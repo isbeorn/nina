@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -53,20 +53,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                 devices.Add(new DirectGuider(profileService, telescopeMediator));
                 devices.Add(new MetaGuideGuider(profileService, windowServiceFactory));
                 devices.Add(new SkyGuardGuider(profileService, windowServiceFactory));
-
-                try {
-                    var mgen2 = new MGEN2.MGEN(Path.Combine("FTDI", "ftd2xx.dll"), new MGenLogger());
-                    devices.Add(new MGENGuider(mgen2, "Lacerta MGEN Superguider", "Lacerta_MGEN_Superguider", profileService, telescopeMediator, windowServiceFactory));
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                try {
-                    var mgen3 = new MGEN3.MGEN3(Path.Combine("FTDI", "ftd2xx.dll"), Path.Combine("MGEN", "MG3lib.dll"), new MGenLogger());
-                    devices.Add(new MGENGuider(mgen3, "Lacerta MGEN-3 Autoguider", "Lacerta_MGEN-3_Autoguider", profileService, telescopeMediator, windowServiceFactory));
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
 
                 /* Plugin Providers */
                 foreach (var provider in await equipmentProviders.GetProviders()) {

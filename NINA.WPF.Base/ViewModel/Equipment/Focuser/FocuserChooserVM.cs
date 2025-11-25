@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -15,6 +15,7 @@
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
 using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Interfaces;
@@ -24,6 +25,7 @@ using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ToupTek;
 using ZWOptical.ASISDK;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
@@ -31,7 +33,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
     public class FocuserChooserVM : DeviceChooserVM<IFocuser> {
 
         public FocuserChooserVM(
-                IProfileService profileService, 
+                IProfileService profileService,
                 IEquipmentProviders<IFocuser> equipmentProviders) : base(profileService, equipmentProviders) {
         }
 
@@ -67,25 +69,55 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                     Logger.Error(ex);
                 }
 
+                /* Oasis focuser */
+                /*                try {
+                                    Logger.Trace("Adding Oasis Focusers");
+                                    var ids = new int[AOFocus.AO_FOCUSER_MAX_NUM];
+                                    AOFocus.FocuserScan(out var focusers, ids);
+                                    for (int i = 0; i < focusers; ++i) {
+                                        var focuser = new OasisFocuser(ids[i], profileService);
+                                        Logger.Debug($"Adding Oasis Focuser: {focuser.Name}");
+                                        devices.Add(focuser);
+                                    }
+                                } catch (Exception ex) {
+                                    Logger.Error(ex);
+                                }
+                */
+                /* ToupTek focusers */
                 try {
-                    var ascomInteraction = new ASCOMInteraction(profileService);
-                    devices.AddRange(ascomInteraction.GetFocusers());
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                /* Alpaca */
-                try {
-                    var alpacaInteraction = new AlpacaInteraction(profileService);
-                    var alpacaFocusers = await alpacaInteraction.GetFocusers(default);
-                    foreach (IFocuser focuser in alpacaFocusers) {
-                        devices.Add(focuser);
+                    Logger.Trace("Adding ToupTek Focusers");
+                    var toupTekDevices = ToupCam.EnumV2();
+                    foreach (var instance in toupTekDevices) {
+                        var info = instance.ToDeviceInfo();
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_AUTOFOCUSER) > 0) {
+                            var focuser = new ToupTekAlikeFocuser(info, new ToupTekSDKWrapper(), profileService);
+                            Logger.Debug($"Adding ToupTek Focuser: {focuser.Name}");
+                            devices.Add(focuser);
+                        }
                     }
-                    Logger.Info($"Found {alpacaFocusers?.Count} Alpaca Focusers");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }
 
+                /* INDI focusers */
+                try {
+                    var indiFocusers = await INDIInteraction.GetFocusers();
+                    devices.AddRange(indiFocusers);
+                    Logger.Info($"Found {indiFocusers?.Count} INDI Focusers");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* INDIGO focusers */
+                /*                try {
+                                    var indigoInteraction = new INDIGOInteraction(profileService);
+                                    var indigoFocusers = indigoInteraction.GetFocusers();
+                                    devices.AddRange(indigoFocusers);
+                                    Logger.Info($"Found {indigoFocusers?.Count} INDIGO Focusers");
+                                } catch (Exception ex) {
+                                    Logger.Error(ex);
+                                }
+                */
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.FocuserSettings.Id, profileService.ActiveProfile.FocuserSettings.LastDeviceName);
 
             } finally {

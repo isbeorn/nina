@@ -52,27 +52,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                     }
                 }
 
-                try {
-                    var ascomInteraction = new ASCOMInteraction(profileService);
-                    foreach (ISafetyMonitor safetyMonitor in ascomInteraction.GetSafetyMonitors()) {
-                        devices.Add(safetyMonitor);
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                /* Alpaca */
-                try {
-                    var alpacaInteraction = new AlpacaInteraction(profileService);
-                    var alpacaSafetyMonitors = await alpacaInteraction.GetSafetyMonitors(default);
-                    foreach (ISafetyMonitor safetyMonitor in alpacaSafetyMonitors) {
-                        devices.Add(safetyMonitor);
-                    }
-                    Logger.Info($"Found {alpacaSafetyMonitors?.Count} Alpaca Safety Monitors");
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
                 devices.Add(new SafetyMonitorSimulator());
 
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.SafetyMonitorSettings.Id, profileService.ActiveProfile.SafetyMonitorSettings.LastDeviceName);

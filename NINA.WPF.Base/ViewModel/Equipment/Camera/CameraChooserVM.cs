@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -12,24 +12,18 @@
 
 #endregion "copyright"
 
-using EDSDKLib;
-using FLI;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
 using NINA.Profile.Interfaces;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
-using QHYCCD;
 using System;
 using System.Collections.Generic;
 using ZWOptical.ASISDK;
-using NINA.Equipment.SDK.CameraSDKs.AtikSDK;
 using NINA.Equipment.Utility;
 using NINA.Core.Locale;
 using NINA.Equipment.Equipment;
 using NINA.Equipment.Interfaces;
-using NINA.WPF.Base.Model.Equipment.MyCamera.Simulator;
-using NINA.Equipment.SDK.CameraSDKs.SBIGSDK;
 using NINA.Image.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Core.Interfaces;
@@ -39,18 +33,15 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
     public class CameraChooserVM : DeviceChooserVM<ICamera> {
         private readonly ITelescopeMediator telescopeMediator;
-        private readonly ISbigSdk sbigSdk;
         private readonly IExposureDataFactory exposureDataFactory;
         private readonly IImageDataFactory imageDataFactory;
 
         public CameraChooserVM(IProfileService profileService,
                                ITelescopeMediator telescopeMediator,
-                               ISbigSdk sbigSdk,
                                IExposureDataFactory exposureDataFactory,
                                IImageDataFactory imageDataFactory,
                                IEquipmentProviders<ICamera> equipmentProviders) : base(profileService, equipmentProviders) {
             this.telescopeMediator = telescopeMediator;
-            this.sbigSdk = sbigSdk;
             this.exposureDataFactory = exposureDataFactory;
             this.imageDataFactory = imageDataFactory;
         }
@@ -62,21 +53,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblNoCamera"]));
-
-                /* ASI */
-                try {
-                    var asiCameras = ASICameras.Count;
-                    Logger.Info($"Found {asiCameras} ASI Cameras");
-                    for (int cameraIndex = 0; cameraIndex < asiCameras; cameraIndex++) {
-                        var cam = ASICameras.GetCamera(cameraIndex, profileService, exposureDataFactory);
-                        if (!string.IsNullOrEmpty(cam.Name)) {
-                            Logger.Trace(string.Format("Adding {0}", cam.Name));
-                            devices.Add(cam);
-                        }
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
 
                 /* Altair */
                 try {
@@ -92,68 +68,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }
-
-                /* Atik */
-                try {
-                    var atikDevices = AtikCameraDll.GetDevicesCount();
-                    Logger.Info($"Found {atikDevices} Atik Cameras");
-                    if (atikDevices > 0) {
-                        for (int i = 0; i < atikDevices; i++) {                            
-                            var cam = new AtikCamera(i, profileService, exposureDataFactory);
-                            devices.Add(cam);
-                        }
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                /* FLI */
-                try {
-                    List<string> cameras = FLICameras.GetCameras();
-                    Logger.Info($"Found {cameras.Count} FLI Cameras");
-
-                    if (cameras.Count > 0) {
-                        foreach (var entry in cameras) {
-                            var camera = new FLICamera(entry, profileService, exposureDataFactory);
-
-                            if (!string.IsNullOrEmpty(camera.Name)) {
-                                Logger.Debug($"Adding FLI camera {camera.Id} (as {camera.Name})");
-                                devices.Add(camera);
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                /* QHYCCD */
-                try {
-                    var qhy = new QHYCameras(exposureDataFactory);
-                    uint numCameras = qhy.Count;
-                    Logger.Info($"Found {numCameras} QHYCCD Cameras");
-
-                    if (numCameras > 0) {
-                        for (uint i = 0; i < numCameras; i++) {
-                            var cam = qhy.GetCamera(i, profileService);
-                            if (!string.IsNullOrEmpty(cam.Name)) {
-                                Logger.Debug($"Adding QHY camera {i}: {cam.Id} (as {cam.Name})");
-                                devices.Add(cam);
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                ///* Player One */
-                //try {
-                //    var provider = new PlayerOneProvider(profileService, exposureDataFactory);
-                //    var playerOneCameras = provider.GetEquipment();
-                //    Logger.Info($"Found {playerOneCameras?.Count} Player One Cameras");
-                //    devices.AddRange(playerOneCameras);
-                //} catch (Exception ex) {
-                //    Logger.Error(ex);
-                //}
 
                 /* ToupTek */
                 try {
@@ -255,26 +169,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     Logger.Error(ex);
                 }
 
-                /* SBIG */
-                try {
-                    var provider = new SBIGCameraProvider(sbigSdk, profileService, exposureDataFactory);
-                    var sbigCameras = provider.GetEquipment();
-                    Logger.Info($"Found {sbigCameras?.Count} SBIG Cameras");
-                    devices.AddRange(sbigCameras);
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                ///* ASTPAN */
-                //try {
-                //    var provider = new ASTPANProvider(profileService, exposureDataFactory);
-                //    var astpanCameras = provider.GetEquipment();
-                //    Logger.Info($"Found {astpanCameras?.Count} ASTPAN Cameras");
-                //    devices.AddRange(astpanCameras );
-                //} catch (Exception ex) {
-                //    Logger.Error(ex);
-                //}
-
                 /* Plugin Providers */
                 foreach (var provider in await equipmentProviders.GetProviders()) {
                     try {
@@ -286,65 +180,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     }
                 }
 
-                /* ASCOM */
-                try {
-                    var ascomInteraction = new ASCOMInteraction(profileService);
-                    var ascomCameras = ascomInteraction.GetCameras(exposureDataFactory);
-                    foreach (ICamera cam in ascomCameras) {
-                        devices.Add(cam);
-                    }
-                    Logger.Info($"Found {ascomCameras?.Count} ASCOM Cameras");
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                /* Alpaca */
-                try {
-                    var alpacaInteraction = new AlpacaInteraction(profileService);
-                    var alpacaCameras = await alpacaInteraction.GetCameras(exposureDataFactory, default);
-                    foreach (ICamera cam in alpacaCameras) {
-                        devices.Add(cam);
-                    }
-                    Logger.Info($"Found {alpacaCameras?.Count} Alpaca Cameras");
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                /* CANON */
-                try {
-                    IntPtr cameraList;
-                    uint err = EDSDK.EdsGetCameraList(out cameraList);
-                    if (err == EDSDK.EDS_ERR_OK) {
-                        int count;
-                        err = EDSDK.EdsGetChildCount(cameraList, out count);
-
-                        Logger.Info($"Found {count} Canon Cameras");
-                        for (int i = 0; i < count; i++) {
-                            IntPtr cam;
-                            err = EDSDK.EdsGetChildAtIndex(cameraList, i, out cam);
-
-                            EDSDK.EdsDeviceInfo info;
-                            err = EDSDK.EdsGetDeviceInfo(cam, out info);
-
-                            Logger.Trace(string.Format("Adding {0}", info.szDeviceDescription));
-                            devices.Add(new EDCamera(cam, info, profileService, exposureDataFactory));
-                        }
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                /* NIKON */
-                if (!DllLoader.IsX86()) {
-                    try {
-                        devices.Add(new NikonCamera(profileService, telescopeMediator, exposureDataFactory));
-                    } catch (Exception ex) {
-                        Logger.Error(ex);
-                    }
-                }
-
-                devices.Add(new FileCamera(profileService, telescopeMediator, imageDataFactory, exposureDataFactory));
-                devices.Add(new SimulatorCamera(profileService, telescopeMediator, exposureDataFactory, imageDataFactory));
+                /* INDIGO camera */
+                /*                try {
+                                    var indigoInteraction = new INDIGOInteraction(profileService);
+                                    var indigoCameras = indigoInteraction.GetCameras(exposureDataFactory);
+                                    devices.AddRange(indigoCameras);
+                                    Logger.Info($"Found {indigoCameras?.Count} INDIGO Cameras");
+                                } catch (Exception ex) {
+                                    Logger.Error(ex);
+                                }
+                */
+                //                devices.Add(new FileCamera(profileService, telescopeMediator, imageDataFactory, exposureDataFactory));
+                devices.Add(new SimulatorCamera(profileService, imageDataFactory, exposureDataFactory));
 
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.CameraSettings.Id, profileService.ActiveProfile.CameraSettings.LastDeviceName);
 

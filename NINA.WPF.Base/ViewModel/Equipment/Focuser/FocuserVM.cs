@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright ï¿½ 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -150,11 +150,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                 if (lastFocusedTemperature == -1000) {
                     delta = 0;
                     deltaInt = 0;
-                    Logger.Info($"Moving Focuser By Temperature - Slope {slope} * ( DeltaT ) °C (relative mode) - lastTemperature initialized to {temperature}");
+                    Logger.Info($"Moving Focuser By Temperature - Slope {slope} * ( DeltaT ) ï¿½C (relative mode) - lastTemperature initialized to {temperature}");
                 } else {
                     delta = lastRoundoff + (temperature - lastFocusedTemperature) * slope;
                     deltaInt = (int)Math.Round(delta);
-                    Logger.Info($"Moving Focuser By Temperature - LastRoundoff {lastRoundoff} + Slope {slope} * ( Temperature {temperature} - PrevTemperature {lastFocusedTemperature} ) °C (relative mode) = Delta {delta} / DeltaInt {deltaInt}");
+                    Logger.Info($"Moving Focuser By Temperature - LastRoundoff {lastRoundoff} + Slope {slope} * ( Temperature {temperature} - PrevTemperature {lastFocusedTemperature} ) ï¿½C (relative mode) = Delta {delta} / DeltaInt {deltaInt}");
                 }
                 int pos = Position;
                 var result = await MoveFocuserInternal(pos + deltaInt, ct);

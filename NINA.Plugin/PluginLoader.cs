@@ -341,10 +341,10 @@ namespace NINA.Plugin {
                 var applicationVersion = new Version(CoreUtil.Version);
 
                 var pluginFileInfo = new FileInfo(file);
-                if (pluginFileInfo.AlternateDataStreamExists("Zone.Identifier")) {
+/*                if (pluginFileInfo.AlternateDataStreamExists("Zone.Identifier")) {
                     pluginFileInfo.DeleteAlternateDataStream("Zone.Identifier");
                 }
-
+*/
                 var references = PluginAssemblyReader.GrabAssemblyReferences(file);
                 if (references.FirstOrDefault(x => x.Contains("NINA.Plugin")) != null) {
                     try {
@@ -464,11 +464,11 @@ namespace NINA.Plugin {
                 var container = GetContainer(catalog);
                 var parts = new PartsImport();
                 container.ComposeParts(parts);
-
+/*
                 foreach (var template in parts.DataTemplateImports) {
                     Application.Current?.Resources.MergedDictionaries.Add(template);
                 }
-
+*/
                 var pluginItems = AssignSequenceEntity(parts.ItemImports, resourceDictionary, pluginName);
                 var pluginConditions = AssignSequenceEntity(parts.ConditionImports, resourceDictionary, pluginName);
                 var pluginTriggers = AssignSequenceEntity(parts.TriggerImports, resourceDictionary, pluginName);
@@ -737,9 +737,6 @@ namespace NINA.Plugin {
 
         [ImportMany(typeof(ISequenceContainer))]
         public IEnumerable<Lazy<ISequenceContainer, Dictionary<string, object>>> ContainerImports { get; private set; }
-
-        [ImportMany(typeof(ResourceDictionary))]
-        public IEnumerable<ResourceDictionary> DataTemplateImports { get; private set; }
 
         [ImportMany(typeof(IDockableVM))]
         public IEnumerable<IDockableVM> DockableVMImports { get; private set; }

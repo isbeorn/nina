@@ -88,8 +88,6 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             this.Add(loopCondition);
             this.Add(ditherAfterExposures);
 
-            WeakEventManager<SwitchFilter, PropertyChangedEventArgs>.AddHandler(switchFilter, nameof(switchFilter.PropertyChanged), SwitchFilter_PropertyChanged);
-
             IsExpanded = false;
 
             if (cloneMe != null) {
@@ -103,20 +101,6 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                         GetSwitchFilter().ResetProgress();
                     } catch(Exception) { }                    
                 }
-            }
-        }
-
-        private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
-
-        [JsonProperty]
-        public override InstructionErrorBehavior ErrorBehavior {
-            get => errorBehavior;
-            set {
-                errorBehavior = value;
-                foreach (var item in Items) {
-                    item.ErrorBehavior = errorBehavior;
-                }
-                RaisePropertyChanged();
             }
         }
 

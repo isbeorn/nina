@@ -68,8 +68,6 @@ namespace NINA.Sequencer.Conditions {
         [JsonProperty]
         public ISequenceContainer Parent { get; set; }
 
-        public ICommand ResetProgressCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>((o) => { ResetProgress(); ShowMenu = false; });
-
         private bool showMenu;
 
         public bool ShowMenu {
@@ -91,8 +89,6 @@ namespace NINA.Sequencer.Conditions {
                 }
             }
         }
-
-        public ICommand ShowMenuCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>((o) => ShowMenu = !ShowMenu, (o) => Status != SequenceEntityStatus.DISABLED);
 
         public virtual void AfterParentChanged() {
         }
@@ -163,21 +159,6 @@ namespace NINA.Sequencer.Conditions {
 
         public virtual void Teardown() {
         }
-
-        public ICommand DetachCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>((o) => Detach());
-
-        public ICommand MoveUpCommand => null;
-
-        public ICommand MoveDownCommand => null;
-        public ICommand DisableEnableCommand => new GalaSoft.MvvmLight.Command.RelayCommand(() => {
-            if (Status != SequenceEntityStatus.DISABLED) {
-                Status = SequenceEntityStatus.DISABLED;
-                ShowMenu = false;
-            } else {
-                Status = SequenceEntityStatus.CREATED;
-            }
-
-        });
 
         public void Detach() {
             Parent?.Remove(this);

@@ -45,15 +45,15 @@ namespace NINA.Sequencer {
         public const string TargetsFileExtension = ".json";
 
         public IList<TargetSequenceContainer> Targets { get; }
-
+/*
         private CollectionViewSource targetsView;
         private CollectionViewSource targetsMenuView;
         public ICollectionView TargetsView => targetsView.View;
         public ICollectionView TargetsMenuView => targetsMenuView.View;
-
+*/
         private string viewFilter = string.Empty;
         private ISequenceSettings activeSequenceSettings;
-
+/*
         public string ViewFilter {
             get => viewFilter;
             set {
@@ -61,7 +61,7 @@ namespace NINA.Sequencer {
                 TargetsView.Refresh();
             }
         }
-
+*/
         [ObservableProperty]
         private bool targetsLoading = true;
         [ObservableProperty]
@@ -89,7 +89,7 @@ namespace NINA.Sequencer {
             this.profileService = profileService;
 
             Targets = new List<TargetSequenceContainer>();
-            
+/*
             targetsView = new CollectionViewSource { Source = Targets };
             targetsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(TargetSequenceContainer.Grouping)));
             TargetsView.SortDescriptions.Add(new SortDescription(nameof(TargetSequenceContainer.Weight), ListSortDirection.Ascending));
@@ -98,7 +98,7 @@ namespace NINA.Sequencer {
 
             targetsMenuView = new CollectionViewSource { Source = Targets };
             TargetsMenuView.SortDescriptions.Add(new SortDescription(nameof(TargetSequenceContainer.Name), ListSortDirection.Ascending));
-
+*/
             LoadTargets().ContinueWith(t => {
                 sequenceTargetsFolderWatcher = new FileSystemWatcher(profileService.ActiveProfile.SequenceSettings.SequencerTargetsFolder, "*" + TargetsFileExtension);
 
@@ -116,18 +116,18 @@ namespace NINA.Sequencer {
         [RelayCommand]
         private void ToggleSort() {
             if (SortByRelevance) {
-                TargetsView.SortDescriptions.RemoveAt(0);
-                TargetsView.SortDescriptions.Add(new SortDescription(nameof(TargetSequenceContainer.Weight), ListSortDirection.Ascending));
+//                TargetsView.SortDescriptions.RemoveAt(0);
+//                TargetsView.SortDescriptions.Add(new SortDescription(nameof(TargetSequenceContainer.Weight), ListSortDirection.Ascending));
             } else if (SortByName) {
-                TargetsView.SortDescriptions.RemoveAt(0);
-                TargetsView.SortDescriptions.Add(new SortDescription(nameof(TargetSequenceContainer.Name), ListSortDirection.Ascending));
+//                TargetsView.SortDescriptions.RemoveAt(0);
+//                TargetsView.SortDescriptions.Add(new SortDescription(nameof(TargetSequenceContainer.Name), ListSortDirection.Ascending));
             }
         }
 
 
 
         private bool ApplyViewFilter(object obj) {
-            return (obj as TargetSequenceContainer).Name.IndexOf(ViewFilter, StringComparison.OrdinalIgnoreCase) >= 0;
+            return false; //(obj as TargetSequenceContainer).Name.IndexOf(ViewFilter, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private async void SequenceTargetsFolderWatcher_Changed(object sender, FileSystemEventArgs e) {
@@ -228,13 +228,11 @@ namespace NINA.Sequencer {
         }
 
         private async Task RefreshFilters() {
-            await Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => {
-                try {
-                    TargetsView.Refresh(); TargetsMenuView.Refresh();
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-            }));
+            try {
+                //                    TargetsView.Refresh(); TargetsMenuView.Refresh();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
 
         public void DeleteTarget(TargetSequenceContainer targetSequenceContainer) {

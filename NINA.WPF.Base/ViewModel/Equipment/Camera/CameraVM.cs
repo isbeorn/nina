@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -77,9 +77,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             _ = RescanDevicesCommand.ExecuteAsync(null);
 
             TempChangeRunning = false;
-            CoolerHistory = new LinkedList<CameraCoolingStep>();
-            CoolerHistoryMax = 20;
-            coolerHistoryMin = -20;
 
             updateTimer = new DeviceUpdateTimer(
                 GetCameraValues,
@@ -355,10 +352,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                         var connected = await cam.Connect(_cancelConnectCameraSource.Token);
 
                         if (connected) {
-                            CoolerHistory.Clear();
-                            CoolerHistoryMax = 20;
-                            CoolerHistoryMin = -20;
-                            CoolerHistoryChangeId++;
                             this.Cam = cam;
                             token.ThrowIfCancellationRequested();
 
@@ -403,6 +396,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                 Name = Cam.Name,
                                 DisplayName = Cam.DisplayName,
                                 DeviceId = Cam.Id,
+                                Description = Cam.Description,
+                                DriverInfo = Cam.DriverInfo,
+                                DriverVersion = Cam.DriverVersion,
                                 CanSetOffset = Cam.CanSetOffset,
                                 OffsetMin = Cam.OffsetMin,
                                 OffsetMax = Cam.OffsetMax,
@@ -572,14 +568,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
             cameraValues.TryGetValue(nameof(CameraInfo.PixelSize), out o);
             CameraInfo.PixelSize = (double)(o ?? 0.0d);
-
-            CoolerHistory.AddLast(new CameraCoolingStep(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), CameraInfo.Temperature, CameraInfo.CoolerPower));
-            if(CoolerHistory.Count > 100) {
-                CoolerHistory.RemoveFirst();
-            }
-            CoolerHistoryChangeId++;
-            CoolerHistoryMax = Math.Max(CameraInfo.Temperature, CoolerHistoryMax);
-            CoolerHistoryMin = Math.Min(CameraInfo.Temperature, CoolerHistoryMin);
 
             BroadcastCameraInfo();
         }
@@ -997,16 +985,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
             return Cam;
         }
-
-        [ObservableProperty]
-        private ulong coolerHistoryChangeId;
-
-        public LinkedList<CameraCoolingStep> CoolerHistory { get; private set; }
-
-        [ObservableProperty]
-        private double coolerHistoryMax;
-        [ObservableProperty]
-        private double coolerHistoryMin;
 
         public IAsyncCommand CoolCamCommand { get; private set; }
         public IAsyncCommand WarmCamCommand { get; private set; }

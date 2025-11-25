@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -46,27 +46,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                     } catch (Exception ex) {
                         Logger.Error(ex);
                     }
-                }
-
-                try {
-                    var ascomInteraction = new ASCOMInteraction(profileService);
-                    foreach (IDome dome in ascomInteraction.GetDomes()) {
-                        devices.Add(dome);
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                /* Alpaca */
-                try {
-                    var alpacaInteraction = new AlpacaInteraction(profileService);
-                    var alpacaDomes = await alpacaInteraction.GetDomes(default);
-                    foreach (IDome dome in alpacaDomes) {
-                        devices.Add(dome);
-                    }
-                    Logger.Info($"Found {alpacaDomes?.Count} Alpaca Domes");
-                } catch (Exception ex) {
-                    Logger.Error(ex);
                 }
 
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.DomeSettings.Id, profileService.ActiveProfile.DomeSettings.LastDeviceName);

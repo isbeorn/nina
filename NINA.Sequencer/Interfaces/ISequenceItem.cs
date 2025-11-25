@@ -52,13 +52,6 @@ namespace NINA.Sequencer.SequenceItem {
         /// <returns></returns>
         TimeSpan GetEstimatedDuration();
 
-        ICommand ResetProgressCommand { get; }
-
-        /// <summary>
-        /// Defines the instruction behavor in case of an error
-        /// </summary>
-        InstructionErrorBehavior ErrorBehavior { get; set; }
-
         /// <summary>
         /// How many times the instruction should retry in case of an error
         /// </summary>

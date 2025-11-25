@@ -55,7 +55,7 @@ namespace NINA.Sequencer {
             Conditions = new ObservableCollection<ISequenceCondition>(conditions);
             Triggers = new ObservableCollection<ISequenceTrigger>(triggers);
             Container = new ObservableCollection<ISequenceContainer>(container);
-
+/*
             var enitityOptions = new PluginOptionsAccessor(profileService, Guid.Parse("E7C2BE8E-479B-4DBA-A0B0-D513B77F9A54"));
             var allEntities = new List<SidebarEntity>();
             var sidebarItems = new List<SidebarEntity>();
@@ -95,10 +95,10 @@ namespace NINA.Sequencer {
             TriggersView.SortDescriptions.Add(new SortDescription("Entity.Category", ListSortDirection.Ascending));
             TriggersView.SortDescriptions.Add(new SortDescription("Entity.Name", ListSortDirection.Ascending));
             TriggersView.Filter += new Predicate<object>((object o) => (o as SidebarEntity).Enabled);
-
+*/
             SettingsMode = false;
 
-            ItemsView = CollectionViewSource.GetDefaultView(allEntities);
+            //ItemsView = CollectionViewSource.GetDefaultView(allEntities);
 
             profileService.ProfileChanged += ProfileService_ProfileChanged;
         }
@@ -112,8 +112,8 @@ namespace NINA.Sequencer {
             var sidebarEntity = obj as SidebarEntity;
 
             var filterByName = sidebarEntity.Entity.Name.IndexOf(ViewFilter, StringComparison.OrdinalIgnoreCase) >= 0;
-            var filterByEnabled = SettingsMode ? true : sidebarEntity.Enabled;
-            return filterByEnabled && filterByName;
+            //var filterByEnabled = SettingsMode ? true : sidebarEntity.Enabled;
+            return /*filterByEnabled &&*/ filterByName;
         }
 
         private string viewFilter = string.Empty;
@@ -122,7 +122,7 @@ namespace NINA.Sequencer {
             get => viewFilter;
             set {
                 viewFilter = value;
-                ItemsView.Refresh();
+                //ItemsView.Refresh();
             }
         }
         private bool settingsMode;
@@ -131,18 +131,20 @@ namespace NINA.Sequencer {
             set {
                 settingsMode = value;
                 RaisePropertyChanged();
+                /*
                 ItemsView.Refresh();
                 InstructionsView.Refresh();
                 ConditionsView.Refresh();
                 TriggersView.Refresh();
+                */
             }
         }
-
+/*
         public ICollectionView ItemsView { get; }
         public ICollectionView InstructionsView { get; }
         public ICollectionView ConditionsView { get; }
         public ICollectionView TriggersView { get; }
-
+*/
         public T GetContainer<T>() where T : ISequenceContainer {
             return (T)(Container.FirstOrDefault(x => x.GetType() == typeof(T))?.Clone() ?? default(T));
         }
@@ -161,11 +163,11 @@ namespace NINA.Sequencer {
     }
 
     public class SidebarEntity : BaseINPC {
-        public SidebarEntity(ISequenceEntity entity, PluginOptionsAccessor entityOptions) {
+        public SidebarEntity(ISequenceEntity entity/*, PluginOptionsAccessor entityOptions*/) {
             Entity = entity;
-            this.entityOptions = entityOptions;
+            //            this.entityOptions = entityOptions;
         }
-
+/*
         public bool Enabled {
             get => entityOptions.GetValueBoolean(this.Entity.GetType().FullName, true);
             set {
@@ -173,8 +175,9 @@ namespace NINA.Sequencer {
                 RaisePropertyChanged();
             }
         }
+        */
         public ISequenceEntity Entity { get; }
 
-        private PluginOptionsAccessor entityOptions;
+//        private PluginOptionsAccessor entityOptions;
     }
 }

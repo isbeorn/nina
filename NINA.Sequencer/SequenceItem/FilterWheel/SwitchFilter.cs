@@ -51,7 +51,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             this.profileService = profileservice;
             this.filterWheelMediator = filterWheelMediator;
 
-            WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.ProfileChanged), ProfileService_ProfileChanged);
+            //WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.ProfileChanged), ProfileService_ProfileChanged);
         }
 
         private void MatchFilter() {

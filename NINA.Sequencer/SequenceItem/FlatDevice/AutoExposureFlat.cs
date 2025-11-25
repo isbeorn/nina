@@ -120,7 +120,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             set {
                 errorBehavior = value;
                 foreach (var item in Items) {
-                    item.ErrorBehavior = errorBehavior;
+                    //item.ErrorBehavior = errorBehavior;
                 }
                 RaisePropertyChanged();
             }

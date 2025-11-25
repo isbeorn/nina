@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -48,26 +48,16 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                     }
                 }
 
-                try {
-                    var ascomInteraction = new ASCOMInteraction(profileService);
-                    foreach (IFlatDevice flatDevice in ascomInteraction.GetCoverCalibrators()) {
-                        devices.Add(flatDevice);
-                    }
+                /* INDIGO cover calibrators */
+/*                try {
+                    var indigoInteraction = new INDIGOInteraction(profileService);
+                    var indigoCoverCalibrators = indigoInteraction.GetCoverCalibrators();
+                    devices.AddRange(indigoCoverCalibrators);
+                    Logger.Info($"Found {indigoCoverCalibrators?.Count} INDIGO CoverCalibrators");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }
-
-                /* Alpaca */
-                try {
-                    var alpacaInteraction = new AlpacaInteraction(profileService);
-                    var alpacaCoverCalibrators = await alpacaInteraction.GetCoverCalibrators(default);
-                    foreach (IFlatDevice fd in alpacaCoverCalibrators) {
-                        devices.Add(fd);
-                    }
-                    Logger.Info($"Found {alpacaCoverCalibrators?.Count} Alpaca Cover Calibrators");
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
+*/
 
                 devices.AddRange(new List<IDevice>{
                     new AllProSpikeAFlat(profileService),

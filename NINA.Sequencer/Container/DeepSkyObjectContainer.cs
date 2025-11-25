@@ -83,22 +83,10 @@ namespace NINA.Sequencer.Container {
             Task.Run(() => NighttimeData = nighttimeCalculator.Calculate());
             ExposureInfoList = new AsyncObservableCollection<ExposureInfo>();
             Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
-            CoordsToFramingCommand = new GalaSoft.MvvmLight.Command.RelayCommand(SendCoordinatesToFraming);
-            CoordsFromPlanetariumCommand = new GalaSoft.MvvmLight.Command.RelayCommand(GetCoordsFromPlanetarium);
-            DropTargetCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(DropTarget);
-            DeleteExposureInfoCommand = new GalaSoft.MvvmLight.Command.RelayCommand<ExposureInfo>(DeleteExposureInfo);
 
-            WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.LocationChanged), ProfileService_LocationChanged);
-            WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.HorizonChanged), ProfileService_HorizonChanged);
-            WeakEventManager<INighttimeCalculator, EventArgs>.AddHandler(nighttimeCalculator, nameof(nighttimeCalculator.OnReferenceDayChanged), NighttimeCalculator_OnReferenceDayChanged);
-        }
-
-        private void SendCoordinatesToFraming() {
-            _ = CoordsToFraming();
-        }
-
-        private void GetCoordsFromPlanetarium() {
-            _ = CoordsFromPlanetarium();
+            //            WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.LocationChanged), ProfileService_LocationChanged);
+            //            WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.HorizonChanged), ProfileService_HorizonChanged);
+            //            WeakEventManager<INighttimeCalculator, EventArgs>.AddHandler(nighttimeCalculator, nameof(nighttimeCalculator.OnReferenceDayChanged), NighttimeCalculator_OnReferenceDayChanged);
         }
 
         private void NighttimeCalculator_OnReferenceDayChanged(object sender, EventArgs e) {
@@ -146,11 +134,11 @@ namespace NINA.Sequencer.Container {
             set {
                 if (ReferenceEquals(target, value)) return;
                 if (target != null) {
-                    WeakEventManager<InputTarget, EventArgs>.RemoveHandler(target, nameof(InputTarget.CoordinatesChanged), Target_OnCoordinatesChanged);
+                    //WeakEventManager<InputTarget, EventArgs>.RemoveHandler(target, nameof(InputTarget.CoordinatesChanged), Target_OnCoordinatesChanged);
                 }
                 target = value;
                 if (target != null) {
-                    WeakEventManager<InputTarget, EventArgs>.AddHandler(target, nameof(InputTarget.CoordinatesChanged), Target_OnCoordinatesChanged);
+                    //WeakEventManager<InputTarget, EventArgs>.AddHandler(target, nameof(InputTarget.CoordinatesChanged), Target_OnCoordinatesChanged);
                 }
                 RaisePropertyChanged();
             }
@@ -211,54 +199,6 @@ namespace NINA.Sequencer.Container {
         public override string ToString() {
             var baseString = base.ToString();
             return $"{baseString}, Target: {Target?.TargetName} {Target?.InputCoordinates?.Coordinates} {Target?.PositionAngle}";
-        }
-
-        private async Task<bool> CoordsToFraming() {
-            if (Target.DeepSkyObject?.Coordinates != null) {
-                var dso = new DeepSkyObject(Target.DeepSkyObject.Name, Target.DeepSkyObject.Coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
-                dso.RotationPositionAngle = Target.PositionAngle;
-                applicationMediator.ChangeTab(ApplicationTab.FRAMINGASSISTANT);
-                return await framingAssistantVM.SetCoordinates(dso);
-            }
-            return false;
-        }
-
-        private async Task<bool> CoordsFromPlanetarium() {
-            IPlanetarium s = planetariumFactory.GetPlanetarium();
-            DeepSkyObject resp = null;
-
-            try {
-                resp = await s.GetTarget();
-
-                if (resp != null) {
-                    Target.InputCoordinates.Coordinates = resp.Coordinates;
-                    Target.TargetName = resp.Name;
-                    this.Name = resp.Name;
-
-                    Target.PositionAngle = 0;
-
-                    if (s.CanGetRotationAngle) {
-                        double rotationAngle = await s.GetRotationAngle();
-
-                        if (!double.IsNaN(rotationAngle)) {
-                            Target.PositionAngle = rotationAngle;
-                        }
-                    }
-
-                    Notification.ShowSuccess(string.Format(Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
-                }
-            } catch (PlanetariumObjectNotSelectedException) {
-                Logger.Error($"Attempted to get coordinates from {s.Name} when no object was selected");
-                Notification.ShowError(string.Format(Loc.Instance["LblPlanetariumObjectNotSelected"], s.Name));
-            } catch (PlanetariumFailedToConnect ex) {
-                Logger.Error($"Unable to connect to {s.Name}: {ex}");
-                Notification.ShowError(string.Format(Loc.Instance["LblPlanetariumFailedToConnect"], s.Name));
-            } catch (Exception ex) {
-                Logger.Error($"Failed to get coordinates from {s.Name}: {ex}");
-                Notification.ShowError(string.Format(Loc.Instance["LblPlanetariumCoordsError"], s.Name));
-            }
-
-            return (resp != null);
         }
 
         [JsonProperty]

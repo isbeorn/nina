@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -34,14 +34,40 @@ namespace NINA.WPF.Base.Mediator {
     public abstract class DeviceMediator<THandler, TConsumer, TInfo> : IDeviceMediator<THandler, TConsumer, TInfo> where THandler : IDeviceVM<TInfo> where TConsumer : IDeviceConsumer<TInfo> {
         protected THandler handler;
         protected List<TConsumer> consumers = new List<TConsumer>();
+        private event Func<object, EventArgs, Task> pendingConnected;
+        private event Func<object, EventArgs, Task> pendingDisconnected;
 
         public event Func<object, EventArgs, Task> Connected {
-            add { this.handler.Connected += value; }
-            remove { this.handler.Connected -= value; }
+            add { 
+                if (this.handler != null) {
+                    this.handler.Connected += value;
+                } else {
+                    pendingConnected += value;
+                }
+            }
+            remove { 
+                if (this.handler != null) {
+                    this.handler.Connected -= value;
+                } else {
+                    pendingConnected -= value;
+                }
+            }
         }
         public event Func<object, EventArgs, Task> Disconnected {
-            add { this.handler.Disconnected += value; }
-            remove { this.handler.Disconnected -= value; }
+            add { 
+                if (this.handler != null) {
+                    this.handler.Disconnected += value;
+                } else {
+                    pendingDisconnected += value;
+                }
+            }
+            remove { 
+                if (this.handler != null) {
+                    this.handler.Disconnected -= value;
+                } else {
+                    pendingDisconnected -= value;
+                }
+            }
         }
 
         public void RegisterHandler(THandler handler) {            
@@ -49,6 +75,20 @@ namespace NINA.WPF.Base.Mediator {
                 throw new Exception("Handler already registered!");
             }
             this.handler = handler;
+
+            // Attach any pending event handlers
+            if (pendingConnected != null) {
+                foreach (var d in pendingConnected.GetInvocationList()) {
+                    this.handler.Connected += (Func<object, EventArgs, Task>)d;
+                }
+                pendingConnected = null;
+            }
+            if (pendingDisconnected != null) {
+                foreach (var d in pendingDisconnected.GetInvocationList()) {
+                    this.handler.Disconnected += (Func<object, EventArgs, Task>)d;
+                }
+                pendingDisconnected = null;
+            }
 
             var info = handler.GetDeviceInfo();
             Broadcast(info);

@@ -46,7 +46,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
             Coordinates = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
-            WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.LocationChanged), ProfileService_LocationChanged);
+            //WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.LocationChanged), ProfileService_LocationChanged);
         }
 
         private void ProfileService_LocationChanged(object sender, EventArgs e) {

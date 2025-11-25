@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -37,7 +37,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblNoRotator"]));
-                
+
                 /* Plugin Providers */
                 foreach (var provider in await equipmentProviders.GetProviders()) {
                     try {
@@ -49,27 +49,25 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     }
                 }
 
+                /* INDI rotator */
                 try {
-                    var ascomInteraction = new ASCOMInteraction(profileService);
-                    foreach (IRotator rotator in ascomInteraction.GetRotators()) {
-                        devices.Add(rotator);
-                    }
+                    var indiRotator = await INDIInteraction.GetRotators();
+                    devices.AddRange(indiRotator);
+                    Logger.Info($"Found {indiRotator?.Count} INDI Rotators");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }
 
-                /* Alpaca */
-                try {
-                    var alpacaInteraction = new AlpacaInteraction(profileService);
-                    var alpacaRotators = await alpacaInteraction.GetRotators(default);
-                    foreach (IRotator r in alpacaRotators) {
-                        devices.Add(r);
-                    }
-                    Logger.Info($"Found {alpacaRotators?.Count} Alpaca Rotators");
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
+                /* INDIGO focuser */
+                /*                try {
+                                    var indigoInteraction = new INDIGOInteraction(profileService);
+                                    var indigoRotator = indigoInteraction.GetRotators();
+                                    devices.AddRange(indigoRotator);
+                                    Logger.Info($"Found {indigoRotator?.Count} INDIGO Rotators");
+                                } catch (Exception ex) {
+                                    Logger.Error(ex);
+                                }
+                */
                 devices.Add(new ManualRotator(profileService));
 
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.RotatorSettings.Id, profileService.ActiveProfile.RotatorSettings.LastDeviceName);

@@ -51,29 +51,6 @@ namespace NINA.Sequencer.Container {
         public SequenceRootContainer() : base(new SequentialStrategy()) {
         }
 
-        public override ICommand ResetProgressCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>(
-            (o) => {
-                if (MyMessageBox.Show(Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_ResetPrompt"], Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_ResetPromptCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
-                    base.ResetProgressCommand.Execute(o);
-                }
-            }
-        );
-
-        public override ICommand DetachCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>(
-            (o) => {
-                if (MyMessageBox.Show(Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_ClearPrompt"], Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_ClearCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
-                    foreach (var trigger in GetTriggersSnapshot()) {
-                        trigger.Detach();
-                    }
-                    SequenceTitle = Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_Name"];
-                    ClearContainer(Items[0] as ISequenceContainer);
-                    ClearContainer(Items[1] as ISequenceContainer);
-                    ClearContainer(Items[2] as ISequenceContainer);
-                    GC.Collect(2);
-                }
-            }
-        );
-
         private void ClearContainer(ISequenceContainer container) {
             foreach (var item in container.GetItemsSnapshot()) {
                 item.Detach();
@@ -118,10 +95,6 @@ namespace NINA.Sequencer.Container {
                 Logger.Error(eventException);
             }
         }
-
-        public override ICommand DropIntoCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>((o) => {
-            (Items[1] as TargetAreaContainer).DropIntoCommand.Execute(o);
-        });
 
         public override object Clone() {
             return new SequenceRootContainer() {

@@ -36,7 +36,5 @@ namespace NINA.Sequencer.Conditions {
         /// Resets the progress of the condition. For example when nested in a container that restarts itself the condition needs to be reset
         /// </summary>
         void ResetProgress();
-
-        ICommand ResetProgressCommand { get; }
     }
 }

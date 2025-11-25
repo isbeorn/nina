@@ -50,23 +50,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                     }
                 }
 
+                /* INDI weather data */
                 try {
-                    var ascomInteraction = new ASCOMInteraction(profileService);
-                    foreach (IWeatherData obsdev in ascomInteraction.GetWeatherDataSources()) {
-                        devices.Add(obsdev);
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                }
-
-                /* Alpaca */
-                try {
-                    var alpacaInteraction = new AlpacaInteraction(profileService);
-                    var alpacaObservingConditions = await alpacaInteraction.GetWeatherDataSources(default);
-                    foreach (IWeatherData w in alpacaObservingConditions) {
-                        devices.Add(w);
-                    }
-                    Logger.Info($"Found {alpacaObservingConditions?.Count} Alpaca Observing Conditions");
+                    var indiWeatherData = await INDIInteraction.GetWeatherData();
+                    devices.AddRange(indiWeatherData);
+                    Logger.Info($"Found {indiWeatherData?.Count} INDI Weather Data");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }
