@@ -1,3 +1,6 @@
 [submodule "NINA/External"]
 	path = NINA/External
 	url = git@pins:nitr57/pins.external.git
+[submodule "Touch-N-Stars"]
+	path = Touch-N-Stars
+	url = git@pins:Touch-N-Stars/Touch-N-Stars.git
