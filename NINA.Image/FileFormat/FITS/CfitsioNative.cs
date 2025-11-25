@@ -16,7 +16,7 @@ namespace NINA.Image.FileFormat.FITS {
             }
         }
 
-        private const string DLLNAME = "cfitsionative.dll";
+        private const string DLLNAME = "libcfitsio.so";
         static CfitsioNative() {
             DllLoader.LoadDll(Path.Combine("Cfitsio", DLLNAME));
         }
@@ -102,7 +102,7 @@ namespace NINA.Image.FileFormat.FITS {
         }
 
         public static void LogErrorStatus(string op, int statusCode) {
-            if(statusCode != 0) {
+            if (statusCode != 0) {
                 Logger.Error($"{op} failed with {statusCode} = {fits_get_errstatus(statusCode)}");
             }
         }
@@ -152,7 +152,7 @@ namespace NINA.Image.FileFormat.FITS {
         public static extern int fits_read_pix(
             IntPtr fptr,
             DATATYPE datatype,
-            int[] firstpix,
+            long[] firstpix,
             long nelem,
             IntPtr nulval,
             IntPtr array,
@@ -376,7 +376,7 @@ namespace NINA.Image.FileFormat.FITS {
         }
 
         public static T[] read_pixels<T>(IntPtr fptr, int naxes, int nelem) where T : unmanaged {
-            var firstpix = new int[naxes];
+            var firstpix = new long[naxes];
             for (int i = 0; i < naxes; i++) {
                 firstpix[i] = 1;
             }
