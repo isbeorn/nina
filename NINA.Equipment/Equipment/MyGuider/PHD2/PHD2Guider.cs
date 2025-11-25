@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright ï¿½ 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -41,6 +41,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Net;
 using ASCOM.Common.Helpers;
+using System.Runtime.InteropServices;
 
 namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
@@ -989,7 +990,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                         break;
                     }
                 case "ConfigurationChange": {
-                        if(initialized) { 
+                        if (initialized) {
                             Logger.Debug($"PHD2 - ConfigurationChange!");
                             _ = SetPixelScale();
                         }
@@ -1064,16 +1065,32 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             }
         }
 
+        private static Process[] FindPhd2Processes() {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                return Process.GetProcessesByName("PHD2");
+            } else {
+                // On Linux/macOS, check for 'phd2', 'phd2.bin', etc.
+                var names = new[] { "phd2", "phd2.bin" };
+                return Process.GetProcesses()
+                    .Where(p => names.Contains(p.ProcessName, StringComparer.OrdinalIgnoreCase))
+                    .ToArray();
+            }
+        }
+
         private async Task<bool> StartPHD2Process() {
             // If PHD2 instance is not running start it.
             try {
                 var windowTitleRegex = PHD2WindowTitleRegex();
 
                 // Check if PHD2 is already started with the expected instance number
-                foreach (var p in Process.GetProcessesByName("phd2")) {
-                    var match = windowTitleRegex.Match(p.MainWindowTitle);
-                    if ((int.TryParse(match.Groups[1].Value, out int i) ? i : 1) == profileService.ActiveProfile.GuiderSettings.PHD2InstanceNumber) {
-                        // PHD2 is already started
+                foreach (var p in FindPhd2Processes()) {
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                        var match = windowTitleRegex.Match(p.MainWindowTitle);
+                        if ((int.TryParse(match.Groups[1].Value, out int i) ? i : 1) == profileService.ActiveProfile.GuiderSettings.PHD2InstanceNumber) {
+                            // PHD2 is already started
+                            return true;
+                        }
+                    } else {
                         return true;
                     }
                 }
@@ -1087,7 +1104,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                         FileName = profileService.ActiveProfile.GuiderSettings.PHD2Path,
                         Arguments = $"-i={profileService.ActiveProfile.GuiderSettings.PHD2InstanceNumber}"
                     }
-                    };
+                };
                 process?.Start();
                 process?.WaitForInputIdle();
 
