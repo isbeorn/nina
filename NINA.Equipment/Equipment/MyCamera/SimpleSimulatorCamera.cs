@@ -26,9 +26,9 @@ using NINA.Equipment.Interfaces;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
-    public class SimulatorCamera : BaseINPC, ICamera {
+    public class SimpleSimulatorCamera : BaseINPC, ICamera {
 
-        public SimulatorCamera(IProfileService profileService, IImageDataFactory imageDataFactory, IExposureDataFactory exposureDataFactory) {
+        public SimpleSimulatorCamera(IProfileService profileService, IImageDataFactory imageDataFactory, IExposureDataFactory exposureDataFactory) {
             this.profileService = profileService;
             this.imageDataFactory = imageDataFactory;
             this.exposureDataFactory = exposureDataFactory;

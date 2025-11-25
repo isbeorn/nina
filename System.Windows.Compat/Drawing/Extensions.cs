@@ -14,12 +14,15 @@
 
 using OpenCvSharp;
 using System.Drawing.Imaging;
+using System.IO;
 
-namespace System.Drawing {
+namespace System.Drawing
+{
     /// <summary>
     /// Base class for images
     /// </summary>
-    public class Image : IDisposable {
+    public class Image : IDisposable
+    {
         public virtual void Dispose() { }
         public int Width { get; set; }
         public int Height { get; set; }
@@ -29,20 +32,25 @@ namespace System.Drawing {
     /// <summary>
     /// Bitmap type that wraps OpenCV Mat
     /// </summary>
-    public class Bitmap : Image {
+    public class Bitmap : Image
+    {
         private Mat _mat;
 
-        public Bitmap() {
+        public Bitmap()
+        {
             _mat = new Mat();
         }
 
-        public Bitmap(int width, int height) {
+        public Bitmap(int width, int height)
+        {
             _mat = new Mat(height, width, MatType.CV_8UC3);
         }
 
-        public Bitmap(int width, int height, PixelFormat format) {
+        public Bitmap(int width, int height, PixelFormat format)
+        {
             MatType matType;
-            switch (format) {
+            switch (format)
+            {
                 case PixelFormat.Format8bppIndexed:
                     matType = MatType.CV_8UC1;
                     break;
@@ -71,20 +79,25 @@ namespace System.Drawing {
             _mat.SetTo(OpenCvSharp.Scalar.All(0));
         }
 
-        public Bitmap(string filename) {
+        public Bitmap(string filename)
+        {
             _mat = Cv2.ImRead(filename, ImreadModes.Unchanged);
-            if (_mat == null || _mat.Empty()) {
+            if (_mat == null || _mat.Empty())
+            {
                 throw new ArgumentException($"Failed to load image from: {filename}");
             }
         }
 
-        public Bitmap(Mat mat) {
+        public Bitmap(Mat mat)
+        {
             _mat = mat;
         }
 
-        public Bitmap(Bitmap source, int width, int height) {
+        public Bitmap(Bitmap source, int width, int height)
+        {
             // Resize the source bitmap to the specified dimensions
-            if (source == null || source._mat == null || source._mat.Empty()) {
+            if (source == null || source._mat == null || source._mat.Empty())
+            {
                 _mat = new Mat();
                 return;
             }
@@ -93,15 +106,18 @@ namespace System.Drawing {
             Cv2.Resize(source._mat, _mat, new OpenCvSharp.Size(width, height));
         }
 
-        public Bitmap Clone() {
+        public Bitmap Clone()
+        {
             return new Bitmap(_mat?.Clone());
         }
 
         public int Width => _mat.Width;
         public int Height => _mat.Height;
 
-        public PixelFormat PixelFormat {
-            get {
+        public PixelFormat PixelFormat
+        {
+            get
+            {
                 if (_mat == null || _mat.Empty()) return PixelFormat.Undefined;
 
                 var matType = _mat.Type();
@@ -122,22 +138,28 @@ namespace System.Drawing {
         /// <summary>
         /// Gets or sets the color palette used for this Bitmap
         /// </summary>
-        public Imaging.ColorPalette Palette {
-            get {
-                if (_palette != null) {
+        public Imaging.ColorPalette Palette
+        {
+            get
+            {
+                if (_palette != null)
+                {
                     return _palette;
                 }
                 // Create a default grayscale palette for indexed images
-                if (PixelFormat == PixelFormat.Format8bppIndexed) {
+                if (PixelFormat == PixelFormat.Format8bppIndexed)
+                {
                     var palette = new Imaging.ColorPalette(256);
-                    for (int i = 0; i < 256; i++) {
+                    for (int i = 0; i < 256; i++)
+                    {
                         palette.Entries[i] = Color.FromArgb(i, i, i);
                     }
                     return palette;
                 }
                 return new Imaging.ColorPalette();
             }
-            set {
+            set
+            {
                 _palette = value;
             }
         }
@@ -145,10 +167,12 @@ namespace System.Drawing {
         /// <summary>
         /// Locks a bitmap into system memory
         /// </summary>
-        public BitmapData LockBits(Rectangle rect, ImageLockMode mode, PixelFormat format) {
+        public BitmapData LockBits(Rectangle rect, ImageLockMode mode, PixelFormat format)
+        {
             // For OpenCV Mat, the data is already accessible
             // Return BitmapData pointing to the Mat's data
-            return new BitmapData {
+            return new BitmapData
+            {
                 Width = _mat.Width,
                 Height = _mat.Height,
                 Stride = (int)_mat.Step(),
@@ -160,7 +184,8 @@ namespace System.Drawing {
         /// <summary>
         /// Unlocks a bitmap from system memory
         /// </summary>
-        public void UnlockBits(BitmapData bitmapData) {
+        public void UnlockBits(BitmapData bitmapData)
+        {
             // For OpenCV Mat, no action needed as data is always accessible
             // This is a no-op for compatibility
         }
@@ -168,18 +193,33 @@ namespace System.Drawing {
         /// <summary>
         /// Saves the bitmap to a file
         /// </summary>
-        public void Save(string filename) {
-            if (_mat == null || _mat.Empty()) {
+        public void Save(string filename)
+        {
+            if (_mat == null || _mat.Empty())
+            {
                 throw new InvalidOperationException("Cannot save an empty bitmap");
             }
             Cv2.ImWrite(filename, _mat);
         }
 
         /// <summary>
+        /// Saves the bitmap to a file with specified encoder and parameters
+        /// </summary>
+        public void Save(string filename, Imaging.ImageCodecInfo encoder, Imaging.EncoderParameters encoderParams)
+        {
+            using (var fileStream = new FileStream(filename, FileMode.Create))
+            {
+                Save(fileStream, encoder, encoderParams);
+            }
+        }
+
+        /// <summary>
         /// Saves the bitmap to a file with specified format
         /// </summary>
-        public void Save(string filename, Imaging.ImageFormat format) {
-            if (_mat == null || _mat.Empty()) {
+        public void Save(string filename, Imaging.ImageFormat format)
+        {
+            if (_mat == null || _mat.Empty())
+            {
                 throw new InvalidOperationException("Cannot save an empty bitmap");
             }
             // OpenCV's ImWrite determines format from filename extension
@@ -190,18 +230,20 @@ namespace System.Drawing {
         /// <summary>
         /// Saves the bitmap to a stream with specified format
         /// </summary>
-        public void Save(System.IO.Stream stream, Imaging.ImageFormat format) {
-            if (_mat == null || _mat.Empty()) {
+        public void Save(System.IO.Stream stream, Imaging.ImageFormat format)
+        {
+            if (_mat == null || _mat.Empty())
+            {
                 throw new InvalidOperationException("Cannot save an empty bitmap");
             }
-            
+
             // Determine file extension from format
             string ext = ".png";
             if (format == Imaging.ImageFormat.Jpeg) ext = ".jpg";
             else if (format == Imaging.ImageFormat.Bmp) ext = ".bmp";
             else if (format == Imaging.ImageFormat.Tiff) ext = ".tiff";
             else if (format == Imaging.ImageFormat.Gif) ext = ".gif";
-            
+
             // Encode to memory buffer
             Cv2.ImEncode(ext, _mat, out byte[] buffer);
             stream.Write(buffer, 0, buffer.Length);
@@ -210,28 +252,35 @@ namespace System.Drawing {
         /// <summary>
         /// Saves the bitmap to a stream with specified encoder and parameters
         /// </summary>
-        public void Save(System.IO.Stream stream, Imaging.ImageCodecInfo encoder, Imaging.EncoderParameters encoderParams) {
-            if (_mat == null || _mat.Empty()) {
+        public void Save(System.IO.Stream stream, Imaging.ImageCodecInfo encoder, Imaging.EncoderParameters encoderParams)
+        {
+            if (_mat == null || _mat.Empty())
+            {
                 throw new InvalidOperationException("Cannot save an empty bitmap");
             }
-            
+
             // Determine file extension from codec
             string ext = ".png";
-            if (encoder != null && encoder.FormatDescription.Contains("JPEG")) {
+            if (encoder != null && encoder.FormatDescription.Contains("JPEG"))
+            {
                 ext = ".jpg";
-            } else if (encoder != null && encoder.FormatDescription.Contains("PNG")) {
+            }
+            else if (encoder != null && encoder.FormatDescription.Contains("PNG"))
+            {
                 ext = ".png";
             }
-            
+
             // For JPEG with quality parameter, extract quality value
             int quality = 95;
-            if (encoderParams != null && encoderParams.Param != null && encoderParams.Param.Length > 0) {
+            if (encoderParams != null && encoderParams.Param != null && encoderParams.Param.Length > 0)
+            {
                 var qualityParam = encoderParams.Param[0];
-                if (qualityParam != null) {
+                if (qualityParam != null)
+                {
                     quality = (int)qualityParam.Value;
                 }
             }
-            
+
             // Encode to memory buffer with quality parameter
             var encodeParams = new int[] { (int)ImwriteFlags.JpegQuality, quality };
             Cv2.ImEncode(ext, _mat, out byte[] buffer, encodeParams);
@@ -253,12 +302,15 @@ namespace System.Drawing {
     /// <summary>
     /// Extension methods for System.Drawing types
     /// </summary>
-    public static class DrawingExtensions {
-        public static bool FullyInsideRect(this Rectangle lhs, Rectangle rhs) {
+    public static class DrawingExtensions
+    {
+        public static bool FullyInsideRect(this Rectangle lhs, Rectangle rhs)
+        {
             // Top left of first rectangle starts outside of the other rectangle
             var rhsRightX = rhs.X + rhs.Width;
             var rhsBottomY = rhs.Y + rhs.Height;
-            if (lhs.X < rhs.X || lhs.Y < rhs.Y || lhs.X >= rhsRightX || lhs.Y >= rhsBottomY) {
+            if (lhs.X < rhs.X || lhs.Y < rhs.Y || lhs.X >= rhsRightX || lhs.Y >= rhsBottomY)
+            {
                 return false;
             }
 
