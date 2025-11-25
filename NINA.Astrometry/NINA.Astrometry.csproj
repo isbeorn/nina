@@ -1,30 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWPF>true</UseWPF>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <Configurations>Debug;Release;SignedRelease</Configurations>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSource>true</IncludeSource>
     <Deterministic>true</Deterministic>
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SignedRelease|AnyCPU'">
-    <OutputPath>bin\SignedRelease\</OutputPath>
     <Optimize>true</Optimize>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="publish\**" />
-    <EmbeddedResource Remove="publish\**" />
-    <None Remove="publish\**" />
-    <Page Remove="publish\**" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
@@ -49,23 +33,7 @@
     <PackageReference Include="Nito.AsyncEx.Context" Version="5.1.2" />
     <PackageReference Include="Nito.Disposables" Version="2.5.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.9" />
   </ItemGroup>
-  <PropertyGroup>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>$(AssemblyName)</Title>
-    <Version>3.2.0.9001</Version>
-    <Company>$(Authors)</Company>
-    <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
-    <Description>This assembly contains the astronomy components of N.I.N.A.</Description>
-    <Copyright>Copyright ©  2016 - 2025 Stefan Berg and the N.I.N.A. contributors</Copyright>
-    <PackageProjectUrl>https://nighttime-imaging.eu/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/isbeorn/nina.git</RepositoryUrl>
-    <PackageIcon>ninasplash.png</PackageIcon>
-    <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
-    <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-  </PropertyGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec IgnoreExitCode="true" Command="if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetPath)" />
-  </Target>
 </Project>

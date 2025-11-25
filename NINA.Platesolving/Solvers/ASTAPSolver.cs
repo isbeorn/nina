@@ -35,6 +35,14 @@ namespace NINA.PlateSolving.Solvers {
 
         public ASTAPSolver(string executableLocation)
             : base(executableLocation) {
+            // Fallback to default location if not set
+            if (string.IsNullOrWhiteSpace(this.executableLocation)) {
+                var defaultLocation = "/usr/local/bin/astap";
+                if (File.Exists(defaultLocation)) {
+                    this.executableLocation = defaultLocation;
+                    Logger.Info($"ASTAP location not configured, using default: {defaultLocation}");
+                }
+            }
         }
 
         protected override PlateSolveResult ReadResult(
@@ -167,14 +175,6 @@ namespace NINA.PlateSolving.Solvers {
             }
             if (!File.Exists(this.executableLocation)) {
                 throw new ASTAPValidationFailedException($"ASTAP executable not found at {this.executableLocation}");
-            }
-            var astapVersionInfo = FileVersionInfo.GetVersionInfo(this.executableLocation);
-            if (astapVersionInfo.FileVersion == null) {
-                // Version below 0.9.1.0
-                // Only allows downsample in the range of 1 to 4
-                if (parameter.DownSampleFactor == 0) {
-                    throw new ASTAPValidationFailedException($"ASTAP version below 0.9.1.0 does not allow auto downsample factor value of 0! Please update your ASTAP version!");
-                }
             }
         }
 

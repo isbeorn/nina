@@ -23,7 +23,7 @@ namespace NINA.Astrometry {
      */
 
     public static class NOVAS {
-        private const string DLLNAME = "NOVAS31lib.dll";
+        private const string DLLNAME = "libnovas_c.so";
 
         private static double JPL_EPHEM_START_DATE = 2305424.5; // First date of data in the ephemerides file
         private static double JPL_EPHEM_END_DATE = 2525008.5; // Last date of data in the ephemerides file
@@ -38,6 +38,10 @@ namespace NINA.Astrometry {
         public static string EphemerisLocation = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "External", "JPLEPH");
 
         static NOVAS() {
+            // Ensure the DLL import resolver is set up
+            NativeLibraryResolver.EnsureResolverSet();
+
+            // Preload the library
             DllLoader.LoadDll(Path.Combine("NOVAS", DLLNAME));
 
             short a = 0;
