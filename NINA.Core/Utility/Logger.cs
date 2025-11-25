@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,7 +22,7 @@ using Serilog.Sinks.File;
 using System.Text;
 using Serilog.Events;
 using System.Globalization;
-using System.Management;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace NINA.Core.Utility {
@@ -63,7 +63,7 @@ namespace NINA.Core.Utility {
         }
 
         private static string GenerateHeader() {
-            /* Initial log of App Version, OS Info, Ascom Version, .NET Version */
+            /* Initial log of App Version, OS Info, INDI Version, .NET Version */
             var sb = new StringBuilder();
             sb.AppendLine(PadBoth("", 70, '-'));
             sb.AppendLine(PadBoth(CoreUtil.Title, 70, '-'));
@@ -93,11 +93,13 @@ namespace NINA.Core.Utility {
         }
 
         private static long GetTotalPhysicalMemory() {
-            ObjectQuery winQuery = new ObjectQuery("SELECT * FROM Win32_ComputerSystem");
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher(winQuery);
-
-            foreach (ManagementObject item in searcher.Get()) {
-                return Convert.ToInt64(item["TotalPhysicalMemory"]);
+            var lines = System.IO.File.ReadAllLines("/proc/meminfo");
+            var memTotalLine = lines.FirstOrDefault(l => l.StartsWith("MemTotal:"));
+            if (memTotalLine != null) {
+                var parts = memTotalLine.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (long.TryParse(parts[1], out long kb)) {
+                    return kb * 1024;
+                }
             }
 
             return 0; // Return 0 if the information could not be retrieved

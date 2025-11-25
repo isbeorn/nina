@@ -46,7 +46,16 @@
       #include "nutation.h"
    #endif
 
-#define EXPORT __declspec(dllexport)
+/* Portable EXPORT macro: use __declspec on Windows, visibility attribute on GCC/Clang, or empty fallback */
+#ifndef EXPORT
+# if defined(_WIN32) || defined(__CYGWIN__)
+#  define EXPORT __declspec(dllexport)
+# elif defined(__GNUC__)
+#  define EXPORT __attribute__((visibility("default")))
+# else
+#  define EXPORT
+# endif
+#endif
 
 /*
    Structures

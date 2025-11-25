@@ -26,7 +26,7 @@ void iauFk54z(double r2000, double d2000, double bepoch,
 **
 **  Notes:
 **
-**  1) In contrast to the iauFk524  routine, here the FK5 proper
+**  1) In contrast to the iauFk524 function, here the FK5 proper
 **     motions, the parallax and the radial velocity are presumed zero.
 **
 **  2) This function converts a star position from the IAU 1976 FK5
@@ -34,16 +34,16 @@ void iauFk54z(double r2000, double d2000, double bepoch,
 **     cases such as distant radio sources where it is presumed there is
 **     zero parallax and no proper motion.  Because of the E-terms of
 **     aberration, such objects have (in general) non-zero proper motion
-**     in FK4, and the present routine returns those fictitious proper
+**     in FK4, and the present function returns those fictitious proper
 **     motions.
 **
-**  3) Conversion from B1950.0 FK4 to J2000.0 FK5 only is provided for.
+**  3) Conversion from J2000.0 FK5 to B1950.0 FK4 only is provided for.
 **     Conversions involving other equinoxes would require additional
 **     treatment for precession.
 **
-**  4) The position returned by this routine is in the B1950.0 FK4
-**     reference system but at Besselian epoch BEPOCH.  For comparison
-**     with catalogs the BEPOCH argument will frequently be 1950.0. (In
+**  4) The position returned by this function is in the B1950.0 FK4
+**     reference system but at Besselian epoch bepoch.  For comparison
+**     with catalogs the bepoch argument will frequently be 1950.0. (In
 **     this context the distinction between Besselian and Julian epoch
 **     is insignificant.)
 **
@@ -56,11 +56,11 @@ void iauFk54z(double r2000, double d2000, double bepoch,
 **     iauFk524     FK4 to FK5
 **     iauS2c       spherical to p-vector
 **
-**  This revision:   2018 December 5
+**  This revision:   2023 March 5
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double r, d, pr, pd, px, rv, p[3], w, v[3];
@@ -97,8 +97,8 @@ void iauFk54z(double r2000, double d2000, double bepoch,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

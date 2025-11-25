@@ -9,7 +9,7 @@ double iauPas(double al, double ap, double bl, double bp)
 **  Position-angle from spherical coordinates.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  vector/matrix support function.
 **
@@ -31,11 +31,11 @@ double iauPas(double al, double ap, double bl, double bp)
 **
 **  2) Zero is returned if the two points are coincident.
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double dl, x, y, pa;
@@ -48,10 +48,12 @@ double iauPas(double al, double ap, double bl, double bp)
 
    return pa;
 
+/* Finished. */
+
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================
