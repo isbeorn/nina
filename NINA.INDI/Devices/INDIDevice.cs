@@ -409,8 +409,6 @@ namespace NINA.INDI.Devices {
         }
 
         public virtual void OnSwitchPropertyUpdated(INDISwitchProperty p) {
-            Logger.Info($"INDIDevice::OnSwitchPropertyUpdated({p.Name})");
-
             // Check for CONNECTION property updates (for device connection flow)
             if (p.Name == "CONNECTION") {
                 var connectSwitch = p.Switches.FirstOrDefault(s => s.Name == "CONNECT");
@@ -419,10 +417,11 @@ namespace NINA.INDI.Devices {
                     bool isConnected = connectSwitch.Value;
 
                     // Complete the operation when:
-                    // - State is Ok for successful connection
-                    // - State is Idle for successful disconnection
-                    // - Don't complete for Busy (operation in progress) or Alert (error)
-                    if (p.State == PropertyState.Ok || (p.State == PropertyState.Idle && !isConnected)) {
+                    // - State is Ok (successful connection/disconnection)
+                    // - State is Alert (connection/disconnection failed)
+                    // - Don't complete for Idle (initial property definition or waiting state)
+                    // - Don't complete for Busy (operation in progress)
+                    if (p.State == PropertyState.Ok || p.State == PropertyState.Alert) {
                         lock (_operationLock) {
                             if (_operationTcs != null && !_operationTcs.Task.IsCompleted) {
                                 Logger.Info($"Completing connection TCS with result: {isConnected} (state: {p.State})");

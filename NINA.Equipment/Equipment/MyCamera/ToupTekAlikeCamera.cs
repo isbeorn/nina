@@ -528,7 +528,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 RaisePropertyChanged();
             }
         }
-        public string DisplayName => $"{Name} ({(Id.Length > 8 ? Id[^8..] : Id)})";
+        public string DisplayName => $"{Category} {Name} ({(Id.Length > 8 ? Id[^8..] : Id)})";
 
         private bool _connected;
 

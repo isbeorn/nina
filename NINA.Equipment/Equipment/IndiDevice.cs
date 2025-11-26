@@ -31,11 +31,11 @@ namespace NINA.Equipment.Equipment {
         protected readonly INDIDeviceInfo _device;
 
         public IndiDevice(INDIDeviceInfo info) {
+            this.Category = "INDI";
             _device = info;
             Id = info.Id;
             indiRegistrationName = info.Name;
-            DisplayName = info.Name;
-            this.Category = "INDI";
+            DisplayName = $"{info.Name} ({Category})";
         }
 
         protected DeviceT device;
@@ -235,7 +235,7 @@ namespace NINA.Equipment.Equipment {
                 Logger.Trace($"{Name} - Calling PostDisconnect");
                 PostDisconnect();
                 name = null;
-                DisplayName = indiRegistrationName;
+                DisplayName = $"{indiRegistrationName} ({Category})";
             } finally {
                 try {
                     Dispose();

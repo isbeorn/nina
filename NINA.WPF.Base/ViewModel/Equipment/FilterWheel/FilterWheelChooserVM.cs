@@ -24,6 +24,7 @@ using NINA.Equipment.Equipment;
 using System.Threading.Tasks;
 using NINA.Equipment.Interfaces.ViewModel;
 using ZWOptical.EFWSDK;
+using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
@@ -50,6 +51,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                         var fw = new ASIFilterWheel(i, profileService);
                         Logger.Debug($"Adding ZWOptical Filter Wheel: {fw.Name}");
                         devices.Add(fw);
+                    }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* ToupTek */
+                try {
+                    var toupTekWheels = ToupTek.ToupCam.EnumV2();
+                    Logger.Info($"Found {toupTekWheels?.Length} ToupTek Filter Wheels");
+                    foreach (var instance in toupTekWheels) {
+                        var info = instance.ToDeviceInfo();
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_FILTERWHEEL) > 0) {
+                            var wheel = new ToupTekAlikeFilterWheel(info, new ToupTekSDKWrapper(), profileService);
+                            devices.Add(wheel);
+                        }
                     }
                 } catch (Exception ex) {
                     Logger.Error(ex);

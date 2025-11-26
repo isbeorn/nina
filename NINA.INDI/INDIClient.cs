@@ -71,7 +71,10 @@ namespace NINA.INDI {
         private readonly IReadOnlyDictionary<string, string> AvailableDriverNames = new Dictionary<string, string>() {
             {"indi_simulator_focus", "Focuser Simulator (INDI)" },
             {"indi_simulator_rotator", "Rotator Simulator (INDI)" },
+            {"indi_wanderer_lite_rotator", "WandererRotator Lite (INDI)" },
+            {"indi_wanderer_rotator_lite_v2", "WandererRotator Lite v2 (INDI)" },
             {"indi_simulator_telescope", "Mount Simulator" },
+            {"indi_lx200_OnStep", "OnStep Mount (INDI)" },
             {"indi_simulator_weather", "Weather Simulator (INDI)" },
             {"indi_simulator_wheel", "FilterWheel Simulator (INDI)" }
         };
@@ -297,7 +300,8 @@ namespace NINA.INDI {
             while (!ct.IsCancellationRequested && _stream != null) {
                 try {
                     var bytesRead = await _stream.ReadAsync(buffer, ct);
-                    if (bytesRead == 0) {
+                    if (bytesRead == 0)
+                    {
                         Logger.Error("Server disconnected");
                         break;
                     }
@@ -319,37 +323,38 @@ namespace NINA.INDI {
             await _serverReadyTcs.Task;
             var devices = new Dictionary<string, INDIDeviceInfo>();
 
-            string type = string.Empty;
+            var types = new List<string>();
             switch (deviceInterface) {
                 case IndiDeviceInterface.CCD_INTERFACE:
-                    type = "ccd";
+                    types.Add("ccd");
                     break;
                 case IndiDeviceInterface.FILTER_INTERFACE:
-                    type = "wheel";
+                    types.Add("wheel");
                     break;
                 case IndiDeviceInterface.FOCUSER_INTERFACE:
-                    type = "focus";
+                    types.Add("focus");
                     break;
                 case IndiDeviceInterface.ROTATOR_INTERFACE:
-                    type = "rotator";
+                    types.Add("rotator");
                     break;
                 case IndiDeviceInterface.TELESCOPE_INTERFACE:
-                    type = "telescope";
+                    types.Add("telescope");
+                    types.Add("lx200");
                     break;
                 case IndiDeviceInterface.WEATHER_INTERFACE:
-                    type = "weather";
+                    types.Add("weather");
                     break;
                 case IndiDeviceInterface.LIGHTBOX_INTERFACE:
-                    type = "cover";
+                    types.Add("cover");
                     break;
             }
 
             // Check available devices
             foreach (var driver in AvailableDriverNames) {
                 ct.ThrowIfCancellationRequested();
-                if (driver.Key.Contains(type)) {
+                if (types.Any(type => driver.Key.Contains(type))) {
                     // Give slow drivers an extra short window to appear after load.
-                    if (await LoadDriver(driver.Key, TimeSpan.FromSeconds(15), ct)) {
+                    if (await LoadDriver(driver.Key, TimeSpan.FromSeconds(10), ct)) {
                         // Wait up to a few seconds for the driver to announce itself
                         await WaitForDevicesForDriverAsync(driver.Key, TimeSpan.FromSeconds(5), ct);
 
@@ -566,10 +571,11 @@ namespace NINA.INDI {
             var xmlString = message.ToString();
 
             // Check for valid string
-            if (string.IsNullOrEmpty(xmlString)) {
+            if (string.IsNullOrEmpty(xmlString))
+            {
                 return;
             }
-
+            
             int lastProcessed = 0;
             var elementsToProcess = new List<string>();
 
@@ -591,35 +597,47 @@ namespace NINA.INDI {
                 }
 
                 if (tagNameEnd == -1) {
+                    Logger.Debug("Tag name end not found, waiting for more data");
                     break;
                 }
 
                 var tagNameLength = tagNameEnd - startTag - 1;
-
-                // Check for self-closing tags first (most common for INDI property updates)
-                var selfClosingEnd = xmlString.IndexOf("/>", startTag, StringComparison.Ordinal);
-                if (selfClosingEnd != -1 && selfClosingEnd < startTag + 200) {
-                    var elementEnd = selfClosingEnd + 2;
-                    var xmlText = xmlString.Substring(startTag, elementEnd - startTag);
-
-                    elementsToProcess.Add(xmlText);
-                    lastProcessed = elementEnd;
+                if (tagNameLength <= 0) {
+                    Logger.Warning("Invalid tag name length, skipping");
+                    lastProcessed = startTag + 1;
                     continue;
                 }
 
-                // Try to find matching end tag
                 var tagName = xmlString.Substring(startTag + 1, tagNameLength);
+
+                // Check for self-closing tags first (most common for INDI property updates)
+                var selfClosingEnd = xmlString.IndexOf("/>", startTag, StringComparison.Ordinal);
+                if (selfClosingEnd != -1) {
+                    // Make sure this /> belongs to our tag (not nested inside)
+                    var nextOpenTag = xmlString.IndexOf('<', startTag + 1);
+                    if (nextOpenTag == -1 || selfClosingEnd < nextOpenTag) {
+                        var elementEnd = selfClosingEnd + 2;
+                        var xmlText = xmlString.Substring(startTag, elementEnd - startTag);
+                        Logger.Debug($"Found self-closing element: {xmlText.Substring(0, Math.Min(100, xmlText.Length))}");
+                        elementsToProcess.Add(xmlText);
+                        lastProcessed = elementEnd;
+                        continue;
+                    }
+                }
+
+                // Try to find matching end tag
                 var endTagStr = "</" + tagName + ">";
                 var endIndex = xmlString.IndexOf(endTagStr, startTag + tagNameLength, StringComparison.Ordinal);
 
                 if (endIndex == -1) {
                     // Incomplete element, wait for more data
+                    Logger.Debug($"End tag {endTagStr} not found, waiting for more data");
                     break;
                 }
 
                 var elementEnd2 = endIndex + endTagStr.Length;
                 var xmlText2 = xmlString.Substring(startTag, elementEnd2 - startTag);
-
+                Logger.Debug($"Found complete element: {xmlText2.Substring(0, Math.Min(100, xmlText2.Length))}");
                 elementsToProcess.Add(xmlText2);
                 lastProcessed = elementEnd2;
             }
@@ -633,6 +651,7 @@ namespace NINA.INDI {
             if (elementsToProcess.Count > 0) {
                 Parallel.ForEach(elementsToProcess, xmlText => {
                     try {
+                        Logger.Debug($"Parsing XML element: {xmlText.Substring(0, Math.Min(100, xmlText.Length))}...");
                         var element = XElement.Parse(xmlText);
                         ProcessElement(element);
                     } catch (System.Xml.XmlException ex) {
@@ -673,6 +692,9 @@ namespace NINA.INDI {
                             // Add property to registered device
                             if (_registeredDevices.TryGetValue(deviceName, out var deviceInstance)) {
                                 deviceInstance.AddProperty(property);
+                                // Immediately process initial value as an update
+                                if (property is INDISwitchProperty sp)
+                                    deviceInstance.OnSwitchPropertyUpdated(sp);
                             }
                             break;
                         }
@@ -682,6 +704,9 @@ namespace NINA.INDI {
                             // Add property to registered device
                             if (_registeredDevices.TryGetValue(deviceName, out var deviceInstance)) {
                                 deviceInstance.AddProperty(property);
+                                // Immediately process initial value as an update
+                                if (property is INDITextProperty tp)
+                                    deviceInstance.OnTextPropertyUpdated(tp);
                             }
                             break;
                         }
@@ -690,6 +715,9 @@ namespace NINA.INDI {
                             // Add property to registered device
                             if (_registeredDevices.TryGetValue(deviceName, out var deviceInstance)) {
                                 deviceInstance.AddProperty(property);
+                                // Immediately process initial value as an update
+                                if (property is INDIBlobProperty bp)
+                                    deviceInstance.OnBlobPropertyUpdated(bp);
                             }
                             break;
                         }

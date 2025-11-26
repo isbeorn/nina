@@ -55,7 +55,7 @@ namespace NINA.INDI.Interfaces {
 
         DateTime UTCDate { get; set; }
 
-
+        void ConfigureConnectionProperties(string connectionMode, string devicePort, int baudRate);
         void AbortSlew();
         IAxisRates AxisRates(TelescopeAxes axis);
         void ConfigureJNOW();

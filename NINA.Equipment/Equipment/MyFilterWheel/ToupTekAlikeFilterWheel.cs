@@ -110,7 +110,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             }
         }
 
-        public string DisplayName => $"{Name} ({(Id.Length > 8 ? Id[^8..] : Id)})";
+        public string DisplayName => $"{Category} {Name} ({(Id.Length > 8 ? Id[^8..] : Id)})";
 
         private bool _connected;
         public bool Connected {

@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.INDI.Enums;
 using NINA.Astrometry;
+using NINA.INDI.Model;
 
 namespace NINA.INDI.Devices {
 
@@ -52,6 +53,64 @@ namespace NINA.INDI.Devices {
         /// </summary>
         protected override string[] GetRequiredConnectionProperties() {
             return ["TELESCOPE_TRACK_MODE"];
+        }
+
+        /// <summary>
+        /// Configure device connection properties before connecting
+        /// </summary>
+        public void ConfigureConnectionProperties(string connectionMode, string devicePort, int baudRate) {
+            try {
+                // Set connection mode
+                if (!string.IsNullOrEmpty(connectionMode)) {
+                    var connectionTypeProp = GetTextProperty("CONNECTION_TYPE");
+                    if (connectionTypeProp != null) {
+                        var modeText = connectionTypeProp.Texts.FirstOrDefault(t => t.Name == "CONNECTION_TYPE");
+                        if (modeText != null) {
+                            modeText.Value = connectionMode;
+                            INDIClient.Instance.SendProperty(connectionTypeProp);
+                            Logger.Info($"Set CONNECTION_TYPE to {connectionMode}");
+                        }
+                    }
+                }
+
+                // Set device port
+                if (!string.IsNullOrEmpty(devicePort)) {
+                    var portProp = GetTextProperty("DEVICE_PORT");
+                    if (portProp != null) {
+                        var portText = portProp.Texts.FirstOrDefault(t => t.Name == "PORT");
+                        if (portText != null) {
+                            portText.Value = devicePort;
+                            INDIClient.Instance.SendProperty(portProp);
+                            Logger.Info($"Set DEVICE_PORT to {devicePort}");
+                        }
+                    }
+                }
+
+                // Set baud rate for non-network connections
+                if (baudRate > 0 && connectionMode != "NETWORK") {
+                    var baudProp = GetSwitchProperty("DEVICE_BAUD_RATE");
+                    if (baudProp != null) {
+                        // Turn off all baud rate switches
+                        foreach (var sw in baudProp.Switches) {
+                            sw.Value = false;
+                        }
+
+                        // Turn on the matching baud rate switch
+                        var baudSwitch = baudProp.Switches.FirstOrDefault(s => s.Name == $"BAUD_{baudRate}");
+                        if (baudSwitch != null) {
+                            baudSwitch.Value = true;
+                            INDIClient.Instance.SendProperty(baudProp);
+                            Logger.Info($"Set DEVICE_BAUD_RATE to {baudRate}");
+                        } else {
+                            Logger.Warning($"Baud rate {baudRate} not found in available options");
+                        }
+                    }
+                }
+
+                Logger.Info($"Configured INDI telescope: Mode={connectionMode}, Port={devicePort}, Baud={baudRate}");
+            } catch (Exception ex) {
+                Logger.Error($"Failed to configure INDI connection properties: {ex.Message}");
+            }
         }
 
 
@@ -258,21 +317,30 @@ namespace NINA.INDI.Devices {
 
         public IAxisRates AxisRates(TelescopeAxes axis) {
             try {
+                // Check if we have TELESCOPE_SLEW_RATE (OnStep style with discrete rates)
+                var slewRateProp = GetSwitchProperty("TELESCOPE_SLEW_RATE");
+                if (slewRateProp != null && slewRateProp.Switches.Count > 1) {
+                    // UI operates on 0-5 scale, which gets mapped to device's switch indices
+                    // Report the UI scale (0-5) as the valid range
+                    Logger.Debug($"Found TELESCOPE_SLEW_RATE with {slewRateProp.Switches.Count} switches, returning UI range 0-5");
+                    return new AxisRates(0.0, 5.0);
+                }
+                
                 // Try to get the TELESCOPE_MOTION_RATE property to find min/max values
                 var motionRateProperty = GetNumberProperty("TELESCOPE_MOTION_RATE");
                 if (motionRateProperty != null) {
                     var motionRateElement = motionRateProperty.Numbers.FirstOrDefault(n => n.Name == "MOTION_RATE");
                     if (motionRateElement != null) {
-                        return new INDIAxisRates(motionRateElement.Min, motionRateElement.Max);
+                        return new AxisRates(motionRateElement.Min, motionRateElement.Max);
                     }
                 }
-            } catch (Exception) {
-                // Property doesn't exist or error accessing it
+            } catch (Exception ex) {
+                Logger.Debug($"Error getting axis rates: {ex.Message}");
             }
 
-            // Return a default range if we can't get the property
-            // Most INDI drivers support 0.0 to 1.0 (sidereal rate multiplier)
-            return new INDIAxisRates(0.0, 1.0);
+            // Return a default continuous range of 0.0 to 5.0 deg/s
+            // This allows Touch-N-Stars slider (0.01 to 5) to work fully
+            return new AxisRates(0.0, 5.0);
         }
 
         public void ConfigureJNOW() {
@@ -287,17 +355,63 @@ namespace NINA.INDI.Devices {
                 try {
                     var eqCoordProp = GetSwitchProperty("TELESCOPE_EQUATORIAL_COORD");
                     if (eqCoordProp != null) {
-                        Logger.Info("Setting TELESCOPE_EQUATORIAL_COORD to EOD (JNOW)");
                         SetSwitchValue("TELESCOPE_EQUATORIAL_COORD", "EOD", true);
                     }
                 } catch (ArgumentException) {
                     // Property doesn't exist, that's okay
                 }
 
-                Logger.Info("INDI configured to use EQUATORIAL_EOD_COORD (JNOW)");
+                Logger.Debug("INDI configured to use EQUATORIAL_EOD_COORD (JNOW)");
             } catch (Exception ex) {
                 Logger.Warning($"Could not configure JNOW: {ex.Message}");
             }
+        }
+
+        private void SetSlewRateForMotion(double absRate) {
+            // Different INDI drivers use different methods to set slew rate:
+            // 1. TELESCOPE_MOTION_RATE (numeric) - used by some simulators
+            // 2. TELESCOPE_SLEW_RATE (switch) - used by OnStep and others (GUIDE/CENTERING/FIND/MAX)
+
+            // Try numeric TELESCOPE_MOTION_RATE first
+            try {
+                SetNumberValue("TELESCOPE_MOTION_RATE", "MOTION_RATE", absRate);
+                Task.Delay(50).Wait();
+                return;
+            } catch { }
+
+            // Try switch-based TELESCOPE_SLEW_RATE (OnStep style)
+            try {
+                var slewRateProp = GetSwitchProperty("TELESCOPE_SLEW_RATE");
+                if (slewRateProp != null) {
+                    // Log available switches to see what the driver actually provides
+                    var availableSwitches = string.Join(", ", slewRateProp.Switches.Select(s => $"{s.Name}={s.Label}"));
+                    
+                    // OnStep provides: 0=0.25x, 1=0.5x, 2=1x, 3=2x, 4=4x, 5=8x, 6=20x, 7=48x, 8=Half-Max, 9=Max
+                    // Map UI rate (0-5 range) to device's available switch indices (0 to switchCount-1)
+                    int maxIndex = slewRateProp.Switches.Count - 1;
+                    int targetIndex;
+                    
+                    // Linear mapping: UI range [0, 5] -> device range [0, maxIndex]
+                    // targetIndex = (absRate / 5.0) * maxIndex
+                    targetIndex = (int)Math.Round((absRate / 5.0) * maxIndex);
+                    
+                    // Clamp to valid range
+                    targetIndex = Math.Max(0, Math.Min(targetIndex, maxIndex));
+                    
+                    var targetSwitch = slewRateProp.Switches[targetIndex];
+                    
+                    foreach (var sw in slewRateProp.Switches) {
+                        sw.Value = (sw.Name == targetSwitch.Name);
+                    }
+                    INDIClient.Instance.SendProperty(slewRateProp);
+                    Task.Delay(100).Wait();
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.Debug($"TELESCOPE_SLEW_RATE not available: {ex.Message}");
+            }
+
+            Logger.Warning("No slew rate property available, using driver default");
         }
 
         public void MoveAxis(TelescopeAxes axis, double rate) {
@@ -314,25 +428,19 @@ namespace NINA.INDI.Devices {
                     case TelescopeAxes.Primary:
                         // Primary axis is RA/Azimuth - use West/East motion
                         if (rate != 0) {
-                            // Set the motion rate if the property exists
-                            try {
-                                SetNumberValue("TELESCOPE_MOTION_RATE", "MOTION_RATE", absRate);
-                            } catch (ArgumentException) {
-                                // Property doesn't exist, telescope will use default rate
-                            }
+                            // Try to set the motion rate - different drivers use different properties
+                            SetSlewRateForMotion(absRate);
 
                             // Set the direction switch
                             var prop = GetSwitchProperty("TELESCOPE_MOTION_WE");
                             if (prop != null) {
                                 if (rate < 0) {
                                     // Negative rate = West
-                                    Logger.Info($"Setting TELESCOPE_MOTION_WE: MOTION_WEST=true (rate={rate})");
                                     foreach (var sw in prop.Switches) {
                                         sw.Value = (sw.Name == "MOTION_WEST");
                                     }
                                 } else {
                                     // Positive rate = East
-                                    Logger.Info($"Setting TELESCOPE_MOTION_WE: MOTION_EAST=true (rate={rate})");
                                     foreach (var sw in prop.Switches) {
                                         sw.Value = (sw.Name == "MOTION_EAST");
                                     }
@@ -341,7 +449,6 @@ namespace NINA.INDI.Devices {
                             }
                         } else {
                             // Stop motion - set both to false
-                            Logger.Info($"Stopping TELESCOPE_MOTION_WE (rate={rate})");
                             var prop = GetSwitchProperty("TELESCOPE_MOTION_WE");
                             if (prop != null) {
                                 foreach (var sw in prop.Switches) {
@@ -354,25 +461,19 @@ namespace NINA.INDI.Devices {
                     case TelescopeAxes.Secondary:
                         // Secondary axis is Dec/Altitude - use North/South motion
                         if (rate != 0) {
-                            // Set the motion rate if the property exists
-                            try {
-                                SetNumberValue("TELESCOPE_MOTION_RATE", "MOTION_RATE", absRate);
-                            } catch (ArgumentException) {
-                                // Property doesn't exist, telescope will use default rate
-                            }
+                            // Try to set the motion rate - different drivers use different properties
+                            SetSlewRateForMotion(absRate);
 
                             // Set the direction switch
                             var prop = GetSwitchProperty("TELESCOPE_MOTION_NS");
                             if (prop != null) {
                                 if (rate > 0) {
                                     // Positive rate = North
-                                    Logger.Info($"Setting TELESCOPE_MOTION_NS: MOTION_NORTH=true (rate={rate})");
                                     foreach (var sw in prop.Switches) {
                                         sw.Value = (sw.Name == "MOTION_NORTH");
                                     }
                                 } else {
                                     // Negative rate = South
-                                    Logger.Info($"Setting TELESCOPE_MOTION_NS: MOTION_SOUTH=true (rate={rate})");
                                     foreach (var sw in prop.Switches) {
                                         sw.Value = (sw.Name == "MOTION_SOUTH");
                                     }
@@ -381,7 +482,6 @@ namespace NINA.INDI.Devices {
                             }
                         } else {
                             // Stop motion - set both to false
-                            Logger.Info($"Stopping TELESCOPE_MOTION_NS (rate={rate})");
                             var prop = GetSwitchProperty("TELESCOPE_MOTION_NS");
                             if (prop != null) {
                                 foreach (var sw in prop.Switches) {
@@ -426,7 +526,7 @@ namespace NINA.INDI.Devices {
                 await Task.Delay(100, ct);
 
                 var parkProp = GetProperty("TELESCOPE_PARK");
-                while (parkProp?.State == PropertyState.Busy && !ct.IsCancellationRequested) {
+                while ((Slewing == true || parkProp?.State == PropertyState.Busy) && !ct.IsCancellationRequested) {
                     await Task.Delay(200, ct);
                     parkProp = GetProperty("TELESCOPE_PARK");
                 }
@@ -524,15 +624,35 @@ namespace NINA.INDI.Devices {
 
         public async Task FindHomeAsync(CancellationToken ct = default) {
             try {
-                SetSwitchValue("TELESCOPE_HOME", "FIND", true);
+                // If the telescope cannot park, throw exception
+                var homeProp = GetSwitchProperty("TELESCOPE_HOME");
+                if (homeProp == null) {
+                    Logger.Warning("TELESCOPE_HOME property not found");
+                    throw new NotImplementedException("TELESCOPE_HOME property not found");
+                }
+
+                // Find which switch to activate
+                var goSwitch = homeProp.Switches.FirstOrDefault(s => s.Name == "GO");
+                var findSwitch = homeProp.Switches.FirstOrDefault(s => s.Name == "FIND");
+
+                if (goSwitch != null) {
+                    SetSwitchValue("TELESCOPE_HOME", "GO", true);
+                }
+                else if (findSwitch != null) {
+                    SetSwitchValue("TELESCOPE_HOME", "FIND", true);
+                }
+                else {
+                    Logger.Warning("TELESCOPE_HOME switch not found");
+                    throw new NotImplementedException("TELESCOPE_HOME switch not found");
+                }
 
                 // Wait for property to become busy then return to idle/ok
                 await Task.Delay(100, ct);
 
-                var homeProp = GetProperty("TELESCOPE_HOME");
-                while (homeProp?.State == NINA.INDI.Enums.PropertyState.Busy && !ct.IsCancellationRequested) {
+                homeProp = GetSwitchProperty("TELESCOPE_HOME");
+                while ((Slewing == true || homeProp?.State == PropertyState.Busy) && !ct.IsCancellationRequested) {
                     await Task.Delay(200, ct);
-                    homeProp = GetProperty("TELESCOPE_HOME");
+                    homeProp = GetSwitchProperty("TELESCOPE_HOME");
                 }
             } catch (ArgumentException) {
                 throw new NotImplementedException();

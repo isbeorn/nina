@@ -16,18 +16,18 @@ using System.Collections;
 using System.Collections.Generic;
 using NINA.INDI.Interfaces;
 
-namespace NINA.INDI.Devices {
+namespace NINA.INDI.Model {
     /// <summary>
     /// Implementation of IAxisRates for INDI telescopes
     /// Provides rate range information from INDI TELESCOPE_MOTION_RATE property
     /// </summary>
-    public class INDIAxisRates : IAxisRates {
+    public class AxisRates : IAxisRates {
         private readonly List<IRate> _rates = new List<IRate>();
         private int _position = -1;
 
-        public INDIAxisRates(double min, double max) {
+        public AxisRates(double min, double max) {
             // INDI typically provides a single continuous range
-            _rates.Add(new INDIRate(min, max));
+            _rates.Add(new Rate(min, max));
         }
 
         public int Count => _rates.Count;
@@ -55,8 +55,8 @@ namespace NINA.INDI.Devices {
     /// Implementation of IRate for INDI telescopes
     /// Represents a rate range (min, max)
     /// </summary>
-    public class INDIRate : IRate {
-        public INDIRate(double minimum, double maximum) {
+    internal class Rate : IRate {
+        public Rate(double minimum, double maximum) {
             Minimum = minimum;
             Maximum = maximum;
         }

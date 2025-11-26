@@ -41,6 +41,9 @@ namespace NINA.Profile {
             noSync = false;
             timeSync = true;
             telescopeLocationSyncDirection = TelescopeLocationSyncDirection.PROMPT;
+            connectionMode = "SERIAL";
+            devicePort = "/dev/ttyUSB0";
+            baudRate = 9600;
         }
 
         private string id;
@@ -218,6 +221,42 @@ namespace NINA.Profile {
             set {
                 if(timeSync != value) {
                     timeSync = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string connectionMode;
+        [DataMember]
+        public string ConnectionMode {
+            get => connectionMode;
+            set {
+                if(connectionMode != value) {
+                    connectionMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string devicePort;
+        [DataMember]
+        public string DevicePort {
+            get => devicePort;
+            set {
+                if(devicePort != value) {
+                    devicePort = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int baudRate;
+        [DataMember]
+        public int BaudRate {
+            get => baudRate;
+            set {
+                if(baudRate != value) {
+                    baudRate = value;
                     RaisePropertyChanged();
                 }
             }
