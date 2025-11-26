@@ -267,11 +267,20 @@ namespace NINA.INDI.Devices {
                     _operationTcs = new TaskCompletionSource<bool>();
                 }
 
-                // Send connect command
-                if (!await INDIClient.Instance.ConnectDevice(_device, ct)) {
-                    Logger.Info($"Failed to connect to device '{DeviceName}'");
+                // Load driver first, which makes properties available
+                if (!await INDIClient.Instance.LoadDriver(_device.Driver, null, ct)) {
+                    Logger.Error($"Failed to load driver for {DeviceName}");
                     return false;
                 }
+
+                // Wait briefly for driver properties to become available
+                await Task.Delay(500, ct);
+
+                // Call hook to configure connection properties before connecting
+                OnPreConnect();
+
+                // Now send the actual CONNECT command using SetSwitchValue
+                SetSwitchValue("CONNECTION", "CONNECT", true);
 
                 try {
                     // Check token before we start
@@ -342,30 +351,41 @@ namespace NINA.INDI.Devices {
                 _operationTcs = new TaskCompletionSource<bool>();
             }
 
-            INDIClient.Instance.DisconnectDevice(_device);
+            // Now send the actual DISCONNECT command using SetSwitchValue
+            SetSwitchValue("CONNECTION", "DISCONNECT", true);
 
             // Wait for disconnection synchronously to avoid race with Dispose()
-            try {
+            try
+            {
                 // Wait for the disconnection callback with shorter timeout (server may be dead)
                 var completedTask = Task.WhenAny(_operationTcs.Task, Task.Delay(TimeSpan.FromSeconds(2))).Result;
 
-                if (completedTask == _operationTcs.Task) {
+                if (completedTask == _operationTcs.Task)
+                {
                     bool isConnected = _operationTcs.Task.Result;
-                    if (!isConnected) {
+                    if (!isConnected)
+                    {
                         Logger.Info($"Disconnected from INDI device: {DeviceName}");
-                    } else {
+                    }
+                    else
+                    {
                         Logger.Warning($"Disconnect command completed but device reports still connected");
                     }
-                } else {
+                }
+                else
+                {
                     Logger.Warning($"Disconnecting from {DeviceName} timed out (server may be disconnected)");
                 }
 
                 // Always try to unload driver after disconnect (or timeout)
                 // Only try to unload driver if server is still connected
-                if (INDIClient.Instance.IsConnected) {
+                if (INDIClient.Instance.IsConnected)
+                {
                     INDIClient.Instance.UnloadDriver(_device.Driver);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Logger.Error($"Error during disconnect: {ex.Message}");
             }
 
@@ -388,6 +408,12 @@ namespace NINA.INDI.Devices {
         /// </summary>
         protected virtual string[] GetRequiredConnectionProperties() {
             return null;
+        }
+
+        /// <summary>
+        /// Override this to configure device properties after driver load but before CONNECT
+        /// </summary>
+        protected virtual void OnPreConnect() {
         }
 
         /// <summary>

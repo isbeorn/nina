@@ -164,8 +164,7 @@ namespace NINA.INDI {
             }
 
             if (_loadedDrivers.Contains(driverName)) {
-                Logger.Info($"Driver '{driverName}' is already loaded");
-                return false;
+                UnloadDriver(driverName);
             }
 
             lock (_operationLock) {
@@ -445,55 +444,6 @@ namespace NINA.INDI {
                 Logger.Error($"WaitForDevicesForDriverAsync failed: {ex.Message}");
                 return false;
             }
-        }
-
-        public async Task<bool> ConnectDevice(INDIDeviceInfo device, CancellationToken ct) {
-            if (!IsConnected) {
-                Logger.Error("Cannot connect device: not connected to INDI");
-                return false;
-            }
-
-            // Load device driver
-            if (await LoadDriver(device.Driver, null, ct)) {
-                var element = new XElement("newSwitchVector",
-                    new XAttribute("device", device.Id),
-                    new XAttribute("name", "CONNECTION"),
-                    new XElement("oneSwitch",
-                        new XAttribute("name", "CONNECT"),
-                        "On"),
-                    new XElement("oneSwitch",
-                        new XAttribute("name", "DISCONNECT"),
-                        "Off")
-                );
-
-                SendMessage(element);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool DisconnectDevice(INDIDeviceInfo device) {
-            if (!IsConnected) {
-                Logger.Error("Cannot disconnect device: not connected to INDI bus");
-                return false;
-            }
-
-            var element = new XElement("newSwitchVector",
-                new XAttribute("device", device.Id),
-                new XAttribute("name", "CONNECTION"),
-                new XElement("oneSwitch",
-                    new XAttribute("name", "CONNECT"),
-                    "Off"),
-                new XElement("oneSwitch",
-                    new XAttribute("name", "DISCONNECT"),
-                    "On")
-            );
-
-            SendMessage(element);
-
-            return true;
         }
 
         public void Dispose() {

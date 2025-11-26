@@ -55,66 +55,71 @@ namespace NINA.INDI.Devices {
             return ["TELESCOPE_TRACK_MODE"];
         }
 
+        public INDITelescope(INDIDeviceInfo device) : base(device) {
+        }
+
+        private string _connectionMode;
+        private string _devicePort;
+        private int _baudRate;
+
         /// <summary>
-        /// Configure device connection properties before connecting
+        /// Store connection properties to be applied before connecting
         /// </summary>
         public void ConfigureConnectionProperties(string connectionMode, string devicePort, int baudRate) {
+            _connectionMode = connectionMode;
+            _devicePort = devicePort;
+            _baudRate = baudRate;
+            Logger.Info($"Stored INDI connection config: Mode={connectionMode}, Port={devicePort}, Baud={baudRate}");
+        }
+
+        /// <summary>
+        /// Apply stored connection properties after driver load but before CONNECT
+        /// </summary>
+        protected override void OnPreConnect() {
+            base.OnPreConnect();
+
+            if (string.IsNullOrEmpty(_connectionMode) && string.IsNullOrEmpty(_devicePort) && _baudRate == 0) {
+                return; // No configuration stored
+            }
+
             try {
                 // Set connection mode
-                if (!string.IsNullOrEmpty(connectionMode)) {
-                    var connectionTypeProp = GetTextProperty("CONNECTION_TYPE");
-                    if (connectionTypeProp != null) {
-                        var modeText = connectionTypeProp.Texts.FirstOrDefault(t => t.Name == "CONNECTION_TYPE");
-                        if (modeText != null) {
-                            modeText.Value = connectionMode;
-                            INDIClient.Instance.SendProperty(connectionTypeProp);
-                            Logger.Info($"Set CONNECTION_TYPE to {connectionMode}");
-                        }
+                if (!string.IsNullOrEmpty(_connectionMode)) {
+                    try {
+                        SetTextValue("CONNECTION_TYPE", "CONNECTION_TYPE", _connectionMode);
+                        Logger.Info($"Set CONNECTION_TYPE to {_connectionMode}");
+                        Task.Delay(100).Wait();
+                    } catch (Exception ex) {
+                        Logger.Debug($"Could not set CONNECTION_TYPE: {ex.Message}");
                     }
                 }
 
                 // Set device port
-                if (!string.IsNullOrEmpty(devicePort)) {
-                    var portProp = GetTextProperty("DEVICE_PORT");
-                    if (portProp != null) {
-                        var portText = portProp.Texts.FirstOrDefault(t => t.Name == "PORT");
-                        if (portText != null) {
-                            portText.Value = devicePort;
-                            INDIClient.Instance.SendProperty(portProp);
-                            Logger.Info($"Set DEVICE_PORT to {devicePort}");
-                        }
+                if (!string.IsNullOrEmpty(_devicePort)) {
+                    try {
+                        SetTextValue("DEVICE_PORT", "PORT", _devicePort);
+                        Logger.Info($"Set DEVICE_PORT to {_devicePort}");
+                        Task.Delay(100).Wait();
+                    } catch (Exception ex) {
+                        Logger.Debug($"Could not set DEVICE_PORT: {ex.Message}");
                     }
                 }
 
                 // Set baud rate for non-network connections
-                if (baudRate > 0 && connectionMode != "NETWORK") {
-                    var baudProp = GetSwitchProperty("DEVICE_BAUD_RATE");
-                    if (baudProp != null) {
-                        // Turn off all baud rate switches
-                        foreach (var sw in baudProp.Switches) {
-                            sw.Value = false;
-                        }
-
-                        // Turn on the matching baud rate switch
-                        var baudSwitch = baudProp.Switches.FirstOrDefault(s => s.Name == $"BAUD_{baudRate}");
-                        if (baudSwitch != null) {
-                            baudSwitch.Value = true;
-                            INDIClient.Instance.SendProperty(baudProp);
-                            Logger.Info($"Set DEVICE_BAUD_RATE to {baudRate}");
-                        } else {
-                            Logger.Warning($"Baud rate {baudRate} not found in available options");
-                        }
+                if (_baudRate > 0 && _connectionMode != "NETWORK") {
+                    try {
+                        SetSwitchValue("DEVICE_BAUD_RATE", $"BAUD_{_baudRate}", true);
+                        Logger.Info($"Set DEVICE_BAUD_RATE to {_baudRate}");
+                        Task.Delay(100).Wait();
+                    } catch (Exception ex) {
+                        Logger.Debug($"Could not set DEVICE_BAUD_RATE: {ex.Message}");
                     }
                 }
 
-                Logger.Info($"Configured INDI telescope: Mode={connectionMode}, Port={devicePort}, Baud={baudRate}");
+                Logger.Info($"Applied INDI connection properties: Mode={_connectionMode}, Port={_devicePort}, Baud={_baudRate}");
             } catch (Exception ex) {
-                Logger.Error($"Failed to configure INDI connection properties: {ex.Message}");
+                Logger.Error($"Failed to apply INDI connection properties: {ex.Message}");
             }
-        }
-
-
-        public INDITelescope(INDIDeviceInfo device) : base(device) {
         }
 
         public AlignmentMode AlignmentMode { get; }

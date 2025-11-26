@@ -418,7 +418,7 @@ namespace NINA.Equipment.Equipment {
             }
         }
 
-        public bool HasSetupDialog => false;
+        public virtual bool HasSetupDialog => false;
         public IList<string> SupportedActions => new List<string>();
         public void SetupDialog() {
         }

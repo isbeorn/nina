@@ -1040,6 +1040,14 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             this.device.DeclinationRate = declinationRate;
         }
 
+        protected override Task PreConnect() {
+            // Configure connection properties from profile before connecting
+            var settings = profileService.ActiveProfile.TelescopeSettings;
+            var instance = GetInstance();
+            instance.ConfigureConnectionProperties(settings.ConnectionMode, settings.DevicePort, settings.BaudRate);
+            return Task.CompletedTask;
+        }
+
         protected override Task PostConnect() {
             Initialize();
             // Configure INDI to use JNOW (EOD) coordinates
@@ -1060,5 +1068,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             var pierSide = device.DestinationSideOfPier(coordinates.RA, coordinates.Dec);
             return (PierSide)pierSide;
         }
+
+        public override bool HasSetupDialog => !Connected;
     }
 }
