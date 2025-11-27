@@ -148,8 +148,8 @@ This database will be automatically created by the EntityFramework based on the 
 
 ## Setting up the developer environment
 
-* Install [Visual Studio Community 2022](https://visualstudio.microsoft.com/vs/community/)
-* Install [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+* Install [Visual Studio Community 2026](https://visualstudio.microsoft.com/vs/community/)
+* Install [.NET 10.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 * Install [ASCOM](https://ascom-standards.org/Downloads/Index.htm)
 * Recommended Visual Studio Extensions:
     * [CodeMaid](http://www.codemaid.net/): A code cleanup Utility

@@ -13,11 +13,15 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Core.Locale;
 using NINA.Core.Model;
+using NINA.Core.MyMessageBox;
+using NINA.Core.Utility;
+using NINA.Core.Utility.Extensions;
 using NINA.Sequencer.Container.ExecutionStrategy;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
-using NINA.Core.Utility;
+using NINA.Sequencer.Utility;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -26,11 +30,8 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
-using NINA.Core.MyMessageBox;
-using NINA.Core.Locale;
-using NINA.Sequencer.Utility;
-using NINA.Core.Utility.Extensions;
 
 namespace NINA.Sequencer.Container {
 
@@ -144,5 +145,39 @@ namespace NINA.Sequencer.Container {
                 }
             }
         }
+
+        public Dictionary<string, bool> HasChanges { get => hasChanges; }
+
+        private Dictionary<string, bool> hasChanges = new Dictionary<string, bool>() { { defaultChangeSet, false } };
+
+        public bool DoesHaveChanges(string hasChangeSet) {
+            return HasChanges.ContainsKey(hasChangeSet) && HasChanges[hasChangeSet];
+        }
+        public void SetChanged(string changedSet=defaultChangeSet) {
+            if (HasChanges.ContainsKey(changedSet))
+                HasChanges[changedSet] = true;
+            else
+                HasChanges.Add(changedSet, true);
+        }
+
+        /*        public void ClearHasChanged() {
+                    foreach (string key in HasChanges.Keys) {
+                        HasChanges[key] = false;
+                    }
+                }
+
+                public bool ShouldStopForChanges(string name, string hasChangedSet) {
+                    if ((HasChanges.ContainsKey(hasChangedSet)) && (HasChanges[hasChangedSet]) &&
+                        (MyMessageBox.Show(
+                            string.Format(Loc.Instance["LblChangedSequenceWarning"], name ?? ""),
+                            Loc.Instance["LblChangedSequenceWarningTitle"],
+                            MessageBoxButton.YesNo, MessageBoxResult.Yes) == MessageBoxResult.No)) {
+                        return true;
+                    }
+                    return false;
+                }
+
+        */
+
     }
 }
