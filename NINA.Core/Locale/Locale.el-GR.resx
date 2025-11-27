@@ -567,10 +567,13 @@
   <data name="LblChange" xml:space="preserve">
     <value>Αλλαγή</value>
   </data>
+  <data name="LblExposureCount" xml:space="preserve">
+    <value>Exposure count</value>
+  </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>Η αλληλουχία για τον/τους στόχο/ους '{0}' έχει τροποποιηθεί από την τελευταία φορά που αποθηκεύτηκε (ή δεν έχει αποθηκευτεί ακόμα).
-
-Θέλετε να κλείσετε την αλληλουχία και να χάσετε τις αλλαγές;</value>
+    <value>The sequence has been modified since it was last saved (changes to {0}).
+        
+Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Κλείσιμο τροποποιημένης αλληλουχίας</value>
@@ -3310,6 +3313,9 @@ Should the settings be synchronized?</value>
   </data>
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Διάβαση Νότια</value>
+  </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Transit time</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Τάσεις και Υπερβολικό</value>
@@ -7314,6 +7320,15 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblPrepareImageFailed" xml:space="preserve">
     <value>Failed to prepare image for display: {0}</value>
     <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
+    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+  </data>
+  <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
+    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
+You'll normally be prompted to save the sequence to save the changed exposure count.
+
+If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
     <value>Day Rollover Time</value>
