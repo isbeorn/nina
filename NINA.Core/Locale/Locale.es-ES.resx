@@ -567,10 +567,13 @@ Filtro: {3}</value>
   <data name="LblChange" xml:space="preserve">
     <value>Cambiar</value>
   </data>
+  <data name="LblExposureCount" xml:space="preserve">
+    <value>Exposure count</value>
+  </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>La secuencia para el (los) objetivo(s) '{0}' se ha modificado desde la última vez que se guardó (o aún no se ha guardado).
+    <value>The sequence has been modified since it was last saved (changes to {0}).
         
-¿Quieres cerrar la secuencia y perder los cambios de todos modos?</value>
+Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Cerrando secuencia modificada</value>
@@ -3311,6 +3314,9 @@ Mueve el rectángulo sobre la parte del Encuadre que quieras hacer subsampling. 
   </data>
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Tránsito Sur</value>
+  </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Transit time</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Tendencia e Hiperbólico</value>
@@ -7312,6 +7318,15 @@ El tiempo de exposición de los flats de cierlo será recalculado y se repetirá
   <data name="LblPrepareImageFailed" xml:space="preserve">
     <value>Error al preparar la imagen para mostrar: {0}</value>
     <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
+    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+  </data>
+  <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
+    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
+You'll normally be prompted to save the sequence to save the changed exposure count.
+
+If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
     <value>Hora para la transferencia de día</value>
