@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -224,7 +224,11 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
         public void ToString_FilledProperly() {
             var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
             var tostring = sut.ToString();
-            tostring.Should().Be("Trigger: AutofocusAfterHFRIncreaseTrigger, Amount: 5");
+            tostring.Should().Be("Trigger: AutofocusAfterHFRIncreaseTrigger, Amount: 5, TrendPerFilter: True");
+
+            sut.TrendPerFilter = false;
+            tostring = sut.ToString();
+            tostring.Should().Be("Trigger: AutofocusAfterHFRIncreaseTrigger, Amount: 5, TrendPerFilter: False");
         }
 
         [Test]
@@ -263,6 +267,36 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             trigger.Should().Be(shouldTrigger);
         }
 
+        [Test]                          // index 2+3 are for a different filter
+        [TestCase(new double[] { 3, 3, 50, 100, 3, 3 }, 1, true, false)] // should not trigger as trend per filter true 
+        [TestCase(new double[] { 3, 3, 50, 100, 3, 3 }, 1, false, true)] // should trigger as trend across all filters 
+        public void ShouldTrigger_HistoryExists_NoPreviousAFs_TestTrendPerFilterConsidered(double[] hfrs, double changeAmount, bool trendPerFilter, bool shouldTrigger) {
+            for (int i = 0; i < hfrs.Length; i++) {
+                if (i > 1 && i < 4) {
+                    var p = new ImageHistoryPoint(i, null, "LIGHT");
+                    var id = imagehistory.GetNextImageId();
+                    imagehistory.Add(id, null, "LIGHT");
+                    imagehistory.AppendImageProperties(new ImageSavedEventArgs() { Filter = "OtherFilter", StarDetectionAnalysis = new StarDetectionAnalysis() { DetectedStars = 1, HFR = hfrs[i] }, MetaData = new ImageMetaData() { Image = new ImageParameter() { Id = id } } });
+                } else {
+                    var p = new ImageHistoryPoint(i, null, "LIGHT");
+                    var id = imagehistory.GetNextImageId();
+                    imagehistory.Add(id, null, "LIGHT");
+                    imagehistory.AppendImageProperties(new ImageSavedEventArgs() { Filter = "TestFilter", StarDetectionAnalysis = new StarDetectionAnalysis() { DetectedStars = 1, HFR = hfrs[i] }, MetaData = new ImageMetaData() { Image = new ImageParameter() { Id = id } } });
+                }
+            }
+
+            filterWheelMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true, SelectedFilter = new FilterInfo() { Name = "TestFilter" } });
+
+            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
+            sut.Amount = changeAmount;
+            sut.TrendPerFilter = trendPerFilter;
+
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var trigger = sut.ShouldTrigger(null, itemMock.Object);
+
+            trigger.Should().Be(shouldTrigger);
+        }
 
 
         [Test]

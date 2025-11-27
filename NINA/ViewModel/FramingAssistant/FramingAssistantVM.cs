@@ -349,7 +349,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     };
 
                     var captureSolver = new CaptureSolver(plateSolver, blindSolver, imagingMediator, filterWheelMediator);
-                    var result = await captureSolver.Solve(seq, parameter, default, _statusUpdate, getRotationTokenSource.Token);                    
+                    var result = await captureSolver.Solve(seq, parameter, default, _statusUpdate, getRotationTokenSource.Token);
 
                     if (result.Success) {
                         RectangleTotalRotation = 360 - result.PositionAngle;
@@ -1165,6 +1165,11 @@ namespace NINA.ViewModel.FramingAssistant {
                         if (FramingAssistantSource != SkySurveySource.FILE) {
                             RectangleTotalRotation = profileService.ActiveProfile.FramingAssistantSettings.LastRotationAngle;
                         }
+
+                        if (Rectangle != null) {
+                            DSO.Coordinates = Rectangle.Coordinates;
+                            RaiseCoordinatesChanged();
+                        }                            
                     }
                 } catch (OperationCanceledException) {
                     Logger.Info("Loading image for framing has been cancelled");
@@ -1518,6 +1523,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
                         if (!double.IsNaN(rotationAngle)) {
                             RectangleRotation = 360 - rotationAngle;
+                            RectangleTotalRotation = 360 - rotationAngle;
                         }
                     }
                 }

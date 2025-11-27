@@ -82,7 +82,10 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                 lock (lockObj) {
                     var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                     sdk.get_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_SLOT, out var positions);
-                    return new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+
+                    var filters = new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+                    profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters = filters;
+                    return filters;
                 }
             }
         }
