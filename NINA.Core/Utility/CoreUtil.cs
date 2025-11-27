@@ -121,6 +121,15 @@ namespace NINA.Core.Utility {
             return (int)date.ToUniversalTime().Subtract(new DateTime(1970, 1, 1)).TotalSeconds; ;
         }
 
+        public static DateTime UnixTimeStampToDateTime(double timestamp) {
+            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            return origin.AddSeconds(timestamp);
+        }
+        public static long UnixTimeStampNow() {
+            var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+            return (long)timeSpan.TotalSeconds;
+        }
+
         public static async Task<TimeSpan> Delay(int milliseconds, CancellationToken token) {
             var t = TimeSpan.FromMilliseconds(milliseconds);
             return await Delay(t, token);

@@ -273,7 +273,7 @@ namespace NINA.Sequencer.Logic {
                 long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
                 long end = start + (2 * ONE_YEAR);
                 if (DATE_VALUES_ALLOWED && Value > start && Value < end) {
-                    var local = ConvertFromUnixTimestamp(Value).ToLocalTime();
+                    var local = CoreUtil.UnixTimeStampToDateTime(Value).ToLocalTime();
                     var today = DateTime.Today;
                     if (local.Date == today.AddDays(1)) {
                         return local.ToShortTimeString() + " " + Loc.Instance["LblTomorrow"];
@@ -365,8 +365,11 @@ namespace NINA.Sequencer.Logic {
                         // We always want to show the result if not a Symbol
                         //IsExpression = true;
                     }
-                } else if (Regex.IsMatch(value, "{(\\d+)}")) { // Should be /^\d*\.?\d*$/
-                    IsExpression = false;
+                // The following lines make no sense to me; it would capture literally {ddd} where d are digits.
+                // The "should be" would match any double and would be covered by previous clause
+                // Leaving this here temporarily in case something comes to mind
+                //} else if (Regex.IsMatch(value, "{(\\d+)}")) { // Should be /^\d*\.?\d*$/
+                //    IsExpression = false;
                 } else {
                     IsExpression = true;
 
@@ -628,15 +631,6 @@ namespace NINA.Sequencer.Logic {
             Dirty = false;
         }
         
-        public static DateTime ConvertFromUnixTimestamp(double timestamp) {
-            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            return origin.AddSeconds(timestamp);
-        }
-        public long UnixTimeNow() {
-            var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc));
-            return (long)timeSpan.TotalSeconds;
-        }
-
         public static Random RNG = new Random();
 
         public void ExtensionFunction(string name, FunctionArgs args) {
@@ -645,7 +639,7 @@ namespace NINA.Sequencer.Logic {
             try {
                 if (args.Parameters.Length > 0) {
                     try {
-                        var utc = ConvertFromUnixTimestamp(Convert.ToDouble(args.Parameters[0].Evaluate()));
+                        var utc = CoreUtil.UnixTimeStampToDateTime(Convert.ToDouble(args.Parameters[0].Evaluate()));
                         dt = utc.ToLocalTime();
                     } catch (Exception) {
                         dt = DateTime.MinValue;
@@ -656,7 +650,7 @@ namespace NINA.Sequencer.Logic {
 
                 switch (name) {
                     case "now":
-                        args.Result = UnixTimeNow();
+                        args.Result = CoreUtil.UnixTimeStampNow();
                         break;
                     case "hour":
                         args.Result = (int)dt.Hour;

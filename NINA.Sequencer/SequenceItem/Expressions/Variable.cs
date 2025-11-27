@@ -10,13 +10,12 @@ using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
-    [ExportMetadata("Name", "Define Local Variable")]
-    [ExportMetadata("Description", "Creates a Variable whose value can be used in Expressions")]
+    [ExportMetadata("Name", "Define Scoped Variable")]
+    [ExportMetadata("Description", "Creates a Scoped Variable which can be used in Expressions")]
     [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Symbol")]
-    //[Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-
     public partial class Variable : UserSymbol {
 
         [ImportingConstructor]

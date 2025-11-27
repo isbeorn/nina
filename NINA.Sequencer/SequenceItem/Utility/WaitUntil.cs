@@ -28,8 +28,8 @@ using System.Threading.Tasks;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
-    [ExportMetadata("Name", "Wait Until")]
-    [ExportMetadata("Description", "Waits until the Expression is true.")]
+    [ExportMetadata("Name", "Lbl_SequenceItem_Utility_WaitUntil_Name")]
+    [ExportMetadata("Description", "Lbl_SequenceItem_Utility_WaitUntil_Description")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]

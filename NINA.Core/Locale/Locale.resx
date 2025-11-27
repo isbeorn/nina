@@ -7480,4 +7480,16 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
     <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
   </data>
+  <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
+    <value>Loop While</value>
+  </data>
+  <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
+    <value>Loops while the Expression is not false</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
+    <value>Wait Until</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
+    <value>Waits until the Expression is true</value>
+  </data>
 </root>

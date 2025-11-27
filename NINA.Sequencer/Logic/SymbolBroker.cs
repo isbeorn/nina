@@ -42,6 +42,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
+using System.Windows.Input;
 using static NINA.Sequencer.Logic.Symbol;
 
 namespace NINA.Sequencer.Logic {
@@ -80,13 +82,21 @@ namespace NINA.Sequencer.Logic {
             CameraMediator.RegisterConsumer(this);
             FlatMediator.RegisterConsumer(this);
             RotatorMediator.RegisterConsumer(this);
+
+            // Register the default Providers
+            foreach (string provider in SymbolProviders) {
+                RegisterSymbolProvider(provider);
+            }
         }
 
-        private static ConcurrentDictionary<string, IList<Symbol>> DataSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
+        private ConcurrentDictionary<string, IList<Symbol>> DataSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
-        private static ConcurrentDictionary<string, IList<Symbol>> HiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
+        private ConcurrentDictionary<string, IList<Symbol>> HiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
         public static readonly char DELIMITER = '_';
+
+        private static List<string> SymbolProviders = 
+            new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel"};
 
         public bool TryGetSymbol(string key, out Symbol symbol) {
             Symbol sym;
@@ -303,7 +313,11 @@ namespace NINA.Sequencer.Logic {
             }
 
             if (list.Count == 1) {
-                DataSymbols.Remove(key, out _);
+                if (list[0].Category == source) {
+                    DataSymbols.Remove(key, out _);
+                    return true;
+                }
+                return false;
             }
 
             Symbol toRemove = null;
@@ -424,6 +438,7 @@ namespace NINA.Sequencer.Logic {
             if (Providers.Contains(name)) {
                 throw new ArgumentException("Symbol Provider name is already registered.");
             }
+            Providers.Add(name);
             return new SymbolProvider(name, this);
         }
 
@@ -445,7 +460,8 @@ namespace NINA.Sequencer.Logic {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
-            return RemoveSymbol(provider.GetProviderName() + DELIMITER + token);
+
+            return RemoveSymbol(provider.GetProviderName(), token);
         }
 
         public List<Symbol> GetSymbols() {
