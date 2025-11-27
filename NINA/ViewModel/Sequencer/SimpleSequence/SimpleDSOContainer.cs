@@ -10,9 +10,19 @@
 */
 #endregion "copyright"
 using Newtonsoft.Json;
+using NINA.Astrometry;
+using NINA.Astrometry.Interfaces;
 using NINA.Core.Enum;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.MyMessageBox;
+using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyPlanetarium;
+using NINA.Equipment.Exceptions;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
@@ -26,33 +36,24 @@ using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Trigger.Autofocus;
+using NINA.Sequencer.Validations;
 using NINA.Utility;
-using NINA.Astrometry;
 using NINA.ViewModel.FramingAssistant;
 using NINA.ViewModel.ImageHistory;
 using NINA.ViewModel.Sequencer.SimpleSequence;
+using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using NINA.Equipment.Interfaces.Mediator;
-using NINA.Core.Utility;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Model;
-using NINA.Core.Locale;
-using NINA.Equipment.Exceptions;
-using NINA.Core.Utility.Notification;
-using NINA.Astrometry.Interfaces;
-using NINA.Equipment.Interfaces;
-using NINA.WPF.Base.Interfaces.ViewModel;
-using NINA.Core.MyMessageBox;
 using System.Windows;
-using NINA.Sequencer.Validations;
+using System.Windows.Input;
 
 namespace NINA.Sequencer.Container {
 
@@ -154,12 +155,14 @@ namespace NINA.Sequencer.Container {
             if (this.Parent.Items.IndexOf(this) > 0) {
                 base.MoveUp();
             }
+            SetChanged();
         }
 
         public override void MoveDown() {
             if (this.Parent.Items.IndexOf(this) < this.Parent.Items.Count - 1) {
                 base.MoveDown();
             }
+            SetChanged();
         }
 
         public TimeSpan CalculateEstimatedRuntime() {
@@ -240,6 +243,9 @@ namespace NINA.Sequencer.Container {
             SelectedSimpleExposure = item;
             ActiveExposure = Items.FirstOrDefault() as SimpleExposure;
             this.ResetProgressCascaded();
+
+            SetChanged();
+
             return item;
         }
 
@@ -250,6 +256,10 @@ namespace NINA.Sequencer.Container {
                     ActiveExposure = se;
                 }
             }
+        }
+
+        public override ISequenceRootContainer GetSequenceRootContainer() {
+            return Parent as ISequenceRootContainer;
         }
 
         private void RemoveSimpleExposure(object obj) {
@@ -263,6 +273,9 @@ namespace NINA.Sequencer.Container {
                 } else {
                     SelectedSimpleExposure = (SimpleExposure)this.Items[idx];
                 }
+
+                SetChanged();
+
             }
         }
 
@@ -276,6 +289,7 @@ namespace NINA.Sequencer.Container {
             if (idx > 0 && idx <= this.Items.Count - 1) {
                 SelectedSimpleExposure?.MoveUp();
                 SelectedSimpleExposure = (SimpleExposure)this.Items[--idx];
+                SetChanged();
             }
         }
 
@@ -284,6 +298,7 @@ namespace NINA.Sequencer.Container {
             if (idx >= 0 && idx < this.Items.Count - 1) {
                 SelectedSimpleExposure?.MoveDown();
                 SelectedSimpleExposure = (SimpleExposure)this.Items[++idx];
+                SetChanged();
             }
         }
 
@@ -296,6 +311,7 @@ namespace NINA.Sequencer.Container {
                 foreach (var item in Items) {
                     item.ResetProgress();
                 }
+                SetChanged();
             }
         }
 
@@ -325,6 +341,7 @@ namespace NINA.Sequencer.Container {
                             loop.ResetProgress();
                         }
                     }
+                    SetChanged();
                     RaisePropertyChanged();
                 }
             }
@@ -335,6 +352,7 @@ namespace NINA.Sequencer.Container {
             set {
                 selectedSimpleExposure = value;
                 RaisePropertyChanged();
+                SetChanged();
             }
         }
 
@@ -343,6 +361,7 @@ namespace NINA.Sequencer.Container {
             private set {
                 cameraInfo = value;
                 RaisePropertyChanged();
+                SetChanged();
             }
         }
 
@@ -684,6 +703,37 @@ namespace NINA.Sequencer.Container {
             }
 
             return clone;
+        }
+
+        public Dictionary<string, bool> HasChanges { get => hasChanges;  }
+
+        private Dictionary<string, bool> hasChanges = new Dictionary<string, bool>() { { SequenceEntityINPC.defaultChangeSet, false } };
+
+        public void ClearHasChanged() {
+            foreach (string key in HasChanges.Keys) {
+                HasChanges[key] = false;
+            }
+        }
+
+        public bool DoesHaveChanges(string hasChangeSet) {
+            return HasChanges.ContainsKey(hasChangeSet) && HasChanges[hasChangeSet];
+        }
+        public void SetChanged(string changedSet = SequenceEntityINPC.defaultChangeSet) {
+            if (HasChanges.ContainsKey(changedSet))
+                HasChanges[changedSet] = true;
+            else
+                HasChanges.Add(changedSet, true);
+        }
+
+        public bool ShouldStopForChanges(string name, string hasChangedSet) {
+            if ((HasChanges.ContainsKey(hasChangedSet)) && (HasChanges[hasChangedSet]) &&
+                (MyMessageBox.Show(
+                    string.Format(Loc.Instance["LblChangedSequenceWarning"], name ?? ""),
+                    Loc.Instance["LblChangedSequenceWarningTitle"],
+                    MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes) == System.Windows.MessageBoxResult.No)) {
+                return true;
+            }
+            return false;
         }
 
         public IDeepSkyObjectContainer TransformToDSOContainer() {
