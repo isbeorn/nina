@@ -565,9 +565,13 @@ Dec: {1}</value>
   <data name="LblChange" xml:space="preserve">
     <value>변경</value>
   </data>
+  <data name="LblExposureCount" xml:space="preserve">
+    <value>Exposure count</value>
+  </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>'{0}' 대상에 대한 시퀀스가 마지막으로 저장된 이후 수정됨(또는 아직 저장되지 않음).
-시퀀스를 닫고 변경된 내용을 삭제하시겠습니까?</value>
+    <value>The sequence has been modified since it was last saved (changes to {0}).
+        
+Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>수정된 시퀀스 닫기</value>
@@ -3309,6 +3313,9 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblTransitSouth" xml:space="preserve">
     <value>서쪽 통과[Transit South]</value>
   </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Transit time</value>
+  </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>추세와 쌍곡선</value>
   </data>
@@ -4441,6 +4448,15 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_Name" xml:space="preserve">
     <value>HFR 증가 후 오토포커스</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+<value>HFR trend per filter</value>
+</data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+<value>When disabled, the HFR trend is evaluated across all filters combined. 
+This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
+and a temperature sensitive optics on a quickly changing ambient temperature. 
+Note: This mode requires that HFR differences between filters in your setup are small.</value>
+</data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>마지막 오토포커스 또는 시퀀스 시작 이후로 주어진 양만큼 온도가 변경된 후 오토포커스를 시작하는 트리거</value>
   </data>
@@ -7331,6 +7347,15 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblPrepareImageFailed" xml:space="preserve">
     <value>Failed to prepare image for display: {0}</value>
     <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
+    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+  </data>
+  <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
+    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
+You'll normally be prompted to save the sequence to save the changed exposure count.
+
+If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
     <value>Day Rollover Time</value>
