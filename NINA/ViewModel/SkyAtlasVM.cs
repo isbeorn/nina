@@ -697,7 +697,7 @@ namespace NINA.ViewModel {
         public DateTime SelectedAltitudeTimeFrom {
             get => _selectedAltitudeTimeFrom;
             set {
-                if (value != _selectedAltitudeTimeThrough) {
+                if (value != _selectedAltitudeTimeFrom) {
                     _selectedAltitudeTimeFrom = value;
                     RaisePropertyChanged();
                 }
