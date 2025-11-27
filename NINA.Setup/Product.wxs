@@ -1560,6 +1560,9 @@
       <Component Id="Database_Migration_14.sql" Guid="872DFD14-7FFD-4043-B1CD-52190C05FE62">
         <File Id="Database_Migration_14.sql" Name="14.sql" Source="$(var.NINA_TargetDir)Database\Migration\14.sql" />
       </Component>
+      <Component Id="Database_Migration_15.sql" Guid="BC665729-A2B6-4A3E-9754-10EB8F33682D">
+        <File Id="Database_Migration_15.sql" Name="15.sql" Source="$(var.NINA_TargetDir)Database\Migration\15.sql" />
+      </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
