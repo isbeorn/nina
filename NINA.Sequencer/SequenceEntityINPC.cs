@@ -41,9 +41,6 @@ namespace NINA.Sequencer {
 
         private Dictionary<string, System.Reflection.PropertyInfo> propertyInfoByname = new Dictionary<string, System.Reflection.PropertyInfo>();
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            //var _profileService = (ProfileService)Application.Current.Resources["ProfileService"];
-            //Trace.WriteLine(_profileService.ActiveProfile.ImageFileSettings.FilePath);
-
             System.Reflection.PropertyInfo propInf;
             if (propertyInfoByname.ContainsKey(e.PropertyName)) {
                 propInf = propertyInfoByname[e.PropertyName];
@@ -55,7 +52,8 @@ namespace NINA.Sequencer {
             if (propInf.GetCustomAttributes(typeof(JsonPropertyAttribute), true).Length > 0) {
                 ISequenceRootContainer root = GetSequenceRootContainer();
 
-                if ((root != null) && (!root.HasChanges[defaultChangeSet])) {
+                bool hasChange = root?.HasChanges?.TryGetValue(defaultChangeSet, out var v) == true && v;
+                if (hasChange) {
                     object[] hasChangedSets = propInf.GetCustomAttributes(typeof(NINA.Core.Model.HasChangedSetAttribute), true);
                     if (hasChangedSets.Length > 0) {
                         foreach (object item in hasChangedSets) {
