@@ -39,7 +39,11 @@ namespace NINA.Core.Enum {
         SURFACEBRIGHTNESS,
 
         [Description("LblObjectType")]
-        DSOTYPE
+        DSOTYPE,
+
+        [Description("LblTransitTime")]
+        TRANSITTIME,
+
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

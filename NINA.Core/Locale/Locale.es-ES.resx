@@ -7348,4 +7348,7 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque√
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
   </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Tiempo de tr√°nsito</value>
+  </data>
 </root>

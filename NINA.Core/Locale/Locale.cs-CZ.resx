@@ -7354,4 +7354,7 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
   </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Čas přechodu</value>
+  </data>
 </root>

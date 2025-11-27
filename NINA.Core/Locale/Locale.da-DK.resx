@@ -7352,4 +7352,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
   </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Transit time</value>
+  </data>
 </root>

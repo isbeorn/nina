@@ -7352,4 +7352,7 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZSstandar</value>
   </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Temps de transició</value>
+  </data>
 </root>

@@ -7348,4 +7348,7 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
   </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Transit time</value>
+  </data>
 </root>

@@ -7351,4 +7351,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
   </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>中天时间</value>
+  </data>
 </root>
