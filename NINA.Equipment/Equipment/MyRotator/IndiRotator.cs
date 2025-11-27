@@ -22,13 +22,17 @@ using NINA.Equipment.Interfaces;
 using NINA.INDI.Interfaces;
 using NINA.INDI;
 using NINA.INDI.Devices;
+using NINA.Profile.Interfaces;
 
 namespace NINA.Equipment.Equipment.MyRotator {
 
     internal class IndiRotator : IndiDevice<IINDIRotator>, IRotator, IDisposable {
 
-        public IndiRotator(INDIDeviceInfo info) : base(info) {
+        public IndiRotator(INDIDeviceInfo info, IProfileService profileService) : base(info) {
+            this.profileService = profileService;
         }
+
+        private IProfileService profileService;
 
         public bool CanReverse => GetProperty(nameof(IINDIRotator.CanReverse), false);
 
@@ -117,11 +121,18 @@ namespace NINA.Equipment.Equipment.MyRotator {
         protected override Task PreConnect() {
             offset = 0;
             Synced = false;
+
+            // Configure connection properties from profile before connecting
+            var settings = profileService.ActiveProfile.RotatorSettings;
+            var instance = GetInstance();
+            instance.ConfigureConnectionProperties(settings.ConnectionMode, settings.DevicePort, settings.BaudRate);
             return Task.CompletedTask;
         }
 
         protected override IINDIRotator GetInstance() {
             return device ??= new INDIRotator(_device);
         }
+
+        public override bool HasSetupDialog => !Connected;
     }
 }

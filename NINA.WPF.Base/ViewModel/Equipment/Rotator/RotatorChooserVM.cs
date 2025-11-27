@@ -51,7 +51,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
                 /* INDI rotator */
                 try {
-                    var indiRotator = await INDIInteraction.GetRotators();
+                    var indiInteraction = new INDIInteraction(profileService);
+                    var indiRotator = await indiInteraction.GetRotators();
                     devices.AddRange(indiRotator);
                     Logger.Info($"Found {indiRotator?.Count} INDI Rotators");
                 } catch (Exception ex) {

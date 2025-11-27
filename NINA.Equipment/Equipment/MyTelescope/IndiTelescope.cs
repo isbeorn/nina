@@ -28,7 +28,6 @@ using NINA.INDI.Interfaces;
 using NINA.INDI;
 using NINA.Core.Enum;
 using NINA.INDI.Devices;
-using NINA.Core.Model.Equipment;
 
 namespace NINA.Equipment.Equipment.MyTelescope {
 

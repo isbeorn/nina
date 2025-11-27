@@ -34,6 +34,9 @@ namespace NINA.Profile {
             reverse2 = false;
             rangeType = RotatorRangeTypeEnum.FULL;
             rangeStartMechanicalPosition = 0.0f;
+            connectionMode = "SERIAL";
+            devicePort = "/dev/ttyUSB0";
+            baudRate = 9600;
         }
 
         private string id;
@@ -100,6 +103,42 @@ namespace NINA.Profile {
             set {
                 if (rangeStartMechanicalPosition != value) {
                     rangeStartMechanicalPosition = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string connectionMode;
+        [DataMember]
+        public string ConnectionMode {
+            get => connectionMode;
+            set {
+                if(connectionMode != value) {
+                    connectionMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string devicePort;
+        [DataMember]
+        public string DevicePort {
+            get => devicePort;
+            set {
+                if(devicePort != value) {
+                    devicePort = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int baudRate;
+        [DataMember]
+        public int BaudRate {
+            get => baudRate;
+            set {
+                if(baudRate != value) {
+                    baudRate = value;
                     RaisePropertyChanged();
                 }
             }

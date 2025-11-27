@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright ï¿½ 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -28,5 +28,9 @@ namespace NINA.Profile.Interfaces {
         bool Reverse2 { get; set; }
         RotatorRangeTypeEnum RangeType { get; set; }
         float RangeStartMechanicalPosition { get; set; }
+
+        string ConnectionMode { get; set; }
+        string DevicePort { get; set; }
+        int BaudRate { get; set; }
     }
 }

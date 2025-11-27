@@ -418,6 +418,48 @@ namespace NINA.INDI.Devices {
         /// Override this to configure device properties after driver load but before CONNECT
         /// </summary>
         protected virtual void OnPreConnect() {
+            if (string.IsNullOrEmpty(_connectionMode) && string.IsNullOrEmpty(_devicePort) && _baudRate == 0) {
+                return; // No configuration stored
+            }
+
+            try {
+                // Set connection mode
+                if (!string.IsNullOrEmpty(_connectionMode)) {
+                    try {
+                        SetTextValue("CONNECTION_TYPE", "CONNECTION_TYPE", _connectionMode);
+                        Logger.Info($"Set CONNECTION_TYPE to {_connectionMode}");
+                        Task.Delay(100).Wait();
+                    } catch (Exception ex) {
+                        Logger.Debug($"Could not set CONNECTION_TYPE: {ex.Message}");
+                    }
+                }
+
+                // Set device port
+                if (!string.IsNullOrEmpty(_devicePort)) {
+                    try {
+                        SetTextValue("DEVICE_PORT", "PORT", _devicePort);
+                        Logger.Info($"Set DEVICE_PORT to {_devicePort}");
+                        Task.Delay(100).Wait();
+                    } catch (Exception ex) {
+                        Logger.Debug($"Could not set DEVICE_PORT: {ex.Message}");
+                    }
+                }
+
+                // Set baud rate for non-network connections
+                if (_baudRate > 0 && _connectionMode != "NETWORK") {
+                    try {
+                        SetSwitchValue("DEVICE_BAUD_RATE", $"BAUD_{_baudRate}", true);
+                        Logger.Info($"Set DEVICE_BAUD_RATE to {_baudRate}");
+                        Task.Delay(100).Wait();
+                    } catch (Exception ex) {
+                        Logger.Debug($"Could not set DEVICE_BAUD_RATE: {ex.Message}");
+                    }
+                }
+
+                Logger.Info($"Applied INDI connection properties: Mode={_connectionMode}, Port={_devicePort}, Baud={_baudRate}");
+            } catch (Exception ex) {
+                Logger.Error($"Failed to apply INDI connection properties: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -471,7 +513,22 @@ namespace NINA.INDI.Devices {
         public virtual void OnTextPropertyUpdated(INDITextProperty p) {
         }
 
-        public virtual void OnBlobPropertyUpdated(INDIBlobProperty p) {
+        public virtual void OnBlobPropertyUpdated(INDIBlobProperty p)
+        {
+        }
+        
+        private string _connectionMode;
+        private string _devicePort;
+        private int _baudRate;
+
+        /// <summary>
+        /// Store connection properties to be applied before connecting
+        /// </summary>
+        public void ConfigureConnectionProperties(string connectionMode, string devicePort, int baudRate) {
+            _connectionMode = connectionMode;
+            _devicePort = devicePort;
+            _baudRate = baudRate;
+            Logger.Info($"Stored INDI connection config: Mode={connectionMode}, Port={devicePort}, Baud={baudRate}");
         }
 
         #region Unsupported

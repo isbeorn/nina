@@ -65,14 +65,14 @@ namespace NINA.Equipment.Utility {
             return l;
         }
 
-        public static async Task<List<IRotator>> GetRotators() {
+        public async Task<List<IRotator>> GetRotators() {
             var l = new List<IRotator>();
             if (!await INDIClient.Instance.WaitForServerReadyAsync(TimeSpan.FromSeconds(15))) {
                 Logger.Debug("INDI server not ready - skipping INDI rotator enumeration");
                 return l;
             }
             foreach (var device in await INDIClient.Instance.GetDrivers(IndiDeviceInterface.ROTATOR_INTERFACE)) {
-                IndiRotator rotator = new(device);
+                IndiRotator rotator = new(device, profileService);
                 l.Add(rotator);
             }
             return l;
