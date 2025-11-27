@@ -513,10 +513,9 @@ namespace NINA.INDI.Devices {
         public virtual void OnTextPropertyUpdated(INDITextProperty p) {
         }
 
-        public virtual void OnBlobPropertyUpdated(INDIBlobProperty p)
-        {
+        public virtual void OnBlobPropertyUpdated(INDIBlobProperty p) {
         }
-        
+
         private string _connectionMode;
         private string _devicePort;
         private int _baudRate;

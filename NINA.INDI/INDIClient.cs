@@ -59,7 +59,10 @@ namespace NINA.INDI {
         private Task _receiveTask;
         private CancellationTokenSource _cts;
         private TaskCompletionSource<bool> _operationTcs;
+        private TaskCompletionSource<bool> _driverTcs;
         private readonly object _operationLock = new();
+        private readonly object _driverLock = new();
+        private readonly SemaphoreSlim _getDriversSemaphore = new(1, 1);
 
         // Signals when the server is ready for driver operations
         private readonly TaskCompletionSource<bool> _serverReadyTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -69,14 +72,35 @@ namespace NINA.INDI {
         private readonly Dictionary<string, INDIDevice> _registeredDevices = [];
 
         private readonly IReadOnlyDictionary<string, string> AvailableDriverNames = new Dictionary<string, string>() {
+            /* Focusers */
             {"indi_simulator_focus", "Focuser Simulator (INDI)" },
-            {"indi_simulator_rotator", "Rotator Simulator (INDI)" },
-            {"indi_wanderer_lite_rotator", "WandererRotator Lite (INDI)" },
-            {"indi_wanderer_rotator_lite_v2", "WandererRotator Lite v2 (INDI)" },
-            {"indi_simulator_telescope", "Mount Simulator" },
-            {"indi_lx200_OnStep", "OnStep Mount (INDI)" },
-            {"indi_simulator_weather", "Weather Simulator (INDI)" },
-            {"indi_simulator_wheel", "FilterWheel Simulator (INDI)" }
+            {"indi_gemini_focus", "Gemini Focuser (INDI)" },
+            {"indi_moonlite_focus", "MoonLite Focuser (INDI)" },
+            {"indi_nightcrawler_focus", "MoonLite NiteCrawler Focuser (INDI)" },
+            {"indi_qhy_focuser", "QHY Q-Focuser (INDI)" },
+
+            /* Rotators */
+            { "indi_falcon_rotator", "Pegasus Falcon Rotator (INDI)" },
+            { "indi_falconv2_rotator", "Pegasus Falcon V2 Rotator (INDI)" },
+            { "indi_simulator_rotator", "Rotator Simulator (INDI)" },
+            { "indi_wanderer_lite_rotator", "WandererRotator Lite (INDI)" },
+            { "indi_wanderer_rotator_lite_v2", "WandererRotator Lite V2 (INDI)" },
+            { "indi_wanderer_rotator_mini", "WandererRotator Mini (INDI)" },
+
+            /* Mounts */
+            { "indi_simulator_telescope", "Mount Simulator" },
+            { "indi_lx200_10micron", "10micron Mount (INDI)" },
+            { "indi_lx200am5", "ZWO AM5 Mount (INDI)" },
+            { "indi_lx200_TeenAstro", "TeenAstro Mount (INDI)" },
+            { "indi_eqmod_telescope", "EQMOD Mount (INDI)" },
+            { "indi_synscan_telescope", "Synscan Mount (INDI)" },
+
+            /* Filter Wheels */
+            { "indi_pegasusindigo_wheel", "Pegasus Indigo (INDI)" },
+            { "indi_simulator_wheel", "FilterWheel Simulator (INDI)" },
+
+            /* Weather */
+            { "indi_simulator_weather", "Weather Simulator (INDI)" }
         };
 
         public INDIClient(int port) {
@@ -167,34 +191,34 @@ namespace NINA.INDI {
                 UnloadDriver(driverName);
             }
 
-            lock (_operationLock) {
-                _operationTcs = new TaskCompletionSource<bool>();
-            }
-
             try {
-                ct.ThrowIfCancellationRequested();
+                lock (_driverLock) {
+                    _driverTcs = new TaskCompletionSource<bool>();
 
-                using var fs = new FileStream(_fifoPath, FileMode.Open, FileAccess.Write);
-                using var writer = new StreamWriter(fs);
-                writer.WriteLine($"start {driverName}");
-                writer.Flush();
+                    ct.ThrowIfCancellationRequested();
+
+                    using var fs = new FileStream(_fifoPath, FileMode.Open, FileAccess.Write);
+                    using var writer = new StreamWriter(fs);
+                    writer.WriteLine($"start {driverName}");
+                    writer.Flush();
+                }
 
                 // Wait for the driver to be loaded with timeout and cancellation support
                 var timeout = loadTimeout ?? TimeSpan.FromSeconds(15);
                 var timeoutTask = Task.Delay(timeout, ct);
-                var completedTask = await Task.WhenAny(_operationTcs.Task, timeoutTask);
+                var completedTask = await Task.WhenAny(_driverTcs.Task, timeoutTask);
 
                 if (completedTask == timeoutTask) {
                     // Check if it was a timeout or cancellation
                     if (ct.IsCancellationRequested) {
-                        Logger.Warning("INDI loading driver was cancelled");
+                        Logger.Warning($"INDI loading driver {driverName} was cancelled");
                         return false;
                     }
-                    Logger.Error("INDI loading driver timed out");
+                    Logger.Error($"INDI loading driver {driverName} timed out");
                     return false;
                 }
 
-                bool success = await _operationTcs.Task;
+                bool success = await _driverTcs.Task;
                 if (success) {
                     _loadedDrivers.Add(driverName);
                     Logger.Info($"Loaded driver '{driverName}'");
@@ -202,7 +226,7 @@ namespace NINA.INDI {
 
                 return success;
             } catch (OperationCanceledException) {
-                Logger.Warning("INDI loading driver was cancelled");
+                Logger.Warning($"INDI loading driver {driverName} was cancelled");
                 return false;
             } catch (Exception ex) {
                 Logger.Error($"Exception loading INDI driver: {ex.Message}");
@@ -211,7 +235,7 @@ namespace NINA.INDI {
         }
 
         public void UnloadDriver(string driverName) {
-            lock (_operationLock) {
+            lock (_driverLock) {
                 if (_loadedDrivers.Contains(driverName)) {
                     try {
                         Logger.Debug($"Removing driver '{driverName}'");
@@ -229,7 +253,6 @@ namespace NINA.INDI {
                             _discoveredDevices.Remove(deviceKey);
                             Logger.Debug($"Removed device '{deviceKey}' (driver: {driverName})");
                         }
-
                         Logger.Info($"Unloaded driver '{driverName}'");
                     } catch (Exception ex) {
                         Logger.Error(ex.Message);
@@ -317,59 +340,62 @@ namespace NINA.INDI {
         }
 
         public async Task<IReadOnlyList<INDIDeviceInfo>> GetDrivers(IndiDeviceInterface deviceInterface, CancellationToken ct = default) {
-            // Wait for the server to be ready before proceeding
-            await _serverReadyTcs.Task;
-            var devices = new Dictionary<string, INDIDeviceInfo>();
+            // Serialize GetDrivers calls to prevent concurrent driver load/unload operations
+            await _getDriversSemaphore.WaitAsync(ct);
+            try {
+                // Wait for the server to be ready before proceeding
+                await _serverReadyTcs.Task;
+                var devices = new Dictionary<string, INDIDeviceInfo>();
 
-            var types = new List<string>();
-            switch (deviceInterface) {
-                case IndiDeviceInterface.CCD_INTERFACE:
-                    types.Add("ccd");
-                    break;
-                case IndiDeviceInterface.FILTER_INTERFACE:
-                    types.Add("wheel");
-                    break;
-                case IndiDeviceInterface.FOCUSER_INTERFACE:
-                    types.Add("focus");
-                    break;
-                case IndiDeviceInterface.ROTATOR_INTERFACE:
-                    types.Add("rotator");
-                    break;
-                case IndiDeviceInterface.TELESCOPE_INTERFACE:
-                    types.Add("telescope");
-                    types.Add("lx200");
-                    break;
-                case IndiDeviceInterface.WEATHER_INTERFACE:
-                    types.Add("weather");
-                    break;
-                case IndiDeviceInterface.LIGHTBOX_INTERFACE:
-                    types.Add("cover");
-                    break;
-            }
+                var types = new List<string>();
+                switch (deviceInterface) {
+                    case IndiDeviceInterface.CCD_INTERFACE:
+                        types.Add("ccd");
+                        break;
+                    case IndiDeviceInterface.FILTER_INTERFACE:
+                        types.Add("wheel");
+                        break;
+                    case IndiDeviceInterface.FOCUSER_INTERFACE:
+                        types.Add("focus");
+                        break;
+                    case IndiDeviceInterface.ROTATOR_INTERFACE:
+                        types.Add("rotator");
+                        break;
+                    case IndiDeviceInterface.TELESCOPE_INTERFACE:
+                        types.Add("telescope");
+                        types.Add("lx200");
+                        break;
+                    case IndiDeviceInterface.WEATHER_INTERFACE:
+                        types.Add("weather");
+                        break;
+                    case IndiDeviceInterface.LIGHTBOX_INTERFACE:
+                        types.Add("cover");
+                        break;
+                }
 
-            // Check available devices
-            foreach (var driver in AvailableDriverNames) {
-                ct.ThrowIfCancellationRequested();
-                if (types.Any(type => driver.Key.Contains(type))) {
-                    // Give slow drivers an extra short window to appear after load.
-                    if (await LoadDriver(driver.Key, TimeSpan.FromSeconds(10), ct)) {
-                        // Wait up to a few seconds for the driver to announce itself
-                        await WaitForDevicesForDriverAsync(driver.Key, TimeSpan.FromSeconds(5), ct);
-
-                        foreach (var dev in _discoveredDevices) {
-                            if ((dev.Value.Interface & deviceInterface) != 0) {
-                                if (!devices.ContainsKey(dev.Key)) {
-                                    Logger.Info($"Found driver {dev.Key}");
-                                    devices.Add(dev.Key, dev.Value);
+                // Check available devices
+                foreach (var driver in AvailableDriverNames) {
+                    ct.ThrowIfCancellationRequested();
+                    if (types.Any(type => driver.Key.Contains(type))) {
+                        // Give slow drivers an extra short window to appear after load.
+                        if (await LoadDriver(driver.Key, TimeSpan.FromSeconds(5), ct)) {
+                            foreach (var dev in _discoveredDevices) {
+                                if ((dev.Value.Interface & deviceInterface) != 0) {
+                                    if (!devices.ContainsKey(dev.Key)) {
+                                        Logger.Info($"Found driver {dev.Key}");
+                                        devices.Add(dev.Key, dev.Value);
+                                    }
                                 }
                             }
+                            UnloadDriver(driver.Key);
                         }
-                        UnloadDriver(driver.Key);
                     }
                 }
-            }
 
-            return devices.Values.ToList();
+                return devices.Values.ToList();
+            } finally {
+                _getDriversSemaphore.Release();
+            }
         }
 
         /// <summary>
@@ -419,32 +445,6 @@ namespace NINA.INDI {
             return _serverPlatformVersion ?? new Version(0, 0, 0, 0);
         }
 
-        /// <summary>
-        /// Wait for any discovered device matching a driver name to appear.
-        /// This helps when drivers take a short time to announce themselves
-        /// after being started via FIFO.
-        /// </summary>
-        public async Task<bool> WaitForDevicesForDriverAsync(string driverName, TimeSpan timeout, CancellationToken ct = default) {
-            try {
-                var sw = System.Diagnostics.Stopwatch.StartNew();
-                while (sw.Elapsed < timeout) {
-                    ct.ThrowIfCancellationRequested();
-                    lock (_lock) {
-                        if (_discoveredDevices.Values.Any(d => !string.IsNullOrEmpty(d.Driver) && (d.Driver.Equals(driverName, StringComparison.OrdinalIgnoreCase) || d.Driver.Contains(driverName, StringComparison.OrdinalIgnoreCase)))) {
-                            return true;
-                        }
-                    }
-                    await Task.Delay(200, ct);
-                }
-                return false;
-            } catch (OperationCanceledException) {
-                return false;
-            } catch (Exception ex) {
-                Logger.Error($"WaitForDevicesForDriverAsync failed: {ex.Message}");
-                return false;
-            }
-        }
-
         public void Dispose() {
             Logger.Info("INDIClient.Dispose() starting cleanup");
             CleanupServer();
@@ -455,51 +455,49 @@ namespace NINA.INDI {
             if (p is INDITextProperty t) {
                 // Device enumeration
                 if (t.Name == "DRIVER_INFO") {
-                    // Track this device
-                    if (!_discoveredDevices.ContainsKey(t.DeviceName)) {
-                        var id = p.DeviceName;
+                    lock (_driverLock) {
+                        // Track this device
+                        if (!_discoveredDevices.ContainsKey(t.DeviceName)) {
+                            var id = p.DeviceName;
 
-                        var name = string.Empty;
-                        var exec = string.Empty;
-                        var version = string.Empty;
-                        var deviceInterface = 0;
+                            var name = string.Empty;
+                            var exec = string.Empty;
+                            var version = string.Empty;
+                            var deviceInterface = 0;
 
-                        foreach (var text in t.Texts) {
-                            switch (text.Name) {
-                                case "DRIVER_NAME":
-                                    name = text.Value;
-                                    break;
-                                case "DRIVER_EXEC":
-                                    exec = text.Value;
-                                    break;
-                                case "DRIVER_VERSION":
-                                    version = text.Value;
-                                    break;
-                                case "DRIVER_INTERFACE":
-                                    if (int.TryParse(text.Value, out var interfaceNumber)) {
-                                        deviceInterface = interfaceNumber;
-                                    }
-                                    break;
+                            foreach (var text in t.Texts) {
+                                switch (text.Name) {
+                                    case "DRIVER_NAME":
+                                        name = text.Value;
+                                        break;
+                                    case "DRIVER_EXEC":
+                                        exec = text.Value;
+                                        break;
+                                    case "DRIVER_VERSION":
+                                        version = text.Value;
+                                        break;
+                                    case "DRIVER_INTERFACE":
+                                        if (int.TryParse(text.Value, out var interfaceNumber)) {
+                                            deviceInterface = interfaceNumber;
+                                        }
+                                        break;
+                                }
+                            }
+
+                            if (!_discoveredDevices.ContainsKey(t.DeviceName)) {
+                                _discoveredDevices.Add(t.DeviceName, new INDIDeviceInfo {
+                                    Id = id,
+                                    Name = name,
+                                    Interface = (IndiDeviceInterface)deviceInterface,
+                                    Version = version,
+                                    Driver = exec
+                                });
                             }
                         }
 
-                        Logger.Info($"Found {name} (INDI) device");
-
-                        if (!_discoveredDevices.ContainsKey(t.DeviceName)) {
-                            _discoveredDevices.Add(t.DeviceName, new INDIDeviceInfo {
-                                Id = id,
-                                Name = name,
-                                Interface = (IndiDeviceInterface)deviceInterface,
-                                Version = version,
-                                Driver = exec
-                            });
-                        }
-                    }
-
-                    // Release tcs (moved outside to handle duplicate DRIVER_INFO messages)
-                    lock (_operationLock) {
-                        if (_operationTcs != null && !_operationTcs.Task.IsCompleted) {
-                            _operationTcs.SetResult(true);
+                        // Release tcs (moved outside to handle duplicate DRIVER_INFO messages)
+                        if (_driverTcs != null && !_driverTcs.Task.IsCompleted) {
+                            _driverTcs.SetResult(true);
                             Logger.Debug($"LoadDriver operation completed for {t.DeviceName}");
                         }
                     }

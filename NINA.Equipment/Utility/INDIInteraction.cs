@@ -105,11 +105,11 @@ namespace NINA.Equipment.Utility {
         }
 
         public static string GetVersion() {
-            return "0"; //return $"Version {INDI.Com.PlatformUtilities.PlatformVersion}";
+            return INDIClient.Instance.GetServerVersionString();
         }
 
         public static Version GetPlatformVersion() {
-            return new Version(); //return new Version(INDI.Com.PlatformUtilities.MajorVersion, INDI.Com.PlatformUtilities.MinorVersion, INDI.Com.PlatformUtilities.ServicePack, INDI.Com.PlatformUtilities.BuildNumber);
+            return INDIClient.Instance.GetServerPlatformVersion();
         }
     }
 }
