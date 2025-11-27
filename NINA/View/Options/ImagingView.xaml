@@ -1151,7 +1151,7 @@
                         </Grid>
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <TextBlock
-                                MinWidth="230"
+                                MinWidth="480"
                                 MinHeight="20"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblCollapseSequencerTemplatesByDefault}">
@@ -1166,7 +1166,7 @@
                         </StackPanel>
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <TextBlock
-                                MinWidth="230"
+                                MinWidth="480"
                                 MinHeight="20"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblDisableSimpleSequencer}">
@@ -1178,6 +1178,21 @@
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding DisableSimpleSequencer}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="480"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSupressSaveExposureCountMsg}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblSupressSaveExposureCountTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding ExcludeExposureCountFromHasChanges}" />
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>

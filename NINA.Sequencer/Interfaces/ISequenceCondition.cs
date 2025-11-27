@@ -17,7 +17,7 @@ using System.Windows.Input;
 
 namespace NINA.Sequencer.Conditions {
 
-    public interface ISequenceCondition : ISequenceEntity, ISequenceHasChanged {
+    public interface ISequenceCondition : ISequenceEntity {
 
         /// <summary>
         /// Indicates if the condition can be placed multiple times into an instruction set or should only be present once

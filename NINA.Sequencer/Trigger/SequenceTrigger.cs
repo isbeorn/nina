@@ -33,7 +33,7 @@ using NINA.Sequencer.Utility;
 namespace NINA.Sequencer.Trigger {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public abstract class SequenceTrigger : SequenceHasChanged, ISequenceTrigger {
+    public abstract class SequenceTrigger : SequenceEntityINPC, ISequenceTrigger {
 
         public SequenceTrigger() {
             TriggerRunner = new SequentialContainer();
