@@ -32,7 +32,7 @@ using NINA.Sequencer.Utility;
 namespace NINA.Sequencer.Conditions {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public abstract class SequenceCondition : SequenceHasChanged, ISequenceCondition {
+    public abstract class SequenceCondition : SequenceEntityINPC, ISequenceCondition {
 
         public SequenceCondition() {
         }
@@ -178,6 +178,13 @@ namespace NINA.Sequencer.Conditions {
         /// <returns></returns>
         protected bool IsActive() {
             return ItemUtility.IsInRootContainer(Parent) && Parent.Status == SequenceEntityStatus.RUNNING && Status != SequenceEntityStatus.DISABLED;
+        }
+        public bool HasChanged { get; set; }
+
+        public void ClearHasChanged() { }
+
+        public bool AskHasChanged(string name) {
+            return false;
         }
     }
 }

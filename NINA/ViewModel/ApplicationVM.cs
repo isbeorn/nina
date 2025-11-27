@@ -39,6 +39,7 @@ using System.Runtime.InteropServices;
 using System.Globalization;
 using System.Threading.Tasks;
 using NINA.INDI;
+using NINA.Sequencer;
 
 namespace NINA.ViewModel {
 

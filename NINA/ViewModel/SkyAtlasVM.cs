@@ -10,28 +10,27 @@
 */
 #endregion "copyright"
 using NINA.Astrometry;
+using NINA.Astrometry.Interfaces;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Container;
+using NINA.Sequencer.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.SkySurvey;
+using NINA.WPF.Base.ViewModel;
 using OxyPlot.Axes;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
-using NINA.Sequencer.Container;
-using NINA.Core.Enum;
-using NINA.Equipment.Interfaces.Mediator;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Utility;
-using NINA.Sequencer.Interfaces.Mediator;
-using NINA.Core.Locale;
-using NINA.Core.Model;
-using NINA.Astrometry.Interfaces;
-using NINA.WPF.Base.ViewModel;
-using NINA.WPF.Base.Interfaces.ViewModel;
-using NINA.WPF.Base.SkySurvey;
 
 namespace NINA.ViewModel {
 
@@ -161,14 +160,14 @@ namespace NINA.ViewModel {
             var prevDuration = SelectedAltitudeDuration;
             var prevTimeFrom = SelectedAltitudeTimeFrom;
             var prevTimeThrough = SelectedAltitudeTimeThrough;
- 
+            var prevTransitTimeFrom = SelectedTransitTimeFrom;
+            var prevTransitTimeThrough = SelectedTransitTimeThrough;
             var oldDusk = NighttimeData.SunRiseAndSet.Set.HasValue ? NighttimeData.SunRiseAndSet.Set.Value : DateTime.MinValue;
             var oldDawn = NighttimeData.SunRiseAndSet.Rise.HasValue ? NighttimeData.SunRiseAndSet.Rise.Value : DateTime.MinValue;
             var oldNauticalDusk = NighttimeData.NauticalTwilightRiseAndSet.Set.HasValue ? NighttimeData.NauticalTwilightRiseAndSet.Set.Value : DateTime.MinValue;
             var oldNauticalDawn = NighttimeData.NauticalTwilightRiseAndSet.Rise.HasValue ? NighttimeData.NauticalTwilightRiseAndSet.Rise.Value : DateTime.MinValue;
             var oldAstroDusk = NighttimeData.TwilightRiseAndSet.Set.HasValue ? NighttimeData.TwilightRiseAndSet.Set.Value : DateTime.MinValue;
             var oldAstroDawn = NighttimeData.TwilightRiseAndSet.Rise.HasValue ? NighttimeData.TwilightRiseAndSet.Rise.Value : DateTime.MinValue;
-
 
             NighttimeData = this.nighttimeCalculator.Calculate(FilterDate);
             
@@ -243,6 +242,78 @@ namespace NINA.ViewModel {
             } else {
                 SelectedAltitudeTimeThrough = prevTimeThrough;
             }
+
+            // TransitTime Soft Reset
+            if (prevTransitTimeFrom == oldDusk) {
+                if (NighttimeData.SunRiseAndSet.Set.HasValue) {
+                    SelectedTransitTimeFrom = NighttimeData.SunRiseAndSet.Set.Value;
+                } else {
+                    SelectedTransitTimeFrom = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 0, 0);
+                }
+            } else if (prevTransitTimeFrom == oldNauticalDusk) {
+                if (NighttimeData.NauticalTwilightRiseAndSet.Set.HasValue) {
+                    SelectedTransitTimeFrom = NighttimeData.NauticalTwilightRiseAndSet.Set.Value;
+                } else {
+                    if (NighttimeData.SunRiseAndSet.Set.HasValue) {
+                        SelectedTransitTimeFrom = NighttimeData.SunRiseAndSet.Set.Value;
+                    } else {
+                        SelectedTransitTimeFrom = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 0, 0);
+                    }
+                }
+            } else if (prevTransitTimeFrom == oldAstroDusk) {
+                if (NighttimeData.TwilightRiseAndSet.Set.HasValue) {
+                    SelectedTransitTimeFrom = NighttimeData.TwilightRiseAndSet.Set.Value;
+                } else {
+                    if (NighttimeData.NauticalTwilightRiseAndSet.Set.HasValue) {
+                        SelectedTransitTimeFrom = NighttimeData.NauticalTwilightRiseAndSet.Set.Value;
+                    } else {
+                        if (NighttimeData.SunRiseAndSet.Set.HasValue) {
+                            SelectedTransitTimeFrom = NighttimeData.SunRiseAndSet.Set.Value;
+                        } else {
+                            SelectedTransitTimeFrom = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 0, 0);
+                        }
+                    }
+                }
+            } else {
+                SelectedTransitTimeFrom = prevTransitTimeFrom;
+            }
+
+            if (prevTransitTimeThrough == oldDawn) {
+                if (NighttimeData.SunRiseAndSet.Rise.HasValue) {
+                    SelectedTransitTimeThrough = NighttimeData.SunRiseAndSet.Rise.Value;
+                } else {
+                    SelectedTransitTimeThrough = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 11, 0, 0);
+                }
+            } else if (prevTransitTimeThrough == oldNauticalDawn) {
+                if (NighttimeData.NauticalTwilightRiseAndSet.Rise.HasValue) {
+                    SelectedTransitTimeThrough = NighttimeData.NauticalTwilightRiseAndSet.Rise.Value;
+                } else {
+                    if (NighttimeData.SunRiseAndSet.Rise.HasValue) {
+                        SelectedTransitTimeThrough = NighttimeData.SunRiseAndSet.Rise.Value;
+                    } else {
+                        SelectedTransitTimeThrough = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 11, 0, 0);
+                    }
+                }
+            } else if (prevTransitTimeThrough == oldAstroDawn) {
+                if (NighttimeData.TwilightRiseAndSet.Rise.HasValue) {
+                    SelectedTransitTimeThrough = NighttimeData.TwilightRiseAndSet.Rise.Value;
+                } else {
+                    if (NighttimeData.NauticalTwilightRiseAndSet.Rise.HasValue) {
+                        SelectedTransitTimeThrough = NighttimeData.NauticalTwilightRiseAndSet.Rise.Value;
+                    } else {
+                        if (NighttimeData.SunRiseAndSet.Rise.HasValue) {
+                            SelectedTransitTimeThrough = NighttimeData.SunRiseAndSet.Rise.Value;
+                        } else {
+                            SelectedTransitTimeThrough = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 11, 0, 0);
+                        }
+                    }
+                }
+            } else {
+                SelectedTransitTimeThrough = prevTransitTimeThrough;
+            }
+            // end Transit Soft Reset
+
+
         }
 
         private void ResetFilters(object obj) {
@@ -280,6 +351,9 @@ namespace NINA.ViewModel {
             SelectedSizeThrough = null;
 
             SelectedMinimumMoonDistanceDegrees = 0;
+
+            SelectedTransitTimeFrom = DateTime.MinValue;
+            SelectedTransitTimeThrough = DateTime.MaxValue;
 
             OrderByField = SkyAtlasOrderByFieldsEnum.SIZEMAX;
             OrderByDirection = SkyAtlasOrderByDirectionEnum.DESC;
@@ -345,8 +419,14 @@ namespace NINA.ViewModel {
                     searchParams.Magnitude.Thru = SelectedMagnitudeThrough;
                     searchParams.Size.From = SelectedSizeFrom;
                     searchParams.Size.Thru = SelectedSizeThrough;
-                    searchParams.SearchOrder.Field = OrderByField.ToString().ToLower();
                     searchParams.SearchOrder.Direction = OrderByDirection.ToString();
+
+                    // handling for ordering by TRANSITTIME as is not a DB field
+                    if (OrderByField == SkyAtlasOrderByFieldsEnum.TRANSITTIME) {
+                        searchParams.SearchOrder.Field = nameof(SkyAtlasOrderByFieldsEnum.RA).ToLower();
+                    } else {
+                        searchParams.SearchOrder.Field = OrderByField.ToString().ToLower();
+                    }
 
                     var cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);                    
                     var imageFactory = async (SkyObjectBase obj) => {
@@ -447,7 +527,80 @@ namespace NINA.ViewModel {
                         result = result.Where(x => x.Altitudes.Count > 0 && x.Moon.Separation > SelectedMinimumMoonDistanceDegrees);
                     }
 
-                    SearchResult = new PagedList<DeepSkyObject>(PageSize, result);                    
+                    var resultList = result.ToList();
+
+                    var useTransitFilter = !(SelectedTransitTimeFrom == DateTime.MinValue && SelectedTransitTimeThrough == DateTime.MaxValue);
+                    
+                    if (useTransitFilter || OrderByField == SkyAtlasOrderByFieldsEnum.TRANSITTIME) {
+
+                        var transitTimes = new ConcurrentDictionary<DeepSkyObject, DateTime>();
+
+                        TimeSpan siderealDay = TimeSpan.FromHours(23.9344696);
+                        TimeSpan halfSiderealDay = TimeSpan.FromTicks(siderealDay.Ticks / 2);
+
+                        double lstRef = AstroUtil.GetLocalSiderealTime(NighttimeData.ReferenceDate, longitude);
+                        Angle lstRefAngle = Angle.ByHours(lstRef);
+
+                        Parallel.ForEach(resultList, dso => {
+
+                            var coords = dso.Coordinates;
+                            if (coords == null) {
+                                return;
+                            }
+
+                            double lstRef = AstroUtil.GetLocalSiderealTime(NighttimeData.ReferenceDate, longitude);
+                            double ra = coords.RA; // in hours
+
+                            // time to next hour angle H = 0 (upper culmination) - must be within next 24 hrs
+                            double hoursToUpperTransit = (ra - lstRef) % 24.0;
+                            if (hoursToUpperTransit < 0) {
+                                hoursToUpperTransit += 24.0;
+                            }
+
+                            DateTime tUpper = NighttimeData.ReferenceDate + TimeSpan.FromHours(hoursToUpperTransit);
+                            transitTimes[dso] = tUpper;
+
+                            _searchTokenSource.Token.ThrowIfCancellationRequested();
+                        });
+
+                        DateTime transitFromDate;
+                        DateTime transitThroughDate;
+
+                        if (SelectedTransitTimeFrom == DateTime.MinValue) {
+                            transitFromDate = DateTime.MinValue;
+                        } else {
+                            transitFromDate = GetDateFromReferenceDate(SelectedTransitTimeFrom, NighttimeData.ReferenceDate);
+                        }
+
+                        if (SelectedTransitTimeThrough == DateTime.MaxValue) {
+                            transitThroughDate = DateTime.MaxValue;
+                        } else {
+                            transitThroughDate = GetDateFromReferenceDate(SelectedTransitTimeThrough, NighttimeData.ReferenceDate);
+                        }
+                        
+                        resultList = resultList
+                            .Where(dso =>
+                                transitTimes.TryGetValue(dso, out var tt) &&
+                                tt >= transitFromDate &&
+                                tt <= transitThroughDate)
+                            .ToList();
+
+
+                        if (OrderByField == SkyAtlasOrderByFieldsEnum.TRANSITTIME) {
+                            if (OrderByDirection == SkyAtlasOrderByDirectionEnum.ASC) {
+                                resultList = resultList
+                                    .OrderBy(dso => transitTimes.TryGetValue(dso, out var tt) ? tt : DateTime.MaxValue)
+                                    .ToList();
+                            } else {
+                                resultList = resultList
+                                    .OrderByDescending(dso => transitTimes.TryGetValue(dso, out var tt) ? tt : DateTime.MinValue)
+                                    .ToList();
+                            }
+                        }
+
+                    }
+                    
+                    SearchResult = new PagedList<DeepSkyObject>(PageSize, resultList);
                 } catch (OperationCanceledException) {
                 }
                 return true;
@@ -473,6 +626,8 @@ namespace NINA.ViewModel {
             AltitudeTimesThrough = new AsyncObservableCollection<KeyValuePair<DateTime, string>>();
             MinimumAltitudeDegrees = new AsyncObservableCollection<KeyValuePair<double, string>>();
             AltitudeDurations = new AsyncObservableCollection<KeyValuePair<double, string>>();
+            TransitTimesFrom = new AsyncObservableCollection<KeyValuePair<DateTime, string>>();
+            TransitTimesThrough = new AsyncObservableCollection<KeyValuePair<DateTime, string>>();
 
             var d = NighttimeData.ReferenceDate;
 
@@ -502,8 +657,9 @@ namespace NINA.ViewModel {
             AltitudeTimesFrom = new AsyncObservableCollection<KeyValuePair<DateTime, string>>(dates.OrderBy(x => x.Key));
             AltitudeTimesThrough = new AsyncObservableCollection<KeyValuePair<DateTime, string>>(dates.OrderBy(x => x.Key));
 
-
-
+            TransitTimesFrom = new AsyncObservableCollection<KeyValuePair<DateTime, string>>(dates.OrderBy(x => x.Key));
+            TransitTimesThrough = new AsyncObservableCollection<KeyValuePair<DateTime, string>>(dates.OrderBy(x => x.Key));
+            
             MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(0, Loc.Instance["LblAny"]));
             for (int i = 10; i <= 80; i += 10) {
                 MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(i, i + "°"));
@@ -655,6 +811,11 @@ namespace NINA.ViewModel {
         private AsyncObservableCollection<double> _moonDistanceDegrees;
         private double _selectedMinimumMoonDistanceDegrees;
 
+        private AsyncObservableCollection<KeyValuePair<DateTime, string>> _transitTimesFrom;
+        private AsyncObservableCollection<KeyValuePair<DateTime, string>> _transitTimesThrough;
+        private DateTime _selectedTransitTimeFrom = DateTime.MinValue;
+        private DateTime _selectedTransitTimeThrough = DateTime.MaxValue;
+        
         public AsyncObservableCollection<KeyValuePair<DateTime, string>> AltitudeTimesFrom {
             get => _altitudeTimesFrom;
             set {
@@ -697,7 +858,7 @@ namespace NINA.ViewModel {
         public DateTime SelectedAltitudeTimeFrom {
             get => _selectedAltitudeTimeFrom;
             set {
-                if (value != _selectedAltitudeTimeThrough) {
+                if (value != _selectedAltitudeTimeFrom) {
                     _selectedAltitudeTimeFrom = value;
                     RaisePropertyChanged();
                 }
@@ -738,6 +899,42 @@ namespace NINA.ViewModel {
                 if (value > 180) { value = 180; }
                 _selectedMinimumMoonDistanceDegrees = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public AsyncObservableCollection<KeyValuePair<DateTime, string>> TransitTimesFrom {
+            get => _transitTimesFrom;
+            set {
+                _transitTimesFrom = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public AsyncObservableCollection<KeyValuePair<DateTime, string>> TransitTimesThrough {
+            get => _transitTimesThrough;
+            set {
+                _transitTimesThrough = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public DateTime SelectedTransitTimeFrom {
+            get => _selectedTransitTimeFrom;
+            set {
+                if (value != _selectedTransitTimeFrom) {
+                    _selectedTransitTimeFrom = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public DateTime SelectedTransitTimeThrough {
+            get => _selectedTransitTimeThrough;
+            set {
+                if (value != _selectedTransitTimeThrough) {
+                    _selectedTransitTimeThrough = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 

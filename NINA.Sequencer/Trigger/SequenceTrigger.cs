@@ -33,7 +33,7 @@ using NINA.Sequencer.Utility;
 namespace NINA.Sequencer.Trigger {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public abstract class SequenceTrigger : SequenceHasChanged, ISequenceTrigger {
+    public abstract class SequenceTrigger : SequenceEntityINPC, ISequenceTrigger {
 
         public SequenceTrigger() {
             TriggerRunner = new SequentialContainer();
@@ -186,6 +186,13 @@ namespace NINA.Sequencer.Trigger {
 
         public void MoveDown() {
             throw new NotImplementedException();
+        }
+        public bool HasChanged { get; set; }
+
+        public void ClearHasChanged() { }
+
+        public bool AskHasChanged(string name) {
+            return false;
         }
     }
 }

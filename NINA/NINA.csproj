@@ -127,6 +127,9 @@
     <None Update="Database\Migration\14.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Database\Migration\15.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Target Name="CopySystemWindowsStub" AfterTargets="Build">
     <Copy SourceFiles="$(MSBuildThisFileDirectory)\..\System.Windows.Compat\bin\$(Configuration)\net10.0\System.Windows.dll" 

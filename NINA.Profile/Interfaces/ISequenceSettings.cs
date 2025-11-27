@@ -89,5 +89,10 @@ namespace NINA.Profile.Interfaces {
         /// Disables the sequence dashboard and directly shows the advanced sequencer
         /// </summary>
         bool DisableSimpleSequencer { get; set; }
+
+        /// <summary>
+        /// Exclude changes to exposure count when checking for changes to a sequence
+        /// </summary>
+        bool ExcludeExposureCountFromHasChanges { get; set; }
     }
 }

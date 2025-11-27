@@ -209,7 +209,6 @@ namespace NINA.ViewModel.Sequencer {
                     rootContainer.Add(SequencerFactory.GetContainer<StartAreaContainer>());
                     rootContainer.Add(SequencerFactory.GetContainer<TargetAreaContainer>());
                     rootContainer.Add(SequencerFactory.GetContainer<EndAreaContainer>());
-                    rootContainer.ClearHasChanged();
 
                     Sequencer = new NINA.Sequencer.Sequencer(
                         rootContainer
@@ -222,7 +221,6 @@ namespace NINA.ViewModel.Sequencer {
                         try {
                             LoadSequenceFromFile(profileService.ActiveProfile.SequenceSettings.StartupSequenceTemplate);
                             SavePath = string.Empty;
-                            Sequencer.MainContainer.ClearHasChanged();
                         } catch (Exception ex) {
                             Logger.Error("Startup Sequence failed to load", ex);
                         }
@@ -231,6 +229,9 @@ namespace NINA.ViewModel.Sequencer {
                     if (commandLineOptions.SequenceFile != null) {
                         TryLoadSequenceFile();
                     }
+
+                    ClearHasChanged();
+
                 }));
             });
         }
@@ -241,7 +242,7 @@ namespace NINA.ViewModel.Sequencer {
                 try {
                     while (await timer.WaitForNextTickAsync(token)) {
                         try {
-                            using (MyStopWatch.Measure()) { 
+                            using (MyStopWatch.Measure()) {
                                 Sequencer.MainContainer.Validate();
                             }
                         } catch (Exception ex) {
@@ -321,6 +322,29 @@ namespace NINA.ViewModel.Sequencer {
             }
         }
 
+        public void ClearHasChanged() {
+            if ((Sequencer != null) && (Sequencer.MainContainer != null))
+                foreach (string key in Sequencer.MainContainer.HasChanges.Keys) {
+                    Sequencer.MainContainer.HasChanges[key] = false;
+                }
+        }
+
+        public bool ShouldStopForChanges(string name, string hasChangeSet) {
+            if ((Sequencer != null) && (Sequencer.MainContainer != null)) {
+                if (string.IsNullOrEmpty(name))
+                    name = Sequencer.MainContainer.Name;
+                if ((Sequencer.MainContainer.DoesHaveChanges(hasChangeSet)) &&
+                    (MyMessageBox.Show(
+                        string.Format(Loc.Instance["LblChangedSequenceWarning"], name ?? ""),
+                        Loc.Instance["LblChangedSequenceWarningTitle"],
+                        MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes) == System.Windows.MessageBoxResult.No)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
         private void LoadSequence(object obj) {
             bool isEmpty = true;
             foreach (ISequenceContainer cont in Sequencer.MainContainer.Items) {
@@ -331,8 +355,16 @@ namespace NINA.ViewModel.Sequencer {
             }
 
             // Don't ask if this is an empty sequence
-            if (!isEmpty && Sequencer.MainContainer.AskHasChanged(SavePath ?? "")) {
-                return;
+            if (!isEmpty) {
+                if (ShouldStopForChanges(SavePath ?? "", SequenceEntityINPC.defaultChangeSet)) {
+                    return;
+                }
+                if (!Sequencer.MainContainer.HasChanges[SequenceEntityINPC.defaultChangeSet])
+                    if (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges) {
+                        if (ShouldStopForChanges(Loc.Instance["LblExposureCount"], "Exposures")) {
+                            return;
+                        }
+                    }
             }
 
             var initialDirectory = string.Empty;
@@ -366,7 +398,6 @@ namespace NINA.ViewModel.Sequencer {
                     Sequencer.MainContainer = root;
                     Sequencer.MainContainer.Validate();
                     SavePath = file;
-                    Sequencer.MainContainer.ClearHasChanged();
                 } else if (container != null) {
                     // In case a template or target was selected to load, put it into a new sequence root container
                     var rootContainer = SequencerFactory.GetContainer<SequenceRootContainer>();
@@ -376,13 +407,11 @@ namespace NINA.ViewModel.Sequencer {
                     targetAreaContainer.Add(container);
                     rootContainer.Add(targetAreaContainer);
                     rootContainer.Add(SequencerFactory.GetContainer<EndAreaContainer>());
-                    rootContainer.ClearHasChanged();
 
                     // Save path will be empty, as the origin file is not a complete sequencer file
                     SavePath = string.Empty;
                     Sequencer.MainContainer = rootContainer;
                     Sequencer.MainContainer.Validate();
-                    Sequencer.MainContainer.ClearHasChanged();
 
                 } else {
                     Logger.Error("Unable to load sequence");
@@ -392,6 +421,7 @@ namespace NINA.ViewModel.Sequencer {
                 Logger.Error(ex);
                 Notification.ShowError(Loc.Instance["Lbl_Sequencer_UnableToDeserializeJSON"]);
             }
+            ClearHasChanged();
         }
 
         private void TryLoadSequenceFile() {
@@ -406,7 +436,7 @@ namespace NINA.ViewModel.Sequencer {
                 Logger.Info($"Loading sequence file: {sequenceFile}");
                 LoadSequenceFromFile(sequenceFile);
                 SavePath = string.Empty;
-                Sequencer.MainContainer.ClearHasChanged();
+                ClearHasChanged();
 
                 if (commandLineOptions.RunSequence) {
                     Logger.Info("Starting sequence from command line options");
@@ -441,7 +471,7 @@ namespace NINA.ViewModel.Sequencer {
                     var json = SequenceJsonConverter.Serialize(Sequencer.MainContainer);
                     File.WriteAllText(dialog.FileName, json);
                     SavePath = dialog.FileName;
-                    Sequencer.MainContainer.ClearHasChanged();
+                    ClearHasChanged();
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -456,7 +486,7 @@ namespace NINA.ViewModel.Sequencer {
                 try {
                     var json = SequenceJsonConverter.Serialize(Sequencer.MainContainer);
                     File.WriteAllText(SavePath, json);
-                    Sequencer.MainContainer.ClearHasChanged();
+                    ClearHasChanged();
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(string.Format(Loc.Instance["Lbl_Sequencer_SaveSequence_FailureNotification"], Sequencer.MainContainer.Name, ex.Message));
@@ -573,7 +603,7 @@ namespace NINA.ViewModel.Sequencer {
             RaisePropertyChanged("StartSequenceTooltip");
         }
 
-        public async Task SaveContainer(ISequenceContainer content, string filePath, CancellationToken token) {            
+        public async Task SaveContainer(ISequenceContainer content, string filePath, CancellationToken token) {
             var json = SequenceJsonConverter.Serialize(content);
             await File.WriteAllTextAsync(filePath, json, token);
         }
