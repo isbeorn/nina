@@ -52,8 +52,7 @@ namespace NINA.Sequencer {
             if (propInf.GetCustomAttributes(typeof(JsonPropertyAttribute), true).Length > 0) {
                 ISequenceRootContainer root = GetSequenceRootContainer();
 
-                bool hasChange = root?.HasChanges?.TryGetValue(defaultChangeSet, out var v) == true && v;
-                if (hasChange) {
+                if (root != null && !(root.HasChanges?[defaultChangeSet] ?? false)) { 
                     object[] hasChangedSets = propInf.GetCustomAttributes(typeof(NINA.Core.Model.HasChangedSetAttribute), true);
                     if (hasChangedSets.Length > 0) {
                         foreach (object item in hasChangedSets) {
@@ -65,7 +64,7 @@ namespace NINA.Sequencer {
                             }
                         }
                     } else {
-                        root.HasChanges[defaultChangeSet] = true;
+                        root?.HasChanges[defaultChangeSet] = true;
                     }
                 }
             }

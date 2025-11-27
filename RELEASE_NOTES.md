@@ -21,6 +21,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **Additional manual focus targets**
     - 160 stars have been added to the manual focus target list to cover more stars of different magnitudes across the sky
 - Filterwheels will now poll in the background their position in case the wheel is moved by another client. This ensures that N.I.N.A. always has the correct filter position even when the wheel was moved outside of N.I.N.A.
+- Enhanced sequencer exit handling to more reliably detect actual changes and prevent false-positive change prompts.
 
 ## Features
 
