@@ -21,7 +21,7 @@ using System.Windows.Input;
 
 namespace NINA.Sequencer.SequenceItem {
 
-    public interface ISequenceItem : ISequenceEntity {
+    public interface ISequenceItem : ISequenceEntity, ISequenceHasChanged {
 
         /// <summary>
         /// The actual logic when the sequence item should be executed

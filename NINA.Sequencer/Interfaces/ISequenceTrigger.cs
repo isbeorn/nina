@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Sequencer.Trigger {
 
-    public interface ISequenceTrigger : ISequenceEntity {
+    public interface ISequenceTrigger : ISequenceEntity, ISequenceHasChanged {
 
         /// <summary>
         /// Indicates if the trigger can be placed multiple times into an instruction set or should only be present once

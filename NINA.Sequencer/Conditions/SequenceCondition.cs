@@ -198,5 +198,12 @@ namespace NINA.Sequencer.Conditions {
         protected bool IsActive() {
             return ItemUtility.IsInRootContainer(Parent) && Parent.Status == SequenceEntityStatus.RUNNING && Status != SequenceEntityStatus.DISABLED;
         }
+        public bool HasChanged { get; set; }
+
+        public void ClearHasChanged() { }
+
+        public bool AskHasChanged(string name) {
+            return false;
+        }
     }
 }

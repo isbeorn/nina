@@ -200,5 +200,12 @@ namespace NINA.Sequencer.Trigger {
         public void MoveDown() {
             throw new NotImplementedException();
         }
+        public bool HasChanged { get; set; }
+
+        public void ClearHasChanged() { }
+
+        public bool AskHasChanged(string name) {
+            return false;
+        }
     }
 }

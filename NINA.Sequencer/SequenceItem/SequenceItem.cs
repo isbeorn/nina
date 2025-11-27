@@ -342,5 +342,12 @@ namespace NINA.Sequencer.SequenceItem {
 
         public virtual void Teardown() {
         }
+        public bool HasChanged { get; set; }
+
+        public void ClearHasChanged() { }
+
+        public bool AskHasChanged(string name) {
+            return false;
+        }
     }
 }
