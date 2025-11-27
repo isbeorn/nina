@@ -80,7 +80,7 @@ namespace NINA.INDI.Devices {
             get {
                 var prop = GetNumberProperty("FILTER_FOCUS_OFFSET");
                 if (prop == null) return Array.Empty<int>();
-                
+
                 var offsets = new int[prop.Numbers.Count];
                 for (int i = 0; i < prop.Numbers.Count; i++) {
                     offsets[i] = (int)prop.Numbers[i].Value;
@@ -93,7 +93,7 @@ namespace NINA.INDI.Devices {
             get {
                 var prop = GetTextProperty("FILTER_NAME");
                 if (prop == null) return Array.Empty<string>();
-                
+
                 var names = new string[prop.Texts.Count];
                 for (int i = 0; i < prop.Texts.Count; i++) {
                     names[i] = prop.Texts[i].Value ?? $"Filter {i + 1}";

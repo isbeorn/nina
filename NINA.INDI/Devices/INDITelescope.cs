@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using NINA.INDI.Enums;
 using NINA.Astrometry;
 using NINA.INDI.Model;
+using NINA.Astrometry;
 
 namespace NINA.INDI.Devices {
 
@@ -123,12 +124,32 @@ namespace NINA.INDI.Devices {
         }
 
         public AlignmentMode AlignmentMode { get; }
-        public double Altitude => GetNumberPropertyValue("HORIZONTAL_COORD", "ALT") ?? double.NaN;
+        public double Altitude {
+            get {
+                var altitude = GetNumberPropertyValue("HORIZONTAL_COORD", "ALT");
+                if (!altitude.HasValue) {
+                    var hourAngle = AstroUtil.GetHourAngle(SiderealTime, RightAscension);
+                    var hourAngleDeg = AstroUtil.HoursToDegrees(hourAngle);
+                    return AstroUtil.GetAltitude(hourAngleDeg, SiteLatitude, Declination);
+                }
+                return altitude.Value;
+            }
+        }
         public double ApertureArea => ApertureDiameter * ApertureDiameter * 0.25 * Math.PI;
         public double ApertureDiameter => GetNumberPropertyValue("TELESCOPE_INFO", "TELESCOPE_APERTURE") ?? double.NaN;
         public bool AtHome { get; }
         public bool AtPark => (bool)GetSwitchPropertyValue("TELESCOPE_PARK", "PARK");
-        public double Azimuth => GetNumberPropertyValue("HORIZONTAL_COORD", "AZ") ?? double.NaN;
+        public double Azimuth {
+            get {
+                var azimuth = GetNumberPropertyValue("HORIZONTAL_COORD", "AZ");
+                if (!azimuth.HasValue) {
+                    var hourAngle = AstroUtil.GetHourAngle(SiderealTime, RightAscension);
+                    var hourAngleDeg = AstroUtil.HoursToDegrees(hourAngle);
+                    return AstroUtil.GetAzimuth(hourAngleDeg, Altitude, SiteLatitude, Declination);
+                }
+                return azimuth.Value;
+            }
+        }
         public double Declination => GetNumberPropertyValue("EQUATORIAL_EOD_COORD", "DEC") ?? double.NaN;
         public double DeclinationRate { get; set; }
         public bool DoesRefraction { get; }
@@ -330,7 +351,7 @@ namespace NINA.INDI.Devices {
                     Logger.Debug($"Found TELESCOPE_SLEW_RATE with {slewRateProp.Switches.Count} switches, returning UI range 0-5");
                     return new AxisRates(0.0, 5.0);
                 }
-                
+
                 // Try to get the TELESCOPE_MOTION_RATE property to find min/max values
                 var motionRateProperty = GetNumberProperty("TELESCOPE_MOTION_RATE");
                 if (motionRateProperty != null) {
@@ -390,21 +411,21 @@ namespace NINA.INDI.Devices {
                 if (slewRateProp != null) {
                     // Log available switches to see what the driver actually provides
                     var availableSwitches = string.Join(", ", slewRateProp.Switches.Select(s => $"{s.Name}={s.Label}"));
-                    
+
                     // OnStep provides: 0=0.25x, 1=0.5x, 2=1x, 3=2x, 4=4x, 5=8x, 6=20x, 7=48x, 8=Half-Max, 9=Max
                     // Map UI rate (0-5 range) to device's available switch indices (0 to switchCount-1)
                     int maxIndex = slewRateProp.Switches.Count - 1;
                     int targetIndex;
-                    
+
                     // Linear mapping: UI range [0, 5] -> device range [0, maxIndex]
                     // targetIndex = (absRate / 5.0) * maxIndex
                     targetIndex = (int)Math.Round((absRate / 5.0) * maxIndex);
-                    
+
                     // Clamp to valid range
                     targetIndex = Math.Max(0, Math.Min(targetIndex, maxIndex));
-                    
+
                     var targetSwitch = slewRateProp.Switches[targetIndex];
-                    
+
                     foreach (var sw in slewRateProp.Switches) {
                         sw.Value = (sw.Name == targetSwitch.Name);
                     }
@@ -567,63 +588,128 @@ namespace NINA.INDI.Devices {
 
         public void SlewToCoordinates(double ra, double dec) {
             try {
-                SetNumberValue("EQUATORIAL_EOD_COORD", "RA", ra);
-                SetNumberValue("EQUATORIAL_EOD_COORD", "DEC", dec);
+                // Check mount state before slewing
+                if (AtPark) {
+                    Logger.Error("Cannot slew: Mount is parked");
+                    throw new InvalidOperationException("Mount is parked");
+                }
+
+                // Enable slewing mode
+                SetSwitchValue("ON_COORD_SET", "SLEW", true);
+
+                // Send coordinates
+                SetNumberValues("EQUATORIAL_EOD_COORD", ("RA", ra), ("DEC", dec));
             } catch (ArgumentException) {
                 throw new NotImplementedException();
+            } catch (Exception ex) {
+                Logger.Error($"Error in SlewToCoordinates: {ex.Message}");
+                throw;
             }
         }
 
         public async Task SlewToCoordinatesTaskAsync(double ra, double dec, CancellationToken ct = default) {
             try {
-                SetNumberValue("EQUATORIAL_EOD_COORD", "RA", ra);
-                SetNumberValue("EQUATORIAL_EOD_COORD", "DEC", dec);
+                // Slew
+                SlewToCoordinates(ra, dec);
 
                 // Wait a bit for the slew to start
-                await Task.Delay(100, ct);
+                await Task.Delay(1000, ct);
 
+                // Check the actual property state
+                var coordProp = GetProperty("EQUATORIAL_EOD_COORD");
+
+                // Wait for slew to finish
                 while (Slewing && !ct.IsCancellationRequested) {
-                    await Task.Delay(200, ct);
+                    // Check slewing status
+                    if (coordProp?.State == PropertyState.Idle) {
+                        // Done
+                        break;
+                    } else if (coordProp?.State == PropertyState.Alert) {
+                        Logger.Error("EQUATORIAL_EOD_COORD in Alert state - slew rejected by mount");
+                        throw new InvalidOperationException("Slew rejected by mount - check mount limits and target accessibility");
+                    }
+
+                    await Task.Delay(500, ct);
                 }
             } catch (ArgumentException) {
                 throw new NotImplementedException();
+            } catch (Exception ex) {
+                Logger.Error($"Error in SlewToCoordinatesTaskAsync: {ex.Message}");
+                throw;
             }
         }
 
         public void SlewToAltAz(double azimuth, double altitude) {
             try {
-                SetNumberValue("HORIZONTAL_COORD", "ALT", altitude);
-                SetNumberValue("HORIZONTAL_COORD", "AZ", azimuth);
+                // Check mount state before slewing
+                if (AtPark) {
+                    Logger.Error("Cannot slew: Mount is parked");
+                    throw new InvalidOperationException("Mount is parked");
+                }
+
+                // Enable slewing mode
+                SetSwitchValue("ON_COORD_SET", "SLEW", true);
+
+                // Send coordinates
+                SetNumberValues("HORIZONTAL_COORD", ("ALT", altitude), ("AZ", azimuth));
             } catch (ArgumentException) {
                 throw new NotImplementedException();
+            } catch (Exception ex) {
+                Logger.Error($"Error in SlewToCoordinates: {ex.Message}");
+                throw;
             }
         }
 
-        public async Task SlewToAltAzTaskAsync(double azimuth, double altitude, CancellationToken cancellationToken = default) {
+        public async Task SlewToAltAzTaskAsync(double azimuth, double altitude, CancellationToken ct = default) {
             try {
-                SetNumberValue("HORIZONTAL_COORD", "ALT", altitude);
-                SetNumberValue("HORIZONTAL_COORD", "AZ", azimuth);
+                // Slew
+                SlewToAltAz(azimuth, altitude);
 
                 // Wait a bit for the slew to start
-                await Task.Delay(100, cancellationToken);
+                await Task.Delay(1000, ct);
 
-                while (Slewing && !cancellationToken.IsCancellationRequested) {
-                    await Task.Delay(200, cancellationToken);
+                // Check the actual property state
+                var coordProp = GetProperty("HORIZONTAL_COORD");
+
+                // Wait for slew to finish
+                while (Slewing && !ct.IsCancellationRequested) {
+                    // Check slewing status
+                    if (coordProp?.State == PropertyState.Idle) {
+                        // Done
+                        break;
+                    } else if (coordProp?.State == PropertyState.Alert) {
+                        Logger.Error("HORIZONTAL_COORD in Alert state - slew rejected by mount");
+                        throw new InvalidOperationException("Slew rejected by mount - check mount limits and target accessibility");
+                    }
+
+                    await Task.Delay(500, ct);
                 }
             } catch (ArgumentException) {
                 throw new NotImplementedException();
+            } catch (Exception ex) {
+                Logger.Error($"Error in SlewToCoordinatesTaskAsync: {ex.Message}");
+                throw;
             }
         }
 
         public void SyncToCoordinates(double ra, double dec) {
             try {
-                SetNumberValue("ON_COORD_SET", "SYNC", 1);
-                SetNumberValue("EQUATORIAL_EOD_COORD", "RA", ra);
-                SetNumberValue("EQUATORIAL_EOD_COORD", "DEC", dec);
-                // Reset to slew mode after sync
-                SetNumberValue("ON_COORD_SET", "SLEW", 1);
+                // Check mount state before slewing
+                if (AtPark) {
+                    Logger.Error("Cannot slew: Mount is parked");
+                    throw new InvalidOperationException("Mount is parked");
+                }
+
+                // Enable sync mode
+                SetSwitchValue("ON_COORD_SET", "SYNC", true);
+
+                // Send coordinates
+                SetNumberValues("EQUATORIAL_EOD_COORD", ("RA", ra), ("DEC", dec));
             } catch (ArgumentException) {
                 throw new NotImplementedException();
+            } catch (Exception ex) {
+                Logger.Error($"Error in SlewToCoordinates: {ex.Message}");
+                throw;
             }
         }
 
@@ -642,11 +728,9 @@ namespace NINA.INDI.Devices {
 
                 if (goSwitch != null) {
                     SetSwitchValue("TELESCOPE_HOME", "GO", true);
-                }
-                else if (findSwitch != null) {
+                } else if (findSwitch != null) {
                     SetSwitchValue("TELESCOPE_HOME", "FIND", true);
-                }
-                else {
+                } else {
                     Logger.Warning("TELESCOPE_HOME switch not found");
                     throw new NotImplementedException("TELESCOPE_HOME switch not found");
                 }

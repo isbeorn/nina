@@ -171,7 +171,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
 
         public bool DoesRefraction => GetProperty(nameof(IINDITelescope.DoesRefraction), false);
 
-        private Epoch equatorialSystem = Epoch.J2000;
+        private Epoch equatorialSystem = Epoch.JNOW;
 
         public Epoch EquatorialSystem {
             get => equatorialSystem;

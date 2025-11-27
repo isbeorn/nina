@@ -299,8 +299,7 @@ namespace NINA.INDI {
             while (!ct.IsCancellationRequested && _stream != null) {
                 try {
                     var bytesRead = await _stream.ReadAsync(buffer, ct);
-                    if (bytesRead == 0)
-                    {
+                    if (bytesRead == 0) {
                         Logger.Error("Server disconnected");
                         break;
                     }
@@ -521,11 +520,10 @@ namespace NINA.INDI {
             var xmlString = message.ToString();
 
             // Check for valid string
-            if (string.IsNullOrEmpty(xmlString))
-            {
+            if (string.IsNullOrEmpty(xmlString)) {
                 return;
             }
-            
+
             int lastProcessed = 0;
             var elementsToProcess = new List<string>();
 

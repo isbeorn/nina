@@ -146,6 +146,20 @@ namespace NINA.INDI.Devices {
             INDIClient.Instance.SendProperty(prop);
         }
 
+        public void SetNumberValues(string propertyName, params (string elementName, double value)[] values) {
+            var prop = GetNumberProperty(propertyName) ?? throw new ArgumentException($"Number property '{propertyName}' not found");
+            if (prop == null) return;
+
+            foreach (var (elementName, value) in values) {
+                var number = prop.Numbers.FirstOrDefault(n => n.Name == elementName);
+                if (number != null) {
+                    number.Value = value;
+                }
+            }
+
+            INDIClient.Instance.SendProperty(prop);
+        }
+
         public void SetSwitchValue(string propertyName, string elementName, bool value) {
             var prop = GetSwitchProperty(propertyName) ?? throw new ArgumentException($"Switch property '{propertyName}' not found");
             if (prop == null) return;
@@ -355,37 +369,27 @@ namespace NINA.INDI.Devices {
             SetSwitchValue("CONNECTION", "DISCONNECT", true);
 
             // Wait for disconnection synchronously to avoid race with Dispose()
-            try
-            {
+            try {
                 // Wait for the disconnection callback with shorter timeout (server may be dead)
                 var completedTask = Task.WhenAny(_operationTcs.Task, Task.Delay(TimeSpan.FromSeconds(2))).Result;
 
-                if (completedTask == _operationTcs.Task)
-                {
+                if (completedTask == _operationTcs.Task) {
                     bool isConnected = _operationTcs.Task.Result;
-                    if (!isConnected)
-                    {
+                    if (!isConnected) {
                         Logger.Info($"Disconnected from INDI device: {DeviceName}");
-                    }
-                    else
-                    {
+                    } else {
                         Logger.Warning($"Disconnect command completed but device reports still connected");
                     }
-                }
-                else
-                {
+                } else {
                     Logger.Warning($"Disconnecting from {DeviceName} timed out (server may be disconnected)");
                 }
 
                 // Always try to unload driver after disconnect (or timeout)
                 // Only try to unload driver if server is still connected
-                if (INDIClient.Instance.IsConnected)
-                {
+                if (INDIClient.Instance.IsConnected) {
                     INDIClient.Instance.UnloadDriver(_device.Driver);
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.Error($"Error during disconnect: {ex.Message}");
             }
 
