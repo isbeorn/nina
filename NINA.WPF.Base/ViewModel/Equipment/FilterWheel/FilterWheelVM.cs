@@ -12,31 +12,33 @@
 
 #endregion "copyright"
 
-using NINA.Equipment.Equipment.MyFilterWheel;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.Model.Equipment;
+using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.Core.Utility.Extensions;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyFilterWheel;
+using NINA.Equipment.Equipment.MyFlatDevice;
+using NINA.Equipment.Equipment.MySafetyMonitor;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Profile.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NINA.Core.Model.Equipment;
-using NINA.Core.Model;
-using NINA.Core.Locale;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.MyMessageBox;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.Equipment.Interfaces;
-using NINA.Equipment.Equipment;
-using NINA.Core.Utility.Extensions;
-using NINA.Equipment.Equipment.MyFlatDevice;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
     public class FilterWheelVM : DockableVM, IFilterWheelVM {
+        private DeviceUpdateTimer updateTimer;
 
         public FilterWheelVM(IProfileService profileService,
                              IFilterWheelMediator filterWheelMediator,
@@ -62,6 +64,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !FilterWheelInfo.Connected);
             _ = RescanDevicesCommand.ExecuteAsync(null);
 
+            updateTimer = new DeviceUpdateTimer(
+                GetFilterWheelValues,
+                UpdateFilterWheelValues,
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "FilterWheel"
+            );
+
             ChangeFilterCommand = new AsyncCommand<bool>(async () => {
                 _changeFilterCancellationSource?.Dispose();
                 _changeFilterCancellationSource = new CancellationTokenSource();
@@ -72,6 +81,30 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
             profileService.ProfileChanged += async (object sender, EventArgs e) => {
                 _ = RescanDevicesCommand.ExecuteAsync(null);
             };
+        }
+
+        private Dictionary<string, object> GetFilterWheelValues() {
+            Dictionary<string, object> filterWheelValues = new Dictionary<string, object> {
+                { nameof(IFilterWheel.Connected), FW?.Connected ?? false },
+                { nameof(IFilterWheel.Position), FW?.Position ?? -1 }
+            };
+
+            return filterWheelValues;
+        }
+
+        private void UpdateFilterWheelValues(Dictionary<string, object> filterWheelValues) {
+            object o = null;
+            filterWheelValues.TryGetValue(nameof(IFilterWheel.Connected), out o);
+            FilterWheelInfo.Connected = (bool)(o ?? false);
+
+            filterWheelValues.TryGetValue(nameof(IFilterWheel.Position), out o);
+            var position = (short)(o ?? -1);
+            FilterWheelInfo.IsMoving = position == -1;
+
+            var filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.FirstOrDefault(x => x.Position == position);
+            FilterWheelInfo.SelectedFilter = filter;
+
+            BroadcastFilterWheelInfo();
         }
 
         public event Func<object, FilterChangedEventArgs, Task> FilterChanged;
@@ -215,6 +248,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
             await ss.WaitAsync();
             try {
                 await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.FilterWheelSettings.Id = DeviceChooserVM.SelectedDevice.Id;
@@ -262,6 +298,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                             if (FW.Position > -1) {
                                 FilterWheelInfo.SelectedFilter = FW.Filters[FW.Position];
                             }
+
+                            updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
+                            _ = updateTimer.Run();
 
                             // Auto import filters to profile, when profile does not have any filters set yet.
                             if (FW.Filters.Count > 0 && profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count == 0) {
@@ -324,6 +363,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
         public async Task Disconnect() {
             try {
                 try { _changeFilterCancellationSource?.Cancel(); } catch { }
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
                 FW?.Disconnect();
                 FW = null;
                 FilterWheelInfo.Reset();
