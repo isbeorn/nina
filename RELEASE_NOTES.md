@@ -28,6 +28,11 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
   - The ToupTek based filter wheels are now available as a native driver.
 
+### User Interface & Usability
+- **Sky Atlas Improvements**  
+  - Deep sky objects can now be filtered and sorted by their upper transit time
+
+
 # Version 3.2
 
 ## Bugfixes

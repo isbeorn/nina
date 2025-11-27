@@ -379,7 +379,51 @@
                         </StackPanel>
                     </Expander>
 
-                    <UniformGrid Columns="2">
+                    <!--  Start TransitTime  -->
+                    <Expander
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Header="{ns:Loc LblTransitTime}">
+                        <StackPanel>
+                            <UniformGrid Columns="2">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="&#x21AA;" />
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblFromTime}" />
+                                </StackPanel>
+                                <ComboBox
+                                    DisplayMemberPath="Value"
+                                    ItemsSource="{Binding TransitTimesFrom}"
+                                    SelectedValue="{Binding SelectedTransitTimeFrom}"
+                                    SelectedValuePath="Key" />
+                            </UniformGrid>
+                            <UniformGrid Margin="0,2,0,0" Columns="2">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="&#x21AA;" />
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblThroughTime}" />
+                                </StackPanel>
+                                <ComboBox
+                                    DisplayMemberPath="Value"
+                                    ItemsSource="{Binding TransitTimesThrough}"
+                                    SelectedValue="{Binding SelectedTransitTimeThrough}"
+                                    SelectedValuePath="Key" />
+                            </UniformGrid>
+                        </StackPanel>
+                    </Expander>
+                    <!--  End TransitTime  -->
+
+                    <UniformGrid Margin="0,10,0,0" Columns="2">
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOrderBy}" />
                         <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:SkyAtlasOrderByFieldsEnum}}}" SelectedItem="{Binding OrderByField}" />
                     </UniformGrid>
