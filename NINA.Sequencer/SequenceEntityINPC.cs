@@ -64,7 +64,7 @@ namespace NINA.Sequencer {
                             }
                         }
                     } else {
-                        root?.HasChanges[defaultChangeSet] = true;
+                        root?.HasChanges?[defaultChangeSet] = true;
                     }
                 }
             }
