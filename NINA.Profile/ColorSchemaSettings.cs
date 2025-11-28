@@ -82,12 +82,24 @@ namespace NINA.Profile {
         private void Initialize() {
             var index = ColorSchemas.Items.FindIndex(x => x.Name == ColorSchema.Name);
             if (index > -1) {
-                ColorSchemas.Items[index] = ColorSchema;
+                if (ColorSchema.Name == "Custom" || ColorSchema.Name == "Alternative Custom") {
+                    // Apply custom colors to the custom schema
+                    ColorSchemas.Items[index] = ColorSchema;
+                } else {
+                    // Ensure the reference is the same as in the collection to get the combobox populated
+                    ColorSchema = ColorSchemas.Items[index];
+                }
             }
 
             var index2 = ColorSchemas.Items.FindIndex(x => x.Name == AltColorSchema.Name);
             if (index2 > -1) {
-                ColorSchemas.Items[index2] = AltColorSchema;
+                if (ColorSchema.Name == "Custom" || ColorSchema.Name == "Alternative Custom") {
+                    // Apply custom colors to the custom schema
+                    ColorSchemas.Items[index2] = AltColorSchema;
+                } else {
+                    // Ensure the reference is the same as in the collection to get the combobox populated
+                    AltColorSchema = ColorSchemas.Items[index2];
+                }
             }
         }
 

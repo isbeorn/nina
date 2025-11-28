@@ -294,5 +294,18 @@ namespace NINA.Profile {
                 }
             }
         }
+
+        private bool excludeExposureCountFromHasChanges;
+
+        [DataMember]
+        public bool ExcludeExposureCountFromHasChanges { 
+            get => excludeExposureCountFromHasChanges; 
+            set {
+                if (excludeExposureCountFromHasChanges != value) {
+                    excludeExposureCountFromHasChanges = value;
+                    RaisePropertyChanged();
+                }
+            } 
+        }
     }
 }
