@@ -99,8 +99,8 @@ namespace NINA.Sequencer.Logic {
 
         public static readonly char DELIMITER = '_';
 
-        private static List<string> SymbolProviders = 
-            new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel"};
+        private static List<string> SymbolProviders =
+            new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel" };
 
         public bool TryGetSymbol(string key, out Symbol symbol) {
             Symbol sym;
@@ -341,28 +341,28 @@ namespace NINA.Sequencer.Logic {
 
         private IList<string> Providers = new List<string>();
 
-        private static Symbol[] PierConstants = new Symbol[] { 
-            new Symbol("PierUnknown", -1), 
-            new Symbol("PierEast", 0), 
-            new Symbol("PierWest", 1) 
+        private static Symbol[] PierConstants = new Symbol[] {
+            new Symbol("PierUnknown", -1),
+            new Symbol("PierEast", 0),
+            new Symbol("PierWest", 1)
         };
 
-        private static Symbol[] ShutterConstants = new Symbol[] { 
-            new Symbol("ShutterUnknown", -1), 
-            new Symbol("ShutterOpen", 0), 
-            new Symbol("ShutterClosed", 1), 
-            new Symbol("ShutterOpening", 2), 
+        private static Symbol[] ShutterConstants = new Symbol[] {
+            new Symbol("ShutterUnknown", -1),
+            new Symbol("ShutterOpen", 0),
+            new Symbol("ShutterClosed", 1),
+            new Symbol("ShutterOpening", 2),
             new Symbol("ShutterClosing", 3),
-            new Symbol("ShutterError", 4) 
+            new Symbol("ShutterError", 4)
         };
 
-        private static Symbol[] CoverConstants = new Symbol[] { 
-            new Symbol("CoverUnknown", 0), 
-            new Symbol("CoverNeitherOpenNorClosed", 1), 
-            new Symbol("CoverClosed", 2), 
+        private static Symbol[] CoverConstants = new Symbol[] {
+            new Symbol("CoverUnknown", 0),
+            new Symbol("CoverNeitherOpenNorClosed", 1),
+            new Symbol("CoverClosed", 2),
             new Symbol("CoverOpen", 3),
-            new Symbol("CoverError", 4), 
-            new Symbol("CoverNotPresent", 5) 
+            new Symbol("CoverError", 4),
+            new Symbol("CoverNotPresent", 5)
         };
 
         public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys() {
@@ -437,7 +437,7 @@ namespace NINA.Sequencer.Logic {
 
             return Task.CompletedTask;
         }
-        
+
         public ISymbolProvider RegisterSymbolProvider(string name) {
             if (Providers.Contains(name)) {
                 throw new ArgumentException("Symbol Provider name is already registered.");
@@ -459,7 +459,7 @@ namespace NINA.Sequencer.Logic {
             }
             AddOrUpdateSymbol(provider.GetProviderName(), token, value, values);
         }
-        
+
         public bool RemoveSymbol(ISymbolProvider provider, string token) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
@@ -652,6 +652,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "now",
+                "Returns the current Unix timestamp in seconds.",
+                "now()",
                 args => CoreUtil.UnixTimeStampNow(),
                 minArgs: 0,
                 maxArgs: 0,
@@ -660,6 +662,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "hour",
+                "Returns the hour component (0–23) of a given datetime, or of the current time if no argument is supplied.",
+                "hour() or hour(someDate)",
                 args => (int)GetDateTime(args).Hour,
                 minArgs: 0,
                 maxArgs: 1
@@ -667,6 +671,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "minute",
+                "Returns the minute component (0–59) of a given datetime, or of the current time if no argument is supplied.",
+                "minute() or minute(someDate)",
                 args => (int)GetDateTime(args).Minute,
                 minArgs: 0,
                 maxArgs: 1
@@ -674,6 +680,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "day",
+                "Returns the day of the month (1–31) of a given datetime, or of the current date if no argument is supplied.",
+                "day() or day(someDate)",
                 args => (int)GetDateTime(args).Day,
                 minArgs: 0,
                 maxArgs: 1
@@ -681,6 +689,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "month",
+                "Returns the month (1–12) of a given datetime, or of the current date if no argument is supplied.",
+                "month() or month(someDate)",
                 args => (int)GetDateTime(args).Month,
                 minArgs: 0,
                 maxArgs: 1
@@ -688,6 +698,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "year",
+                "Returns the year component of a given datetime, or of the current date if no argument is supplied.",
+                "year() or year(someDate)",
                 args => (int)GetDateTime(args).Year,
                 minArgs: 0,
                 maxArgs: 1
@@ -695,6 +707,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "dow",
+                "Returns the day of the week as an integer (0 = Sunday, 1 = Monday, … 6 = Saturday).",
+                "dow() or dow(someDate)",
                 args => (int)GetDateTime(args).DayOfWeek,
                 minArgs: 0,
                 maxArgs: 1
@@ -702,6 +716,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "dateString",
+                "Formats a datetime value using the specified .NET format string.",
+                "dateString(now(), \"yyyy-MM-dd HH:mm:ss\")",
                 args => {
                     var dt = GetDateTime(args);
                     var fmt = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
@@ -713,6 +729,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "defined",
+                "Returns whether a symbol name is defined in the symbol table.",
+                "defined(\"foo\")",
                 args => {
                     var str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
                     return TryGetValue(str, out _);
@@ -724,6 +742,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "startsWith",
+                "Returns whether the string starts with the specified prefix.",
+                "startsWith(\"hello\", \"he\")",
                 args => {
                     var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
                     var prefix = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
@@ -735,6 +755,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "strLength",
+                "Returns the length of the given string, or -1 if the argument is not a string.",
+                "strLength(\"hello\")",
                 args => {
                     var v = args.Parameters[0].Evaluate();
                     return v is string s ? s.Length : -1;
@@ -745,6 +767,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "strConcat",
+                "Concatenates two strings.",
+                "strConcat(\"hello\", \" world\")",
                 args => {
                     var a = args.Parameters[0].Evaluate()?.ToString() ?? string.Empty;
                     var b = args.Parameters[1].Evaluate()?.ToString() ?? string.Empty;
@@ -756,6 +780,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "strAtPos",
+                "Returns the character at the specified zero-based index in a string, or an empty string if the index is out of bounds.",
+                "strAtPos(\"hello\", 1)",
                 args => {
                     var s = args.Parameters[0].Evaluate() as string ?? string.Empty;
                     var idxObj = args.Parameters[1].Evaluate();
@@ -769,6 +795,8 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction(new SymbolFunction(
                 "random",
+                "Returns a random double value in the range 0.0–1.0.",
+                "random()",
                 args => rng.NextDouble(),
                 minArgs: 0,
                 maxArgs: 0,
@@ -794,6 +822,236 @@ namespace NINA.Sequencer.Logic {
             result = fn.Implementation(args);
             isVolatile = fn.IsVolatile;
             return true;
+        }
+
+        private static readonly IReadOnlyList<SymbolFunction> _ncalcBuiltIns = [
+            new SymbolFunction(
+                "Abs",
+                "Returns the absolute value of a specified number.",
+                "Abs(-1)",
+                args => Math.Abs(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                minArgs: 1, maxArgs: 1),
+
+            new SymbolFunction(
+                "Acos",
+                "Returns the angle whose cosine is the specified number.",
+                "Acos(1)",
+                args => Math.Acos(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Asin",
+                "Returns the angle whose sine is the specified number.",
+                "Asin(0)",
+                args => Math.Asin(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Atan",
+                "Returns the angle whose tangent is the specified number.",
+                "Atan(0)",
+                args => Math.Atan(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Ceiling",
+                "Returns the smallest integer greater than or equal to the specified number.",
+                "Ceiling(1.5)",
+                args => Math.Ceiling(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Cos",
+                "Returns the cosine of the specified angle.",
+                "Cos(0)",
+                args => Math.Cos(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Exp",
+                "Returns e raised to the specified power.",
+                "Exp(0)",
+                args => Math.Exp(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Floor",
+                "Returns the largest integer less than or equal to the specified number.",
+                "Floor(1.5)",
+                args => Math.Floor(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "IEEERemainder",
+                "Returns the remainder resulting from the division of a specified number by another specified number.",
+                "IEEERemainder(3, 2)",
+                args => Math.IEEERemainder(
+                    Convert.ToDouble(args.Parameters[0].Evaluate()),
+                    Convert.ToDouble(args.Parameters[1].Evaluate())),
+                2, 2),
+
+            new SymbolFunction(
+                "Ln",
+                "Returns the natural logarithm of a specified number.",
+                "Ln(1)",
+                args => Math.Log(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Log",
+                "Returns the logarithm of a specified number.",
+                "Log(1, 10)",
+                args => Math.Log(
+                    Convert.ToDouble(args.Parameters[0].Evaluate()),
+                    Convert.ToDouble(args.Parameters[1].Evaluate())),
+                2, 2),
+
+            new SymbolFunction(
+                "Log10",
+                "Returns the base 10 logarithm of a specified number.",
+                "Log10(1)",
+                args => Math.Log10(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Max",
+                "Returns the larger of two specified numbers.",
+                "Max(1, 2)",
+                args => Math.Max(
+                    Convert.ToDouble(args.Parameters[0].Evaluate()),
+                    Convert.ToDouble(args.Parameters[1].Evaluate())),
+                2, 2),
+
+            new SymbolFunction(
+                "Min",
+                "Returns the smaller of two numbers.",
+                "Min(1, 2)",
+                args => Math.Min(
+                    Convert.ToDouble(args.Parameters[0].Evaluate()),
+                    Convert.ToDouble(args.Parameters[1].Evaluate())),
+                2, 2),
+
+            new SymbolFunction(
+                "Pow",
+                "Returns a specified number raised to the specified power.",
+                "Pow(3, 2)",
+                args => Math.Pow(
+                    Convert.ToDouble(args.Parameters[0].Evaluate()),
+                    Convert.ToDouble(args.Parameters[1].Evaluate())),
+                2, 2),
+
+            new SymbolFunction(
+                "Round",
+                "Rounds a value to the nearest integer or specified number of decimal places.",
+                "Round(3.222, 2)",
+                args =>
+                {
+                    // 1 or 2 args: Round(x) or Round(x, decimals)
+                    if (args.Parameters.Length == 2)
+                    {
+                        return Math.Round(
+                            Convert.ToDouble(args.Parameters[0].Evaluate()),
+                            Convert.ToInt32(args.Parameters[1].Evaluate()));
+                    }
+
+                    return Math.Round(Convert.ToDouble(args.Parameters[0].Evaluate()));
+                },
+                minArgs: 1, maxArgs: 2),
+
+            new SymbolFunction(
+                "Sign",
+                "Returns a value indicating the sign of a number.",
+                "Sign(-10)",
+                args => Math.Sign(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Sin",
+                "Returns the sine of the specified angle.",
+                "Sin(0)",
+                args => Math.Sin(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Sqrt",
+                "Returns the square root of a specified number.",
+                "Sqrt(4)",
+                args => Math.Sqrt(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Tan",
+                "Returns the tangent of the specified angle.",
+                "Tan(0)",
+                args => Math.Tan(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "Truncate",
+                "Calculates the integral part of a number.",
+                "Truncate(1.7)",
+                args => Math.Truncate(Convert.ToDouble(args.Parameters[0].Evaluate())),
+                1, 1),
+
+            new SymbolFunction(
+                "In",
+                "Returns whether an element is in a set of values.",
+                "in(1 + 1, 1, 2, 3)",
+                args =>
+                {
+                    var value = args.Parameters[0].Evaluate();
+                    for (int i = 1; i < args.Parameters.Length; i++)
+                    {
+                        if (Equals(value, args.Parameters[i].Evaluate()))
+                            return true;
+                    }
+                    return false;
+                },
+                minArgs: 2, maxArgs: int.MaxValue),
+
+            new SymbolFunction(
+                "If",
+                "Returns a value based on a condition.",
+                "if(3 % 2 = 1, 'value is true', 'value is false')",
+                args =>
+                {
+                    bool condition = Convert.ToBoolean(args.Parameters[0].Evaluate());
+                    return condition
+                        ? args.Parameters[1].Evaluate()
+                        : args.Parameters[2].Evaluate();
+                },
+                minArgs: 3, maxArgs: 3),
+
+            new SymbolFunction(
+                "Ifs",
+                "Returns a value based on evaluating a number of conditions, with a default if none are true.",
+                "ifs(foo > 50, \"bar\", foo > 75, \"baz\", \"quux\")",
+                args =>
+                {
+                    int count = args.Parameters.Length;
+
+                    // at least condition, value, default
+                    if (count < 3)
+                        throw new ArgumentException("ifs() requires at least 3 arguments.");
+
+                    // all but last are (condition, value) pairs
+                    for (int i = 0; i < count - 1; i += 2)
+                    {
+                        bool cond = Convert.ToBoolean(args.Parameters[i].Evaluate());
+                        if (cond)
+                            return args.Parameters[i + 1].Evaluate();
+                    }
+
+                    // default value (last argument)
+                    return args.Parameters[count - 1].Evaluate();
+                },
+                minArgs: 3, maxArgs: int.MaxValue),
+        ];
+
+        public IReadOnlyCollection<SymbolFunction> GetFunctions() {
+            return _functions.Values
+                .Concat(_ncalcBuiltIns)
+                .ToList();
         }
     }
 }

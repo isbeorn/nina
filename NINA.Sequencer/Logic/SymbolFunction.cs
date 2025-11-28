@@ -19,6 +19,8 @@ using System;
 namespace NINA.Sequencer.Logic {
     public class SymbolFunction {
         public string Name { get; }
+        public string Description { get; }
+        public string UsageExample { get; }
         public Func<FunctionArgs, object> Implementation { get; }
         public int MinArgs { get; }
         public int MaxArgs { get; }  
@@ -26,11 +28,15 @@ namespace NINA.Sequencer.Logic {
 
         public SymbolFunction(
             string name,
+            string description,
+            string usageExample,
             Func<FunctionArgs, object> implementation,
             int minArgs = 0,
             int maxArgs = 0,
             bool isVolatile = false) {
             Name = name;
+            Description = description;
+            UsageExample = usageExample;
             Implementation = implementation;
             MinArgs = minArgs;
             MaxArgs = maxArgs == 0 ? minArgs : maxArgs;
