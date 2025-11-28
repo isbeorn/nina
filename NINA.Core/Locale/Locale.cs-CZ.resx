@@ -571,12 +571,12 @@ Filtr: {3}</value>
     <value>Změna</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>Počet expozice</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence has been modified since it was last saved (changes to {0}).
+    <value>Sekvence byla od posledního uložení změněna (změny v {0}).
         
-Do you want to continue and lose the changes anyway?</value>
+Chcete pokračovat a změny přesto ztratit?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Uzavření změněné sekvence</value>
@@ -3319,7 +3319,7 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
     <value>Tranzit Jih</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>Čas přechodu</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Trendy a Hyperbola</value>
@@ -7326,13 +7326,13 @@ Znovu se určí doba expozice flat oblohy a expozice se zopakuje.</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
-    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+    <value>Nevyžadovat uložení sekvence, pokud se změnil pouze počet expozic</value>
   </data>
   <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
-    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
-You'll normally be prompted to save the sequence to save the changed exposure count.
+    <value>Pokud vaše sekvence nebyla upravena, ale byla spuštěna, počet expozic se změní.
+Obvykle budete vyzváni k uložení sekvence, aby se změněný počet expozic uložil.
 
-If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste nemuseli sekvenci po spuštění ukládat.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
     <value>Čas Překlopení Dne</value>
