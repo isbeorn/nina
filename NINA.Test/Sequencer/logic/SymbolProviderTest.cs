@@ -277,7 +277,7 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         [Test]
-        public void RegisterFunction_WithSameName_ShouldOverrideExistingFunction() {
+        public void RegisterFunction_WithSameName_ShouldNotOverrideExistingFunction() {
             // arrange
             var broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
                flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
@@ -301,16 +301,8 @@ namespace NINA.Test.Sequencer.Logic {
                 isVolatile: false);
 
             broker.RegisterFunction(fn1);
-            broker.RegisterFunction(fn2); // should overwrite
-
-            var args = new FunctionArgs(Guid.NewGuid(), []);
-
-            // act
-            var success = broker.TryInvokeFunction("overrideMe", args, out var result, out var isVolatile);
-
-            // assert
-            success.Should().BeTrue();
-            result.Should().Be(2, "the second registration should override the first implementation");
+            Action overwrite = () => broker.RegisterFunction(fn2);
+            overwrite.Should().Throw<ArgumentException>("overwriting an existing function should not be allowed");
         }
 
         private static FunctionArgs CreateArgsFromStrings(params string[] exprStrings) {

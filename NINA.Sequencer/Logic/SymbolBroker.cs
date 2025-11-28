@@ -807,6 +807,9 @@ namespace NINA.Sequencer.Logic {
         private readonly Dictionary<string, SymbolFunction> _functions = new(StringComparer.OrdinalIgnoreCase);
 
         public void RegisterFunction(SymbolFunction function) {
+            if (_functions.ContainsKey(function.Name)) {
+                throw new ArgumentException("Function name is already registered: " + function.Name);
+            }
             _functions[function.Name] = function;
         }
 

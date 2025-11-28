@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NCalc;
+using NCalc.Exceptions;
 using NCalc.Handlers;
 using Newtonsoft.Json;
 using NINA.Core.Locale;
@@ -572,14 +573,14 @@ namespace NINA.Sequencer.Logic {
                             UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                             if (s is Variable sv && !sv.Executed) {
                                 AddError(Loc.Instance["LblNotEvaluated"] + r);
-//                           } else if (r.StartsWith("_")) {
-//                               AddError("Reference: " + r);
+                                //                           } else if (r.StartsWith("_")) {
+                                //                               AddError("Reference: " + r);
                             } else {
                                 //                                if (r.StartsWith('$') && ext && validateOnly) {
                                 //                                    AddError("External: " + symReference);
                                 //                                } else {
                                 AddError(Loc.Instance["LblUndefined"] + ": " + r);
-//                                }
+                                //                                }
                             }
                         }
                     }
@@ -619,21 +620,20 @@ namespace NINA.Sequencer.Logic {
 
             } catch (NCalc.Exceptions.NCalcParameterNotDefinedException ex) {
                 Error = Loc.Instance["LblUndefined"] + ": " + ex.ParameterName;
+            } catch (NCalc.Exceptions.NCalcEvaluationException ex) {
+                Error = ex.Message;
+                return;
+            } catch (NCalc.Exceptions.NCalcParserException) {
+                Error = Loc.Instance["LblSyntaxError"];
+                return;
             } catch (Exception ex) {
-                if (ex is NCalc.Exceptions.NCalcEvaluationException || ex is NCalc.Exceptions.NCalcParserException) {
-                    Error = Loc.Instance["LblSyntaxError"];
-                    return;
-                } else {
-                    Error = Loc.Instance["LblError"] + ": " + ex.Message; // "Unknown Error; see log";
-                    Logger.Warning("Exception evaluating " + Definition + ": " + ex.Message);
-                }
+                Error = Loc.Instance["LblError"] + ": " + ex.Message; // "Unknown Error; see log";
+                Logger.Warning("Exception evaluating " + Definition + ": " + ex.Message);
             }
             Dirty = false;
         }
-        
-        public static Random RNG = new Random();
 
-        public void ExtensionFunction(string name, FunctionArgs args) {
+        private void ExtensionFunction(string name, FunctionArgs args) {
             try {
                 if (SymbolBroker.TryInvokeFunction(name, args, out var result, out var isVolatile)) {
                     args.Result = result;
@@ -645,6 +645,7 @@ namespace NINA.Sequencer.Logic {
                 }
             } catch (Exception ex) {
                 Logger.Error($"Error evaluating function {name}: {ex.Message}");
+                throw new NCalcEvaluationException(ex.Message);
             }
         }
 
