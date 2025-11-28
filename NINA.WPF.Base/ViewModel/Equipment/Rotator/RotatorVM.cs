@@ -90,6 +90,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 if (obj is bool) {
                     var reverse = (bool)obj;
                     if (Rotator != null && RotatorInfo.Connected) {
+                        Logger.Info($"Setting Rotator Reverse flag to {reverse}");
                         Rotator.Reverse = reverse;
                         profileService.ActiveProfile.RotatorSettings.Reverse2 = reverse;
                     }
@@ -368,6 +369,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                             token.ThrowIfCancellationRequested();
 
                             if (this.Rotator.CanReverse) {
+                                Logger.Info($"Restoring Rotator Reverse flag to {profileService.ActiveProfile.RotatorSettings.Reverse2}");
                                 this.Rotator.Reverse = profileService.ActiveProfile.RotatorSettings.Reverse2;
                             }
 

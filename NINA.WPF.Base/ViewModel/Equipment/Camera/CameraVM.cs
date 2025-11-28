@@ -443,36 +443,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                 profileService.ActiveProfile.CameraSettings.PixelSize = Cam.PixelSizeX;
                             }
 
-                            if (Cam is PersistSettingsCameraDecorator p) {
-                                if (p.Camera is NikonCamera nikonCamera) {
-                                    if (nikonCamera.LensName.Length > 0) {
-                                        profileService.ActiveProfile.TelescopeSettings.Name = nikonCamera.LensName;
-                                    }
-
-                                    if (nikonCamera.LensFocalLength > 0) {
-                                        profileService.ActiveProfile.TelescopeSettings.FocalLength = nikonCamera.LensFocalLength;
-                                    }
-
-                                    if (nikonCamera.LensFocalRatio > 0) {
-                                        profileService.ActiveProfile.TelescopeSettings.FocalRatio = nikonCamera.LensFocalRatio;
-                                    }
-
-                                    nikonCamera.LensStateChanged += (object sender, EventArgs e) => {
-                                        if (nikonCamera.LensName.Length > 0) {
-                                            profileService.ActiveProfile.TelescopeSettings.Name = nikonCamera.LensName;
-                                        }
-
-                                        if (nikonCamera.LensFocalLength > 0) {
-                                            profileService.ActiveProfile.TelescopeSettings.FocalLength = nikonCamera.LensFocalLength;
-                                        }
-
-                                        if (nikonCamera.LensFocalRatio > 0) {
-                                            profileService.ActiveProfile.TelescopeSettings.FocalRatio = nikonCamera.LensFocalRatio;
-                                        }
-                                    };
-                                }
-                            }
-
                             BroadcastCameraInfo();
 
                             if (Cam.CanSetTemperature) {
