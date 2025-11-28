@@ -14,6 +14,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Namotion.Reflection;
+using NCalc.Handlers;
 using NINA.Astrometry;
 using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
@@ -38,6 +39,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -87,6 +89,8 @@ namespace NINA.Sequencer.Logic {
             foreach (string provider in SymbolProviders) {
                 RegisterSymbolProvider(provider);
             }
+            // Register basic functions
+            RegisterBasicFunctions();
         }
 
         private ConcurrentDictionary<string, IList<Symbol>> DataSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
@@ -625,6 +629,171 @@ namespace NINA.Sequencer.Logic {
                 RemoveSymbol("Rotator", "Position");
                 RemoveSymbol("Rotator", "MechanicalPosition");
             }
+        }
+
+        private static Random rng = new Random();
+
+        private void RegisterBasicFunctions() {
+            static DateTime GetDateTime(FunctionArgs args) {
+                DateTime dt;
+                if (args.Parameters?.Length > 0) {
+                    try {
+                        var utc = CoreUtil.UnixTimeStampToDateTime(
+                            Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture));
+                        dt = utc.ToLocalTime();
+                    } catch {
+                        dt = DateTime.MinValue;
+                    }
+                } else {
+                    dt = DateTime.Now;
+                }
+                return dt;
+            }
+
+            RegisterFunction(new SymbolFunction(
+                "now",
+                args => CoreUtil.UnixTimeStampNow(),
+                minArgs: 0,
+                maxArgs: 0,
+                isVolatile: true
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "hour",
+                args => (int)GetDateTime(args).Hour,
+                minArgs: 0,
+                maxArgs: 1
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "minute",
+                args => (int)GetDateTime(args).Minute,
+                minArgs: 0,
+                maxArgs: 1
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "day",
+                args => (int)GetDateTime(args).Day,
+                minArgs: 0,
+                maxArgs: 1
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "month",
+                args => (int)GetDateTime(args).Month,
+                minArgs: 0,
+                maxArgs: 1
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "year",
+                args => (int)GetDateTime(args).Year,
+                minArgs: 0,
+                maxArgs: 1
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "dow",
+                args => (int)GetDateTime(args).DayOfWeek,
+                minArgs: 0,
+                maxArgs: 1
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "dateString",
+                args => {
+                    var dt = GetDateTime(args);
+                    var fmt = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                    return dt.ToString(fmt);
+                },
+                minArgs: 2,
+                maxArgs: 2
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "defined",
+                args => {
+                    var str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                    return TryGetValue(str, out _);
+                },
+                minArgs: 1,
+                maxArgs: 1,
+                isVolatile: true // depends on symbol table
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "startsWith",
+                args => {
+                    var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                    var prefix = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                    return s.StartsWith(prefix, StringComparison.Ordinal);
+                },
+                minArgs: 2,
+                maxArgs: 2
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "strLength",
+                args => {
+                    var v = args.Parameters[0].Evaluate();
+                    return v is string s ? s.Length : -1;
+                },
+                minArgs: 1,
+                maxArgs: 1
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "strConcat",
+                args => {
+                    var a = args.Parameters[0].Evaluate()?.ToString() ?? string.Empty;
+                    var b = args.Parameters[1].Evaluate()?.ToString() ?? string.Empty;
+                    return string.Concat(a, b);
+                },
+                minArgs: 2,
+                maxArgs: 2
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "strAtPos",
+                args => {
+                    var s = args.Parameters[0].Evaluate() as string ?? string.Empty;
+                    var idxObj = args.Parameters[1].Evaluate();
+                    if (idxObj is int idx && idx >= 0 && idx < s.Length)
+                        return s[idx].ToString();
+                    return string.Empty;
+                },
+                minArgs: 2,
+                maxArgs: 2
+            ));
+
+            RegisterFunction(new SymbolFunction(
+                "random",
+                args => rng.NextDouble(),
+                minArgs: 0,
+                maxArgs: 0,
+                isVolatile: true
+            ));
+        }
+
+        private readonly Dictionary<string, SymbolFunction> _functions = new(StringComparer.OrdinalIgnoreCase);
+
+        public void RegisterFunction(SymbolFunction function) {
+            _functions[function.Name] = function;
+        }
+
+        public bool TryInvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile) {
+            result = null;
+            isVolatile = false;
+
+            if (!_functions.TryGetValue(name, out var fn)) {
+                return false;
+            }
+
+            fn.ValidateArgs(name, args);
+            result = fn.Implementation(args);
+            isVolatile = fn.IsVolatile;
+            return true;
         }
     }
 }

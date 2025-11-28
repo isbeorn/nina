@@ -12,18 +12,21 @@
 
 #endregion "copyright"
 
+using NCalc.Handlers;
 using NINA.Equipment.Interfaces.ViewModel;
 using System.Collections.Generic;
 
 namespace NINA.Sequencer.Logic {
     public interface ISymbolBroker : IDockableVM {
-        public bool TryGetValue(string key, out object value);
-        public bool TryGetSymbol(string key, out Symbol symbol);
-        public List<Symbol> GetSymbols();
-        public ISymbolProvider RegisterSymbolProvider(string name);
-        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value);
-        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values);
-        public bool RemoveSymbol(ISymbolProvider provider, string token);
-        public IList<Symbol> GetHiddenSymbols(string source);
+        bool TryGetValue(string key, out object value);
+        bool TryGetSymbol(string key, out Symbol symbol);
+        List<Symbol> GetSymbols();
+        ISymbolProvider RegisterSymbolProvider(string name);
+        void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value);
+        void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values);
+        bool RemoveSymbol(ISymbolProvider provider, string token);
+        IList<Symbol> GetHiddenSymbols(string source);
+        void RegisterFunction(SymbolFunction function);
+        bool TryInvokeFunction(string name, FunctionArgs args, out object? result, out bool isVolatile);
     }
 }
