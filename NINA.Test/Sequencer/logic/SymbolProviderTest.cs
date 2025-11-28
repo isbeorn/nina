@@ -181,6 +181,8 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var fn = new SymbolFunction(
                 name: "const42",
+                description: "",
+                usageExample: "",
                 implementation: args => 42,
                 minArgs: 0,
                 maxArgs: 0,
@@ -224,6 +226,8 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var fn = new SymbolFunction(
                 name: "volatileFunc",
+                description: "",
+                usageExample: "",
                 implementation: args => "value",
                 minArgs: 0,
                 maxArgs: 0,
@@ -250,6 +254,8 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var fn = new SymbolFunction(
                 name: "needsOneArg",
+                description: "",
+                usageExample: "",
                 implementation: args => args.Parameters[0].Evaluate(),
                 minArgs: 1,
                 maxArgs: 1,
@@ -278,6 +284,8 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var fn1 = new SymbolFunction(
                 name: "overrideMe",
+                description: "",
+                usageExample: "",
                 implementation: args => 1,
                 minArgs: 0,
                 maxArgs: 0,
@@ -285,6 +293,8 @@ namespace NINA.Test.Sequencer.Logic {
 
             var fn2 = new SymbolFunction(
                 name: "overrideMe",
+                description: "",
+                usageExample: "",
                 implementation: args => 2,
                 minArgs: 0,
                 maxArgs: 0,
@@ -319,6 +329,8 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var fn = new SymbolFunction(
                 name: "randomInRange",
+                description: "",
+                usageExample: "",
                 implementation: args => {
                     var min = Convert.ToDouble(args.Parameters[0].Evaluate());
                     var max = Convert.ToDouble(args.Parameters[1].Evaluate());
@@ -349,6 +361,8 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var fn = new SymbolFunction(
                 name: "add",
+                description: "",
+                usageExample: "",
                 implementation: args => {
                     // args.Parameters[i] are NCalc.Expression
                     var a = Convert.ToInt32(args.Parameters[0].Evaluate());
