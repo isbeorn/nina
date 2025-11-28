@@ -12,10 +12,10 @@
 
 #endregion "copyright"
 
+using Astroasis.AstroasisSDK;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment;
-using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
@@ -67,6 +67,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                     Logger.Error(ex);
                 }
 
+                /* Oasis focusers */
+                try {
+                    Logger.Trace("Adding Oasis Focusers");
+                    int[] ids = new int[AOFocus.AO_FOCUSER_MAX_NUM];
+                    AOFocus.FocuserScan(out var focusers, ids);
+                    for (int i = 0; i < focusers; i++) {
+                        var focuser = new OasisFocuser(ids[i], profileService);
+                        Logger.Debug($"Adding Oasis Focuser: {focuser.Name}");
+                        devices.Add(focuser);
+                    }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* ASCOM */
                 try {
                     var ascomInteraction = new ASCOMInteraction(profileService);
                     devices.AddRange(ascomInteraction.GetFocusers());
