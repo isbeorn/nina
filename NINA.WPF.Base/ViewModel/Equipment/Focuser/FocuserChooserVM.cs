@@ -12,11 +12,11 @@
 
 #endregion "copyright"
 
+using Astroasis.AstroasisSDK;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment;
 using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
-using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
@@ -69,21 +69,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                     Logger.Error(ex);
                 }
 
-                /* Oasis focuser */
-                /*                try {
-                                    Logger.Trace("Adding Oasis Focusers");
-                                    var ids = new int[AOFocus.AO_FOCUSER_MAX_NUM];
-                                    AOFocus.FocuserScan(out var focusers, ids);
-                                    for (int i = 0; i < focusers; ++i) {
-                                        var focuser = new OasisFocuser(ids[i], profileService);
-                                        Logger.Debug($"Adding Oasis Focuser: {focuser.Name}");
-                                        devices.Add(focuser);
-                                    }
-                                } catch (Exception ex) {
-                                    Logger.Error(ex);
-                                }
-                */
-                /* ToupTek focusers */
+                /* Oasis focusers */
+                try {
+                    Logger.Trace("Adding Oasis Focusers");
+                    int[] ids = new int[AOFocus.AO_FOCUSER_MAX_NUM];
+                    AOFocus.FocuserScan(out var focusers, ids);
+                    for (int i = 0; i < focusers; i++) {
+                        var focuser = new OasisFocuser(ids[i], profileService);
+                        Logger.Debug($"Adding Oasis Focuser: {focuser.Name}");
+                        devices.Add(focuser);
+                    }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 try {
                     Logger.Trace("Adding ToupTek Focusers");
                     var toupTekDevices = ToupCam.EnumV2();

@@ -11,12 +11,13 @@
 #endregion "copyright"
 
 using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 
-namespace NINA.Equipment.SDKs.FocuserSDKs.OasisSDK {
+namespace Astroasis.AstroasisSDK {
     public class AOFocus {
         private const string DLLNAME = "liboasisfocuser.so";
 
