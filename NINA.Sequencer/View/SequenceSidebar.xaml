@@ -1635,7 +1635,11 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock MouseDown="TextBlock_MouseDown" Text="{Binding Key}">
                                     <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding UsageExample}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{ns:Loc Lbl_SymbolFunctions_Usage}" />
+                                            <TextBlock Text=": " />
+                                            <TextBlock Text="{Binding UsageExample}" />
+                                        </StackPanel>
                                     </TextBlock.ToolTip>
                                 </TextBlock>
                                 <TextBlock
