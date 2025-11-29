@@ -16,7 +16,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     key: "Random",
                     category: "Utility",
-                    description: Loc.Instance["Lbl_SymbolFunction_Random_Description"],
+                    description: Loc.Instance["Lbl_SymbolFunction_Utility_Random_Description"],
                     usageExample: "Random()",
                     implementation: args => rng.NextDouble(),
                     minArgs: 0,
