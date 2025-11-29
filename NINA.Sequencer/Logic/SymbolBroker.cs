@@ -941,10 +941,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "now",
+                name: "Now",
                 category: "NINA",
                 description: "Returns the current Unix timestamp in seconds.",
-                usageExample: "now()",
+                usageExample: "Now()",
                 implementation: args => CoreUtil.UnixTimeStampNow(),
                 minArgs: 0,
                 maxArgs: 0,
@@ -953,10 +953,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "hour",
+                name: "Hour",
                 category: "NINA",
                 description: "Returns the hour component (0–23) of a given datetime, or of the current time if no argument is supplied.",
-                usageExample: "hour() or hour(someDate)",
+                usageExample: "Hour() or Hour(someDate)",
                 implementation: args => (int)GetDateTime(args).Hour,
                 minArgs: 0,
                 maxArgs: 1
@@ -964,10 +964,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "minute",
+                name: "Minute",
                 category: "NINA",
                 description: "Returns the minute component (0–59) of a given datetime, or of the current time if no argument is supplied.",
-                usageExample: "minute() or minute(someDate)",
+                usageExample: "Minute() or Minute(someDate)",
                 implementation: args => (int)GetDateTime(args).Minute,
                 minArgs: 0,
                 maxArgs: 1
@@ -975,10 +975,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "day",
+                name: "Day",
                 category: "NINA",
                 description: "Returns the day of the month (1–31) of a given datetime, or of the current date if no argument is supplied.",
-                usageExample: "day() or day(someDate)",
+                usageExample: "Day() or Day(someDate)",
                 implementation: args => (int)GetDateTime(args).Day,
                 minArgs: 0,
                 maxArgs: 1
@@ -986,10 +986,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "month",
+                name: "Month",
                 category: "NINA",
                 description: "Returns the month (1–12) of a given datetime, or of the current date if no argument is supplied.",
-                usageExample: "month() or month(someDate)",
+                usageExample: "Month() or Month(someDate)",
                 implementation: args => (int)GetDateTime(args).Month,
                 minArgs: 0,
                 maxArgs: 1
@@ -997,10 +997,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "year",
+                name: "Year",
                 category: "NINA",
                 description: "Returns the year component of a given datetime, or of the current date if no argument is supplied.",
-                usageExample: "year() or year(someDate)",
+                usageExample: "Year() or Year(someDate)",
                 implementation: args => (int)GetDateTime(args).Year,
                 minArgs: 0,
                 maxArgs: 1
@@ -1008,10 +1008,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "dow",
+                name: "Dow",
                 category: "NINA",
                 description: "Returns the day of the week as an integer (0 = Sunday, 1 = Monday, … 6 = Saturday).",
-                usageExample: "dow() or dow(someDate)",
+                usageExample: "Dow() or Dow(someDate)",
                 implementation: args => (int)GetDateTime(args).DayOfWeek,
                 minArgs: 0,
                 maxArgs: 1
@@ -1019,10 +1019,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "dateString",
+                name: "DateString",
                 category: "NINA",
                 description: "Formats a datetime value using the specified .NET format string.",
-                usageExample: "dateString(now(), \"yyyy-MM-dd HH:mm:ss\")",
+                usageExample: "DateString(now(), \"yyyy-MM-dd HH:mm:ss\")",
                 implementation: args => {
                     var dt = GetDateTime(args);
                     var fmt = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
@@ -1034,10 +1034,87 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "defined",
+                    name: "AddMinutes",
+                    category: "NINA",
+                    description: "Adds minutes to a datetime. Returns a Unix timestamp in seconds.",
+                    usageExample: "AddMinutes(now(), 30)",
+                    implementation: args => {
+                        DateTime baseDt;
+                        double minutes;
+
+                        if (args.Parameters.Length == 1) {
+                            // base: now, arg: minutes
+                            baseDt = DateTime.Now;
+                            minutes = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        } else {
+                            // first arg: unix timestamp, second: minutes
+                            var baseSeconds = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                            baseDt = CoreUtil.UnixTimeStampToDateTime(baseSeconds).ToLocalTime();
+                            minutes = Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        }
+
+                        var result = baseDt.AddMinutes(minutes);
+                        return CoreUtil.ToUnixSeconds(result);
+                    },
+                    minArgs: 1,
+                    maxArgs: 2,
+                    isVolatile: true // can depend on current time when called with a single argument
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "AddHours",
+                    category: "NINA",
+                    description: "Adds hours to a datetime. Returns a Unix timestamp in seconds.",
+                    usageExample: "AddHours(now(), 1.5)",
+                    implementation: args => {
+                        DateTime baseDt;
+                        double hours;
+
+                        if (args.Parameters.Length == 1) {
+                            // base: now, arg: hours
+                            baseDt = DateTime.Now;
+                            hours = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        } else {
+                            // first arg: unix timestamp, second: hours
+                            var baseSeconds = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                            baseDt = CoreUtil.UnixTimeStampToDateTime(baseSeconds).ToLocalTime();
+                            hours = Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        }
+
+                        var result = baseDt.AddHours(hours);
+                        return CoreUtil.ToUnixSeconds(result);
+                    },
+                    minArgs: 1,
+                    maxArgs: 2,
+                    isVolatile: true
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "SecondsSince",
+                    category: "NINA",
+                    description: "Returns the number of seconds elapsed since the given datetime (Unix timestamp, seconds).",
+                    usageExample: "SecondsSince(lastEventTime) > 600",
+                    implementation: args => {
+                        var dt = GetDateTime(args); // arg[0] interpreted as unix seconds
+                        var now = DateTime.Now;
+                        return (now - dt).TotalSeconds;
+                    },
+                    minArgs: 1,
+                    maxArgs: 1,
+                    isVolatile: true
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                name: "Defined",
                 category: "NINA",
                 description: "Returns whether a symbol name is defined in the symbol table.",
-                usageExample: "defined(\"foo\")",
+                usageExample: "Defined(\"foo\")",
                 implementation: args => {
                     var str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
                     return TryGetValue(str, out _);
@@ -1049,10 +1126,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "startsWith",
+                name: "StartsWith",
                 category: "NINA",
                 description: "Returns whether the string starts with the specified prefix.",
-                usageExample: "startsWith(\"hello\", \"he\")",
+                usageExample: "StartsWith(\"hello\", \"he\")",
                 implementation: args => {
                     var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
                     var prefix = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
@@ -1064,10 +1141,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "strLength",
+                name: "StrLength",
                 category: "NINA",
                 description: "Returns the length of the given string, or -1 if the argument is not a string.",
-                usageExample: "strLength(\"hello\")",
+                usageExample: "StrLength(\"hello\")",
                 implementation: args => {
                     var v = args.Parameters[0].Evaluate();
                     return v is string s ? s.Length : -1;
@@ -1078,10 +1155,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "strConcat",
+                name: "StrConcat",
                 category: "NINA",
                 description: "Concatenates two strings.",
-                usageExample: "strConcat(\"hello\", \" world\")",
+                usageExample: "StrConcat(\"hello\", \" world\")",
                 implementation: args => {
                     var a = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
                     var b = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
@@ -1093,10 +1170,10 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "strAtPos",
+                name: "StrAtPos",
                 category: "NINA",
                 description: "Returns the character at the specified zero-based index in a string, or an empty string if the index is out of bounds.",
-                usageExample: "strAtPos(\"hello\", 1)",
+                usageExample: "StrAtPos(\"hello\", 1)",
                 implementation: args => {
                     var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
                     var idxObj = args.Parameters[1].Evaluate();
@@ -1110,15 +1187,241 @@ namespace NINA.Sequencer.Logic {
 
             RegisterFunction("NINA",
                 new SymbolFunction(
-                name: "random",
+                    name: "Contains",
+                    category: "NINA",
+                    description: "Returns whether the string contains the specified substring.",
+                    usageExample: "Contains(filterName, \"Ha\")",
+                    implementation: args => {
+                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        var sub = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        return s?.Contains(sub, StringComparison.Ordinal) ?? false;
+                    },
+                    minArgs: 2,
+                    maxArgs: 2
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "EndsWith",
+                    category: "NINA",
+                    description: "Returns whether the string ends with the specified suffix.",
+                    usageExample: "EndsWith(fileName, \".fits\")",
+                    implementation: args => {
+                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        var suffix = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        return s?.EndsWith(suffix, StringComparison.Ordinal) ?? false;
+                    },
+                    minArgs: 2,
+                    maxArgs: 2
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "Substring",
+                    category: "NINA",
+                    description: "Returns a substring of the given string. Out-of-range results in an empty string.",
+                    usageExample: "Substring(\"hello\", 1, 3)  // \"ell\"",
+                    implementation: args => {
+                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture) ?? string.Empty;
+                        int start = Convert.ToInt32(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+
+                        if (start < 0 || start > s.Length)
+                            return string.Empty;
+
+                        if (args.Parameters.Length == 2) {
+                            // from start to end
+                            return s.Substring(start);
+                        } else {
+                            int length = Convert.ToInt32(args.Parameters[2].Evaluate(), CultureInfo.InvariantCulture);
+                            if (length < 0)
+                                return string.Empty;
+                            if (start + length > s.Length)
+                                return string.Empty;
+                            return s.Substring(start, length);
+                        }
+                    },
+                    minArgs: 2,
+                    maxArgs: 3
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "ToLower",
+                    category: "NINA",
+                    description: "Converts the string to lower case (invariant).",
+                    usageExample: "ToLower(filterName)",
+                    implementation: args => {
+                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        return s?.ToLowerInvariant();
+                    },
+                    minArgs: 1,
+                    maxArgs: 1
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "ToUpper",
+                    category: "NINA",
+                    description: "Converts the string to upper case (invariant).",
+                    usageExample: "toUpper(filterName)",
+                    implementation: args => {
+                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        return s?.ToUpperInvariant();
+                    },
+                    minArgs: 1,
+                    maxArgs: 1
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                name: "Random",
                 category: "NINA",
                 description: "Returns a random double value in the range 0.0–1.0.",
-                usageExample: "random()",
+                usageExample: "Random()",
                 implementation: args => rng.NextDouble(),
                 minArgs: 0,
                 maxArgs: 0,
                 isVolatile: true
             ));
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "Mod",
+                    category: "NINA",
+                    description: "Returns the mathematical modulus (remainder) of x / y. For positive y, the result is in [0, y).",
+                    usageExample: "Mod(-1, 10)",
+                    implementation: args => {
+                        var a = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        var b = Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        var r = a % b;
+                        if (r < 0 && b > 0) r += b;
+                        return r;
+                    },
+                    minArgs: 2,
+                    maxArgs: 2
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "Clamp",
+                    category: "NINA",
+                    description: "Clamps a value to the inclusive range [min, max].",
+                    usageExample: "Clamp(exposure, 1, 600)",
+                    implementation: args => {
+                        var v = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        var lo = Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        var hi = Convert.ToDouble(args.Parameters[2].Evaluate(), CultureInfo.InvariantCulture);
+                        return Math.Clamp(v, lo, hi);
+                    },
+                    minArgs: 3,
+                    maxArgs: 3
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "Between",
+                    category: "NINA",
+                    description: "Returns whether x is between min and max (inclusive).",
+                    usageExample: "Between(temperature, -10, 40)",
+                    implementation: args => {
+                        var v = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        var lo = Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        var hi = Convert.ToDouble(args.Parameters[2].Evaluate(), CultureInfo.InvariantCulture);
+                        return v >= lo && v <= hi;
+                    },
+                    minArgs: 3,
+                    maxArgs: 3
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "Deg",
+                    category: "NINA",
+                    description: "Converts an angle from radians to degrees.",
+                    usageExample: "Deg(PI() / 2)", // assuming user has a PI or similar
+                    implementation: args => {
+                        var rad = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        return AstroUtil.ToDegree(rad);
+                    },
+                    minArgs: 1,
+                    maxArgs: 1
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "Rad",
+                    category: "NINA",
+                    description: "Converts an angle from degrees to radians.",
+                    usageExample: "Rad(90)",
+                    implementation: args => {
+                        var deg = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        return AstroUtil.ToRadians(deg);
+                    },
+                    minArgs: 1,
+                    maxArgs: 1
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "Sum",
+                    category: "NINA",
+                    description: "Returns the sum of all arguments.",
+                    usageExample: "Sum(1, 2, 3)",
+                    implementation: args => {
+                        double sum = 0.0;
+                        for (int i = 0; i < args.Parameters.Length; i++) {
+                            sum += Convert.ToDouble(args.Parameters[i].Evaluate(), CultureInfo.InvariantCulture);
+                        }
+                        return sum;
+                    },
+                    minArgs: 1,
+                    maxArgs: int.MaxValue
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "Avg",
+                    category: "NINA",
+                    description: "Returns the average (arithmetic mean) of all arguments.",
+                    usageExample: "Avg(1, 2, 3)",
+                    implementation: args => {
+                        double sum = 0.0;
+                        int count = args.Parameters.Length;
+                        for (int i = 0; i < count; i++) {
+                            sum += Convert.ToDouble(args.Parameters[i].Evaluate(), CultureInfo.InvariantCulture);
+                        }
+                        return sum / count;
+                    },
+                    minArgs: 1,
+                    maxArgs: int.MaxValue
+                )
+            );
+
+            RegisterFunction("NINA",
+                new SymbolFunction(
+                    name: "Not",
+                    category: "NINA",
+                    description: "Returns the logical negation of a boolean value.",
+                    usageExample: "Not(cloudy)",
+                    implementation: args => {
+                        bool v = Convert.ToBoolean(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        return !v;
+                    },
+                    minArgs: 1,
+                    maxArgs: 1
+                )
+            );
         }
 
         void ISymbolBroker.RegisterFunction(ISymbolProvider symbolProvider, SymbolFunction symbolFunction) {
