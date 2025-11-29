@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Core.Locale;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,7 +16,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "StartsWith",
                     category: "String",
-                    description: "Returns whether the string starts with the specified prefix.",
+                    description: Loc.Instance["Lbl_SymbolFunction_String_StartsWith_Description"],
                     usageExample: "StartsWith(\"hello\", \"he\")",
                     implementation: args => {
                         var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
@@ -29,7 +30,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "StrLength",
                     category: "String",
-                    description: "Returns the length of the given string, or -1 if the argument is not a string.",
+                    description: Loc.Instance["Lbl_SymbolFunction_String_StrLength_Description"],
                     usageExample: "StrLength(\"hello\")",
                     implementation: args => {
                         var v = args.Parameters[0].Evaluate();
@@ -42,7 +43,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "StrConcat",
                     category: "String",
-                    description: "Concatenates two strings.",
+                    description: Loc.Instance["Lbl_SymbolFunction_String_StrConcat_Description"],
                     usageExample: "StrConcat(\"hello\", \" world\")",
                     implementation: args => {
                         var a = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
@@ -56,7 +57,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "StrAtPos",
                     category: "String",
-                    description: "Returns the character at the specified zero-based index in a string, or an empty string if the index is out of bounds.",
+                    description: Loc.Instance["Lbl_SymbolFunction_String_StrAtPos_Description"],
                     usageExample: "StrAtPos(\"hello\", 1)",
                     implementation: args => {
                         var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
@@ -72,7 +73,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "Contains",
                     category: "String",
-                    description: "Returns whether the string contains the specified substring.",
+                    description: Loc.Instance["Lbl_SymbolFunction_String_Contains_Description"],
                     usageExample: "Contains(filterName, \"Ha\")",
                     implementation: args => {
                         var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
@@ -86,7 +87,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "EndsWith",
                     category: "String",
-                    description: "Returns whether the string ends with the specified suffix.",
+                    description: Loc.Instance["Lbl_SymbolFunction_String_EndsWith_Description"],
                     usageExample: "EndsWith(fileName, \".fits\")",
                     implementation: args => {
                         var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
@@ -100,7 +101,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "Substring",
                     category: "String",
-                    description: "Returns a substring of the given string. Out-of-range results in an empty string.",
+                    description: Loc.Instance["Lbl_SymbolFunction_String_Substring_Description"],
                     usageExample: "Substring(\"hello\", 1, 3)  // \"ell\"",
                     implementation: args => {
                         var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture) ?? string.Empty;
@@ -128,7 +129,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "ToLower",
                     category: "String",
-                    description: "Converts the string to lower case (invariant).",
+                    description: Loc.Instance["Lbl_SymbolFunction_String_ToLower_Description"],
                     usageExample: "ToLower(filterName)",
                     implementation: args => {
                         var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
@@ -141,7 +142,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "ToUpper",
                     category: "String",
-                    description: "Converts the string to upper case (invariant).",
+                    description: Loc.Instance["Lbl_SymbolFunction_String_ToUpper_Description"],
                     usageExample: "toUpper(filterName)",
                     implementation: args => {
                         var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Core.Locale;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +16,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "Random",
                     category: "Utility",
-                    description: "Returns a random double value in the range 0.0–1.0.",
+                    description: Loc.Instance["Lbl_SymbolFunction_Random_Description"],
                     usageExample: "Random()",
                     implementation: args => rng.NextDouble(),
                     minArgs: 0,

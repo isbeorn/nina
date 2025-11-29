@@ -1,4 +1,5 @@
 ﻿using NCalc.Handlers;
+using NINA.Core.Locale;
 using NINA.Core.Utility;
 using System;
 using System.Collections;
@@ -34,7 +35,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "Now",
                     category: "Time",
-                    description: "Returns the current Unix timestamp in seconds.",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_Now_Description"],
                     usageExample: "Now()",
                     implementation: args => CoreUtil.UnixTimeStampNow(),
                     minArgs: 0,
@@ -45,7 +46,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "Hour",
                     category: "Time",
-                    description: "Returns the hour component (0–23) of a given datetime, or of the current time if no argument is supplied.",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_Hour_Description"],
                     usageExample: "Hour() or Hour(someDate)",
                     implementation: args => (int)GetDateTime(args).Hour,
                     minArgs: 0,
@@ -55,7 +56,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "Minute",
                     category: "Time",
-                    description: "Returns the minute component (0–59) of a given datetime, or of the current time if no argument is supplied.",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_Minute_Description"],
                     usageExample: "Minute() or Minute(someDate)",
                     implementation: args => (int)GetDateTime(args).Minute,
                     minArgs: 0,
@@ -65,7 +66,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "Day",
                     category: "Time",
-                    description: "Returns the day of the month (1–31) of a given datetime, or of the current date if no argument is supplied.",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_Day_Description"],
                     usageExample: "Day() or Day(someDate)",
                     implementation: args => (int)GetDateTime(args).Day,
                     minArgs: 0,
@@ -75,7 +76,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "Month",
                     category: "Time",
-                    description: "Returns the month (1–12) of a given datetime, or of the current date if no argument is supplied.",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_Month_Description"],
                     usageExample: "Month() or Month(someDate)",
                     implementation: args => (int)GetDateTime(args).Month,
                     minArgs: 0,
@@ -85,7 +86,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "Year",
                     category: "Time",
-                    description: "Returns the year component of a given datetime, or of the current date if no argument is supplied.",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_Year_Description"],
                     usageExample: "Year() or Year(someDate)",
                     implementation: args => (int)GetDateTime(args).Year,
                     minArgs: 0,
@@ -95,7 +96,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "Dow",
                     category: "Time",
-                    description: "Returns the day of the week as an integer (0 = Sunday, 1 = Monday, … 6 = Saturday).",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_Dow_Description"],
                     usageExample: "Dow() or Dow(someDate)",
                     implementation: args => (int)GetDateTime(args).DayOfWeek,
                     minArgs: 0,
@@ -105,7 +106,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "AddMinutes",
                     category: "Time",
-                    description: "Adds minutes to a datetime. Returns a Unix timestamp in seconds.",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_AddMinutes_Description"],
                     usageExample: "AddMinutes(now(), 30)",
                     implementation: args => {
                         DateTime baseDt;
@@ -133,7 +134,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "AddHours",
                     category: "Time",
-                    description: "Adds hours to a datetime. Returns a Unix timestamp in seconds.",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_AddHours_Description"],
                     usageExample: "AddHours(now(), 1.5)",
                     implementation: args => {
                         DateTime baseDt;
@@ -161,7 +162,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "SecondsSince",
                     category: "Time",
-                    description: "Returns the number of seconds elapsed since the given datetime (Unix timestamp, seconds).",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_SecondsSince_Description"],
                     usageExample: "SecondsSince(lastEventTime) > 600",
                     implementation: args => {
                         var dt = GetDateTime(args); // arg[0] interpreted as unix seconds
@@ -176,7 +177,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 new SymbolFunction(
                     name: "DateString",
                     category: "Time",
-                    description: "Formats a datetime value using the specified .NET format string.",
+                    description: Loc.Instance["Lbl_SymbolFunction_Time_DateString_Description"],
                     usageExample: "DateString(now(), \"yyyy-MM-dd HH:mm:ss\")",
                     implementation: args => {
                         var dt = GetDateTime(args);

@@ -7567,4 +7567,166 @@ If exposure count is not important to you, enable this option to avoid having to
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
     <value>Waits until the Expression is true</value>
   </data>
+  <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
+    <value>Returns a random double value in the range 0.0-1.0.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
+    <value>Returns the current Unix timestamp in seconds.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
+    <value>Returns the hour component (0-23) of a given datetime, or of the current time if no argument is supplied.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
+    <value>Returns the minute component (0-59) of a given datetime, or of the current time if no argument is supplied.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
+    <value>Returns the day of the month (1-31) of a given datetime, or of the current date if no argument is supplied.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
+    <value>Returns the month (1-12) of a given datetime, or of the current date if no argument is supplied.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
+    <value>Returns the year component of a given datetime, or of the current date if no argument is supplied.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
+    <value>Returns the day of the week as an integer (0 = Sunday, 1 = Monday, … 6 = Saturday).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
+    <value>Adds minutes to a datetime. Returns a Unix timestamp in seconds.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
+    <value>Adds hours to a datetime. Returns a Unix timestamp in seconds.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
+    <value>Returns the number of seconds elapsed since the given datetime (Unix timestamp, seconds).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
+    <value>Formats a datetime value using the specified .NET format string.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
+    <value>Returns whether the string starts with the specified prefix.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
+    <value>Returns the length of the given string, or -1 if the argument is not a string.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
+    <value>Concatenates two strings.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
+    <value>Returns the character at the specified zero-based index in a string, or an empty string if the index is out of bounds.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
+    <value>Returns whether the string contains the specified substring.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
+    <value>Returns whether the string ends with the specified suffix.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
+    <value>Returns a substring of the given string. Out-of-range results in an empty string.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
+    <value>Converts the string to lower case (invariant).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
+    <value>Converts the string to upper case (invariant).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
+    <value>Returns the absolute value of a specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
+    <value>Returns the angle whose cosine is the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
+    <value>Returns the angle whose sine is the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
+    <value>Returns the angle whose tangent is the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
+    <value>Returns the average (arithmetic mean) of all arguments.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
+    <value>Returns the smallest integer greater than or equal to the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
+    <value>Returns the cosine of the specified angle.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
+    <value>Returns e raised to the specified power.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
+    <value>Returns the largest integer less than or equal to the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
+    <value>Returns the remainder resulting from the division of a specified number by another specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
+    <value>Returns the natural logarithm of a specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
+    <value>Returns the logarithm of a specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
+    <value>Returns the base 10 logarithm of a specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
+    <value>Returns the larger of two specified numbers.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
+    <value>Returns the smaller of two numbers.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
+    <value>Returns a specified number raised to the specified power.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
+    <value>Rounds a value to the nearest integer or specified number of decimal places.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
+    <value>Returns a value indicating the sign of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
+    <value>Returns the sine of the specified angle.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
+    <value>Returns the square root of a specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
+    <value>Returns the tangent of the specified angle.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
+    <value>Calculates the integral part of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
+    <value>Returns the mathematical modulus (remainder) of x / y. For positive y, the result is in [0, y).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
+    <value>Clamps a value to the inclusive range [min, max].</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
+    <value>Returns whether x is between min and max (inclusive).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
+    <value>Converts an angle from radians to degrees.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
+    <value>Converts an angle from degrees to radians.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
+    <value>Returns the sum of all arguments.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
+    <value>Returns whether an element is in a set of values.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
+    <value>Returns a value based on a condition.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
+    <value>Returns a value based on evaluating a number of conditions, with a default if none are true.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
+    <value>Returns whether a symbol name is defined in the symbol table.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
+    <value>Returns the logical negation of a boolean value.</value>
+  </data>
 </root>
