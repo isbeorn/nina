@@ -97,12 +97,14 @@ namespace NINA.Sequencer.Logic {
 
         private ConcurrentDictionary<string, IList<Symbol>> HiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
+        private readonly ConcurrentDictionary<string, IList<SymbolFunction>> _functions = new(StringComparer.OrdinalIgnoreCase);
+
         public static readonly char DELIMITER = '_';
 
         private static List<string> SymbolProviders =
             new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel" };
 
-        public bool TryGetSymbol(string key, out Symbol symbol) {
+        bool ISymbolBroker.TryGetSymbol(string key, out Symbol symbol) {
             Symbol sym;
             if (GetSymbol(key, out sym)) {
                 symbol = sym;
@@ -233,13 +235,13 @@ namespace NINA.Sequencer.Logic {
             return syms;
         }
 
-        public void AddOrUpdateSymbol(string source, string token, object value) {
+        void AddOrUpdateSymbol(string source, string token, object value) {
             AddOrUpdateSymbol(source, token, value, null, SymbolType.SYMBOL_NORMAL);
         }
-        public void AddOrUpdateSymbol(string source, string token, object value, SymbolType type) {
+        void AddOrUpdateSymbol(string source, string token, object value, SymbolType type) {
             AddOrUpdateSymbol(source, token, value, null, type);
         }
-        private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values) {
+        void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values) {
             AddOrUpdateSymbol(source, token, value, values, SymbolType.SYMBOL_NORMAL);
         }
         private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values, SymbolType type) {
@@ -446,21 +448,21 @@ namespace NINA.Sequencer.Logic {
             return new SymbolProvider(name, this);
         }
 
-        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value) {
+        void ISymbolBroker.AddOrUpdateSymbol(ISymbolProvider provider, string token, object value) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
             AddOrUpdateSymbol(provider.GetProviderName(), token, value);
         }
 
-        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
+        void ISymbolBroker.AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
             AddOrUpdateSymbol(provider.GetProviderName(), token, value, values);
         }
 
-        public bool RemoveSymbol(ISymbolProvider provider, string token) {
+        bool ISymbolBroker.RemoveSymbol(ISymbolProvider provider, string token) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
@@ -650,8 +652,10 @@ namespace NINA.Sequencer.Logic {
                 return dt;
             }
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "now",
+                "NINA",
                 "Returns the current Unix timestamp in seconds.",
                 "now()",
                 args => CoreUtil.UnixTimeStampNow(),
@@ -660,8 +664,10 @@ namespace NINA.Sequencer.Logic {
                 isVolatile: true
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "hour",
+                "NINA",
                 "Returns the hour component (0–23) of a given datetime, or of the current time if no argument is supplied.",
                 "hour() or hour(someDate)",
                 args => (int)GetDateTime(args).Hour,
@@ -669,8 +675,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 1
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "minute",
+                "NINA",
                 "Returns the minute component (0–59) of a given datetime, or of the current time if no argument is supplied.",
                 "minute() or minute(someDate)",
                 args => (int)GetDateTime(args).Minute,
@@ -678,8 +686,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 1
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "day",
+                "NINA",
                 "Returns the day of the month (1–31) of a given datetime, or of the current date if no argument is supplied.",
                 "day() or day(someDate)",
                 args => (int)GetDateTime(args).Day,
@@ -687,8 +697,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 1
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "month",
+                "NINA",
                 "Returns the month (1–12) of a given datetime, or of the current date if no argument is supplied.",
                 "month() or month(someDate)",
                 args => (int)GetDateTime(args).Month,
@@ -696,8 +708,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 1
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "year",
+                "NINA",
                 "Returns the year component of a given datetime, or of the current date if no argument is supplied.",
                 "year() or year(someDate)",
                 args => (int)GetDateTime(args).Year,
@@ -705,8 +719,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 1
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "dow",
+                "NINA",
                 "Returns the day of the week as an integer (0 = Sunday, 1 = Monday, … 6 = Saturday).",
                 "dow() or dow(someDate)",
                 args => (int)GetDateTime(args).DayOfWeek,
@@ -714,8 +730,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 1
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "dateString",
+                "NINA",
                 "Formats a datetime value using the specified .NET format string.",
                 "dateString(now(), \"yyyy-MM-dd HH:mm:ss\")",
                 args => {
@@ -727,8 +745,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 2
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "defined",
+                "NINA",
                 "Returns whether a symbol name is defined in the symbol table.",
                 "defined(\"foo\")",
                 args => {
@@ -740,8 +760,10 @@ namespace NINA.Sequencer.Logic {
                 isVolatile: true // depends on symbol table
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "startsWith",
+                "NINA",
                 "Returns whether the string starts with the specified prefix.",
                 "startsWith(\"hello\", \"he\")",
                 args => {
@@ -753,8 +775,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 2
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "strLength",
+                "NINA",
                 "Returns the length of the given string, or -1 if the argument is not a string.",
                 "strLength(\"hello\")",
                 args => {
@@ -765,8 +789,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 1
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "strConcat",
+                "NINA",
                 "Concatenates two strings.",
                 "strConcat(\"hello\", \" world\")",
                 args => {
@@ -778,8 +804,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 2
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "strAtPos",
+                "NINA",
                 "Returns the character at the specified zero-based index in a string, or an empty string if the index is out of bounds.",
                 "strAtPos(\"hello\", 1)",
                 args => {
@@ -793,8 +821,10 @@ namespace NINA.Sequencer.Logic {
                 maxArgs: 2
             ));
 
-            RegisterFunction(new SymbolFunction(
+            RegisterFunction("NINA",
+                new SymbolFunction(
                 "random",
+                "NINA",
                 "Returns a random double value in the range 0.0–1.0.",
                 "random()",
                 args => rng.NextDouble(),
@@ -804,32 +834,88 @@ namespace NINA.Sequencer.Logic {
             ));
         }
 
-        private readonly Dictionary<string, SymbolFunction> _functions = new(StringComparer.OrdinalIgnoreCase);
-
-        public void RegisterFunction(SymbolFunction function) {
-            if (_functions.ContainsKey(function.Name)) {
-                throw new ArgumentException("Function name is already registered: " + function.Name);
-            }
-            _functions[function.Name] = function;
+        void ISymbolBroker.RegisterFunction(ISymbolProvider symbolProvider, SymbolFunction symbolFunction) {
+            RegisterFunction(symbolProvider.GetProviderName(), symbolFunction);
         }
 
-        public bool TryInvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile) {
+        private void RegisterFunction(string source, SymbolFunction function) {
+            if (source != function.Category) {
+                throw new ArgumentException("Function category does not match source provider.");
+            }
+
+            if (!Providers.Contains(source)) {
+                Providers.Add(source);
+            }
+
+            if (!_functions.ContainsKey(function.Name)) {
+                _functions[function.Name] = new List<SymbolFunction>();
+            }
+
+            if (_functions[function.Name].Any(x => x.Category == source)) {
+                throw new ArgumentException("Function symbol already registered: " + function.Name + " in category " + source);
+            }
+                        
+            _functions[function.Name].Add(function);
+        }
+
+        private SymbolFunction GetFunction(string key) {
+            // 1) Direct lookup - if exactly one function matches the key, return it.
+            if (_functions.TryGetValue(key, out var list) && list.Count == 1) {
+                return list[0];
+            }
+
+            // 2) Parse prefix if key contains a delimiter (e.g., "prefix_key").
+            string prefix = null;
+            int delimiterIndex = key.IndexOf(DELIMITER);
+
+            if (delimiterIndex > 0) {
+                // Split only once: "prefix_key" → ["prefix", "key"]
+                var parts = key.Split(DELIMITER, 2);
+                if (parts.Length == 2) {
+                    prefix = parts[0];
+                    key = parts[1]; // lookup is performed on the key part
+                }
+            }
+
+            // 3) Lookup base key (after removing prefix if present).
+            if (!_functions.TryGetValue(key, out list)) {
+                throw new ArgumentException("Function not found: " + key); // not found
+            }
+
+            // 4) If a prefix is available, use it to disambiguate between multiple functions.
+            if (prefix != null) {
+                foreach (var f in list) {
+                    if (f.Category == prefix) {
+                        return f;
+                    }
+                }
+            }
+
+            // 5) If only one symbol exists at this point, return it.
+            if (list.Count == 1) {
+                return list[0];
+            }
+
+            // 6) Multiple symbols remain → ambiguous.
+            throw new ArgumentException("Ambiguous function symbol: " + key);
+        }
+
+
+        void ISymbolBroker.InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile) {
             result = null;
             isVolatile = false;
 
-            if (!_functions.TryGetValue(name, out var fn)) {
-                return false;
-            }
+            var fn = GetFunction(name);
 
             fn.ValidateArgs(name, args);
             result = fn.Implementation(args);
             isVolatile = fn.IsVolatile;
-            return true;
         }
 
         private static readonly IReadOnlyList<SymbolFunction> _ncalcBuiltIns = [
             new SymbolFunction(
                 "Abs",
+                "NINA",
                 "Returns the absolute value of a specified number.",
                 "Abs(-1)",
                 args => Math.Abs(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -837,6 +923,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Acos",
+                "NINA",
                 "Returns the angle whose cosine is the specified number.",
                 "Acos(1)",
                 args => Math.Acos(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -844,6 +931,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Asin",
+                "NINA",
                 "Returns the angle whose sine is the specified number.",
                 "Asin(0)",
                 args => Math.Asin(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -851,6 +939,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Atan",
+                "NINA",
                 "Returns the angle whose tangent is the specified number.",
                 "Atan(0)",
                 args => Math.Atan(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -858,6 +947,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Ceiling",
+                "NINA",
                 "Returns the smallest integer greater than or equal to the specified number.",
                 "Ceiling(1.5)",
                 args => Math.Ceiling(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -865,6 +955,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Cos",
+                "NINA",
                 "Returns the cosine of the specified angle.",
                 "Cos(0)",
                 args => Math.Cos(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -872,6 +963,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Exp",
+                "NINA",
                 "Returns e raised to the specified power.",
                 "Exp(0)",
                 args => Math.Exp(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -879,6 +971,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Floor",
+                "NINA",
                 "Returns the largest integer less than or equal to the specified number.",
                 "Floor(1.5)",
                 args => Math.Floor(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -886,6 +979,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "IEEERemainder",
+                "NINA",
                 "Returns the remainder resulting from the division of a specified number by another specified number.",
                 "IEEERemainder(3, 2)",
                 args => Math.IEEERemainder(
@@ -895,6 +989,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Ln",
+                "NINA",
                 "Returns the natural logarithm of a specified number.",
                 "Ln(1)",
                 args => Math.Log(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -902,6 +997,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Log",
+                "NINA",
                 "Returns the logarithm of a specified number.",
                 "Log(1, 10)",
                 args => Math.Log(
@@ -911,6 +1007,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Log10",
+                "NINA",
                 "Returns the base 10 logarithm of a specified number.",
                 "Log10(1)",
                 args => Math.Log10(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -918,6 +1015,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Max",
+                "NINA",
                 "Returns the larger of two specified numbers.",
                 "Max(1, 2)",
                 args => Math.Max(
@@ -927,6 +1025,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Min",
+                "NINA",
                 "Returns the smaller of two numbers.",
                 "Min(1, 2)",
                 args => Math.Min(
@@ -936,6 +1035,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Pow",
+                "NINA",
                 "Returns a specified number raised to the specified power.",
                 "Pow(3, 2)",
                 args => Math.Pow(
@@ -945,6 +1045,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Round",
+                "NINA",
                 "Rounds a value to the nearest integer or specified number of decimal places.",
                 "Round(3.222, 2)",
                 args =>
@@ -963,6 +1064,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Sign",
+                "NINA",
                 "Returns a value indicating the sign of a number.",
                 "Sign(-10)",
                 args => Math.Sign(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -970,6 +1072,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Sin",
+                "NINA",
                 "Returns the sine of the specified angle.",
                 "Sin(0)",
                 args => Math.Sin(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -977,6 +1080,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Sqrt",
+                "NINA",
                 "Returns the square root of a specified number.",
                 "Sqrt(4)",
                 args => Math.Sqrt(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -984,6 +1088,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Tan",
+                "NINA",
                 "Returns the tangent of the specified angle.",
                 "Tan(0)",
                 args => Math.Tan(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -991,6 +1096,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Truncate",
+                "NINA",
                 "Calculates the integral part of a number.",
                 "Truncate(1.7)",
                 args => Math.Truncate(Convert.ToDouble(args.Parameters[0].Evaluate())),
@@ -998,6 +1104,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "In",
+                "NINA",
                 "Returns whether an element is in a set of values.",
                 "in(1 + 1, 1, 2, 3)",
                 args =>
@@ -1014,6 +1121,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "If",
+                "NINA",
                 "Returns a value based on a condition.",
                 "if(3 % 2 = 1, 'value is true', 'value is false')",
                 args =>
@@ -1027,6 +1135,7 @@ namespace NINA.Sequencer.Logic {
 
             new SymbolFunction(
                 "Ifs",
+                "NINA",
                 "Returns a value based on evaluating a number of conditions, with a default if none are true.",
                 "ifs(foo > 50, \"bar\", foo > 75, \"baz\", \"quux\")",
                 args =>
@@ -1052,7 +1161,7 @@ namespace NINA.Sequencer.Logic {
         ];
 
         public IReadOnlyCollection<SymbolFunction> GetFunctions() {
-            return _functions.Values
+            return _functions.Values.SelectMany(l => l)
                 .Concat(_ncalcBuiltIns)
                 .ToList();
         }

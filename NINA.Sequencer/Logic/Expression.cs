@@ -635,13 +635,12 @@ namespace NINA.Sequencer.Logic {
 
         private void ExtensionFunction(string name, FunctionArgs args) {
             try {
-                if (SymbolBroker.TryInvokeFunction(name, args, out var result, out var isVolatile)) {
-                    args.Result = result;
+                SymbolBroker.InvokeFunction(name, args, out var result, out var isVolatile);
+                args.Result = result;
 
-                    if (isVolatile) {
-                        // Always check again on validation
-                        GlobalVolatile = true;
-                    }
+                if (isVolatile) {
+                    // Always check again on validation
+                    GlobalVolatile = true;
                 }
             } catch (Exception ex) {
                 Logger.Error($"Error evaluating function {name}: {ex.Message}");

@@ -41,5 +41,9 @@ namespace NINA.Sequencer.Logic {
         public bool RemoveSymbol(string token) {
             return broker.RemoveSymbol(this, token);
         }
+
+        public void RegisterFunction(SymbolFunction function) {
+            broker.RegisterFunction(this, function);
+        }
     }
 }
