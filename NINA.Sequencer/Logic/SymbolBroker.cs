@@ -14,6 +14,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Namotion.Reflection;
+using NCalc.Handlers;
 using NINA.Astrometry;
 using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
@@ -32,12 +33,14 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Image.ImageData;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Logic.SymbolFunctions;
 using NINA.WPF.Base.ViewModel;
 using Parlot.Fluent;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -87,18 +90,22 @@ namespace NINA.Sequencer.Logic {
             foreach (string provider in SymbolProviders) {
                 RegisterSymbolProvider(provider);
             }
+            // Register the core functions
+            RegisterCoreFunctions();
         }
 
         private ConcurrentDictionary<string, IList<Symbol>> DataSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
         private ConcurrentDictionary<string, IList<Symbol>> HiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
+        private readonly ConcurrentDictionary<string, IList<SymbolFunction>> _functions = new(StringComparer.OrdinalIgnoreCase);
+
         public static readonly char DELIMITER = '_';
 
-        private static List<string> SymbolProviders = 
-            new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel"};
+        private static List<string> SymbolProviders =
+            new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel" };
 
-        public bool TryGetSymbol(string key, out Symbol symbol) {
+        bool ISymbolBroker.TryGetSymbol(string key, out Symbol symbol) {
             Symbol sym;
             if (GetSymbol(key, out sym)) {
                 symbol = sym;
@@ -229,13 +236,13 @@ namespace NINA.Sequencer.Logic {
             return syms;
         }
 
-        public void AddOrUpdateSymbol(string source, string token, object value) {
+        void AddOrUpdateSymbol(string source, string token, object value) {
             AddOrUpdateSymbol(source, token, value, null, SymbolType.SYMBOL_NORMAL);
         }
-        public void AddOrUpdateSymbol(string source, string token, object value, SymbolType type) {
+        void AddOrUpdateSymbol(string source, string token, object value, SymbolType type) {
             AddOrUpdateSymbol(source, token, value, null, type);
         }
-        private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values) {
+        void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values) {
             AddOrUpdateSymbol(source, token, value, values, SymbolType.SYMBOL_NORMAL);
         }
         private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values, SymbolType type) {
@@ -337,28 +344,28 @@ namespace NINA.Sequencer.Logic {
 
         private IList<string> Providers = new List<string>();
 
-        private static Symbol[] PierConstants = new Symbol[] { 
-            new Symbol("PierUnknown", -1), 
-            new Symbol("PierEast", 0), 
-            new Symbol("PierWest", 1) 
+        private static Symbol[] PierConstants = new Symbol[] {
+            new Symbol("PierUnknown", -1),
+            new Symbol("PierEast", 0),
+            new Symbol("PierWest", 1)
         };
 
-        private static Symbol[] ShutterConstants = new Symbol[] { 
-            new Symbol("ShutterUnknown", -1), 
-            new Symbol("ShutterOpen", 0), 
-            new Symbol("ShutterClosed", 1), 
-            new Symbol("ShutterOpening", 2), 
+        private static Symbol[] ShutterConstants = new Symbol[] {
+            new Symbol("ShutterUnknown", -1),
+            new Symbol("ShutterOpen", 0),
+            new Symbol("ShutterClosed", 1),
+            new Symbol("ShutterOpening", 2),
             new Symbol("ShutterClosing", 3),
-            new Symbol("ShutterError", 4) 
+            new Symbol("ShutterError", 4)
         };
 
-        private static Symbol[] CoverConstants = new Symbol[] { 
-            new Symbol("CoverUnknown", 0), 
-            new Symbol("CoverNeitherOpenNorClosed", 1), 
-            new Symbol("CoverClosed", 2), 
+        private static Symbol[] CoverConstants = new Symbol[] {
+            new Symbol("CoverUnknown", 0),
+            new Symbol("CoverNeitherOpenNorClosed", 1),
+            new Symbol("CoverClosed", 2),
             new Symbol("CoverOpen", 3),
-            new Symbol("CoverError", 4), 
-            new Symbol("CoverNotPresent", 5) 
+            new Symbol("CoverError", 4),
+            new Symbol("CoverNotPresent", 5)
         };
 
         public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys() {
@@ -433,7 +440,7 @@ namespace NINA.Sequencer.Logic {
 
             return Task.CompletedTask;
         }
-        
+
         public ISymbolProvider RegisterSymbolProvider(string name) {
             if (Providers.Contains(name)) {
                 throw new ArgumentException("Symbol Provider name is already registered.");
@@ -442,21 +449,21 @@ namespace NINA.Sequencer.Logic {
             return new SymbolProvider(name, this);
         }
 
-        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value) {
+        void ISymbolBroker.AddOrUpdateSymbol(ISymbolProvider provider, string token, object value) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
             AddOrUpdateSymbol(provider.GetProviderName(), token, value);
         }
 
-        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
+        void ISymbolBroker.AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
             AddOrUpdateSymbol(provider.GetProviderName(), token, value, values);
         }
-        
-        public bool RemoveSymbol(ISymbolProvider provider, string token) {
+
+        bool ISymbolBroker.RemoveSymbol(ISymbolProvider provider, string token) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
@@ -625,6 +632,110 @@ namespace NINA.Sequencer.Logic {
                 RemoveSymbol("Rotator", "Position");
                 RemoveSymbol("Rotator", "MechanicalPosition");
             }
+        }
+
+        private void RegisterCoreFunctions() {
+            foreach (var fn in new MathFunctions(this)) {
+                RegisterFunction(fn.Category, fn);
+            }
+
+            foreach (var fn in new LogicFunctions(this)) {
+                RegisterFunction(fn.Category, fn);
+            }
+
+            foreach (var fn in new TimeFunctions(this)) {
+                RegisterFunction(fn.Category, fn);
+            }
+
+            foreach (var fn in new StringFunctions(this)) {
+                RegisterFunction(fn.Category, fn);
+            }
+
+            foreach (var fn in new UtilityFunctions(this)) {
+                RegisterFunction(fn.Category, fn);
+            }
+        }
+
+        void ISymbolBroker.RegisterFunction(ISymbolProvider symbolProvider, SymbolFunction symbolFunction) {
+            RegisterFunction(symbolProvider.GetProviderName(), symbolFunction);
+        }
+
+        private void RegisterFunction(string source, SymbolFunction function) {
+            if (source != function.Category) {
+                throw new ArgumentException("Function category does not match source provider.");
+            }
+
+            if (!Providers.Contains(source)) {
+                Providers.Add(source);
+            }
+
+            if (!_functions.ContainsKey(function.Key)) {
+                _functions[function.Key] = new List<SymbolFunction>();
+            }
+
+            if (_functions[function.Key].Any(x => x.Category == source)) {
+                throw new ArgumentException("Function symbol already registered: " + function.Key + " in category " + source);
+            }
+
+            _functions[function.Key].Add(function);
+        }
+
+        private SymbolFunction GetFunction(string key) {
+            // 1) Direct lookup - if exactly one function matches the key, return it.
+            if (_functions.TryGetValue(key, out var list) && list.Count == 1) {
+                return list[0];
+            }
+
+            // 2) Parse prefix if key contains a delimiter (e.g., "prefix_key").
+            string prefix = null;
+            int delimiterIndex = key.IndexOf(DELIMITER);
+
+            if (delimiterIndex > 0) {
+                // Split only once: "prefix_key" → ["prefix", "key"]
+                var parts = key.Split(DELIMITER, 2);
+                if (parts.Length == 2) {
+                    prefix = parts[0];
+                    key = parts[1]; // lookup is performed on the key part
+                }
+            }
+
+            // 3) Lookup base key (after removing prefix if present).
+            if (!_functions.TryGetValue(key, out list)) {
+                throw new ArgumentException("Function not found: " + key); // not found
+            }
+
+            // 4) If a prefix is available, use it to disambiguate between multiple functions.
+            if (prefix != null) {
+                foreach (var f in list) {
+                    if (f.Category == prefix) {
+                        return f;
+                    }
+                }
+            }
+
+            // 5) If only one symbol exists at this point, return it.
+            if (list.Count == 1) {
+                return list[0];
+            }
+
+            // 6) Multiple symbols remain → ambiguous.
+            throw new ArgumentException("Ambiguous function symbol: " + key);
+        }
+
+
+        void ISymbolBroker.InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile) {
+            result = null;
+            isVolatile = false;
+
+            var fn = GetFunction(name);
+
+            fn.ValidateArgs(name, args);
+            result = fn.Implementation(args);
+            isVolatile = fn.IsVolatile;
+        }
+
+        public IReadOnlyCollection<SymbolFunction> GetFunctions() {
+            return _functions.Values.SelectMany(l => l).ToList();
         }
     }
 }

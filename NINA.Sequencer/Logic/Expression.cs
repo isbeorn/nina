@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NCalc;
+using NCalc.Exceptions;
 using NCalc.Handlers;
 using Newtonsoft.Json;
 using NINA.Core.Locale;
@@ -59,7 +60,7 @@ namespace NINA.Sequencer.Logic {
         public static readonly bool STRING_VALUES_ALLOWED = true;
         public static readonly bool DATE_VALUES_ALLOWED = true;
 
-        public ISymbolBroker SymbolBroker;
+        public ISymbolBroker SymbolBroker { get; set; }
 
         public bool HasError => !string.IsNullOrEmpty(Error);
  
@@ -572,14 +573,14 @@ namespace NINA.Sequencer.Logic {
                             UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                             if (s is Variable sv && !sv.Executed) {
                                 AddError(Loc.Instance["LblNotEvaluated"] + r);
-//                           } else if (r.StartsWith("_")) {
-//                               AddError("Reference: " + r);
+                                //                           } else if (r.StartsWith("_")) {
+                                //                               AddError("Reference: " + r);
                             } else {
                                 //                                if (r.StartsWith('$') && ext && validateOnly) {
                                 //                                    AddError("External: " + symReference);
                                 //                                } else {
                                 AddError(Loc.Instance["LblUndefined"] + ": " + r);
-//                                }
+                                //                                }
                             }
                         }
                     }
@@ -619,106 +620,31 @@ namespace NINA.Sequencer.Logic {
 
             } catch (NCalc.Exceptions.NCalcParameterNotDefinedException ex) {
                 Error = Loc.Instance["LblUndefined"] + ": " + ex.ParameterName;
+            } catch (NCalc.Exceptions.NCalcEvaluationException ex) {
+                Error = ex.Message;
+                return;
+            } catch (NCalc.Exceptions.NCalcParserException) {
+                Error = Loc.Instance["LblSyntaxError"];
+                return;
             } catch (Exception ex) {
-                if (ex is NCalc.Exceptions.NCalcEvaluationException || ex is NCalc.Exceptions.NCalcParserException) {
-                    Error = Loc.Instance["LblSyntaxError"];
-                    return;
-                } else {
-                    Error = Loc.Instance["LblError"] + ": " + ex.Message; // "Unknown Error; see log";
-                    Logger.Warning("Exception evaluating " + Definition + ": " + ex.Message);
-                }
+                Error = Loc.Instance["LblError"] + ": " + ex.Message; // "Unknown Error; see log";
+                Logger.Warning("Exception evaluating " + Definition + ": " + ex.Message);
             }
             Dirty = false;
         }
-        
-        public static Random RNG = new Random();
 
-        public void ExtensionFunction(string name, FunctionArgs args) {
-            DateTime dt;
-            string str;
+        private void ExtensionFunction(string name, FunctionArgs args) {
             try {
-                if (args.Parameters.Length > 0) {
-                    try {
-                        var utc = CoreUtil.UnixTimeStampToDateTime(Convert.ToDouble(args.Parameters[0].Evaluate()));
-                        dt = utc.ToLocalTime();
-                    } catch (Exception) {
-                        dt = DateTime.MinValue;
-                    }
-                } else {
-                    dt = DateTime.Now;
-                }
+                SymbolBroker.InvokeFunction(name, args, out var result, out var isVolatile);
+                args.Result = result;
 
-                switch (name) {
-                    case "now":
-                        args.Result = CoreUtil.UnixTimeStampNow();
-                        break;
-                    case "hour":
-                        args.Result = (int)dt.Hour;
-                        break;
-                    case "minute":
-                        args.Result = (int)dt.Minute;
-                        break;
-                    case "day":
-                        args.Result = (int)dt.Day;
-                        break;
-                    case "month":
-                        args.Result = (int)dt.Month;
-                        break;
-                    case "year":
-                        args.Result = (int)dt.Year;
-                        break;
-                    case "dow":
-                        args.Result = (int)dt.DayOfWeek;
-                        break;
-                    case "dateString":
-                        if (args.Parameters.Length < 2) {
-                            throw new ArgumentException();
-                        }
-                        args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
-                        break;
-                    case "defined":
-                        str = Convert.ToString(args.Parameters[0].Evaluate());
-                        args.Result = SymbolBroker.TryGetValue(str, out _);
-                        // Always check again on validation
-                        GlobalVolatile = true;
-                        break;
-                    case "startsWith":
-                        str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                        string f = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
-                        args.Result = str.StartsWith(f, StringComparison.Ordinal);
-                        break;
-                    case "strLength":
-                        var e = args.Parameters[0].Evaluate();
-                        if (e is string es) {
-                            args.Result = es.Length;
-                        } else {
-                            args.Result = -1;
-                        }
-                        break;
-                    case "strConcat":
-                        var e1 = args.Parameters[0].Evaluate().ToString();
-                        var i1 = args.Parameters[1].Evaluate().ToString();
-                        if (e1 is string es1 && i1 is string iss) {
-                            args.Result = String.Concat(es1, iss);
-                        } else {
-                            args.Result = "";
-                        }
-                        break;
-                    case "strAtPos":
-                        var e2 = args.Parameters[0].Evaluate();
-                        var i2 = args.Parameters[1].Evaluate();
-                        if (e2 is string es2 && i2 is int iint && iint >= 0 && iint < es2.Length) {
-                            args.Result = Convert.ToString(es2[iint]);
-                        } else {
-                            args.Result = "";
-                        }
-                        break;
-                    case "random":
-                        args.Result = RNG.NextDouble();
-                        break;
+                if (isVolatile) {
+                    // Always check again on validation
+                    GlobalVolatile = true;
                 }
             } catch (Exception ex) {
-                Logger.Error("Error evaluating function " + name + ": " + ex.Message);
+                Logger.Error($"Error evaluating function {name}: {ex.Message}");
+                throw new NCalcEvaluationException(ex.Message);
             }
         }
 

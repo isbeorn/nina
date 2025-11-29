@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NCalc.Handlers;
 using NINA.Equipment.Interfaces.ViewModel;
 using System.Collections.Generic;
 
@@ -21,9 +22,12 @@ namespace NINA.Sequencer.Logic {
         public bool TryGetSymbol(string key, out Symbol symbol);
         public List<Symbol> GetSymbols();
         public ISymbolProvider RegisterSymbolProvider(string name);
-        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value);
-        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values);
-        public bool RemoveSymbol(ISymbolProvider provider, string token);
         public IList<Symbol> GetHiddenSymbols(string source);
+        public IReadOnlyCollection<SymbolFunction> GetFunctions();
+        public void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile);
+        internal void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value);
+        internal void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values);
+        internal bool RemoveSymbol(ISymbolProvider provider, string token);
+        internal void RegisterFunction(ISymbolProvider provider, SymbolFunction function);
     }
 }
