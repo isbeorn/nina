@@ -7574,16 +7574,16 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Current Unix timestamp in seconds.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
-    <value>Hour component (0–23) of a datetime or the current time.</value>
+    <value>Hour component (0-23) of a datetime or the current time.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
-    <value>Minute component (0–59) of a datetime or the current time.</value>
+    <value>Minute component (0-59) of a datetime or the current time.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
-    <value>Day of the month (1–31) of a datetime or the current date.</value>
+    <value>Day of the month (1-31) of a datetime or the current date.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1–12) of a datetime or the current date.</value>
+    <value>Month (1-12) of a datetime or the current date.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
     <value>Year component of a datetime or the current date.</value>
@@ -7607,7 +7607,7 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Whether the string starts with the specified prefix.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
-    <value>Length of the given string, or –1 if the value is not a string.</value>
+    <value>Length of the given string, or -1 if the value is not a string.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
     <value>Concatenation of two strings.</value>
