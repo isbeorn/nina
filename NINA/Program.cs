@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
+using NINA.Core.SignalR;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -25,6 +27,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add full services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAll", builder => {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .DisallowCredentials(); // SignalR with * origin cannot use credentials
+    });
+});
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<SignalRNotificationBroadcaster>();
 builder.Services.AddControllers().AddJsonOptions(options => {
     options.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals;
 });
@@ -88,8 +100,18 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
+// Enable CORS for SignalR connections from other ports/origins
+app.UseCors("AllowAll");
+
 // Start web server to expose profile endpoints
 app.MapControllers();
+app.MapHub<NotificationHub>("/hubs/notifications");
+
+// Set up the notification broadcaster to use SignalR
+var signalRBroadcaster = app.Services.GetRequiredService<SignalRNotificationBroadcaster>();
+Notification.Broadcaster = async (message) => {
+    await signalRBroadcaster.BroadcastNotificationAsync(message);
+};
 
 Logger.Info("Server fully initialized and running.");
 
