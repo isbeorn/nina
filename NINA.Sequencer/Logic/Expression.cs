@@ -644,7 +644,7 @@ namespace NINA.Sequencer.Logic {
                 }
             } catch (Exception ex) {
                 Logger.Error($"Error evaluating function {name}: {ex.Message}");
-                //throw new NCalcEvaluationException(ex.Message);
+                throw new NCalcEvaluationException(ex.Message);
             }
         }
 
