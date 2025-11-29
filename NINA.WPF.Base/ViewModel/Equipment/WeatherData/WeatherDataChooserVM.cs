@@ -59,6 +59,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                     Logger.Error(ex);
                 }
 
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaObservingConditions = await alpacaInteraction.GetWeatherDataSources(default);
+                    foreach (IWeatherData w in alpacaObservingConditions) {
+                        devices.Add(w);
+                    }
+                    Logger.Info($"Found {alpacaObservingConditions?.Count} Alpaca Observing Conditions");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 devices.Add(new OpenWeatherMap(this.profileService));
                 devices.Add(new TheWeatherCompany(this.profileService));
                 devices.Add(new WeatherUnderground(this.profileService));

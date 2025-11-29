@@ -37,7 +37,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblNoRotator"]));
-
+                
                 /* Plugin Providers */
                 foreach (var provider in await equipmentProviders.GetProviders()) {
                     try {
@@ -69,6 +69,19 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                                     Logger.Error(ex);
                                 }
                 */
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaRotators = await alpacaInteraction.GetRotators(default);
+                    foreach (IRotator r in alpacaRotators) {
+                        devices.Add(r);
+                    }
+                    Logger.Info($"Found {alpacaRotators?.Count} Alpaca Rotators");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 devices.Add(new ManualRotator(profileService));
 
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.RotatorSettings.Id, profileService.ActiveProfile.RotatorSettings.LastDeviceName);

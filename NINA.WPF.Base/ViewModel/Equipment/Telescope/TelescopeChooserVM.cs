@@ -70,6 +70,19 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                     Logger.Error(ex);
                                 }
                 */
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaTelescopes = await alpacaInteraction.GetTelescopes(default);
+                    foreach (ITelescope t in alpacaTelescopes) {
+                        devices.Add(t);
+                    }
+                    Logger.Info($"Found {alpacaTelescopes?.Count} Alpaca Telescopes");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.TelescopeSettings.Id, profileService.ActiveProfile.TelescopeSettings.LastDeviceName);
 
             } finally {

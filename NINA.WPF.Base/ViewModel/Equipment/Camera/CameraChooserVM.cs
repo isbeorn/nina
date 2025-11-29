@@ -190,6 +190,19 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                     Logger.Error(ex);
                                 }
                 */
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaCameras = await alpacaInteraction.GetCameras(exposureDataFactory, default);
+                    foreach (ICamera cam in alpacaCameras) {
+                        devices.Add(cam);
+                    }
+                    Logger.Info($"Found {alpacaCameras?.Count} Alpaca Cameras");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 //                devices.Add(new FileCamera(profileService, telescopeMediator, imageDataFactory, exposureDataFactory));
                 devices.Add(new SimpleSimulatorCamera(profileService, imageDataFactory, exposureDataFactory));
 

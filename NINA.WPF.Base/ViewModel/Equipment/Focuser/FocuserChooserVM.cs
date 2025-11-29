@@ -33,7 +33,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
     public class FocuserChooserVM : DeviceChooserVM<IFocuser> {
 
         public FocuserChooserVM(
-                IProfileService profileService,
+                IProfileService profileService, 
                 IEquipmentProviders<IFocuser> equipmentProviders) : base(profileService, equipmentProviders) {
         }
 
@@ -117,6 +117,19 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                                     Logger.Error(ex);
                                 }
                 */
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaFocusers = await alpacaInteraction.GetFocusers(default);
+                    foreach (IFocuser focuser in alpacaFocusers) {
+                        devices.Add(focuser);
+                    }
+                    Logger.Info($"Found {alpacaFocusers?.Count} Alpaca Focusers");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.FocuserSettings.Id, profileService.ActiveProfile.FocuserSettings.LastDeviceName);
 
             } finally {

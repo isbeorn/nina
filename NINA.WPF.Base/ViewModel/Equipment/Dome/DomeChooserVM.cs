@@ -48,6 +48,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                     }
                 }
 
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaDomes = await alpacaInteraction.GetDomes(default);
+                    foreach (IDome dome in alpacaDomes) {
+                        devices.Add(dome);
+                    }
+                    Logger.Info($"Found {alpacaDomes?.Count} Alpaca Domes");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.DomeSettings.Id, profileService.ActiveProfile.DomeSettings.LastDeviceName);
 
             } finally {

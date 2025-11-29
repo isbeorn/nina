@@ -59,6 +59,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                 }
 */
 
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaCoverCalibrators = await alpacaInteraction.GetCoverCalibrators(default);
+                    foreach (IFlatDevice fd in alpacaCoverCalibrators) {
+                        devices.Add(fd);
+                    }
+                    Logger.Info($"Found {alpacaCoverCalibrators?.Count} Alpaca Cover Calibrators");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 devices.AddRange(new List<IDevice>{
                     new AllProSpikeAFlat(profileService),
                     new AlnitakFlipFlatSimulator(profileService),

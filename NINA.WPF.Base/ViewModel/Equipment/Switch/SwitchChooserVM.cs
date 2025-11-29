@@ -51,6 +51,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                     }
                 }
 
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaSwitches = await alpacaInteraction.GetSwitches(default);
+                    foreach (ISwitchHub s in alpacaSwitches) {
+                        devices.Add(s);
+                    }
+                    Logger.Info($"Found {alpacaSwitches?.Count} Alpaca Switch Hubs");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.SwitchSettings.Id, profileService.ActiveProfile.SwitchSettings.LastDeviceName);
 
             } finally {
