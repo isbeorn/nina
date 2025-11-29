@@ -36,6 +36,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public Annotation() { }
 
         private Annotation(Annotation cloneMe) : base(cloneMe) {
+            CopyMetaData(cloneMe);
         }
 
         [JsonProperty]

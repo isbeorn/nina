@@ -15,12 +15,15 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Symbol")]
 <<<<<<< HEAD
+<<<<<<< HEAD
     [Export(typeof(ISequenceItem))]
 =======
     //[Export(typeof(ISequenceItem))]
 >>>>>>> a8d66a2a29455991d43d762d6396c74c02108a29
+=======
+    [Export(typeof(ISequenceItem))]
+>>>>>>> 6a901085469ce89ac30fa63b0e92d85ab389cfb9
     [JsonObject(MemberSerialization.OptIn)]
-
     public partial class Variable : UserSymbol {
 
         [ImportingConstructor]
