@@ -15,7 +15,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
 
             _all = [
                 new SymbolFunction(
-                    name: "In",
+                    key: "In",
                     category: "Logic",
                     description: Loc.Instance["Lbl_SymbolFunction_Logic_In_Description"],
                     usageExample: "in(1 + 1, 1, 2, 3)",
@@ -31,7 +31,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "If",
+                    key: "If",
                     category: "Logic",
                     description: Loc.Instance["Lbl_SymbolFunction_Logic_If_Description"],
                     usageExample: "if(3 % 2 = 1, 'value is true', 'value is false')",
@@ -45,7 +45,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Ifs",
+                    key: "Ifs",
                     category: "Logic",
                     description: Loc.Instance["Lbl_SymbolFunction_Logic_Ifs_Description"],
                     usageExample: "ifs(foo > 50, \"bar\", foo > 75, \"baz\", \"quux\")",
@@ -67,7 +67,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Defined",
+                    key: "Defined",
                     category: "Logic",
                     description: Loc.Instance["Lbl_SymbolFunction_Logic_Defined_Description"],
                     usageExample: "Defined(\"foo\")",
@@ -81,7 +81,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Not",
+                    key: "Not",
                     category: "Logic",
                     description: Loc.Instance["Lbl_SymbolFunction_Logic_Not_Description"],
                     usageExample: "Not(cloudy)",

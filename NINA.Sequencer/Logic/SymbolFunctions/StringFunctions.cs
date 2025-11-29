@@ -14,7 +14,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
             this.symbolBroker = symbolBroker;
             _all = [
                 new SymbolFunction(
-                    name: "StartsWith",
+                    key: "StartsWith",
                     category: "String",
                     description: Loc.Instance["Lbl_SymbolFunction_String_StartsWith_Description"],
                     usageExample: "StartsWith(\"hello\", \"he\")",
@@ -28,7 +28,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "StrLength",
+                    key: "StrLength",
                     category: "String",
                     description: Loc.Instance["Lbl_SymbolFunction_String_StrLength_Description"],
                     usageExample: "StrLength(\"hello\")",
@@ -41,7 +41,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "StrConcat",
+                    key: "StrConcat",
                     category: "String",
                     description: Loc.Instance["Lbl_SymbolFunction_String_StrConcat_Description"],
                     usageExample: "StrConcat(\"hello\", \" world\")",
@@ -55,7 +55,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "StrAtPos",
+                    key: "StrAtPos",
                     category: "String",
                     description: Loc.Instance["Lbl_SymbolFunction_String_StrAtPos_Description"],
                     usageExample: "StrAtPos(\"hello\", 1)",
@@ -71,7 +71,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Contains",
+                    key: "Contains",
                     category: "String",
                     description: Loc.Instance["Lbl_SymbolFunction_String_Contains_Description"],
                     usageExample: "Contains(filterName, \"Ha\")",
@@ -85,7 +85,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "EndsWith",
+                    key: "EndsWith",
                     category: "String",
                     description: Loc.Instance["Lbl_SymbolFunction_String_EndsWith_Description"],
                     usageExample: "EndsWith(fileName, \".fits\")",
@@ -99,7 +99,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Substring",
+                    key: "Substring",
                     category: "String",
                     description: Loc.Instance["Lbl_SymbolFunction_String_Substring_Description"],
                     usageExample: "Substring(\"hello\", 1, 3)  // \"ell\"",
@@ -127,7 +127,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "ToLower",
+                    key: "ToLower",
                     category: "String",
                     description: Loc.Instance["Lbl_SymbolFunction_String_ToLower_Description"],
                     usageExample: "ToLower(filterName)",
@@ -140,7 +140,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "ToUpper",
+                    key: "ToUpper",
                     category: "String",
                     description: Loc.Instance["Lbl_SymbolFunction_String_ToUpper_Description"],
                     usageExample: "toUpper(filterName)",

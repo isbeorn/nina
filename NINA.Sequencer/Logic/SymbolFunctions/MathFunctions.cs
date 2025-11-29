@@ -17,7 +17,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
             this.symbolBroker = symbolBroker;
             _all = [
                 new SymbolFunction(
-                    name: "Abs",
+                    key: "Abs",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Abs_Description"],
                     usageExample: "Abs(-1)",
@@ -26,7 +26,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Acos",
+                    key: "Acos",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Acos_Description"],
                     usageExample: "Acos(1)",
@@ -35,7 +35,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Asin",
+                    key: "Asin",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Asin_Description"],
                     usageExample: "Asin(0)",
@@ -44,7 +44,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Atan",
+                    key: "Atan",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Atan_Description"],
                     usageExample: "Atan(0)",
@@ -53,7 +53,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Avg",
+                    key: "Avg",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Avg_Description"],
                     usageExample: "Avg(1, 2, 3)",
@@ -70,7 +70,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Ceiling",
+                    key: "Ceiling",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Ceiling_Description"],
                     usageExample: "Ceiling(1.5)",
@@ -79,7 +79,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Cos",
+                    key: "Cos",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Cos_Description"],
                     usageExample: "Cos(0)",
@@ -88,7 +88,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Exp",
+                    key: "Exp",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Exp_Description"],
                     usageExample: "Exp(0)",
@@ -97,7 +97,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Floor",
+                    key: "Floor",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Floor_Description"],
                     usageExample: "Floor(1.5)",
@@ -106,7 +106,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "IEEERemainder",
+                    key: "IEEERemainder",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_IEEERemainder_Description"],
                     usageExample: "IEEERemainder(3, 2)",
@@ -117,7 +117,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Ln",
+                    key: "Ln",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Ln_Description"],
                     usageExample: "Ln(1)",
@@ -126,7 +126,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Log",
+                    key: "Log",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Log_Description"],
                     usageExample: "Log(1, 10)",
@@ -137,7 +137,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Log10",
+                    key: "Log10",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Log10_Description"],
                     usageExample: "Log10(1)",
@@ -146,7 +146,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Max",
+                    key: "Max",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Max_Description"],
                     usageExample: "Max(1, 2)",
@@ -157,7 +157,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Min",
+                    key: "Min",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Min_Description"],
                     usageExample: "Min(1, 2)",
@@ -168,7 +168,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Pow",
+                    key: "Pow",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Pow_Description"],
                     usageExample: "Pow(3, 2)",
@@ -179,7 +179,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Round",
+                    key: "Round",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Round_Description"],
                     usageExample: "Round(3.222, 2)",
@@ -195,7 +195,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Sign",
+                    key: "Sign",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Sign_Description"],
                     usageExample: "Sign(-10)",
@@ -204,7 +204,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Sin",
+                    key: "Sin",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Sin_Description"],
                     usageExample: "Sin(0)",
@@ -213,7 +213,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Sqrt",
+                    key: "Sqrt",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Sqrt_Description"],
                     usageExample: "Sqrt(4)",
@@ -222,7 +222,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Tan",
+                    key: "Tan",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Tan_Description"],
                     usageExample: "Tan(0)",
@@ -231,7 +231,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Truncate",
+                    key: "Truncate",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Truncate_Description"],
                     usageExample: "Truncate(1.7)",
@@ -240,7 +240,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Mod",
+                    key: "Mod",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Mod_Description"],
                     usageExample: "Mod(-1, 10)",
@@ -255,7 +255,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Clamp",
+                    key: "Clamp",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Clamp_Description"],
                     usageExample: "Clamp(exposure, 1, 600)",
@@ -269,7 +269,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Between",
+                    key: "Between",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Between_Description"],
                     usageExample: "Between(temperature, -10, 40)",
@@ -283,7 +283,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Deg",
+                    key: "Deg",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Deg_Description"],
                     usageExample: "Deg(PI() / 2)",
@@ -295,7 +295,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Rad",
+                    key: "Rad",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Rad_Description"],
                     usageExample: "Rad(90)",
@@ -307,7 +307,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Sum",
+                    key: "Sum",
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Sum_Description"],
                     usageExample: "Sum(1, 2, 3)",

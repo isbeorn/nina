@@ -182,7 +182,7 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var provider = broker.RegisterSymbolProvider("Plugin");
             var fn = new SymbolFunction(
-                name: "const42",
+                key: "const42",
                 category: "Plugin",
                 description: "",
                 usageExample: "",
@@ -226,7 +226,7 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var provider = broker.RegisterSymbolProvider("Plugin");
             var fn = new SymbolFunction(
-                name: "volatileFunc",
+                key: "volatileFunc",
                 category: "Plugin",
                 description: "",
                 usageExample: "",
@@ -255,7 +255,7 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var provider = broker.RegisterSymbolProvider("Plugin");
             var fn = new SymbolFunction(
-                name: "needsOneArg",
+                key: "needsOneArg",
                 category: "Plugin",
                 description: "",
                 usageExample: "",
@@ -287,7 +287,7 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var provider = broker.RegisterSymbolProvider("Plugin");
             var fn1 = new SymbolFunction(
-                name: "overrideMe",
+                key: "overrideMe",
                 category: "Plugin",
                 description: "",
                 usageExample: "",
@@ -297,7 +297,7 @@ namespace NINA.Test.Sequencer.Logic {
                 isVolatile: false);
 
             var fn2 = new SymbolFunction(
-                name: "overrideMe",
+                key: "overrideMe",
                 category: "Plugin",
                 description: "",
                 usageExample: "",
@@ -319,7 +319,7 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var provider1 = broker.RegisterSymbolProvider("Plugin1");
             var fn1 = new SymbolFunction(
-                name: "overrideMe",
+                key: "overrideMe",
                 category: "Plugin1",
                 description: "",
                 usageExample: "",
@@ -330,7 +330,7 @@ namespace NINA.Test.Sequencer.Logic {
 
             var provider2 = broker.RegisterSymbolProvider("Plugin2");
             var fn2 = new SymbolFunction(
-                name: "overrideMe",
+                key: "overrideMe",
                 category: "Plugin2",
                 description: "",
                 usageExample: "",
@@ -360,7 +360,7 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var provider = broker.RegisterSymbolProvider("Plugin");
             var fn = new SymbolFunction(
-                name: "randomInRange",
+                key: "randomInRange",
                 category: "Plugin",
                 description: "",
                 usageExample: "",
@@ -393,7 +393,7 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var provider = broker.RegisterSymbolProvider("Plugin");
             var fn = new SymbolFunction(
-                name: "add",
+                key: "add",
                 category: "Plugin",
                 description: "",
                 usageExample: "",
@@ -428,7 +428,7 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var provider = broker.RegisterSymbolProvider("Plugin");
             var fn = new SymbolFunction(
-                name: "add",
+                key: "add",
                 category: "Plugin",
                 description: "",
                 usageExample: "",
@@ -463,7 +463,7 @@ namespace NINA.Test.Sequencer.Logic {
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
             var provider1 = broker.RegisterSymbolProvider("Plugin1");
             var fn1 = new SymbolFunction(
-                name: "add",
+                key: "add",
                 category: "Plugin1",
                 description: "",
                 usageExample: "",
@@ -481,7 +481,7 @@ namespace NINA.Test.Sequencer.Logic {
 
             var provider2 = broker.RegisterSymbolProvider("Plugin2");
             var fn2 = new SymbolFunction(
-                name: "add",
+                key: "add",
                 category: "Plugin2",
                 description: "",
                 usageExample: "",

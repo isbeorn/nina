@@ -18,7 +18,7 @@ using System;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolFunction {
-        public string Name { get; }
+        public string Key { get; }
         public string Category { get; }
         public string Description { get; }
         public string UsageExample { get; }
@@ -28,7 +28,7 @@ namespace NINA.Sequencer.Logic {
         public bool IsVolatile { get; }
 
         public SymbolFunction(
-            string name,
+            string key,
             string category,
             string description,            
             string usageExample,
@@ -36,7 +36,7 @@ namespace NINA.Sequencer.Logic {
             int minArgs = 0,
             int maxArgs = 0,
             bool isVolatile = false) {
-            Name = name;
+            Key = key;
             Category = category;
             Description = description;
             UsageExample = usageExample;

@@ -14,7 +14,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
             this.symbolBroker = symbolBroker;
             _all = [
                 new SymbolFunction(
-                    name: "Random",
+                    key: "Random",
                     category: "Utility",
                     description: Loc.Instance["Lbl_SymbolFunction_Random_Description"],
                     usageExample: "Random()",

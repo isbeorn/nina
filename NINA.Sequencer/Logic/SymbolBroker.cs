@@ -669,15 +669,15 @@ namespace NINA.Sequencer.Logic {
                 Providers.Add(source);
             }
 
-            if (!_functions.ContainsKey(function.Name)) {
-                _functions[function.Name] = new List<SymbolFunction>();
+            if (!_functions.ContainsKey(function.Key)) {
+                _functions[function.Key] = new List<SymbolFunction>();
             }
 
-            if (_functions[function.Name].Any(x => x.Category == source)) {
-                throw new ArgumentException("Function symbol already registered: " + function.Name + " in category " + source);
+            if (_functions[function.Key].Any(x => x.Category == source)) {
+                throw new ArgumentException("Function symbol already registered: " + function.Key + " in category " + source);
             }
 
-            _functions[function.Name].Add(function);
+            _functions[function.Key].Add(function);
         }
 
         private SymbolFunction GetFunction(string key) {

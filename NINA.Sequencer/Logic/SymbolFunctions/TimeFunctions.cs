@@ -33,7 +33,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
             this.symbolBroker = symbolBroker;
             _all = [
                 new SymbolFunction(
-                    name: "Now",
+                    key: "Now",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_Now_Description"],
                     usageExample: "Now()",
@@ -44,7 +44,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Hour",
+                    key: "Hour",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_Hour_Description"],
                     usageExample: "Hour() or Hour(someDate)",
@@ -54,7 +54,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Minute",
+                    key: "Minute",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_Minute_Description"],
                     usageExample: "Minute() or Minute(someDate)",
@@ -64,7 +64,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Day",
+                    key: "Day",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_Day_Description"],
                     usageExample: "Day() or Day(someDate)",
@@ -74,7 +74,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Month",
+                    key: "Month",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_Month_Description"],
                     usageExample: "Month() or Month(someDate)",
@@ -84,7 +84,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Year",
+                    key: "Year",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_Year_Description"],
                     usageExample: "Year() or Year(someDate)",
@@ -94,7 +94,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "Dow",
+                    key: "Dow",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_Dow_Description"],
                     usageExample: "Dow() or Dow(someDate)",
@@ -104,7 +104,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "AddMinutes",
+                    key: "AddMinutes",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_AddMinutes_Description"],
                     usageExample: "AddMinutes(now(), 30)",
@@ -132,7 +132,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "AddHours",
+                    key: "AddHours",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_AddHours_Description"],
                     usageExample: "AddHours(now(), 1.5)",
@@ -160,7 +160,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "SecondsSince",
+                    key: "SecondsSince",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_SecondsSince_Description"],
                     usageExample: "SecondsSince(lastEventTime) > 600",
@@ -175,7 +175,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                 ),
 
                 new SymbolFunction(
-                    name: "DateString",
+                    key: "DateString",
                     category: "Time",
                     description: Loc.Instance["Lbl_SymbolFunction_Time_DateString_Description"],
                     usageExample: "DateString(now(), \"yyyy-MM-dd HH:mm:ss\")",

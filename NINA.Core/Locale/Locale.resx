@@ -7729,4 +7729,13 @@ If exposure count is not important to you, enable this option to avoid having to
   <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
     <value>Returns the logical negation of a boolean value.</value>
   </data>
+  <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard">
+    <value>Click any function to copy it to the clipboard.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions" xml:space="preserve">
+    <value>Functions</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
+    <value>Usage</value>
+  </data>
 </root>
