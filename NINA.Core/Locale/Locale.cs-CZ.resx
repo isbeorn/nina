@@ -6542,6 +6542,9 @@ Tato funkce by měla být vypnuta pouze v případě, že máte k dispozici vyni
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>Název dlouhý až 8 znaků ASCII, který můžete přiřadit připojenému zařízení ZWO. To umožňuje jednoznačně identifikovat více kusů stejného modelu zařízení.</value>
   </data>
+  <data name="LblDeviceIdTooltip" xml:space="preserve">
+    <value>Název o délce až 8 znaků ASCII, který můžete přiřadit připojenému zařízení. To vám umožní jednoznačně identifikovat více kusů stejného modelu zařízení.</value>
+  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Jednosměrný</value>
   </data>
@@ -7342,6 +7345,63 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicializace</value>
+  </data>
+  <data name="LblOasisClearStallPrompt" xml:space="preserve">
+    <value>Vyčistit stav zastavení?</value>
+  </data>
+  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
+    <value>Zaostřovač se zasekl. Zaseknutí je nutné odstranit ručně.</value>
+  </data>
+  <data name="LblBeepOnStartup" xml:space="preserve">
+    <value>Pípnutí při spuštění</value>
+  </data>
+  <data name="LblBeepOnMove" xml:space="preserve">
+    <value>Pípnutí při pohybu</value>
+  </data>
+  <data name="LblOasisHeating" xml:space="preserve">
+    <value>Topení</value>
+  </data>
+  <data name="LblOasisHeatingTemperature" xml:space="preserve">
+    <value>Teplota ohřevu</value>
+  </data>
+  <data name="LblOasisStallDetection" xml:space="preserve">
+    <value>Detekce zastavení</value>
+  </data>
+  <data name="LblOasisIsStalled" xml:space="preserve">
+    <value>Je zastaveno</value>
+  </data>
+  <data name="LblOasisUSBCapacity" xml:space="preserve">
+    <value>Kapacita USB</value>
+  </data>
+  <data name="LblOasisSpeed" xml:space="preserve">
+    <value>Rychlost</value>
+  </data>
+  <data name="LblOasisClearStall" xml:space="preserve">
+    <value>Obnovení provozu</value>
+  </data>
+  <data name="LblOasisDcPower" xml:space="preserve">
+    <value>DC napájení</value>
+  </data>
+  <data name="LblOasisBoardHeating" xml:space="preserve">
+    <value>Ohřev</value>
+  </data>
+  <data name="LblOasisHeatingPower" xml:space="preserve">
+    <value>Topný výkon</value>
+  </data>
+  <data name="LblOasisBoardTemperature" xml:space="preserve">
+    <value>Teplota desky</value>
+  </data>
+  <data name="LblOasisSyncPosition" xml:space="preserve">
+    <value>Synchronizace polohy</value>
+  </data>
+  <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
+    <value>Nastavit aktuální pozici pro synchronizaci?</value>
+  </data>
+  <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
+    <value>Vybraný zaostřovač Oasis není k dispozici. Zkontrolujte připojení a znovu vyhledejte zařízení.</value>
+  </data>
+  <data name="LblBluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
     <value>ASCOM Alpaca IP Nastavení</value>
