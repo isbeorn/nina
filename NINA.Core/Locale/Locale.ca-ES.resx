@@ -6539,6 +6539,9 @@ Això només s'ha de desactivar quan es disposa d'un bon model del cel i no s'ha
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>Un nom de 8 caràcters ASCII que podeu assignar al dispositiu ZWO connectat. Això us permet identificar de manera única diverses peces del mateix model de dispositiu.</value>
   </data>
+  <data name="LblDeviceIdTooltip" xml:space="preserve">
+    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Unidireccional</value>
   </data>
@@ -7340,6 +7343,63 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicialització</value>
+  </data>
+  <data name="LblOasisClearStallPrompt" xml:space="preserve">
+    <value>Clear stall?</value>
+  </data>
+  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
+    <value>Focuser stalled. You need to manually clear stall.</value>
+  </data>
+  <data name="LblBeepOnStartup" xml:space="preserve">
+    <value>Beep on startup</value>
+  </data>
+  <data name="LblBeepOnMove" xml:space="preserve">
+    <value>Beep on move</value>
+  </data>
+  <data name="LblOasisHeating" xml:space="preserve">
+    <value>Heating</value>
+  </data>
+  <data name="LblOasisHeatingTemperature" xml:space="preserve">
+    <value>Heating temperature</value>
+  </data>
+  <data name="LblOasisStallDetection" xml:space="preserve">
+    <value>Stall detection</value>
+  </data>
+  <data name="LblOasisIsStalled" xml:space="preserve">
+    <value>Is stalled</value>
+  </data>
+  <data name="LblOasisUSBCapacity" xml:space="preserve">
+    <value>USB capacity</value>
+  </data>
+  <data name="LblOasisSpeed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
+  <data name="LblOasisClearStall" xml:space="preserve">
+    <value>Clear stall</value>
+  </data>
+  <data name="LblOasisDcPower" xml:space="preserve">
+    <value>DC power</value>
+  </data>
+  <data name="LblOasisBoardHeating" xml:space="preserve">
+    <value>Board heating</value>
+  </data>
+  <data name="LblOasisHeatingPower" xml:space="preserve">
+    <value>Heating power</value>
+  </data>
+  <data name="LblOasisBoardTemperature" xml:space="preserve">
+    <value>Board temperature</value>
+  </data>
+  <data name="LblOasisSyncPosition" xml:space="preserve">
+    <value>Sync position</value>
+  </data>
+  <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
+    <value>Set current position to sync position?</value>
+  </data>
+  <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
+    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+  </data>
+  <data name="LblBluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
     <value>Configuració IP d'ASCOM Alpaca</value>
