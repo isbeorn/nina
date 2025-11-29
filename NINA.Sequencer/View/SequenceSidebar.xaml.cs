@@ -40,6 +40,9 @@ namespace NINA.View.Sequencer {
             if (sender is FrameworkElement fe && fe.DataContext is Symbol item) { 
                 Clipboard.SetText((item.Category?.ToString() ?? string.Empty) + SymbolBroker.DELIMITER + (item.Key?.ToString() ?? string.Empty));
             }
+            if (sender is FrameworkElement fe1 && fe1.DataContext is SymbolFunction fn) {
+                Clipboard.SetText((fn.Category?.ToString() ?? string.Empty) + SymbolBroker.DELIMITER + (fn.Key?.ToString() ?? string.Empty));
+            }
         }
     }
 }

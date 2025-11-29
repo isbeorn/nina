@@ -14,5 +14,6 @@ namespace NINA.Sequencer.Logic
         public bool RemoveSymbol(string token);
 
         public string GetProviderName();
+        public void RegisterFunction(SymbolFunction function);
     }
 }
