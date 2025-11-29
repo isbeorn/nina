@@ -12,8 +12,10 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Astrometry;
 using NINA.Astrometry.Interfaces;
+using NINA.Core.Database.Schema;
 using NINA.Core.Enum;
 using NINA.Core.Locale;
 using NINA.Core.Model;
@@ -40,6 +42,7 @@ using NINA.WPF.Base.SkySurvey;
 using NINA.WPF.Base.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -151,6 +154,8 @@ namespace NINA.ViewModel.FramingAssistant {
 
             this.OverlapUnits = new List<string> { "%", "px" };
             this.SelectedOverlapUnit = this.overlapUnits[0];
+
+            LoadHipsSkyMaps().Wait();
         }
 
         private void NighttimeCalculator_OnReferenceDayChanged(object sender, EventArgs e) {
@@ -173,6 +178,91 @@ namespace NINA.ViewModel.FramingAssistant {
                 RaisePropertyChanged();
             }
         }
+
+        private HipsSkyMaps selectedHipsSkyMap;
+        public HipsSkyMaps SelectedHipsSkyMap {
+            get => selectedHipsSkyMap;
+            set {
+                selectedHipsSkyMap = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<HipsSkyMaps> hipsSkyMaps;
+        public ObservableCollection<HipsSkyMaps> HipsSkyMaps {
+            get {
+                if (hipsSkyMaps == null) {
+                    hipsSkyMaps = new ObservableCollection<HipsSkyMaps>();
+                }
+                return hipsSkyMaps;
+            }
+            private set {
+                hipsSkyMaps = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private List<HipsSkyMaps> allHipsSkyMaps = new List<HipsSkyMaps>();
+
+        private Task LoadHipsSkyMaps() {
+            return Task.Run(async () => {
+                try {
+                    var db = new DatabaseInteraction();
+                    allHipsSkyMaps = await db.GetHipsSkyMaps();
+
+                    if (hipsSkyMaps == null) {
+                        hipsSkyMaps = new ObservableCollection<HipsSkyMaps>();
+                    }
+
+                    hipsSkyMaps.Clear();
+
+                    foreach (var map in allHipsSkyMaps) {
+                        hipsSkyMaps.Add(map);
+                    }
+
+                    if (SelectedHipsSkyMap == null) {
+                        SelectedHipsSkyMap = hipsSkyMaps.FirstOrDefault();
+                    }
+
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+            });
+        }
+
+        //private Task LoadHipsSkyMaps() {
+        //    return Task.Run(async () => {
+        //        try {
+        //            var db = new DatabaseInteraction();
+        //            var maps = await db.GetHipsSkyMaps() ?? new List<HipsSkyMaps>();
+
+        //            allHipsSkyMaps = maps;
+
+        //            // Auf UI-Thread in die ObservableCollection schreiben
+        //            await _dispatcher.BeginInvoke(new Action(() => {
+        //                if (hipsSkyMaps == null) {
+        //                    hipsSkyMaps = new ObservableCollection<HipsSkyMaps>();
+        //                }
+
+        //                hipsSkyMaps.Clear();
+
+        //                foreach (var map in allHipsSkyMaps.OrderBy(m => m.Name)) {
+        //                    hipsSkyMaps.Add(map);
+        //                }
+
+        //                // Optional: Default-Auswahl setzen
+        //                if (SelectedHipsSkyMap == null) {
+        //                    SelectedHipsSkyMap = hipsSkyMaps.FirstOrDefault();
+        //                }
+
+        //                // Falls du HipsSkyMaps als Property benutzt:
+        //                RaisePropertyChanged(nameof(HipsSkyMaps));
+        //            }));
+        //        } catch (Exception ex) {
+        //            Logger.Error(ex);
+        //        }
+        //    });
+        //}
 
         private void InitializeCommands() {
             LoadImageCommand = new AsyncCommand<bool>(async () => { return await LoadImage(); });
@@ -1121,8 +1211,12 @@ namespace NINA.ViewModel.FramingAssistant {
                         } else {
                             var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
-                            skySurveyImage = await skySurvey.GetImage(DSO?.Name ?? string.Empty, DSO?.Coordinates,
-                                AstroUtil.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
+                            if (FramingAssistantSource != SkySurveySource.HIPS2FITS) {
+                                skySurveyImage = await skySurvey.GetImage(DSO?.Name ?? string.Empty, DSO?.Coordinates,
+                                    AstroUtil.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
+                            } else {
+                                skySurveyImage = await skySurvey.GetImage(DSO?.Name ?? string.Empty, SelectedHipsSkyMap, DSO?.Coordinates, AstroUtil.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
+                            }
                         }
                     }
 

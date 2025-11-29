@@ -12,11 +12,16 @@
 
 #endregion "copyright"
 
+using Namotion.Reflection;
 using NINA.Astrometry;
+using NINA.Core.Database.Schema;
+using NINA.Core.Enum;
 using NINA.Core.Utility.Http;
 using NINA.Equipment.Equipment.MyWeatherData;
 using NINA.WPF.Base.Exceptions;
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -28,21 +33,24 @@ namespace NINA.WPF.Base.SkySurvey {
     /// Description can be found at http://alasky.u-strasbg.fr/hips-image-services/hips2fits
     /// </summary>
     internal class Hips2FitsSurvey : ISkySurvey {
-        private const string AltUrl = "https://alasky.u-strasbg.fr/hips-image-services/hips2fits?projection=STG&hips=CDS%2FP%2FDSS2%2Fcolor&width={0}&height={1}&fov={2}&ra={3}&dec={4}&format=jpg";
-        private const string Url = "https://alaskybis.u-strasbg.fr/hips-image-services/hips2fits?projection=STG&hips=CDS%2FP%2FDSS2%2Fcolor&width={0}&height={1}&fov={2}&ra={3}&dec={4}&format=jpg";
 
-        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
-            int height, CancellationToken ct, IProgress<int> progress) {
+        private const string AltUrl = "https://alasky.u-strasbg.fr/hips-image-services/hips2fits?projection=STG&hips={0}&width={1}&height={2}&fov={3}&ra={4}&dec={5}&format=jpg";
+        private const string Url = "https://alaskybis.u-strasbg.fr/hips-image-services/hips2fits?projection=STG&hips={0}&width={1}&height={2}&fov={3}&ra={4}&dec={5}&format=jpg";
+        private const string DefaultSkyMap = "CDS/P/DSS2/color";
+
+        public async Task<SkySurveyImage> GetImage(string name, HipsSkyMaps hipsSkyMap, Coordinates coordinates, double fieldOfView, int width, int height,
+            CancellationToken ct, IProgress<int> progress) {
+
             fieldOfView = Math.Round(fieldOfView, 2);
 
             BitmapSource image;
             try {
-                image = await QueryImage(Url, coordinates, fieldOfView, ct, progress);
+                image = await QueryImage(Url, coordinates, fieldOfView, ct, progress, hipsSkyMap.Path);
             } catch(OperationCanceledException) {
                 throw;
             } catch (Exception) {
                 try {
-                    image = await QueryImage(AltUrl, coordinates, fieldOfView, ct, progress);
+                    image = await QueryImage(AltUrl, coordinates, fieldOfView, ct, progress, hipsSkyMap.Path);
                 } catch (OperationCanceledException) {
                     throw;
                 } catch (Exception ex) {
@@ -66,9 +74,10 @@ namespace NINA.WPF.Base.SkySurvey {
             };
         }
 
-        private async Task<BitmapSource> QueryImage(string url, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
+        private async Task<BitmapSource> QueryImage(string url, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress, string hipsSkyMap = DefaultSkyMap) {
             var request = new HttpDownloadImageRequest(
                    url,
+                   Uri.EscapeDataString(hipsSkyMap),
                    2000,
                    2000,
                    AstroUtil.ArcminToDegree(fieldOfView),
@@ -89,5 +98,27 @@ namespace NINA.WPF.Base.SkySurvey {
 
             return BitmapSource.Create(width, height, dpi, dpi, bitmapImage.Format, null, pixelData, stride);
         }
+
+        public Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width, int height, CancellationToken ct, IProgress<int> progress) {
+            throw new NotImplementedException();
+        }
     }
+
+    //public static class HipsSkyMapSourceValues {
+
+    //    private const string DefaultSkyMap = "CDS/P/DSS2/color";
+    //    public static string GetHipsSkyMapValue(this HipsSkyMapSource source) {
+            
+    //        var type = typeof(HipsSkyMapSource);
+    //        var member = type.GetMember(source.ToString()).FirstOrDefault();
+    //        if (member == null) return DefaultSkyMap;
+
+    //        var attr = member.GetCustomAttribute<HipsSkyMapValue>();
+    //        if (attr == null) return DefaultSkyMap;
+            
+    //        return attr.Value;
+    //    }
+
+    //}
+
 }

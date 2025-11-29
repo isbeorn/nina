@@ -42,6 +42,7 @@ namespace NINA.Core.Database {
         public IDbSet<ConstellationBoundaries> ConstellationBoundariesSet { get; set; }
         public IDbSet<VisualDescription> VisualDescriptionSet { get; set; }
         public IDbSet<CatalogueNr> CatalogueNrSet { get; set; }
+        public IDbSet<HipsSkyMaps> HipsSkyMapSet { get; set; }
 
         public NINADbContext(string connectionString) : base(new SQLiteConnection() { ConnectionString = connectionString }, true) {
             DbConfiguration.SetConfiguration(new SQLiteConfiguration());

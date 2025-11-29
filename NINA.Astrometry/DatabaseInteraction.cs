@@ -118,7 +118,35 @@ namespace NINA.Astrometry {
             }
             return brightStars;
         }
+        
+        public async Task<List<Core.Database.Schema.HipsSkyMaps>> GetHipsSkyMaps() {
+            var hipsSkyMaps = new List<Core.Database.Schema.HipsSkyMaps>();
+            try {
+                using (var context = new NINADbContext(connectionString)) {
+                    var rows = await context.HipsSkyMapSet.ToListAsync();
 
+                    foreach (var row in rows) {
+                        var hipsSkyMap = new Core.Database.Schema.HipsSkyMaps {
+                            Id = row.Id,
+                            Name = row.Name,
+                            Path = row.Path,
+                            Band = row.Band,
+                            Coverage = row.Coverage,
+                            Comment = row.Comment
+                        };
+                        hipsSkyMaps.Add(hipsSkyMap);
+                    }
+                }
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                if (!ex.Message.Contains("Execution was aborted by the user")) {
+                    Logger.Error(ex);
+                    Notification.ShowError(ex.Message);
+                }
+            }
+            return hipsSkyMaps;
+        }
+        
         public class DeepSkyObjectSearchParams {
             public string Constellation { get; set; } = "";
             public IList<string> DsoTypes { get; set; }

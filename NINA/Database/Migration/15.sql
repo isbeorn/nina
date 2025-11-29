@@ -177,4 +177,33 @@ INSERT OR REPLACE INTO brightstars(name,ra,dec,magnitude,syncedfrom) VALUES
 ('Alpha Vol',135.6116,-66.3961,4,'VizieR'),
 ('Anser',292.1764,24.6649,4.44,'VizieR');
 
+CREATE TABLE IF NOT EXISTS `hipsskymaps` (
+    `id` TEXT NOT NULL,
+    `name` TEXT NOT NULL,
+    `path` TEXT NOT NULL,
+    `band` TEXT,
+    `coverage` REAL,
+    `comment` TEXT,
+    PRIMARY KEY(`id`)
+);
+
+INSERT OR REPLACE INTO hipsskymaps(id, name, path, band, coverage, comment)
+VALUES
+    ('DSS2_COLOR','DSS2 Color','CDS/P/DSS2/color','optical',100,'Digitized Sky Survey - STScI/NASA, Colored & Healpixed by CDS'),
+    ('DSS2_RED','DSS2 Red','CDS/P/DSS2/red','640-658 nm',100,'The Catalogs and Surveys Group of the Space Telescope Science Institute has digitized the photographic Sky survey plates from the Palomar and UK Schmidt telescopes to produce the "Digitized Sky Survey" (DSS). Each plate covers 6.5 x 6.5 degrees of the sky and have been digitized using a modified PDS microdensitometer.\nDSS2F north is the digitalization of the POSS2/UKSTU Red survey (0.658um)\nDSS2R south is the digitalization of the AAO Red survey (0.64um)\nThe all-sky HEALPix resampling has been done by the CDS'),
+    ('DSS2_BLUE','DSS2 Blue','CDS/P/DSS2/blue','468-491 nm',   99.67,'The Catalogs and Surveys Group of the Space Telescope Science Institute has digitized the photographic Sky survey plates from the Palomar and UK Schmidt telescopes to produce the "Digitized Sky Survey"(DSS). Each plate covers 6.5 x 6.5 degrees of the sky and have been\ndigitized using a modified PDS microdensitometer. The DSS blue HiPS is a combination of DSS2-XJ and DSS2-S. DSS2-XJ north is the digitalization of the POSS-II J (1987-1998 - 0.491um) from Caltech,DSS2-S south is the digitalization of the SERC-J (1975-1987 - 0.468um) and SERC-EJ (1979-1988 - 0.468um) from ROE.The all-sky HEALPix resampling has been done by the CDS with the help of CADC.'),
+    ('DSS2_NIR','DSS2 NIR','CDS/P/DSS2/NIR','700-950 nm',99.55,'The Catalogs and Surveys Group of the Space Telescope Science Institute has digitized the photographic Sky survey plates from the Palomar and UK Schmidt telescopes to produce the "Digitized Sky Survey"(DSS). Each plate covers 6.5 x 6.5 degrees of the sky and have been digitized using a modified PDS microdensitometer. The DSS NIT HiPS is a combination of DSS2-XI and DSS2-IS. DSS2-XI north is the digitalization of the POSS-II N (1987-2002 - filter: IV-N +RG9) from Caltech, DSS2-IS south is the digitalization of the SERC-IS (1990-2002 - filter: IV-N +RG175). The all-sky HEALPix resampling has been done by the CDS with the help of CADC.'),
+    ('2MASS_COL','2MASS Color','CDS/P/2MASS/color','1.15-2.3 um',100,'MASS has uniformly scanned the entire sky in three near-infrared bands to detect and characterize point sources brighter than about 1 mJy in each band, with signal-to-noise ratio (SNR) greater than 10, using a pixel size of 2.0". This has achieved an 80,000-fold improvement in sensitivity relative to earlier surveys. 2MASS used two highly-automated 1.3-m telescopes, one at Mt. Hopkins, AZ, and one at CTIO, Chile. Each telescope was equipped with a three-channel camera, each channel consisting of a 256x256 array of HgCdTe detectors, capable of observing the sky simultaneously at J (1.25 microns), H (1.65 microns), and Ks (2.17 microns). The University of Massachusetts (UMass) was responsible for the overall management of the project, and for developing the infrared cameras and on-site computing systems at both facilities. The Infrared Processing and Analysis Center (IPAC) is responsible for all data processing through the Production Pipeline, and construction and distribution of the data products. Funding is provided primarily by NASA and the NSF'),
+    ('tc8','NSNS DR0.1: True-color','simg.de/P/NSNS/DR0_1/tc8','440-700 nm',65.1,'Almost true-color composite without star subtraction as compressed 8-bit color HIPS for easy visualization. See http://www.simg.de/nebulae3/dr0_1 for other data sets. Northern Sky Narrowband Survey by Stefan Ziegenbalg.'),
+    ('hbr8','NSNS DR0.2: H-alpha and continuum','simg.de/P/NSNS/DR0_2/hbr8','440-700 nm',64.84,'H-alpha (without continuum, mapped to red), blue continuum (mapped to green) and red continuum (mapped to blue) as compressed 8-bit color HIPS for easy visualization. Stars are partially subtracted to make the faint refelction nebulae visible. See http://www.simg.de/nebulae3/dr0_2 for other data sets. Northern Sky Narrowband Survey by Stefan Ziegenbalg.'),
+    ('rgb8','NSNS DR0.2: RGB continuum','simg.de/P/NSNS/DR0_2/rgb8','440-700 nm',65.1,'Red, green and blue continuum with partially subtracted stars as compressed 8-bit color HIPS for easy visualization. See http://www.simg.de/nebulae3/dr0_2 for other data sets. Northern Sky Narrowband Survey by Stefan Ziegenbalg.'),
+    ('halpha8','NSNS DR0.2: H-alpha','simg.de/P/NSNS/DR0_2/halpha8','656.3 nm',64.64,'	H-alpha (without continuum) as compressed 8-bit HIPS for easy visualization. See http://www.simg.de/nebulae3/dr0_2 for other data sets. Northern Sky Narrowband Survey by Stefan Ziegenbalg.'),
+    ('ohs8','NSNS DR0.2: OIII, H-alpha and SII','simg.de/P/NSNS/DR0_2/ohs8','500.7-673 nm',64.84,'[OIII] (mapped to red), H-alpha (mapped to green), and [SII] (mapped to blue) without continuum (except for the brightest stars) as compressed 8-bit color HIPS for easy visualization. See http://www.simg.de/nebulae3/dr0_2 for other data sets. Northern Sky Narrowband Survey by Stefan Ziegenbalg.'),
+    ('oiii8','NSNS DR0.2: OIII','simg.de/P/NSNS/DR0_2/oiii8','500.7 nm',64.64,'OIII at 500.7 nm (without continuum) as compressed 8-bit HIPS for easy visualization. See http://www.simg.de/nebulae3/dr0_2 for other data sets. Northern Sky Narrowband Survey by Stefan Ziegenbalg.'),
+    ('Finkbeiner','Finkbeiner Halpha composite survey','CDS/P/Finkbeiner','480-730 nm',100,'D. Finkbeiner has assembled a full sky Halpha map using data from several surveys: the Wisconsin H-Alpha Mapper (WHAM), the Virginia Tech Spectral-Line Survey (VTSS), and the Southern H-Alpha Sky Survey Atlas (SHASSA).');
+
 PRAGMA user_version = 15;
+
+/*
+    ('','','','',,''),
+    */

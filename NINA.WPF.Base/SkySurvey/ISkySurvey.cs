@@ -13,6 +13,8 @@
 #endregion "copyright"
 
 using NINA.Astrometry;
+using NINA.Core.Database.Schema;
+using NINA.Core.Enum;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +26,13 @@ namespace NINA.WPF.Base.SkySurvey {
 
         Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width, int height,
             CancellationToken ct, IProgress<int> progress);
+
+        Task<SkySurveyImage> GetImage(string name, HipsSkyMaps hipsSkyMap, Coordinates coordinates, double fieldOfView, int width, int height,
+            CancellationToken ct, IProgress<int> progress) {
+
+            return GetImage(name, coordinates: coordinates, fieldOfView: fieldOfView, width: width, height: height, ct: ct, progress: progress);
+        }
+
     }
 
     public class SkySurveyImage {
