@@ -120,8 +120,5 @@ namespace NINA.Sequencer {
                 }
             }
         }
-
-
-        public IList<Symbol> GetHiddenSymbols(string category) => SymbolBroker.GetHiddenSymbols(category) ?? Array.Empty<Symbol>();
     }
 }
