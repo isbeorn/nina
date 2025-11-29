@@ -7738,4 +7738,16 @@ If exposure count is not important to you, enable this option to avoid having to
   <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
     <value>Usage</value>
   </data>
+  <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
+    <value>Function '{0}' expects no arguments, but got {1}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
+    <value>Function '{0}' expects exactly one argument, but got {1}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
+    <value>Function '{0}' expects exactly {1} arguments, but got {2}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
+    <value>Function '{0}' expects between {1} and {2} arguments, but got {3}.</value>
+  </data>
 </root>

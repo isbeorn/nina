@@ -513,5 +513,60 @@ namespace NINA.Test.Sequencer.Logic {
             result2.Should().Be(82);
             isVolatile2.Should().BeTrue();
         }
+
+        [Test]
+        public void RegisterMultipleFunctions_WithNumericArguments_WithoutNamespace_IsAmbiguousAndThrows() {
+            // arrange: add(a, b) => a + b
+            ISymbolBroker broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
+               flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
+               telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
+            var provider1 = broker.RegisterSymbolProvider("Plugin1");
+            var fn1 = new SymbolFunction(
+                key: "add",
+                category: "Plugin1",
+                description: "",
+                usageExample: "",
+                implementation: args => {
+                    // args.Parameters[i] are NCalc.Expression
+                    var a = Convert.ToInt32(args.Parameters[0].Evaluate());
+                    var b = Convert.ToInt32(args.Parameters[1].Evaluate());
+                    return a + b;
+                },
+                minArgs: 2,
+                maxArgs: 2,
+                isVolatile: false);
+
+            provider1.RegisterFunction(fn1);
+
+            var provider2 = broker.RegisterSymbolProvider("Plugin2");
+            var fn2 = new SymbolFunction(
+                key: "add",
+                category: "Plugin2",
+                description: "",
+                usageExample: "",
+                implementation: args => {
+                    // args.Parameters[i] are NCalc.Expression
+                    var a = Convert.ToInt32(args.Parameters[0].Evaluate());
+                    var b = Convert.ToInt32(args.Parameters[1].Evaluate());
+                    var c = Convert.ToInt32(args.Parameters[2].Evaluate());
+                    return a + b + c;
+                },
+                minArgs: 3,
+                maxArgs: 3,
+                isVolatile: true);
+
+            provider2.RegisterFunction(fn2);
+
+            // add(10, 32)
+            var args1 = CreateArgsFromStrings("10", "32");
+            // add(10, 32, 40)
+            var args2 = CreateArgsFromStrings("10", "32", "40");
+
+            // act
+            Action act = () => broker.InvokeFunction("add", args1, out var result1, out var isVolatile1);
+
+            // assert
+            act.Should().Throw<ArgumentException>();
+        }
     }
 }

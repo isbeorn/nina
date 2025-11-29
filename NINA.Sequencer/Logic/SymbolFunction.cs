@@ -14,6 +14,7 @@
 
 using NCalc;
 using NCalc.Handlers;
+using NINA.Core.Locale;
 using System;
 
 namespace NINA.Sequencer.Logic {
@@ -28,14 +29,16 @@ namespace NINA.Sequencer.Logic {
         public bool IsVolatile { get; }
 
         public SymbolFunction(
-            string key,
-            string category,
-            string description,            
-            string usageExample,
-            Func<FunctionArgs, object> implementation,
-            int minArgs = 0,
-            int maxArgs = 0,
-            bool isVolatile = false) {
+                string key,
+                string category,
+                string description,            
+                string usageExample,
+                Func<FunctionArgs, object> implementation,
+                int minArgs = 0,
+                int maxArgs = 0,
+                bool isVolatile = false) {
+            if (MinArgs > MaxArgs) throw new ArgumentException("Invalid argument configuration: MinArgs cannot be greater than MaxArgs.");
+
             Key = key;
             Category = category;
             Description = description;
@@ -48,8 +51,15 @@ namespace NINA.Sequencer.Logic {
 
         public void ValidateArgs(string name, FunctionArgs args) {
             var count = args.Parameters?.Length ?? 0;
-            if (count < MinArgs || count > MaxArgs) {
-                throw new ArgumentException($"Function '{name}' expects between {MinArgs} and {MaxArgs} arguments, but got {count}.");
+
+            if (MaxArgs == 0 && count > 0) {
+                throw new ArgumentException(string.Format(Loc.Instance["Lbl_SymbolFunctions_Validation_NoArguments"], name, count));
+            } else if (MinArgs == 1 && MaxArgs == 1 && count != 1) {
+                throw new ArgumentException(string.Format(Loc.Instance["Lbl_SymbolFunctions_Validation_ExactlyOneArgument"], name, count));
+            } else if (MinArgs == MaxArgs && count != MaxArgs) {
+                throw new ArgumentException(string.Format(Loc.Instance["Lbl_SymbolFunctions_Validation_ExactlyManyArguments"], name, MaxArgs, count));
+            } else if (count < MinArgs || count > MaxArgs) {
+                throw new ArgumentException(string.Format(Loc.Instance["Lbl_SymbolFunctions_Validation_BetweenArguments"], name, MinArgs, MaxArgs, count));
             }
         }
     }
