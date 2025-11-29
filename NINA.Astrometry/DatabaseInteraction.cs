@@ -343,10 +343,24 @@ namespace NINA.Astrometry {
                         }
 
                         if (!string.IsNullOrEmpty(searchParams.ObjectName)) {
-                            var name = searchParams.ObjectName.Trim().ToLower();
-                            var idQuery = context.CatalogueNrSet.Where(x => x.dsodetailid.ToLower().Contains(name) || (x.catalogue + x.designation).ToLower().Contains(name) || (x.catalogue + " " + x.designation).ToLower().Contains(name)).Select(x => x.dsodetailid).Distinct();
+                            var name = searchParams.ObjectName.Trim();
+                            var pattern = "%" + name + "%";
 
-                            query = query.Join(idQuery, dsoDetail => dsoDetail.id, e => e, (dsoDetail, id) => dsoDetail);
+                            var idQuery =
+                                context.CatalogueNrSet
+                                    .Where(x =>
+                                        DbFunctions.Like(x.dsodetailid, pattern) ||
+                                        DbFunctions.Like(x.catalogue + x.designation, pattern) ||
+                                        DbFunctions.Like(x.catalogue + " " + x.designation, pattern))
+                                    .Select(x => x.dsodetailid)
+                                    .Distinct();
+
+                            query = query.Join(
+                                idQuery,
+                                dsoDetail => dsoDetail.id,
+                                e => e,
+                                (dsoDetail, id) => dsoDetail
+                            );
                         }
 
                         if (searchParams.SearchOrder.Direction == "ASC") {
