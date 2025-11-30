@@ -12,7 +12,6 @@
 
 #endregion "copyright"
 
-using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Astrometry;
 using NINA.Astrometry.Interfaces;
 using NINA.Core.Database.Schema;
@@ -42,7 +41,6 @@ using NINA.WPF.Base.SkySurvey;
 using NINA.WPF.Base.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -1130,7 +1128,7 @@ namespace NINA.ViewModel.FramingAssistant {
                                 skySurveyImage = await skySurvey.GetImage(DSO?.Name ?? string.Empty, DSO?.Coordinates,
                                     AstroUtil.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
                             } else {
-                                skySurveyImage = await skySurvey.GetImage(DSO?.Name ?? string.Empty, SelectedHipsSkyMap, DSO?.Coordinates, AstroUtil.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
+                                skySurveyImage = await skySurvey.GetImage(DSO?.Name ?? string.Empty, SelectedHipsSkyMap.Path, DSO?.Coordinates, AstroUtil.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
                             }
                         }
                     }
