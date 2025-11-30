@@ -257,148 +257,6 @@
                                     </Style>
                                 </Grid.Style>
                                 <StackPanel Orientation="Vertical">
-                                    <!--
-                                    <ListView
-                                        Width="{Binding ActualWidth, ElementName=PART_FramingAssistantSource}"
-                                        MaxHeight="250"
-                                        Margin="0,5,0,0"
-                                        HorizontalAlignment="Right"
-                                        ItemsSource="{Binding HipsSkyMaps}"
-                                        SelectedItem="{Binding SelectedHipsSkyMap}"
-                                        SelectionMode="Single">
-
-                                        <ListView.View>
-                                            <GridView>
-
-                                                <GridViewColumn
-                                                    Width="Auto"
-                                                    DisplayMemberBinding="{Binding Name}"
-                                                    Header="{ns:Loc LblName}" />
-                                                <GridViewColumn
-                                                    Width="Auto"
-                                                    DisplayMemberBinding="{Binding Band}"
-                                                    Header="Band" />
-                                                <GridViewColumn
-                                                    Width="Auto"
-                                                    DisplayMemberBinding="{Binding Coverage, StringFormat={}{0}%}"
-                                                    Header="Coverage" />
-
-                                                <GridViewColumn Width="Auto" Header="HiPS sky maps">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <Grid>
-                                                                <TextBlock
-                                                                    HorizontalAlignment="Center"
-                                                                    VerticalAlignment="Center"
-                                                                    Text="{Binding Name}" />
-                                                                <Grid.ToolTip>
-                                                                    <TextBlock Text="{Binding Comment}" />
-                                                                </Grid.ToolTip>
-                                                            </Grid>
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-
-                                                <GridViewColumn Width="Auto" Header="Band">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <Grid HorizontalAlignment="Center">
-                                                                <TextBlock
-                                                                    HorizontalAlignment="Center"
-                                                                    VerticalAlignment="Center"
-                                                                    Text="{Binding Band}" />
-                                                                <Grid.ToolTip>
-                                                                    <TextBlock Text="{Binding Comment}" />
-                                                                </Grid.ToolTip>
-                                                            </Grid>
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-
-                                                <GridViewColumn Width="Auto" Header="Sky coverage">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <Grid>
-                                                                <TextBlock
-                                                                    HorizontalAlignment="Center"
-                                                                    VerticalAlignment="Center"
-                                                                    Text="{Binding Coverage, StringFormat={}{0}%}" />
-                                                                <Grid.ToolTip>
-                                                                    <TextBlock Text="{Binding Comment}" />
-                                                                </Grid.ToolTip>
-                                                            </Grid>
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-
-                                                <GridViewColumn Width="Auto">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock>
-                                                                <Run Text="?" />
-                                                                <TextBlock.ToolTip>
-                                                                    <TextBlock Text="{Binding Comment}" />
-                                                                </TextBlock.ToolTip>
-                                                            </TextBlock>
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-
-
-                                    <DataGrid
-                                        Margin="2,0,0,0"
-                                        AutoGenerateColumns="False"
-                                        CanUserAddRows="False"
-                                        CanUserDeleteRows="False"
-                                        CanUserResizeRows="False"
-                                        HeadersVisibility="Column"
-                                        IsReadOnly="True"
-                                        ItemsSource="{Binding HipsSkyMaps}"
-                                        SelectedItem="{Binding SelectedHipsSkyMap}"
-                                        SelectionMode="Single"
-                                        SelectionUnit="FullRow">
-                                        <DataGrid.RowStyle>
-                                            <Style TargetType="DataGridRow">
-                                                <Setter Property="VerticalContentAlignment" Value="Center" />
-                                                <Setter Property="HorizontalAlignment" Value="Center" />
-                                                <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-                                                <Setter Property="Height" Value="26" />
-
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsSelected" Value="True">
-                                                        <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
-                                                        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-
-                                            </Style>
-                                        </DataGrid.RowStyle>
-                                        <DataGrid.CellStyle>
-                                            <Style TargetType="DataGridCell">
-                                                <Setter Property="VerticalContentAlignment" Value="Center" />
-                                                <Setter Property="HorizontalAlignment" Value="Center" />
-                                            </Style>
-                                        </DataGrid.CellStyle>
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn
-                                                Width="2*"
-                                                Binding="{Binding Name}"
-                                                Header="Sky Survey" />
-                                            <DataGridTextColumn
-                                                Width="1.2*"
-                                                Binding="{Binding Band}"
-                                                Header="Band" />
-                                            <DataGridTextColumn
-                                                Width="1.5*"
-                                                Binding="{Binding Coverage, StringFormat={}{0}%}"
-                                                Header="Coverage" />
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                    -->
                                     <Grid Margin="0,0,0,0" VerticalAlignment="Center">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
@@ -417,40 +275,30 @@
                                             SelectedItem="{Binding SelectedHipsSkyMap}">
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate>
-                                                    <StackPanel
+                                                    <Grid
+                                                        Width="{Binding ActualWidth, ElementName=PART_FramingAssistantSource}"
                                                         Margin="0,2,0,2"
-                                                        HorizontalAlignment="Center"
-                                                        Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Name}" />
-                                                        <TextBlock Text="  Band  " />
-                                                        <TextBlock Text="{Binding Band}" />
-                                                        <TextBlock Text=" Coverage " />
-                                                        <TextBlock Text="{Binding Coverage, StringFormat={}{0}%}" />
-                                                        <StackPanel.ToolTip>
-                                                            <TextBlock Text="{Binding Comment}" />
-                                                        </StackPanel.ToolTip>
-                                                    </StackPanel>
-                                                    <!--
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="2*" />
-                                                            <ColumnDefinition Width="1.2*" />
-                                                            <ColumnDefinition Width="1.5*" />
-                                                        </Grid.ColumnDefinitions>
-                                                        <TextBlock Grid.Column="0" Text="{Binding Name}" />
-                                                        <TextBlock
-                                                            Grid.Column="1"
-                                                            Margin="2,0,0,0"
-                                                            Text="{Binding Band}" />
-                                                        <TextBlock Grid.Column="2" Margin="5,0,0,0">
-                                                            <Run Text="Coverage" />
-                                                            <Run Text="{Binding Coverage, StringFormat={}{0}%}" />
-                                                            <TextBlock.ToolTip>
+                                                        HorizontalAlignment="Left">
+                                                        <TextBlock VerticalAlignment="Center" Text="{Binding ShortName}" />
+                                                        <Grid.ToolTip>
+                                                            <StackPanel Orientation="Vertical">
+                                                                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                                    <TextBlock FontWeight="Bold" Text="{Binding LongName}" />
+                                                                    <TextBlock
+                                                                        Margin="10,0,0,0"
+                                                                        FontWeight="Bold"
+                                                                        Text="Band: " />
+                                                                    <TextBlock FontWeight="Bold" Text="{Binding Band}" />
+                                                                    <TextBlock
+                                                                        Margin="10,0,0,0"
+                                                                        FontWeight="Bold"
+                                                                        Text="Coverage: " />
+                                                                    <TextBlock FontWeight="Bold" Text="{Binding Coverage, StringFormat={}{0}%}" />
+                                                                </StackPanel>
                                                                 <TextBlock Text="{Binding Comment}" />
-                                                            </TextBlock.ToolTip>
-                                                        </TextBlock>
+                                                            </StackPanel>
+                                                        </Grid.ToolTip>
                                                     </Grid>
-                                                    -->
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>

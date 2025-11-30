@@ -21,7 +21,8 @@ namespace NINA.Core.Database.Schema {
 
         [Key]
         public string Id { get; set; }
-        public string Name { get; set; }
+        public string ShortName { get; set; }
+        public string LongName { get; set; }
         public string Path { get; set; }
         public string Band { get; set; }
         public double Coverage { get; set; }

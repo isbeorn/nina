@@ -104,21 +104,4 @@ namespace NINA.WPF.Base.SkySurvey {
         }
     }
 
-    //public static class HipsSkyMapSourceValues {
-
-    //    private const string DefaultSkyMap = "CDS/P/DSS2/color";
-    //    public static string GetHipsSkyMapValue(this HipsSkyMapSource source) {
-            
-    //        var type = typeof(HipsSkyMapSource);
-    //        var member = type.GetMember(source.ToString()).FirstOrDefault();
-    //        if (member == null) return DefaultSkyMap;
-
-    //        var attr = member.GetCustomAttribute<HipsSkyMapValue>();
-    //        if (attr == null) return DefaultSkyMap;
-            
-    //        return attr.Value;
-    //    }
-
-    //}
-
 }

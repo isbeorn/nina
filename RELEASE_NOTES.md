@@ -34,7 +34,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ### User Interface & Usability
 - **Sky Atlas Improvements**  
   - Deep sky objects can now be filtered and sorted by their upper transit time
-
+- **Framing Assistant Improvements** 
+  - In HiPS 2 FITS Sky Survey different HiPS sky maps can now be selected like CTA-FRAM, Mellinger, Northern Sky Narrowband Survey and more for better target planning. 
 
 # Version 3.2
 
