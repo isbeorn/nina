@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Moq;
 using NINA.Sequencer.Logic;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,16 @@ using System.Text;
 namespace NINA.Test.Sequencer.Logic {
     [TestFixture]
     public class ExpressionTest {
+        [Test]
+        public void Expression_Validator_AfterValueAssignment_IsCalled() {
+            var validator = new Mock<Action<Expression>>();
+            var sut = new Expression();
+
+            sut.Validator = validator.Object;
+            sut.Value = 10;
+
+            validator.Verify(v => v(It.Is<Expression>(x => ReferenceEquals(x,sut))), Times.Once);
+        }
 
         [Test]
         // 10 <= Value <= 100

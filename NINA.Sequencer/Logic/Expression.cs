@@ -77,7 +77,7 @@ namespace NINA.Sequencer.Logic {
         public bool Dirty { get; set; }
         public ISequenceEntity Context { get; set; }
 
-        public Action<Expression> Validator;
+        public Action<Expression> Validator { get; set; }
 
         public double Default {
             get => field;
@@ -143,7 +143,6 @@ namespace NINA.Sequencer.Logic {
         public bool IsSyntaxError { get; set; } = false;
         public bool IsAnnotated {
             get => IsExpression || ForceAnnotated || Error != null;
-            set { }
         }
 
         public bool ForceAnnotated { get; set; } = false;
