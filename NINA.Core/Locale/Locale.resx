@@ -7463,17 +7463,6 @@ If exposure count is not important to you, enable this option to avoid having to
   <data name="LblErrors" xml:space="preserve">
     <value>Error(s): {0}</value>
   </data>
-  <data name="LblRange" xml:space="preserve">
-    <value>Range</value>
-  </data>
-  <data name="LblValueMustBe" xml:space="preserve">
-    <value>Value must be</value>
-    <comment>Value must be between x and y</comment>
-  </data>
-  <data name="LblBetween" xml:space="preserve">
-    <value>between</value>
-    <comment>[Value must be] between [x and y]</comment>
-  </data>
   <data name="LblNotEvaluated" xml:space="preserve">
     <value>Not Evaluated</value>
     <comment>As in, a variable is not yet evaluated</comment>
@@ -7749,5 +7738,23 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
     <value>Function '{0}' expects between {1} and {2} arguments, but got {3}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
+    <value>Value must be greater than or equal to {0}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
+    <value>Value must be greater than {0}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
+    <value>Value must be between {0} and {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
+    <value>Value must be between {0} and less than {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
+    <value>Value must be greater than {0} and up to {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
+    <value>Value must be greater than {0} and less than {1}.</value>
   </data>
 </root>
