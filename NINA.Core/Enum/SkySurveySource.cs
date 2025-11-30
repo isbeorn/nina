@@ -44,5 +44,4 @@ namespace NINA.Core.Enum {
         [Description("LblCache")]
         CACHE,
     }
-
 }
