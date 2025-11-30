@@ -66,7 +66,7 @@ namespace NINA.Test.Sequencer.Logic {
         [Test]
         public void Expression_Evaluate_SimpleArithmeticExpression_ShouldEvaluateCorrectly() {
             // arrange
-            var expr = CreateExpression("1 + 2 * 3"); // expect 7
+            var expr = CreateExpression("1 + 2 * 3");
             expr.IsExpression.Should().BeTrue();
 
             // act
@@ -87,7 +87,7 @@ namespace NINA.Test.Sequencer.Logic {
 
             // assert
             expr.Error.Should().BeNull();
-            expr.Value.Should().Be(1.0); // true -> 1
+            expr.Value.Should().Be(1.0);
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace NINA.Test.Sequencer.Logic {
 
             // assert
             expr.Error.Should().BeNull();
-            expr.Value.Should().Be(0.0); // false -> 0
+            expr.Value.Should().Be(0.0);
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace NINA.Test.Sequencer.Logic {
         [Test]
         public void Expression_Evaluate_ExpressionWithSymbolBrokerParameters_ShouldUseBrokerValues() {
             // arrange
-            var expr = CreateExpression("a + b * 2"); // expect 3 + 4*2 = 11
+            var expr = CreateExpression("a + b * 2"); // expect 3 + 4 * 2 = 11
 
             // force parse references
             expr.Definition = "a + b * 2";
@@ -166,7 +166,8 @@ namespace NINA.Test.Sequencer.Logic {
 
             // assert
             expr.Error.Should().NotBeNullOrEmpty();
-            expr.Error.Should().Contain("b"); // or use Loc.Instance["LblUndefined"]
+            expr.Error.Should().Contain(Loc.Instance["LblUndefined"]);
+            expr.Error.Should().Contain("b");
         }
 
         [Test]
@@ -188,14 +189,10 @@ namespace NINA.Test.Sequencer.Logic {
         [Ignore("Edge case fails as the Value doesn't change and then will not re-run validation")]
         public void Expression_Evaluate_OutOfRangeValue_ShouldSetRangeError() {
             // arrange
-            //var expr = CreateExpression("100"); 
-            var expr = new Expression("100", _context.Object) {
-                SymbolBroker = _symbolBroker.Object
-            };
-            expr.IsExpression = true;
+            var expr = CreateExpression("100"); 
 
             // inclusive [0, 10]
-            expr.Range = new[] { 0.0, 10.0, 0.0 }; // 0 flags -> inclusive/inclusive
+            expr.Range = new[] { 0.0, 10.0, 0.0 };
             expr.Definition = "100";
 
             // act
@@ -211,7 +208,7 @@ namespace NINA.Test.Sequencer.Logic {
         public void Expression_Evaluate_InRangeValue_ShouldNotProduceRangeError() {
             // arrange
             var expr = CreateExpression("5");
-            expr.Range = new[] { 0.0, 10.0, 0.0 }; // inclusive [0, 10]
+            expr.Range = new[] { 0.0, 10.0, 0.0 };
             expr.Definition = "5";
 
             // act
