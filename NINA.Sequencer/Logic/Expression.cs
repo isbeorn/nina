@@ -350,7 +350,6 @@ namespace NINA.Sequencer.Logic {
             }
             set {
                 if (value == null) return;
-                if (value == field) return;
                 value = value.Trim();
 
                 if (value.Length == 0) {
@@ -391,6 +390,11 @@ namespace NINA.Sequencer.Logic {
                     field = String.Format(CultureInfo.InvariantCulture, "{0:0.#######}", result);
                     Error = null;
                     IsExpression = false;
+
+                    if (Range != null) {
+                        CheckRange(result);
+                    }
+                    
                     Value = result;
 
                     // Notify consumers
