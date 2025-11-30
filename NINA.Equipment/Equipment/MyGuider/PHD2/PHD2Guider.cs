@@ -1143,7 +1143,31 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                     NoDelay = true,
                 };
 
-                await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                // Retry logic with exponential backoff for connecting to PHD2
+                int maxRetries = 10;
+                int retryCount = 0;
+                int delayMs = 500;
+                Exception lastException = null;
+
+                while (retryCount < maxRetries) {
+                    try {
+                        Logger.Info($"Attempting to connect to PHD2 at {phd2Ip}:{profileService.ActiveProfile.GuiderSettings.PHD2ServerPort} (attempt {retryCount + 1}/{maxRetries})");
+                        await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                        Logger.Info("Successfully connected to PHD2");
+                        break;
+                    } catch (Exception ex) {
+                        lastException = ex;
+                        retryCount++;
+                        if (retryCount < maxRetries) {
+                            Logger.Warning($"Failed to connect to PHD2: {ex.Message}. Retrying in {delayMs}ms...");
+                            await Task.Delay(delayMs, _clientCTS.Token);
+                            delayMs = Math.Min(delayMs * 2, 5000); // Exponential backoff, max 5 seconds
+                        } else {
+                            throw;
+                        }
+                    }
+                }
+
                 Connected = true;
                 _tcs.TrySetResult(true);
 
