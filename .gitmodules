@@ -1,18 +1,24 @@
 [submodule "NINA/External"]
 	path = NINA/External
-	url = git@pins:nitr57/pins.external.git
+	url = https://github.com/nitr57/pins.external.git
+	branch = main
 [submodule "Touch-N-Stars"]
 	path = Touch-N-Stars
-	url = git@pins:Touch-N-Stars/Touch-N-Stars.git
+	url = https://github.com/Touch-N-Stars/Touch-N-Stars.git
+	branch = pins
 [submodule "NINA.Plugins/ninaAPI"]
 	path = NINA.Plugins/ninaAPI
-	url = git@pins:nitr57/ninaAPI.git
+	url = https://github.com/nitr57/ninaAPI.git
+	branch = dev
 [submodule "NINA.Plugins/Touch-N-Stars"]
 	path = NINA.Plugins/Touch-N-Stars
-	url = git@pins:nitr57/N.I.N.A-Plugin-for-Touch-N-Stars.git
+	url = https://github.com/nitr57/N.I.N.A-Plugin-for-Touch-N-Stars.git
+	branch = main
 [submodule "NINA.Plugins/LiveStack"]
 	path = NINA.Plugins/LiveStack
-	url = git@pins:nitr57/nina.plugin.livestack
+	url = https://github.com/nitr57/nina.plugin.livestack
+	branch = main
 [submodule "NINA.Plugins/PolarAlignment"]
 	path = NINA.Plugins/PolarAlignment
-	url = git@pins:nitr57/nina.plugin.polaralignment.git
+	url = https://github.com/nitr57/nina.plugin.polaralignment.git
+	branch = master
