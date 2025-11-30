@@ -36,7 +36,7 @@ namespace NINA.Core.Database.Schema {
             HasKey(x => x.Id);
             Property(x => x.Id).HasColumnName("id").IsRequired();
             HasKey(x => x.Path);
-            Property(x => x.Path).HasColumnName("hipspath").IsRequired();
+            Property(x => x.Path).HasColumnName("path").IsRequired();
         }
     }
 }
