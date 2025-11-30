@@ -148,12 +148,11 @@ namespace NINA.ViewModel.FramingAssistant {
                 this.NighttimeData = this.nighttimeCalculator.Calculate();
                 nighttimeCalculator.OnReferenceDayChanged += NighttimeCalculator_OnReferenceDayChanged;
                 InitializeCache();
+                LoadHipsSkyMaps().Wait();
             });
 
             this.OverlapUnits = new List<string> { "%", "px" };
             this.SelectedOverlapUnit = this.overlapUnits[0];
-
-            LoadHipsSkyMaps().Wait();
         }
 
         private void NighttimeCalculator_OnReferenceDayChanged(object sender, EventArgs e) {
