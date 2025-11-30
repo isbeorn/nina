@@ -186,7 +186,6 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         [Test]
-        [Ignore("Edge case fails as the Value doesn't change and then will not re-run validation")]
         public void Expression_Evaluate_OutOfRangeValue_ShouldSetRangeError() {
             // arrange
             var expr = CreateExpression("100"); 
