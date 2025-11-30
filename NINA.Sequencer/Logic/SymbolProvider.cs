@@ -11,11 +11,11 @@ namespace NINA.Sequencer.Logic {
     public class SymbolProvider : ISymbolProvider {
 
         private string name;
-        ISymbolBroker broker;
+        ISymbolBrokerProviderApi  broker;
 
         public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
 
-        public SymbolProvider(string name, ISymbolBroker broker) {
+        internal SymbolProvider(string name, ISymbolBrokerProviderApi  broker) {
             if (name.Length == 0 || !Regex.IsMatch(name, UserSymbol.VALID_SYMBOL)) {
                 throw new ArgumentException("SymbolProvider name must be an alphanumeric word.");
             }

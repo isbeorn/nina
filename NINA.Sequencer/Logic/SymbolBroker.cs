@@ -50,7 +50,7 @@ using System.Windows.Input;
 using static NINA.Sequencer.Logic.Symbol;
 
 namespace NINA.Sequencer.Logic {
-    public class SymbolBroker : DockableVM, ISymbolBroker, ITelescopeConsumer, ISwitchConsumer, IWeatherDataConsumer, IFocuserConsumer, IFilterWheelConsumer,
+    public class SymbolBroker : DockableVM, ISymbolBrokerProviderApi , ITelescopeConsumer, ISwitchConsumer, IWeatherDataConsumer, IFocuserConsumer, IFilterWheelConsumer,
         IDomeConsumer, ISafetyMonitorConsumer, ICameraConsumer, IFlatDeviceConsumer, IRotatorConsumer {
 
         public SymbolBroker(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
@@ -105,7 +105,7 @@ namespace NINA.Sequencer.Logic {
         private static List<string> SymbolProviders =
             new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel" };
 
-        bool ISymbolBroker.TryGetSymbol(string key, out Symbol symbol) {
+        public bool TryGetSymbol(string key, out Symbol symbol) {
             Symbol sym;
             if (GetSymbol(key, out sym)) {
                 symbol = sym;
@@ -449,21 +449,21 @@ namespace NINA.Sequencer.Logic {
             return new SymbolProvider(name, this);
         }
 
-        void ISymbolBroker.AddOrUpdateSymbol(ISymbolProvider provider, string token, object value) {
+        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
             AddOrUpdateSymbol(provider.GetProviderName(), token, value);
         }
 
-        void ISymbolBroker.AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
+        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
             AddOrUpdateSymbol(provider.GetProviderName(), token, value, values);
         }
 
-        bool ISymbolBroker.RemoveSymbol(ISymbolProvider provider, string token) {
+        public bool RemoveSymbol(ISymbolProvider provider, string token) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
@@ -656,7 +656,7 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        void ISymbolBroker.RegisterFunction(ISymbolProvider symbolProvider, SymbolFunction symbolFunction) {
+        public void RegisterFunction(ISymbolProvider symbolProvider, SymbolFunction symbolFunction) {
             RegisterFunction(symbolProvider.GetProviderName(), symbolFunction);
         }
 
@@ -723,7 +723,7 @@ namespace NINA.Sequencer.Logic {
         }
 
 
-        void ISymbolBroker.InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile) {
+        public void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile) {
             result = null;
             isVolatile = false;
 

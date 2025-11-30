@@ -24,8 +24,6 @@ namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
 
-        //private static IProfileService ProfileService = null;
-
         public Expression() { }
         
         public Expression (Expression cloneMe, ISequenceEntity context, Action<Expression> validator = null) {
@@ -37,9 +35,6 @@ namespace NINA.Sequencer.Logic {
             DefaultString = cloneMe.DefaultString;
             Validator = validator;
             Context = context;
-            //if (ProfileService == null) {
-            //    ProfileService = (IProfileService)System.Windows.Application.Current.Resources["ProfileService"];
-            //}
         }
 
         public Expression(string definition, ISequenceEntity context) {
@@ -64,12 +59,11 @@ namespace NINA.Sequencer.Logic {
 
         public bool HasError => !string.IsNullOrEmpty(Error);
  
-        private string _error;
         public virtual string Error {
-            get => _error;
+            get => field;
             set {
-                if (value != _error) {
-                    _error = value;
+                if (value != field) {
+                    field = value;
                     RaisePropertyChanged(nameof(ValueString));
                     RaisePropertyChanged(nameof(IsExpression));
                     RaisePropertyChanged(nameof(IsAnnotated));
@@ -83,60 +77,86 @@ namespace NINA.Sequencer.Logic {
         public bool Dirty { get; set; }
         public ISequenceEntity Context { get; set; }
 
-        public Action<Expression> Validator;
+        public Action<Expression> Validator { get; set; }
 
-        private double _default = Double.NaN;
         public double Default {
-            get => _default;
+            get => field;
             set {
-                _default = value;
+                field = value;
                 RaisePropertyChanged();
             }
-        }
+        } = double.NaN;
 
         public string Type { get; set; } = "double";
 
         public bool Volatile { get; set; } = false;
         public bool GlobalVolatile { get; set; } = false;
 
-        private string defaultString = null;
         public string DefaultString {
             get {
-                if (Double.IsNaN(Default) && Definition.Length == 0) {
+                if (double.IsNaN(Default) && Definition.Length == 0) {
                     return "";
-                } else if (string.IsNullOrWhiteSpace(defaultString)) {
+                } else if (string.IsNullOrWhiteSpace(field)) {
                     return Default.ToString(CultureInfo.InvariantCulture);
-                } else if (defaultString.StartsWith("Lbl")) {
-                    return $"{{{Core.Locale.Loc.Instance[defaultString]}}}";
+                } else if (field.StartsWith("Lbl")) {
+                    return $"{{{Loc.Instance[field]}}}";
                 }
-                return defaultString;
+                return field;
             }
             set {
-                defaultString = value;
+                field = value;
             }
-        }
+        } = null;
 
+        /// <summary>
+        /// Specifies the allowed numeric range for this expression.
+        /// 
+        /// The array must contain exactly three elements:
+        /// 
+        ///     Range[0] = Minimum value
+        ///     Range[1] = Maximum value
+        ///     Range[2] = Boundary flags (encoded as an integer bitmask)
+        ///
+        /// The boundary flags determine whether the min/max boundaries are
+        /// inclusive or exclusive. They use the ExpressionRange flags:
+        ///
+        ///     ExpressionRange.MIN_EXCLUSIVE = 1   // bit 0
+        ///     ExpressionRange.MAX_EXCLUSIVE = 2   // bit 1
+        ///
+        /// Meaning of Range[2]:
+        ///
+        ///     0 (binary 00) → Min inclusive, Max inclusive
+        ///     1 (binary 01) → Min exclusive, Max inclusive
+        ///     2 (binary 10) → Min inclusive, Max exclusive
+        ///     3 (binary 11) → Min exclusive, Max exclusive
+        ///
+        /// Example:
+        ///
+        ///     Range = new double[] { 0, 10, 3 };
+        ///
+        /// Means: 0 < value < 10 (both sides exclusive).
+        ///
+        /// This field is optional; if null, no range checking occurs.
+        /// </summary>
         public double[]? Range { get; set; }
         public bool IsExpression { get; set; } = false;
         public bool IsSyntaxError { get; set; } = false;
         public bool IsAnnotated {
             get => IsExpression || ForceAnnotated || Error != null;
-            set { }
         }
 
         public bool ForceAnnotated { get; set; } = false;
         public string StringValue { get; set; }
 
-        private double _value = Double.NaN;
         public virtual double Value {
             get {
-                if (double.IsNaN(_value) && !double.IsNaN(Default)) {
+                if (double.IsNaN(field) && !double.IsNaN(Default)) {
                     return Default;
                 }
-                return _value;
+                return field;
             }
             set {
-                if (value != _value) {
+                if (value != field) {
                     if ("int".Equals(Type)) {
                         if (StringValue != null) {
                             Error = Loc.Instance["LblMustBeInteger"];
@@ -148,7 +168,7 @@ namespace NINA.Sequencer.Logic {
                         }
                         RaisePropertyChanged(nameof(IsAnnotated));
                     }
-                    _value = value;
+                    field = value;
                     if (Range != null) {
                         CheckRange((double)value);
                     } 
@@ -161,36 +181,52 @@ namespace NINA.Sequencer.Logic {
                     RaisePropertyChanged(nameof(IsExpression));
                 }
             }
-        }
+        } = double.NaN;
 
         private void CheckRange(double value) {
             if (Range?.Length < 3) { return; }
 
             int r = Convert.ToInt32(Range[2], CultureInfo.InvariantCulture);
+
+            bool minExclusive = (r & ExpressionRange.MIN_EXCLUSIVE) == ExpressionRange.MIN_EXCLUSIVE;
+            bool maxExclusive = (r & ExpressionRange.MAX_EXCLUSIVE) == ExpressionRange.MAX_EXCLUSIVE;
+
             double min = Range[0] + (((r & ExpressionRange.MIN_EXCLUSIVE) == ExpressionRange.MIN_EXCLUSIVE) ? 1e-8 : 0);
-            double max = Range[1] - (((r & ExpressionRange.MAX_EXCLUSIVE) == ExpressionRange.MAX_EXCLUSIVE) ? 1e-8 : 0);
-            if (value < min || (max != 0 && value > max)) {
-                if (r == 0) {
-                    if (max == 0) {
-                        Error = Loc.Instance["LblRange"] + ": >= " + min;
-                    } else {
-                        Error = Loc.Instance["LblRange"] +  ":" + min + " < " + Loc.Instance["LblValue"] + " < " + max;
-                    }
+            double max = Range[1] == 0 ? double.MaxValue : Range[1] - (((r & ExpressionRange.MAX_EXCLUSIVE) == ExpressionRange.MAX_EXCLUSIVE) ? 1e-8 : 0);
+
+            bool outOfRange =
+                (minExclusive ? value <= min : value < min) ||
+                (maxExclusive ? value >= max : value > max);
+
+            if (!outOfRange) { return; }
+
+            string msgKey;
+
+            if (Range[1] == 0) {
+                if (minExclusive) {
+                    msgKey = "Lbl_Expressions_CheckRange_RangeGreaterThan";
                 } else {
-                    Error = Loc.Instance["ValueMustBe"] + " " + (((r & 1) == 1) ? ">" : Loc.Instance["LblBetween"]) + " " + Range[0] + " " + Loc.Instance["LblAnd"] + " <" + " " + (((r & 2) == 2) ? " < " : " <=" + " ") + Range[1];
+                    msgKey = "Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals";
                 }
+            } else if (!minExclusive && !maxExclusive) {
+                msgKey = "Lbl_Expressions_CheckRange_RangeInclusiveInclusive";
+            } else if (!minExclusive && maxExclusive) {
+                msgKey = "Lbl_Expressions_CheckRange_RangeInclusiveExclusive";
+            } else if (minExclusive && !maxExclusive) {
+                msgKey = "Lbl_Expressions_CheckRange_RangeExclusiveInclusive";
+            } else {
+                msgKey = "Lbl_Expressions_CheckRange_RangeExclusiveExclusive";
             }
+
+            Error = string.Format(CultureInfo.InvariantCulture, Loc.Instance[msgKey], Range[0], Range[1]);
         }
         
         public SolidColorBrush InfoButtonColor {
             get {
                 if (Error == null) return new SolidColorBrush(Colors.White);
                 return JustWarnings(Error) ?
-                    // Don't like existing notification colors - they are hard to see.  Maybe add new ones to profiles?
                     new SolidColorBrush(Colors.Orange) :
                     new SolidColorBrush(Colors.Red);
-                    //new SolidColorBrush(ProfileService.ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationWarningColor) : 
-                    //new SolidColorBrush(ProfileService.ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationErrorColor);
             }
             set { }
         }
@@ -307,15 +343,13 @@ namespace NINA.Sequencer.Logic {
         private Dictionary<string, object> parameters = new Dictionary<string, object>();
         public IReadOnlyDictionary<string, object> Parameters => parameters.AsReadOnly();
 
-        private string definition = "";
         [JsonProperty]
         public virtual string Definition {
             get {
-                return definition;
+                return field;
             }
             set {
                 if (value == null) return;
-                if (value == definition) return;
                 value = value.Trim();
 
                 if (value.Length == 0) {
@@ -325,7 +359,7 @@ namespace NINA.Sequencer.Logic {
                     } else {
                         Value = Double.NaN;
                     }
-                    definition = value;
+                    field = value;
                     parameters.Clear();
                     resolved.Clear();
                     references.Clear();
@@ -338,7 +372,7 @@ namespace NINA.Sequencer.Logic {
 
                 Double result;
 
-                if (value != definition && IsExpression) {
+                if (value != field && IsExpression) {
                     // The value has changed.  Clear what we had...
                     foreach (var symKvp in Resolved) {
                         UserSymbol s = symKvp.Value;
@@ -350,12 +384,17 @@ namespace NINA.Sequencer.Logic {
                     parameters.Clear();
                 }
 
-                definition = value;
+                field = value;
 
                 if (Double.TryParse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out result)) {
-                    definition = String.Format(CultureInfo.InvariantCulture, "{0:0.#######}", result);
+                    field = String.Format(CultureInfo.InvariantCulture, "{0:0.#######}", result);
                     Error = null;
                     IsExpression = false;
+
+                    if (Range != null) {
+                        CheckRange(result);
+                    }
+                    
                     Value = result;
 
                     // Notify consumers
@@ -410,7 +449,7 @@ namespace NINA.Sequencer.Logic {
                 RaisePropertyChanged(nameof(StringValue));
                 RaisePropertyChanged(nameof(IsAnnotated));
             }
-        }
+        } = "";
         public void RemoveParameter(string identifier) {
             parameters.Remove(identifier);
             resolved.Remove(identifier);
