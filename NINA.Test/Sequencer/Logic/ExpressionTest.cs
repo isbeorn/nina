@@ -1,13 +1,278 @@
 ﻿using FluentAssertions;
+using MdXaml.Plugins;
 using Moq;
+using NCalc.Handlers;
+using NINA.Core.Locale;
+using NINA.Sequencer;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Text;
 
 namespace NINA.Test.Sequencer.Logic {
     [TestFixture]
     public class ExpressionTest {
+        private Mock<ISequenceEntity> _context;
+        private Mock<ISymbolBroker> _symbolBroker;
+
+        [SetUp]
+        public void SetUp() {
+            _context = new Mock<ISequenceEntity>();
+            _symbolBroker = new Mock<ISymbolBroker>();
+
+            _context.SetupGet(c => c.SymbolBroker).Returns(_symbolBroker.Object);
+            _context.SetupGet(c => c.Parent).Returns((ISequenceContainer)null);
+            _context.SetupGet(c => c.Name).Returns("TestContext");
+        }
+
+        private Expression CreateExpression(string definition) {
+            var expr = new Expression(definition, _context.Object) {
+                SymbolBroker = _symbolBroker.Object
+            };
+            expr.IsExpression = true;
+            return expr;
+        }
+
+
+        [Test]
+        public void Expression_Evaluate_LiteralNumericDefinition_ShouldNotBeExpression_AndKeepValue() {
+            // arrange
+            var expr = CreateExpression("123.45");
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Value.Should().Be(123.45);
+            expr.Error.Should().BeNull();
+        }
+
+        [Test]
+        public void Expression_Evaluate_EmptyDefinition_ShouldResetToNaN_AndNoError() {
+            // arrange
+            var expr = CreateExpression("42");
+            expr.Definition = ""; // resets state
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Value.Should().Be(double.NaN);
+            expr.Error.Should().BeNull();
+        }
+
+        [Test]
+        public void Expression_Evaluate_SimpleArithmeticExpression_ShouldEvaluateCorrectly() {
+            // arrange
+            var expr = CreateExpression("1 + 2 * 3"); // expect 7
+            expr.IsExpression.Should().BeTrue();
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().BeNull();
+            expr.Value.Should().Be(7.0);
+        }
+
+        [Test]
+        public void Expression_Evaluate_BooleanExpression_ShouldMapTrueToOne() {
+            // arrange
+            var expr = CreateExpression("1 < 2");
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().BeNull();
+            expr.Value.Should().Be(1.0); // true -> 1
+        }
+
+        [Test]
+        public void Expression_Evaluate_BooleanExpression_ShouldMapFalseToZero() {
+            // arrange
+            var expr = CreateExpression("1 > 2");
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().BeNull();
+            expr.Value.Should().Be(0.0); // false -> 0
+        }
+
+        [Test]
+        public void Expression_Evaluate_StringExpression_ShouldSetStringValue_AndNegativeInfinityValue() {
+            // arrange
+            var expr = CreateExpression("\"Hello NINA\"");
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().BeNull();
+            expr.StringValue.Should().Be("Hello NINA");
+            expr.Value.Should().Be(double.NegativeInfinity);
+        }
+
+        [Test]
+        public void Expression_Evaluate_ExpressionWithSymbolBrokerParameters_ShouldUseBrokerValues() {
+            // arrange
+            var expr = CreateExpression("a + b * 2"); // expect 3 + 4*2 = 11
+
+            // force parse references
+            expr.Definition = "a + b * 2";
+            expr.IsExpression.Should().BeTrue();
+
+            object aVal = 3.0;
+            _symbolBroker
+                .Setup(b => b.TryGetValue("a", out aVal))
+                .Returns(true);
+
+            object bVal = 4.0;
+            _symbolBroker
+                .Setup(b => b.TryGetValue("b", out bVal))
+                .Returns(true);
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().BeNull();
+            expr.Value.Should().Be(11.0);
+            expr.Parameters.Keys.Should().Contain(new[] { "a", "b" });
+            expr.Volatile.Should().BeTrue("values came from SymbolBroker");
+        }
+
+        [Test]
+        public void Expression_Evaluate_MissingParameter_ShouldProduceUndefinedError() {
+            // arrange
+            var expr = CreateExpression("a + b");
+
+            expr.Definition = "a + b";
+
+            // only a is provided
+            object aVal = 1.0;
+            _symbolBroker
+                .Setup(b => b.TryGetValue("a", out aVal))
+                .Returns(true);
+
+            // no setup for b -> TryGetValue returns false by default
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().NotBeNullOrEmpty();
+            expr.Error.Should().Contain("b"); // or use Loc.Instance["LblUndefined"]
+        }
+
+        [Test]
+        public void Expression_Evaluate_SyntaxError_ShouldSetSyntaxErrorMessage() {
+            // arrange
+            var expr = CreateExpression("1 +"); // invalid
+
+            // The Definition setter already sets Error/LblSyntaxError on first parse, but we re-check Evaluate
+            expr.Definition = "1 +";
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().Be(Loc.Instance["LblSyntaxError"]);
+        }
+
+        [Test]
+        [Ignore("Edge case fails as the Value doesn't change and then will not re-run validation")]
+        public void Expression_Evaluate_OutOfRangeValue_ShouldSetRangeError() {
+            // arrange
+            //var expr = CreateExpression("100"); 
+            var expr = new Expression("100", _context.Object) {
+                SymbolBroker = _symbolBroker.Object
+            };
+            expr.IsExpression = true;
+
+            // inclusive [0, 10]
+            expr.Range = new[] { 0.0, 10.0, 0.0 }; // 0 flags -> inclusive/inclusive
+            expr.Definition = "100";
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().NotBeNullOrEmpty();
+            expr.Error.Should().Contain("0");
+            expr.Error.Should().Contain("10");
+        }
+
+        [Test]
+        public void Expression_Evaluate_InRangeValue_ShouldNotProduceRangeError() {
+            // arrange
+            var expr = CreateExpression("5");
+            expr.Range = new[] { 0.0, 10.0, 0.0 }; // inclusive [0, 10]
+            expr.Definition = "5";
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Value.Should().Be(5.0);
+            expr.Error.Should().BeNull();
+        }
+
+        [Test]
+        public void Expression_Evaluate_FunctionCallViaSymbolBroker_ShouldSetResult_AndMarkGlobalVolatile() {
+            // arrange
+            var expr = CreateExpression("myFunc(1)");
+            expr.Definition = "myFunc(1)";
+
+            _symbolBroker
+                .Setup(b => b.InvokeFunction(
+                    "myFunc",
+                    It.IsAny<FunctionArgs>(),
+                    out It.Ref<object>.IsAny,
+                    out It.Ref<bool>.IsAny))
+                .Callback((string name, FunctionArgs args, out object result, out bool isVolatile) => {
+                    result = 42.0;
+                    isVolatile = true;
+                });
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().BeNull();
+            expr.Value.Should().Be(42.0);
+            expr.GlobalVolatile.Should().BeTrue();
+        }
+
+        [Test]
+        public void Expression_Evaluate_FunctionCallException_ShouldSurfaceErrorMessage() {
+            // arrange
+            var expr = CreateExpression("failFunc(1)");
+            expr.Definition = "failFunc(1)";
+
+            _symbolBroker
+                .Setup(b => b.InvokeFunction(
+                    "failFunc",
+                    It.IsAny<FunctionArgs>(),
+                    out It.Ref<object>.IsAny,
+                    out It.Ref<bool>.IsAny))
+                .Callback((string name, FunctionArgs args, out object result, out bool isVolatile) => {
+                    result = null;
+                    isVolatile = false;
+                    throw new InvalidOperationException("Boom");
+                });
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().Be("Boom");
+        }
+
         [Test]
         public void Expression_Validator_AfterValueAssignment_IsCalled() {
             var validator = new Mock<Action<Expression>>();

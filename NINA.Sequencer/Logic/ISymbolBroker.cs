@@ -17,17 +17,19 @@ using NINA.Equipment.Interfaces.ViewModel;
 using System.Collections.Generic;
 
 namespace NINA.Sequencer.Logic {
-    public interface ISymbolBroker : IDockableVM {
-        public bool TryGetValue(string key, out object value);
-        public bool TryGetSymbol(string key, out Symbol symbol);
-        public List<Symbol> GetSymbols();
-        public ISymbolProvider RegisterSymbolProvider(string name);
-        public IList<Symbol> GetHiddenSymbols(string source);
-        public IReadOnlyCollection<SymbolFunction> GetFunctions();
-        public void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile);
-        internal void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value);
-        internal void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values);
-        internal bool RemoveSymbol(ISymbolProvider provider, string token);
-        internal void RegisterFunction(ISymbolProvider provider, SymbolFunction function);
+    public interface ISymbolBroker {
+        bool TryGetValue(string key, out object value);
+        bool TryGetSymbol(string key, out Symbol symbol);
+        List<Symbol> GetSymbols();
+        ISymbolProvider RegisterSymbolProvider(string name);
+        IList<Symbol> GetHiddenSymbols(string source);
+        IReadOnlyCollection<SymbolFunction> GetFunctions();
+        void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile);
+    }
+    internal interface ISymbolBrokerProviderApi  : ISymbolBroker, IDockableVM {
+        void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value);
+        void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values);
+        bool RemoveSymbol(ISymbolProvider provider, string token);
+        void RegisterFunction(ISymbolProvider provider, SymbolFunction function);
     }
 }
