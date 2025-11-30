@@ -59,12 +59,11 @@ namespace NINA.Sequencer.Logic {
 
         public bool HasError => !string.IsNullOrEmpty(Error);
  
-        private string _error;
         public virtual string Error {
-            get => _error;
+            get => field;
             set {
-                if (value != _error) {
-                    _error = value;
+                if (value != field) {
+                    field = value;
                     RaisePropertyChanged(nameof(ValueString));
                     RaisePropertyChanged(nameof(IsExpression));
                     RaisePropertyChanged(nameof(IsAnnotated));
@@ -80,36 +79,34 @@ namespace NINA.Sequencer.Logic {
 
         public Action<Expression> Validator;
 
-        private double _default = Double.NaN;
         public double Default {
-            get => _default;
+            get => field;
             set {
-                _default = value;
+                field = value;
                 RaisePropertyChanged();
             }
-        }
+        } = double.NaN;
 
         public string Type { get; set; } = "double";
 
         public bool Volatile { get; set; } = false;
         public bool GlobalVolatile { get; set; } = false;
 
-        private string defaultString = null;
         public string DefaultString {
             get {
-                if (Double.IsNaN(Default) && Definition.Length == 0) {
+                if (double.IsNaN(Default) && Definition.Length == 0) {
                     return "";
-                } else if (string.IsNullOrWhiteSpace(defaultString)) {
+                } else if (string.IsNullOrWhiteSpace(field)) {
                     return Default.ToString(CultureInfo.InvariantCulture);
-                } else if (defaultString.StartsWith("Lbl")) {
-                    return $"{{{Core.Locale.Loc.Instance[defaultString]}}}";
+                } else if (field.StartsWith("Lbl")) {
+                    return $"{{{Loc.Instance[field]}}}";
                 }
-                return defaultString;
+                return field;
             }
             set {
-                defaultString = value;
+                field = value;
             }
-        }
+        } = null;
 
         /// <summary>
         /// Specifies the allowed numeric range for this expression.
@@ -152,16 +149,15 @@ namespace NINA.Sequencer.Logic {
         public bool ForceAnnotated { get; set; } = false;
         public string StringValue { get; set; }
 
-        private double _value = Double.NaN;
         public virtual double Value {
             get {
-                if (double.IsNaN(_value) && !double.IsNaN(Default)) {
+                if (double.IsNaN(field) && !double.IsNaN(Default)) {
                     return Default;
                 }
-                return _value;
+                return field;
             }
             set {
-                if (value != _value) {
+                if (value != field) {
                     if ("int".Equals(Type)) {
                         if (StringValue != null) {
                             Error = Loc.Instance["LblMustBeInteger"];
@@ -173,7 +169,7 @@ namespace NINA.Sequencer.Logic {
                         }
                         RaisePropertyChanged(nameof(IsAnnotated));
                     }
-                    _value = value;
+                    field = value;
                     if (Range != null) {
                         CheckRange((double)value);
                     } 
@@ -186,7 +182,7 @@ namespace NINA.Sequencer.Logic {
                     RaisePropertyChanged(nameof(IsExpression));
                 }
             }
-        }
+        } = double.NaN;
 
         private void CheckRange(double value) {
             if (Range?.Length < 3) { return; }
@@ -348,15 +344,14 @@ namespace NINA.Sequencer.Logic {
         private Dictionary<string, object> parameters = new Dictionary<string, object>();
         public IReadOnlyDictionary<string, object> Parameters => parameters.AsReadOnly();
 
-        private string definition = "";
         [JsonProperty]
         public virtual string Definition {
             get {
-                return definition;
+                return field;
             }
             set {
                 if (value == null) return;
-                if (value == definition) return;
+                if (value == field) return;
                 value = value.Trim();
 
                 if (value.Length == 0) {
@@ -366,7 +361,7 @@ namespace NINA.Sequencer.Logic {
                     } else {
                         Value = Double.NaN;
                     }
-                    definition = value;
+                    field = value;
                     parameters.Clear();
                     resolved.Clear();
                     references.Clear();
@@ -379,7 +374,7 @@ namespace NINA.Sequencer.Logic {
 
                 Double result;
 
-                if (value != definition && IsExpression) {
+                if (value != field && IsExpression) {
                     // The value has changed.  Clear what we had...
                     foreach (var symKvp in Resolved) {
                         UserSymbol s = symKvp.Value;
@@ -391,10 +386,10 @@ namespace NINA.Sequencer.Logic {
                     parameters.Clear();
                 }
 
-                definition = value;
+                field = value;
 
                 if (Double.TryParse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out result)) {
-                    definition = String.Format(CultureInfo.InvariantCulture, "{0:0.#######}", result);
+                    field = String.Format(CultureInfo.InvariantCulture, "{0:0.#######}", result);
                     Error = null;
                     IsExpression = false;
                     Value = result;
@@ -451,7 +446,7 @@ namespace NINA.Sequencer.Logic {
                 RaisePropertyChanged(nameof(StringValue));
                 RaisePropertyChanged(nameof(IsAnnotated));
             }
-        }
+        } = "";
         public void RemoveParameter(string identifier) {
             parameters.Remove(identifier);
             resolved.Remove(identifier);
