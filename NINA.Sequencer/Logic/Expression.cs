@@ -688,13 +688,26 @@ namespace NINA.Sequencer.Logic {
         }
 
         public override string ToString() {
-            string id = Symbol != null ? (Symbol.Name + ": " + Symbol.Identifier) : Context?.Name;
+            string id = Symbol != null
+        ? (Symbol.Name + ": " + Symbol.Identifier)
+        : Context?.Name;
+
             if (Error != null) {
-                return $"'{Definition}' in {id}, References: {References.Count}, Error: {Error}";
+                return string.Create(
+                    CultureInfo.InvariantCulture,
+                    $"'{Definition}' in {id}, References: {References.Count}, Error: {Error}"
+                );
             } else if (Definition.Length == 0) {
-                return "Undefined" + (Context != null ? " in " + Context.Name : "") + (Validator != null ? " (with Validator)" : "");
+                return string.Create(
+                    CultureInfo.InvariantCulture,
+                    $"Undefined{(Context != null ? " in " + Context.Name : "")}{(Validator != null ? " (with Validator)" : "")}"
+                );
             }
-            return $"Expression: {Definition} in {id}, References: {References.Count}, Value: {ValueString}";
+
+            return string.Create(
+                CultureInfo.InvariantCulture,
+                $"Expression: {Definition} in {id}, References: {References.Count}, Value: {ValueString}"
+            );
         }
 
     }

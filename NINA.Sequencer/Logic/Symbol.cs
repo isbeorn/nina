@@ -17,6 +17,7 @@ using NINA.Core.Utility;
 using NmeaParser.Gnss.Ntrip;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Input;
 
 namespace NINA.Sequencer.Logic {
@@ -86,7 +87,10 @@ namespace NINA.Sequencer.Logic {
         public Symbol[] Constants { get { return constants; } }
 
         public override string ToString() {
-            return $"{key} : {category} : {value} ";
+            return string.Create(
+                CultureInfo.InvariantCulture,
+                $"{category}_{key}: {value}"
+            );
         }
     }
 
