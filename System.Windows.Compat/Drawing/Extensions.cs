@@ -191,6 +191,94 @@ namespace System.Drawing
         }
 
         /// <summary>
+        /// Gets the color of the specified pixel
+        /// </summary>
+        public Color GetPixel(int x, int y)
+        {
+            if (_mat == null || _mat.Empty())
+            {
+                throw new InvalidOperationException("Cannot get pixel from an empty bitmap");
+            }
+            if (x < 0 || x >= _mat.Width || y < 0 || y >= _mat.Height)
+            {
+                throw new ArgumentOutOfRangeException($"Pixel coordinates ({x}, {y}) are out of bounds");
+            }
+
+            var type = _mat.Type();
+            if (type == MatType.CV_8UC3)
+            {
+                // BGR format
+                var vec = _mat.Get<Vec3b>(y, x);
+                return Color.FromArgb(255, vec.Item2, vec.Item1, vec.Item0); // BGR to RGB
+            }
+            else if (type == MatType.CV_8UC4)
+            {
+                // BGRA format
+                var vec = _mat.Get<Vec4b>(y, x);
+                return Color.FromArgb(vec.Item3, vec.Item2, vec.Item1, vec.Item0); // BGRA to ARGB
+            }
+            else if (type == MatType.CV_8UC1)
+            {
+                // Grayscale
+                var value = _mat.Get<byte>(y, x);
+                return Color.FromArgb(255, value, value, value);
+            }
+            else if (type == MatType.CV_16UC1)
+            {
+                // 16-bit grayscale - scale down to 8-bit
+                var value = (byte)(_mat.Get<ushort>(y, x) >> 8);
+                return Color.FromArgb(255, value, value, value);
+            }
+            else
+            {
+                throw new NotSupportedException($"GetPixel not supported for pixel format {PixelFormat}");
+            }
+        }
+
+        /// <summary>
+        /// Sets the color of the specified pixel
+        /// </summary>
+        public void SetPixel(int x, int y, Color color)
+        {
+            if (_mat == null || _mat.Empty())
+            {
+                throw new InvalidOperationException("Cannot set pixel in an empty bitmap");
+            }
+            if (x < 0 || x >= _mat.Width || y < 0 || y >= _mat.Height)
+            {
+                throw new ArgumentOutOfRangeException($"Pixel coordinates ({x}, {y}) are out of bounds");
+            }
+
+            var type = _mat.Type();
+            if (type == MatType.CV_8UC3)
+            {
+                // BGR format
+                _mat.Set(y, x, new Vec3b(color.B, color.G, color.R));
+            }
+            else if (type == MatType.CV_8UC4)
+            {
+                // BGRA format
+                _mat.Set(y, x, new Vec4b(color.B, color.G, color.R, color.A));
+            }
+            else if (type == MatType.CV_8UC1)
+            {
+                // Grayscale - convert to luminance
+                var luminance = (byte)(0.299 * color.R + 0.587 * color.G + 0.114 * color.B);
+                _mat.Set(y, x, luminance);
+            }
+            else if (type == MatType.CV_16UC1)
+            {
+                // 16-bit grayscale - convert to luminance and scale up
+                var luminance = (ushort)((0.299 * color.R + 0.587 * color.G + 0.114 * color.B) * 257);
+                _mat.Set(y, x, luminance);
+            }
+            else
+            {
+                throw new NotSupportedException($"SetPixel not supported for pixel format {PixelFormat}");
+            }
+        }
+
+        /// <summary>
         /// Saves the bitmap to a file
         /// </summary>
         public void Save(string filename)

@@ -34,6 +34,21 @@ namespace System.Drawing {
             LineType = LineTypes.AntiAlias;
         }
 
+        public Pen(Windows.Media.Brush brush) : this(brush, 1.0f) {
+            // Default width of 1
+        }
+
+        public Pen(SolidBrush brush, float width) {
+            // Convert System.Drawing.SolidBrush to OpenCV Scalar
+            Color = brush.Color;
+            Width = width;
+            LineType = LineTypes.AntiAlias;
+        }
+
+        public Pen(SolidBrush brush) : this(brush, 1.0f) {
+            // Default width of 1
+        }
+
         public Pen(Windows.Media.Color color, float width) {
             Color = color;
             Width = width;

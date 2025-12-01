@@ -22,3 +22,7 @@
 	path = NINA.Plugins/PolarAlignment
 	url = https://github.com/nitr57/nina.plugin.polaralignment.git
 	branch = master
+[submodule "NINA.Plugins/joko.nina.plugins"]
+	path = NINA.Plugins/joko.nina.plugins
+	url = https://github.com/nitr57/joko.nina.plugins.git
+	branch = develop

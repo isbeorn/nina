@@ -242,5 +242,34 @@ namespace System.Windows.Media {
         Linear,
         NearestNeighbor
     }
+
+    /// <summary>
+    /// FontFamily class compatible with WPF API
+    /// </summary>
+    public class FontFamily {
+        private readonly string _familyName;
+        
+        public FontFamily(string familyName) {
+            _familyName = familyName ?? "Arial";
+        }
+
+        /// <summary>
+        /// Gets the family names as a dictionary (compatible with WPF API)
+        /// </summary>
+        public System.Collections.Generic.IDictionary<System.Globalization.CultureInfo, string> FamilyNames {
+            get {
+                var dict = new System.Collections.Generic.Dictionary<System.Globalization.CultureInfo, string>();
+                dict[System.Globalization.CultureInfo.InvariantCulture] = _familyName;
+                return dict;
+            }
+        }
+
+        /// <summary>
+        /// Gets the family name
+        /// </summary>
+        public string Source => _familyName;
+
+        public override string ToString() => _familyName;
+    }
 }
 
