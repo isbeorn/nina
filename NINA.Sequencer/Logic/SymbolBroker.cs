@@ -561,8 +561,10 @@ namespace NINA.Sequencer.Logic {
         public void UpdateDeviceInfo(DomeInfo deviceInfo) {
             if (deviceInfo.Connected) {
                 AddOrUpdateSymbol("Dome", "ShutterStatus", (int)deviceInfo.ShutterStatus, ShutterConstants);
-                AddOrUpdateSymbol("Dome", "DomeAzimuth", deviceInfo.Azimuth);
-                AddOrUpdateSymbol("Dome", "DomeAltitude", deviceInfo.Altitude);
+                AddOrUpdateSymbol("Dome", "Azimuth", deviceInfo.Azimuth);
+                AddOrUpdateSymbol("Dome", "Altitude", deviceInfo.Altitude);
+                AddOrUpdateSymbol("Dome", "DomeAzimuth", deviceInfo.Azimuth, SymbolType.SYMBOL_HIDDEN);
+                AddOrUpdateSymbol("Dome", "DomeAltitude", deviceInfo.Altitude, SymbolType.SYMBOL_HIDDEN);
             } else {
                 RemoveSymbol("Dome", "ShutterStatus");
                 RemoveSymbol("Dome", "DomeAzimuth");

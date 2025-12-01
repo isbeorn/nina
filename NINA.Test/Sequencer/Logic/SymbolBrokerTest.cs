@@ -538,8 +538,10 @@ namespace NINA.Test.Sequencer.Logic {
 
             // Assert
             ValidateSymbol(key: "Dome_ShutterStatus", expectedSuccess: true, expectedValue: (int)info.ShutterStatus);
-            ValidateSymbol(key: "Dome_DomeAltitude", expectedSuccess: true, expectedValue: info.Altitude);
-            ValidateSymbol(key: "Dome_DomeAzimuth", expectedSuccess: true, expectedValue: info.Azimuth);
+            ValidateSymbol(key: "Dome_Altitude", expectedSuccess: true, expectedValue: info.Altitude);
+            ValidateSymbol(key: "Dome_Azimuth", expectedSuccess: true, expectedValue: info.Azimuth);
+            ValidateSymbol(key: "Dome_DomeAltitude", expectedSuccess: true, expectedValue: info.Altitude, true);
+            ValidateSymbol(key: "Dome_DomeAzimuth", expectedSuccess: true, expectedValue: info.Azimuth, true);
         }
 
         [Test]
