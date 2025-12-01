@@ -39,8 +39,8 @@ namespace NINA.Core.Utility.Notification {
             Lifetime = lifetime;
             DateTime = DateTime.Now;
 
-            CloseCommand = new RelayCommand(_ => closeAction?.Invoke(this));
-            CloseAllCommand = new RelayCommand(_ => closeAllAction?.Invoke());
+            CloseCommand = new CommunityToolkit.Mvvm.Input.RelayCommand<CustomNotification>(closeAction);
+            CloseAllCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(closeAllAction);
         }
 
         public DateTime DateTime { get; }

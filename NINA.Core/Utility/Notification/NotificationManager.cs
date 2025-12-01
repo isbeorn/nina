@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -23,11 +23,9 @@ namespace NINA.Core.Utility.Notification {
         private readonly Dispatcher dispatcher;
         private readonly int maxVisible;
         private readonly Queue<CustomNotification> pendingNotifications = new();
-        private readonly Dictionary<CustomNotification, DispatcherTimer> timers = new();
-
-        private readonly ObservableCollection<CustomNotification> notifications
-            = new ObservableCollection<CustomNotification>();
-
+        private readonly ObservableCollection<CustomNotification> notifications = new ();
+        private readonly Dictionary<CustomNotification, DateTime> expirationTimes = new ();
+        private DispatcherTimer lifetimeTimer;
         private NotificationHostWindow hostWindow;
         private bool disposed;
 
@@ -43,7 +41,6 @@ namespace NINA.Core.Utility.Notification {
                 return;
             }
 
-            // Make sure window is created on the UI thread
             if (!dispatcher.CheckAccess()) {
                 dispatcher.Invoke(EnsureHostWindow);
                 return;
@@ -54,6 +51,37 @@ namespace NINA.Core.Utility.Notification {
             };
             hostWindow.Show();
             hostWindow.Hide();
+        }
+
+        private void EnsureLifetimeTimer() {
+            if (lifetimeTimer != null) {
+                return;
+            }
+
+            lifetimeTimer = new DispatcherTimer(DispatcherPriority.Background, dispatcher) {
+                Interval = TimeSpan.FromMilliseconds(200)
+            };
+            lifetimeTimer.Tick += (_, __) => OnLifetimeTick();
+        }
+
+        private void StartLifetimeTimerIfNeeded() {
+            if (expirationTimes.Count == 0 || lifetimeTimer == null) {
+                return;
+            }
+
+            if (!lifetimeTimer.IsEnabled) {
+                lifetimeTimer.Start();
+            }
+        }
+
+        private void StopLifetimeTimerIfPossible() {
+            if (lifetimeTimer == null) {
+                return;
+            }
+
+            if (expirationTimes.Count == 0) {
+                lifetimeTimer.Stop();
+            }
         }
 
         public void Show(CustomNotification notification) {
@@ -73,39 +101,33 @@ namespace NINA.Core.Utility.Notification {
 
         private void ShowInternal(CustomNotification notification) {
             EnsureHostWindow();
+            EnsureLifetimeTimer();
 
             notifications.Add(notification);
             hostWindow.ShowIfNeeded();
 
             if (notification.Lifetime > TimeSpan.Zero) {
-                var timer = new DispatcherTimer(DispatcherPriority.Background, dispatcher) {
-                    Interval = notification.Lifetime
-                };
-                timer.Tick += (s, e) => {
-                    timer.Stop();
-                    Close(notification);
-                };
-                timers[notification] = timer;
-                timer.Start();
+                expirationTimes[notification] = DateTime.UtcNow + notification.Lifetime;
+                StartLifetimeTimerIfNeeded();
             }
         }
-
 
         public void Close(CustomNotification notification) {
             if (disposed || notification == null) return;
 
             dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                 if (!notifications.Contains(notification)) {
+                    // Might be queued but not yet shown; ensure it is not in queue either.
+                    RemoveFromQueue(notification);
+                    expirationTimes.Remove(notification);
+                    StopLifetimeTimerIfPossible();
                     return;
                 }
 
                 notifications.Remove(notification);
+                expirationTimes.Remove(notification);
 
-                if (timers.TryGetValue(notification, out var timer)) {
-                    timer.Stop();
-                    timers.Remove(notification);
-                }
-
+                // Show next from queue, if any
                 if (pendingNotifications.Count > 0) {
                     var next = pendingNotifications.Dequeue();
                     ShowInternal(next);
@@ -114,22 +136,58 @@ namespace NINA.Core.Utility.Notification {
                 if (notifications.Count == 0) {
                     hostWindow.HideIfPossible();
                 }
+
+                StopLifetimeTimerIfPossible();
             }));
+        }
+
+        private void RemoveFromQueue(CustomNotification notification) {
+            if (pendingNotifications.Count == 0) {
+                return;
+            }
+
+            // Rebuild queue without the item
+            var temp = pendingNotifications.ToList();
+            pendingNotifications.Clear();
+            foreach (var n in temp) {
+                if (!ReferenceEquals(n, notification)) {
+                    pendingNotifications.Enqueue(n);
+                }
+            }
         }
 
         public void CloseAll() {
             if (disposed) return;
 
             dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                foreach (var kvp in timers.ToList()) {
-                    kvp.Value.Stop();
-                }
-                timers.Clear();
-
                 notifications.Clear();
                 pendingNotifications.Clear();
-                hostWindow.HideIfPossible();
+                expirationTimes.Clear();
+
+                if (lifetimeTimer != null) {
+                    lifetimeTimer.Stop();
+                }
+
+                hostWindow?.HideIfPossible();
             }));
+        }
+
+        private void OnLifetimeTick() {
+            if (disposed) return;
+
+            var now = DateTime.UtcNow;
+            var toClose = expirationTimes
+                .Where(kv => kv.Value <= now)
+                .Select(kv => kv.Key)
+                .ToList();
+
+            if (toClose.Count == 0) {
+                return;
+            }
+
+            foreach (var n in toClose) {
+                Close(n);
+            }
         }
 
         public void Dispose() {
@@ -140,7 +198,13 @@ namespace NINA.Core.Utility.Notification {
             disposed = true;
 
             dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                CloseAll();
+                lifetimeTimer?.Stop();
+                lifetimeTimer = null;
+
+                notifications.Clear();
+                pendingNotifications.Clear();
+                expirationTimes.Clear();
+
                 hostWindow?.Close();
                 hostWindow = null;
             }));
