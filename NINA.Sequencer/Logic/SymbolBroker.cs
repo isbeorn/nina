@@ -12,7 +12,6 @@
 
 #endregion "copyright"
 
-using CommunityToolkit.Mvvm.ComponentModel;
 using Namotion.Reflection;
 using NCalc.Handlers;
 using NINA.Astrometry;
@@ -30,12 +29,11 @@ using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Equipment.MyWeatherData;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Logic.SymbolFunctions;
 using NINA.WPF.Base.ViewModel;
-using Parlot.Fluent;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -72,9 +70,6 @@ namespace NINA.Sequencer.Logic {
 
             imagingMediator.ImagePrepared += SetImageSymbols;
 
-            ConditionWatchdog = new ConditionWatchdog(UpdateNINASymbols, TimeSpan.FromSeconds(3));
-            ConditionWatchdog.Start();
-
             TelescopeMediator.RegisterConsumer(this);
             SwitchMediator.RegisterConsumer(this);
             WeatherDataMediator.RegisterConsumer(this);
@@ -92,6 +87,10 @@ namespace NINA.Sequencer.Logic {
             }
             // Register the core functions
             RegisterCoreFunctions();
+
+            UpdateNINASymbols();
+            ConditionWatchdog = new ConditionWatchdog(UpdateNINASymbols, TimeSpan.FromSeconds(3));
+            ConditionWatchdog.Start();
         }
 
         private ConcurrentDictionary<string, IList<Symbol>> DataSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
@@ -296,20 +295,28 @@ namespace NINA.Sequencer.Logic {
 
         private void RemoveAllSymbols(string source) {
             int count = 0;
-            foreach (KeyValuePair<string, IList<Symbol>> kvp in DataSymbols) {
-                Symbol toRemove = null;
-                foreach (Symbol sym in kvp.Value) {
-                    if (sym.Category == source) {
-                        toRemove = sym;
-                        break;
+            var keysToRemove = new List<string>();
+
+            foreach (var kvp in DataSymbols) {
+                var list = kvp.Value;
+
+                for (int i = list.Count - 1; i >= 0; i--) {
+                    if (list[i].Category == source) {
+                        list.RemoveAt(i);
+                        count++;
                     }
                 }
-                if (toRemove != null) {
-                    kvp.Value.Remove(toRemove);
-                    count++;
+
+                if (list.Count == 0) {
+                    keysToRemove.Add(kvp.Key);
                 }
             }
-            Logger.Info("Removing all symbols from: " + source + " (" + count + ")");
+
+            foreach (var key in keysToRemove) {
+                DataSymbols.Remove(key, out _);
+            }
+
+            Logger.Info($"Removing all symbols from: {source} ({count})");
         }
 
         private bool RemoveSymbol(string source, string key) {
@@ -372,9 +379,9 @@ namespace NINA.Sequencer.Logic {
             return (IEnumerable<ConcurrentDictionary<string, object>>)DataSymbols;
         }
 
-        private void AddOptionalImageSymbol(StarDetectionAnalysis a, string name) {
-            if (a.HasProperty(name)) {
-                var v = a.GetType().GetProperty(name).GetValue(a, null);
+        private void AddOptionalImageSymbol(IStarDetectionAnalysis analysis, string name) {
+            if (analysis.HasProperty(name)) {
+                var v = analysis.GetType().GetProperty(name).GetValue(analysis, null);
                 if (v is double vDouble) {
                     AddOrUpdateSymbol("Image", name, Math.Round(vDouble, 2));
                 }
@@ -384,9 +391,9 @@ namespace NINA.Sequencer.Logic {
         public void SetImageSymbols(object sender, ImagePreparedEventArgs e) {
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
 
-            StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
-            if (double.IsNaN(a.HFR)) {
-                a.HFR = 0;
+            IStarDetectionAnalysis analysis = e.RenderedImage.RawImageData.StarDetectionAnalysis;
+            if (double.IsNaN(analysis.HFR)) {
+                analysis.HFR = 0;
             }
 
             var imageMetaData = e.RenderedImage.RawImageData.MetaData;
@@ -397,8 +404,8 @@ namespace NINA.Sequencer.Logic {
                 rms = recordedRMS.Total;
             }
 
-            AddOrUpdateSymbol("Image", "HFR", Math.Round(a.HFR, 3));
-            AddOrUpdateSymbol("Image", "StarCount", a.DetectedStars);
+            AddOrUpdateSymbol("Image", "HFR", Math.Round(analysis.HFR, 3));
+            AddOrUpdateSymbol("Image", "StarCount", analysis.DetectedStars);
             AddOrUpdateSymbol("Image", "ImageId", imageMetaData.Image.Id);
             AddOrUpdateSymbol("Image", "ExposureTime", imageMetaData.Image.ExposureTime);
             AddOrUpdateSymbol("Image", "RMS", rms);
@@ -407,8 +414,8 @@ namespace NINA.Sequencer.Logic {
             AddOrUpdateSymbol("Image", "ImageType", imageMetaData.Image.ImageType);
 
             // Add these if they exist (from Hocus Focus at this time)
-            AddOptionalImageSymbol(a, "Eccentricity");
-            AddOptionalImageSymbol(a, "FWHM");
+            AddOptionalImageSymbol(analysis, "Eccentricity");
+            AddOptionalImageSymbol(analysis, "FWHM");
         }
 
         private Task UpdateNINASymbols() {
@@ -600,12 +607,14 @@ namespace NINA.Sequencer.Logic {
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
             if (deviceInfo.Connected) {
                 AddOrUpdateSymbol("Camera", "Temperature", deviceInfo.Temperature);
+                AddOrUpdateSymbol("Camera", "TemperatureSetPoint", deviceInfo.TemperatureSetPoint);
                 // Hidden
                 AddOrUpdateSymbol("Camera", "PixelSize", deviceInfo.PixelSize, SymbolType.SYMBOL_HIDDEN);
                 AddOrUpdateSymbol("Camera", "XSize", deviceInfo.XSize, SymbolType.SYMBOL_HIDDEN);
                 AddOrUpdateSymbol("Camera", "YSize", deviceInfo.YSize, SymbolType.SYMBOL_HIDDEN);
             } else {
                 RemoveSymbol("Camera", "Temperature");
+                RemoveSymbol("Camera", "TemperatureSetPoint");
                 RemoveSymbol("Camera", "PixelSize");
                 RemoveSymbol("Camera", "XSize");
                 RemoveSymbol("Camera", "YSize");
