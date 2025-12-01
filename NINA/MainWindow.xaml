@@ -854,7 +854,7 @@
                 Margin="5,0,5,0"
                 VerticalAlignment="Center"
                 FontWeight="Bold"
-                Foreground="{StaticResource WarningColorBrush}"
+                Foreground="{StaticResource NotificationWarningBrush}"
                 Text="TRACE LOGGING ENABLED"
                 Visibility="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ApplicationSettings.LogLevel, Converter={StaticResource TraceLogToVisibilityConverter}}" />
             <ComboBox
