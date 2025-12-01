@@ -23,7 +23,7 @@ using System.Text;
 using FilterWheelInfo = NINA.Equipment.Equipment.MyFilterWheel.FilterWheelInfo;
 
 namespace NINA.Test.Sequencer.Logic {
-    internal class SymbolBrokerTest {
+    public class SymbolBrokerTest {
         private Mock<IProfileService> profileServiceMock;
         private Mock<ISwitchMediator> switchMediatorMock;
         private Mock<IWeatherDataMediator> weatherDataMediatorMock;
@@ -70,8 +70,8 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         private void ValidateSymbol(string key, bool expectedSuccess, object? expectedValue = null, bool isHidden = false) {
+            // Validate TryGetSymbol
             var success = broker.TryGetSymbol(key, out var symbol);
-
             success.Should().Be(expectedSuccess, key);
             if (expectedSuccess) {
                 symbol.Should().NotBeNull();
@@ -81,6 +81,17 @@ namespace NINA.Test.Sequencer.Logic {
                 }
             } else {
                 symbol.Should().BeNull();
+            }
+
+            // Validate TryGetValue
+            var successGetValue = broker.TryGetValue(key, out var value);
+            successGetValue.Should().Be(expectedSuccess, key);
+            if (expectedSuccess) {
+                if (expectedValue is not null) {
+                    value.Should().Be(expectedValue);
+                }
+            } else {
+                value.Should().BeNull();
             }
         }
 
@@ -671,6 +682,207 @@ namespace NINA.Test.Sequencer.Logic {
             ValidateSymbol(key: "Image_RMS", expectedSuccess: true, expectedValue: 123.2);
             ValidateSymbol(key: "Image_HFR", expectedSuccess: true, expectedValue: 2.5);
             ValidateSymbol(key: "Image_StarCount", expectedSuccess: true, expectedValue: 2222);
+        }
+
+        public interface IMyExtraStatsStarDetectionAnalysis : IStarDetectionAnalysis {
+            double Eccentricity { get; set; }
+            double FWHM { get; set; }
+        }
+
+        [Test]
+        public void SymbolBroker_SetImageSymbols_AdditionalFields_HasSymbols() {
+            // Arrange            
+            var renderedImageMock = new Mock<IRenderedImage>();
+
+            renderedImageMock.SetupGet(x => x.RawImageData.MetaData).Returns(new ImageMetaData() {
+                Image = new ImageParameter() {
+                    Id = 10,
+                    ExposureTime = 120.5,
+                    ImageType = "DARK",
+                    RecordedRMS = new Core.Model.RMS() {
+                        Total = 123.2
+                    }
+                },
+                Camera = new CameraParameter() {
+                    Gain = 139,
+                    Offset = 25
+                }
+            });
+
+            var starDetectionMock = new Mock<IMyExtraStatsStarDetectionAnalysis>();
+            renderedImageMock.SetupGet(x => x.RawImageData.StarDetectionAnalysis).Returns(starDetectionMock.Object);
+            starDetectionMock.SetupGet(x => x.DetectedStars).Returns(2222);
+            starDetectionMock.SetupGet(x => x.HFR).Returns(2.5);
+            starDetectionMock.SetupGet(x => x.Eccentricity).Returns(3.5);
+            starDetectionMock.SetupGet(x => x.FWHM).Returns(4.5);
+
+            var args = new ImagePreparedEventArgs {
+                RenderedImage = renderedImageMock.Object,
+                Parameters = new Core.Utility.PrepareImageParameters(true, true)
+            };
+
+            // Act
+            broker.SetImageSymbols(this, args);
+
+            // Assert
+            ValidateSymbol(key: "Image_ImageId", expectedSuccess: true, expectedValue: 10);
+            ValidateSymbol(key: "Image_ExposureTime", expectedSuccess: true, expectedValue: 120.5);
+            ValidateSymbol(key: "Image_ImageType", expectedSuccess: true, expectedValue: "DARK");
+            ValidateSymbol(key: "Image_Gain", expectedSuccess: true, expectedValue: 139);
+            ValidateSymbol(key: "Image_Offset", expectedSuccess: true, expectedValue: 25);
+            ValidateSymbol(key: "Image_RMS", expectedSuccess: true, expectedValue: 123.2);
+            ValidateSymbol(key: "Image_HFR", expectedSuccess: true, expectedValue: 2.5);
+            ValidateSymbol(key: "Image_StarCount", expectedSuccess: true, expectedValue: 2222);
+            ValidateSymbol(key: "Image_Eccentricity", expectedSuccess: true, expectedValue: 3.5);
+            ValidateSymbol(key: "Image_FWHM", expectedSuccess: true, expectedValue: 4.5);
+        }
+
+        [Test]
+        public void SymbolBroker_GetSymbols_ReturnAllSymbols() {
+            // Arrange
+            var info = new CameraInfo {
+                Connected = true,
+                TemperatureSetPoint = -15.0,
+                Temperature = -10.5,
+                XSize = 4000,
+                YSize = 3000,
+                PixelSize = 4.54
+            };
+
+            // Act
+            broker.UpdateDeviceInfo(info);
+            var symbols = broker.GetSymbols();
+
+            // Assert
+            symbols.Should().NotBeNull();
+            symbols.Should().Contain(x => x.Category == "NINA");
+            symbols.Should().Contain(x => x.Category == "Camera");
+            symbols.Should().NotContain(x => x.Category == "Camera" && x.Key == "XSize");
+
+            // Act 2
+            broker.UpdateDeviceInfo(new CameraInfo {  Connected = false });
+            var symbols2 = broker.GetSymbols();
+
+            // Assert 2
+            symbols2.Should().NotBeNull();
+            symbols2.Should().Contain(x => x.Category == "NINA");
+            symbols2.Should().NotContain(x => x.Category == "Camera");
+        }
+
+        [Test]
+        public void SymbolBroker_RegisterSymbolProvider_Successful() {
+            // Act
+            var provider = broker.RegisterSymbolProvider("TestProvider");
+
+            // Assert
+            provider.Should().NotBeNull();
+            provider.GetProviderName().Should().Be("TestProvider");
+        }
+
+        [Test]
+        public void SymbolBroker_RegisterSymbolProviderTwice_Fails() {
+            // Arrange
+            broker.RegisterSymbolProvider("TestProvider");
+
+            // Act
+            Action act = () => broker.RegisterSymbolProvider("TestProvider");
+
+            // Assert
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void SymbolBroker_AddOrUpdateSymbol_NoProvider_Fails() {
+            // Act
+            Action act = () => broker.AddOrUpdateSymbol(null, "MySymbol", 123.45);
+
+            // Assert
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void SymbolBroker_AddOrUpdateSymbol_WithSymbolArray_NoProvider_Fails() {
+            // Act
+            Action act = () => broker.AddOrUpdateSymbol(null, "MySymbol", 123.45, []);
+
+            // Assert
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void SymbolBroker_AddOrUpdateSymbol_SuccessfullyAdded() {
+            // Arrange
+            var provider = broker.RegisterSymbolProvider("Test");
+
+            // Act
+            broker.AddOrUpdateSymbol(provider, "MySymbol", 123.45);
+
+            // Assert
+            ValidateSymbol("Test_MySymbol", true, 123.45, false);
+        }
+
+        [Test]
+        public void SymbolBroker_RemoveSymbol_NoProvider_Fails() {
+            // Act
+            Action act = () => broker.RemoveSymbol(null, "MySymbol");
+
+            // Assert
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void SymbolBroker_RemoveSymbol_SuccessfullyAddedAndRemoved() {
+            // Arrange
+            var provider = broker.RegisterSymbolProvider("Test");
+            broker.AddOrUpdateSymbol(provider, "MySymbol", 123.45);
+            ValidateSymbol("Test_MySymbol", true, 123.45, false);
+
+            // Act
+            var success = broker.RemoveSymbol(provider, "MySymbol");
+
+            // Assert
+            success.Should().BeTrue();
+            ValidateSymbol("Test_MySymbol",false);
+        }
+
+        [Test]
+        public void SymbolBroker_RemoveSymbol_Ambiguous_SuccessfullyAddedAndRemoved() {
+            // Arrange
+            var provider = broker.RegisterSymbolProvider("Test");
+            broker.AddOrUpdateSymbol(provider, "MySymbol", 123.45);
+            ValidateSymbol("Test_MySymbol", true, 123.45, false);
+
+            var provider2 = broker.RegisterSymbolProvider("Test2");
+            broker.AddOrUpdateSymbol(provider2, "MySymbol", 543.21);
+            ValidateSymbol("Test_MySymbol", true, 123.45, false);
+
+            // Act
+            var success = broker.RemoveSymbol(provider, "MySymbol");
+
+            // Assert
+            success.Should().BeTrue();
+            ValidateSymbol("Test2_MySymbol", true, 543.21, false);
+        }
+
+        [Test]
+        public void SymbolBroker_GetHiddenSymbols_ReturnAllHiddenSymbols() {
+            // Arrange
+            var info = new CameraInfo {
+                Connected = true,
+                TemperatureSetPoint = -15.0,
+                Temperature = -10.5,
+                XSize = 4000,
+                YSize = 3000,
+                PixelSize = 4.54
+            };
+
+            // Act
+            broker.UpdateDeviceInfo(info);
+            var symbols = broker.GetHiddenSymbols("Camera");
+
+            // Assert
+            symbols.Should().NotBeNull();
+            symbols.Should().Contain(x => x.Category == "Camera" && x.Key == "XSize" && x.Type == Symbol.SymbolType.SYMBOL_HIDDEN);
         }
     }
 }

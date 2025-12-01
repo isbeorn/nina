@@ -208,17 +208,7 @@ namespace NINA.Sequencer.Logic {
         private static ITelescopeMediator TelescopeMediator { get; set; }
         private static IGuiderMediator GuiderMediator { get; set; }
         private static IImagingMediator ImagingMediator { get; set; }
-
         private static ConditionWatchdog ConditionWatchdog { get; set; }
-
-        public static Object SYMBOL_LOCK = new object();
-
-        private static HashSet<string> LoggedOnce = new HashSet<string>();
-        public static void LogOnce(string message) {
-            if (LoggedOnce.Contains(message)) return;
-            Logger.Warning(message);
-            LoggedOnce.Add(message);
-        }
 
         private void AddHiddenSymbol(string source, Symbol sym) {
             IList<Symbol> symList;
@@ -279,18 +269,6 @@ namespace NINA.Sequencer.Logic {
                     AddOrUpdateSymbol(source, d.Key, d.Value, null, SymbolType.SYMBOL_CONSTANT);
                 }
             }
-        }
-
-        // For use with registered providers
-        private bool RemoveSymbol(string key) {
-            IList<Symbol> list;
-
-            if (!DataSymbols.TryGetValue(key, out list)) {
-                return false;
-            }
-
-            DataSymbols.Remove(key, out _);
-            return true;
         }
 
         private void RemoveAllSymbols(string source) {
@@ -374,10 +352,6 @@ namespace NINA.Sequencer.Logic {
             new Symbol("CoverError", 4),
             new Symbol("CoverNotPresent", 5)
         };
-
-        public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys() {
-            return (IEnumerable<ConcurrentDictionary<string, object>>)DataSymbols;
-        }
 
         private void AddOptionalImageSymbol(IStarDetectionAnalysis analysis, string name) {
             if (analysis.HasProperty(name)) {
