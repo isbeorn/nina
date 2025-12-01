@@ -39,7 +39,7 @@ namespace NINA.Core.Utility.Notification {
             Lifetime = lifetime;
             DateTime = DateTime.Now;
 
-            CloseCommand = new CommunityToolkit.Mvvm.Input.RelayCommand<CustomNotification>(closeAction);
+            CloseCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(() => closeAction.Invoke(this));
             CloseAllCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(closeAllAction);
         }
 
