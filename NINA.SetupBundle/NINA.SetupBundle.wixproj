@@ -53,7 +53,7 @@
   <Target Name="SignBundle">
     <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;@(SignBundle)&quot;" />
   </Target>-->
-  <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.2" />
+  <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="6.0.2" />
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="%LOCALAPPDATA%\Pandoc\pandoc.exe &quot;$(SolutionDir)RELEASE_NOTES.md&quot; -f markdown -t rtf -s -o &quot;$(SolutionDir)RELEASE_NOTES.rtf&quot;&#xD;&#xA;%LOCALAPPDATA%\Pandoc\pandoc.exe &quot;$(SolutionDir)RELEASE_NOTES.md&quot; -f markdown -t html -s -o &quot;$(SolutionDir)RELEASE_NOTES.html&quot; --template &quot;$(SolutionDir)md-template.html&quot; --metadata title=&quot;Nighttime Imaging 'N' Astronomy&quot;" Condition="'$(SolutionDir)' != '*Undefined*'" />
   </Target>
