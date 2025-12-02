@@ -7757,7 +7757,6 @@ If exposure count is not important to you, enable this option to avoid having to
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
     <value>Value must be greater than {0} and less than {1}.</value>
   </data>
-</root>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>Notification work area</value>
   </data>
