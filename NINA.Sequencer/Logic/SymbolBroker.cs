@@ -584,6 +584,9 @@ namespace NINA.Sequencer.Logic {
             if (deviceInfo.Connected) {
                 AddOrUpdateSymbol("Camera", "Temperature", deviceInfo.Temperature);
                 AddOrUpdateSymbol("Camera", "TemperatureSetPoint", deviceInfo.TemperatureSetPoint);
+                AddOrUpdateSymbol("Camera", "CoolerOn", deviceInfo.CoolerOn);
+                AddOrUpdateSymbol("Camera", "CoolerPower", deviceInfo.CoolerPower);
+
                 // Hidden
                 AddOrUpdateSymbol("Camera", "PixelSize", deviceInfo.PixelSize, SymbolType.SYMBOL_HIDDEN);
                 AddOrUpdateSymbol("Camera", "XSize", deviceInfo.XSize, SymbolType.SYMBOL_HIDDEN);
@@ -591,6 +594,8 @@ namespace NINA.Sequencer.Logic {
             } else {
                 RemoveSymbol("Camera", "Temperature");
                 RemoveSymbol("Camera", "TemperatureSetPoint");
+                RemoveSymbol("Camera", "CoolerOn");
+                RemoveSymbol("Camera", "CoolerPower");
                 RemoveSymbol("Camera", "PixelSize");
                 RemoveSymbol("Camera", "XSize");
                 RemoveSymbol("Camera", "YSize");

@@ -112,6 +112,8 @@ namespace NINA.Test.Sequencer.Logic {
             var info = new CameraInfo {
                 Connected = true,
                 TemperatureSetPoint = -15.0,
+                CoolerOn = true,
+                CoolerPower = 75.5,
                 Temperature = -10.5,
                 XSize = 4000,
                 YSize = 3000,
@@ -124,6 +126,8 @@ namespace NINA.Test.Sequencer.Logic {
             // Assert
             ValidateSymbol(key: "Camera_Temperature", expectedSuccess: true, expectedValue: info.Temperature);
             ValidateSymbol(key: "Camera_TemperatureSetPoint", expectedSuccess: true, expectedValue: info.TemperatureSetPoint);
+            ValidateSymbol(key: "Camera_CoolerOn", expectedSuccess: true, expectedValue: info.CoolerOn);
+            ValidateSymbol(key: "Camera_CoolerPower", expectedSuccess: true, expectedValue: info.CoolerPower);
             ValidateSymbol(key: "Camera_PixelSize", expectedSuccess: true, expectedValue: info.PixelSize, isHidden: true);
             ValidateSymbol(key: "Camera_XSize", expectedSuccess: true, expectedValue: info.XSize, isHidden: true);
             ValidateSymbol(key: "Camera_YSize", expectedSuccess: true, expectedValue: info.YSize, isHidden: true);
@@ -143,6 +147,8 @@ namespace NINA.Test.Sequencer.Logic {
             // Assert
             ValidateSymbol(key: "Camera_Temperature", expectedSuccess: false);
             ValidateSymbol(key: "Camera_TemperatureSetPoint", expectedSuccess: false);
+            ValidateSymbol(key: "Camera_CoolerOn", expectedSuccess: false);
+            ValidateSymbol(key: "Camera_CoolerPower", expectedSuccess: false);
             ValidateSymbol(key: "Camera_PixelSize", expectedSuccess: false);
             ValidateSymbol(key: "Camera_XSize", expectedSuccess: false);
             ValidateSymbol(key: "Camera_YSize", expectedSuccess: false);
