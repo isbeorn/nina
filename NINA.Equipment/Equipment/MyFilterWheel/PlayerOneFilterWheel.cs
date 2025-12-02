@@ -92,14 +92,24 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         }
 
         public Task<bool> Connect(CancellationToken token) {
-            return Task.Run(() => {
+            return Task.Run(async () => {
                 if (PlayerOneFilterWheelSDK.POAOpenPW(this.id) == PlayerOneFilterWheelSDK.PWErrors.PW_OK) {
                     Connected = true;
 
                     PlayerOneFilterWheelSDK.POAGetPWPropertiesByHandle(this.id, out var info);
                     this.info = info;
 
-                    PlayerOneFilterWheelSDK.POASetOneWay(this.id, true);
+                    // Wait for the filter wheel to initialize
+                    using (var cts = CancellationTokenSource.CreateLinkedTokenSource(token)) {
+                        cts.CancelAfter(TimeSpan.FromSeconds(10));
+                        try {
+                            while (Position == -1) {
+                                await Task.Delay(500, cts.Token);
+                            }
+                        } catch { }
+                    }
+
+                    Unidirectional = profileService.ActiveProfile.FilterWheelSettings.Unidirectional;
 
                     Connected = true;
                     return true;
@@ -108,6 +118,27 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     return false;
                 };
             });
+        }
+
+        public bool Unidirectional {
+            get {
+                if (Connected) {
+                    _ = PlayerOneFilterWheelSDK.POAGetOneWay(this.id, out var unidirectional);
+                    return unidirectional;
+                }
+
+                return false;
+            }
+
+            set {
+                if (Connected) {
+                    Logger.Info($"PlayerOne FilterWheel: Setting Unidirectional to {value}");
+
+                    _ = PlayerOneFilterWheelSDK.POASetOneWay(this.id, value);
+                    profileService.ActiveProfile.FilterWheelSettings.Unidirectional = value;
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         public void Disconnect() {
