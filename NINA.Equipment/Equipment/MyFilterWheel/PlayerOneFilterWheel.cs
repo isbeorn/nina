@@ -92,14 +92,34 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         }
 
         public Task<bool> Connect(CancellationToken token) {
-            return Task.Run(() => {
+            return Task.Run(async () => {
+                token.ThrowIfCancellationRequested();
                 if (PlayerOneFilterWheelSDK.POAOpenPW(this.id) == PlayerOneFilterWheelSDK.PWErrors.PW_OK) {
                     Connected = true;
 
                     PlayerOneFilterWheelSDK.POAGetPWPropertiesByHandle(this.id, out var info);
                     this.info = info;
 
-                    PlayerOneFilterWheelSDK.POASetOneWay(this.id, true);
+                    // Wait for the filter wheel to initialize
+                    using (var cts = CancellationTokenSource.CreateLinkedTokenSource(token)) {
+                        cts.CancelAfter(TimeSpan.FromMinutes(2));
+                        try {
+                            while (Position == -1) {
+                                await Task.Delay(500, cts.Token);
+                            }
+                            cts.Token.ThrowIfCancellationRequested();
+                        } catch (OperationCanceledException) {
+                            Disconnect();
+                            token.ThrowIfCancellationRequested();
+                            Logger.Error("PlayerOne filter wheel homing timed out");
+                            return false;
+                        } catch {
+                            Disconnect();
+                            throw;
+                        }
+                    }
+
+                    Unidirectional = profileService.ActiveProfile.FilterWheelSettings.Unidirectional;
 
                     Connected = true;
                     return true;
@@ -108,6 +128,31 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     return false;
                 };
             });
+        }
+
+        public bool Unidirectional {
+            get {
+                if (Connected) {
+                    _ = PlayerOneFilterWheelSDK.POAGetOneWay(this.id, out var unidirectional);
+                    return unidirectional;
+                }
+
+                return false;
+            }
+
+            set {
+                if (Connected) {
+                    Logger.Info($"PlayerOne FilterWheel: Setting Unidirectional to {value}");
+
+                    var result = PlayerOneFilterWheelSDK.POASetOneWay(this.id, value);
+                    if (result != PlayerOneFilterWheelSDK.PWErrors.PW_OK) {
+                        Logger.Error($"PlayerOne filter wheel could not set unidirectional mode: {result}");
+                        return;
+                    }
+                    profileService.ActiveProfile.FilterWheelSettings.Unidirectional = value;
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         public void Disconnect() {

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
@@ -191,11 +191,24 @@
                         </StackPanel>
                     </DataTemplate>
 
+                    <DataTemplate x:Key="PlayerOne">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Margin="0,0,0,6" Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblUnidirectional}" />
+                                <CheckBox
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    IsChecked="{Binding Unidirectional}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+
                     <local:FilterWheelTemplateSelector
                         x:Key="ContentSelector"
                         Default="{StaticResource Default}"
                         FailedToLoadTemplate="{StaticResource Failed}"
                         Postfix="{x:Static wpfutil:DataTemplatePostfix.FilterWheelSettings}"
+                        PlayerOne="{StaticResource PlayerOne}"
                         Zwo="{StaticResource Zwo}" />
                 </Grid.Resources>
                 <ContentControl
