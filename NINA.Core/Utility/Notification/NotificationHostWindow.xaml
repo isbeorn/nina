@@ -30,7 +30,7 @@
         <DataTemplate DataType="{x:Type notification:CustomNotification}">
             <Border
                 MinHeight="130"
-                Margin="0,0,0,8"
+                Margin="0,0,0,3"
                 Background="{Binding Background}"
                 BorderThickness="0">
                 <Grid Margin="5" VerticalAlignment="Stretch">
