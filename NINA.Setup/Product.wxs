@@ -438,8 +438,11 @@
       <Component Id="Fastenshtein.dll" Guid="3A028268-64BC-4C7E-9895-56BEC5BA259C" Bitness="$(var.Win64)">
         <File Id="Fastenshtein.dll" Name="Fastenshtein.dll" Source="$(var.NINA_TargetDir)Fastenshtein.dll" />
       </Component>
-      <Component Id="FreeImageNET.dll" Guid="65499493-d525-4075-b136-c37e5713dd5b" Bitness="$(var.Win64)">
-        <File Id="FreeImageNET.dll" Name="FreeImageNET.dll" Source="$(var.NINA_TargetDir)FreeImageNET.dll" />
+      <Component Id="FreeImage.dll" Guid="73504596-bbcd-454b-bf8c-492f0c906a1e">
+        <File Id="FreeImage.dll" Name="FreeImage.dll" Source="$(var.NINA_TargetDir)FreeImage.dll" />
+      </Component>
+      <Component Id="FreeImage.Standard.dll" Guid="8b23baea-54b1-4f91-b813-c646f3fb70e8">
+        <File Id="FreeImage.Standard.dll" Name="FreeImage.Standard.dll" Source="$(var.NINA_TargetDir)FreeImage.Standard.dll" />
       </Component>
       <Component Id="Google.Protobuf.dll" Guid="48efb59c-8605-4a27-b22c-6dc5eef42339" Bitness="$(var.Win64)">
         <File Id="Google.Protobuf.dll" Name="Google.Protobuf.dll" Source="$(var.NINA_TargetDir)Google.Protobuf.dll" />
