@@ -152,7 +152,7 @@
     </Window.Resources>
 
     <!--  Toast stack  -->
-    <Grid Margin="0,0,15,3">
+    <Grid>
         <ItemsControl ItemsSource="{Binding Notifications}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>

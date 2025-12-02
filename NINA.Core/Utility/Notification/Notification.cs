@@ -44,7 +44,18 @@ namespace NINA.Core.Utility.Notification {
             }
 
             dispatcher = Application.Current.Dispatcher;
-            manager = new NotificationManager(dispatcher, maxVisible: 5);
+            manager = new NotificationManager(dispatcher, maxVisible: 5, workAreaProvider: new PrimaryScreenWorkAreaProvider(), corner: NotificationCorner.BottomRight, offsetX: 15, offsetY: 5);
+        }
+
+        public static void ConfigurePosition(
+            INotificationWorkAreaProvider provider,
+            NotificationCorner corner,
+            double offsetX,
+            double offsetY) {
+
+            lock (_lock) {
+                manager?.UpdatePosition(provider, corner, offsetX, offsetY);
+            }
         }
 
         // Helpers to construct CustomNotification

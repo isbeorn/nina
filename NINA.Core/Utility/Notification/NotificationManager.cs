@@ -22,6 +22,10 @@ namespace NINA.Core.Utility.Notification {
     internal sealed class NotificationManager : IDisposable {
         private readonly Dispatcher dispatcher;
         private readonly int maxVisible;
+        private INotificationWorkAreaProvider workAreaProvider;
+        private NotificationCorner corner;
+        private double offsetX;
+        private double offsetY;
         private readonly Queue<CustomNotification> pendingNotifications = new();
         private readonly ObservableCollection<CustomNotification> notifications = new ();
         private readonly Dictionary<CustomNotification, DateTime> expirationTimes = new ();
@@ -29,9 +33,39 @@ namespace NINA.Core.Utility.Notification {
         private NotificationHostWindow hostWindow;
         private bool disposed;
 
-        public NotificationManager(Dispatcher dispatcher, int maxVisible) {
+        public NotificationManager(Dispatcher dispatcher,
+                                   int maxVisible,
+                                   INotificationWorkAreaProvider workAreaProvider,
+                                   NotificationCorner corner,
+                                   double offsetX,
+                                   double offsetY) {
             this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
             this.maxVisible = maxVisible;
+            this.workAreaProvider = workAreaProvider ?? new PrimaryScreenWorkAreaProvider();
+            this.corner = corner;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+        }
+
+        public INotificationWorkAreaProvider WorkAreaProvider => workAreaProvider;
+        public NotificationCorner Corner => corner;
+        public double OffsetX => offsetX;
+        public double OffsetY => offsetY;
+
+        public void UpdatePosition(
+            INotificationWorkAreaProvider provider,
+            NotificationCorner corner,
+            double offsetX,
+            double offsetY) {
+
+            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                this.workAreaProvider = provider ?? new PrimaryScreenWorkAreaProvider();
+                this.corner = corner;
+                this.offsetX = offsetX;
+                this.offsetY = offsetY;
+
+                hostWindow?.Reposition();
+            }));
         }
 
         public ObservableCollection<CustomNotification> Notifications => notifications;
