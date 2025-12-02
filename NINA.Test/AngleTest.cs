@@ -37,11 +37,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedRadian = AstroUtil.ToRadians(expectedDegree);
 
-            ClassicAssert.AreEqual(inputHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(expectedRadian, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(inputHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(expectedRadian).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -59,11 +59,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(inputDegrees);
             var expectedRadian = AstroUtil.ToRadians(inputDegrees);
 
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(expectedRadian, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(inputDegrees, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(expectedRadian).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(inputDegrees).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -79,11 +79,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(inputRadians, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(inputRadians).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -100,11 +100,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(rad, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(rad).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -124,11 +124,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(rad, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(rad).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -145,11 +145,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(rad, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(rad).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -166,11 +166,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(rad, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(rad).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -187,11 +187,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(rad, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(rad).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -208,11 +208,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(rad, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(rad).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -231,11 +231,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(rad, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(rad).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -254,11 +254,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(rad, angle.Radians, TOLERANCE);
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(rad).Within(TOLERANCE));
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
         }
 
         [Test]
@@ -279,11 +279,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(expectedRadian, angle.Radians, TOLERANCE);
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(expectedRadian).Within(TOLERANCE));
         }
 
         [Test]
@@ -303,11 +303,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(expectedRadian, angle.Radians, TOLERANCE);
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(expectedRadian).Within(TOLERANCE));
         }
 
         [Test]
@@ -328,11 +328,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(expectedRadian, angle.Radians, TOLERANCE);
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(expectedRadian).Within(TOLERANCE));
         }
 
         [Test]
@@ -352,11 +352,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(expectedRadian, angle.Radians, TOLERANCE);
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(expectedRadian).Within(TOLERANCE));
         }
 
         [Test]
@@ -377,11 +377,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(expectedRadian, angle.Radians, TOLERANCE);
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(expectedRadian).Within(TOLERANCE));
         }
 
         [Test]
@@ -401,11 +401,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(expectedRadian, angle.Radians, TOLERANCE);
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(expectedRadian).Within(TOLERANCE));
         }
 
         [Test]
@@ -426,11 +426,11 @@ namespace NINA.Test {
             var expectedArcsec = AstroUtil.DegreeToArcsec(expectedDegree);
             var expectedHours = AstroUtil.DegreesToHours(expectedDegree);
 
-            ClassicAssert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
-            ClassicAssert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
-            ClassicAssert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
-            ClassicAssert.AreEqual(expectedRadian, angle.Radians, TOLERANCE);
+            Assert.That(angle.Degree, Is.EqualTo(expectedDegree).Within(TOLERANCE));
+            Assert.That(angle.ArcMinutes, Is.EqualTo(expectedArcmin).Within(TOLERANCE));
+            Assert.That(angle.ArcSeconds, Is.EqualTo(expectedArcsec).Within(TOLERANCE));
+            Assert.That(angle.Hours, Is.EqualTo(expectedHours).Within(TOLERANCE));
+            Assert.That(angle.Radians, Is.EqualTo(expectedRadian).Within(TOLERANCE));
         }
 
         [Test]
@@ -442,7 +442,7 @@ namespace NINA.Test {
 
             var dms = angle.ToString();
 
-            ClassicAssert.AreEqual(expectedDMS, dms);
+            Assert.That(dms, Is.EqualTo(expectedDMS));
         }
 
         [Test]

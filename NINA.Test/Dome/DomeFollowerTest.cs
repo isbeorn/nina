@@ -122,7 +122,7 @@ namespace NINA.Test.Dome {
             await sut.TriggerTelescopeSync();
             await sut.WaitForDomeSynchronization(CancellationToken.None);
             mockDomeMediator.Verify();
-            ClassicAssert.AreEqual(domeAzimuth, domeTargetAzimuth.Degree);
+            Assert.That(domeTargetAzimuth.Degree, Is.EqualTo(domeAzimuth));
         }
     }
 }

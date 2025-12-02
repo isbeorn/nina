@@ -93,22 +93,22 @@ namespace NINA.Test {
         [Test]
         public void AllSetTest() {
             var data = GetData();
-            ClassicAssert.AreEqual(moonPhase, data.MoonPhase);
-            ClassicAssert.AreEqual(illumination, data.Illumination);
-            ClassicAssert.AreEqual(date, data.Date);
-            ClassicAssert.AreEqual(referenceDate, data.ReferenceDate);
-            ClassicAssert.AreEqual(twilightRiseAndSet, data.TwilightRiseAndSet);
-            ClassicAssert.AreEqual(moonRiseAndSet, data.MoonRiseAndSet);
-            ClassicAssert.AreEqual(sunRiseAndSet, data.SunRiseAndSet);
-            CollectionAssert.AreEqual(GetExpectedNightDuration(), data.NightDuration.ToImmutableList());
-            CollectionAssert.AreEqual(GetExpectedTwilightDuration(), data.TwilightDuration.ToImmutableList());
+            Assert.That(data.MoonPhase, Is.EqualTo(moonPhase));
+            Assert.That(data.Illumination, Is.EqualTo(illumination));
+            Assert.That(data.Date, Is.EqualTo(date));
+            Assert.That(data.ReferenceDate, Is.EqualTo(referenceDate));
+            Assert.That(data.TwilightRiseAndSet, Is.EqualTo(twilightRiseAndSet));
+            Assert.That(data.MoonRiseAndSet, Is.EqualTo(moonRiseAndSet));
+            Assert.That(data.SunRiseAndSet, Is.EqualTo(sunRiseAndSet));
+            Assert.That(data.NightDuration.ToImmutableList(), Is.EqualTo(GetExpectedNightDuration()).AsCollection);
+            Assert.That(data.TwilightDuration.ToImmutableList(), Is.EqualTo(GetExpectedTwilightDuration()).AsCollection);
         }
 
         [Test]
         public void MoonPhaseChangedTest() {
             moonPhase = MoonPhase.LastQuarter;
             var data = GetData();
-            ClassicAssert.AreEqual(moonPhase, data.MoonPhase);
+            Assert.That(data.MoonPhase, Is.EqualTo(moonPhase));
         }
 
         [Test]
@@ -122,16 +122,16 @@ namespace NINA.Test {
         public void TwilightNotSetTest() {
             twilightRiseAndSet = null;
             var data = GetData();
-            CollectionAssert.AreEqual(GetExpectedNightDuration(), data.NightDuration.ToImmutableList());
-            CollectionAssert.AreEqual(GetExpectedTwilightDuration(), data.TwilightDuration.ToImmutableList());
+            Assert.That(data.NightDuration.ToImmutableList(), Is.EqualTo(GetExpectedNightDuration()).AsCollection);
+            Assert.That(data.TwilightDuration.ToImmutableList(), Is.EqualTo(GetExpectedTwilightDuration()).AsCollection);
         }
 
         [Test]
         public void SunriseNotSetTest() {
             sunRiseAndSet = null;
             var data = GetData();
-            CollectionAssert.AreEqual(GetExpectedNightDuration(), data.NightDuration.ToImmutableList());
-            CollectionAssert.AreEqual(GetExpectedTwilightDuration(), data.TwilightDuration.ToImmutableList());
+            Assert.That(data.NightDuration.ToImmutableList(), Is.EqualTo(GetExpectedNightDuration()).AsCollection);
+            Assert.That(data.TwilightDuration.ToImmutableList(), Is.EqualTo(GetExpectedTwilightDuration()).AsCollection);
         }
 
         [Test]
@@ -139,8 +139,8 @@ namespace NINA.Test {
             twilightRiseAndSet = null;
             sunRiseAndSet = null;
             var data = GetData();
-            CollectionAssert.AreEqual(GetExpectedNightDuration(), data.NightDuration.ToImmutableList());
-            CollectionAssert.AreEqual(GetExpectedTwilightDuration(), data.TwilightDuration.ToImmutableList());
+            Assert.That(data.NightDuration.ToImmutableList(), Is.EqualTo(GetExpectedNightDuration()).AsCollection);
+            Assert.That(data.TwilightDuration.ToImmutableList(), Is.EqualTo(GetExpectedTwilightDuration()).AsCollection);
         }
     }
 }

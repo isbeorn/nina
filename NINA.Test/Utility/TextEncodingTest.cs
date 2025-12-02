@@ -36,7 +36,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.UnicodeToAscii(unicode);
 
             // Assert
-            ClassicAssert.AreEqual(ascii, result);
+            Assert.That(result, Is.EqualTo(ascii));
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.UnicodeToAscii(unicode);
 
             // Assert
-            ClassicAssert.AreEqual(ascii, result);
+            Assert.That(result, Is.EqualTo(ascii));
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.UnicodeToAscii(unicode);
 
             // Assert
-            ClassicAssert.AreEqual(ascii, result);
+            Assert.That(result, Is.EqualTo(ascii));
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.GreekToLatinAbbreviation(hasGreek);
 
             // Assert
-            ClassicAssert.AreEqual(inLatin, result);
+            Assert.That(result, Is.EqualTo(inLatin));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.GreekToLatinAbbreviation(hasGreek);
 
             // Assert
-            ClassicAssert.AreEqual(inLatin, result);
+            Assert.That(result, Is.EqualTo(inLatin));
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.GreekToLatinAbbreviation(hasGreek);
 
             // Assert
-            ClassicAssert.AreEqual(inLatin, result);
+            Assert.That(result, Is.EqualTo(inLatin));
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.GreekToLatinAbbreviation(hasOnylLatin);
 
             // Assert
-            ClassicAssert.AreEqual(inLatin, result);
+            Assert.That(result, Is.EqualTo(inLatin));
         }
     }
 }

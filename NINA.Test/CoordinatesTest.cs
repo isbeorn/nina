@@ -34,10 +34,10 @@ namespace NINA.Test {
             var epoch = Epoch.J2000;
             var coordinates = new Coordinates(ra, dec, epoch, Coordinates.RAType.Degrees);
 
-            ClassicAssert.AreEqual(AstroUtil.DegreesToHours(ra), coordinates.RA, 0.0001);
-            ClassicAssert.AreEqual(ra, coordinates.RADegrees, 0.0001);
-            ClassicAssert.AreEqual(dec, coordinates.Dec, 0.0001);
-            ClassicAssert.AreEqual(epoch, coordinates.Epoch);
+            Assert.That(coordinates.RA, Is.EqualTo(AstroUtil.DegreesToHours(ra)).Within(0.0001));
+            Assert.That(coordinates.RADegrees, Is.EqualTo(ra).Within(0.0001));
+            Assert.That(coordinates.Dec, Is.EqualTo(dec).Within(0.0001));
+            Assert.That(coordinates.Epoch, Is.EqualTo(epoch));
         }
 
         [Test]
@@ -50,10 +50,10 @@ namespace NINA.Test {
             var epoch = Epoch.JNOW;
             var coordinates = new Coordinates(ra, dec, epoch, Coordinates.RAType.Hours);
 
-            ClassicAssert.AreEqual(ra, coordinates.RA, 0.0001);
-            ClassicAssert.AreEqual(AstroUtil.HoursToDegrees(ra), coordinates.RADegrees, 0.0001);
-            ClassicAssert.AreEqual(dec, coordinates.Dec, 0.0001);
-            ClassicAssert.AreEqual(epoch, coordinates.Epoch);
+            Assert.That(coordinates.RA, Is.EqualTo(ra).Within(0.0001));
+            Assert.That(coordinates.RADegrees, Is.EqualTo(AstroUtil.HoursToDegrees(ra)).Within(0.0001));
+            Assert.That(coordinates.Dec, Is.EqualTo(dec).Within(0.0001));
+            Assert.That(coordinates.Epoch, Is.EqualTo(epoch));
         }
 
         // The interfaces are not available in current latest ASCOM libs
@@ -180,8 +180,8 @@ namespace NINA.Test {
 
             var shifted = coordinates.Shift(deltaX, deltaY, rotation, Coordinates.ProjectionType.Gnomonic);
 
-            ClassicAssert.AreEqual(expectedRA, shifted.RADegrees, ANGLE_TOLERANCE);
-            ClassicAssert.AreEqual(expectedDec, shifted.Dec, ANGLE_TOLERANCE);
+            Assert.That(shifted.RADegrees, Is.EqualTo(expectedRA).Within(ANGLE_TOLERANCE));
+            Assert.That(shifted.Dec, Is.EqualTo(expectedDec).Within(ANGLE_TOLERANCE));
         }
 
         [Test]
@@ -227,8 +227,8 @@ namespace NINA.Test {
 
             var expectedPoint = new Point(expectedX, expectedY);
 
-            ClassicAssert.AreEqual(expectedPoint.X, p.X, ANGLE_TOLERANCE);
-            ClassicAssert.AreEqual(expectedPoint.Y, p.Y, ANGLE_TOLERANCE);
+            Assert.That(p.X, Is.EqualTo(expectedPoint.X).Within(ANGLE_TOLERANCE));
+            Assert.That(p.Y, Is.EqualTo(expectedPoint.Y).Within(ANGLE_TOLERANCE));
         }
 
         [Test]
@@ -302,8 +302,8 @@ namespace NINA.Test {
 
             var shifted = coordinates.Shift(deltaX, deltaY, rotation, Coordinates.ProjectionType.Stereographic);
 
-            ClassicAssert.AreEqual(expectedRA, shifted.RADegrees, ANGLE_TOLERANCE);
-            ClassicAssert.AreEqual(expectedDec, shifted.Dec, ANGLE_TOLERANCE);
+            Assert.That(shifted.RADegrees, Is.EqualTo(expectedRA).Within(ANGLE_TOLERANCE));
+            Assert.That(shifted.Dec, Is.EqualTo(expectedDec).Within(ANGLE_TOLERANCE));
         }
 
         [Test]
@@ -346,8 +346,8 @@ namespace NINA.Test {
 
             var expectedPoint = new Point(expectedX, expectedY);
 
-            ClassicAssert.AreEqual(expectedPoint.X, p.X, ANGLE_TOLERANCE);
-            ClassicAssert.AreEqual(expectedPoint.Y, p.Y, ANGLE_TOLERANCE);
+            Assert.That(p.X, Is.EqualTo(expectedPoint.X).Within(ANGLE_TOLERANCE));
+            Assert.That(p.Y, Is.EqualTo(expectedPoint.Y).Within(ANGLE_TOLERANCE));
         }
 
         [Test]

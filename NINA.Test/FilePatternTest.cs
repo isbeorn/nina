@@ -60,7 +60,7 @@ namespace NINA.Test {
             string parsedPattern = result.GetImagePatterns().GetImageFileString(filePattern);
 
             //Assert
-            ClassicAssert.AreEqual(expectedResult, parsedPattern);
+            Assert.That(parsedPattern, Is.EqualTo(expectedResult));
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace NINA.Test {
             string parsedPattern = result.GetImagePatterns().GetImageFileString(filePattern);
 
             //Assert
-            ClassicAssert.AreEqual(expectedResult, parsedPattern);
+            Assert.That(parsedPattern, Is.EqualTo(expectedResult));
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace NINA.Test {
             string parsedPattern = result.GetImagePatterns().GetImageFileString(filePattern);
 
             //Assert
-            ClassicAssert.AreEqual(expectedResult, parsedPattern);
+            Assert.That(parsedPattern, Is.EqualTo(expectedResult));
         }
     }
 }

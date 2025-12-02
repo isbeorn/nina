@@ -34,14 +34,14 @@ namespace NINA.Test {
             var historySize = 100;
             GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.PIXELS, 4);
 
-            ClassicAssert.AreEqual(historySize, gsh.HistorySize);
-            ClassicAssert.AreEqual(1, gsh.PixelScale);
-            ClassicAssert.AreEqual(GuiderScaleEnum.PIXELS, gsh.Scale);
-            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count());
-            ClassicAssert.AreEqual(1, gsh.RMS.Scale);
-            ClassicAssert.AreEqual(0, gsh.RMS.RA);
-            ClassicAssert.AreEqual(0, gsh.RMS.Dec);
-            ClassicAssert.AreEqual(0, gsh.RMS.Total);
+            Assert.That(gsh.HistorySize, Is.EqualTo(historySize));
+            Assert.That(gsh.PixelScale, Is.EqualTo(1));
+            Assert.That(gsh.Scale, Is.EqualTo(GuiderScaleEnum.PIXELS));
+            Assert.That(gsh.GuideSteps.Count(), Is.EqualTo(0));
+            Assert.That(gsh.RMS.Scale, Is.EqualTo(1));
+            Assert.That(gsh.RMS.RA, Is.EqualTo(0));
+            Assert.That(gsh.RMS.Dec, Is.EqualTo(0));
+            Assert.That(gsh.RMS.Total, Is.EqualTo(0));
         }
 
         [Test]
@@ -74,10 +74,10 @@ namespace NINA.Test {
             gsh.AddGuideStep(step3);
             gsh.AddGuideStep(step4);
 
-            ClassicAssert.AreEqual(300, gsh.RMS.RA);
-            ClassicAssert.AreEqual(630, gsh.RMS.Dec);
+            Assert.That(gsh.RMS.RA, Is.EqualTo(300));
+            Assert.That(gsh.RMS.Dec, Is.EqualTo(630));
             var total = Math.Sqrt((Math.Pow(300, 2) + Math.Pow(630, 2)));
-            ClassicAssert.AreEqual(total, gsh.RMS.Total);
+            Assert.That(gsh.RMS.Total, Is.EqualTo(total));
         }
 
         [Test]
@@ -113,10 +113,10 @@ namespace NINA.Test {
             gsh.AddGuideStep(step3);
             gsh.AddGuideStep(step4);
 
-            ClassicAssert.AreEqual(300, gsh.RMS.RA);
-            ClassicAssert.AreEqual(630, gsh.RMS.Dec);
+            Assert.That(gsh.RMS.RA, Is.EqualTo(300));
+            Assert.That(gsh.RMS.Dec, Is.EqualTo(630));
             var total = Math.Sqrt((Math.Pow(300, 2) + Math.Pow(630, 2)));
-            ClassicAssert.AreEqual(total, gsh.RMS.Total);
+            Assert.That(gsh.RMS.Total, Is.EqualTo(total));
         }
 
         [Test]
@@ -154,10 +154,10 @@ namespace NINA.Test {
 
             gsh.Clear();
 
-            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count());
-            ClassicAssert.AreEqual(0, gsh.RMS.RA);
-            ClassicAssert.AreEqual(0, gsh.RMS.Dec);
-            ClassicAssert.AreEqual(0, gsh.RMS.Total);
+            Assert.That(gsh.GuideSteps.Count(), Is.EqualTo(0));
+            Assert.That(gsh.RMS.RA, Is.EqualTo(0));
+            Assert.That(gsh.RMS.Dec, Is.EqualTo(0));
+            Assert.That(gsh.RMS.Total, Is.EqualTo(0));
         }
 
         public static List<IGuideStep> steps = new List<IGuideStep>();
@@ -204,16 +204,16 @@ namespace NINA.Test {
             gsh.AddGuideStep(step5);
             gsh.AddGuideStep(step6);
 
-            ClassicAssert.AreEqual(step2.RADistanceRaw, gsh.GuideSteps.ElementAt(0).RADistanceRaw);
-            ClassicAssert.AreEqual(step3.RADistanceRaw, gsh.GuideSteps.ElementAt(1).RADistanceRaw);
-            ClassicAssert.AreEqual(step4.RADistanceRaw, gsh.GuideSteps.ElementAt(2).RADistanceRaw);
-            ClassicAssert.AreEqual(step5.RADistanceRaw, gsh.GuideSteps.ElementAt(3).RADistanceRaw);
-            ClassicAssert.AreEqual(step6.RADistanceRaw, gsh.GuideSteps.ElementAt(4).RADistanceRaw);
-            ClassicAssert.AreEqual(step2.DECDistanceRaw, gsh.GuideSteps.ElementAt(0).DECDistanceRaw);
-            ClassicAssert.AreEqual(step3.DECDistanceRaw, gsh.GuideSteps.ElementAt(1).DECDistanceRaw);
-            ClassicAssert.AreEqual(step4.DECDistanceRaw, gsh.GuideSteps.ElementAt(2).DECDistanceRaw);
-            ClassicAssert.AreEqual(step5.DECDistanceRaw, gsh.GuideSteps.ElementAt(3).DECDistanceRaw);
-            ClassicAssert.AreEqual(step6.DECDistanceRaw, gsh.GuideSteps.ElementAt(4).DECDistanceRaw);
+            Assert.That(gsh.GuideSteps.ElementAt(0).RADistanceRaw, Is.EqualTo(step2.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(1).RADistanceRaw, Is.EqualTo(step3.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(2).RADistanceRaw, Is.EqualTo(step4.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(3).RADistanceRaw, Is.EqualTo(step5.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(4).RADistanceRaw, Is.EqualTo(step6.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(0).DECDistanceRaw, Is.EqualTo(step2.DECDistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(1).DECDistanceRaw, Is.EqualTo(step3.DECDistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(2).DECDistanceRaw, Is.EqualTo(step4.DECDistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(3).DECDistanceRaw, Is.EqualTo(step5.DECDistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(4).DECDistanceRaw, Is.EqualTo(step6.DECDistanceRaw));
         }
 
         [Test]
@@ -260,18 +260,18 @@ namespace NINA.Test {
 
             gsh.HistorySize = 10;
 
-            ClassicAssert.AreEqual(step1.RADistanceRaw, gsh.GuideSteps.ElementAt(0).RADistanceRaw);
-            ClassicAssert.AreEqual(step2.RADistanceRaw, gsh.GuideSteps.ElementAt(1).RADistanceRaw);
-            ClassicAssert.AreEqual(step3.RADistanceRaw, gsh.GuideSteps.ElementAt(2).RADistanceRaw);
-            ClassicAssert.AreEqual(step4.RADistanceRaw, gsh.GuideSteps.ElementAt(3).RADistanceRaw);
-            ClassicAssert.AreEqual(step5.RADistanceRaw, gsh.GuideSteps.ElementAt(4).RADistanceRaw);
-            ClassicAssert.AreEqual(step6.RADistanceRaw, gsh.GuideSteps.ElementAt(5).RADistanceRaw);
-            ClassicAssert.AreEqual(step1.DECDistanceRaw, gsh.GuideSteps.ElementAt(0).DECDistanceRaw);
-            ClassicAssert.AreEqual(step2.DECDistanceRaw, gsh.GuideSteps.ElementAt(1).DECDistanceRaw);
-            ClassicAssert.AreEqual(step3.DECDistanceRaw, gsh.GuideSteps.ElementAt(2).DECDistanceRaw);
-            ClassicAssert.AreEqual(step4.DECDistanceRaw, gsh.GuideSteps.ElementAt(3).DECDistanceRaw);
-            ClassicAssert.AreEqual(step5.DECDistanceRaw, gsh.GuideSteps.ElementAt(4).DECDistanceRaw);
-            ClassicAssert.AreEqual(step6.DECDistanceRaw, gsh.GuideSteps.ElementAt(5).DECDistanceRaw);
+            Assert.That(gsh.GuideSteps.ElementAt(0).RADistanceRaw, Is.EqualTo(step1.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(1).RADistanceRaw, Is.EqualTo(step2.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(2).RADistanceRaw, Is.EqualTo(step3.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(3).RADistanceRaw, Is.EqualTo(step4.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(4).RADistanceRaw, Is.EqualTo(step5.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(5).RADistanceRaw, Is.EqualTo(step6.RADistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(0).DECDistanceRaw, Is.EqualTo(step1.DECDistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(1).DECDistanceRaw, Is.EqualTo(step2.DECDistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(2).DECDistanceRaw, Is.EqualTo(step3.DECDistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(3).DECDistanceRaw, Is.EqualTo(step4.DECDistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(4).DECDistanceRaw, Is.EqualTo(step5.DECDistanceRaw));
+            Assert.That(gsh.GuideSteps.ElementAt(5).DECDistanceRaw, Is.EqualTo(step6.DECDistanceRaw));
         }
 
         [Test]
@@ -316,8 +316,8 @@ namespace NINA.Test {
             gsh.AddGuideStep(step5);
             gsh.AddGuideStep(step6);
 
-            ClassicAssert.AreEqual(6, gsh.MaxDurationY);
-            ClassicAssert.AreEqual(-6, gsh.MinDurationY);
+            Assert.That(gsh.MaxDurationY, Is.EqualTo(6));
+            Assert.That(gsh.MinDurationY, Is.EqualTo(-6));
         }
 
         [Test]
@@ -362,8 +362,8 @@ namespace NINA.Test {
             gsh.AddGuideStep(step5);
             gsh.AddGuideStep(step6);
 
-            ClassicAssert.AreEqual(6, gsh.MaxDurationY);
-            ClassicAssert.AreEqual(-6, gsh.MinDurationY);
+            Assert.That(gsh.MaxDurationY, Is.EqualTo(6));
+            Assert.That(gsh.MinDurationY, Is.EqualTo(-6));
         }
 
         [Test]
@@ -410,8 +410,8 @@ namespace NINA.Test {
 
             gsh.HistorySize = 100;
 
-            ClassicAssert.AreEqual(100, gsh.MaxDurationY);
-            ClassicAssert.AreEqual(-100, gsh.MinDurationY);
+            Assert.That(gsh.MaxDurationY, Is.EqualTo(100));
+            Assert.That(gsh.MinDurationY, Is.EqualTo(-100));
         }
     }
 }
