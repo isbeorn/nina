@@ -442,19 +442,6 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="ToastNotifications     " />
-                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/raflop/ToastNotifications    " RequestNavigate="Hyperlink_RequestNavigate">https://github.com/raflop/ToastNotifications</Hyperlink></TextBlock>
-                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.gnu.de/documents/lgpl-3.0.de.html" RequestNavigate="Hyperlink_RequestNavigate">GNU Lesser General Public License version 3</Hyperlink></TextBlock>
-                </Grid>
-                <Grid Margin="5,5,5,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition
-                            Width="Auto"
-                            MinWidth="150"
-                            SharedSizeGroup="Column1" />
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
-                    </Grid.ColumnDefinitions>
                     <TextBlock Text="Trinet.Core.IO.Ntfs    " />
                     <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/RichardD2/NTFS-Streams     " RequestNavigate="Hyperlink_RequestNavigate">https://github.com/RichardD2/NTFS-Streams</Hyperlink></TextBlock>
                     <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/BSD-2-Clause" RequestNavigate="Hyperlink_RequestNavigate">The 2-Clause BSD License</Hyperlink></TextBlock>
