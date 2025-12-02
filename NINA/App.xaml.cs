@@ -13,6 +13,7 @@ using NINA.Astrometry;
 using NINA.Core.Locale;
 using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Utility;
@@ -165,6 +166,7 @@ namespace NINA {
             _profileService.CreateWatcher();
 
             Logger.SetLogLevel(_profileService.ActiveProfile.ApplicationSettings.LogLevel);
+            Notification.ConfigurePosition(_profileService.ActiveProfile.ApplicationSettings.NotificationWorkArea, _profileService.ActiveProfile.ApplicationSettings.NotificationCorner);
 
             if (e.Args.Length > 0) {
                 Logger.Info("Launched with command line arguments: " + string.Join(" ", e.Args));

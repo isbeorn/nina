@@ -183,6 +183,22 @@ namespace NINA.ViewModel {
             }
         }
 
+        public NotificationCorner NotificationCorner {
+            get => profileService.ActiveProfile.ApplicationSettings.NotificationCorner;
+            set {
+                profileService.ActiveProfile.ApplicationSettings.NotificationCorner = value;
+                Notification.ConfigurePosition(NotificationWorkArea, NotificationCorner);
+            }
+        }
+
+        public NotificationWorkArea NotificationWorkArea {
+            get => profileService.ActiveProfile.ApplicationSettings.NotificationWorkArea;
+            set {
+                profileService.ActiveProfile.ApplicationSettings.NotificationWorkArea = value;
+                Notification.ConfigurePosition(NotificationWorkArea, NotificationCorner);
+            }
+        }
+
         [ObservableProperty]
         private bool filePatternsExpanded;
 

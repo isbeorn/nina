@@ -18,6 +18,7 @@
     xmlns:local="clr-namespace:NINA.View.Options"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:notification="clr-namespace:NINA.Core.Utility.Notification;assembly=NINA.Core"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:plugin="clr-namespace:NINA.Plugin;assembly=NINA.Plugin"
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
@@ -389,6 +390,32 @@
                                             Stretch="Uniform"
                                             UseLayoutRounding="True" />
                                     </Button>
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="150"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblNotificationWorkArea}" />
+                                    <ComboBox
+                                        MinWidth="120"
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type notification:NotificationWorkArea}}}"
+                                        SelectedItem="{Binding NotificationWorkArea}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="150"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblNotificationCorner}" />
+                                    <ComboBox
+                                        MinWidth="120"
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type notification:NotificationCorner}}}"
+                                        SelectedItem="{Binding NotificationCorner}" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">

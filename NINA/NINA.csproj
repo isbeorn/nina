@@ -395,7 +395,6 @@
     <PackageReference Include="OxyPlot.Contrib.Wpf" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
-    <PackageReference Include="ToastNotifications.Messages" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
     <Page Remove="Resources\Camera.xaml" />
