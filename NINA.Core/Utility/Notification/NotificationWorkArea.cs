@@ -16,14 +16,12 @@ using System.ComponentModel;
 
 namespace NINA.Core.Utility.Notification {
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum NotificationCorner {
-        [Description("LblNotificationTopLeft")]
-        TopLeft,
-        [Description("LblNotificationTopRight")]
-        TopRight,
-        [Description("LblNotificationBottomLeft")]
-        BottomLeft,
-        [Description("LblNotificationBottomRight")]
-        BottomRight
+    public enum NotificationWorkArea {
+        [Description("LblNotificationPrimaryScreen")]
+        PrimaryScreen,
+        [Description("LblNotificationSameScreenAsApplication")]
+        SameScreenAsApplication,
+        [Description("LblNotificationApplication")]
+        Application
     }
 }

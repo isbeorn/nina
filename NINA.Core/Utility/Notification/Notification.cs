@@ -48,10 +48,31 @@ namespace NINA.Core.Utility.Notification {
         }
 
         public static void ConfigurePosition(
-            INotificationWorkAreaProvider provider,
-            NotificationCorner corner,
-            double offsetX,
-            double offsetY) {
+            NotificationWorkArea workArea,
+            NotificationCorner corner) {
+
+            INotificationWorkAreaProvider provider;
+            int offsetX;
+            int offsetY;
+            switch (workArea) {
+                case NotificationWorkArea.PrimaryScreen:
+                    provider = new PrimaryScreenWorkAreaProvider();
+                    offsetX = 15;
+                    offsetY = 5;
+                    break;
+                case NotificationWorkArea.SameScreenAsApplication:
+                    provider = new SameScreenAsApplicationWorkAreaProvider();
+                    offsetX = 15;
+                    offsetY = 5;
+                    break;
+                case NotificationWorkArea.Application:
+                    provider = new MainWindowWorkAreaProvider();
+                    offsetX = 15;
+                    offsetY = 35;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(workArea), workArea, null);
+            }
 
             lock (_lock) {
                 manager?.UpdatePosition(provider, corner, offsetX, offsetY);

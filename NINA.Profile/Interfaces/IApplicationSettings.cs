@@ -14,6 +14,7 @@
 
 using NINA.Core.Enum;
 using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,5 +32,7 @@ namespace NINA.Profile.Interfaces {
         AsyncObservableCollection<KeyValuePair<string, string>> SelectedPluggableBehaviors { get; set; }
         IReadOnlyDictionary<string, string> SelectedPluggableBehaviorsLookup { get; }
         int PageSize { get; set; }
+        NotificationWorkArea NotificationWorkArea { get; set; }
+        NotificationCorner NotificationCorner { get; set; }
     }
 }

@@ -33,9 +33,14 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **Oasis Focuser Native Driver**
   - The Oasis focuser is now available as a native driver.
 
-### User Interface & Usability
+### **User Interface & Usability**
 - **Sky Atlas Improvements**  
   - Deep sky objects can now be filtered and sorted by their upper transit time
+- **New Toast Notification System**
+  - Replaced the external ToastNotifications package with a fully native WPF implementation.
+  - Improved reliability, lifetime handling, and positioning across multiple monitors.
+  - Added configurable notification placement: primary screen, same screen as the app, or application window, as well as adjustable corner positioning via Options > General > Advanced.
+  - Notifications now reposition automatically on window moves, DPI changes, and display configuration changes.
 
 
 # Version 3.2
