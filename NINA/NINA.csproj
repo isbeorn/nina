@@ -424,6 +424,9 @@
    <None Update="Database\Migration\15.sql">
 	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
+   <None Update="Database\Migration\16.sql">
+     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+   </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
