@@ -571,12 +571,12 @@ Filtr: {3}</value>
     <value>Změna</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>Počet expozice</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence has been modified since it was last saved (changes to {0}).
+    <value>Sekvence byla od posledního uložení změněna (změny v {0}).
         
-Do you want to continue and lose the changes anyway?</value>
+Chcete pokračovat a změny přesto ztratit?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Uzavření změněné sekvence</value>
@@ -3319,7 +3319,7 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
     <value>Tranzit Jih</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>Čas přechodu</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Trendy a Hyperbola</value>
@@ -6542,6 +6542,9 @@ Tato funkce by měla být vypnuta pouze v případě, že máte k dispozici vyni
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>Název dlouhý až 8 znaků ASCII, který můžete přiřadit připojenému zařízení ZWO. To umožňuje jednoznačně identifikovat více kusů stejného modelu zařízení.</value>
   </data>
+  <data name="LblDeviceIdTooltip" xml:space="preserve">
+    <value>Název o délce až 8 znaků ASCII, který můžete přiřadit připojenému zařízení. To vám umožní jednoznačně identifikovat více kusů stejného modelu zařízení.</value>
+  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Jednosměrný</value>
   </data>
@@ -7326,13 +7329,13 @@ Znovu se určí doba expozice flat oblohy a expozice se zopakuje.</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
-    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+    <value>Nevyžadovat uložení sekvence, pokud se změnil pouze počet expozic</value>
   </data>
   <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
-    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
-You'll normally be prompted to save the sequence to save the changed exposure count.
+    <value>Pokud vaše sekvence nebyla upravena, ale byla spuštěna, počet expozic se změní.
+Obvykle budete vyzváni k uložení sekvence, aby se změněný počet expozic uložil.
 
-If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste nemuseli sekvenci po spuštění ukládat.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
     <value>Čas Překlopení Dne</value>
@@ -7342,6 +7345,63 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicializace</value>
+  </data>
+  <data name="LblOasisClearStallPrompt" xml:space="preserve">
+    <value>Vyčistit stav zastavení?</value>
+  </data>
+  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
+    <value>Zaostřovač se zasekl. Zaseknutí je nutné odstranit ručně.</value>
+  </data>
+  <data name="LblBeepOnStartup" xml:space="preserve">
+    <value>Pípnutí při spuštění</value>
+  </data>
+  <data name="LblBeepOnMove" xml:space="preserve">
+    <value>Pípnutí při pohybu</value>
+  </data>
+  <data name="LblOasisHeating" xml:space="preserve">
+    <value>Topení</value>
+  </data>
+  <data name="LblOasisHeatingTemperature" xml:space="preserve">
+    <value>Teplota ohřevu</value>
+  </data>
+  <data name="LblOasisStallDetection" xml:space="preserve">
+    <value>Detekce zastavení</value>
+  </data>
+  <data name="LblOasisIsStalled" xml:space="preserve">
+    <value>Je zastaveno</value>
+  </data>
+  <data name="LblOasisUSBCapacity" xml:space="preserve">
+    <value>Kapacita USB</value>
+  </data>
+  <data name="LblOasisSpeed" xml:space="preserve">
+    <value>Rychlost</value>
+  </data>
+  <data name="LblOasisClearStall" xml:space="preserve">
+    <value>Obnovení provozu</value>
+  </data>
+  <data name="LblOasisDcPower" xml:space="preserve">
+    <value>DC napájení</value>
+  </data>
+  <data name="LblOasisBoardHeating" xml:space="preserve">
+    <value>Ohřev</value>
+  </data>
+  <data name="LblOasisHeatingPower" xml:space="preserve">
+    <value>Topný výkon</value>
+  </data>
+  <data name="LblOasisBoardTemperature" xml:space="preserve">
+    <value>Teplota desky</value>
+  </data>
+  <data name="LblOasisSyncPosition" xml:space="preserve">
+    <value>Synchronizace polohy</value>
+  </data>
+  <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
+    <value>Nastavit aktuální pozici pro synchronizaci?</value>
+  </data>
+  <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
+    <value>Vybraný zaostřovač Oasis není k dispozici. Zkontrolujte připojení a znovu vyhledejte zařízení.</value>
+  </data>
+  <data name="LblBluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
     <value>ASCOM Alpaca IP Nastavení</value>
@@ -7359,5 +7419,32 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Číslo Zařízení</value>
+  </data>
+  <data name="LblNotificationWorkArea" xml:space="preserve">
+    <value>Notification work area</value>
+  </data>
+  <data name="LblNotificationCorner" xml:space="preserve">
+    <value>Notification corner</value>
+  </data>
+  <data name="LblNotificationTopLeft" xml:space="preserve">
+    <value>Top left</value>
+  </data>
+  <data name="LblNotificationTopRight" xml:space="preserve">
+    <value>Top right</value>
+  </data>
+  <data name="LblNotificationBottomLeft" xml:space="preserve">
+    <value>Bottom left</value>
+  </data>
+  <data name="LblNotificationBottomRight" xml:space="preserve">
+    <value>Bottom right</value>
+  </data>
+  <data name="LblNotificationPrimaryScreen" xml:space="preserve">
+    <value>Primary screen</value>
+  </data>
+  <data name="LblNotificationSameScreenAsApplication" xml:space="preserve">
+    <value>Same screen as application</value>
+  </data>
+  <data name="LblNotificationApplication" xml:space="preserve">
+    <value>Application</value>
   </data>
 </root>

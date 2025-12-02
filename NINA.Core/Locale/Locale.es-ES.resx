@@ -568,12 +568,12 @@ Filtro: {3}</value>
     <value>Cambiar</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>Recuento de exposición</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence has been modified since it was last saved (changes to {0}).
+    <value>La secuencia ha sido modificada desde la última vez que fue guardada (cambia a {0}).
         
-Do you want to continue and lose the changes anyway?</value>
+¿Quieres continuar y perder los cambios de todos modos?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Cerrando secuencia modificada</value>
@@ -3316,7 +3316,7 @@ Mueve el rectángulo sobre la parte del Encuadre que quieras hacer subsampling. 
     <value>Tránsito Sur</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>Tiempo de tránsito</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Tendencia e Hiperbólico</value>
@@ -6536,6 +6536,9 @@ Esto solo debería desactivarse si tienes un buen modelado de cielo que no debe 
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>Un nombre de hasta 8 caracteres ASCII que puede asignar al dispositivo ZWO conectado. Esto le permite identificar de forma única múltiples piezas del mismo modelo de dispositivo.</value>
   </data>
+  <data name="LblDeviceIdTooltip" xml:space="preserve">
+    <value>Un nombre de hasta 8 caracteres ASCII que puede asignar al dispositivo conectado. Esto le permite identificar de forma única múltiples ejemplares del mismo modelo de dispositivo.</value>
+  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Unidireccional</value>
   </data>
@@ -7320,13 +7323,11 @@ El tiempo de exposición de los flats de cierlo será recalculado y se repetirá
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
-    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+    <value>No se le pide guardar la secuencia cuando lo único que ha cambiado es el recuento de exposiciones</value>
   </data>
   <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
-    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
-You'll normally be prompted to save the sequence to save the changed exposure count.
-
-If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+    <value>Si tu secuencia no se ha modificado pero la has ejecutado, el recuento de exposiciones habrá cambiado.
+Si el recuento de las exposiciones no es importante para ti, activa esta opción para evitar tener que guardar la secuencia después de ejecutarla.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
     <value>Hora para la transferencia de día</value>
@@ -7336,6 +7337,63 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicializando</value>
+  </data>
+  <data name="LblOasisClearStallPrompt" xml:space="preserve">
+    <value>¿Eliminar el bloqueo?</value>
+  </data>
+  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
+    <value>El enfocador se ha detenido y debe desbloquearse manualmente.</value>
+  </data>
+  <data name="LblBeepOnStartup" xml:space="preserve">
+    <value>Beep al inicio</value>
+  </data>
+  <data name="LblBeepOnMove" xml:space="preserve">
+    <value>Beep al moverse</value>
+  </data>
+  <data name="LblOasisHeating" xml:space="preserve">
+    <value>Calentando</value>
+  </data>
+  <data name="LblOasisHeatingTemperature" xml:space="preserve">
+    <value>Temperatura de calentamiento</value>
+  </data>
+  <data name="LblOasisStallDetection" xml:space="preserve">
+    <value>Detección de bloqueo</value>
+  </data>
+  <data name="LblOasisIsStalled" xml:space="preserve">
+    <value>Está bloqueado</value>
+  </data>
+  <data name="LblOasisUSBCapacity" xml:space="preserve">
+    <value>Capacidad USB</value>
+  </data>
+  <data name="LblOasisSpeed" xml:space="preserve">
+    <value>Velocidad</value>
+  </data>
+  <data name="LblOasisClearStall" xml:space="preserve">
+    <value>Eliminar el bloqueo</value>
+  </data>
+  <data name="LblOasisDcPower" xml:space="preserve">
+    <value>Alimentación DC</value>
+  </data>
+  <data name="LblOasisBoardHeating" xml:space="preserve">
+    <value>Calentamiento de placa</value>
+  </data>
+  <data name="LblOasisHeatingPower" xml:space="preserve">
+    <value>Alimentador de calentamiento</value>
+  </data>
+  <data name="LblOasisBoardTemperature" xml:space="preserve">
+    <value>Temperatura de la placa</value>
+  </data>
+  <data name="LblOasisSyncPosition" xml:space="preserve">
+    <value>Posición de sincronización</value>
+  </data>
+  <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
+    <value>¿Establecer la posición actual como posición de sincronización?</value>
+  </data>
+  <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
+    <value>El enfocador Oasis seleccionado no está disponible. Por favor, compruebe la conexión y vuelva a escanear dispositivos.</value>
+  </data>
+  <data name="LblBluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
     <value>Configuración IP de ASCOM Alpaca</value>
@@ -7353,5 +7411,32 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Número de dispositivo</value>
+  </data>
+  <data name="LblNotificationWorkArea" xml:space="preserve">
+    <value>Área de notificación de trabajo</value>
+  </data>
+  <data name="LblNotificationCorner" xml:space="preserve">
+    <value>Rincón de notificaciones</value>
+  </data>
+  <data name="LblNotificationTopLeft" xml:space="preserve">
+    <value>Arriba izquierda</value>
+  </data>
+  <data name="LblNotificationTopRight" xml:space="preserve">
+    <value>Arriba derecha</value>
+  </data>
+  <data name="LblNotificationBottomLeft" xml:space="preserve">
+    <value>Abajo izquierda</value>
+  </data>
+  <data name="LblNotificationBottomRight" xml:space="preserve">
+    <value>Abajo derecha</value>
+  </data>
+  <data name="LblNotificationPrimaryScreen" xml:space="preserve">
+    <value>Pantalla principal</value>
+  </data>
+  <data name="LblNotificationSameScreenAsApplication" xml:space="preserve">
+    <value>Misma pantalla que la aplicación</value>
+  </data>
+  <data name="LblNotificationApplication" xml:space="preserve">
+    <value>Aplicación</value>
   </data>
 </root>

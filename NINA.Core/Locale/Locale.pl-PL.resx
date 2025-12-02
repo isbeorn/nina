@@ -569,12 +569,12 @@ w stanie zrekompensować zmiany temperatury otoczenia</value>
     <value>Zmień</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>Liczba ekspozycji</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence has been modified since it was last saved (changes to {0}).
+    <value>Sekwencja została zmodyfikowana od czasu jej ostatniego zapisania (zmiany w {0}).
         
-Do you want to continue and lose the changes anyway?</value>
+Czy mimo to chcesz kontynuować i stracić zmiany?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Zamknij zmienioną sekwencję</value>
@@ -6536,6 +6536,9 @@ Opcję tę należy wyłączyć tylko wtedy, gdy dostępny jest dobry wzorzec map
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>Nazwa do 8 znaków ASCII, które możesz przypisać do podłączonego urządzenia ZWO. Pozwala to na unikalną identyfikację wielu elementów tego samego modelu urządzenia.</value>
   </data>
+  <data name="LblDeviceIdTooltip" xml:space="preserve">
+    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Jednokierunkowy</value>
   </data>
@@ -7320,13 +7323,13 @@ Czas ekspozycji flatów zostanie określony ponownie, a ekspozycja zostanie powt
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
-    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+    <value>Nie pytaj o zapisanie sekwencji, gdy jedyną zmienioną rzeczą jest liczba ekspozycji</value>
   </data>
   <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
-    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
-You'll normally be prompted to save the sequence to save the changed exposure count.
+    <value>Jeśli Twoja sekwencja nie została zmodyfikowana, ale ją uruchomiłeś, liczba ekspozycji zostanie zmieniona.
+Zwykle zostaniesz poproszony o zapisanie sekwencji, aby zapisać zmienioną liczbę ekspozycji.
 
-If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uniknąć konieczności zapisywania sekwencji po uruchomieniu.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
     <value>Czas przestawienia dnia</value>
@@ -7336,6 +7339,63 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicjalizacja</value>
+  </data>
+  <data name="LblOasisClearStallPrompt" xml:space="preserve">
+    <value>Clear stall?</value>
+  </data>
+  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
+    <value>Focuser stalled. You need to manually clear stall.</value>
+  </data>
+  <data name="LblBeepOnStartup" xml:space="preserve">
+    <value>Beep on startup</value>
+  </data>
+  <data name="LblBeepOnMove" xml:space="preserve">
+    <value>Beep on move</value>
+  </data>
+  <data name="LblOasisHeating" xml:space="preserve">
+    <value>Heating</value>
+  </data>
+  <data name="LblOasisHeatingTemperature" xml:space="preserve">
+    <value>Heating temperature</value>
+  </data>
+  <data name="LblOasisStallDetection" xml:space="preserve">
+    <value>Stall detection</value>
+  </data>
+  <data name="LblOasisIsStalled" xml:space="preserve">
+    <value>Is stalled</value>
+  </data>
+  <data name="LblOasisUSBCapacity" xml:space="preserve">
+    <value>USB capacity</value>
+  </data>
+  <data name="LblOasisSpeed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
+  <data name="LblOasisClearStall" xml:space="preserve">
+    <value>Clear stall</value>
+  </data>
+  <data name="LblOasisDcPower" xml:space="preserve">
+    <value>DC power</value>
+  </data>
+  <data name="LblOasisBoardHeating" xml:space="preserve">
+    <value>Board heating</value>
+  </data>
+  <data name="LblOasisHeatingPower" xml:space="preserve">
+    <value>Heating power</value>
+  </data>
+  <data name="LblOasisBoardTemperature" xml:space="preserve">
+    <value>Board temperature</value>
+  </data>
+  <data name="LblOasisSyncPosition" xml:space="preserve">
+    <value>Sync position</value>
+  </data>
+  <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
+    <value>Set current position to sync position?</value>
+  </data>
+  <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
+    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+  </data>
+  <data name="LblBluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
     <value>Ustawienia IP ASCOM Alpaca</value>
@@ -7353,5 +7413,32 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Numer urządzenia</value>
+  </data>
+  <data name="LblNotificationWorkArea" xml:space="preserve">
+    <value>Notification work area</value>
+  </data>
+  <data name="LblNotificationCorner" xml:space="preserve">
+    <value>Notification corner</value>
+  </data>
+  <data name="LblNotificationTopLeft" xml:space="preserve">
+    <value>Top left</value>
+  </data>
+  <data name="LblNotificationTopRight" xml:space="preserve">
+    <value>Top right</value>
+  </data>
+  <data name="LblNotificationBottomLeft" xml:space="preserve">
+    <value>Bottom left</value>
+  </data>
+  <data name="LblNotificationBottomRight" xml:space="preserve">
+    <value>Bottom right</value>
+  </data>
+  <data name="LblNotificationPrimaryScreen" xml:space="preserve">
+    <value>Primary screen</value>
+  </data>
+  <data name="LblNotificationSameScreenAsApplication" xml:space="preserve">
+    <value>Same screen as application</value>
+  </data>
+  <data name="LblNotificationApplication" xml:space="preserve">
+    <value>Application</value>
   </data>
 </root>
