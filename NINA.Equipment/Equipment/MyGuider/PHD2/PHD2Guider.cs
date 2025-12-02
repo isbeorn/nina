@@ -375,7 +375,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                         elapsed += await CoreUtil.Delay(500, ct);
                         if (elapsed.TotalSeconds > 60) {
                             //Failsafe when phd is not sending resume message
-                            Notification.ShowWarning(Loc.Instance["LblGuiderNoResume"]/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);
+                            Notification.ShowWarning(Loc.Instance["LblGuiderNoResume"]);
                             break;
                         }
                     }

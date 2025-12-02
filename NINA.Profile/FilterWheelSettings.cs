@@ -52,7 +52,7 @@ namespace NINA.Profile {
             lastDeviceName = string.Empty;
             filterWheelFilters = new ObserveAllCollection<FilterInfo>();
             disableGuidingOnFilterChange = false;
-            unidirectional = false;
+            unidirectional = true;
         }
 
         private string id;

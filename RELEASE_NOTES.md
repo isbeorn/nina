@@ -30,10 +30,22 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
 - **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
   - The ToupTek based filter wheels are now available as a native driver.
+- **Oasis Focuser Native Driver**
+  - The Oasis focuser is now available as a native driver.
+- **PlayerOne FilterWheel**
+  - Added setting to change unidirectional mode
+  - While connecting the app will wait for the filter wheel homing to finish before proceeding
 
-### User Interface & Usability
+### **User Interface & Usability**
 - **Sky Atlas Improvements**  
   - Deep sky objects can now be filtered and sorted by their upper transit time
+- **Framing Assistant Improvements** 
+  - In HiPS 2 FITS Sky Survey different HiPS sky maps can now be selected like CTA-FRAM, Mellinger, Northern Sky Narrowband Survey and more for better target planning. 
+- **New Toast Notification System**
+  - Replaced the external ToastNotifications package with a fully native WPF implementation.
+  - Improved reliability, lifetime handling, and positioning across multiple monitors.
+  - Added configurable notification placement: primary screen, same screen as the app, or application window, as well as adjustable corner positioning via Options > General > Advanced.
+  - Notifications now reposition automatically on window moves, DPI changes, and display configuration changes.
 
 
 # Version 3.2

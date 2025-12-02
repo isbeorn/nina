@@ -296,6 +296,9 @@
     <Content Include="External\x64\ToupTek\toupcam.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\Oasis\OasisFocuser.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Logo_Nina.ico" />
     <Resource Include="Resources\Logo_Nina.png" />
     <Resource Include="Resources\Logo_Nina.ico" />
@@ -392,7 +395,6 @@
     <PackageReference Include="OxyPlot.Contrib.Wpf" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
-    <PackageReference Include="ToastNotifications.Messages" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
     <Page Remove="Resources\Camera.xaml" />
@@ -422,6 +424,9 @@
    <None Update="Database\Migration\15.sql">
 	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
+   <None Update="Database\Migration\16.sql">
+     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+   </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
