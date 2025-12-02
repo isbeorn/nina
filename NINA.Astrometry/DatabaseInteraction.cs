@@ -118,7 +118,7 @@ namespace NINA.Astrometry {
             }
             return brightStars;
         }
-
+        
         public class DeepSkyObjectSearchParams {
             public string Constellation { get; set; } = "";
             public IList<string> DsoTypes { get; set; }
@@ -477,6 +477,40 @@ namespace NINA.Astrometry {
                 .ThenByDescending(alias => alias.cleanName.Length)
                 .Select(alias => alias.name)
                 .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves all HiPS sky map records from the database.
+        /// </summary>
+        /// <returns>A list of <see cref="Core.Database.Schema.HipsSkyMaps"/> objects representing the available HiPS sky maps.
+        /// Returns an empty list if no records are found or if the operation is canceled.</returns>
+        public async Task<List<Core.Database.Schema.HipsSkyMaps>> GetHipsSkyMaps() {
+            var hipsSkyMaps = new List<Core.Database.Schema.HipsSkyMaps>();
+            try {
+                using (var context = new NINADbContext(connectionString)) {
+                    var rows = await context.HipsSkyMapSet.ToListAsync();
+
+                    foreach (var row in rows) {
+                        var hipsSkyMap = new Core.Database.Schema.HipsSkyMaps {
+                            Id = row.Id,
+                            ShortName = row.ShortName,
+                            LongName = row.LongName,
+                            Path = row.Path,
+                            Band = row.Band,
+                            Coverage = row.Coverage,
+                            Comment = row.Comment
+                        };
+                        hipsSkyMaps.Add(hipsSkyMap);
+                    }
+                }
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                if (!ex.Message.Contains("Execution was aborted by the user")) {
+                    Logger.Error(ex);
+                    Notification.ShowError(ex.Message);
+                }
+            }
+            return hipsSkyMaps;
         }
 
         /// <summary>

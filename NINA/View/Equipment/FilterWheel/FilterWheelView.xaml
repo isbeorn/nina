@@ -191,6 +191,18 @@
                         </StackPanel>
                     </DataTemplate>
 
+                    <DataTemplate x:Key="PlayerOne">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Margin="0,0,0,6" Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblUnidirectional}" />
+                                <CheckBox
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    IsChecked="{Binding Unidirectional}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+
                     <DataTemplate x:Key="ToupTekAlike">
                         <StackPanel Orientation="Vertical">
                             <DockPanel Margin="0,0,0,6">
@@ -216,6 +228,7 @@
                         x:Key="ContentSelector"
                         Default="{StaticResource Default}"
                         FailedToLoadTemplate="{StaticResource Failed}"
+                        PlayerOne="{StaticResource PlayerOne}"
                         Postfix="{x:Static wpfutil:DataTemplatePostfix.FilterWheelSettings}"
                         ToupTekAlike="{StaticResource ToupTekAlike}"
                         Zwo="{StaticResource Zwo}" />

@@ -14,6 +14,7 @@
 
 using NINA.Astrometry;
 using NINA.Astrometry.Interfaces;
+using NINA.Core.Database.Schema;
 using NINA.Core.Enum;
 using NINA.Core.Locale;
 using NINA.Core.Model;
@@ -147,6 +148,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 this.NighttimeData = this.nighttimeCalculator.Calculate();
                 nighttimeCalculator.OnReferenceDayChanged += NighttimeCalculator_OnReferenceDayChanged;
                 InitializeCache();
+                LoadHipsSkyMaps().Wait();
             });
 
             this.OverlapUnits = new List<string> { "%", "px" };
@@ -173,7 +175,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 RaisePropertyChanged();
             }
         }
-
+        
         private void InitializeCommands() {
             LoadImageCommand = new AsyncCommand<bool>(async () => { return await LoadImage(); });
             CancelLoadImageFromFileCommand = new RelayCommand((object o) => { CancelLoadImage(); });
@@ -1121,8 +1123,12 @@ namespace NINA.ViewModel.FramingAssistant {
                         } else {
                             var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
-                            skySurveyImage = await skySurvey.GetImage(DSO?.Name ?? string.Empty, DSO?.Coordinates,
-                                AstroUtil.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
+                            if (FramingAssistantSource != SkySurveySource.HIPS2FITS) {
+                                skySurveyImage = await skySurvey.GetImage(DSO?.Name ?? string.Empty, DSO?.Coordinates,
+                                    AstroUtil.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
+                            } else {
+                                skySurveyImage = await skySurvey.GetImage(DSO?.Name ?? string.Empty, SelectedHipsSkyMap.Path, DSO?.Coordinates, AstroUtil.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
+                            }
                         }
                     }
 
@@ -1553,6 +1559,57 @@ namespace NINA.ViewModel.FramingAssistant {
             var dso = new DeepSkyObject(string.Empty, coordinates, string.Empty, null);
             await SetCoordinates(dso);
             return true;
+        }
+
+        private HipsSkyMaps selectedHipsSkyMap;
+        public HipsSkyMaps SelectedHipsSkyMap {
+            get => selectedHipsSkyMap;
+            set {
+                selectedHipsSkyMap = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private List<HipsSkyMaps> hipsSkyMaps;
+        public List<HipsSkyMaps> HipsSkyMaps {
+            get {
+                if (hipsSkyMaps == null) {
+                    hipsSkyMaps = new List<HipsSkyMaps>();
+                }
+                return hipsSkyMaps;
+            }
+            private set {
+                hipsSkyMaps = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private List<HipsSkyMaps> allHipsSkyMaps = new List<HipsSkyMaps>();
+
+        private Task LoadHipsSkyMaps() {
+            return Task.Run(async () => {
+                try {
+                    var db = new DatabaseInteraction();
+                    allHipsSkyMaps = await db.GetHipsSkyMaps();
+
+                    if (hipsSkyMaps == null) {
+                        hipsSkyMaps = new List<HipsSkyMaps>();
+                    }
+
+                    hipsSkyMaps.Clear();
+
+                    foreach (var map in allHipsSkyMaps) {
+                        hipsSkyMaps.Add(map);
+                    }
+
+                    if (SelectedHipsSkyMap == null) {
+                        SelectedHipsSkyMap = hipsSkyMaps.FirstOrDefault();
+                    }
+
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+            });
         }
 
         public void Dispose() {

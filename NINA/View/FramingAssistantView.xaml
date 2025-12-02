@@ -257,13 +257,62 @@
                                     </Style>
                                 </Grid.Style>
                                 <StackPanel Orientation="Vertical">
-                                    <WrapPanel Orientation="Horizontal">
+                                    <Grid Margin="0,0,0,0" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center"
+                                            Text="HiPS sky maps" />
+                                        <ComboBox
+                                            Grid.Column="1"
+                                            Width="{Binding ActualWidth, ElementName=PART_FramingAssistantSource}"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            ItemsSource="{Binding HipsSkyMaps}"
+                                            SelectedItem="{Binding SelectedHipsSkyMap}">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid
+                                                        Width="{Binding ActualWidth, ElementName=PART_FramingAssistantSource}"
+                                                        Margin="0,2,0,2"
+                                                        HorizontalAlignment="Left">
+                                                        <TextBlock VerticalAlignment="Center" Text="{Binding ShortName}" />
+                                                        <Grid.ToolTip>
+                                                            <StackPanel Orientation="Vertical">
+                                                                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                                    <TextBlock FontWeight="Bold" Text="{Binding LongName}" />
+                                                                    <TextBlock
+                                                                        Margin="10,0,0,0"
+                                                                        FontWeight="Bold"
+                                                                        Text="Band: " />
+                                                                    <TextBlock FontWeight="Bold" Text="{Binding Band}" />
+                                                                    <TextBlock
+                                                                        Margin="10,0,0,0"
+                                                                        FontWeight="Bold"
+                                                                        Text="Coverage: " />
+                                                                    <TextBlock FontWeight="Bold" Text="{Binding Coverage, StringFormat={}{0}%}" />
+                                                                </StackPanel>
+                                                                <TextBlock Text="{Binding Comment}" />
+                                                            </StackPanel>
+                                                        </Grid.ToolTip>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+
+                                    </Grid>
+
+                                    <WrapPanel Margin="0,10,0,0" Orientation="Horizontal">
                                         <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
                                         <TextBlock TextWrapping="Wrap">
                                             <Hyperlink NavigateUri="https://alasky.u-strasbg.fr/hips-image-services/hips2fits" RequestNavigate="Hyperlink_RequestNavigate">hips2fits</Hyperlink>
                                         </TextBlock>
                                         <TextBlock Text=" a service provided by CDS" TextWrapping="Wrap" />
                                     </WrapPanel>
+
 
                                     <Grid Margin="0,5,0,0" VerticalAlignment="Center">
                                         <Grid.ColumnDefinitions>
