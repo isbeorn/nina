@@ -238,7 +238,7 @@ namespace NINA.Sequencer.Logic {
             foreach (string e in errors) {
                 // Note "External" not used currently
                 if (e.Contains(Loc.Instance["LblNotEvaluated"]) || e.Contains("External")) {
-                    orange = true; ;
+                    orange = true;
                 } else {
                     red = true;
                 }
@@ -251,9 +251,9 @@ namespace NINA.Sequencer.Logic {
                 if (Error == null) {
                     return Loc.Instance["NoErrors"];
                 } else if (JustWarnings(Error)) {
-                    return string.Format(Loc.Instance["LblWarnings"], Error);
+                    return Error; // string.Format(Loc.Instance["LblWarnings"], Error);
                 } else {
-                    return string.Format(Loc.Instance["LblErrors"], Error);
+                    return Error; // string.Format(Loc.Instance["LblErrors"], Error);
                 }
             }
             set { }
@@ -545,6 +545,9 @@ namespace NINA.Sequencer.Logic {
             if (SymbolBroker == null && Context != null) {
                 SymbolBroker = Context.SymbolBroker;
             }
+            if (SymbolBroker == null && Symbol != null) {
+                SymbolBroker = Symbol.SymbolBroker;
+            }
 
             // First, validate References
             foreach (string sRef in References) {
@@ -611,7 +614,7 @@ namespace NINA.Sequencer.Logic {
                             // Not defined or evaluated
                             UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                             if (s is Variable sv && !sv.Executed) {
-                                AddError(Loc.Instance["LblNotEvaluated"] + r);
+                                AddError(Loc.Instance["LblNotEvaluated"] + ": " + r);
                                 //                           } else if (r.StartsWith("_")) {
                                 //                               AddError("Reference: " + r);
                             } else {
