@@ -29,7 +29,7 @@ namespace NINA.Test.Utility {
         [Test]
         public void UnicodeToAsciiNullTest() {
             // Arrange
-            string unicode = null;
+            string? unicode = null;
             string ascii = "";
 
             // Act
@@ -68,7 +68,7 @@ namespace NINA.Test.Utility {
         [Test]
         public void GreekToLatinAbbreviationNullTest() {
             // Arrange
-            string hasGreek = null;
+            string? hasGreek = null;
             string inLatin = "";
 
             // Act

@@ -33,11 +33,11 @@ namespace NINA.Test {
         private DateTime referenceDate;
         private double latitude;
         private double longitude;
-        private RiseAndSetEvent twilightRiseAndSet;
-        private RiseAndSetEvent nauticalTwilightRiseAndSet;
-        private RiseAndSetEvent civilTwilightRiseAndSet;
-        private RiseAndSetEvent moonRiseAndSet;
-        private RiseAndSetEvent sunRiseAndSet;
+        private RiseAndSetEvent? twilightRiseAndSet;
+        private RiseAndSetEvent? nauticalTwilightRiseAndSet;
+        private RiseAndSetEvent? civilTwilightRiseAndSet;
+        private RiseAndSetEvent? moonRiseAndSet;
+        private RiseAndSetEvent? sunRiseAndSet;
         private MoonPhase moonPhase;
         private double? illumination;
 

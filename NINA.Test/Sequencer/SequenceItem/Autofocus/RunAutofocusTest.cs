@@ -217,7 +217,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Autofocus {
             windowFactoryMock.Setup(x => x.Create()).Returns(windowMock.Object);
 
             var autofocusMock = new Mock<IAutoFocusVM>();
-            autofocusMock.Setup(af => af.StartAutoFocus(It.IsAny<FilterInfo>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>())).Returns(Task.FromResult<AutoFocusReport>(null));
+            autofocusMock.Setup(af => af.StartAutoFocus(It.IsAny<FilterInfo>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>())).Returns(Task.FromResult<AutoFocusReport?>(null));
             autofocusVMFactoryMock.Setup(x => x.Create()).Returns(autofocusMock.Object);
 
             var filter = new FilterInfo() { Position = 0 };

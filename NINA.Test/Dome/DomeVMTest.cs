@@ -104,6 +104,7 @@ namespace NINA.Test.Dome {
             mockProfileService.SetupGet(p => p.ActiveProfile.ApplicationSettings.DevicePollingInterval).Returns(1);
 
             mockApplicationStatusMediator.Setup(x => x.StatusUpdate(It.IsAny<ApplicationStatus>()));
+            mockDome = new Mock<IDome>();
         }
 
         private async Task<DomeVM> CreateSUT() {

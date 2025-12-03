@@ -71,6 +71,7 @@ namespace NINA.Test.Rotator {
             mockProfileService.SetupGet(p => p.ActiveProfile.ApplicationSettings.DevicePollingInterval).Returns(0);
             mockProfileService.SetupGet(p => p.ActiveProfile.RotatorSettings.RangeType).Returns(() => rangeType);
             mockProfileService.SetupGet(p => p.ActiveProfile.RotatorSettings.RangeStartMechanicalPosition).Returns(() => rangeStartMechanicalPosition);
+            mockRotator = new Mock<IRotator>();
         }
 
         private async Task<RotatorVM> CreateSUT() {

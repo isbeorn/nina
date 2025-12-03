@@ -72,12 +72,12 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             var originalExposure = sut.Items[0] as TakeExposure;
             var clonedExposure = item2.Items[0] as TakeExposure;
             clonedExposure.Should().NotBeSameAs(originalExposure);
-            clonedExposure.Binning.Should().NotBeNull();
-            clonedExposure.ExposureCount.Should().Be(0);
-            clonedExposure.ExposureTime.Should().Be(originalExposure.ExposureCount);
-            clonedExposure.Gain.Should().Be(originalExposure.Gain);
-            clonedExposure.Offset.Should().Be(originalExposure.Offset);
-            clonedExposure.ImageType.Should().Be(originalExposure.ImageType);
+            clonedExposure?.Binning.Should().NotBeNull();
+            clonedExposure?.ExposureCount.Should().Be(0);
+            clonedExposure?.ExposureTime.Should().Be(originalExposure?.ExposureCount);
+            clonedExposure?.Gain.Should().Be(originalExposure?.Gain);
+            clonedExposure?.Offset.Should().Be(originalExposure?.Offset);
+            clonedExposure?.ImageType.Should().Be(originalExposure?.ImageType);
         }
 
         [Test]
