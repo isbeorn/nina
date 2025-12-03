@@ -105,7 +105,7 @@ namespace NINA.Sequencer.Serialization {
                         if (originalType.EndsWith(", WhenPlugin")) {
                             PowerupsUpgrader.PreUpgradeInstruction(originalType, jObject);
                         }
-
+                   
                         // Populate the object properties
                         serializer.Populate(jObject.CreateReader(), target);
 
