@@ -176,22 +176,22 @@ namespace NINA.WPF.Base.SkySurvey {
         [ObservableProperty]
         private BitmapSource skyMapOverlay;
 
-        partial void OnAnnotateConstellationBoundariesChanged(bool _, bool newValue) {
+        partial void OnAnnotateConstellationBoundariesChanged(bool oldValue, bool newValue) {
             if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries != newValue)
                 profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries = newValue;
         }
 
-        partial void OnAnnotateConstellationsChanged(bool _, bool newValue) {
+        partial void OnAnnotateConstellationsChanged(bool oldValue, bool newValue) {
             if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellations != newValue)
                 profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellations = newValue;
         }
 
-        partial void OnAnnotateDSOChanged(bool _, bool newValue) {
+        partial void OnAnnotateDSOChanged(bool oldValue, bool newValue) {
             if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateDSO != newValue)
                 profileService.ActiveProfile.FramingAssistantSettings.AnnotateDSO = newValue;
         }
 
-        partial void OnAnnotateGridChanged(bool _, bool newValue) {
+        partial void OnAnnotateGridChanged(bool oldValue, bool newValue) {
             if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid != newValue)
                 profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid = newValue;
         }

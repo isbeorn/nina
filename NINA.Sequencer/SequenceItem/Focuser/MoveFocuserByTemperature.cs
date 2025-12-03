@@ -66,10 +66,6 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
             }
         }
 
-        private static double lastTemperature = -1000;
-
-        private static double lastRoundoff = 0;
-
         private bool absolute = true;
 
         [JsonProperty]
@@ -147,14 +143,10 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
 
         public void UpdateEndAutoFocusRun(AutoFocusInfo info) {
             Logger.Info($"Autofocus notification received - Temperature {info.Temperature}");
-            lastTemperature = info.Temperature;
-            lastRoundoff = 0;
         }
 
         public void UpdateUserFocused(Equipment.Equipment.MyFocuser.FocuserInfo info) {
             Logger.Info($"User Focused notification received - Temperature {info.Temperature}");
-            lastTemperature = info.Temperature;
-            lastRoundoff = 0;
         }
     }
 }

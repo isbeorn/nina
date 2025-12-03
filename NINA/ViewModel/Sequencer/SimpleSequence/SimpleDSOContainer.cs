@@ -709,7 +709,7 @@ namespace NINA.Sequencer.Container {
 
         private Dictionary<string, bool> hasChanges = new Dictionary<string, bool>() { { SequenceEntityINPC.defaultChangeSet, false } };
 
-        public void ClearHasChanged() {
+        public new void ClearHasChanged() {
             foreach (string key in HasChanges.Keys) {
                 HasChanges[key] = false;
             }

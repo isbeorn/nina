@@ -511,9 +511,6 @@ namespace ZWOptical.ASISDK {
     [Serializable]
     public class ASICameraException : Exception {
 
-        public ASICameraException(SerializationInfo info, StreamingContext context) : base(info, context) {
-        }
-
         public ASICameraException(ASICameraDll.ASI_ERROR_CODE errorCode) : base(errorCode.ToString()) {
         }
 

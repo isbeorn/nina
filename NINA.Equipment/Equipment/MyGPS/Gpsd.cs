@@ -71,7 +71,7 @@ namespace NINA.Equipment.Equipment.MyGPS {
                 int tries = 0;
 
                 while (tries < 8 && !token.IsCancellationRequested) {
-                    string? line = await reader.ReadLineAsync(token);
+                    string line = await reader.ReadLineAsync(token);
 
                     if (string.IsNullOrEmpty(line)) continue;
 

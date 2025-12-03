@@ -27,7 +27,7 @@ namespace NINA.Equipment.Equipment.MyGPS {
 
         public IGnss GetGnssSource(GnssSourceEnum gnss) {
             return gnss switch {
-                GnssSourceEnum.NmeaSerial => new NMEAGps(profileService),
+                GnssSourceEnum.NmeaSerial => new NMEAGps(),
                 GnssSourceEnum.PegausAstroUranusMeteo => new UranusMeteo(profileService),
                 GnssSourceEnum.PrimaLuceLabEagle => new PrimaLuceLabEagle(profileService),
                 GnssSourceEnum.Gpsd => new Gpsd(profileService),

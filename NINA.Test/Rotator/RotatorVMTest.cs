@@ -100,7 +100,7 @@ namespace NINA.Test.Rotator {
             mockRotatorDeviceChooserVM.SetupGet(x => x.SelectedDevice).Returns(mockRotator.Object);
 
             var connectionResult = await rotatorVM.Connect();
-            ClassicAssert.IsTrue(connectionResult);
+            Assert.That(connectionResult, Is.True);
             return rotatorVM;
         }
 

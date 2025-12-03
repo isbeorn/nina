@@ -28,8 +28,5 @@ namespace NINA.Equipment.Exceptions {
 
         public GnssFailedToConnectException(string message, Exception innerException) : base(message, innerException) {
         }
-
-        protected GnssFailedToConnectException(SerializationInfo info, StreamingContext context) : base(info, context) {
-        }
     }
 }

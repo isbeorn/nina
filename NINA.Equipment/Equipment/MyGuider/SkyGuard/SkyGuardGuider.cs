@@ -34,21 +34,12 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
         #region Fields
         private IProfileService profileService;
         private readonly IWindowServiceFactory windowServiceFactory;
-        WebRequest request;
 
         private bool _connected;
-        private TaskCompletionSource<bool> _tcs;
-        private CancellationTokenSource skyGuardTCS;
 
-        private bool _isDithering;
-        private readonly object startGuidingLock = new object();
-        private CancellationTokenSource startGuidingCancellationTokenSource;
         private Task<bool> startGuidingTask;
-        private CancellationToken startFocusingCancellationTokenSource;
         private Task<bool> startFocusingTask;
-        private IGuider guiderInstance;
 
-        private CancellationToken tokenNINA;
         private Process skyGuardProcess;
         HttpListener skyGuardListener;
         DateTime dateTimeOut = new DateTime();
@@ -787,7 +778,6 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
         /// <returns></returns>
         public async Task<bool> Connect(CancellationToken token)
         {
-            _tcs = new TaskCompletionSource<bool>();
             var startedSkyGuard = await StartSkyProcess(token);
 
             if (!startedSkyGuard)

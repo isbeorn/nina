@@ -454,7 +454,7 @@ namespace NINA.Test {
             var lhsAngle = Angle.ByDegree(lhs);
             var rhsAngle = Angle.ByDegree(rhs);
             var toleranceAngle = Angle.ByDegree(tolerance);
-            ClassicAssert.IsTrue(lhsAngle.Equals(rhsAngle, toleranceAngle));
+            Assert.That(lhsAngle.Equals(rhsAngle, toleranceAngle), Is.True);
         }
 
         [Test]
@@ -467,7 +467,7 @@ namespace NINA.Test {
             var lhsAngle = Angle.ByDegree(lhs);
             var rhsAngle = Angle.ByDegree(rhs);
             var toleranceAngle = Angle.ByDegree(tolerance);
-            ClassicAssert.IsFalse(lhsAngle.Equals(rhsAngle, toleranceAngle));
+            Assert.That(lhsAngle.Equals(rhsAngle, toleranceAngle), Is.False);
         }
 
 
@@ -487,7 +487,7 @@ namespace NINA.Test {
             var lhsAngle = Angle.ByDegree(lhs);
             var rhsAngle = Angle.ByDegree(rhs);
             var toleranceAngle = Angle.ByDegree(tolerance);
-            ClassicAssert.IsTrue(lhsAngle.Equals(rhsAngle, toleranceAngle, true));
+            Assert.That(lhsAngle.Equals(rhsAngle, toleranceAngle, true), Is.True);
         }
 
         [Test]
@@ -507,7 +507,7 @@ namespace NINA.Test {
             var lhsAngle = Angle.ByDegree(lhs);
             var rhsAngle = Angle.ByDegree(rhs);
             var toleranceAngle = Angle.ByDegree(tolerance);
-            ClassicAssert.IsFalse(lhsAngle.Equals(rhsAngle, toleranceAngle, true));
+            Assert.That(lhsAngle.Equals(rhsAngle, toleranceAngle, true), Is.False);
         }
     }
 }

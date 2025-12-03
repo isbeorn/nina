@@ -10,6 +10,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Platform>x64</Platform>
   </PropertyGroup>
 
   <ItemGroup>

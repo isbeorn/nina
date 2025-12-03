@@ -115,7 +115,7 @@ namespace NINA.Test {
         public void IlluminationChangedTest() {
             illumination = null;
             var data = GetData();
-            ClassicAssert.IsFalse(data.Illumination.HasValue);
+            Assert.That(data.Illumination.HasValue, Is.False);
         }
 
         [Test]

@@ -39,8 +39,5 @@ namespace NINA.Equipment.Exceptions {
 
         public CameraDownloadFailedException(string message, Exception innerException) : base(message, innerException) {
         }
-
-        protected CameraDownloadFailedException(SerializationInfo info, StreamingContext context) : base(info, context) {
-        }
     }
 }

@@ -28,8 +28,5 @@ namespace NINA.Equipment.Exceptions {
 
         public GnssInvalidHostException(string message, Exception innerException) : base(message, innerException) {
         }
-
-        protected GnssInvalidHostException(SerializationInfo info, StreamingContext context) : base(info, context) {
-        }
     }
 }
