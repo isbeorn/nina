@@ -215,7 +215,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     pos = adjustedTargetPosition;
                     await updateTimer.WaitForNextUpdate(ct);
                     BroadcastRotatorInfo();
-                    await (Moved?.InvokeAsync(this, new RotatorEventArgs(from: from, to: RotatorInfo.MechanicalPosition)) ?? Task.CompletedTask);
+                    await (MovedMechanical?.InvokeAsync(this, new RotatorEventArgs(from: from, to: RotatorInfo.MechanicalPosition)) ?? Task.CompletedTask);
                 } catch (OperationCanceledException) {
                 } finally {
                     applicationStatusMediator.StatusUpdate(
