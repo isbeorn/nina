@@ -305,7 +305,7 @@ namespace NINA.Sequencer.Logic {
             get {
                 if (Error != null) return Error;
                 if (Value is double.NegativeInfinity) {
-                    return StringValue;
+                    return qgStringValue;
                 }
                 long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
                 long end = start + (2 * ONE_YEAR);
@@ -394,11 +394,7 @@ namespace NINA.Sequencer.Logic {
                     if (Range != null) {
                         CheckRange(result);
                     }
-<<<<<<< HEAD
-                    
-=======
 
->>>>>>> 9946fafb76b5f5fadccc72fd60fdf9cba9028365
                     Value = result;
 
                     // Notify consumers
