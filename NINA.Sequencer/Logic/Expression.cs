@@ -394,7 +394,6 @@ namespace NINA.Sequencer.Logic {
                     if (Range != null) {
                         CheckRange(result);
                     }
-
                     Value = result;
 
                     // Notify consumers
