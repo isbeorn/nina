@@ -391,9 +391,11 @@ namespace NINA.Sequencer.Logic {
                     Error = null;
                     IsExpression = false;
 
+                    // Add range check here...
                     if (Range != null) {
                         CheckRange(result);
                     }
+
                     Value = result;
 
                     // Notify consumers
