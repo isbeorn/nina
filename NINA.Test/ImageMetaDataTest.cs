@@ -40,60 +40,60 @@ namespace NINA.Test {
         public void DefaultValuesTest() {
             var sut = new ImageMetaData();
 
-            ClassicAssert.AreEqual(DateTime.MinValue, sut.Image.ExposureStart);
-            ClassicAssert.AreEqual(-1, sut.Image.ExposureNumber);
-            ClassicAssert.AreEqual(string.Empty, sut.Image.ImageType);
-            ClassicAssert.AreEqual(string.Empty, sut.Image.Binning);
-            ClassicAssert.AreEqual(double.NaN, sut.Image.ExposureTime);
-            ClassicAssert.AreEqual(null, sut.Image.RecordedRMS);
+            Assert.That(sut.Image.ExposureStart, Is.EqualTo(DateTime.MinValue));
+            Assert.That(sut.Image.ExposureNumber, Is.EqualTo(-1));
+            Assert.That(sut.Image.ImageType, Is.Empty);
+            Assert.That(sut.Image.Binning, Is.Empty);
+            Assert.That(sut.Image.ExposureTime, Is.EqualTo(double.NaN));
+            Assert.That(sut.Image.RecordedRMS, Is.EqualTo(null));
 
-            ClassicAssert.AreEqual(string.Empty, sut.Camera.Name);
-            ClassicAssert.AreEqual("1x1", sut.Camera.Binning);
-            ClassicAssert.AreEqual(1, sut.Camera.BinX);
-            ClassicAssert.AreEqual(1, sut.Camera.BinY);
-            ClassicAssert.AreEqual(double.NaN, sut.Camera.PixelSize);
-            ClassicAssert.AreEqual(double.NaN, sut.Camera.Temperature);
-            ClassicAssert.AreEqual(-1, sut.Camera.Gain);
-            ClassicAssert.AreEqual(-1, sut.Camera.Offset);
-            ClassicAssert.AreEqual(double.NaN, sut.Camera.ElectronsPerADU);
-            ClassicAssert.AreEqual(double.NaN, sut.Camera.SetPoint);
+            Assert.That(sut.Camera.Name, Is.Empty);
+            Assert.That(sut.Camera.Binning, Is.EqualTo("1x1"));
+            Assert.That(sut.Camera.BinX, Is.EqualTo(1));
+            Assert.That(sut.Camera.BinY, Is.EqualTo(1));
+            Assert.That(sut.Camera.PixelSize, Is.EqualTo(double.NaN));
+            Assert.That(sut.Camera.Temperature, Is.EqualTo(double.NaN));
+            Assert.That(sut.Camera.Gain, Is.EqualTo(-1));
+            Assert.That(sut.Camera.Offset, Is.EqualTo(-1));
+            Assert.That(sut.Camera.ElectronsPerADU, Is.EqualTo(double.NaN));
+            Assert.That(sut.Camera.SetPoint, Is.EqualTo(double.NaN));
 
-            ClassicAssert.AreEqual(string.Empty, sut.Telescope.Name);
-            ClassicAssert.AreEqual(double.NaN, sut.Telescope.FocalLength);
-            ClassicAssert.AreEqual(double.NaN, sut.Telescope.FocalRatio);
-            ClassicAssert.AreEqual(null, sut.Telescope.Coordinates);
+            Assert.That(sut.Telescope.Name, Is.Empty);
+            Assert.That(sut.Telescope.FocalLength, Is.EqualTo(double.NaN));
+            Assert.That(sut.Telescope.FocalRatio, Is.EqualTo(double.NaN));
+            Assert.That(sut.Telescope.Coordinates, Is.EqualTo(null));
 
-            ClassicAssert.AreEqual(string.Empty, sut.Focuser.Name);
-            ClassicAssert.AreEqual(null, sut.Focuser.Position);
-            ClassicAssert.AreEqual(double.NaN, sut.Focuser.StepSize);
-            ClassicAssert.AreEqual(double.NaN, sut.Focuser.Temperature);
+            Assert.That(sut.Focuser.Name, Is.Empty);
+            Assert.That(sut.Focuser.Position, Is.EqualTo(null));
+            Assert.That(sut.Focuser.StepSize, Is.EqualTo(double.NaN));
+            Assert.That(sut.Focuser.Temperature, Is.EqualTo(double.NaN));
 
-            ClassicAssert.AreEqual(string.Empty, sut.Rotator.Name);
-            ClassicAssert.AreEqual(double.NaN, sut.Rotator.Position);
-            ClassicAssert.AreEqual(double.NaN, sut.Rotator.StepSize);
+            Assert.That(sut.Rotator.Name, Is.Empty);
+            Assert.That(sut.Rotator.Position, Is.EqualTo(double.NaN));
+            Assert.That(sut.Rotator.StepSize, Is.EqualTo(double.NaN));
 
-            ClassicAssert.AreEqual(string.Empty, sut.FilterWheel.Name);
-            ClassicAssert.AreEqual(string.Empty, sut.FilterWheel.Filter);
+            Assert.That(sut.FilterWheel.Name, Is.Empty);
+            Assert.That(sut.FilterWheel.Filter, Is.Empty);
 
-            ClassicAssert.AreEqual(string.Empty, sut.Target.Name);
-            ClassicAssert.AreEqual(null, sut.Target.Coordinates);
+            Assert.That(sut.Target.Name, Is.Empty);
+            Assert.That(sut.Target.Coordinates, Is.EqualTo(null));
 
-            ClassicAssert.AreEqual(double.NaN, sut.Observer.Latitude);
-            ClassicAssert.AreEqual(double.NaN, sut.Observer.Longitude);
-            ClassicAssert.AreEqual(double.NaN, sut.Observer.Elevation);
+            Assert.That(sut.Observer.Latitude, Is.EqualTo(double.NaN));
+            Assert.That(sut.Observer.Longitude, Is.EqualTo(double.NaN));
+            Assert.That(sut.Observer.Elevation, Is.EqualTo(double.NaN));
 
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.CloudCover);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.DewPoint);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.Humidity);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.Pressure);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.SkyBrightness);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.SkyQuality);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.SkyTemperature);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.StarFWHM);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.Temperature);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.WindDirection);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.WindGust);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.WindSpeed);
+            Assert.That(sut.WeatherData.CloudCover, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.DewPoint, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.Humidity, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.Pressure, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.SkyBrightness, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.SkyQuality, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.SkyTemperature, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.StarFWHM, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.Temperature, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.WindDirection, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.WindGust, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.WindSpeed, Is.EqualTo(double.NaN));
         }
 
         [Test]
@@ -123,16 +123,16 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromProfile(profile);
 
-            ClassicAssert.AreEqual(3.8, sut.Camera.PixelSize);
-            ClassicAssert.AreEqual("TestName", sut.Telescope.Name);
-            ClassicAssert.AreEqual(100, sut.Telescope.FocalLength);
-            ClassicAssert.AreEqual(5, sut.Telescope.FocalRatio);
-            ClassicAssert.AreEqual(10, sut.Observer.Latitude);
-            ClassicAssert.AreEqual(20, sut.Observer.Longitude);
-            ClassicAssert.AreEqual(102.3, sut.Observer.Elevation);
-            ClassicAssert.AreEqual("Jon Doe", sut.Observer.Name);
-            ClassicAssert.AreEqual("Jon Observatory 1", sut.Observer.Observatory);
-            ClassicAssert.AreEqual("Jon Town", sut.Observer.Site);
+            Assert.That(sut.Camera.PixelSize, Is.EqualTo(3.8));
+            Assert.That(sut.Telescope.Name, Is.EqualTo("TestName"));
+            Assert.That(sut.Telescope.FocalLength, Is.EqualTo(100));
+            Assert.That(sut.Telescope.FocalRatio, Is.EqualTo(5));
+            Assert.That(sut.Observer.Latitude, Is.EqualTo(10));
+            Assert.That(sut.Observer.Longitude, Is.EqualTo(20));
+            Assert.That(sut.Observer.Elevation, Is.EqualTo(102.3));
+            Assert.That(sut.Observer.Name, Is.EqualTo("Jon Doe"));
+            Assert.That(sut.Observer.Observatory, Is.EqualTo("Jon Observatory 1"));
+            Assert.That(sut.Observer.Site, Is.EqualTo("Jon Town"));
         }
 
         [Test]
@@ -222,16 +222,16 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromCameraInfo(cameraInfo);
 
-            ClassicAssert.AreEqual(string.Empty, sut.Camera.Name);
-            ClassicAssert.AreEqual("1x1", sut.Camera.Binning);
-            ClassicAssert.AreEqual(1, sut.Camera.BinX);
-            ClassicAssert.AreEqual(1, sut.Camera.BinY);
-            ClassicAssert.AreEqual(double.NaN, sut.Camera.PixelSize);
-            ClassicAssert.AreEqual(double.NaN, sut.Camera.Temperature);
-            ClassicAssert.AreEqual(-1, sut.Camera.Gain);
-            ClassicAssert.AreEqual(-1, sut.Camera.Offset);
-            ClassicAssert.AreEqual(double.NaN, sut.Camera.ElectronsPerADU);
-            ClassicAssert.AreEqual(double.NaN, sut.Camera.SetPoint);
+            Assert.That(sut.Camera.Name, Is.Empty);
+            Assert.That(sut.Camera.Binning, Is.EqualTo("1x1"));
+            Assert.That(sut.Camera.BinX, Is.EqualTo(1));
+            Assert.That(sut.Camera.BinY, Is.EqualTo(1));
+            Assert.That(sut.Camera.PixelSize, Is.EqualTo(double.NaN));
+            Assert.That(sut.Camera.Temperature, Is.EqualTo(double.NaN));
+            Assert.That(sut.Camera.Gain, Is.EqualTo(-1));
+            Assert.That(sut.Camera.Offset, Is.EqualTo(-1));
+            Assert.That(sut.Camera.ElectronsPerADU, Is.EqualTo(double.NaN));
+            Assert.That(sut.Camera.SetPoint, Is.EqualTo(double.NaN));
         }
 
         [Test]
@@ -254,16 +254,16 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromCameraInfo(cameraInfo);
 
-            ClassicAssert.AreEqual("TEST", sut.Camera.Name);
-            ClassicAssert.AreEqual("3x2", sut.Camera.Binning);
-            ClassicAssert.AreEqual(3, sut.Camera.BinX);
-            ClassicAssert.AreEqual(2, sut.Camera.BinY);
-            ClassicAssert.AreEqual(12, sut.Camera.PixelSize);
-            ClassicAssert.AreEqual(20.5, sut.Camera.Temperature);
-            ClassicAssert.AreEqual(139, sut.Camera.Gain);
-            ClassicAssert.AreEqual(10, sut.Camera.Offset);
-            ClassicAssert.AreEqual(2.43, sut.Camera.ElectronsPerADU);
-            ClassicAssert.AreEqual(-10, sut.Camera.SetPoint);
+            Assert.That(sut.Camera.Name, Is.EqualTo("TEST"));
+            Assert.That(sut.Camera.Binning, Is.EqualTo("3x2"));
+            Assert.That(sut.Camera.BinX, Is.EqualTo(3));
+            Assert.That(sut.Camera.BinY, Is.EqualTo(2));
+            Assert.That(sut.Camera.PixelSize, Is.EqualTo(12));
+            Assert.That(sut.Camera.Temperature, Is.EqualTo(20.5));
+            Assert.That(sut.Camera.Gain, Is.EqualTo(139));
+            Assert.That(sut.Camera.Offset, Is.EqualTo(10));
+            Assert.That(sut.Camera.ElectronsPerADU, Is.EqualTo(2.43));
+            Assert.That(sut.Camera.SetPoint, Is.EqualTo(-10));
             Assert.That(sut.Camera.ReadoutModeName, Is.EqualTo("mode2"));
         }
 
@@ -279,10 +279,10 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromTelescopeInfo(telescopeInfo);
 
-            ClassicAssert.AreEqual(string.Empty, sut.Telescope.Name);
-            ClassicAssert.AreEqual(double.NaN, sut.Telescope.FocalLength);
-            ClassicAssert.AreEqual(double.NaN, sut.Telescope.FocalRatio);
-            ClassicAssert.AreEqual(null, sut.Telescope.Coordinates);
+            Assert.That(sut.Telescope.Name, Is.Empty);
+            Assert.That(sut.Telescope.FocalLength, Is.EqualTo(double.NaN));
+            Assert.That(sut.Telescope.FocalRatio, Is.EqualTo(double.NaN));
+            Assert.That(sut.Telescope.Coordinates, Is.EqualTo(null));
         }
 
         [Test]
@@ -298,14 +298,14 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromTelescopeInfo(telescopeInfo);
 
-            ClassicAssert.AreEqual("TestName", sut.Telescope.Name);
-            ClassicAssert.AreEqual(double.NaN, sut.Telescope.FocalLength);
-            ClassicAssert.AreEqual(double.NaN, sut.Telescope.FocalRatio);
+            Assert.That(sut.Telescope.Name, Is.EqualTo("TestName"));
+            Assert.That(sut.Telescope.FocalLength, Is.EqualTo(double.NaN));
+            Assert.That(sut.Telescope.FocalRatio, Is.EqualTo(double.NaN));
 
-            ClassicAssert.AreEqual(Epoch.J2000, sut.Telescope.Coordinates.Epoch);
-            ClassicAssert.AreEqual(59.694545025696307d, sut.Telescope.Coordinates.RADegrees);
-            ClassicAssert.AreEqual(28.945185789035015d, sut.Telescope.Coordinates.Dec);
-            ClassicAssert.AreEqual(PierSide.pierWest, sut.Telescope.SideOfPier);
+            Assert.That(sut.Telescope.Coordinates.Epoch, Is.EqualTo(Epoch.J2000));
+            Assert.That(sut.Telescope.Coordinates.RADegrees, Is.EqualTo(59.694545025696307d));
+            Assert.That(sut.Telescope.Coordinates.Dec, Is.EqualTo(28.945185789035015d));
+            Assert.That(sut.Telescope.SideOfPier, Is.EqualTo(PierSide.pierWest));
         }
 
         [Test]
@@ -318,9 +318,9 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromTelescopeInfo(telescopeInfo);
 
-            ClassicAssert.AreEqual(Epoch.J2000, sut.Telescope.Coordinates.Epoch);
-            ClassicAssert.AreEqual(60, sut.Telescope.Coordinates.RADegrees);
-            ClassicAssert.AreEqual(29, sut.Telescope.Coordinates.Dec);
+            Assert.That(sut.Telescope.Coordinates.Epoch, Is.EqualTo(Epoch.J2000));
+            Assert.That(sut.Telescope.Coordinates.RADegrees, Is.EqualTo(60));
+            Assert.That(sut.Telescope.Coordinates.Dec, Is.EqualTo(29));
         }
 
         [Test]
@@ -333,9 +333,9 @@ namespace NINA.Test {
                 }
             };
 
-            ClassicAssert.AreEqual(Epoch.J2000, sut.Target.Coordinates.Epoch);
-            ClassicAssert.AreEqual(59.694545025696307d, sut.Target.Coordinates.RADegrees);
-            ClassicAssert.AreEqual(28.945185789035015d, sut.Target.Coordinates.Dec);
+            Assert.That(sut.Target.Coordinates.Epoch, Is.EqualTo(Epoch.J2000));
+            Assert.That(sut.Target.Coordinates.RADegrees, Is.EqualTo(59.694545025696307d));
+            Assert.That(sut.Target.Coordinates.Dec, Is.EqualTo(28.945185789035015d));
         }
 
         [Test]
@@ -348,9 +348,9 @@ namespace NINA.Test {
                 }
             };
 
-            ClassicAssert.AreEqual(Epoch.J2000, sut.Target.Coordinates.Epoch);
-            ClassicAssert.AreEqual(60, sut.Target.Coordinates.RADegrees);
-            ClassicAssert.AreEqual(29, sut.Target.Coordinates.Dec);
+            Assert.That(sut.Target.Coordinates.Epoch, Is.EqualTo(Epoch.J2000));
+            Assert.That(sut.Target.Coordinates.RADegrees, Is.EqualTo(60));
+            Assert.That(sut.Target.Coordinates.Dec, Is.EqualTo(29));
         }
 
         [Test]
@@ -364,8 +364,8 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromFilterWheelInfo(info);
 
-            ClassicAssert.AreEqual(string.Empty, sut.FilterWheel.Name);
-            ClassicAssert.AreEqual(string.Empty, sut.FilterWheel.Filter);
+            Assert.That(sut.FilterWheel.Name, Is.Empty);
+            Assert.That(sut.FilterWheel.Filter, Is.Empty);
         }
 
         [Test]
@@ -379,8 +379,8 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromFilterWheelInfo(info);
 
-            ClassicAssert.AreEqual("TestFilterWheel", sut.FilterWheel.Name);
-            ClassicAssert.AreEqual("Red", sut.FilterWheel.Filter);
+            Assert.That(sut.FilterWheel.Name, Is.EqualTo("TestFilterWheel"));
+            Assert.That(sut.FilterWheel.Filter, Is.EqualTo("Red"));
         }
 
         [Test]
@@ -396,10 +396,10 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromFocuserInfo(info);
 
-            ClassicAssert.AreEqual(string.Empty, sut.Focuser.Name);
-            ClassicAssert.AreEqual(null, sut.Focuser.Position);
-            ClassicAssert.AreEqual(double.NaN, sut.Focuser.StepSize);
-            ClassicAssert.AreEqual(double.NaN, sut.Focuser.Temperature);
+            Assert.That(sut.Focuser.Name, Is.Empty);
+            Assert.That(sut.Focuser.Position, Is.EqualTo(null));
+            Assert.That(sut.Focuser.StepSize, Is.EqualTo(double.NaN));
+            Assert.That(sut.Focuser.Temperature, Is.EqualTo(double.NaN));
         }
 
         [Test]
@@ -415,10 +415,10 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromFocuserInfo(info);
 
-            ClassicAssert.AreEqual("TestFocuser", sut.Focuser.Name);
-            ClassicAssert.AreEqual(123, sut.Focuser.Position);
-            ClassicAssert.AreEqual(3.8, sut.Focuser.StepSize);
-            ClassicAssert.AreEqual(100, sut.Focuser.Temperature);
+            Assert.That(sut.Focuser.Name, Is.EqualTo("TestFocuser"));
+            Assert.That(sut.Focuser.Position, Is.EqualTo(123));
+            Assert.That(sut.Focuser.StepSize, Is.EqualTo(3.8));
+            Assert.That(sut.Focuser.Temperature, Is.EqualTo(100));
         }
 
         [Test]
@@ -433,9 +433,9 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromRotatorInfo(info);
 
-            ClassicAssert.AreEqual(string.Empty, sut.Rotator.Name);
-            ClassicAssert.AreEqual(double.NaN, sut.Rotator.Position);
-            ClassicAssert.AreEqual(double.NaN, sut.Rotator.StepSize);
+            Assert.That(sut.Rotator.Name, Is.Empty);
+            Assert.That(sut.Rotator.Position, Is.EqualTo(double.NaN));
+            Assert.That(sut.Rotator.StepSize, Is.EqualTo(double.NaN));
         }
 
         [Test]
@@ -450,9 +450,9 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromRotatorInfo(info);
 
-            ClassicAssert.AreEqual("TestRotator", sut.Rotator.Name);
-            ClassicAssert.AreEqual(123, sut.Rotator.Position);
-            ClassicAssert.AreEqual((double)3.8f, sut.Rotator.StepSize);
+            Assert.That(sut.Rotator.Name, Is.EqualTo("TestRotator"));
+            Assert.That(sut.Rotator.Position, Is.EqualTo(123));
+            Assert.That(sut.Rotator.StepSize, Is.EqualTo((double)3.8f));
         }
 
         [Test]
@@ -466,8 +466,8 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromWeatherDataInfo(info);
 
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.Temperature);
-            ClassicAssert.AreEqual(double.NaN, sut.WeatherData.Humidity);
+            Assert.That(sut.WeatherData.Temperature, Is.EqualTo(double.NaN));
+            Assert.That(sut.WeatherData.Humidity, Is.EqualTo(double.NaN));
         }
 
         [Test]
@@ -481,8 +481,8 @@ namespace NINA.Test {
             var sut = new ImageMetaData();
             sut.FromWeatherDataInfo(info);
 
-            ClassicAssert.AreEqual(15, sut.WeatherData.Temperature);
-            ClassicAssert.AreEqual((double)99.8f, sut.WeatherData.Humidity);
+            Assert.That(sut.WeatherData.Temperature, Is.EqualTo(15));
+            Assert.That(sut.WeatherData.Humidity, Is.EqualTo((double)99.8f));
         }
     }
 }

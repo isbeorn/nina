@@ -58,8 +58,9 @@ namespace NINA.Test.Sequencer.Conditions {
             sut.Data.Coordinates.Coordinates = coords;
             sut.Data.Offset = targetAltitude;
 
-            ClassicAssert.IsTrue(
-                sut.Check(null, null));
+            Assert.That(
+                sut.Check(null, null),
+                Is.True);
         }
 
         [Test]
@@ -77,8 +78,9 @@ namespace NINA.Test.Sequencer.Conditions {
             sut.Data.Coordinates.Coordinates = coords;
             sut.Data.Offset = targetAltitude;
 
-            ClassicAssert.IsTrue(
-                sut.Check(null, null));
+            Assert.That(
+                sut.Check(null, null),
+                Is.True);
         }
 
         [Test]
@@ -92,8 +94,9 @@ namespace NINA.Test.Sequencer.Conditions {
             var sut = new AltitudeCondition(profileServiceMock.Object);
             sut.Data.Coordinates.Coordinates = coords;
             sut.Data.Offset = targetAltitude;
-            ClassicAssert.IsFalse(
-                sut.Check(null, null));
+            Assert.That(
+                sut.Check(null, null),
+                Is.False);
         }
 
         [Test]

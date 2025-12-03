@@ -28,8 +28,5 @@ namespace NINA.Equipment.Exceptions {
 
         public PlanetariumObjectNotSelectedException(string message, Exception innerException) : base(message, innerException) {
         }
-
-        protected PlanetariumObjectNotSelectedException(SerializationInfo info, StreamingContext context) : base(info, context) {
-        }
     }
 }

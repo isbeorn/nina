@@ -104,6 +104,7 @@ namespace NINA.Test.Dome {
             mockProfileService.SetupGet(p => p.ActiveProfile.ApplicationSettings.DevicePollingInterval).Returns(1);
 
             mockApplicationStatusMediator.Setup(x => x.StatusUpdate(It.IsAny<ApplicationStatus>()));
+            mockDome = new Mock<IDome>();
         }
 
         private async Task<DomeVM> CreateSUT() {
@@ -139,7 +140,7 @@ namespace NINA.Test.Dome {
             mockDomeDeviceChooserVM.SetupGet(x => x.SelectedDevice).Returns(mockDome.Object);
 
             var connectionResult = await domeVM.Connect();
-            ClassicAssert.IsTrue(connectionResult);
+            Assert.That(connectionResult, Is.True);
             return domeVM;
         }
 
@@ -176,7 +177,7 @@ namespace NINA.Test.Dome {
             var sut = await CreateSUT();            
             mockDome.Setup(x => x.OpenShutter(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask).Verifiable();
             var result = await sut.OpenShutter(CancellationToken.None);
-            ClassicAssert.IsTrue(result);
+            Assert.That(result, Is.True);
             mockDome.Verify();
         }
 
@@ -185,7 +186,7 @@ namespace NINA.Test.Dome {
             domeCanSetShutter = false;
             var sut = await CreateSUT();
             var result = await sut.OpenShutter(CancellationToken.None);
-            ClassicAssert.IsFalse(result);
+            Assert.That(result, Is.False);
             mockDome.Verify(x => x.OpenShutter(It.IsAny<CancellationToken>()), Times.Never);
         }
 
@@ -195,7 +196,7 @@ namespace NINA.Test.Dome {
             var sut = await CreateSUT();
             mockDome.Setup(x => x.CloseShutter(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask).Verifiable();
             var result = await sut.CloseShutter(CancellationToken.None);
-            ClassicAssert.IsTrue(result);
+            Assert.That(result, Is.True);
             mockDome.Verify();
         }
 
@@ -204,7 +205,7 @@ namespace NINA.Test.Dome {
             domeCanSetShutter = false;
             var sut = await CreateSUT();
             var result = await sut.CloseShutter(CancellationToken.None);
-            ClassicAssert.IsFalse(result);
+            Assert.That(result, Is.False);
             mockDome.Verify(x => x.CloseShutter(It.IsAny<CancellationToken>()), Times.Never);
         }
 
@@ -214,7 +215,7 @@ namespace NINA.Test.Dome {
             var sut = await CreateSUT();
             mockDome.Setup(x => x.Park(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask).Verifiable();
             var result = await sut.Park(CancellationToken.None);
-            ClassicAssert.IsTrue(result);
+            Assert.That(result, Is.True);
             mockDome.Verify();
         }
 
@@ -223,7 +224,7 @@ namespace NINA.Test.Dome {
             domeCanPark = false;
             var sut = await CreateSUT();
             var result = await sut.Park(CancellationToken.None);
-            ClassicAssert.IsFalse(result);
+            Assert.That(result, Is.False);
             mockDome.Verify(x => x.Park(It.IsAny<CancellationToken>()), Times.Never);
         }
     }

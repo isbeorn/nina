@@ -14,6 +14,7 @@
 
 using CommunityToolkit.Mvvm.Input;
 using System;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace NINA.Core.Utility {

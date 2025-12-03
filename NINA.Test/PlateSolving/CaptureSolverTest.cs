@@ -181,8 +181,8 @@ namespace NINA.Test.PlateSolving {
 
             imagingMediatorMock
                 .SetupSequence(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
-                .ReturnsAsync((IRenderedImage)null)
-                .ReturnsAsync((IRenderedImage)null)
+                .ReturnsAsync((IRenderedImage?)null)
+                .ReturnsAsync((IRenderedImage?)null)
                 .ReturnsAsync(renderedImageMock.Object);
             imageSolverMock
                 .Setup(x => x.Solve(imageDataMock.Object, It.IsAny<PlateSolveParameter>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))

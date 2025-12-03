@@ -28,8 +28,5 @@ namespace NINA.WPF.Base.Exceptions {
 
         public SkySurveyUnavailableException(string message, Exception innerException) : base(message, innerException) {
         }
-
-        protected SkySurveyUnavailableException(SerializationInfo info, StreamingContext context) : base(info, context) {
-        }
     }
 }

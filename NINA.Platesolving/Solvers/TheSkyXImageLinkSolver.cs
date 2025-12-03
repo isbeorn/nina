@@ -416,9 +416,6 @@ namespace NINA.PlateSolving.Solvers {
 
             public TheSkyXException(string message, Exception innerException) : base(message, innerException) {
             }
-
-            protected TheSkyXException(SerializationInfo info, StreamingContext context) : base(info, context) {
-            }
         }
     }
 }

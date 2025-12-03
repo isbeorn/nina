@@ -28,8 +28,5 @@ namespace NINA.Equipment.Exceptions {
 
         public PlanetariumFailedToGetCoordinates(string message, Exception innerException) : base(message, innerException) {
         }
-
-        protected PlanetariumFailedToGetCoordinates(SerializationInfo info, StreamingContext context) : base(info, context) {
-        }
     }
 }

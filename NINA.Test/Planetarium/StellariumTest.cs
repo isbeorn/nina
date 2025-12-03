@@ -86,9 +86,9 @@ namespace NINA.Test.Planetarium {
             var result = JObject.Parse(response).ToObject<Stellarium.StellariumObject>();
 
             result.Should().NotBeNull();
-            result.RightAscension.Should().Be(-44.596316809094915);
-            result.Declination.Should().Be(68.16330033167878);
-            result.Name.Should().Be("Iris Nebula");
+            result?.RightAscension.Should().Be(-44.596316809094915);
+            result?.Declination.Should().Be(68.16330033167878);
+            result?.Name.Should().Be("Iris Nebula");
         }
 
         [Test]
@@ -104,9 +104,9 @@ namespace NINA.Test.Planetarium {
             var result = JObject.Parse(response).ToObject<Stellarium.StellariumStatus>();
 
             result.Should().NotBeNull();
-            result.Location.Latitude.Should().Be(33.02870178222656);
-            result.Location.Longitude.Should().Be(-117.08460235595703);
-            result.Location.Altitude.Should().Be(0);
+            result?.Location.Latitude.Should().Be(33.02870178222656);
+            result?.Location.Longitude.Should().Be(-117.08460235595703);
+            result?.Location.Altitude.Should().Be(0);
         }
 
         [Test]

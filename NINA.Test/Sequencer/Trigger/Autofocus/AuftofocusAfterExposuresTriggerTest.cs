@@ -174,7 +174,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             var windowService = new Mock<IWindowService>();
             windowService.Setup(x => x.Show(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<ResizeMode>(), It.IsAny<WindowStyle>()));
             windowServiceFactory.Setup(x => x.Create()).Returns(windowService.Object);
-            (afTrigger.TriggerRunner.Items.First() as RunAutofocus).WindowServiceFactory = windowServiceFactory.Object;
+            (afTrigger.TriggerRunner.Items.First() as RunAutofocus)?.WindowServiceFactory = windowServiceFactory.Object;
             afTrigger.AfterExposures = afterExposures;
 
             afTrigger.SequenceBlockInitialize();

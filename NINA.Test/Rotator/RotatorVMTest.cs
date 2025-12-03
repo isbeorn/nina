@@ -71,6 +71,7 @@ namespace NINA.Test.Rotator {
             mockProfileService.SetupGet(p => p.ActiveProfile.ApplicationSettings.DevicePollingInterval).Returns(0);
             mockProfileService.SetupGet(p => p.ActiveProfile.RotatorSettings.RangeType).Returns(() => rangeType);
             mockProfileService.SetupGet(p => p.ActiveProfile.RotatorSettings.RangeStartMechanicalPosition).Returns(() => rangeStartMechanicalPosition);
+            mockRotator = new Mock<IRotator>();
         }
 
         private async Task<RotatorVM> CreateSUT() {
@@ -100,7 +101,7 @@ namespace NINA.Test.Rotator {
             mockRotatorDeviceChooserVM.SetupGet(x => x.SelectedDevice).Returns(mockRotator.Object);
 
             var connectionResult = await rotatorVM.Connect();
-            ClassicAssert.IsTrue(connectionResult);
+            Assert.That(connectionResult, Is.True);
             return rotatorVM;
         }
 
@@ -132,7 +133,7 @@ namespace NINA.Test.Rotator {
 
             var cts = new CancellationTokenSource();
             var result = await sut.MoveMechanical(requestedPosition, TimeSpan.Zero, cts.Token);
-            ClassicAssert.AreEqual(expectedPosition, result);
+            Assert.That(result, Is.EqualTo(expectedPosition));
             mockRotator.Verify(x => x.MoveAbsoluteMechanical(expectedPosition, It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -150,7 +151,7 @@ namespace NINA.Test.Rotator {
 
             var cts = new CancellationTokenSource();
             var result = await sut.MoveRelative(requestedAmount, TimeSpan.Zero, cts.Token);
-            ClassicAssert.AreEqual(expectedPosition, result);
+            Assert.That(result, Is.EqualTo(expectedPosition));
             mockRotator.Verify(x => x.MoveAbsoluteMechanical(expectedPosition, It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -188,7 +189,7 @@ namespace NINA.Test.Rotator {
             offset = 5.0f;
 
             var result = sut.GetTargetPosition(requestedPosition);
-            ClassicAssert.AreEqual(expectedPosition, result, 0.1);
+            Assert.That(result, Is.EqualTo(expectedPosition).Within(0.1));
         }
 
         [Test]
@@ -224,7 +225,7 @@ namespace NINA.Test.Rotator {
             offset = 5.0f;
 
             var result = sut.GetTargetMechanicalPosition(requestedPosition);
-            ClassicAssert.AreEqual(expectedPosition, result, 0.1);
+            Assert.That(result, Is.EqualTo(expectedPosition).Within(0.1));
         }
     }
 }

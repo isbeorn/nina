@@ -67,7 +67,7 @@ namespace NINA.Image.FileFormat.FITS {
         public int Height { get; }
         public BITPIX BitPix { get; }
 
-        public T[] ReadPixelRow<T>(int row) {
+        public T[] ReadPixelRow<T>(int row) where T : unmanaged {
             const int nelem = 2;
             var firstpix = new int[nelem] { 1, row + 1 };
 
@@ -86,7 +86,7 @@ namespace NINA.Image.FileFormat.FITS {
             }
         }
 
-        public T[] ReadAllPixels<T>() {
+        public T[] ReadAllPixels<T>() where T : unmanaged {
             const int nelem = 2;
             var firstpix = new int[nelem] { 1, 1 };
 

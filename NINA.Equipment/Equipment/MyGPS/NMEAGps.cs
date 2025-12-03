@@ -34,7 +34,7 @@ namespace NINA.Equipment.Equipment.MyGPS {
     /// NMEA GPS Class detects comport based NMEA GPS Devices
     /// Flow : construct -> Autodiscover [detect, Connect, listens to messages]
     /// </summary>
-    public partial class NMEAGps(IProfileService profileService) : BaseINPC, IGnss, IDisposable {
+    public partial class NMEAGps() : BaseINPC, IGnss, IDisposable {
         private string portName;
         private int baudRate = 0;
         private System.Timers.Timer fixTimer;

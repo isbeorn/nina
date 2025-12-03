@@ -28,8 +28,5 @@ namespace NINA.Equipment.Exceptions {
 
         public PlanetariumFailedToConnect(string message, Exception innerException) : base(message, innerException) {
         }
-
-        protected PlanetariumFailedToConnect(SerializationInfo info, StreamingContext context) : base(info, context) {
-        }
     }
 }

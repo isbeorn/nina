@@ -28,8 +28,5 @@ namespace NINA.Equipment.Exceptions {
 
         public CameraExposureFailedException(string message, Exception innerException) : base(message, innerException) {
         }
-
-        protected CameraExposureFailedException(SerializationInfo info, StreamingContext context) : base(info, context) {
-        }
     }
 }

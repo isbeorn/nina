@@ -837,7 +837,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 FreeImage Public License - Version 1.0
 
 applies to:
-    - VVVV.FreeImage
+    - FreeImage.Standard
 -----------------------------------------------------------------------------
 
 1. Definitions.
