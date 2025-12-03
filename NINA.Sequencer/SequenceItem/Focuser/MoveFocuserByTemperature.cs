@@ -58,15 +58,6 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
         [IsExpression (Default = 1)]
         private double slope = 1;
 
-        [JsonProperty]
-        public double Slope {
-            get => slope;
-            set {
-                slope = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private bool absolute = true;
 
         [JsonProperty]
