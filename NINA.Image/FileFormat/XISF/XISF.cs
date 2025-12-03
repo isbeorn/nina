@@ -57,7 +57,7 @@ namespace NINA.Image.FileFormat.XISF {
                 using (FileStream fs = new FileStream(filePath.LocalPath, FileMode.Open, FileAccess.Read)) {
                     // First make sure we are opening a XISF file by looking for the XISF signature at bytes 1-8
                     byte[] fileSig = new byte[xisfSignature.Length];
-                    fs.Read(fileSig, 0, fileSig.Length);
+                    fs.ReadExactly(fileSig, 0, fileSig.Length);
 
                     if (!fileSig.SequenceEqual(xisfSignature)) {
                         Logger.Error($"XISF: Opened file \"{filePath.LocalPath}\" is not a valid XISF file");
@@ -68,7 +68,7 @@ namespace NINA.Image.FileFormat.XISF {
 
                     // Get the header length info, bytes 9-12
                     byte[] headerLengthInfo = new byte[4];
-                    fs.Read(headerLengthInfo, 0, headerLengthInfo.Length);
+                    fs.ReadExactly(headerLengthInfo, 0, headerLengthInfo.Length);
                     uint headerLength = BitConverter.ToUInt32(headerLengthInfo, 0);
 
                     // Skip the next 4 bytes as they are reserved space
@@ -76,7 +76,7 @@ namespace NINA.Image.FileFormat.XISF {
 
                     // XML document starts at byte 17
                     byte[] bytes = new byte[headerLength];
-                    fs.Read(bytes, 0, (int)headerLength);
+                    fs.ReadExactly(bytes, 0, (int)headerLength);
                     string xmlString = Encoding.UTF8.GetString(bytes);
 
                     /*
@@ -199,7 +199,7 @@ namespace NINA.Image.FileFormat.XISF {
                         // Read the data block in, starting at the specified offset
                         byte[] raw = new byte[size];
                         fs.Seek(start, SeekOrigin.Begin);
-                        fs.Read(raw, 0, size);
+                        fs.ReadExactly(raw, 0, size);
 
                         // Validate the data block's checksum
                         if (cksumType != XISFChecksumTypeEnum.NONE) {
