@@ -394,7 +394,11 @@ namespace NINA.Sequencer.Logic {
                     if (Range != null) {
                         CheckRange(result);
                     }
+<<<<<<< HEAD
                     
+=======
+
+>>>>>>> 9946fafb76b5f5fadccc72fd60fdf9cba9028365
                     Value = result;
 
                     // Notify consumers
