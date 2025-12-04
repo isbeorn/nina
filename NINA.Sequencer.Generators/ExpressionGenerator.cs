@@ -268,7 +268,7 @@ namespace NINA.Sequencer.Generators {
                     propertiesSource += $@";
             }}
             set {{
-                {propNameExpression}.Definition = Convert.ToString(value, CultureInfo.InvariantCulture);
+                {propNameExpression}.Definition = (value == {propNameExpression}.Default && {propNameExpression}.DefaultString != null) ? String.Empty : Convert.ToString(value, CultureInfo.InvariantCulture);
             }}
         }}
 
