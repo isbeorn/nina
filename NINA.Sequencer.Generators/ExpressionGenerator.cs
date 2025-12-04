@@ -214,11 +214,11 @@ namespace NINA.Sequencer.Generators {
 
                 if (hasValidator) {
                     propertiesSource += $@"
-                {fieldNameExpression}.Validator = {propNameExpression}Validator;";
+                    {fieldNameExpression}.Validator = {propNameExpression}Validator;";
                 }
 
                 expressionClones += $@"
-                clone.{propNameExpression} = new Expression (this.{propNameExpression}, clone, {(hasValidator ? $"{propNameExpression}Validator" : "null")});";
+            clone.{propNameExpression} = new Expression (this.{propNameExpression}, clone, {(hasValidator ? $"clone.{propNameExpression}Validator" : "null")});";
 
                 propertiesSource += $@"
                 }}
@@ -234,7 +234,8 @@ namespace NINA.Sequencer.Generators {
                 if (hasValidator) {
                     propertiesSource += $@"
         
-        partial void {propNameExpression}Validator(Expression expr);";
+        partial void {propNameExpression}Validator(Expression expr);
+";
                 }
 
 
@@ -265,20 +266,19 @@ namespace NINA.Sequencer.Generators {
                         propertiesSource += "Value";
                     }
                     propertiesSource += $@";
-                        }}
+            }}
             set {{
                 {propNameExpression}.Definition = Convert.ToString(value, CultureInfo.InvariantCulture);
             }}
         }}
+
         [JsonProperty (Order = 1)]
         public string {propName}Definition {{
             get => {propNameExpression}.Definition;
             set {{
                 {propNameExpression}.Definition = value;
             }}
-        }}
-
-";
+        }}";
                 }
 
             }
