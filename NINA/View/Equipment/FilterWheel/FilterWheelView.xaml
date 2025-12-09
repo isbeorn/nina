@@ -203,6 +203,65 @@
                         </StackPanel>
                     </DataTemplate>
 
+                    <DataTemplate x:Key="Oasis">
+                        <StackPanel Orientation="Vertical">
+                            <DockPanel Margin="0,0,0,6">
+                                <TextBlock
+                                    MinWidth="100"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblOasisDeviceId}" />
+                                <TextBox
+                                    Width="75"
+                                    HorizontalAlignment="Right"
+                                    MaxLength="8"
+                                    Text="{Binding FilterWheelAlias}">
+                                    <TextBox.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblOasisDeviceIdTooltip}" />
+                                        </ToolTip>
+                                    </TextBox.ToolTip>
+                                </TextBox>
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisSpeed}" />
+                                <ComboBox
+                                    Grid.Column="1"
+                                    Width="80"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    ItemsSource="{Binding Speeds}"
+                                    SelectedIndex="{Binding Speed}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6" Visibility="{Binding HasTurboMode, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisTurboMode}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    IsChecked="{Binding TurboMode}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,6,0,6">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisBoardTemperature}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    Text="{Binding BoardTemperature, StringFormat={}{0}&#176;C}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <ninactrl:AsyncProcessButton
+                                    Width="150"
+                                    Height="25"
+                                    Margin="0,0,0,5"
+                                    HorizontalAlignment="Right"
+                                    ButtonText="{ns:Loc LblCalibrate}"
+                                    Command="{Binding CalibrateOfwCommand}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </DataTemplate>
+
                     <DataTemplate x:Key="ToupTekAlike">
                         <StackPanel Orientation="Vertical">
                             <DockPanel Margin="0,0,0,6">
@@ -228,6 +287,7 @@
                         x:Key="ContentSelector"
                         Default="{StaticResource Default}"
                         FailedToLoadTemplate="{StaticResource Failed}"
+                        Oasis="{StaticResource Oasis}"
                         PlayerOne="{StaticResource PlayerOne}"
                         Postfix="{x:Static wpfutil:DataTemplatePostfix.FilterWheelSettings}"
                         ToupTekAlike="{StaticResource ToupTekAlike}"

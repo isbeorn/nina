@@ -299,6 +299,9 @@
     <Content Include="External\x64\Oasis\OasisFocuser.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\Oasis\OasisFilterWheel.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Logo_Nina.ico" />
     <Resource Include="Resources\Logo_Nina.png" />
     <Resource Include="Resources\Logo_Nina.ico" />
