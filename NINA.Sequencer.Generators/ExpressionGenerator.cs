@@ -16,6 +16,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -268,7 +269,13 @@ namespace NINA.Sequencer.Generators {
                     propertiesSource += $@";
             }}
             set {{
-                {propNameExpression}.Definition = (value == {propNameExpression}.Default && {propNameExpression}.DefaultString != null) ? String.Empty : Convert.ToString(value, CultureInfo.InvariantCulture);
+                {propNameExpression}.Definition = ";
+                    if (fieldType == "String") {
+                        propertiesSource += "value;";
+                    } else {
+                        propertiesSource += $@"(value == {propNameExpression}.Default && {propNameExpression}.DefaultString != null) ? String.Empty : Convert.ToString(value, CultureInfo.InvariantCulture);";
+                    }
+                    propertiesSource += $@"
             }}
         }}
 

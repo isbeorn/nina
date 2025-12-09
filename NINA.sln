@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.2.32630.192
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NINA", "NINA\NINA.csproj", "{7DEC1B46-9701-4E49-90C1-F4427845669E}"
 EndProject
@@ -56,6 +56,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rd Party", "3rd Party", "{D63B3F98-1CD5-454F-9717-307594C75669}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NINA.Sequencer.Generators", "NINA.Sequencer.Generators\NINA.Sequencer.Generators.csproj", "{C88753D1-2494-469A-A462-4D1273348FA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "When", "..\Lite\nina.plugin.lite\When.csproj", "{019A6441-29FC-2B46-AABA-CED22A3D9615}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -279,6 +281,18 @@ Global
 		{C88753D1-2494-469A-A462-4D1273348FA5}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
 		{C88753D1-2494-469A-A462-4D1273348FA5}.SignedRelease|x64.ActiveCfg = Release|Any CPU
 		{C88753D1-2494-469A-A462-4D1273348FA5}.SignedRelease|x64.Build.0 = Release|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.Debug|x64.Build.0 = Debug|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.Release|Any CPU.Build.0 = Release|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.Release|x64.ActiveCfg = Release|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.Release|x64.Build.0 = Release|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.SignedRelease|x64.ActiveCfg = Release|Any CPU
+		{019A6441-29FC-2B46-AABA-CED22A3D9615}.SignedRelease|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
