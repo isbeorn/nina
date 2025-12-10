@@ -331,16 +331,54 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" />
-                    <TextBlock
+					<TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <!--  TODO - Show as a percentage - it is stored as a fraction in code  -->
-                    <logic:ExprControl
-                        Exp="{Binding ROIExpression}"
-                        Label="{ns:Loc LblROI}"
-                        ToolTip="{ns:Loc LblROIPercentageTooltip}" />
+					<!--  TODO - Show as a percentage - it is stored as a fraction in code  -->
+					<TextBlock
+                          Margin="5,-2,0,0"
+                          VerticalAlignment="Center"
+                          Text="Subsample" />
+					<ComboBox
+                          Margin="5,0,0,0"
+                          ItemsSource="{Binding ROIOptions}"
+                          SelectedItem="{Binding ROIOption}" />
+					<StackPanel Orientation="Horizontal" Visibility="{Binding IsROI, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+						<TextBlock
+                              Margin="7.5,-2,7.5,0"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Text="|" />
+						<logic:ExprControl Label="{ns:Loc LblROI}" Exp="{Binding ROIExpression}" ToolTip="{ns:Loc LblROIPercentageTooltip}" />
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" Visibility="{Binding IsROI, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+						<TextBlock
+                              Margin="7.5,-2,7.5,0"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Text="|" />
+						<logic:ExprControl Label="{ns:Loc LblLeft}" Exp="{Binding LeftExpression}" />
+						<TextBlock
+                              Margin="7.5,-2,7.5,0"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Text="|" />
+						<logic:ExprControl Label="{ns:Loc LblTop}" Exp="{Binding TopExpression}" />
+						<TextBlock
+                              Margin="7.5,-2,7.5,0"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Text="|" />
+						<logic:ExprControl Label="{ns:Loc LblWidth}" Exp="{Binding WidthExpression}" />
+						<TextBlock
+                              Margin="7.5,-2,7.5,0"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Text="|" />
+						<logic:ExprControl Label="{ns:Loc LblHeight}" Exp="{Binding HeightExpression}" />
+					</StackPanel>
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
