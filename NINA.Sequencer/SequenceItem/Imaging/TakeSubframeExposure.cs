@@ -100,10 +100,10 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression (Default = 1, Range = [0, 1])]
-        private double rOI;
+        [IsExpression (Default = 1, Range = [1, 100])]
+        private double rOIPct;
 
-        [IsExpression(Default = 60, Range = [0, 3600])]
+        [IsExpression(Default = 60, Range = [1, 3600])]
         private double exposureTime;
 
         [IsExpression(Default = 0, HasValidator = true)]
@@ -117,6 +117,16 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         [IsExpression(Default = 1, HasValidator = true, Range = [1, ExpressionRange.NO_MAXIMUM])]
         private double height;
+
+        // Backward compatibility
+        [JsonProperty]
+        public double ROI {
+            get => ROIPctExpression.Value / 100;
+            set {
+                // When loaded, we set the expression
+                ROIPctExpression.Definition = (value * 100).ToString();
+            }
+        }
 
         partial void LeftExpressionValidator(Expression expr) {
             int x = (int)expr.Value;
@@ -256,11 +266,10 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             if (useSubsample) {
                 if (IsROI) {
                     if (ROI > 0 && ROI < 1) {
-                        double r = ROI / 100;
                         var centerX = info.XSize / 2d;
                         var centerY = info.YSize / 2d;
-                        var subWidth = info.XSize * r;
-                        var subHeight = info.YSize * r;
+                        var subWidth = info.XSize * ROI;
+                        var subHeight = info.YSize * ROI;
                         var startX = centerX - subWidth / 2d;
                         var startY = centerY - subHeight / 2d;
                         rect = new ObservableRectangle(startX, startY, subWidth, subHeight);
