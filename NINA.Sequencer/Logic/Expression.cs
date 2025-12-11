@@ -641,7 +641,9 @@ namespace NINA.Sequencer.Logic {
                         try {
                             Value = Convert.ToDouble(eval, CultureInfo.InvariantCulture);
                             // Validate numeric values
-                            CheckRange(Value);
+                            if (Range != null) {
+                                CheckRange(Value);
+                            }
                         } catch (Exception) {
                             string str = eval as string;
                             if (STRING_VALUES_ALLOWED) {
