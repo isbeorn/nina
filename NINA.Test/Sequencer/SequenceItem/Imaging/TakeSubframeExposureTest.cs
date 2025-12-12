@@ -193,7 +193,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             sut.Binning = new BinningMode(binning, binning);
             sut.ImageType = imageType;
             sut.ROI = roi;
-            sut.ROIOption = Loc.Instance["LblROI"];
+            sut.ROIOption = SubframeType.ROI;
 
             await sut.Execute(default, default);
 
@@ -240,7 +240,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             imagingMediatorMock.Setup(x => x.PrepareImage(It.IsAny<IImageData>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>())).Returns(prepareTask);
 
             var sut = new TakeSubframeExposure(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, historyMock.Object);
-            sut.ROIOption = Loc.Instance["LblDimensions"];
+            sut.ROIOption = SubframeType.DIMENSIONS;
             sut.LeftExpression = new NINA.Sequencer.Logic.Expression(left.ToString(), null);
             sut.TopExpression = new NINA.Sequencer.Logic.Expression(top.ToString(), null);
             sut.WidthExpression = new NINA.Sequencer.Logic.Expression(width.ToString(), null);

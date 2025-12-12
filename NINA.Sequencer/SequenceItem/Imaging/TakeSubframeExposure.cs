@@ -35,6 +35,7 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Data.Entity.Core.Common.CommandTrees;
 using System.Globalization;
@@ -84,6 +85,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             clone.ExposureCount = 0;
             clone.Binning = Binning;
             clone.ImageType = ImageType;
+            clone.ROIOption = ROIOption;
 
             if (clone.Binning == null) {
                 clone.Binning = new BinningMode(1, 1);
@@ -221,16 +223,16 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 RaisePropertyChanged();
             }
         }
-        public string[] ROIOptions {
+        public SubframeType[] ROIOptions {
             get {
-                return new string[] { Loc.Instance["LblROI"], Loc.Instance["LblDimensions"] };
+                return new SubframeType[] { SubframeType.ROI, SubframeType.DIMENSIONS };
             }
             set { }
         }
 
-        private string iROIOption = Loc.Instance["LblROI"];
+        private SubframeType iROIOption = SubframeType.ROI;
         [JsonProperty]
-        public string ROIOption {
+        public SubframeType ROIOption {
             get {
                 return iROIOption;
             }
@@ -243,7 +245,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         [JsonProperty]
         public bool IsROI {
-            get => ROIOption.Equals(Loc.Instance["LblROI"]);
+            get => ROIOption == SubframeType.ROI;
             set {}
         }
 
@@ -420,4 +422,16 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             return $"Category: {Category}, Item: {nameof(TakeSubframeExposure)}, ExposureTime {ExposureTime}, Gain {currentGain}, Offset {currentOffset}, ImageType {ImageType}, Binning {Binning?.Name ?? "1x1"}, ROIType {ROIOption}";
         }
     }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum SubframeType {
+
+        [Description("LblROI")]
+        ROI,
+
+        [Description("LblDimensions")]
+        DIMENSIONS
+    }
+
+
 }

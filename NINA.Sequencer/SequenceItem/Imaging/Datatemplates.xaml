@@ -343,7 +343,7 @@
                           Text="Subsample" />
 					<ComboBox
                           Margin="5,0,0,0"
-                          ItemsSource="{Binding ROIOptions}"
+                          ItemsSource="{Binding Source={util:EnumBindingSource {x:Type local:SubframeType}}}"
                           SelectedItem="{Binding ROIOption}" />
 					<StackPanel Orientation="Horizontal" Visibility="{Binding IsROI, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 						<TextBlock
