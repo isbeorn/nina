@@ -61,11 +61,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
         [OnDeserialized]
         public new void OnDeserialized(StreamingContext context) {
-            base.OnDeserialized(context);
             Coordinates = Data.Coordinates.Clone();
             if (OffsetExpression.Definition.Length == 0) {
                 OffsetExpression.Definition = Data.Offset.ToString();
             }
+            base.OnDeserialized(context);
         }
 
         public int UpdateInterval { get; set; } = 1;
