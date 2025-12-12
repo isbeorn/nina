@@ -19,6 +19,7 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.SequenceItem.Expressions;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [Export(typeof(ISequenceItem))]
     [UsesExpressions]
 
-    public partial class WaitUntil : SequenceItem, IValidatable {
+    public partial class WaitUntil : SequenceItem, IValidatable, ITrueFalse {
         private ISafetyMonitorMediator safetyMonitorMediator;
         protected ISequenceMediator sequenceMediator;
         private IProfileService profileService;

@@ -7718,7 +7718,7 @@ If exposure count is not important to you, enable this option to avoid having to
   <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
     <value>Logical negation of a boolean value.</value>
   </data>
-  <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard">
+  <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
     <value>Click any function to copy it to the clipboard.</value>
   </data>
   <data name="Lbl_SymbolFunctions" xml:space="preserve">
@@ -7783,5 +7783,15 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblNotificationApplication" xml:space="preserve">
     <value>Application</value>
+  </data>
+  <data name="LblDimensions" xml:space="preserve">
+    <value>Dimensions</value>
+    <comment>Label for entering subframe dimensions</comment>
+  </data>
+  <data name="LblTop" xml:space="preserve">
+    <value>Top</value>
+  </data>
+  <data name="LblLeft" xml:space="preserve">
+    <value>Left</value>
   </data>
 </root>

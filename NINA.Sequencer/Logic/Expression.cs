@@ -499,8 +499,8 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void Evaluate(bool ignoreRoot) {
-            if (!IsExpression) {
-                //Error = null;
+            if (!IsExpression && Error == null) {
+                // If there was an error, we still want to validate (it might have failed range validation, for example)
                 return;
             }
             if (Definition.Length == 0) {
@@ -640,6 +640,10 @@ namespace NINA.Sequencer.Logic {
                     } else {
                         try {
                             Value = Convert.ToDouble(eval, CultureInfo.InvariantCulture);
+                            // Validate numeric values
+                            if (Range != null) {
+                                CheckRange(Value);
+                            }
                         } catch (Exception) {
                             string str = eval as string;
                             if (STRING_VALUES_ALLOWED) {
