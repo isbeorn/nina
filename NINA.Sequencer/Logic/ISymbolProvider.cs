@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 namespace NINA.Sequencer.Logic
 {
     public interface ISymbolProvider {
-        void AddOrUpdateSymbol(string token, object value);
+        public void AddOrUpdateSymbol(string token, object value);
 
-        void AddOrUpdateSymbol(string token, object value, Symbol[] values);
+        public void AddOrUpdateSymbol(string token, object value, Symbol[] values);
 
-        bool RemoveSymbol(string token);
+        public bool RemoveSymbol(string token);
 
-        string GetProviderName();
-        void RegisterFunction(SymbolFunction function);
-        void Execute(Expression expr, ISequenceEntity context);
+        public string GetProviderName();
+        public void RegisterFunction(SymbolFunction function);
     }
 }
