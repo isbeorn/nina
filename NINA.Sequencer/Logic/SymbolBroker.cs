@@ -419,6 +419,9 @@ namespace NINA.Sequencer.Logic {
             double timeSeconds = Math.Floor(time.TotalSeconds);
             AddOrUpdateSymbol("NINA", "ApplicationUptime", timeSeconds);
 
+            AddOrUpdateSymbol("NINA", "ProfileName", ProfileService.ActiveProfile.Name);
+            AddOrUpdateSymbol("NINA", "ProfileId", ProfileService.ActiveProfile.Id);
+
             return Task.CompletedTask;
         }
 

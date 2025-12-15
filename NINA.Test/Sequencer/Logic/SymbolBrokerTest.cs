@@ -98,6 +98,8 @@ namespace NINA.Test.Sequencer.Logic {
         [Test]
         public void SymbolBroker_HasCoreSymbols() {
             // Assert
+            ValidateSymbol(key: "NINA_ProfileId", expectedSuccess: true);
+            ValidateSymbol(key: "NINA_ProfileName", expectedSuccess: true);
             ValidateSymbol(key: "NINA_ApplicationUptime", expectedSuccess: true);
             ValidateSymbol(key: "NINA_LocalSiderealTime", expectedSuccess: true);
             ValidateSymbol(key: "NINA_SunAzimuth", expectedSuccess: true);
