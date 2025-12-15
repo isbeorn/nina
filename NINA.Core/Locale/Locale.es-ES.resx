@@ -1445,7 +1445,7 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
     <value>Se ha conectado un panel de flats pero la tapa no está abierta.</value>
   </data>
   <data name="LblFlatDeviceCover" xml:space="preserve">
-    <value>Cubierta</value>
+    <value>Tapa</value>
   </data>
   <data name="LblFlatDeviceCoverCurrently" xml:space="preserve">
     <value>Actualmente</value>
@@ -2692,10 +2692,10 @@ HFR calculada: {2}
     <value>Volver al Objetivo</value>
   </data>
   <data name="LblResumeAutoguider" xml:space="preserve">
-    <value>Retomar Autoguiado</value>
+    <value>Reemprender Autoguiado</value>
   </data>
   <data name="LblResumeGuiding" xml:space="preserve">
-    <value>Retomar Guiado</value>
+    <value>Reemprender Guiado</value>
   </data>
   <data name="LblResumeSettleTime" xml:space="preserve">
     <value>Tiempo de Espera tras reanudar</value>
@@ -4107,7 +4107,7 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
     <value>Tiempo de espera del AE en la secuencia</value>
   </data>
   <data name="LblAutoFocusTimeoutTooltip" xml:space="preserve">
-    <value>Cantidad de tiempo, en segundos, que se esperará para hacer autoenfoque durante una secuencia antes de cancelar para continuar</value>
+    <value>Cantidad de tiempo, en segundos, que se esperará para hacer autoenfoque durante una secuencia antes de cancelarlo para continuar</value>
   </data>
   <data name="LblMetaGuideLowIntensityStopGuiding" xml:space="preserve">
     <value>Guiado detenido debido a la baja intensidad de las estrellas. Puede haber nubes.</value>
@@ -4320,10 +4320,10 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
     <value>Cambiar filtro</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Description" xml:space="preserve">
-    <value>Cierra la cubierta del panel de flats</value>
+    <value>Cierra la tapa del panel de flats</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
-    <value>Cerrar cubierta de panel de flats</value>
+    <value>Cerrar tapa de panel de flats</value>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Mueve el enfocador a la posición absoluta dada</value>
@@ -4529,7 +4529,7 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
     <value>Reanuda el guiado si había sido interrumpido previamente</value>
   </data>
   <data name="Lbl_SequenceTrigger_Guider_RestoreGuidings_Name" xml:space="preserve">
-    <value>Retomar Guiado</value>
+    <value>Reemprender Guiado</value>
   </data>
   <data name="LblEvaluteAfterExposures" xml:space="preserve">
     <value>Evaluar tras las exposiciones</value>
@@ -4613,7 +4613,7 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
     <value>Crea una secuencia para el conjunto de objetivos planificados</value>
   </data>
   <data name="Lbl_SequenceItem_Imaging_TakeManyExposures_Description" xml:space="preserve">
-    <value>Toma exposiciones en la cantidad, duración, ganancia y offset dados. Los activadores y condiciones se evalúan entre las exposiciones.</value>
+    <value>Toma exposiciones en la cantidad, duración, ganancia y offset establecidos. Los activadores y condiciones se evalúan entre las exposiciones.</value>
   </data>
   <data name="Lbl_SequenceItem_Imaging_TakeManyExposures_Name" xml:space="preserve">
     <value>Tomar muchas exposiciones</value>
@@ -4628,10 +4628,10 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
     <value>Guardar secuencia completa en un nuevo archivo JSON</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Description" xml:space="preserve">
-    <value>Abre la cubierta del panel de flats</value>
+    <value>Abre la tapa del panel de flats</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
-    <value>Abrir cubierta del panel de flats</value>
+    <value>Abrir tapa del panel de flats</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Establece el brillo del panel de flats al valor especificado</value>
