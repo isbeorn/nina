@@ -420,6 +420,7 @@ namespace NINA.Sequencer.Logic {
             AddOrUpdateSymbol("NINA", "ApplicationUptime", timeSeconds);
 
             AddOrUpdateSymbol("NINA", "ProfileName", ProfileService.ActiveProfile.Name);
+            AddOrUpdateSymbol("NINA", "ProfileId", ProfileService.ActiveProfile.Id);
 
             return Task.CompletedTask;
         }
