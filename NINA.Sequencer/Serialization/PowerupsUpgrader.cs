@@ -403,10 +403,17 @@ namespace NINA.Sequencer.Serialization {
 
                     case "IfConstant":
                     case "IfThenElse":
-                    case "WhenSwitch":
                         Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e.Definition = jObject["IfExpr"]["Expression"].ToString();
+                            item.Name += " [Powerups 3=>4";
+                        }
+                        break;
+
+                    case "WhenSwitch":
+                        Expression e1 = (Expression)trigger.GetType().GetProperty("PredicateExpression").GetValue(trigger, null);
+                        if (jObject["IfExpr"] != null) {
+                            e1.Definition = jObject["IfExpr"]["Expression"].ToString();
                             item.Name += " [Powerups 3=>4";
                         }
                         break;
