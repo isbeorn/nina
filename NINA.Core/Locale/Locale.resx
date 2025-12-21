@@ -4390,6 +4390,15 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Park Scope</value>
   </data>
+  <data name="Lbl_SequenceItem_Telescope_WaitUntilTelescopeParked_Description" xml:space="preserve">
+    <value>Waits until the telescope is confirmed to be in park position before continuing</value>
+  </data>
+  <data name="Lbl_SequenceItem_Telescope_WaitUntilTelescopeParked_Name" xml:space="preserve">
+    <value>Wait Until Telescope Parked</value>
+  </data>
+  <data name="Lbl_SequenceItem_Telescope_WaitUntilTelescopeParked_Waiting" xml:space="preserve">
+    <value>Waiting for telescope to park...</value>
+  </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>Slews the telescope to the given altitude and azimuth coordinates</value>
   </data>

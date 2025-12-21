@@ -25,6 +25,12 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 ## Features
 
+### **Sequencer**
+- **Wait Until Telescope Parked Instruction**
+  - New sequencer instruction that blocks execution until the telescope confirms it is in the park position.
+  - Useful in end-of-session sequences to ensure the mount is fully parked before closing a roll-off roof or dome shutter.
+  - Prevents potential equipment damage from closing the roof while the telescope is still moving to park.
+
 ### **Device Management**
 - **ASCOM Alpaca Direct Drivers**
     - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
