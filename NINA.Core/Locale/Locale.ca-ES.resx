@@ -7326,4 +7326,7 @@ El temps d'exposició de flats es determinarà de nou i es repetirà l'exposici�
 Això pot ajudar a activar l'enfocament automàtic abans, sobretot quan es fan imatges amb canvis de filtre freqüents i una òptica sensible a la temperatura, en una temperatura ambient que canvia ràpidament.
 Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vostra configuració siguin petites.</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
 </root>

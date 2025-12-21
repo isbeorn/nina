@@ -7328,4 +7328,7 @@ To může pomoci spustit automatické zaostřování dříve, zejména při sní
 a optikou citlivou na teplotu v rychle se měnící okolní teplotě. 
 Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastavení byly malé.</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
 </root>

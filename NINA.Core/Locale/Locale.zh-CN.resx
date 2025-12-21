@@ -7325,4 +7325,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
     <value>禁用后，将所有滤镜合并以计算 HFR 趋势。这有助于加快自动对焦触发，尤其适用于成像过程中频繁更换滤镜，或对温度敏感的光学系统处于温度快速变化环境的场景。
 注意：禁用该功能后，需确保不同滤镜间的 HFR 差异较小。</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
 </root>

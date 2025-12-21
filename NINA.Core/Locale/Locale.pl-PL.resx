@@ -7322,4 +7322,7 @@ Czas ekspozycji flatów zostanie określony ponownie, a ekspozycja zostanie powt
 Może to pomóc w wcześniejszym uruchamianiu autofocusa, szczególnie podczas pracy z częstymi zmianami filtrów oraz przy optyce wrażliwej na temperaturę w warunkach szybko zmieniających się. 
 Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie były niewielkie.</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
 </root>

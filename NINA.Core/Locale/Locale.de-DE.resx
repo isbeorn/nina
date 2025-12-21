@@ -7326,4 +7326,7 @@ Dies kann helfen, Autofokusläufe früher auszulösen, insbesondere bei Aufnahme
 und temperaturempfindlicher Optik bei schnell wechselnder Umgebungstemperatur.
 Hinweis: Dieser Modus setzt voraus, dass die HFR-Unterschiede zwischen den Filtern Ihres Setups gering sind.</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
 </root>
