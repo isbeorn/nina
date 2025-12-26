@@ -6966,6 +6966,9 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Toggle Catalogue Display</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Show all catalogues</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Target Alt</value>
   </data>

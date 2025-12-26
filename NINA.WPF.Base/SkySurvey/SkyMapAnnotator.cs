@@ -102,6 +102,16 @@ namespace NINA.WPF.Base.SkySurvey {
                 }
             }
 
+            if(ActiveCatalogues != null) { 
+                if (ActiveCatalogues.All(c => c.Active)) {
+                    ShowAllCatalogues = true;
+                    OnPropertyChanged(nameof(ShowAllCatalogues));
+                } else if (ActiveCatalogues.All(c => !c.Active)) {
+                    ShowAllCatalogues = false;
+                    OnPropertyChanged(nameof(ShowAllCatalogues));
+                }
+            }
+
             ConstellationsInViewport.Clear();
             ClearFrameLineMatrix();
 
@@ -176,6 +186,9 @@ namespace NINA.WPF.Base.SkySurvey {
         [ObservableProperty]
         private BitmapSource skyMapOverlay;
 
+        [ObservableProperty]
+        private bool showAllCatalogues = true;
+
         partial void OnAnnotateConstellationBoundariesChanged(bool oldValue, bool newValue) {
             if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries != newValue)
                 profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries = newValue;
@@ -194,6 +207,15 @@ namespace NINA.WPF.Base.SkySurvey {
         partial void OnAnnotateGridChanged(bool oldValue, bool newValue) {
             if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid != newValue)
                 profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid = newValue;
+        }
+        
+        partial void OnShowAllCataloguesChanged(bool oldValue, bool newValue) {
+
+            if (ActiveCatalogues is null) return;
+
+            foreach (var c in ActiveCatalogues)
+                c.Active = newValue;
+
         }
 
         private void LoadSettings() {
