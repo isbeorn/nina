@@ -13,8 +13,10 @@
 #endregion "copyright"
 
 using NINA.Core.Enum;
+using NINA.Core.Utility;
 using NINA.Profile.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace NINA.Profile {
@@ -184,5 +186,17 @@ namespace NINA.Profile {
                 }
             }
         }
+
+        private List<string> disabledCatalogues;
+
+        [DataMember]
+        public List<string> DisabledCatalogues {
+            get => disabledCatalogues ?? (disabledCatalogues = new List<string>());
+            set {
+                disabledCatalogues = value;
+                RaisePropertyChanged();
+            }
+        }
+
     }
 }

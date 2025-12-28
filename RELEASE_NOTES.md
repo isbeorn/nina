@@ -40,7 +40,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **Sky Atlas Improvements**  
   - Deep sky objects can now be filtered and sorted by their upper transit time
 - **Framing Assistant Improvements** 
-  - In HiPS 2 FITS Sky Survey different HiPS sky maps can now be selected like CTA-FRAM, Mellinger, Northern Sky Narrowband Survey and more for better target planning. 
+  - In HiPS 2 FITS Sky Survey different HiPS sky maps can now be selected like CTA-FRAM, Mellinger, Northern Sky Narrowband Survey and more for better target planning.
+  - Toogle Catalogue Display: visibility of individual catalogues is no stored in settings and a new "show all catalogues" toogle been added   
 - **New Toast Notification System**
   - Replaced the external ToastNotifications package with a fully native WPF implementation.
   - Improved reliability, lifetime handling, and positioning across multiple monitors.
