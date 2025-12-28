@@ -255,7 +255,7 @@ namespace NINA.WPF.Base.SkySurvey {
                 profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries;
             AnnotateConstellations = profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellations;
             AnnotateDSO = profileService.ActiveProfile.FramingAssistantSettings.AnnotateDSO;
-            AnnotateGrid = profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid;    
+            AnnotateGrid = profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid;
         }
 
         /// <summary>
