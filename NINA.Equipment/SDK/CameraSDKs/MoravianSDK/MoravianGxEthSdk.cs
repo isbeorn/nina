@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 
 namespace MoravianCameraSDK {
-    public class MoravianGxEthSdk : IMoravianSDK, IMoravianCameraTimingExposure, IMoravianGPS, IMoravianConfigurable {
+    public class MoravianGxEthSdk : IMoravianCameraSDK, IMoravianCameraTimingExposure, IMoravianGPS, IMoravianConfigurable {
         static MoravianGxEthSdk() {
             DllLoader.LoadDll(Path.Combine("Moravian", "gXeth.dll"));
         }

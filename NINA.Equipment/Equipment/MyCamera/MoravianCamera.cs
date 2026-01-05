@@ -22,7 +22,7 @@ using System.Windows.Interop;
 namespace NINA.Equipment.Equipment.MyCamera {
     public class MoravianCamera : BaseINPC, ICamera {
         private readonly uint cameraId;
-        private readonly IMoravianSDK sdk;
+        private readonly IMoravianCameraSDK sdk;
         private readonly IProfileService profileService;
         private readonly IExposureDataFactory exposureDataFactory;
         private UIntPtr handle = UIntPtr.Zero;
@@ -35,7 +35,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             string driverVersion,
             string firmwareVersion,
             string flashVersion,
-            IMoravianSDK sdk,
+            IMoravianCameraSDK sdk,
             IProfileService profileService,
             IExposureDataFactory exposureDataFactory) {
             this.cameraId = cameraId;

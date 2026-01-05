@@ -39,7 +39,7 @@ namespace MoravianCameraSDK {
             return devices;
         }
 
-        private IList<ICamera> GetCameras(Func<IMoravianSDK> sdkFactory, List<uint> cameraIds) {
+        private IList<ICamera> GetCameras(Func<IMoravianCameraSDK> sdkFactory, List<uint> cameraIds) {
             var devices = new List<ICamera>();
             foreach (var id in cameraIds) {
                 try {

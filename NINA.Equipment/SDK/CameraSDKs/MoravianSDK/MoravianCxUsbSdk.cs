@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 
 namespace MoravianCameraSDK {
-    public class MoravianCxUsbSdk : IMoravianSDK, IMoravianCameraTimingExposure, IMoravianGPS {
+    public class MoravianCxUsbSdk : IMoravianCameraSDK, IMoravianCameraTimingExposure, IMoravianGPS {
         static MoravianCxUsbSdk() {
             DllLoader.LoadDll(Path.Combine("Moravian", "cXusb.dll"));
         }

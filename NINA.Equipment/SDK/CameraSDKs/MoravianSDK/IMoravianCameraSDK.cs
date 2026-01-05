@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MoravianCameraSDK {
 
-    public interface IMoravianSDK {
+    public interface IMoravianCameraSDK {
         UIntPtr Initialize(uint cameraId);
         void Release(UIntPtr handle);
         void RegisterNotifyHWND(UIntPtr handle, IntPtr hwnd);
@@ -27,8 +27,6 @@ namespace MoravianCameraSDK {
         bool MoveTelescope(UIntPtr handle, short raDurationMs, short decDurationMs);
         bool MoveInProgress(UIntPtr handle, out bool moving);
         void GetLastErrorString(UIntPtr handle, int maxLen, StringBuilder sb);
-        bool OpenShutter(UIntPtr handle);
-        bool CloseShutter(UIntPtr handle);
     }
 
     public interface IMoravianCameraTimingExposure {
@@ -64,8 +62,10 @@ namespace MoravianCameraSDK {
         void Configure(UIntPtr handle, IntPtr parentHwnd);
     }
 
-    public interface IMoravianSensorClearable {
+    public interface IMoravianManualTimingExposure {
         bool ClearSensor(UIntPtr handle);
+        bool OpenShutter(UIntPtr handle);
+        bool CloseShutter(UIntPtr handle);
     }
 
     public enum MoravianBooleanParameter : uint {
