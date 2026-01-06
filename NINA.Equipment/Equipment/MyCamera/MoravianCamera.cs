@@ -670,13 +670,55 @@ namespace NINA.Equipment.Equipment.MyCamera {
             SubSampleWidth = Math.Clamp(SubSampleWidth, 1, Math.Max(1, CameraXSize - SubSampleX));
             SubSampleHeight = Math.Clamp(SubSampleHeight, 1, Math.Max(1, CameraYSize - SubSampleY));
         }
+        public bool CanShowLiveView => false;
+        public bool LiveViewEnabled { get; set; } = false;
+        public void StartLiveView(CaptureSequence sequence) {
+            var isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT;
+            ReadoutMode = isSnap ? ReadoutModeForSnapImages : ReadoutModeForNormalImages;
+
+            int x, y, w, h;
+            if (EnableSubSample && CanSubSample) {
+                UpdateSubSampleArea();
+                x = SubSampleX / BinX;
+                y = SubSampleY / BinY;
+                w = SubSampleWidth / BinX;
+                h = SubSampleHeight / BinY;
+            } else {
+                x = 0; y = 0; w = CameraXSize / BinX; h = CameraYSize / BinY;
+            }
+
+            sdk.SetBinning(handle, (uint)BinX, (uint)BinY);
+
+            exposureTaskX = x;
+            exposureTaskY = y;
+            exposureTaskWidth = w;
+            exposureTaskHeight = h;
+            exposureTaskTime = sequence.ExposureTime;
+            lastExposureStartTime = DateTime.UtcNow;
+
+            var useShutter = (sequence.IsLightSequence() && HasShutter);
+
+            if (sdk is IMoravianComputerTimingExposure computerTimingExposure) {
+                throw new InvalidOperationException($"{Category} - Live view not supported for {DisplayName}");
+            } else if (sdk is IMoravianCameraTimingExposure asyncExposure) {
+                if (!asyncExposure.StartExposure(handle, sequence.ExposureTime, useShutter, x, y, w, h)) {
+                    throw new Exception($"{Category} - Failed to trigger camera exposure");
+                }
+            } else {
+                throw new NotImplementedException();
+            }
+            LiveViewEnabled = true;
+        }
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
+            lastExposureStartTime = DateTime.UtcNow;
+            return DownloadExposure(token);
+        }
+        public void StopLiveView() {
+            AbortExposure();
+            LiveViewEnabled = false;
+        }
 
         #region Unsupported
-        public bool CanShowLiveView => false;
-        public bool LiveViewEnabled => false;
-        public void StartLiveView(CaptureSequence sequence) => throw new NotImplementedException();
-        public Task<IExposureData> DownloadLiveView(CancellationToken token) => throw new NotImplementedException();
-        public void StopLiveView() => throw new NotImplementedException();
         public CameraStates CameraState => CameraStates.NoState;
         public string SensorName => string.Empty;
 
