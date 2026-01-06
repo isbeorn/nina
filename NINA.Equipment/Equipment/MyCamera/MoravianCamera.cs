@@ -493,8 +493,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         if (!ready)
                             await WaitUntilExposureIsReady(downloadCts.Token);
 
-                        var rc = asyncExposure.ReadImageExposure(handle, bufferLength, data);
-                        if (!rc) data = null;
+                        if (LiveViewEnabled) {
+                            var rc = asyncExposure.ReadImageExposure(handle, bufferLength, data);
+                            if (!rc) data = null;
+                        } else {
+                            var rc = asyncExposure.ReadImage(handle, bufferLength, data);
+                            if (!rc) data = null;
+                        }
                     } catch {
                         data = null;
                     }
@@ -524,7 +529,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             var metaData = new ImageMetaData();
             metaData.FromCamera(this);
             metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
-
+            
             // Extract GPS timestamps if availabe
             if (sdk is IMoravianGPS gps && sdk.GetBooleanParameter(handle, MoravianBooleanParameter.gbpGPS, out var value) && value) {
                 var getGpsDataSuccess = gps.GetGPSData(handle, out var lat, out var lon, out var msl, out _, out _, out _, out _, out _, out _, out var satellites, out var fix);
