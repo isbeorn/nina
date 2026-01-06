@@ -49,7 +49,7 @@ namespace NINA.Sequencer {
                 propertyInfoByname.Add(e.PropertyName, propInf);
             }
 
-            if (propInf.GetCustomAttributes(typeof(JsonPropertyAttribute), true).Length > 0) {
+            if (propInf?.GetCustomAttributes(typeof(JsonPropertyAttribute), true)?.Length > 0) {
                 ISequenceRootContainer root = GetSequenceRootContainer();
 
                 if (root != null && !(root.HasChanges?[defaultChangeSet] ?? false)) { 
