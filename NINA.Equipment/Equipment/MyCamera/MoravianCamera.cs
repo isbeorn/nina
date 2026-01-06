@@ -369,8 +369,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
             if (sdk is IMoravianComputerTimingExposure computerTimingExposure) {
                 exposureTaskCts = new CancellationTokenSource();
                 exposureTask = TakeExposureTask(computerTimingExposure, handle, useShutter, TimeSpan.FromSeconds(exposureTaskTime), exposureTaskCts.Token);
-            } else if (sdk is IMoravianCameraTimingExposure asyncExposure) {
-                asyncExposure.StartExposure(handle, sequence.ExposureTime, useShutter, x, y, w, h);
+            } else if (sdk is IMoravianCameraTimingExposure asyncExposure) {                
+                if (!asyncExposure.StartExposure(handle, sequence.ExposureTime, useShutter, x, y, w, h)) {
+                    throw new Exception($"{Category} - Failed to trigger camera exposure");
+                }
             } else {
                 throw new NotImplementedException();
             }
