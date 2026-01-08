@@ -36,6 +36,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **PlayerOne FilterWheel**
   - Added setting to change unidirectional mode
   - While connecting the app will wait for the filter wheel homing to finish before proceeding
+- **Moravian Instruments Cameras and Integrated Filter Wheels**
+  - Added native drivers for Moravian Instruments cameras and integrated filter wheels
 
 ### **User Interface & Usability**
 - **Sky Atlas Improvements**  
