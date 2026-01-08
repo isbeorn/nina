@@ -1448,6 +1448,9 @@
       <Component Id="wpfgfx_cor3.dll" Guid="0472e370-5dd8-4ee9-ba87-10fae5e3f89a">
         <File Id="wpfgfx_cor3.dll" Name="wpfgfx_cor3.dll" Source="$(var.NINA_TargetDir)wpfgfx_cor3.dll" />
       </Component>
+      <Component Id="ZstdSharp.dll" Guid="1b50b5b3-72f9-4a62-99e3-be76b50ad9fa">
+        <File Id="ZstdSharp.dll" Name="ZstdSharp.dll" Source="$(var.NINA_TargetDir)ZstdSharp.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
