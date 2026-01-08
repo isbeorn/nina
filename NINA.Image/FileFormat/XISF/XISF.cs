@@ -331,6 +331,16 @@ namespace NINA.Image.FileFormat.XISF {
                     info.IsShuffled = true;
                     break;
 
+                case "zstd":
+                    info.CompressionType = XISFCompressionTypeEnum.ZSTD;
+                    break;
+
+                case "zstd+sh":
+                    info.CompressionType = XISFCompressionTypeEnum.ZSTD;
+                    info.ItemSize = int.Parse(compression[2]);
+                    info.IsShuffled = true;
+                    break;
+
                 default:
                     throw new InvalidDataException();
             }
@@ -431,6 +441,11 @@ namespace NINA.Image.FileFormat.XISF {
                         case XISFCompressionTypeEnum.ZLIB:
                             outArray = ZlibStream.UncompressBuffer(raw);
                             break;
+                        case XISFCompressionTypeEnum.ZSTD: {
+                            using var decompressor = new ZstdSharp.Decompressor();
+                            outArray = decompressor.Unwrap(raw).ToArray();
+                            break;
+                        }
                     }
                 }
             }

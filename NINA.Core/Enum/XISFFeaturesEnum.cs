@@ -30,7 +30,10 @@ namespace NINA.Core.Enum {
         LZ4HC,
 
         [Description("LblCompressionZLib")]
-        ZLIB
+        ZLIB,
+
+        [Description("LblCompressionZStandard")]
+        ZSTD
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

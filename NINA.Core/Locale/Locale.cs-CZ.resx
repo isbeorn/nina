@@ -7351,4 +7351,7 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
     <value>Typ Služby</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
 </root>

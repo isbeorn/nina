@@ -7373,4 +7373,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Service Type</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
 </root>

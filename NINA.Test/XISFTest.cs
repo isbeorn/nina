@@ -310,6 +310,63 @@ namespace NINA.Test {
         }
 
         [Test]
+        public void XISFCompressZStdTest() {
+            const int imgSize = 128;
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
+            const string imageType = "LIGHT";
+            var data = new ushort[imgSize * imgSize];
+            var length = data.Length * sizeof(ushort);
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Core.Enum.FileTypeEnum.XISF,
+                XISFCompressionType = NINA.Core.Enum.XISFCompressionTypeEnum.ZSTD
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("compression", $"zstd:{length}");
+            sut.Header.Image.Should().HaveAttribute("location", $"attachment:{sut.PaddedBlockSize}:{sut.Data.Data.Length}");
+        }
+
+        [Test]
+        public void XISFCompressZStdShuffledTest() {
+            const int imgSize = 128;
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
+            const string imageType = "LIGHT";
+            var data = new ushort[imgSize * imgSize];
+            var length = data.Length * sizeof(ushort);
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Core.Enum.FileTypeEnum.XISF,
+                XISFCompressionType = NINA.Core.Enum.XISFCompressionTypeEnum.ZSTD,
+                XISFByteShuffling = true
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("compression", $"zstd+sh:{length}:{sizeof(ushort)}");
+            sut.Header.Image.Should().HaveAttribute("location", $"attachment:{sut.PaddedBlockSize}:{sut.Data.Data.Length}");
+        }
+
+        [Test]
         public void XISFChecksumSHA1Test() {
             const int imgSize = 128;
             var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);

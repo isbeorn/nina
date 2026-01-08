@@ -7372,4 +7372,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   <data name="LblAlpacaDirectInvalidDeviceNumber" xml:space="preserve">
     <value>The Alpaca device number must be zero or greater.</value>
   </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
 </root>

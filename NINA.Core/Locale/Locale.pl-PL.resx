@@ -7345,4 +7345,7 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
     <value>Typ usługi</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
 </root>

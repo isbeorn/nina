@@ -7348,4 +7348,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
     <value>服务协议类型</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
 </root>

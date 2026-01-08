@@ -7349,4 +7349,7 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
     <value>Tipus de servei</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZSstandar</value>
+  </data>
 </root>
