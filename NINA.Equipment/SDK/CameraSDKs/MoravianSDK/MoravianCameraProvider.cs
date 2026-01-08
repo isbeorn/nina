@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace MoravianCameraSDK {
@@ -29,22 +30,62 @@ namespace MoravianCameraSDK {
             var devices = new List<ICamera>();
 
             Logger.Debug("Scanning for Moravian Cx USB Cameras");
-            devices.AddRange(GetCameras(() => new MoravianCxUsbSdk(), MoravianCxUsbSdk.Scan()));
+            var cxUsbCameras = GetCameras(() => new MoravianCxUsbSdk(), MoravianCxUsbSdk.Scan());
+            foreach(var camera in cxUsbCameras) {
+                devices.Add(new MoravianCamera(cameraId: camera.Id,
+                                serialNumber: camera.SerialNumber,
+                                name: camera.Name,
+                                category: camera.Category,
+                                driverVersion: camera.DriverVersion,
+                                firmwareVersion: camera.FirmwareVersion,
+                                flashVersion: camera.FlashVersion,
+                                sdk: camera.Sdk,
+                                profileService: profileService,
+                                exposureDataFactory: exposureDataFactory));
+
+            }
 
             Logger.Debug("Scanning for Moravian Gx USB Cameras");
-            devices.AddRange(GetCameras(() => new MoravianGxUsbSdk(), MoravianGxUsbSdk.Scan()));
+            var gxUsbCameras = GetCameras(() => new MoravianGxUsbSdk(), MoravianGxUsbSdk.Scan());
+            foreach (var camera in gxUsbCameras) {
+                devices.Add(new MoravianCamera(cameraId: camera.Id,
+                                serialNumber: camera.SerialNumber,
+                                name: camera.Name,
+                                category: camera.Category,
+                                driverVersion: camera.DriverVersion,
+                                firmwareVersion: camera.FirmwareVersion,
+                                flashVersion: camera.FlashVersion,
+                                sdk: camera.Sdk,
+                                profileService: profileService,
+                                exposureDataFactory: exposureDataFactory));
+
+            }
 
             Logger.Debug("Scanning for Moravian Gx Ethernet Cameras");
-            devices.AddRange(GetCameras(() => new MoravianGxEthSdk(), MoravianGxEthSdk.Scan()));
+            var gxEthCameras = GetCameras(() => new MoravianGxEthSdk(), MoravianGxEthSdk.Scan());
+            foreach (var camera in gxEthCameras) {
+                devices.Add(new MoravianCamera(cameraId: camera.Id,
+                                serialNumber: camera.SerialNumber,
+                                name: camera.Name,
+                                category: camera.Category,
+                                driverVersion: camera.DriverVersion,
+                                firmwareVersion: camera.FirmwareVersion,
+                                flashVersion: camera.FlashVersion,
+                                sdk: camera.Sdk,
+                                profileService: profileService,
+                                exposureDataFactory: exposureDataFactory));
 
+            }
+
+            Logger.Info($"Found {devices.Count} Moravian Cameras");
             return devices;
         }
 
 
-        public static Lock ScanLock = new Lock();
-        private IList<ICamera> GetCameras(Func<IMoravianCameraSDK> sdkFactory, List<uint> cameraIds) {
-            using var scope = ScanLock.EnterScope();
-            var devices = new List<ICamera>();
+        private static Lock scanLock = new Lock();
+        public static IList<MoravianCameraInfo> GetCameras(Func<IMoravianCameraSDK> sdkFactory, List<uint> cameraIds) {
+            using var scope = scanLock.EnterScope();
+            var devices = new List<MoravianCameraInfo>();
             foreach (var id in cameraIds) {
                 try {
                     var sdk = sdkFactory();
@@ -67,7 +108,12 @@ namespace MoravianCameraSDK {
                         sdk.Release(handle);
                         continue;
                     }
-                    
+                    if (!sdk.GetBooleanParameter(handle, MoravianBooleanParameter.gbpFilters, out bool hasFilterWheel)) {
+                        Logger.Warning($"Moravian SDK: Could not GetBooleanParameter gbpFilters for camera id {id} to query its integrated filter wheel");
+                        sdk.Release(handle);
+                        continue;
+                    }
+
                     sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipDriverMajor, out int driverMajor);
                     sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipDriverMinor, out int driverMinor);
                     sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipDriverBuild, out int driverBuild);
@@ -82,21 +128,22 @@ namespace MoravianCameraSDK {
 
                     sdk.Release(handle);
 
-                    devices.Add(new MoravianCamera(cameraId: id,
-                                                  id: $"Moravian-{cameraSerial}",
-                                                  name: cameraName.ToString(),
-                                                  category: "Moravian Instruments",
-                                                  driverVersion: $"{driverMajor}.{driverMinor}.{driverBuild}",
-                                                  firmwareVersion: $"{firmwareMajor}.{firmwareMinor}.{firmwareBuild}",
-                                                  flashVersion: $"{flashMajor}.{flashMinor}.{flashBuild}",
-                                                  sdk: sdk,
-                                                  profileService: profileService,
-                                                  exposureDataFactory: exposureDataFactory));
+                    devices.Add(new MoravianCameraInfo(Id: id,
+                                                  SerialNumber: cameraSerial.ToString(),
+                                                  Name: Regex.Replace(cameraName.ToString(), @"\s+", " "),
+                                                  Category: "Moravian Instruments",
+                                                  DriverVersion: $"{driverMajor}.{driverMinor}.{driverBuild}",
+                                                  FirmwareVersion: $"{firmwareMajor}.{firmwareMinor}.{firmwareBuild}",
+                                                  FlashVersion: $"{flashMajor}.{flashMinor}.{flashBuild}",
+                                                  HasFilterWheel: hasFilterWheel,
+                                                  Sdk: sdk));
                 } catch (Exception ex) {
                     Logger.Error($"Moravian SDK: failed to get camera for camera id {id}", ex);
                 }
             }
             return devices;
         }
+
+        public record MoravianCameraInfo(uint Id, string SerialNumber, string Name, string Category, string DriverVersion, string FirmwareVersion, string FlashVersion, bool HasFilterWheel, IMoravianCameraSDK Sdk);
     }
 }

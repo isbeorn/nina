@@ -9,6 +9,7 @@ using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -29,85 +30,58 @@ namespace MoravianCameraSDK {
             var devices = new List<IFilterWheel>();
 
             if (cameraMediator.GetDevice() is MoravianCamera mc && mc.HasFilterWheel()) {
-                // When the camera is connected the scan won't return it, so we grab the info from the instance
-                devices.Add(new MoravianIntegratedFilterWheel(profileService, cameraMediator, mc.Id.Replace(mc.Category + "_", ""), mc.Name, mc.Category, mc.DriverVersion, mc.FirmwareVersion, mc.FlashVersion));
-            } else {
-                // When not connected we need the Moravian Camera instances
-                Logger.Debug("Scanning for Moravian Cx USB Camera Filter Wheels");
-                devices.AddRange(GetFilterWheels(() => new MoravianCxUsbSdk(), MoravianCxUsbSdk.Scan()));
-
-                Logger.Debug("Scanning for Moravian Gx USB Camera Filter Wheels");
-                devices.AddRange(GetFilterWheels(() => new MoravianGxUsbSdk(), MoravianGxUsbSdk.Scan()));
-
-                Logger.Debug("Scanning for Moravian Gx Ethernet Camera Filter Wheels");
-                devices.AddRange(GetFilterWheels(() => new MoravianGxEthSdk(), MoravianGxEthSdk.Scan()));
+                // When the camera is already connected and has an integrated filter wheel we grab the info from the instance directly
+                devices.Add(new MoravianIntegratedFilterWheel(profileService: profileService,
+                                                              cameraMediator: cameraMediator,
+                                                              serialNumber: mc.SerialNumber,
+                                                              name: mc.Name,
+                                                              category: mc.Category,
+                                                              driverVersion: mc.DriverVersion,
+                                                              firmwareVersion: mc.FirmwareVersion,
+                                                              flashVersion: mc.FlashVersion));
             }
 
-            return devices;
-        }
-        private IList<IFilterWheel> GetFilterWheels(Func<IMoravianCameraSDK> sdkFactory, List<uint> cameraIds) {
-            // A bit ugly but we need to ensure to not stomp each other when camera thread is scanning in parallel
-            using var scope = MoravianCameraProvider.ScanLock.EnterScope();
-            var devices = new List<IFilterWheel>();
-            foreach (var id in cameraIds) {
-                try {
-                    var sdk = sdkFactory();
-                    UIntPtr handle = sdk.Initialize(id);
-                    if (handle == UIntPtr.Zero) {
-                        Logger.Warning($"Moravian SDK: Could not initialize camera id {id} to query its integrated filter wheel");
-                        continue;
-                    }
-
-                    if (!sdk.GetBooleanParameter(handle, MoravianBooleanParameter.gbpFilters, out bool hasFilterWheel)) {
-                        Logger.Warning($"Moravian SDK: Could not GetBooleanParameter gbpFilters for camera id {id} to query its integrated filter wheel");
-                        sdk.Release(handle);
-                        continue;
-                    }
-
-                    if (!hasFilterWheel) {
-                        sdk.Release(handle);
-                        continue;
-                    }
-
-                    StringBuilder cameraName = new StringBuilder(256);
-                    if (!sdk.GetStringParameter(handle, MoravianStringParameter.gspCameraDescription, byte.MaxValue, cameraName)) {
-                        Logger.Warning($"Moravian SDK: Could not get camera description for camera id {id} to query its integrated filter wheel");
-                        sdk.Release(handle);
-                        continue;
-                    }
-                    StringBuilder cameraSerial = new StringBuilder(256);
-                    if (!sdk.GetStringParameter(handle, MoravianStringParameter.gspCameraSerial, byte.MaxValue, cameraSerial)) {
-                        Logger.Warning($"Moravian SDK: Could not get camera serial for camera id {id} to query its integrated filter wheel");
-                        sdk.Release(handle);
-                        continue;
-                    }
-
-                    sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipDriverMajor, out int driverMajor);
-                    sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipDriverMinor, out int driverMinor);
-                    sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipDriverBuild, out int driverBuild);
-
-                    sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipFlashMajor, out int flashMajor);
-                    sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipFlashMinor, out int flashMinor);
-                    sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipFlashBuild, out int flashBuild);
-
-                    sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipFirmwareMajor, out int firmwareMajor);
-                    sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipFirmwareMinor, out int firmwareMinor);
-                    sdk.GetIntegerParameter(handle, MoravianIntegerParameter.gipFirmwareBuild, out int firmwareBuild);
-
-                    sdk.Release(handle);
-
-                    devices.Add(new MoravianIntegratedFilterWheel(id: $"Moravian-{cameraSerial}",
-                                                  profileService: profileService,
-                                                  cameraMediator: cameraMediator,
-                                                  name: cameraName.ToString(),
-                                                  category: "Moravian Instruments",
-                                                  driverVersion: $"{driverMajor}.{driverMinor}.{driverBuild}",
-                                                  firmwareVersion: $"{firmwareMajor}.{firmwareMinor}.{firmwareBuild}",
-                                                  flashVersion: $"{flashMajor}.{flashMinor}.{flashBuild}"));
-                } catch (Exception ex) {
-                    Logger.Error($"Moravian SDK: failed to get camera for camera id {id} to query its integrated filter wheel", ex);
-                }
+            // For all other cases we scan for cameras via the camera provider and check if there have filter wheels
+            Logger.Debug("Scanning for Moravian Cx USB Camera Filter Wheels");
+            var cxUsbCameras = MoravianCameraProvider.GetCameras(() => new MoravianCxUsbSdk(), MoravianCxUsbSdk.Scan());
+            foreach(var camera in cxUsbCameras.Where(x => x.HasFilterWheel)) {
+                devices.Add(new MoravianIntegratedFilterWheel(profileService: profileService,
+                                                              cameraMediator: cameraMediator,
+                                                              serialNumber: camera.SerialNumber,
+                                                              name: camera.Name,
+                                                              category: camera.Category,
+                                                              driverVersion: camera.DriverVersion,
+                                                              firmwareVersion: camera.FirmwareVersion,
+                                                              flashVersion: camera.FlashVersion));
             }
+
+            Logger.Debug("Scanning for Moravian Gx USB Camera Filter Wheels");
+            var gxUsbCameras = MoravianCameraProvider.GetCameras(() => new MoravianGxUsbSdk(), MoravianGxUsbSdk.Scan());
+            foreach (var camera in gxUsbCameras.Where(x => x.HasFilterWheel)) {
+                devices.Add(new MoravianIntegratedFilterWheel(profileService: profileService,
+                                                              cameraMediator: cameraMediator,
+                                                              serialNumber: camera.SerialNumber,
+                                                              name: camera.Name,
+                                                              category: camera.Category,
+                                                              driverVersion: camera.DriverVersion,
+                                                              firmwareVersion: camera.FirmwareVersion,
+                                                              flashVersion: camera.FlashVersion));
+            }
+
+            Logger.Debug("Scanning for Moravian Gx Ethernet Camera Filter Wheels");
+            var gxEthCameras = MoravianCameraProvider.GetCameras(() => new MoravianGxEthSdk(), MoravianGxEthSdk.Scan());
+            foreach (var camera in gxEthCameras.Where(x => x.HasFilterWheel)) {
+                devices.Add(new MoravianIntegratedFilterWheel(profileService: profileService,
+                                                              cameraMediator: cameraMediator,
+                                                              serialNumber: camera.SerialNumber,
+                                                              name: camera.Name,
+                                                              category: camera.Category,
+                                                              driverVersion: camera.DriverVersion,
+                                                              firmwareVersion: camera.FirmwareVersion,
+                                                              flashVersion: camera.FlashVersion));
+            }
+
+            Logger.Info($"Found {devices.Count} Moravian Integrated Filter Wheels");
             return devices;
         }
     }

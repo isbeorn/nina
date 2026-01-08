@@ -3,7 +3,6 @@ using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.Profile;
 using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         public MoravianIntegratedFilterWheel(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,
-                string id,
+                string serialNumber,
                 string name,
                 string category,
                 string driverVersion,
@@ -30,11 +29,17 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                 string flashVersion) {
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
-            Id = $"{category}_{id}_IntegratedFW";
+
             Name = name;
-            DisplayName = $"Moravian - {Name} ({(id.Length > 8 ? id[^8..] : id)}) Integrated Filter Wheel"; ;
             Category = category;
             DriverVersion = driverVersion;
+            FirmwareVersion = firmwareVersion;
+            FlashVersion = flashVersion;
+            Description = serialNumber;
+            DriverInfo = $"Native driver implementation for {category} Cameras";
+            SerialNumber = serialNumber;
+            Id = $"MoravianInstruments_{serialNumber}_IntegratedFW";
+            DisplayName = $"{category} - {name} Integrated Filter Wheel ({(serialNumber.Length > 8 ? serialNumber[^8..] : serialNumber)})";
         }
 
         public int[] FocusOffsets => Filters.Select((x) => x.FocusOffset).ToArray();
@@ -53,13 +58,15 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
 
         public bool HasSetupDialog => false;
 
-        public string Id { get; init; }
+        public string Id { get; }
 
-        public string Name { get; init; }
+        public string SerialNumber { get; }
 
-        public string DisplayName { get; init; }
+        public string Name { get; }
 
-        public string Category { get; init; }
+        public string DisplayName { get; }
+
+        public string Category { get; }
 
         public bool Connected {
             get => field && moravianCamera.Connected;
@@ -69,11 +76,13 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             }
         }
 
-        public string Description => Id;
+        public string Description { get; }
 
-        public string DriverInfo => $"Native driver implementation for {Category} Integrated Filter Wheels";
+        public string DriverInfo { get; }
 
-        public string DriverVersion { get; init; }
+        public string DriverVersion { get; }
+        public string FirmwareVersion { get; }
+        public string FlashVersion { get; }
 
         public IList<string> SupportedActions => new List<string>();
 

@@ -29,7 +29,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public MoravianCamera(
             uint cameraId,
-            string id,
+            string serialNumber,
             string name,
             string category,
             string driverVersion,
@@ -48,15 +48,18 @@ namespace NINA.Equipment.Equipment.MyCamera {
             DriverVersion = driverVersion;
             FirmwareVersion = firmwareVersion;
             FlashVersion = flashVersion;
-            Description = $"{id}";
+            Description = serialNumber;
             DriverInfo = $"Native driver implementation for {category} Cameras";
-            Id = $"{category}_{id}";
+            SerialNumber = serialNumber;
+            Id = $"MoravianInstruments_{serialNumber}";
+            DisplayName = $"{category} - {name} ({(serialNumber.Length > 8 ? serialNumber[^8..] : serialNumber)})";
         }
 
         public bool HasSetupDialog => sdk is IMoravianConfigurable;
+        public string SerialNumber { get; }
         public string Id { get; }
         public string Name { get; }
-        public string DisplayName => $"Moravian - {Name} ({(Id.Length > 8 ? Id[^8..] : Id)})";
+        public string DisplayName { get; }
         public string Category { get; }
         public string Description { get; }
         public string DriverInfo { get; }
