@@ -48,6 +48,10 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Added configurable notification placement: primary screen, same screen as the app, or application window, as well as adjustable corner positioning via Options > General > Advanced.
   - Notifications now reposition automatically on window moves, DPI changes, and display configuration changes.
 
+### File formats
+- **XISF ZStandard Compression**
+  - Added support for ZStandard compression in XISF files.
+
 
 # Version 3.2
 
