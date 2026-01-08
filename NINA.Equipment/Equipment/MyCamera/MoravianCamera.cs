@@ -41,16 +41,16 @@ namespace NINA.Equipment.Equipment.MyCamera {
             this.cameraId = cameraId;
             this.profileService = profileService;
             this.exposureDataFactory = exposureDataFactory;
+            this.sdk = sdk;
 
             Name = name;
             Category = category;
             DriverVersion = driverVersion;
             FirmwareVersion = firmwareVersion;
             FlashVersion = flashVersion;
-            this.sdk = sdk;
             Description = $"{id}";
             DriverInfo = $"Native driver implementation for {category} Cameras";
-            Id = $"{Category}_{id}";
+            Id = $"{category}_{id}";
         }
 
         public bool HasSetupDialog => sdk is IMoravianConfigurable;
@@ -716,6 +716,25 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public void StopLiveView() {
             AbortExposure();
             LiveViewEnabled = false;
+        }
+
+        public bool HasFilterWheel() {
+            return GetBoolSafe(MoravianBooleanParameter.gbpFilters);
+        }
+
+        public void SetFilter(uint index) {
+            sdk.SetFilter(handle, index);
+        }
+
+        public void ReinitFilterWheel() {
+            sdk.ReinitFilterWheel(handle);
+        }
+
+        public ObserveAllCollection<FilterInfo> GetFilters() {
+            var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+            var positions = GetIntSafe(MoravianIntegerParameter.gipFilters, 0);
+            var filters = new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+            return filters;
         }
 
         #region Unsupported

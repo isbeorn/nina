@@ -95,6 +95,11 @@ namespace MoravianCameraSDK {
             return Cxusb.SetFilter(handle, index);
         }
 
+        public bool ReinitFilterWheel(UIntPtr handle) {
+            using var scope = local.EnterScope();
+            return Cxusb.ReinitFilterWheel(handle);
+        }
+
         public void SetTemperature(UIntPtr handle, float temperature) {
             using var scope = local.EnterScope();
             Cxusb.SetTemperature(handle, temperature);

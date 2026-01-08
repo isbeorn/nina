@@ -8,12 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Text;
+using System.Threading;
 
 namespace MoravianCameraSDK {
     [Export(typeof(IEquipmentProvider))]
     public class MoravianCameraProvider : IEquipmentProvider<ICamera> {
 
-        public string Name => "Moravian";
+        public string Name => "Moravian Instruments";
         public string ContentId => this.GetType().FullName;
         private readonly IProfileService profileService;
         private readonly IExposureDataFactory exposureDataFactory;
@@ -39,7 +40,10 @@ namespace MoravianCameraSDK {
             return devices;
         }
 
+
+        public static Lock ScanLock = new Lock();
         private IList<ICamera> GetCameras(Func<IMoravianCameraSDK> sdkFactory, List<uint> cameraIds) {
+            using var scope = ScanLock.EnterScope();
             var devices = new List<ICamera>();
             foreach (var id in cameraIds) {
                 try {
@@ -47,17 +51,20 @@ namespace MoravianCameraSDK {
                     UIntPtr handle = sdk.Initialize(id);
                     if (handle == UIntPtr.Zero) {
                         Logger.Warning($"Moravian SDK: Could not initialize camera id {id}");
+                        sdk.Release(handle);
                         continue;
                     }
 
                     StringBuilder cameraName = new StringBuilder(256);
                     if (!sdk.GetStringParameter(handle, MoravianStringParameter.gspCameraDescription, byte.MaxValue, cameraName)) {
                         Logger.Warning($"Moravian SDK: Could not get camera description for camera id {id}");
+                        sdk.Release(handle);
                         continue;
                     }
                     StringBuilder cameraSerial = new StringBuilder(256);
                     if (!sdk.GetStringParameter(handle, MoravianStringParameter.gspCameraSerial, byte.MaxValue, cameraSerial)) {
                         Logger.Warning($"Moravian SDK: Could not get camera serial for camera id {id}");
+                        sdk.Release(handle);
                         continue;
                     }
                     

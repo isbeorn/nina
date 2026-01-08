@@ -160,6 +160,10 @@ namespace MoravianCameraSDK
         public static extern bool SetFilter(UIntPtr Handle, uint Index);
 
         [DllImport(CameraDriverDllName, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)] // BOOLEAN (unsigned char) return
+        public static extern bool ReinitFilterWheel(UIntPtr Handle);
+
+        [DllImport(CameraDriverDllName, CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetTemperature(UIntPtr Handle, float Temperature);
 
         [DllImport(CameraDriverDllName, CallingConvention = CallingConvention.Cdecl)]

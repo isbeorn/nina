@@ -153,6 +153,13 @@ namespace MoravianCameraSDK {
         bool SetFilter(UIntPtr handle, uint index);
 
         /// <summary>
+        /// The filter wheel performs the initialization, during which the zero filter position is found and set.
+        /// </summary>
+        /// <param name="handle">Camera instance handle.</param>
+        /// <returns>True if successful; otherwise false.</returns>
+        bool ReinitFilterWheel(UIntPtr handle);
+
+        /// <summary>
         /// Sets the required chip temperature in degrees Celsius. If the camera has no cooler, this call has no effect.
         /// </summary>
         /// <param name="handle">Camera instance handle.</param>
