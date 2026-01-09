@@ -7453,4 +7453,7 @@ If exposure count is not important to you, enable this option to avoid having to
   <data name="LblNotificationApplication" xml:space="preserve">
     <value>Application</value>
   </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
 </root>
