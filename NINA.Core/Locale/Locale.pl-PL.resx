@@ -7441,4 +7441,7 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
   <data name="LblNotificationApplication" xml:space="preserve">
     <value>Aplikacja</value>
   </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
 </root>
