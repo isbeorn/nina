@@ -7439,4 +7439,7 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
   <data name="LblNotificationApplication" xml:space="preserve">
     <value>Aplicación</value>
   </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
 </root>
