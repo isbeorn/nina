@@ -66,7 +66,7 @@ namespace NINA.Astrometry.Body {
                 var jdTt = AstroUtil.GetJulianDateTT(Date);
                 var error = NOVAS.Place(jdTt, obj, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref objPosition);
                 if (error != 0) {
-                    Logger.Error($"Error calculating {Name} position - Novas return code: {error}");
+                    Logger.Warning($"Failed to calculate {Name} position for date {Date}, latitude {location.Latitude}, longitude {location.Longitude}, elevation {location.Height} - Novas return code: " + error);
                 }
 
                 this.Distance = AstroUtil.AUToKilometer(objPosition.Dis);

@@ -630,7 +630,7 @@ namespace NINA.Astrometry {
             var jdTt = GetJulianDateTT(date);
             var error = NOVAS.Place(jdTt, celestialObject, obs, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref skyPosition);
             if (error != 0) {
-                Logger.Error("Error calculating moon position - Novas return code: " + error);
+                Logger.Warning($"Failed to calculate moon position for date {date}, latitude {observerInfo.Latitude}, longitude {observerInfo.Longitude}, elevation {observerInfo.Elevation}, temperature {observerInfo.Temperature}, pressure {observerInfo.Pressure} - Novas return code: " + error);
             }
 
             return skyPosition;
@@ -641,15 +641,15 @@ namespace NINA.Astrometry {
             return GetSunPosition(date, oberverInfo);
         }
 
-        public static NOVAS.SkyPosition GetSunPosition(DateTime date, ObserverInfo oberverInfo) {
+        public static NOVAS.SkyPosition GetSunPosition(DateTime date, ObserverInfo observerInfo) {
             var deltaT = DeltaT(date);
 
             var onSurface = new NOVAS.OnSurface() {
-                Latitude = oberverInfo.Latitude,
-                Longitude = oberverInfo.Longitude,
-                Height = oberverInfo.Elevation,
-                Temperature = oberverInfo.Temperature,
-                Pressure = oberverInfo.Pressure
+                Latitude = observerInfo.Latitude,
+                Longitude = observerInfo.Longitude,
+                Height = observerInfo.Elevation,
+                Temperature = observerInfo.Temperature,
+                Pressure = observerInfo.Pressure
             };
 
             var obs = new NOVAS.Observer() {
@@ -669,7 +669,7 @@ namespace NINA.Astrometry {
             var jdTt = GetJulianDateTT(date);
             var error = NOVAS.Place(jdTt, celestialObject, obs, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref skyPosition);
             if (error != 0) {
-                Logger.Error("Error calculating moon position - Novas return code: " + error);
+                Logger.Warning($"Failed to calculate sun position for date {date}, latitude {observerInfo.Latitude}, longitude {observerInfo.Longitude}, elevation {observerInfo.Elevation}, temperature {observerInfo.Temperature}, pressure {observerInfo.Pressure} - Novas return code: " + error);
             }
 
             return skyPosition;
