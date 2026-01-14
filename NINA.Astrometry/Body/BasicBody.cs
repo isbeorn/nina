@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
 using System;
 using System.Threading.Tasks;
 
@@ -40,7 +41,6 @@ namespace NINA.Astrometry.Body {
 
         public Task Calculate() {
             return Task.Run(() => {
-                var jd = AstroUtil.GetJulianDate(Date);
                 var deltaT = AstroUtil.DeltaT(Date);
 
                 var location = new NOVAS.OnSurface() {
@@ -63,7 +63,12 @@ namespace NINA.Astrometry.Body {
 
                 var objPosition = new NOVAS.SkyPosition();
 
-                NOVAS.Place(jd, obj, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref objPosition);
+                var jdTt = AstroUtil.GetJulianDateTT(Date);
+                var error = NOVAS.Place(jdTt, obj, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref objPosition);
+                if (error != 0) {
+                    Logger.Error($"Error calculating {Name} position - Novas return code: {error}");
+                }
+
                 this.Distance = AstroUtil.AUToKilometer(objPosition.Dis);
 
                 var siderealTime = AstroUtil.GetLocalSiderealTime(Date, Longitude);
