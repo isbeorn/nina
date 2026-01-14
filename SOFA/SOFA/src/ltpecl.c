@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauLtpecl(double epj, double vec[3])
 /*
@@ -41,11 +42,11 @@ void iauLtpecl(double epj, double vec[3])
 **    expressions, valid for long time intervals (Corrigendum),
 **    Astron.Astrophys. 541, C1
 **
-**  This revision:  2016 February 9
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
 /* Obliquity at J2000.0 (radians). */
@@ -120,10 +121,12 @@ void iauLtpecl(double epj, double vec[3])
    vec[1] = - q*c - w*s;
    vec[2] = - q*s + w*c;
 
+/* Finished. */
+
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

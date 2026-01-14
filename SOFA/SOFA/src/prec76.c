@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauPrec76(double date01, double date02, double date11, double date12,
                double *zeta, double *z, double *theta)
@@ -14,7 +15,7 @@ void iauPrec76(double date01, double date02, double date11, double date12,
 **  FK5 catalog).
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  canonical model.
 **
@@ -71,11 +72,11 @@ void iauPrec76(double date01, double date02, double date11, double date12,
 **     Lieske, J.H., 1979, Astron.Astrophys. 73, 282, equations
 **     (6) & (7), p283.
 **
-**  This revision:  2013 November 19
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double t0, t, tas2r, w;
@@ -98,12 +99,12 @@ void iauPrec76(double date01, double date02, double date11, double date12,
    *theta = ((2004.3109 + (-0.85330 - 0.000217 * t0) * t0)
           + ((-0.42665 - 0.000217 * t0) - 0.041833 * t) * t) * tas2r;
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================
