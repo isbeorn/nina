@@ -378,7 +378,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetNightTimes(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new AstronomicalTwilightRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate().Result;
+            var t = riseAndSet.Calculate();
 
             return riseAndSet;
         }
@@ -390,7 +390,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetNauticalNightTimes(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new NauticalTwilightRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate().Result;
+            var t = riseAndSet.Calculate();
 
             return riseAndSet;
         }
@@ -402,7 +402,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetCivilNightTimes(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new CivilTwilightRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate().Result;
+            var t = riseAndSet.Calculate();
 
             return riseAndSet;
         }
@@ -415,7 +415,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new MoonRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate().Result;
+            var t = riseAndSet.Calculate();
 
             return riseAndSet;
         }
@@ -428,7 +428,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetSunRiseAndSet(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new SunRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate().Result;
+            var t = riseAndSet.Calculate();
 
             return riseAndSet;
         }

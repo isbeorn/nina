@@ -14,7 +14,6 @@
 
 using NINA.Core.Utility;
 using System;
-using System.Threading.Tasks;
 
 namespace NINA.Astrometry.Body {
 
@@ -39,42 +38,40 @@ namespace NINA.Astrometry.Body {
         protected abstract string Name { get; }
         protected abstract NOVAS.Body BodyNumber { get; }
 
-        public Task Calculate() {
-            return Task.Run(() => {
-                var deltaT = AstroUtil.DeltaT(Date);
+        public void Calculate() {
+            var deltaT = AstroUtil.DeltaT(Date);
 
-                var location = new NOVAS.OnSurface() {
-                    Latitude = Latitude,
-                    Longitude = Longitude,
-                    Height = Elevation
-                };
+            var location = new NOVAS.OnSurface() {
+                Latitude = Latitude,
+                Longitude = Longitude,
+                Height = Elevation
+            };
 
-                var observer = new NOVAS.Observer() {
-                    OnSurf = location,
-                    Where = (short)NOVAS.ObserverLocation.EarthSurface
-                };
+            var observer = new NOVAS.Observer() {
+                OnSurf = location,
+                Where = (short)NOVAS.ObserverLocation.EarthSurface
+            };
 
-                var obj = new NOVAS.CelestialObject() {
-                    Name = Name,
-                    Number = (short)BodyNumber,
-                    Star = new NOVAS.CatalogueEntry(),
-                    Type = (short)NOVAS.ObjectType.MajorPlanetSunOrMoon
-                };
+            var obj = new NOVAS.CelestialObject() {
+                Name = Name,
+                Number = (short)BodyNumber,
+                Star = new NOVAS.CatalogueEntry(),
+                Type = (short)NOVAS.ObjectType.MajorPlanetSunOrMoon
+            };
 
-                var objPosition = new NOVAS.SkyPosition();
+            var objPosition = new NOVAS.SkyPosition();
 
-                var jdTt = AstroUtil.GetJulianDateTT(Date);
-                var error = NOVAS.Place(jdTt, obj, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref objPosition);
-                if (error != 0) {
-                    Logger.Warning($"Failed to calculate {Name} position for date {Date}, latitude {location.Latitude}, longitude {location.Longitude}, elevation {location.Height} - Novas return code: " + error);
-                }
+            var jdTt = AstroUtil.GetJulianDateTT(Date);
+            var error = NOVAS.Place(jdTt, obj, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref objPosition);
+            if (error != 0) {
+                Logger.Warning($"Failed to calculate {Name} position for date {Date}, latitude {location.Latitude}, longitude {location.Longitude}, elevation {location.Height} - Novas return code: " + error);
+            }
 
-                this.Distance = AstroUtil.AUToKilometer(objPosition.Dis);
+            this.Distance = AstroUtil.AUToKilometer(objPosition.Dis);
 
-                var siderealTime = AstroUtil.GetLocalSiderealTime(Date, Longitude);
-                var hourAngle = AstroUtil.HoursToDegrees(AstroUtil.GetHourAngle(siderealTime, objPosition.RA));
-                this.Altitude = AstroUtil.GetAltitude(hourAngle, Latitude, objPosition.Dec);
-            });
+            var siderealTime = AstroUtil.GetLocalSiderealTime(Date, Longitude);
+            var hourAngle = AstroUtil.HoursToDegrees(AstroUtil.GetHourAngle(siderealTime, objPosition.RA));
+            this.Altitude = AstroUtil.GetAltitude(hourAngle, Latitude, objPosition.Dec);
         }
     }
 }
