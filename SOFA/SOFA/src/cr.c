@@ -9,7 +9,7 @@ void iauCr(double r[3][3], double c[3][3])
 **  Copy an r-matrix.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  vector/matrix support function.
 **
@@ -22,23 +22,23 @@ void iauCr(double r[3][3], double c[3][3])
 **  Called:
 **     iauCp        copy p-vector
 **
-**  This revision:  2016 May 19
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    iauCp(r[0], c[0]);
    iauCp(r[1], c[1]);
    iauCp(r[2], c[2]);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

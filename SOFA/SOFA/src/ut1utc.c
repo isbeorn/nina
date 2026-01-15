@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 int iauUt1utc(double ut11, double ut12, double dut1,
               double *utc1, double *utc2)
@@ -43,8 +44,8 @@ int iauUt1utc(double ut11, double ut12, double dut1,
 **
 **  3) JD cannot unambiguously represent UTC during a leap second unless
 **     special measures are taken.  The convention in the present
-**     function is that the returned quasi JD day UTC1+UTC2 represents
-**     UTC days whether the length is 86399, 86400 or 86401 SI seconds.
+**     function is that the returned quasi-JD UTC1+UTC2 represents UTC
+**     days whether the length is 86399, 86400 or 86401 SI seconds.
 **
 **  4) The function iauD2dtf can be used to transform the UTC quasi-JD
 **     into calendar date and clock time, including UTC leap second
@@ -67,11 +68,11 @@ int iauUt1utc(double ut11, double ut12, double dut1,
 **     Explanatory Supplement to the Astronomical Almanac,
 **     P. Kenneth Seidelmann (ed), University Science Books (1992)
 **
-**  This revision:  2019 June 20
+**  This revision:  2023 May 6
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    int big1;
@@ -105,7 +106,7 @@ int iauUt1utc(double ut11, double ut12, double dut1,
       if ( fabs(ddats) >= 0.5 ) {
 
       /* Yes, leap second nearby: ensure UT1-UTC is "before" value. */
-         if ( ddats * duts >= 0 ) duts -= ddats;
+         if ( ddats*duts >= 0.0 ) duts -= ddats;
 
       /* UT1 for the start of the UTC day that ends in a leap. */
          if ( iauCal2jd(iy, im, id, &d1, &d2) ) return -1;
@@ -115,7 +116,7 @@ int iauUt1utc(double ut11, double ut12, double dut1,
       /* Is the UT1 after this point? */
          du = u1 - us1;
          du += u2 - us2;
-         if ( du > 0 ) {
+         if ( du > 0.0 ) {
 
          /* Yes:  fraction of the current UTC day that has elapsed. */
             fd = du * DAYSEC / ( DAYSEC + ddats );
@@ -145,10 +146,12 @@ int iauUt1utc(double ut11, double ut12, double dut1,
 /* Status. */
    return js;
 
+/* Finished. */
+
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

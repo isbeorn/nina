@@ -11,7 +11,7 @@ void iauC2ibpn(double date1, double date2, double rbpn[3][3],
 **  the bias-precession-nutation matrix.  IAU 2000.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  support function.
 **
@@ -76,11 +76,11 @@ void iauC2ibpn(double date1, double date2, double rbpn[3][3],
 **     McCarthy, D. D., Petit, G. (eds.), IERS Conventions (2003),
 **     IERS Technical Note No. 32, BKG (2004)
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double x, y;
@@ -92,12 +92,12 @@ void iauC2ibpn(double date1, double date2, double rbpn[3][3],
 /* Form the celestial-to-intermediate matrix (n.b. IAU 2000 specific). */
    iauC2ixy(date1, date2, x, y, rc2i);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

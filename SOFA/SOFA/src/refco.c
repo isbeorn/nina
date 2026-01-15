@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauRefco(double phpa, double tc, double rh, double wl,
               double *refa, double *refb)
@@ -117,6 +118,7 @@ void iauRefco(double phpa, double tc, double rh, double wl,
 **        total pressure, water-vapour pressure and, in the case
 **        of optical/IR, wavelength.  The formulae for the two cases are
 **        developed from Hohenkerk & Sinclair (1985) and Rueger (2002).
+**        The IAG (1999) optical refractivity for dry air is used.
 **
 **     d) The formula for beta, the ratio of the scale height of the
 **        atmosphere to the geocentric distance of the observer, is
@@ -143,6 +145,9 @@ void iauRefco(double phpa, double tc, double rh, double wl,
 **     Hohenkerk, C.Y., & Sinclair, A.T., NAO Technical Note No. 63,
 **     1985.
 **
+**     IAG Resolutions adopted at the XXIIth General Assembly in
+**     Birmingham, 1999, Resolution 3.
+**
 **     Rueger, J.M., "Refractive Index Formulae for Electronic Distance
 **     Measurement with Radio and Millimetre Waves", in Unisurv Report
 **     S-68, School of Surveying and Spatial Information Systems,
@@ -150,11 +155,11 @@ void iauRefco(double phpa, double tc, double rh, double wl,
 **
 **     Stone, Ronald C., P.A.S.P. 108, 1051-1058, 1996.
 **
-**  This revision:   2013 October 9
+**  This revision:   2021 February 24
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    int optic;
@@ -207,8 +212,8 @@ void iauRefco(double phpa, double tc, double rh, double wl,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

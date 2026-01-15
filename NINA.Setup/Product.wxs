@@ -2197,8 +2197,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x64_SOFA_files" Directory="External_x64_SOFA">
-      <Component Id="External_x64_SOFA_SOFAlib.dll" Guid="7e84f09e-ef65-4075-93f9-34a61f47a2af" Bitness="$(var.Win64)">
-        <File Id="External_x64_SOFA_SOFAlib.dll" Name="SOFAlib.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFAlib.dll" />
+      <Component Id="External_x64_SOFA_SOFA-2023-10-11.dll" Guid="81FF5D30-3236-4516-89F9-C2FD3C655A22" Bitness="$(var.Win64)">
+        <File Id="External_x64_SOFA_SOFA-2023-10-11.dll" Name="SOFA-2023-10-11.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFA-2023-10-11.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
