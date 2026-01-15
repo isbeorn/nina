@@ -154,9 +154,9 @@ namespace NINA.Astrometry {
             return deltaT;
         }
 
-        private static double DeltaUTToday = 0.0;
-        private static double DeltaUTYesterday = 0.0;
-        private static double DeltaUTTomorrow = 0.0;
+        private static double? DeltaUTToday;
+        private static double? DeltaUTYesterday;
+        private static double? DeltaUTTomorrow;
         private static ConcurrentDictionary<DateTime, double> DeltaUTCache = new ConcurrentDictionary<DateTime, double>();
         private static DateTime DeltaUTReference;
 
@@ -170,36 +170,34 @@ namespace NINA.Astrometry {
             if (DeltaUTReference != DateTime.UtcNow.Date) {
                 // Clear the cache when a app is open longer than a day
                 DeltaUTReference = DateTime.UtcNow.Date;
-                DeltaUTYesterday = 0d;
-                DeltaUTToday = 0d;
-                DeltaUTTomorrow = 0d;
+                DeltaUTYesterday = null;
+                DeltaUTToday = null;
+                DeltaUTTomorrow = null;
             }
 
             var utcDate = date.ToUniversalTime();
 
             if (utcDate.Date == DateTime.UtcNow.Date) {
-                if (DeltaUTToday != 0) {
-                    return DeltaUTToday;
+                if (DeltaUTToday is double cachedToday) {
+                    return cachedToday;
                 }
             }
 
             if (utcDate.Date == DateTime.UtcNow.Date - TimeSpan.FromDays(1)) {
-                if (DeltaUTYesterday != 0) {
-                    return DeltaUTYesterday;
+                if (DeltaUTYesterday is double cachedYesterday) {
+                    return cachedYesterday;
                 }
             }
 
             if (utcDate.Date == DateTime.UtcNow.Date + TimeSpan.FromDays(1)) {
-                if (DeltaUTTomorrow != 0) {
-                    return DeltaUTTomorrow;
+                if (DeltaUTTomorrow is double cachedTomorrow) {
+                    return cachedTomorrow;
                 }
             }
 
             var deltaUT = 0d;
-            if (DeltaUTCache.TryGetValue(utcDate.Date, out deltaUT)) {
-                if(deltaUT != 0) {
-                    return deltaUT;
-                }
+            if (DeltaUTCache.TryGetValue(utcDate.Date, out var cached)) {
+                return cached;
             }
 
             db = db ?? new DatabaseInteraction();
@@ -222,9 +220,7 @@ namespace NINA.Astrometry {
             }
 
             try {
-                if (!DeltaUTCache.ContainsKey(utcDate.Date)) {
-                    DeltaUTCache.AddOrUpdate(utcDate.Date, deltaUT, (a, b) => b);
-                }                
+                DeltaUTCache.AddOrUpdate(utcDate.Date, deltaUT, (a, b) => b);
             } catch(Exception) { }
             
 
