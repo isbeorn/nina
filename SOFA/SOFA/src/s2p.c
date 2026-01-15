@@ -9,7 +9,7 @@ void iauS2p(double theta, double phi, double r, double p[3])
 **  Convert spherical polar coordinates to p-vector.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  vector/matrix support function.
 **
@@ -25,11 +25,11 @@ void iauS2p(double theta, double phi, double r, double p[3])
 **     iauS2c       spherical coordinates to unit vector
 **     iauSxp       multiply p-vector by scalar
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double u[3];
@@ -38,12 +38,12 @@ void iauS2p(double theta, double phi, double r, double p[3])
    iauS2c(theta, phi, u);
    iauSxp(r, u, p);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

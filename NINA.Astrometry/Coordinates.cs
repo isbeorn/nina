@@ -172,7 +172,7 @@ namespace NINA.Astrometry {
         /// <returns></returns>
         private Coordinates TransformToJNOW() {
             var now = DateTime.Now;
-            double jdTT = GetJdTT(now);
+            double jdTT = AstroUtil.GetJulianDateTT(now);
 
             double ri = 0, di = 0, eo = 0;
             SOFA.CelestialToIntermediate(raAngle.Radians, decAngle.Radians, 0.0, 0.0, 0.0, 0.0, jdTT, 0.0, ref ri, ref di, ref eo);
@@ -184,26 +184,16 @@ namespace NINA.Astrometry {
             return jnowCoordinates;
         }
 
-        private double GetJdTT(DateTime date) {
-            var utcDate = date.ToUniversalTime();
-            double tai1 = 0, tai2 = 0, tt1 = 0, tt2 = 0;
-            var utc = AstroUtil.GetJulianDate(utcDate);
-
-            SOFA.UtcTai(utc, 0.0, ref tai1, ref tai2);
-            SOFA.TaiTt(tai1, tai2, ref tt1, ref tt2);
-
-            return tt1 + tt2;
-        }
-
         /// <summary>
         /// Transforms coordinates from JNOW to J2000
         /// </summary>
         /// <returns></returns>
         private Coordinates TransformToJ2000() {
-            var jdTT = GetJdTT(this.creationDate);
-            var jdUTC = AstroUtil.GetJulianDate(this.creationDate);
+            var (jdTt1, jdTt2) = AstroUtil.GetJulianDateTTParts(this.creationDate);
+            var (utc1, utc2) = AstroUtil.GetJulianDateUTCParts(this.creationDate);
+
             double rc = 0, dc = 0, eo = 0;
-            SOFA.IntermediateToCelestial(SOFA.Anp(raAngle.Radians + SOFA.Eo06a(jdUTC, 0.0)), decAngle.Radians, jdTT, 0.0, ref rc, ref dc, ref eo);
+            SOFA.IntermediateToCelestial(SOFA.Anp(raAngle.Radians + SOFA.Eo06a(utc1, utc2)), decAngle.Radians, jdTt1, jdTt2, ref rc, ref dc, ref eo);
 
             var raCelestial = Angle.ByRadians(rc);
             var decCelestial = Angle.ByRadians(dc);
@@ -236,11 +226,10 @@ namespace NINA.Astrometry {
         public TopocentricCoordinates Transform(Angle latitude, Angle longitude, double elevation, double pressurehPa, double tempCelcius, double relativeHumidity, double wavelength, DateTime now) {
             var transform = this.Transform(Epoch.J2000);
 
-            var jdUTC = AstroUtil.GetJulianDate(now);
-
+            var (utc1, utc2) = AstroUtil.GetJulianDateUTCParts(now);
             var deltaUT = AstroUtil.DeltaUT(now);
             double aob = 0d, zob = 0d, hob = 0d, dob = 0d, rob = 0d, eo = 0d;
-            SOFA.CelestialToTopocentric(transform.raAngle.Radians, transform.decAngle.Radians, 0d, 0d, 0d, 0d, jdUTC, 0d, deltaUT, longitude.Radians, latitude.Radians, elevation, 0d, 0d, pressurehPa, tempCelcius, relativeHumidity, wavelength, ref aob, ref zob, ref hob, ref dob, ref rob, ref eo);
+            SOFA.CelestialToTopocentric(transform.raAngle.Radians, transform.decAngle.Radians, 0d, 0d, 0d, 0d, utc1, utc2, deltaUT, longitude.Radians, latitude.Radians, elevation, 0d, 0d, pressurehPa, tempCelcius, relativeHumidity, wavelength, ref aob, ref zob, ref hob, ref dob, ref rob, ref eo);
 
             var az = Angle.ByRadians(aob);
             var alt = Angle.ByDegree(90) - Angle.ByRadians(zob);

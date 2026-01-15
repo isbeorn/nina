@@ -113,7 +113,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         private DateTime CalculateExpectedDateTime(DateTime time) {
             var customRiseAndSet = new MoonCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Observer.Elevation, GetDataOffset());
-            AsyncContext.Run(customRiseAndSet.Calculate);
+            customRiseAndSet.Calculate();
             return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN ? customRiseAndSet.Set : customRiseAndSet?.Rise) ?? DateTime.MaxValue;
         }
 

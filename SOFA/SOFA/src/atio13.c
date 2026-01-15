@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 int iauAtio13(double ri, double di,
               double utc1, double utc2, double dut1,
@@ -139,11 +140,11 @@ int iauAtio13(double ri, double di,
 **     iauApio13    astrometry parameters, CIRS-observed, 2013
 **     iauAtioq     quick CIRS to observed
 **
-**  This revision:   2016 February 2
+**  This revision:   2021 February 24
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    int j;
@@ -167,8 +168,8 @@ int iauAtio13(double ri, double di,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================
