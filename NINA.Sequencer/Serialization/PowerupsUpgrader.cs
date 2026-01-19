@@ -28,6 +28,7 @@ using NINA.Sequencer.Trigger.Guider;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity.Migrations.Model;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -149,6 +150,37 @@ namespace NINA.Sequencer.Serialization {
                         jObject.Remove("IfExpr");
                     }
                     break;
+            }
+        }
+
+        private static void UpdateIfContainer(ISequenceItem item) {
+            ISequenceContainer instructions = item.GetType().GetProperty("Instructions").GetValue(item, null) as ISequenceContainer;
+            if (instructions != null && instructions.Items.Count > 0) {
+                ISequenceContainer updated = item as ISequenceContainer;
+                updated.Items.Clear();
+                for (int i = 0; i < instructions.Items.Count; i++) {
+                    ISequenceItem oldItem = instructions.Items[i];
+                    ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                    updated.Add(newItem); // Temporarily add clone to expand collection
+                    newItem.AttachNewParent(updated);
+                }
+                instructions.Items.Clear();
+            }
+
+            PropertyInfo cp = item.GetType().GetProperty("Condition");
+            if (cp != null) {
+                ISequenceContainer condition = cp.GetValue(item, null) as ISequenceContainer;
+                if (condition != null && condition.Items.Count > 0) {
+                    ISequenceItem oldItem = condition.Items[0];
+                    ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                    // CheckInstruction
+                    PropertyInfo cip = item.GetType().GetProperty("CheckInstruction");
+                    if (cip != null) {
+                        cip.SetValue(item, newItem);
+                    }
+                    newItem.AttachNewParent((ISequenceContainer)item);
+                    condition.Items.Clear();
+                }
             }
         }
 
@@ -362,7 +394,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
 
-                    // The following are updates from Powerups 3.2 to Powerups 3.3
+                    // The following are updates from Powerups 3.2 to Powerups 4
                     // Primarily this is changing from Powerups Expr class to NINA Expression class
                     case "AddImagePattern": {
                             if (jObject.ContainsKey("iExpr")) {
@@ -377,8 +409,13 @@ namespace NINA.Sequencer.Serialization {
                                 PutExpr(t, item, "WaitExpression", GetExpr(t, item, "iWaitExpr"));
                                 item.Name += " [Powerups 3=>4";
                             }
+                            UpdateIfContainer(item);
                             return obj;
                         }
+
+                    case "OnceSafe":
+                        UpdateIfContainer(item);
+                        return obj;
 
                     case "InitializeArray":
                     case "ForEachInArray":
@@ -397,7 +434,7 @@ namespace NINA.Sequencer.Serialization {
                     case "ConditionalTrigger":
                         if (jObject.ContainsKey("iIfExpr")) {
                             PutExpr(t, trigger, "PredicateExpression", GetExpr(t, trigger, "iIfExpr"));
-                            item.Name += " [Powerups 3=>4";
+                            trigger.Name += " [Powerups 3=>4";
                         }
                         return obj;
 
@@ -408,6 +445,7 @@ namespace NINA.Sequencer.Serialization {
                             e.Definition = jObject["IfExpr"]["Expression"].ToString();
                             item.Name += " [Powerups 3=>4";
                         }
+                        UpdateIfContainer(item);
                         break;
 
                     case "WhenSwitch":
@@ -418,11 +456,16 @@ namespace NINA.Sequencer.Serialization {
                         }
                         break;
 
+                    case "IfFailed":
+                    case "IfTimeout":
+                        UpdateIfContainer(item);
+                        break;
+
+
                     // Unchanged (no Expressions)
                     case "IfContainer":
                     case "FlipRotator":
                     case "TemplateContainer":
-                    case "IfTimeout":
                     case "DoFlip":
                     case "DIYMeridianFlipTrigger":
                     case "PassMeridian":
@@ -431,18 +474,22 @@ namespace NINA.Sequencer.Serialization {
                     case "Breakpoint":
                     case "EndSequence":
                     case "EndInstructionSet":
-                    case "IfFailed":
                     case "WhenUnsafe":
                     case "InterruptTrigger":
                     case "AutofocusTrigger":
                     case "LogThis":
-                    case "OnceSafe":
                     case "TemplateByReference":
                         break;
 
+                    case "SafeTrigger":
+                        trigger?.Name += " *USE CONDITIONAL TRIGGER WITH IsSafe";
+                        break;
+
                     default: {
-                            item.Name += " *NOT AVAILABLE IN POWERUPS 4";
-                            break;
+                        item?.Name += " *NOT AVAILABLE IN POWERUPS 4";
+                        condition?.Name += " *NOT AVAILABLE IN POWERUPS 4";
+                        trigger?.Name += " *NOT AVAILABLE IN POWERUPS 4";
+                        break;
                         }
                 }
                 return obj;
