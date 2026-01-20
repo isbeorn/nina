@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 int iauAtco13(double rc, double dc,
               double pr, double pd, double px, double rv,
@@ -25,7 +26,7 @@ int iauAtco13(double rc, double dc,
 **
 **  Given:
 **     rc,dc  double   ICRS right ascension at J2000.0 (radians, Note 1)
-**     pr     double   RA proper motion (radians/year; Note 2)
+**     pr     double   RA proper motion (radians/year, Note 2)
 **     pd     double   Dec proper motion (radians/year)
 **     px     double   parallax (arcsec)
 **     rv     double   radial velocity (km/s, +ve if receding)
@@ -47,7 +48,7 @@ int iauAtco13(double rc, double dc,
 **     hob    double*  observed hour angle (radians)
 **     dob    double*  observed declination (radians)
 **     rob    double*  observed right ascension (CIO-based, radians)
-**     eo     double*  equation of the origins (ERA-GST)
+**     eo     double*  equation of the origins (ERA-GST, radians)
 **
 **  Returned (function value):
 **            int      status: +1 = dubious year (Note 4)
@@ -156,11 +157,11 @@ int iauAtco13(double rc, double dc,
 **     iauAtciq     quick ICRS to CIRS
 **     iauAtioq     quick CIRS to observed
 **
-**  This revision:   2016 February 2
+**  This revision:   2022 May 3
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    int j;
@@ -188,8 +189,8 @@ int iauAtco13(double rc, double dc,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

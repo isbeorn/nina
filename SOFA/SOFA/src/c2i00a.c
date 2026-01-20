@@ -10,7 +10,7 @@ void iauC2i00a(double date1, double date2, double rc2i[3][3])
 **  IAU 2000A precession-nutation model.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  support function.
 **
@@ -53,7 +53,7 @@ void iauC2i00a(double date1, double date2, double rc2i[3][3])
 **     Reference System (see IERS Conventions 2003), ERA is the Earth
 **     Rotation Angle and RPOM is the polar motion matrix.
 **
-**  3) A faster, but slightly less accurate result (about 1 mas), can be
+**  3) A faster, but slightly less accurate, result (about 1 mas) can be
 **     obtained by using instead the iauC2i00b function.
 **
 **  Called:
@@ -73,11 +73,11 @@ void iauC2i00a(double date1, double date2, double rc2i[3][3])
 **     McCarthy, D. D., Petit, G. (eds.), IERS Conventions (2003),
 **     IERS Technical Note No. 32, BKG (2004)
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double rbpn[3][3];
@@ -89,12 +89,12 @@ void iauC2i00a(double date1, double date2, double rc2i[3][3])
 /* Form the celestial-to-intermediate matrix. */
    iauC2ibpn(date1, date2, rbpn, rc2i);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

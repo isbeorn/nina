@@ -22,6 +22,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - 160 stars have been added to the manual focus target list to cover more stars of different magnitudes across the sky
 - Filterwheels will now poll in the background their position in case the wheel is moved by another client. This ensures that N.I.N.A. always has the correct filter position even when the wheel was moved outside of N.I.N.A.
 - Enhanced sequencer exit handling to more reliably detect actual changes and prevent false-positive change prompts.
+- Clicking on slew Alt/Az in the Mount equipment page with Mount drivers that do not support slewing to Alt/Az, will now fallback to slewing to RA/Dec coordinates instead of doing nothing.
 
 ## Features
 
@@ -48,6 +49,10 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Improved reliability, lifetime handling, and positioning across multiple monitors.
   - Added configurable notification placement: primary screen, same screen as the app, or application window, as well as adjustable corner positioning via Options > General > Advanced.
   - Notifications now reposition automatically on window moves, DPI changes, and display configuration changes.
+
+### File formats
+- **XISF ZStandard Compression**
+  - Added support for ZStandard compression in XISF files.
 
 
 # Version 3.2
