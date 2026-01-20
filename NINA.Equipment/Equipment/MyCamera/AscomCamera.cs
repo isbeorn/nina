@@ -1,7 +1,7 @@
-#region "copyright"
+﻿#region "copyright"
 
 /*
-    Copyright � 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -19,6 +19,10 @@ using NINA.Profile.Interfaces;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using System;
+using System.Buffers.Binary;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -37,6 +41,7 @@ using NINA.Equipment.Interfaces;
 using NINA.Core.Enum;
 using ASCOM.Common.Alpaca;
 using ASCOM.Alpaca.Discovery;
+using Newtonsoft.Json.Linq;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -53,6 +58,27 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         private IProfileService profileService;
         private readonly IExposureDataFactory exposureDataFactory;
+
+        private const int ImageBytesMetadataSize = 11 * sizeof(uint);
+        private const uint ImageBytesMetadataVersion = 1;
+        private const uint ImageTypeInt16 = 1;
+        private const uint ImageTypeInt32 = 2;
+        private const uint ImageTypeDouble = 3;
+        private const uint ImageTypeSingle = 4;
+        private const uint ImageTypeByte = 5;
+        private const uint ImageTypeUInt16 = 6;
+        private const uint ImageTypeUInt32 = 7;
+        private const uint ImageTypeInt64 = 8;
+        private const uint ImageTypeUInt64 = 9;
+
+        private static readonly HttpClient imageBytesClient = CreateImageBytesClient();
+        private static readonly int alpacaClientId = Math.Max(Environment.ProcessId, 1);
+        private static long alpacaClientTransactionId;
+
+        private static HttpClient CreateImageBytesClient() {
+            var handler = new HttpClientHandler();
+            return new HttpClient(handler, disposeHandler: true);
+        }
 
         private void Initialize() {
             _hasCooler = true;
@@ -631,6 +657,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         metaData.FromCamera(this);
                         metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
 
+                        if (IsAlpacaDevice()) {
+                            var alpacaExposure = await TryDownloadExposureImageBytes(metaData, token);
+                            if (alpacaExposure != null) {
+                                return alpacaExposure;
+                            }
+                        }
+
                         return exposureDataFactory.CreateFlipped2DExposureData(
                             flipped2DArray: (Array)ImageArray,
                             bitDepth: BitDepth,
@@ -644,6 +677,212 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     return null;
                 });
             }
+        }
+
+        private async Task<IExposureData> TryDownloadExposureImageBytes(ImageMetaData metaData, CancellationToken token) {
+            if (!IsAlpacaDevice()) {
+                return null;
+            }
+
+            try {
+                var requestUri = BuildAlpacaImageArrayUri();
+                using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/imagebytes"));
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                using var response = await imageBytesClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
+                if (!response.IsSuccessStatusCode) {
+                    Logger.Trace($"Alpaca ImageBytes request failed with HTTP {(int)response.StatusCode}");
+                    return null;
+                }
+
+                var mediaType = response.Content.Headers.ContentType?.MediaType ?? string.Empty;
+                var payload = await response.Content.ReadAsByteArrayAsync();
+                stopwatch.Stop();
+                Logger.Trace($"Alpaca ImageBytes response content-type '{mediaType}', bytes={payload.Length}, elapsed={stopwatch.ElapsedMilliseconds}ms");
+
+                if (mediaType.IndexOf("application/imagebytes", StringComparison.OrdinalIgnoreCase) >= 0) {
+                    Logger.Trace("Alpaca ImageBytes response detected, decoding");
+                    return ParseImageBytesPayload(payload, metaData);
+                }
+
+                if (string.IsNullOrEmpty(mediaType) && payload.Length >= ImageBytesMetadataSize) {
+                    var version = BinaryPrimitives.ReadUInt32LittleEndian(payload.AsSpan(0, 4));
+                    if (version == ImageBytesMetadataVersion) {
+                        Logger.Trace("Alpaca ImageBytes response detected via metadata, decoding");
+                        return ParseImageBytesPayload(payload, metaData);
+                    }
+                }
+
+                if (mediaType.IndexOf("application/json", StringComparison.OrdinalIgnoreCase) >= 0 || payload.Length > 0) {
+                    Logger.Trace("Alpaca ImageBytes response not detected, using JSON ImageArray");
+                    return ParseImageArrayJson(payload, metaData);
+                }
+            } catch (OperationCanceledException) {
+                throw;
+            } catch (Exception ex) {
+                Logger.Debug($"Alpaca ImageBytes download failed, falling back to ImageArray. {ex.Message}");
+            }
+
+            return null;
+        }
+
+        private Uri BuildAlpacaImageArrayUri() {
+            var protocol = deviceMeta.ServiceType == ASCOM.Common.Alpaca.ServiceType.Https ? "https" : "http";
+            var builder = new UriBuilder(protocol, deviceMeta.IpAddress, deviceMeta.IpPort,
+                $"/api/v1/camera/{deviceMeta.AlpacaDeviceNumber}/imagearray");
+            var transactionId = Interlocked.Increment(ref alpacaClientTransactionId);
+            builder.Query = $"ClientID={alpacaClientId}&ClientTransactionID={transactionId}";
+            return builder.Uri;
+        }
+
+        private IExposureData ParseImageBytesPayload(byte[] payload, ImageMetaData metaData) {
+            if (payload == null || payload.Length < ImageBytesMetadataSize) {
+                throw new System.InvalidOperationException("Alpaca ImageBytes payload is too small.");
+            }
+
+            var span = payload.AsSpan();
+            uint metadataVersion = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(0, 4));
+            uint errorNumber = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(4, 4));
+            uint dataStart = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(16, 4));
+            uint imageElementType = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(20, 4));
+            uint transmissionType = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(24, 4));
+            uint rank = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(28, 4));
+            uint width = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(32, 4));
+            uint height = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(36, 4));
+            uint depth = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(40, 4));
+
+            _ = imageElementType;
+            _ = depth;
+
+            if (metadataVersion != ImageBytesMetadataVersion) {
+                Logger.Trace($"Alpaca ImageBytes metadata version {metadataVersion} not supported.");
+            }
+
+            if (errorNumber != 0) {
+                var message = dataStart < payload.Length
+                    ? Encoding.UTF8.GetString(payload, (int)dataStart, payload.Length - (int)dataStart)
+                    : string.Empty;
+                throw new System.InvalidOperationException($"Alpaca ImageBytes error {errorNumber}: {message}");
+            }
+
+            if (rank != 2 || width == 0 || height == 0) {
+                throw new System.InvalidOperationException("Alpaca ImageBytes payload has invalid dimensions.");
+            }
+
+            int bytesPerElement;
+            switch (transmissionType) {
+                case ImageTypeByte:
+                    bytesPerElement = 1;
+                    break;
+                case ImageTypeUInt16:
+                case ImageTypeInt16:
+                    bytesPerElement = 2;
+                    break;
+                case ImageTypeInt32:
+                    bytesPerElement = 4;
+                    break;
+                default:
+                    throw new System.InvalidOperationException($"Alpaca ImageBytes transmission type {transmissionType} is not supported.");
+            }
+
+            int imageWidth = (int)width;
+            int imageHeight = (int)height;
+            long pixelCountLong = (long)imageWidth * imageHeight;
+            if (pixelCountLong > int.MaxValue) {
+                throw new System.InvalidOperationException("Alpaca ImageBytes payload is too large.");
+            }
+            int pixelCount = (int)pixelCountLong;
+            long requiredBytes = (long)dataStart + (long)pixelCount * bytesPerElement;
+            if (requiredBytes > payload.Length) {
+                throw new System.InvalidOperationException("Alpaca ImageBytes payload is truncated.");
+            }
+
+            int offset = (int)dataStart;
+            var data = new ushort[pixelCount];
+            for (int x = 0; x < imageWidth; x++) {
+                for (int y = 0; y < imageHeight; y++) {
+                    int idx = x + (imageWidth * y);
+                    int value;
+                    switch (transmissionType) {
+                        case ImageTypeByte:
+                            value = payload[offset];
+                            break;
+                        case ImageTypeUInt16:
+                            value = BinaryPrimitives.ReadUInt16LittleEndian(span.Slice(offset, 2));
+                            break;
+                        case ImageTypeInt16:
+                            value = BinaryPrimitives.ReadInt16LittleEndian(span.Slice(offset, 2));
+                            break;
+                        default:
+                            value = BinaryPrimitives.ReadInt32LittleEndian(span.Slice(offset, 4));
+                            break;
+                    }
+
+                    if (value < 0) {
+                        value = 0;
+                    } else if (value > ushort.MaxValue) {
+                        value = ushort.MaxValue;
+                    }
+
+                    data[idx] = (ushort)value;
+                    offset += bytesPerElement;
+                }
+            }
+            return exposureDataFactory.CreateImageArrayExposureData(data, imageWidth, imageHeight, BitDepth, SensorType != SensorType.Monochrome, metaData);
+        }
+
+        private IExposureData ParseImageArrayJson(byte[] payload, ImageMetaData metaData) {
+            var jsonText = Encoding.UTF8.GetString(payload);
+            var root = JObject.Parse(jsonText);
+            int errorNumber = root["ErrorNumber"]?.Value<int>() ?? 0;
+            if (errorNumber != 0) {
+                var message = root["ErrorMessage"]?.Value<string>() ?? string.Empty;
+                throw new System.InvalidOperationException($"Alpaca JSON image error {errorNumber}: {message}");
+            }
+
+            var valueToken = root["Value"] as JArray;
+            if (valueToken == null) {
+                throw new System.InvalidOperationException("Alpaca JSON image payload missing Value.");
+            }
+
+            int width = valueToken.Count;
+            int height = (valueToken.First as JArray)?.Count ?? 0;
+            if (width <= 0 || height <= 0) {
+                throw new System.InvalidOperationException("Alpaca JSON image payload has invalid dimensions.");
+            }
+            if (width > int.MaxValue / height) {
+                throw new System.InvalidOperationException("Alpaca JSON image payload is too large.");
+            }
+            int pixelCount = width * height;
+
+            var data = new ushort[pixelCount];
+            for (int x = 0; x < width; x++) {
+                var column = valueToken[x] as JArray;
+                if (column == null || column.Count != height) {
+                    throw new System.InvalidOperationException("Alpaca JSON image payload has inconsistent dimensions.");
+                }
+
+                for (int y = 0; y < height; y++) {
+                    var token = column[y];
+                    if (token == null) {
+                        continue;
+                    }
+
+                    int value = token.Type == JTokenType.Float
+                        ? (int)token.Value<double>()
+                        : token.Value<int>();
+                    if (value < 0) {
+                        value = 0;
+                    } else if (value > ushort.MaxValue) {
+                        value = ushort.MaxValue;
+                    }
+                    data[x + (width * y)] = (ushort)value;
+                }
+            }
+
+            return exposureDataFactory.CreateImageArrayExposureData(data, width, height, BitDepth, SensorType != SensorType.Monochrome, metaData);
         }
 
         public void StartExposure(CaptureSequence sequence) {
@@ -853,3 +1092,4 @@ namespace NINA.Equipment.Equipment.MyCamera {
         protected override string ConnectionLostMessage => Loc.Instance["LblCameraConnectionLost"];
     }
 }
+
