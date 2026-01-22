@@ -34,6 +34,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using static System.Data.Entity.Infrastructure.Design.Executor;
 
 namespace NINA.Sequencer.Serialization {
     public class PowerupsUpgrader {
@@ -181,6 +182,34 @@ namespace NINA.Sequencer.Serialization {
                     newItem.AttachNewParent((ISequenceContainer)item);
                     condition.Items.Clear();
                 }
+            }
+        }
+
+        private static void UpdateIfThenElse(ISequenceItem item) {
+            ISequenceContainer instructions = item.GetType().GetProperty("Instructions").GetValue(item, null) as ISequenceContainer;
+            if (instructions != null && instructions.Items.Count > 0) {
+                ISequenceContainer thenBranch = item.GetType().GetProperty("ThenBranch").GetValue(item, null) as ISequenceContainer;
+                thenBranch.Items.Clear();
+                for (int i = 0; i < instructions.Items.Count; i++) {
+                    ISequenceItem oldItem = instructions.Items[i];
+                    ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                    thenBranch.Add(newItem); // Temporarily add clone to expand collection
+                    newItem.AttachNewParent(thenBranch);
+                }
+                instructions.Items.Clear();
+            }
+
+            ISequenceContainer elseInstructions = item.GetType().GetProperty("ElseInstructions").GetValue(item, null) as ISequenceContainer;
+            if (elseInstructions != null && elseInstructions.Items.Count > 0) {
+                ISequenceContainer elseBranch = item.GetType().GetProperty("ElseBranch").GetValue(item, null) as ISequenceContainer;
+                elseBranch.Items.Clear();
+                for (int i = 0; i < elseInstructions.Items.Count; i++) {
+                    ISequenceItem oldItem = elseInstructions.Items[i];
+                    ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                    elseBranch.Add(newItem); // Temporarily add clone to expand collection
+                    newItem.AttachNewParent(elseBranch);
+                }
+                elseInstructions.Items.Clear();
             }
         }
 
@@ -439,7 +468,6 @@ namespace NINA.Sequencer.Serialization {
                         return obj;
 
                     case "IfConstant":
-                    case "IfThenElse":
                         Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e.Definition = jObject["IfExpr"]["Expression"].ToString();
@@ -447,11 +475,20 @@ namespace NINA.Sequencer.Serialization {
                         }
                         UpdateIfContainer(item);
                         break;
-
-                    case "WhenSwitch":
-                        Expression e1 = (Expression)trigger.GetType().GetProperty("PredicateExpression").GetValue(trigger, null);
+ 
+                    case "IfThenElse":
+                        Expression e1 = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e1.Definition = jObject["IfExpr"]["Expression"].ToString();
+                            item.Name += " [Powerups 3=>4";
+                        }
+                        UpdateIfThenElse(item);
+                        break;
+
+                    case "WhenSwitch":
+                        Expression e2 = (Expression)trigger.GetType().GetProperty("PredicateExpression").GetValue(trigger, null);
+                        if (jObject["IfExpr"] != null) {
+                            e2.Definition = jObject["IfExpr"]["Expression"].ToString();
                             item.Name += " [Powerups 3=>4";
                         }
                         break;

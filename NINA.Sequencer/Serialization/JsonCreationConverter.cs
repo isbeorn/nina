@@ -149,7 +149,6 @@ namespace NINA.Sequencer.Serialization {
         // When all that's needed is changing the $type
         private (Upgrade, string) PowerupsLiteSimpleMigration(string token) => token switch {
             "WhenPlugin.When.CVContainer, WhenPlugin" => (Upgrade.Lite, "NINA.Sequencer.Container.SequentialContainer, NINA.Sequencer"),
-            "WhenPlugin.When.IfThenElse, WhenPlugin" => (Upgrade.Lite, "WhenPlugin.When.IfConstant, WhenPlugin"),
             // Complex types
             "WhenPlugin.When.Call, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Call, WhenPlugin"), // No change),
             "WhenPlugin.When.Return, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Return, WhenPlugin"), // No change),
