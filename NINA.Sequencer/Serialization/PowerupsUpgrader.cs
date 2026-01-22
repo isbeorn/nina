@@ -28,11 +28,13 @@ using NINA.Sequencer.Trigger.Guider;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity.Migrations.Model;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using static System.Data.Entity.Infrastructure.Design.Executor;
 
 namespace NINA.Sequencer.Serialization {
     public class PowerupsUpgrader {
@@ -149,6 +151,65 @@ namespace NINA.Sequencer.Serialization {
                         jObject.Remove("IfExpr");
                     }
                     break;
+            }
+        }
+
+        private static void UpdateIfContainer(ISequenceItem item) {
+            ISequenceContainer instructions = item.GetType().GetProperty("Instructions").GetValue(item, null) as ISequenceContainer;
+            if (instructions != null && instructions.Items.Count > 0) {
+                ISequenceContainer updated = item as ISequenceContainer;
+                updated.Items.Clear();
+                for (int i = 0; i < instructions.Items.Count; i++) {
+                    ISequenceItem oldItem = instructions.Items[i];
+                    ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                    updated.Add(newItem); // Temporarily add clone to expand collection
+                    newItem.AttachNewParent(updated);
+                }
+                instructions.Items.Clear();
+            }
+
+            PropertyInfo cp = item.GetType().GetProperty("Condition");
+            if (cp != null) {
+                ISequenceContainer condition = cp.GetValue(item, null) as ISequenceContainer;
+                if (condition != null && condition.Items.Count > 0) {
+                    ISequenceItem oldItem = condition.Items[0];
+                    ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                    // CheckInstruction
+                    PropertyInfo cip = item.GetType().GetProperty("CheckInstruction");
+                    if (cip != null) {
+                        cip.SetValue(item, newItem);
+                    }
+                    newItem.AttachNewParent((ISequenceContainer)item);
+                    condition.Items.Clear();
+                }
+            }
+        }
+
+        private static void UpdateIfThenElse(ISequenceItem item) {
+            ISequenceContainer instructions = item.GetType().GetProperty("Instructions").GetValue(item, null) as ISequenceContainer;
+            if (instructions != null && instructions.Items.Count > 0) {
+                ISequenceContainer thenBranch = item.GetType().GetProperty("ThenBranch").GetValue(item, null) as ISequenceContainer;
+                thenBranch.Items.Clear();
+                for (int i = 0; i < instructions.Items.Count; i++) {
+                    ISequenceItem oldItem = instructions.Items[i];
+                    ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                    thenBranch.Add(newItem); // Temporarily add clone to expand collection
+                    newItem.AttachNewParent(thenBranch);
+                }
+                instructions.Items.Clear();
+            }
+
+            ISequenceContainer elseInstructions = item.GetType().GetProperty("ElseInstructions").GetValue(item, null) as ISequenceContainer;
+            if (elseInstructions != null && elseInstructions.Items.Count > 0) {
+                ISequenceContainer elseBranch = item.GetType().GetProperty("ElseBranch").GetValue(item, null) as ISequenceContainer;
+                elseBranch.Items.Clear();
+                for (int i = 0; i < elseInstructions.Items.Count; i++) {
+                    ISequenceItem oldItem = elseInstructions.Items[i];
+                    ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                    elseBranch.Add(newItem); // Temporarily add clone to expand collection
+                    newItem.AttachNewParent(elseBranch);
+                }
+                elseInstructions.Items.Clear();
             }
         }
 
@@ -362,7 +423,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
 
-                    // The following are updates from Powerups 3.2 to Powerups 3.3
+                    // The following are updates from Powerups 3.2 to Powerups 4
                     // Primarily this is changing from Powerups Expr class to NINA Expression class
                     case "AddImagePattern": {
                             if (jObject.ContainsKey("iExpr")) {
@@ -377,8 +438,13 @@ namespace NINA.Sequencer.Serialization {
                                 PutExpr(t, item, "WaitExpression", GetExpr(t, item, "iWaitExpr"));
                                 item.Name += " [Powerups 3=>4";
                             }
+                            UpdateIfContainer(item);
                             return obj;
                         }
+
+                    case "OnceSafe":
+                        UpdateIfContainer(item);
+                        return obj;
 
                     case "InitializeArray":
                     case "ForEachInArray":
@@ -397,32 +463,46 @@ namespace NINA.Sequencer.Serialization {
                     case "ConditionalTrigger":
                         if (jObject.ContainsKey("iIfExpr")) {
                             PutExpr(t, trigger, "PredicateExpression", GetExpr(t, trigger, "iIfExpr"));
-                            item.Name += " [Powerups 3=>4";
+                            trigger.Name += " [Powerups 3=>4";
                         }
                         return obj;
 
                     case "IfConstant":
-                    case "IfThenElse":
                         Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e.Definition = jObject["IfExpr"]["Expression"].ToString();
                             item.Name += " [Powerups 3=>4";
                         }
+                        UpdateIfContainer(item);
                         break;
-
-                    case "WhenSwitch":
-                        Expression e1 = (Expression)trigger.GetType().GetProperty("PredicateExpression").GetValue(trigger, null);
+ 
+                    case "IfThenElse":
+                        Expression e1 = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e1.Definition = jObject["IfExpr"]["Expression"].ToString();
                             item.Name += " [Powerups 3=>4";
                         }
+                        UpdateIfThenElse(item);
                         break;
+
+                    case "WhenSwitch":
+                        Expression e2 = (Expression)trigger.GetType().GetProperty("PredicateExpression").GetValue(trigger, null);
+                        if (jObject["IfExpr"] != null) {
+                            e2.Definition = jObject["IfExpr"]["Expression"].ToString();
+                            item.Name += " [Powerups 3=>4";
+                        }
+                        break;
+
+                    case "IfFailed":
+                    case "IfTimeout":
+                        UpdateIfContainer(item);
+                        break;
+
 
                     // Unchanged (no Expressions)
                     case "IfContainer":
                     case "FlipRotator":
                     case "TemplateContainer":
-                    case "IfTimeout":
                     case "DoFlip":
                     case "DIYMeridianFlipTrigger":
                     case "PassMeridian":
@@ -431,18 +511,22 @@ namespace NINA.Sequencer.Serialization {
                     case "Breakpoint":
                     case "EndSequence":
                     case "EndInstructionSet":
-                    case "IfFailed":
                     case "WhenUnsafe":
                     case "InterruptTrigger":
                     case "AutofocusTrigger":
                     case "LogThis":
-                    case "OnceSafe":
                     case "TemplateByReference":
                         break;
 
+                    case "SafeTrigger":
+                        trigger?.Name += " *USE CONDITIONAL TRIGGER WITH IsSafe";
+                        break;
+
                     default: {
-                            item.Name += " *NOT AVAILABLE IN POWERUPS 4";
-                            break;
+                        item?.Name += " *NOT AVAILABLE IN POWERUPS 4";
+                        condition?.Name += " *NOT AVAILABLE IN POWERUPS 4";
+                        trigger?.Name += " *NOT AVAILABLE IN POWERUPS 4";
+                        break;
                         }
                 }
                 return obj;

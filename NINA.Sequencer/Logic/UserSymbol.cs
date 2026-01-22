@@ -163,7 +163,9 @@ namespace NINA.Sequencer.Logic {
                     // We've deleted this Symbol
                     SymbolDictionary cached;
                     if (LastSParent == null) {
-                        Warn("Removed symbol " + this + " has no LastSParent?");
+                        if (Debugging) {
+                            Warn("Removed symbol " + this + " has no LastSParent?");
+                        }
                         // We're saving a template?
                         return;
                     }
@@ -195,7 +197,9 @@ namespace NINA.Sequencer.Logic {
                         }
                         bool added = cached.TryAdd(Identifier, this);
 
-                        Logger.Info("Entries for " + sParent.Name + ": " + cached.Count);
+                        if (Debugging) {
+                            Logger.Info("Entries for " + sParent.Name + ": " + cached.Count);
+                        }
 
                         if (!added && sParent == GlobalSymbols) {
                             UserSymbol gv;
@@ -235,7 +239,7 @@ namespace NINA.Sequencer.Logic {
             LastParent = Parent;
         }
 
-        protected static bool Debugging = true;
+        protected static bool Debugging = false;
 
         private string _identifier = "";
 

@@ -20,8 +20,6 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [JsonObject(MemberSerialization.OptIn)]
     public class ResetVariable : SequenceItem, IValidatable {
 
-        
-
         [ImportingConstructor]
         public ResetVariable() {
             Icon = Icon;
