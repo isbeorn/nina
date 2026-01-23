@@ -268,6 +268,28 @@
                                 <DataTemplate x:Key="Default">
                                     <Border />
                                 </DataTemplate>
+                                <DataTemplate x:Key="Moravian">
+
+                                    <StackPanel>
+                                        <UniformGrid Columns="2">
+                                            <UniformGrid
+                                                Margin="0,6,0,6"
+                                                VerticalAlignment="Center"
+                                                Columns="2">
+                                                <TextBlock Text="{ns:Loc LblFirmwareVersion}" />
+                                                <TextBlock Margin="5,0,0,0" Text="{Binding FirmwareVersion}" />
+                                            </UniformGrid>
+                                            <UniformGrid
+                                                Margin="0,6,0,6"
+                                                VerticalAlignment="Center"
+                                                Columns="2">
+                                                <TextBlock Text="{ns:Loc LblMoravianFlashVersion}" />
+                                                <TextBlock Margin="5,0,0,0" Text="{Binding FlashVersion}" />
+                                            </UniformGrid>
+                                        </UniformGrid>
+                                    </StackPanel>
+                                </DataTemplate>
+
                                 <DataTemplate x:Key="QhyCcd">
                                     <StackPanel>
                                         <UniformGrid Columns="2">
@@ -338,6 +360,7 @@
                                     FailedToLoadTemplate="{StaticResource Failed}"
                                     Generic="{StaticResource Default}"
                                     LegacySbig="{StaticResource Default}"
+                                    Moravian="{StaticResource Moravian}"
                                     Postfix="{x:Static wpfutil:DataTemplatePostfix.CameraDetails}"
                                     QhyCcd="{StaticResource QhyCcd}"
                                     SVBony="{StaticResource Default}"
@@ -942,6 +965,33 @@
                                         </DockPanel>
                                     </StackPanel>
                                 </DataTemplate>
+                                <DataTemplate x:Key="Moravian2">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasFan, Converter={StaticResource VisibilityConverter}}">
+                                            <StackPanel MinWidth="100" Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFanSpeed}" />
+                                                <StackPanel Opacity="0.4" Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="(" />
+                                                    <TextBlock VerticalAlignment="Center" Text="0" />
+                                                    <TextBlock VerticalAlignment="Center" Text="-" />
+                                                    <TextBlock VerticalAlignment="Center" Text="{Binding MaxFanSpeed}" />
+                                                    <TextBlock VerticalAlignment="Center" Text=")" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <ninactrl:IntStepperControl
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                MaxValue="{Binding MaxFanSpeed}"
+                                                MinValue="0"
+                                                StepSize="1"
+                                                Value="{Binding FanSpeed, Mode=TwoWay}" />
+                                        </DockPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+
 
                                 <local:CameraTemplateSelector
                                     x:Key="ContentSelector"
@@ -952,6 +1002,7 @@
                                     FailedToLoadTemplate="{StaticResource Failed}"
                                     Generic="{StaticResource Generic}"
                                     LegacySbig="{StaticResource LegacySbig}"
+                                    Moravian="{StaticResource Moravian2}"
                                     Postfix="{x:Static wpfutil:DataTemplatePostfix.CameraSettings}"
                                     QhyCcd="{StaticResource QhyCcd}"
                                     SVBony="{StaticResource SVBony}"

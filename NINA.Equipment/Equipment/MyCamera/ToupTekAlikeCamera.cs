@@ -22,6 +22,7 @@ using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Equipment.Utility;
+using NINA.Image.ImageAnalysis;
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
@@ -886,8 +887,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             var bitScaling = this.profileService.ActiveProfile.CameraSettings.BitScaling;
             if (bitScaling) {
                 var shift = 16 - nativeBitDepth;
-                for (var i = 0; i < data.Length; i++) {
-                    data[i] = (ushort)(data[i] << shift);
+                if (shift != 0) {
+                    ImageUtility.BitShiftLeftInPlace(data, shift);
                 }
             }
 
