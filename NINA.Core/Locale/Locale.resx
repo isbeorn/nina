@@ -7795,7 +7795,6 @@ If exposure count is not important to you, enable this option to avoid having to
     <comment>Version of an internal camera component stored in flash memory.
     This is a separate version from camera firmware and driver.</comment>
   </data>
-</root>
   <data name="LblDimensions" xml:space="preserve">
     <value>Dimensions</value>
     <comment>Label for entering subframe dimensions</comment>
