@@ -14,6 +14,7 @@
 
 using FluentAssertions;
 using Moq;
+using NINA.Equipment.Model;
 using NINA.Core.Model.Equipment;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
@@ -35,6 +36,30 @@ namespace NINA.Test.Equipment.Camera {
         [SetUp]
         public void Setup() {
             dataFactoryUtility = new ImageDataFactoryTestUtility();
+        }
+
+        [Test]
+        public async Task DisconnectEvent_CancelsCaptureWithoutClosingFromNativeCallback() {
+            var sdk = CreateConnectableSdk();
+            sdk.Setup(x => x.put_ROI(0, 0, 0, 0)).Returns(true);
+            sdk.Setup(x => x.put_ExpoTime(It.IsAny<uint>())).Returns(true);
+            sdk.Setup(x => x.Trigger(It.IsAny<ushort>())).Returns(true);
+            ToupTekAlikeCallback callback = null;
+            sdk.Setup(x => x.StartPullModeWithCallback(It.IsAny<ToupTekAlikeCallback>()))
+                .Callback<ToupTekAlikeCallback>(value => callback = value).Returns(true);
+            var sut = CreateCamera(sdk.Object, CreateProfileService().Object);
+            (await sut.Connect(default)).Should().BeTrue();
+            try {
+                sut.StartExposure(new CaptureSequence { ExposureTime = 1 });
+                var waiting = sut.WaitUntilExposureIsReady(default);
+                callback(ToupTekAlikeEvent.EVENT_DISCONNECTED);
+                sut.Connected.Should().BeFalse();
+                sdk.Verify(x => x.Close(), Times.Never);
+                Func<Task> wait = () => waiting.WaitAsync(TimeSpan.FromSeconds(2));
+                await wait.Should().ThrowAsync<OperationCanceledException>();
+            } finally {
+                sut.Disconnect();
+            }
         }
 
         [Test]

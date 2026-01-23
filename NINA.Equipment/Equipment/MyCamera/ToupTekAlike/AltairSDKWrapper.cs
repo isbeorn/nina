@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
@@ -81,106 +82,163 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
     }
 
     public class AltairSDKWrapper : IToupTekAlikeCameraSDK {
+        private readonly object lockObj = new();
         private Altaircam sdk;
 
         public string Category => "Altair";
 
         public IToupTekAlikeCameraSDK Open(string id) {
-            this.sdk = Altaircam.Open(id);
-            return this;
+            lock (lockObj) {
+                this.sdk = Altaircam.Open(id);
+                return this;
+            }
         }
 
-        public uint MaxSpeed => sdk.MaxSpeed;
+        public uint MaxSpeed {
+            get {
+                lock (lockObj) {
+                    return sdk.MaxSpeed;
+                }
+            }
+        }
 
-        public bool MonoMode => sdk.MonoMode;
+        public bool MonoMode {
+            get {
+                lock (lockObj) {
+                    return sdk.MonoMode;
+                }
+            }
+        }
 
         public void Close() {
-            sdk.Close();
-            sdk = null;
+            lock (lockObj) {
+                Volatile.Write(ref toupTekAlikeCallback, null);
+                sdk?.Close();
+                sdk = null;
+            }
         }
 
         public bool get_ExpoAGain(out ushort gain) {
-            return sdk.get_ExpoAGain(out gain);
+            lock (lockObj) {
+                return sdk.get_ExpoAGain(out gain);
+            }
         }
 
         public void get_ExpoAGainRange(out ushort min, out ushort max, out ushort def) {
-            sdk.get_ExpoAGainRange(out min, out max, out def);
+            lock (lockObj) {
+                sdk.get_ExpoAGainRange(out min, out max, out def);
+            }
         }
 
         public void get_ExpTimeRange(out uint min, out uint max, out uint def) {
-            sdk.get_ExpTimeRange(out min, out max, out def);
+            lock (lockObj) {
+                sdk.get_ExpTimeRange(out min, out max, out def);
+            }
         }
 
         public void get_Option(ToupTekAlikeOption option, out int target) {
-            sdk.get_Option(option.ToAltair(), out target);
+            lock (lockObj) {
+                sdk.get_Option(option.ToAltair(), out target);
+            }
         }
 
         public bool get_RawFormat(out uint fourCC, out uint bitDepth) {
-            return sdk.get_RawFormat(out fourCC, out bitDepth);
+            lock (lockObj) {
+                return sdk.get_RawFormat(out fourCC, out bitDepth);
+            }
         }
 
         public void get_Size(out int width, out int height) {
-            sdk.get_Size(out width, out height);
+            lock (lockObj) {
+                sdk.get_Size(out width, out height);
+            }
         }
 
         public void get_Speed(out ushort speed) {
-            sdk.get_Speed(out speed);
+            lock (lockObj) {
+                sdk.get_Speed(out speed);
+            }
         }
 
         public void get_Temperature(out short temp) {
-            sdk.get_Temperature(out temp);
+            lock (lockObj) {
+                sdk.get_Temperature(out temp);
+            }
         }
 
         public bool PullImage(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
-            Altaircam.FrameInfoV4 altairInfo;
-            var result = sdk.PullImage(data, 0, bitDepth, 0, out altairInfo);
-            info = altairInfo.ToFrameInfo();
-            return result;
+            lock (lockObj) {
+                Altaircam.FrameInfoV4 altairInfo;
+                var result = sdk.PullImage(data, 0, bitDepth, 0, out altairInfo);
+                info = altairInfo.ToFrameInfo();
+                return result;
+            }
         }
 
         public bool put_ROI(uint x, uint y, uint width, uint height) {
-            return sdk.put_Roi(x, y, width, height);
+            lock (lockObj) {
+                return sdk.put_Roi(x, y, width, height);
+            }
         }
 
         public bool put_AutoExpoEnable(bool v) {
-            return sdk.put_AutoExpoEnable(v);
+            lock (lockObj) {
+                return sdk.put_AutoExpoEnable(v);
+            }
         }
 
         public bool put_ExpoAGain(ushort value) {
-            return sdk.put_ExpoAGain(value);
+            lock (lockObj) {
+                return sdk.put_ExpoAGain(value);
+            }
         }
 
         public bool put_ExpoTime(uint usTime) {
-            return sdk.put_ExpoTime(usTime);
+            lock (lockObj) {
+                return sdk.put_ExpoTime(usTime);
+            }
         }
 
         public bool put_Option(ToupTekAlikeOption option, int v) {
-            return sdk.put_Option(option.ToAltair(), v);
+            lock (lockObj) {
+                return sdk.put_Option(option.ToAltair(), v);
+            }
         }
 
         public bool put_Speed(ushort value) {
-            return sdk.put_Speed(value);
+            lock (lockObj) {
+                return sdk.put_Speed(value);
+            }
         }
 
         private ToupTekAlikeCallback toupTekAlikeCallback;
+        private Altaircam.DelegateEventCallback nativeCallback;
 
         public bool StartPullModeWithCallback(ToupTekAlikeCallback toupTekAlikeCallback) {
-            this.toupTekAlikeCallback = toupTekAlikeCallback;
-            var delegateCb = new Altaircam.DelegateEventCallback(EventCallback);
+            lock (lockObj) {
+                Volatile.Write(ref this.toupTekAlikeCallback, toupTekAlikeCallback);
+                nativeCallback ??= new Altaircam.DelegateEventCallback(EventCallback);
 
-            return sdk.StartPullModeWithCallback(delegateCb);
+                return sdk.StartPullModeWithCallback(nativeCallback);
+            }
         }
 
         private void EventCallback(Altaircam.eEVENT nEvent) {
-            toupTekAlikeCallback(nEvent.ToEvent());
+            // A native Close may wait for this callback. Never acquire the SDK gate here.
+            var cb = Volatile.Read(ref toupTekAlikeCallback);
+            cb?.Invoke(nEvent.ToEvent());
         }
 
         public bool Trigger(ushort v) {
-            return sdk.Trigger(v);
+            lock (lockObj) {
+                return sdk.Trigger(v);
+            }
         }
 
         public string Version() {
-            return Altaircam.Version();
+            lock (lockObj) {
+                return Altaircam.Version();
+            }
         }
     }
 }

@@ -1051,8 +1051,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int BitDepth => profileService.ActiveProfile.CameraSettings.BitScaling ? 16 : nativeBitDepth;
 
         private void OnEventDisconnected() {
-            StopExposure();
-            Disconnect();
+            imageReadyTCS?.TrySetCanceled();
+            try { coolerPowerReadoutCts?.Cancel(); } catch { }
+            Connected = false;
         }
 
         public void StartLiveView(CaptureSequence sequence) {

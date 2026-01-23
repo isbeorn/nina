@@ -1,4 +1,4 @@
-using NINA.Core.Utility;
+﻿using NINA.Core.Utility;
 using System;
 using System.Drawing;
 using System.IO;
@@ -9,11 +9,13 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Security;
 using System.Text;
+using System.Threading;
 
 namespace ZWOptical.ASISDK {
 
     public static class ASICameraDll {
         private const string DLLNAME = "ASICamera2.dll";
+        private static readonly object lockobj = new();
 
         static ASICameraDll() {
             DllLoader.LoadDll(Path.Combine("ASI", DLLNAME));
@@ -300,16 +302,20 @@ namespace ZWOptical.ASISDK {
 
         [SecurityCritical]
         public static ASI_CAMERA_INFO GetCameraProperties(int cameraIndex) {
-            ASI_CAMERA_INFO result;
-            CheckReturn(ASIGetCameraProperty(out result, cameraIndex), MethodBase.GetCurrentMethod(), cameraIndex);
-            return result;
+            lock (lockobj) {
+                ASI_CAMERA_INFO result;
+                CheckReturn(ASIGetCameraProperty(out result, cameraIndex), MethodBase.GetCurrentMethod(), cameraIndex);
+                return result;
+            }
         }
 
         [SecurityCritical]
         public static ASI_CAMERA_INFO GetCameraPropertiesByCameraId(int cameraId) {
-            ASI_CAMERA_INFO result;
-            CheckReturn(ASIGetCameraPropertyByID(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
-            return result;
+            lock (lockobj) {
+                ASI_CAMERA_INFO result;
+                CheckReturn(ASIGetCameraPropertyByID(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
+                return result;
+            }
         }
 
         private static void CheckReturn(ASI_ERROR_CODE errorCode, MethodBase callingMethod, params object[] parameters) {
@@ -348,172 +354,212 @@ namespace ZWOptical.ASISDK {
 
         [SecurityCritical]
         public static int GetNumOfConnectedCameras() {
-            return ASIGetNumOfConnectedCameras();
+            lock (lockobj) {
+                return ASIGetNumOfConnectedCameras();
+            }
         }
 
         [SecurityCritical]
         public static void OpenCamera(int cameraId) {
-            CheckReturn(ASIOpenCamera(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            lock (lockobj) {
+                CheckReturn(ASIOpenCamera(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            }
         }
 
         [SecurityCritical]
         public static void InitCamera(int cameraId) {
-            CheckReturn(ASIInitCamera(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            lock (lockobj) {
+                CheckReturn(ASIInitCamera(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            }
         }
 
         [SecurityCritical]
         public static void CloseCamera(int cameraId) {
-            CheckReturn(ASICloseCamera(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            lock (lockobj) {
+                CheckReturn(ASICloseCamera(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            }
         }
 
         [SecurityCritical]
         public static int GetNumOfControls(int cameraId) {
-            int result;
-            CheckReturn(ASIGetNumOfControls(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
-            return result;
+            lock (lockobj) {
+                int result;
+                CheckReturn(ASIGetNumOfControls(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
+                return result;
+            }
         }
 
         [SecurityCritical]
         public static ASI_CONTROL_CAPS GetControlCaps(int cameraIndex, int controlIndex) {
-            ASI_CONTROL_CAPS result;
-            CheckReturn(ASIGetControlCaps(cameraIndex, controlIndex, out result), MethodBase.GetCurrentMethod(), cameraIndex, controlIndex);
-            return result;
+            lock (lockobj) {
+                ASI_CONTROL_CAPS result;
+                CheckReturn(ASIGetControlCaps(cameraIndex, controlIndex, out result), MethodBase.GetCurrentMethod(), cameraIndex, controlIndex);
+                return result;
+            }
         }
 
         [SecurityCritical]
         public static int GetControlValue(int cameraId, ASI_CONTROL_TYPE controlType, out bool isAuto) {
-            ASI_BOOL auto;
-            int result;
-            CheckReturn(ASIGetControlValue(cameraId, controlType, out result, out auto), MethodBase.GetCurrentMethod(), cameraId, controlType);
-            isAuto = auto != ASI_BOOL.ASI_FALSE;
-            return result;
+            lock (lockobj) {
+                ASI_BOOL auto;
+                int result;
+                CheckReturn(ASIGetControlValue(cameraId, controlType, out result, out auto), MethodBase.GetCurrentMethod(), cameraId, controlType);
+                isAuto = auto != ASI_BOOL.ASI_FALSE;
+                return result;
+            }
         }
 
         [SecurityCritical]
         public static void SetControlValue(int cameraId, ASI_CONTROL_TYPE controlType, int value, bool auto) {
-            CheckReturn(ASISetControlValue(cameraId, controlType, value, auto ? ASI_BOOL.ASI_TRUE : ASI_BOOL.ASI_FALSE), MethodBase.GetCurrentMethod(), cameraId, controlType, value, auto);
+            lock (lockobj) {
+                CheckReturn(ASISetControlValue(cameraId, controlType, value, auto ? ASI_BOOL.ASI_TRUE : ASI_BOOL.ASI_FALSE), MethodBase.GetCurrentMethod(), cameraId, controlType, value, auto);
+            }
         }
 
         [SecurityCritical]
         public static void SetROIFormat(int cameraId, Size size, int bin, ASI_IMG_TYPE imageType) {
-            CheckReturn(ASISetROIFormat(cameraId, size.Width, size.Height, bin, imageType), MethodBase.GetCurrentMethod(), cameraId, size, bin, imageType);
+            lock (lockobj) {
+                CheckReturn(ASISetROIFormat(cameraId, size.Width, size.Height, bin, imageType), MethodBase.GetCurrentMethod(), cameraId, size, bin, imageType);
+            }
         }
 
         [SecurityCritical]
         public static Size GetROIFormat(int cameraId, out int bin, out ASI_IMG_TYPE imageType) {
-            int width, height;
-            CheckReturn(ASIGetROIFormat(cameraId, out width, out height, out bin, out imageType), MethodBase.GetCurrentMethod(), cameraId, bin);
-            return new Size(width, height);
+            lock (lockobj) {
+                int width, height;
+                CheckReturn(ASIGetROIFormat(cameraId, out width, out height, out bin, out imageType), MethodBase.GetCurrentMethod(), cameraId, bin);
+                return new Size(width, height);
+            }
         }
 
         [SecurityCritical]
         public static void SetStartPos(int cameraId, Point startPos) {
-            CheckReturn(ASISetStartPos(cameraId, startPos.X, startPos.Y), MethodBase.GetCurrentMethod(), cameraId, startPos);
+            lock (lockobj) {
+                CheckReturn(ASISetStartPos(cameraId, startPos.X, startPos.Y), MethodBase.GetCurrentMethod(), cameraId, startPos);
+            }
         }
 
         [SecurityCritical]
         public static Point GetStartPos(int cameraId) {
-            int x, y;
-            CheckReturn(ASIGetStartPos(cameraId, out x, out y), MethodBase.GetCurrentMethod(), cameraId);
-            return new Point(x, y);
+            lock (lockobj) {
+                int x, y;
+                CheckReturn(ASIGetStartPos(cameraId, out x, out y), MethodBase.GetCurrentMethod(), cameraId);
+                return new Point(x, y);
+            }
         }
 
         public static int GetDroppedFrames(int cameraId) {
-            int result;
-            CheckReturn(ASIGetDroppedFrames(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
-            return result;
+            lock (lockobj) {
+                int result;
+                CheckReturn(ASIGetDroppedFrames(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
+                return result;
+            }
         }
-
-        /*public static bool EnableDarkSubtract(int cameraId, string darkFilePath) {
-            ASI_BOOL result;
-            CheckReturn(ASIEnableDarkSubtract(cameraId, darkFilePath, out result), MethodBase.GetCurrentMethod(), cameraId, darkFilePath);
-            return result != ASI_BOOL.ASI_FALSE;
-        }
-
-        public static void DisableDarkSubtract(int cameraId) {
-            CheckReturn(ASIDisableDarkSubtract(cameraId), MethodBase.GetCurrentMethod(), cameraId);
-        }*/
 
         [SecurityCritical]
         public static void StartVideoCapture(int cameraId) {
-            CheckReturn(ASIStartVideoCapture(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            lock (lockobj) {
+                CheckReturn(ASIStartVideoCapture(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            }
         }
 
         [SecurityCritical]
         public static void StopVideoCapture(int cameraId) {
-            CheckReturn(ASIStopVideoCapture(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            lock (lockobj) {
+                CheckReturn(ASIStopVideoCapture(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            }
         }
 
         [SecurityCritical]
         public static bool GetVideoData(int cameraId, ushort[] buffer, int bufferSize, int waitMs) {
-            var result = ASIGetVideoData(cameraId, buffer, bufferSize, waitMs);
+            lock (lockobj) {
+                var result = ASIGetVideoData(cameraId, buffer, bufferSize, waitMs);
 
-            if (result == ASI_ERROR_CODE.ASI_ERROR_TIMEOUT)
-                return false;
+                if (result == ASI_ERROR_CODE.ASI_ERROR_TIMEOUT)
+                    return false;
 
-            CheckReturn(result, MethodBase.GetCurrentMethod(), cameraId, buffer, bufferSize, waitMs);
-            return true;
+                CheckReturn(result, MethodBase.GetCurrentMethod(), cameraId, buffer, bufferSize, waitMs);
+                return true;
+            }
         }
 
         [SecurityCritical]
         public static void PulseGuideOn(int cameraId, ASI_GUIDE_DIRECTION direction) {
-            CheckReturn(ASIPulseGuideOn(cameraId, direction), MethodBase.GetCurrentMethod(), cameraId, direction);
+            lock (lockobj) {
+                CheckReturn(ASIPulseGuideOn(cameraId, direction), MethodBase.GetCurrentMethod(), cameraId, direction);
+            }
         }
 
         [SecurityCritical]
         public static void PulseGuideOff(int cameraId, ASI_GUIDE_DIRECTION direction) {
-            CheckReturn(ASIPulseGuideOff(cameraId, direction), MethodBase.GetCurrentMethod(), cameraId, direction);
+            lock (lockobj) {
+                CheckReturn(ASIPulseGuideOff(cameraId, direction), MethodBase.GetCurrentMethod(), cameraId, direction);
+            }
         }
 
         [SecurityCritical]
         public static void StartExposure(int cameraId, bool isDark) {
-            CheckReturn(ASIStartExposure(cameraId, isDark ? ASI_BOOL.ASI_TRUE : ASI_BOOL.ASI_FALSE), MethodBase.GetCurrentMethod(), cameraId, isDark);
+            lock (lockobj) {
+                CheckReturn(ASIStartExposure(cameraId, isDark ? ASI_BOOL.ASI_TRUE : ASI_BOOL.ASI_FALSE), MethodBase.GetCurrentMethod(), cameraId, isDark);
+            }
         }
 
         [SecurityCritical]
         public static void StopExposure(int cameraId) {
-            CheckReturn(ASIStopExposure(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            lock (lockobj) {
+                CheckReturn(ASIStopExposure(cameraId), MethodBase.GetCurrentMethod(), cameraId);
+            }
         }
 
         [SecurityCritical]
         public static ASI_EXPOSURE_STATUS GetExposureStatus(int cameraId) {
-            ASI_EXPOSURE_STATUS result;
-            CheckReturn(ASIGetExpStatus(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
-            return result;
+            lock (lockobj) {
+                ASI_EXPOSURE_STATUS result;
+                CheckReturn(ASIGetExpStatus(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
+                return result;
+            }
         }
 
         [SecurityCritical]
         public static bool GetDataAfterExp(int cameraId, ushort[] buffer, int bufferSize) {
-            var result = ASIGetDataAfterExp(cameraId, buffer, bufferSize);
-            if (result == ASI_ERROR_CODE.ASI_ERROR_TIMEOUT)
-                return false;
+            lock (lockobj) {
+                var result = ASIGetDataAfterExp(cameraId, buffer, bufferSize);
+                if (result == ASI_ERROR_CODE.ASI_ERROR_TIMEOUT)
+                    return false;
 
-            CheckReturn(result, MethodBase.GetCurrentMethod(), cameraId, buffer, bufferSize);
-            return true;
+                CheckReturn(result, MethodBase.GetCurrentMethod(), cameraId, buffer, bufferSize);
+                return true;
+            }
         }
 
         [SecurityCritical]
         public static string GetSDKVersion() {
-            IntPtr p = ASIGetSDKVersion();
-            string version = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(p);
+            lock (lockobj) {
+                IntPtr p = ASIGetSDKVersion();
+                string version = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(p);
 
-            return version;
+                return version;
+            }
         }
 
         [SecurityCritical]
         public static string GetId(int cameraId) {
-            return ASIGetID(cameraId, out ASI_ID id) == ASI_ERROR_CODE.ASI_SUCCESS ? id.ID : string.Empty;
+            lock (lockobj) {
+                return ASIGetID(cameraId, out ASI_ID id) == ASI_ERROR_CODE.ASI_SUCCESS ? id.ID : string.Empty;
+            }
         }
 
         [SecurityCritical]
         public static void SetId(int cameraId, string id) {
-            ASI_ID asiId = default;
-            asiId.id = new byte[8];
+            lock (lockobj) {
+                ASI_ID asiId = default;
+                asiId.id = new byte[8];
 
-            byte[] bytes = Encoding.Default.GetBytes(id);
-            bytes.CopyTo(asiId.id, 0);
+                byte[] bytes = Encoding.Default.GetBytes(id);
+                bytes.CopyTo(asiId.id, 0);
 
-            CheckReturn(ASISetID(cameraId, asiId), MethodBase.GetCurrentMethod(), cameraId);
+                CheckReturn(ASISetID(cameraId, asiId), MethodBase.GetCurrentMethod(), cameraId);
+            }
         }
 
     }
