@@ -101,6 +101,7 @@
       <ComponentGroupRef Id="External_x64_FTDI_files" />
       <ComponentGroupRef Id="External_x64_Risingcam_files" />
       <ComponentGroupRef Id="External_x64_MGEN_files" />
+      <ComponentGroupRef Id="External_x64_Moravian_files"/>
       <ComponentGroupRef Id="External_x64_SVBony_files" />
       <ComponentGroupRef Id="External_x64_SBIG_files" />
       <ComponentGroupRef Id="External_x64_MallinCam_files" />
@@ -232,6 +233,7 @@
               <Directory Id="External_x64_SOFA" Name="SOFA" />
               <Directory Id="External_x64_FTDI" Name="FTDI" />
               <Directory Id="External_x64_MGEN" Name="MGEN" />
+              <Directory Id="External_x64_Moravian" Name="Moravian" />
               <Directory Id="External_x64_Risingcam" Name="Risingcam" />
               <Directory Id="External_x64_VCRedis" Name="VCRedis" />
               <Directory Id="External_x64_SVBony" Name="SVBony" />
@@ -1506,6 +1508,9 @@
       <Component Id="wpfgfx_cor3.dll" Guid="0472e370-5dd8-4ee9-ba87-10fae5e3f89a">
         <File Id="wpfgfx_cor3.dll" Name="wpfgfx_cor3.dll" Source="$(var.NINA_TargetDir)wpfgfx_cor3.dll" />
       </Component>
+      <Component Id="ZstdSharp.dll" Guid="1b50b5b3-72f9-4a62-99e3-be76b50ad9fa">
+        <File Id="ZstdSharp.dll" Name="ZstdSharp.dll" Source="$(var.NINA_TargetDir)ZstdSharp.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
@@ -2252,8 +2257,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x64_SOFA_files" Directory="External_x64_SOFA">
-      <Component Id="External_x64_SOFA_SOFAlib.dll" Guid="7e84f09e-ef65-4075-93f9-34a61f47a2af" Bitness="$(var.Win64)">
-        <File Id="External_x64_SOFA_SOFAlib.dll" Name="SOFAlib.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFAlib.dll" />
+      <Component Id="External_x64_SOFA_SOFA-2023-10-11.dll" Guid="81FF5D30-3236-4516-89F9-C2FD3C655A22" Bitness="$(var.Win64)">
+        <File Id="External_x64_SOFA_SOFA-2023-10-11.dll" Name="SOFA-2023-10-11.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFA-2023-10-11.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -2271,6 +2276,27 @@
       </Component>
     </ComponentGroup>
   </Fragment>
+  
+  <Fragment>
+    <ComponentGroup Id="External_x64_Moravian_files" Directory="External_x64_Moravian">
+      <Component Id="External_x64_Moravian_cXusb.dll" Guid="a30750ce-390b-436b-bad6-d6e65db11646" Bitness="$(var.Win64)">
+        <File Id="External_x64_Moravian_cXusb.dll" Name="cXusb.dll" Source="$(var.NINA_TargetDir)External\x64\Moravian\cXusb.dll" />
+      </Component>
+      <Component Id="External_x64_Moravian_gXeth.dll" Guid="acd8db3b-4722-411c-8c71-4175bd009663" Bitness="$(var.Win64)">
+        <File Id="External_x64_Moravian_gXeth.dll" Name="gXeth.dll" Source="$(var.NINA_TargetDir)External\x64\Moravian\gXeth.dll" />
+      </Component>
+      <Component Id="External_x64_Moravian_gXusb.dll" Guid="93bd191e-1ae2-4f8d-9783-8c572170ecb0" Bitness="$(var.Win64)">
+        <File Id="External_x64_Moravian_gXusb.dll" Name="gXusb.dll" Source="$(var.NINA_TargetDir)External\x64\Moravian\gXusb.dll" />
+      </Component>
+      <Component Id="External_x64_Moravian_sfw.dll" Guid="04cd8866-59ff-45d3-95ef-d71cdee21a80" Bitness="$(var.Win64)">
+        <File Id="External_x64_Moravian_sfw.dll" Name="sfw.dll" Source="$(var.NINA_TargetDir)External\x64\Moravian\sfw.dll" />
+      </Component>
+      <Component Id="External_x64_Moravian_sfweth.dll" Guid="a0f5e73d-ac07-4843-8146-ebf9bbb77fe2" Bitness="$(var.Win64)">
+        <File Id="External_x64_Moravian_sfweth.dll" Name="sfweth.dll" Source="$(var.NINA_TargetDir)External\x64\Moravian\sfweth.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  
   <Fragment>
     <ComponentGroup Id="External_x64_Risingcam_files" Directory="External_x64_Risingcam">
       <Component Id="External_x64_Risingcam_nncam.dll" Guid="4686cc8e-bd19-4fed-8da5-4fc026b4d614" Bitness="$(var.Win64)">

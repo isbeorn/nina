@@ -13,7 +13,7 @@ namespace NINA.Astrometry.RiseAndSet {
             SunAltitude = sunAltitude;
         }
 
-        private double SunAltitude { get; }
+        public double SunAltitude { get; }
 
         protected override double AdjustAltitude(BasicBody body) {
             return body.Altitude - SunAltitude;

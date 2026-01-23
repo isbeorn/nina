@@ -377,15 +377,13 @@ namespace NINA.Sequencer.Utility {
 
         [Obsolete]
         public static Coordinates CalculateSunRADec(ObserverInfo observer) {
-            double jd = AstroUtil.GetJulianDate(DateTime.Now);
-            NOVAS.SkyPosition skyPos = AstroUtil.GetSunPosition(DateTime.Now, jd, observer);
+            NOVAS.SkyPosition skyPos = AstroUtil.GetSunPosition(DateTime.Now, observer);
             return new Coordinates(skyPos.RA, skyPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
         }
 
         [Obsolete]
         public static Coordinates CalculateMoonRADec(ObserverInfo observer) {
-            double jd = AstroUtil.GetJulianDate(DateTime.Now);
-            NOVAS.SkyPosition skyPos = AstroUtil.GetMoonPosition(DateTime.Now, jd, observer);
+            NOVAS.SkyPosition skyPos = AstroUtil.GetMoonPosition(DateTime.Now, observer);
             return new Coordinates(skyPos.RA, skyPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
         }
     }

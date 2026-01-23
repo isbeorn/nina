@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauXy06(double date1, double date2, double *x, double *y)
 /*
@@ -10,7 +11,7 @@ void iauXy06(double date1, double date2, double *x, double *y)
 **  on IAU 2006 precession and IAU 2000A nutation.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  canonical model.
 **
@@ -90,11 +91,11 @@ void iauXy06(double date1, double date2, double *x, double *y)
 **
 **     Wallace, P.T. & Capitaine, N., 2006, Astron.Astrophys. 459, 981
 **
-**  This revision:  2019 June 23
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
 
@@ -2708,12 +2709,12 @@ void iauXy06(double date1, double date2, double *x, double *y)
    *x = DAS2R * (xypr[0] + (xyls[0] + xypl[0]) / 1e6);
    *y = DAS2R * (xypr[1] + (xyls[1] + xypl[1]) / 1e6);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

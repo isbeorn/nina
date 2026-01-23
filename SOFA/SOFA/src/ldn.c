@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauLdn(int n, iauLDBODY b[], double ob[3], double sc[3],
             double sn[3])
@@ -83,11 +84,11 @@ void iauLdn(int n, iauLDBODY b[], double ob[3], double sc[3],
 **     iauPn        decompose p-vector into modulus and direction
 **     iauLd        light deflection by a solar-system body
 **
-**  This revision:   2017 March 16
+**  This revision:   2021 February 24
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
 /* Light time for 1 au (days) */
@@ -128,8 +129,8 @@ void iauLdn(int n, iauLDBODY b[], double ob[3], double sc[3],
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

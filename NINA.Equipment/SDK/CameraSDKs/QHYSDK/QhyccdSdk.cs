@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -27,8 +27,8 @@ namespace QHYCCD {
     public class QhySdk : IQhySdk {
         private const string DLLNAME = "qhyccd.dll";
 
-        private object lockobj = new object();
-        public IntPtr handle = IntPtr.Zero;
+        private readonly object lockobj = new object();
+        private IntPtr handle = IntPtr.Zero;
 
         private bool sdkIsInitialized = false;
         private byte refCount = 0;
@@ -136,7 +136,9 @@ namespace QHYCCD {
         }
 
         public uint GetReadMode(ref uint mode) {
-            return GetQHYCCDReadMode(handle, ref mode);
+            lock (lockobj) {
+                return GetQHYCCDReadMode(handle, ref mode);
+            }
         }
 
         public uint SetReadMode(uint mode) {
@@ -146,11 +148,15 @@ namespace QHYCCD {
         }
 
         public uint GetNumberOfReadModes(ref uint numModes) {
-            return GetQHYCCDNumberOfReadModes(handle, ref numModes);
+            lock (lockobj) {
+                return GetQHYCCDNumberOfReadModes(handle, ref numModes);
+            }
         }
 
         public uint GetReadModeName(uint mode, StringBuilder modeName) {
-            return GetQHYCCDReadModeName(handle, mode, modeName);
+            lock (lockobj) {
+                return GetQHYCCDReadModeName(handle, mode, modeName);
+            }
         }
 
         public uint ControlTemp(double targetTemp) {
@@ -166,11 +172,15 @@ namespace QHYCCD {
         }
 
         public void GetId(uint index, StringBuilder id) {
-            CheckReturn(GetQHYCCDId(index, id), MethodBase.GetCurrentMethod(), index, new object[] { id });
+            lock (lockobj) {
+                CheckReturn(GetQHYCCDId(index, id), MethodBase.GetCurrentMethod(), index, new object[] { id });
+            }
         }
 
         public void GetModel(StringBuilder id, StringBuilder model) {
-            CheckReturn(GetQHYCCDModel(id, model), MethodBase.GetCurrentMethod(), new object[] { model });
+            lock (lockobj) {
+                CheckReturn(GetQHYCCDModel(id, model), MethodBase.GetCurrentMethod(), new object[] { model });
+            }
         }
 
         public uint GetParamMinMaxStep(CONTROL_ID controlId, ref double min, ref double max, ref double step) {
@@ -180,11 +190,15 @@ namespace QHYCCD {
         }
 
         public uint GetChipInfo(ref double chipW, ref double chipH, ref uint imageX, ref uint imageY, ref double pixelX, ref double pixelY, ref uint bpp) {
-            return GetQHYCCDChipInfo(handle, ref chipW, ref chipH, ref imageX, ref imageY, ref pixelX, ref pixelY, ref bpp);
+            lock (lockobj) {
+                return GetQHYCCDChipInfo(handle, ref chipW, ref chipH, ref imageX, ref imageY, ref pixelX, ref pixelY, ref bpp);
+            }
         }
 
         public uint GetEffectiveArea(ref uint startX, ref uint startY, ref uint imageX, ref uint imageY) {
-            return GetQHYCCDEffectiveArea(handle, ref startX, ref startY, ref imageX, ref imageY);
+            lock (lockobj) {
+                return GetQHYCCDEffectiveArea(handle, ref startX, ref startY, ref imageX, ref imageY);
+            }
         }
 
         public uint SetResolution(uint x, uint y, uint xSize, uint ySize) {
@@ -218,27 +232,37 @@ namespace QHYCCD {
         }
 
         public uint GetExposureRemaining() {
-            return GetQHYCCDExposureRemaining(handle);
+            lock (lockobj) {
+                return GetQHYCCDExposureRemaining(handle);
+            }
         }
 
         public uint GetPressure(ref double hpa) {
-            return GetQHYCCDPressure(handle, ref hpa);
+            lock (lockobj) {
+                return GetQHYCCDPressure(handle, ref hpa);
+            }
         }
 
         public uint GetHumidity(ref double rh) {
-            return GetQHYCCDHumidity(handle, ref rh);
+            lock (lockobj) {
+                return GetQHYCCDHumidity(handle, ref rh);
+            }
         }
 
         public bool IsCfwPlugged() {
-            if (IsQHYCCDCFWPlugged(handle) == QHYCCD_SUCCESS) {
-                return true;
-            }
+            lock (lockobj) {
+                if (IsQHYCCDCFWPlugged(handle) == QHYCCD_SUCCESS) {
+                    return true;
+                }
 
-            return false;
+                return false;
+            }
         }
 
         public uint GetCfwStatus(byte[] status) {
-            return GetQHYCCDCFWStatus(handle, status);
+            lock (lockobj) {
+                return GetQHYCCDCFWStatus(handle, status);
+            }
         }
 
         public uint SendOrderToCfw(string order, int length) {
@@ -252,27 +276,31 @@ namespace QHYCCD {
         #region Utility Methods
 
         public bool IsControl(CONTROL_ID type) {
-            bool result = false;
+            lock (lockobj) {
+                bool result = false;
 
-            if (IsQHYCCDControlAvailable(handle, type) == QHYCCD_SUCCESS) {
-                Logger.Debug($"QHYCCD: Control {type} exists");
-                result = true;
-            } else {
-                Logger.Debug($"QHYCCD: Control Value {type} is not available");
+                if (IsQHYCCDControlAvailable(handle, type) == QHYCCD_SUCCESS) {
+                    Logger.Debug($"QHYCCD: Control {type} exists");
+                    result = true;
+                } else {
+                    Logger.Debug($"QHYCCD: Control Value {type} is not available");
+                }
+
+                return result;
             }
-
-            return result;
         }
 
         public double GetControlValue(CONTROL_ID type) {
-            double rv;
+            lock (lockobj) {
+                double rv;
 
-            if ((rv = GetQHYCCDParam(handle, type)) != QHYCCD_ERROR) {
-                Logger.Trace($"QHYCCD: Control {type} = {rv}");
-                return rv;
-            } else {
-                Logger.Error($"QHYCCD: Failed to Get value for control {type}");
-                return QHYCCD_ERROR;
+                if ((rv = GetQHYCCDParam(handle, type)) != QHYCCD_ERROR) {
+                    Logger.Trace($"QHYCCD: Control {type} = {rv}");
+                    return rv;
+                } else {
+                    Logger.Error($"QHYCCD: Failed to Get value for control {type}");
+                    return QHYCCD_ERROR;
+                }
             }
         }
 
@@ -289,49 +317,57 @@ namespace QHYCCD {
         }
 
         public BAYER_ID GetBayerType() {
-            return (BAYER_ID)IsQHYCCDControlAvailable(handle, CONTROL_ID.CAM_COLOR);
+            lock (lockobj) {
+                return (BAYER_ID)IsQHYCCDControlAvailable(handle, CONTROL_ID.CAM_COLOR);
+            }
         }
 
         public string GetSdkVersion() {
-            uint year = 0, month = 0, day = 0, subday = 0;
-            CheckReturn(GetQHYCCDSDKVersion(ref year, ref month, ref day, ref subday), MethodBase.GetCurrentMethod());
+            lock (lockobj) {
+                uint year = 0, month = 0, day = 0, subday = 0;
+                CheckReturn(GetQHYCCDSDKVersion(ref year, ref month, ref day, ref subday), MethodBase.GetCurrentMethod());
 
-            return year.ToString() + "-" + month.ToString() + "-" + day.ToString() + "-" + subday.ToString();
+                return year.ToString() + "-" + month.ToString() + "-" + day.ToString() + "-" + subday.ToString();
+            }
         }
 
         public string GetFwVersion() {
-            string version = "N/A";
-            byte[] buf = new byte[10];
+            lock (lockobj) {
+                string version = "N/A";
+                byte[] buf = new byte[10];
 
-            if (GetQHYCCDFWVersion(handle, buf) != QHYCCD_ERROR) {
-                int ver = buf[0] >> 4;
-                if (ver < 9) {
-                    version = Convert.ToString(ver + 16) + "-" + Convert.ToString(buf[0] & -241) + "-" + Convert.ToString(buf[1]);
-                } else {
-                    version = Convert.ToString(ver) + "-" + Convert.ToString(buf[0] & -241) + "-" + Convert.ToString(buf[1]);
+                if (GetQHYCCDFWVersion(handle, buf) != QHYCCD_ERROR) {
+                    int ver = buf[0] >> 4;
+                    if (ver < 9) {
+                        version = Convert.ToString(ver + 16) + "-" + Convert.ToString(buf[0] & -241) + "-" + Convert.ToString(buf[1]);
+                    } else {
+                        version = Convert.ToString(ver) + "-" + Convert.ToString(buf[0] & -241) + "-" + Convert.ToString(buf[1]);
+                    }
                 }
-            }
 
-            return version;
+                return version;
+            }
         }
 
         public string GetFpgaVersion() {
-            string version = "N/A";
-            byte[] buf = new byte[4];
+            lock (lockobj) {
+                string version = "N/A";
+                byte[] buf = new byte[4];
 
-            for (byte i = 0; i <= 3; i++) {
-                if (GetQHYCCDFPGAVersion(handle, i, buf) != QHYCCD_ERROR) {
-                    if (i > 0) {
-                        version += ", ";
+                for (byte i = 0; i <= 3; i++) {
+                    if (GetQHYCCDFPGAVersion(handle, i, buf) != QHYCCD_ERROR) {
+                        if (i > 0) {
+                            version += ", ";
+                        }
+
+                        version = i + ": " + Convert.ToString(buf[0]) + "-" + Convert.ToString(buf[1]) + "-" + Convert.ToString(buf[2]) + "-" + Convert.ToString(buf[3]);
+                    } else {
+                        break;
                     }
-
-                    version = i + ": " + Convert.ToString(buf[0]) + "-" + Convert.ToString(buf[1]) + "-" + Convert.ToString(buf[2]) + "-" + Convert.ToString(buf[3]);
-                } else {
-                    break;
                 }
-            }
 
-            return version;
+                return version;
+            }
         }
 
         // Added for Live view/recording
@@ -361,7 +397,9 @@ namespace QHYCCD {
         }
 
         public uint GetQHYCCDMemLength() {
-            return GetQHYCCDMemLength(handle);
+            lock (lockobj) {
+                return GetQHYCCDMemLength(handle);
+            }
         }
 
         public uint SetQHYCCDGPSVCOXFreq(ushort freq) {

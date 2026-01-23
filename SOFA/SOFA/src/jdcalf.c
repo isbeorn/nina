@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 int iauJdcalf(int ndp, double dj1, double dj2, int iymdf[4])
 /*
@@ -10,7 +11,7 @@ int iauJdcalf(int ndp, double dj1, double dj2, int iymdf[4])
 **  for formatting messages:  rounded to a specified precision.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  support function.
 **
@@ -26,7 +27,7 @@ int iauJdcalf(int ndp, double dj1, double dj2, int iymdf[4])
 **               int      status:
 **                          -1 = date out of range
 **                           0 = OK
-**                          +1 = NDP not 0-9 (interpreted as 0)
+**                          +1 = ndp not 0-9 (interpreted as 0)
 **
 **  Notes:
 **
@@ -46,10 +47,11 @@ int iauJdcalf(int ndp, double dj1, double dj2, int iymdf[4])
 **     the Gregorian Calendar, nor is the AD/BC numbering convention
 **     observed.
 **
-**  3) Refer to the function iauJd2cal.
+**  3) See also the function iauJd2cal.
 **
-**  4) NDP should be 4 or less if internal overflows are to be
-**     avoided on machines which use 16-bit integers.
+**  4) The number of decimal places ndp should be 4 or less if internal
+**     overflows are to be avoided on platforms which use 16-bit
+**     integers.
 **
 **  Called:
 **     iauJd2cal    JD to Gregorian calendar
@@ -60,11 +62,11 @@ int iauJdcalf(int ndp, double dj1, double dj2, int iymdf[4])
 **     P. Kenneth Seidelmann (ed), University Science Books (1992),
 **     Section 12.92 (p604).
 **
-**  This revision:  2020 April 13
+**  This revision:  2023 January 16
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    int j, js;
@@ -124,10 +126,12 @@ int iauJdcalf(int ndp, double dj1, double dj2, int iymdf[4])
 /* Return the status. */
    return j;
 
+/* Finished. */
+
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

@@ -173,6 +173,16 @@ namespace NINA.Image.FileFormat.XISF {
                     }
 
                     outArray = ZlibStream.CompressBuffer(byteArray);
+                } else if (CompressionType == XISFCompressionTypeEnum.ZSTD) {
+                    if (ByteShuffling) {
+                        CompressionName = "zstd+sh";
+                        byteArray = Shuffle(byteArray, ShuffleItemSize);
+                    } else {
+                        CompressionName = "zstd";
+                    }
+
+                    using var compressor = new ZstdSharp.Compressor(1);
+                    outArray = compressor.Wrap(byteArray).ToArray();
                 } else {
                     outArray = new byte[byteArray.Length];
                     Array.Copy(byteArray, outArray, outArray.Length);
