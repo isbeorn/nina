@@ -30,7 +30,7 @@ void iauAtciqn(double rc, double dc, double pr, double pd,
 **
 **  Given:
 **     rc,dc  double       ICRS RA,Dec at J2000.0 (radians)
-**     pr     double       RA proper motion (radians/year; Note 3)
+**     pr     double       RA proper motion (radians/year, Note 3)
 **     pd     double       Dec proper motion (radians/year)
 **     px     double       parallax (arcsec)
 **     rv     double       radial velocity (km/s, +ve if receding)
@@ -51,11 +51,11 @@ void iauAtciqn(double rc, double dc, double pr, double pd,
 **      eral   double       "local" Earth rotation angle (radians)
 **      refa   double       refraction constant A (radians)
 **      refb   double       refraction constant B (radians)
-**      n     int           number of bodies (Note 3)
-**      b     iauLDBODY[n] data for each of the n bodies (Notes 3,4):
-**       bm    double        mass of the body (solar masses, Note 5)
-**       dl    double        deflection limiter (Note 6)
-**       pv    [2][3]        barycentric PV of the body (au, au/day)
+**     n      int          number of bodies (Note 3)
+**     b      iauLDBODY[n] data for each of the n bodies (Notes 3,4):
+**      bm     double       mass of the body (solar masses, Note 5)
+**      dl     double       deflection limiter (Note 6)
+**      pv     [2][3]       barycentric PV of the body (au, au/day)
 **
 **  Returned:
 **     ri,di   double    CIRS RA,Dec (radians)
@@ -106,11 +106,11 @@ void iauAtciqn(double rc, double dc, double pr, double pd,
 **     iauC2s       p-vector to spherical
 **     iauAnp       normalize angle into range 0 to 2pi
 **
-**  This revision:   2013 October 9
+**  This revision:   2021 April 3
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double pco[3], pnat[3], ppr[3], pi[3], w;
@@ -136,8 +136,8 @@ void iauAtciqn(double rc, double dc, double pr, double pd,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

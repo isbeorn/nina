@@ -36,6 +36,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **PlayerOne FilterWheel**
   - Added setting to change unidirectional mode
   - While connecting the app will wait for the filter wheel homing to finish before proceeding
+- **Moravian Instruments Cameras and Integrated Filter Wheels**
+  - Added native drivers for Moravian Instruments cameras and integrated filter wheels
 
 ### **User Interface & Usability**
 - **Sky Atlas Improvements**  
@@ -48,6 +50,10 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Improved reliability, lifetime handling, and positioning across multiple monitors.
   - Added configurable notification placement: primary screen, same screen as the app, or application window, as well as adjustable corner positioning via Options > General > Advanced.
   - Notifications now reposition automatically on window moves, DPI changes, and display configuration changes.
+
+### File formats
+- **XISF ZStandard Compression**
+  - Added support for ZStandard compression in XISF files.
 
 
 # Version 3.2

@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauNut00a(double date1, double date2, double *dpsi, double *deps)
 /*
@@ -10,7 +11,7 @@ void iauNut00a(double date1, double date2, double *dpsi, double *deps)
 **  with free core nutation omitted).
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  canonical model.
 **
@@ -153,11 +154,11 @@ void iauNut00a(double date1, double date2, double *dpsi, double *deps)
 **     Wallace, P.T., "Software for Implementing the IAU 2000
 **     Resolutions", in IERS Workshop 5.1 (2002)
 **
-**  This revision:  2019 June 23
+**  This revision:  2021 July 20
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    int i;
@@ -1878,7 +1879,7 @@ void iauNut00a(double date1, double date2, double *dpsi, double *deps)
             t * (-0.00001149)))), TURNAS) * DAS2R;
 
 /* Mean longitude of the Moon minus that of the ascending node */
-/* (IERS 2003. */
+/* (IERS 2003). */
    f = iauFaf03(t);
 
 /* Mean elongation of the Moon from the Sun (MHB2000). */
@@ -1997,12 +1998,12 @@ void iauNut00a(double date1, double date2, double *dpsi, double *deps)
    *dpsi = dpsils + dpsipl;
    *deps = depsls + depspl;
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauFk5hz(double r5, double d5, double date1, double date2,
               double *rh, double *dh)
@@ -8,10 +9,10 @@ void iauFk5hz(double r5, double d5, double date1, double date2,
 **  - - - - - - - - -
 **
 **  Transform an FK5 (J2000.0) star position into the system of the
-**  Hipparcos catalogue, assuming zero Hipparcos proper motion.
+**  Hipparcos catalog, assuming zero Hipparcos proper motion.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  support function.
 **
@@ -52,7 +53,7 @@ void iauFk5hz(double r5, double d5, double date1, double date2,
 **     are both good compromises between resolution and convenience.
 **
 **  3) The FK5 to Hipparcos transformation is modeled as a pure
-**     rotation and spin;  zonal errors in the FK5 catalogue are not
+**     rotation and spin;  zonal errors in the FK5 catalog are not
 **     taken into account.
 **
 **  4) The position returned by this function is in the Hipparcos
@@ -74,11 +75,11 @@ void iauFk5hz(double r5, double d5, double date1, double date2,
 **
 **     F.Mignard & M.Froeschle, 2000, Astron.Astrophys. 354, 732-739.
 **
-**  This revision:  2013 June 18
+**  This revision:  2023 March 6
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double t, p5e[3], r5h[3][3], s5h[3], vst[3], rst[3][3], p5[3],
@@ -110,12 +111,12 @@ void iauFk5hz(double r5, double d5, double date1, double date2,
    iauC2s(ph, &w, dh);
    *rh = iauAnp(w);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

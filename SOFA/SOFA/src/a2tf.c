@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauA2tf(int ndp, double angle, char *sign, int ihmsf[4])
 /*
@@ -9,7 +10,7 @@ void iauA2tf(int ndp, double angle, char *sign, int ihmsf[4])
 **  Decompose radians into hours, minutes, seconds, fraction.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  vector/matrix support function.
 **
@@ -56,22 +57,22 @@ void iauA2tf(int ndp, double angle, char *sign, int ihmsf[4])
 **  Called:
 **     iauD2tf      decompose days to hms
 **
-**  This revision:  2020 April 1
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
 /* Scale then use days to h,m,s function. */
    iauD2tf(ndp, angle/D2PI, sign, ihmsf);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

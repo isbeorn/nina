@@ -66,9 +66,9 @@ void iauTpstv(double xi, double eta, double v0[3], double v[3])
 **
 **  This revision:   2018 January 2
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double x, y, z, f, r;
@@ -98,8 +98,8 @@ void iauTpstv(double xi, double eta, double v0[3], double v[3])
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================
