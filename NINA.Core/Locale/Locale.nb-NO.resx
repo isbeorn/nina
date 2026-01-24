@@ -1286,7 +1286,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>Aktiver bit-skalering</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Lagre 10/12/14-bit bilder skalert til 16 bits. (Bare relevant for Altair, Omegon, SVBony, RisingCam og ToupTek-kameraer, når du bruker den innebygde driveren)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Aktivert</value>
@@ -6947,6 +6947,9 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Objektkataloger</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Show all catalogues</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Mål Alt</value>
   </data>
@@ -7436,5 +7439,10 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Flash version</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
   </data>
 </root>
