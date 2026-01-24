@@ -1285,7 +1285,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
     <value>Povolit bitové měřítko</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>10/12/14 bit obraz je rozšířen na 16 bitů a uložen. (Pouze pro kamery Altair, Omegon, SVBony, RisingCam, ToupTek, s nativními ovladači)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Povoleno</value>
@@ -6960,6 +6960,9 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Přepnout Katalog Zobrazení</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Show all catalogues</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Cílová Alt</value>
   </data>
@@ -7449,5 +7452,10 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Flash version</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
   </data>
 </root>
