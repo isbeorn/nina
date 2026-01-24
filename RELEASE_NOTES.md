@@ -35,6 +35,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - The ToupTek based filter wheels are now available as a native driver.
 - **Oasis Focuser Native Driver**
   - The Oasis focuser is now available as a native driver.
+- **Oasis Filter Wheel Native Driver**
+  - The Oasis filter wheel is now available as a native driver.
 - **PlayerOne FilterWheel**
   - Added setting to change unidirectional mode
   - While connecting the app will wait for the filter wheel homing to finish before proceeding

@@ -2302,6 +2302,9 @@
       <Component Id="External_x64_Oasis_OasisFocuser.dll" Guid="8e45b1b1-e320-484b-97b5-cd5512a7f9bd" Bitness="$(var.Win64)">
         <File Id="External_x64_Oasis_OasisFocuser.dll" Name="OasisFocuser.dll" Source="$(var.NINA_ProjectDir)External\x64\Oasis\OasisFocuser.dll" />
       </Component>
+      <Component Id="External_x64_Oasis_OasisFilterWheel.dll" Guid="F0C72D3B-C4EF-4221-9227-55C60C86DEF7" Bitness="$(var.Win64)">
+        <File Id="External_x64_Oasis_OasisFilterWheel.dll" Name="OasisFilterWheel.dll" Source="$(var.NINA_ProjectDir)External\x64\Oasis\OasisFilterWheel.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 
