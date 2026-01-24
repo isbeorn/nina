@@ -1292,7 +1292,7 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
     <value>Abilita la rimappatura dei bit bit</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Salva con scaling a 16 bit le immagini campionate a 10/12/14 bit. (Rilevante solo per le camere Altair, Omegon, SVBony, RisingCam e ToupTek, utilizzando il driver nativo)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Abilitato</value>
@@ -6965,6 +6965,9 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Toggle Catalogue Display</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Show all catalogues</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Alt obiettivo</value>
   </data>
@@ -7454,5 +7457,10 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Flash version</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
   </data>
 </root>
