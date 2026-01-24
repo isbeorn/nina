@@ -1288,7 +1288,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>Activar escalat de bit</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Guarda imatges de 10/12/14 bits amb escala a 16 bits. (Només rellevant per a les càmeres Altair, Omegon, SVBony, RisingCam i ToupTek quan s'utilitza el controlador natiu)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Activat</value>
@@ -6958,6 +6958,9 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Alternar visualització del catàleg</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Show all catalogues</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Alt de l'Objectiu</value>
   </data>
@@ -7447,5 +7450,10 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZSstandar</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Flash version</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
   </data>
 </root>
