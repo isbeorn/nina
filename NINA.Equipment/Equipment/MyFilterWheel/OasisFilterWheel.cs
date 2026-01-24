@@ -25,6 +25,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static Astroasis.AstroasisSDK.AOFilterWheel;
+using static NINA.Image.FileFormat.XISF.XISFImageProperty.Instrument;
 
 namespace NINA.Equipment.Equipment.MyFilterWheel {
     public class OasisFilterWheel : BaseINPC, IFilterWheel {
@@ -44,6 +45,10 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
 
             Name = $"{model} ({filterWheelAlias})";
             CalibrateOfwCommand = new AsyncCommand<bool>(CalibrateOfw);
+            SyncFocusOffsetsCommand = new AsyncCommand<bool>(SyncFocusOffsets);
+            StoreFocusOffsetsCommand = new AsyncCommand<bool>(StoreFocusOffsets);
+            SyncNamesCommand = new AsyncCommand<bool>(SyncNames);
+            StoreNamesCommand = new AsyncCommand<bool>(StoreNames);
             SetId();
         }
 
@@ -110,6 +115,17 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             }
         }
 
+        private int counter;
+        public int Counter {
+            get => counter;
+            private set {
+                if (counter != value) {
+                    counter = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public short Position {
             get {
                 if (!Connected) {
@@ -135,6 +151,37 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     RaisePropertyChanged();
                 } else {
                     Logger.Error($"OFW: Failed to set filter position to {value}");
+                }
+            }
+        }
+
+        public bool Autorun {
+            get {
+                if (!Connected) {
+                    return false;
+                }
+                var err = FilterWheelGetConfig(id, out var config);
+                if (err == AOReturn.AO_SUCCESS) {
+                    return config.autorun != 0;
+                } else {
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        Logger.Error($"Oasis communication error to get config {err}");
+                        DisconnectOnRemovedError();
+                    } else {
+                        Logger.Error($"Oasis error to get config {err}");
+                    }
+                    return false;
+                }
+            }
+            set {
+                OFWConfig config = new();
+                config.mask = (uint)AOConfig.MASK_AUTORUN;
+                config.autorun = value ? 1 : 0;
+                if (FilterWheelSetConfig(id, ref config) == AOReturn.AO_SUCCESS) {
+                    Logger.Info($"Oasis: Autorun set to: {value}");
+                    RaisePropertyChanged();
+                } else {
+                    Logger.Error($"Oasis error to set autorun");
                 }
             }
         }
@@ -234,8 +281,10 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                         return false;
                     }
 
-                    // Set initial position to slot 0
-                    Position = 0;
+                    // If autorun is disabled, load filter0 on connect
+                    if (!Autorun) {
+                        Position = 0;
+                    }
 
                     // Fetch protocol version
                     OFWVersion version = new OFWVersion();
@@ -249,23 +298,26 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     // Start background task to monitor board temperature
                     propertyMonitor?.Cancel();
                     propertyMonitor?.Dispose();
+
                     propertyMonitor = CancellationTokenSource.CreateLinkedTokenSource(token);
+                    var monitorCts = propertyMonitor;
+                    var monitorToken = propertyMonitor.Token;
 
                     _ = Task.Run(async () => {
                         try {
-                            while (!propertyMonitor.Token.IsCancellationRequested) {
+                            while (!monitorToken.IsCancellationRequested) {
                                 var err = FilterWheelGetStatus(id, out var status);
                                 if (err == AOReturn.AO_SUCCESS) {
                                     // Update properties
                                     BoardTemperature = status.temperature / 100.0;
                                 }
-                                await Task.Delay(2000, propertyMonitor.Token);
+                                await Task.Delay(2000, monitorToken);
                             }
                         } catch (OperationCanceledException) {
                             // Expected when cancellation is requested
                             Logger.Debug("Oasis: property monitoring task canceled");
                         }
-                    }, propertyMonitor.Token);
+                    }, monitorToken);
 
                     Connected = true;
                     RaiseAllPropertiesChanged();
@@ -278,11 +330,28 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             });
         }
 
+        public List<string> States { get; } = new() { "Idle", "Moving", "Calibrating", "Benchmarking" };
+
+        private int state = (int)AOStatus.STATUS_IDLE;
+        public int State {
+            get => state;
+            private set {
+                if (state != value) {
+                    state = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(StateText));
+                }
+            }
+        }
+
+        public string StateText => State >= 0 && State < States.Count ? States[state] : "Unknown";
+
         private Task<bool> WaitForReadyState(CancellationToken ct = default) {
             OFWStatus status;
             AOReturn err;
             do {
                 err = FilterWheelGetStatus(id, out status);
+                State = (int)status.filterStatus;
 
                 if (err == AOReturn.AO_ERROR_COMMUNICATION) {
                     Logger.Error($"Oasis communication error to get status {err}");
@@ -295,6 +364,10 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
 
                 CoreUtil.Wait(TimeSpan.FromMilliseconds(100), ct);
             } while (status.filterStatus != AOStatus.STATUS_IDLE && !ct.IsCancellationRequested);
+            State = (int)status.filterStatus;
+
+            // Update counter
+            Counter = status.seq;
 
             return Task.FromResult(true);
         }
@@ -353,6 +426,90 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             });
         }
 
+        private async Task<bool> StoreFocusOffsets(object arg) {
+            return await Task.Run(() => {
+                if (Connected) {
+                    var err = FilterWheelSetFocusOffset(id, FocusOffsets.Length, FocusOffsets);
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        Logger.Error($"Oasis communication error to store focus offsets {err}");
+                        DisconnectOnRemovedError();
+                        return false;
+                    } else if (err != AOReturn.AO_SUCCESS) {
+                        Logger.Error("OFW: Failed to store focus offsets");
+                        return false;
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+
+        private async Task<bool> SyncFocusOffsets(object arg) {
+            return await Task.Run(() => {
+                if (Connected) {
+                    var err = FilterWheelGetFocusOffset(id, FocusOffsets.Length, out var offsets);
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        Logger.Error($"Oasis communication error to sync focus offsets {err}");
+                        DisconnectOnRemovedError();
+                        return false;
+                    } else if (err != AOReturn.AO_SUCCESS) {
+                        Logger.Error("OFW: Failed to sync focus offsets");
+                        return false;
+                    }
+                    foreach (var filter in Filters) {
+                        filter.FocusOffset = offsets[filter.Position];
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+
+        private async Task<bool> StoreNames(object arg) {
+            return await Task.Run(() => {
+                if (Connected) {
+                    foreach (var filter in Filters) {
+                        var err = FilterWheelSetSlotName(id, filter.Position + 1, filter.Name);
+                        if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                            Logger.Error($"Oasis communication error to store name {err}");
+                            DisconnectOnRemovedError();
+                            return false;
+                        } else if (err != AOReturn.AO_SUCCESS) {
+                            Logger.Error("OFW: Failed to store name");
+                            return false;
+                        }
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+
+        private async Task<bool> SyncNames(object arg) {
+            return await Task.Run(() => {
+                if (Connected) {
+                    foreach (var filter in Filters) {
+                        var err = FilterWheelGetSlotName(id, filter.Position + 1, out var name);
+                        if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                            Logger.Error($"Oasis communication error to sync name {err}");
+                            DisconnectOnRemovedError();
+                            return false;
+                        } else if (err != AOReturn.AO_SUCCESS) {
+                            Logger.Error("OFW: Failed to sync name");
+                            return false;
+                        }
+                        filter.Name = name;
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+
         private string GetFwVersionString() {
             OFWVersion version = new OFWVersion();
             _ = FilterWheelGetVersion(id, out version);
@@ -379,6 +536,10 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         }
 
         public IAsyncCommand CalibrateOfwCommand { get; }
+        public IAsyncCommand SyncFocusOffsetsCommand { get; }
+        public IAsyncCommand StoreFocusOffsetsCommand { get; }
+        public IAsyncCommand SyncNamesCommand { get; }
+        public IAsyncCommand StoreNamesCommand { get; }
 
         public void SetupDialog() {
         }

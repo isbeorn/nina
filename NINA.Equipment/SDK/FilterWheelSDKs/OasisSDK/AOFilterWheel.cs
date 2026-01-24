@@ -1,4 +1,5 @@
 ﻿using NINA.Core.Utility;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -121,14 +122,6 @@ namespace Astroasis.AstroasisSDK {
         }
 
         [SecurityCritical]
-        public static AOReturn FilterWheelGetSerialNumber(int id, out string sn) {
-            StringBuilder buf = new StringBuilder(OFW_VERSION_LEN);
-            var err = OFWGetSerialNumber(id, buf);
-            sn = buf.ToString();
-            return err;
-        }
-
-        [SecurityCritical]
         public static AOReturn FilterWheelGetFriendlyName(int id, out string name) {
             StringBuilder buf = new StringBuilder(OFW_NAME_LEN);
             var err = OFWGetFriendlyName(id, buf);
@@ -139,19 +132,6 @@ namespace Astroasis.AstroasisSDK {
         [SecurityCritical]
         public static AOReturn FilterWheelSetFriendlyName(int id, string name) {
             return OFWSetFriendlyName(id, name);
-        }
-
-        [SecurityCritical]
-        public static AOReturn FilterWheelGetBluetoothName(int id, out string name) {
-            StringBuilder buf = new StringBuilder(OFW_NAME_LEN);
-            var err = OFWGetBluetoothName(id, buf);
-            name = buf.ToString();
-            return err;
-        }
-
-        [SecurityCritical]
-        public static AOReturn FilterWheelSetBluetoothName(int id, string name) {
-            return OFWSetBluetoothName(id, name);
         }
 
         [SecurityCritical]
@@ -167,11 +147,6 @@ namespace Astroasis.AstroasisSDK {
         [SecurityCritical]
         public static AOReturn FilterWheelGetStatus(int id, out OFWStatus status) {
             return OFWGetStatus(id, out status);
-        }
-
-        [SecurityCritical]
-        public static AOReturn FilterWheelFactoryReset(int id) {
-            return OFWFactoryReset(id);
         }
 
         [SecurityCritical]
@@ -193,23 +168,31 @@ namespace Astroasis.AstroasisSDK {
         }
 
         [SecurityCritical]
-        public static AOReturn FilterWheelGetFocusOffset(int id, int num, out int offset) {
-            return OFWGetFocusOffset(id, num, out offset);
+        public static AOReturn FilterWheelGetFocusOffset(int id, int num, out int[] offset) {
+            offset = null;
+            IntPtr buffer = Marshal.AllocHGlobal(num * sizeof(int));
+            try {
+                var err = OFWGetFocusOffset(id, num, buffer);
+                if (err == AOReturn.AO_SUCCESS) {
+                    offset = new int[num];
+                    Marshal.Copy(buffer, offset, 0, num);
+                }
+                return err;
+            } finally {
+                Marshal.FreeHGlobal(buffer);
+
+            }
         }
 
         [SecurityCritical]
-        public static AOReturn FilterWheelSetFocusOffset(int id, int num, ref int offset) {
-            return OFWSetFocusOffset(id, num, ref offset);
-        }
-
-        [SecurityCritical]
-        public static AOReturn FilterWheelGetColor(int id, int num, out int color) {
-            return OFWGetColor(id, num, out color);
-        }
-
-        [SecurityCritical]
-        public static AOReturn FilterWheelSetColor(int id, int num, ref int color) {
-            return OFWSetColor(id, num, ref color);
+        public static AOReturn FilterWheelSetFocusOffset(int id, int num, int[] offset) {
+            IntPtr buffer = Marshal.AllocHGlobal(num * sizeof(int));
+            try {
+                Marshal.Copy(offset, 0, buffer, num);
+                return OFWSetFocusOffset(id, num, buffer);
+            } finally {
+                Marshal.FreeHGlobal(buffer);
+            }
         }
 
         [SecurityCritical]
@@ -223,21 +206,11 @@ namespace Astroasis.AstroasisSDK {
         }
 
         [SecurityCritical]
-        public static AOReturn FilterWheelGetCalibrateData(int id, out OFWCalibrateData calibrate) {
-            return OFWGetCalibrateData(id, out calibrate);
-        }
-
-        [SecurityCritical]
         public static AOReturn FilterWheelGetSDKVersion(out string version) {
             StringBuilder buf = new StringBuilder(OFW_VERSION_LEN);
             var err = OFWGetSDKVersion(buf);
             version = buf.ToString();
             return err;
-        }
-
-        [SecurityCritical]
-        public static AOReturn FilterWheelSetLogLevel(int level) {
-            return OFWSetLogLevel(level);
         }
 
         [DllImport(DLLNAME, EntryPoint = "OFWScan", CallingConvention = CallingConvention.Cdecl)]
@@ -255,20 +228,11 @@ namespace Astroasis.AstroasisSDK {
         [DllImport(DLLNAME, EntryPoint = "OFWGetVersion", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn OFWGetVersion(int id, out OFWVersion version);
 
-        [DllImport(DLLNAME, EntryPoint = "OFWGetSerialNumber", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn OFWGetSerialNumber(int id, StringBuilder sn);
-
         [DllImport(DLLNAME, EntryPoint = "OFWGetFriendlyName", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn OFWGetFriendlyName(int id, StringBuilder name);
 
         [DllImport(DLLNAME, EntryPoint = "OFWSetFriendlyName", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn OFWSetFriendlyName(int id, string name);
-
-        [DllImport(DLLNAME, EntryPoint = "OFWGetBluetoothName", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn OFWGetBluetoothName(int id, StringBuilder name);
-
-        [DllImport(DLLNAME, EntryPoint = "OFWSetBluetoothName", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn OFWSetBluetoothName(int id, string name);
 
         [DllImport(DLLNAME, EntryPoint = "OFWGetConfig", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn OFWGetConfig(int id, out OFWConfig config);
@@ -278,9 +242,6 @@ namespace Astroasis.AstroasisSDK {
 
         [DllImport(DLLNAME, EntryPoint = "OFWGetStatus", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn OFWGetStatus(int id, out OFWStatus status);
-
-        [DllImport(DLLNAME, EntryPoint = "OFWFactoryReset", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn OFWFactoryReset(int id);
 
         [DllImport(DLLNAME, EntryPoint = "OFWGetSlotNum", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn OFWGetSlotNum(int id, out int num);
@@ -292,16 +253,10 @@ namespace Astroasis.AstroasisSDK {
         private static extern AOReturn OFWSetSlotName(int id, int slot, string name);
 
         [DllImport(DLLNAME, EntryPoint = "OFWGetFocusOffset", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn OFWGetFocusOffset(int id, int num, out int offset);
+        private static extern AOReturn OFWGetFocusOffset(int id, int num, IntPtr offset);
 
         [DllImport(DLLNAME, EntryPoint = "OFWSetFocusOffset", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn OFWSetFocusOffset(int id, int num, ref int offset);
-
-        [DllImport(DLLNAME, EntryPoint = "OFWGetColor", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn OFWGetColor(int id, int num, out int color);
-
-        [DllImport(DLLNAME, EntryPoint = "OFWSetColor", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn OFWSetColor(int id, int num, ref int color);
+        private static extern AOReturn OFWSetFocusOffset(int id, int num, IntPtr offset);
 
         [DllImport(DLLNAME, EntryPoint = "OFWSetPosition", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn OFWSetPosition(int id, int position);
@@ -309,13 +264,7 @@ namespace Astroasis.AstroasisSDK {
         [DllImport(DLLNAME, EntryPoint = "OFWCalibrate", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn OFWCalibrate(int id, int mode);
 
-        [DllImport(DLLNAME, EntryPoint = "OFWGetCalibrateData", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn OFWGetCalibrateData(int id, out OFWCalibrateData calibrate);
-
         [DllImport(DLLNAME, EntryPoint = "OFWGetSDKVersion", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn OFWGetSDKVersion(StringBuilder version);
-
-        [DllImport(DLLNAME, EntryPoint = "OFWSetLogLevel", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn OFWSetLogLevel(int level);
     }
 }
