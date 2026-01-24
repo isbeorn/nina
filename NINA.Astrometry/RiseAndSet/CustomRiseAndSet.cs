@@ -32,8 +32,8 @@ namespace NINA.Astrometry.RiseAndSet {
         public CustomRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation) {
         }
 
-        public override Task<bool> Calculate() {
-            return Task.FromResult(true);
+        public override bool Calculate() {
+            return true;
         }
 
         public override DateTime? Rise => rise;

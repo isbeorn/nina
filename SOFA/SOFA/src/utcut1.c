@@ -68,11 +68,11 @@ int iauUtcut1(double utc1, double utc2, double dut1,
 **     iauUtctai    UTC to TAI
 **     iauTaiut1    TAI to UT1
 **
-**  This revision:  2013 August 12
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    int iy, im, id, js, jw;
@@ -99,10 +99,12 @@ int iauUtcut1(double utc1, double utc2, double dut1,
 /* Status. */
    return js;
 
+/* Finished. */
+
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

@@ -121,7 +121,7 @@ namespace NINA.Astrometry {
         }
 
         private void CalculateSeparation(DateTime time) {
-            NOVAS.SkyPosition pos = AstroUtil.GetMoonPosition(time, AstroUtil.GetJulianDate(time), _observer);
+            NOVAS.SkyPosition pos = AstroUtil.GetMoonPosition(time, _observer);
             var moonRaRadians = AstroUtil.ToRadians(AstroUtil.HoursToDegrees(pos.RA));
             var moonDecRadians = AstroUtil.ToRadians(pos.Dec);
 

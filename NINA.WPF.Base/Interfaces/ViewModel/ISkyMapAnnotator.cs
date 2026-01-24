@@ -33,6 +33,7 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         bool AnnotateDSO { get; set; }
         bool AnnotateGrid { get; set; }
         bool UseCachedImages { get; set; }
+        bool ShowAllCatalogues { get; set; }
         IList<ActiveCatalogue> ActiveCatalogues { get; set; }
         List<FramingConstellationBoundary> ConstellationBoundariesInViewPort { get; }
         List<FramingConstellation> ConstellationsInViewport { get; }

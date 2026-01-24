@@ -93,14 +93,13 @@ namespace NINA.Astrometry {
         /// <param name="db">NINA database</param>
         /// <returns>Celestial coordinates</returns>
         public Coordinates Transform(DateTime now, Epoch epoch, double pressurehPa, double tempCelcius, double relativeHumidity, double wavelength, DatabaseInteraction db = null) {
-            var jdUTC = AstroUtil.GetJulianDate(now);
-
             var zenithDistance = AstroUtil.ToRadians(90d - Altitude.Degree);
             var deltaUT = AstroUtil.DeltaUT(now, db);
 
             var raRad = 0d;
             var decRad = 0d;
-            SOFA.TopocentricToCelestial("A", Azimuth.Radians, zenithDistance, jdUTC, 0d, deltaUT, Longitude.Radians, Latitude.Radians, Elevation, 0d, 0d, pressurehPa, tempCelcius, relativeHumidity, wavelength, ref raRad, ref decRad);
+            var (utc1, utc2) = AstroUtil.GetJulianDateUTCParts(now);
+            SOFA.TopocentricToCelestial("A", Azimuth.Radians, zenithDistance, utc1, utc2, deltaUT, Longitude.Radians, Latitude.Radians, Elevation, 0d, 0d, pressurehPa, tempCelcius, relativeHumidity, wavelength, ref raRad, ref decRad);
             var ra = Angle.ByRadians(raRad);
             var dec = Angle.ByRadians(decRad);
 
