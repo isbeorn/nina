@@ -39,7 +39,7 @@
             VerticalAlignment="Center"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
-            Foreground="{StaticResource ButtonBackgroundSelectedBrush}"
+            Foreground="{StaticResource PrimaryBrush}"
             HintTextMargin="0,-2,0,0"
             HintTextOpacity="0.65"
             TextAlignment="Center"
@@ -59,8 +59,8 @@
         <TextBlock
             Margin="2,2,0,0"
             VerticalAlignment="Center"
-            Foreground="{StaticResource ButtonBackgroundSelectedBrush}"
-            Opacity=".8"
+            FontStyle="Italic"
+            Foreground="{StaticResource PrimaryBrush}"
             Visibility="{Binding Exp.IsAnnotated, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             >
             <TextBlock.Text>
@@ -71,10 +71,7 @@
             </TextBlock.Text>
         </TextBlock>
 
-        <TextBlock
-            Margin="2,8,0,0"
-            Opacity=".5"
-            Text="{Binding Unit}" />
+        <TextBlock Margin="2,8,0,0" Text="{Binding Unit}" />
 
 
     </StackPanel>
