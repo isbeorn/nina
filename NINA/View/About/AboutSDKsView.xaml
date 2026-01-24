@@ -55,6 +55,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock FontWeight="Bold" Text="{ns:Loc LblVendor}" />
             <TextBlock
@@ -102,63 +103,69 @@
                 Grid.Column="1"
                 Text="{Binding MallinCamSDKVersion}" />
 
-            <TextBlock Grid.Row="7" Text="Nikon" />
+            <TextBlock Grid.Row="7" Text="Moravian Instruments " />
             <TextBlock
                 Grid.Row="7"
                 Grid.Column="1"
-                Text="{Binding NikonSDKVersion}" />
+                Text="{Binding MoravianSDKVersion}" />
 
-            <TextBlock Grid.Row="8" Text="Player One" />
+            <TextBlock Grid.Row="8" Text="Nikon" />
             <TextBlock
                 Grid.Row="8"
                 Grid.Column="1"
-                Text="{Binding PlayerOneSDKVersion}" />
+                Text="{Binding NikonSDKVersion}" />
 
-            <TextBlock Grid.Row="9" Text="OGMA" />
+            <TextBlock Grid.Row="9" Text="Player One" />
             <TextBlock
                 Grid.Row="9"
                 Grid.Column="1"
-                Text="{Binding OgmaSDKVersion}" />
+                Text="{Binding PlayerOneSDKVersion}" />
 
-            <TextBlock Grid.Row="10" Text="Omegon" />
+            <TextBlock Grid.Row="10" Text="OGMA" />
             <TextBlock
                 Grid.Row="10"
                 Grid.Column="1"
-                Text="{Binding OmegonSDKVersion}" />
+                Text="{Binding OgmaSDKVersion}" />
 
-            <TextBlock Grid.Row="11" Text="QHYCCD" />
+            <TextBlock Grid.Row="11" Text="Omegon" />
             <TextBlock
                 Grid.Row="11"
                 Grid.Column="1"
-                Text="{Binding QHYSDKVersion}" />
+                Text="{Binding OmegonSDKVersion}" />
 
-            <TextBlock Grid.Row="12" Text="RisingCam" />
+            <TextBlock Grid.Row="12" Text="QHYCCD" />
             <TextBlock
                 Grid.Row="12"
                 Grid.Column="1"
-                Text="{Binding RisingCamSDKVersion}" />
+                Text="{Binding QHYSDKVersion}" />
 
-            <TextBlock Grid.Row="13" Text="ToupTek" />
+            <TextBlock Grid.Row="13" Text="RisingCam" />
             <TextBlock
                 Grid.Row="13"
                 Grid.Column="1"
-                Text="{Binding ToupTekSDKVersion}" />
+                Text="{Binding RisingCamSDKVersion}" />
 
-            <TextBlock Grid.Row="14" Text="SBIG" />
+            <TextBlock Grid.Row="14" Text="ToupTek" />
             <TextBlock
                 Grid.Row="14"
                 Grid.Column="1"
-                Text="{Binding SBIGSDKVersion}" />
+                Text="{Binding ToupTekSDKVersion}" />
 
-            <TextBlock Grid.Row="15" Text="SVBony" />
+            <TextBlock Grid.Row="15" Text="SBIG" />
             <TextBlock
                 Grid.Row="15"
                 Grid.Column="1"
-                Text="{Binding SVBonySDKVersion}" />
+                Text="{Binding SBIGSDKVersion}" />
 
-            <TextBlock Grid.Row="16" Text="ZWOptical" />
+            <TextBlock Grid.Row="16" Text="SVBony" />
             <TextBlock
                 Grid.Row="16"
+                Grid.Column="1"
+                Text="{Binding SVBonySDKVersion}" />
+
+            <TextBlock Grid.Row="17" Text="ZWOptical" />
+            <TextBlock
+                Grid.Row="17"
                 Grid.Column="1"
                 Text="{Binding ZWOSDKVersion}" />
         </Grid>

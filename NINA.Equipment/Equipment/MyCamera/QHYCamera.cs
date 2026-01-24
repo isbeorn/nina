@@ -34,7 +34,6 @@ using System.Management;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static NINA.Image.ImageAnalysis.StarDetection;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 

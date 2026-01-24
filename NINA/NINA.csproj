@@ -100,6 +100,11 @@
     <None Remove="External\x64\Cfitsio\cfitsionative.dll" />
     <None Remove="External\x64\Cfitsio\pthreadVC2.dll" />
     <None Remove="External\x64\Cfitsio\zlib.dll" />
+    <None Remove="External\x64\Moravian\cXusb.dll" />
+    <None Remove="External\x64\Moravian\gXeth.dll" />
+    <None Remove="External\x64\Moravian\gXusb.dll" />
+    <None Remove="External\x64\Moravian\sfw.dll" />
+    <None Remove="External\x64\Moravian\sfweth.dll" />
     <None Remove="External\x64\PlayerOne\PlayerOnePW.dll" />
     <None Remove="External\x64\SOFA\SOFA-2023-10-11.dll" />
     <None Remove="External\x64\SVBony\svbonycam.dll" />
@@ -156,6 +161,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\Cfitsio\zlib.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Moravian\cXusb.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Moravian\gXeth.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Moravian\gXusb.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Moravian\sfw.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Moravian\sfweth.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\PlayerOne\PlayerOnePW.dll">
@@ -394,7 +414,7 @@
     <PackageReference Include="Dirkster.AvalonDock" Version="4.72.1" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.129" />
     <PackageReference Include="MdXaml" Version="1.27.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     <PackageReference Include="OxyPlot.Contrib" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Contrib.Wpf" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />

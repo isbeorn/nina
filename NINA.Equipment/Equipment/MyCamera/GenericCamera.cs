@@ -4,6 +4,7 @@ using NINA.Core.Utility;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Equipment.Utility;
+using NINA.Image.ImageAnalysis;
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
@@ -257,8 +258,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             if (bitScaling) {
                 var nativeBitDepth = sdk.GetBitDepth();
                 var shift = 16 - nativeBitDepth;
-                for (var i = 0; i < data.Length; i++) {
-                    data[i] = (ushort)(data[i] << shift);
+                if (shift != 0) {
+                    ImageUtility.BitShiftLeftInPlace(data, shift);
                 }
             }
 
