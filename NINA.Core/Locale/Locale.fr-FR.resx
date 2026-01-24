@@ -1292,7 +1292,7 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Activer la mise à l'échelle Bits</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Sauvegarde des images 10/12/14 bits avec mise à l'échelle à 16 bits. (Ne concerne que les caméras Altair, Omegon, SVBony, RisingCam et ToupTek, lorsque le pilote natif est utilisé)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Activé</value>
@@ -6959,6 +6959,9 @@ En outre, il est essentiel que le pilote ASCOM utilisé prenne également en cha
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Activer/désactiver l'affichage du catalogue</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Show all catalogues</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Altitude cible</value>
   </data>
@@ -7448,5 +7451,10 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Flash version</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
   </data>
 </root>
