@@ -1228,30 +1228,39 @@
                         Margin="5"
                         Header="{ns:Loc LblToggleCatalogueDisplay}"
                         Visibility="{Binding SkyMapAnnotator.Initialized, Converter={StaticResource VisibilityConverter}}">
-                        <ItemsControl Margin="15,5,5,5" ItemsSource="{Binding SkyMapAnnotator.ActiveCatalogues}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Catalogue" />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Name}" />
-                                        <CheckBox
-                                            Grid.Column="1"
-                                            Margin="0,0,5,0"
-                                            HorizontalAlignment="Left"
-                                            IsChecked="{Binding Active, Mode=TwoWay}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
+                        <StackPanel Orientation="Vertical">
+                            <!--  Show/Hide All Checkbox  -->
+                            <StackPanel Margin="15,5,5,0" Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="0,0,10,0"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblToggleShowAllCatalogues}" />
+                                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding SkyMapAnnotator.ShowAllCatalogues, Mode=TwoWay}" />
+                            </StackPanel>
+                            <ItemsControl Margin="15,5,5,5" ItemsSource="{Binding SkyMapAnnotator.ActiveCatalogues}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Catalogue" />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                                            <CheckBox
+                                                Grid.Column="1"
+                                                Margin="2,0,10,0"
+                                                HorizontalAlignment="Left"
+                                                IsChecked="{Binding Active, Mode=TwoWay}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
                     </Expander>
                 </Grid>
 

@@ -127,8 +127,48 @@ namespace NINA.Astrometry {
         }
 
         public static double GetJulianDate(DateTime date) {
-            var utcdate = date.ToUniversalTime();
-            return NOVAS.JulianDate((short)utcdate.Year, (short)utcdate.Month, (short)utcdate.Day, utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0 + utcdate.Millisecond / 60.0 / 60.0 / 1000.0);
+            var (utc1, utc2) = GetJulianDateUTCParts(date);
+            return utc1 + utc2;
+        }
+
+        public static double GetSecondOfMinuteWithFraction(DateTime date) {
+            return date.Second + (date.Ticks % TimeSpan.TicksPerSecond) / (double)TimeSpan.TicksPerSecond;
+        }
+
+        public static (double, double) GetJulianDateUTCParts(DateTime date) {
+            var utcDate = date.ToUniversalTime();
+            double utc1 = 0, utc2 = 0;
+            SOFA.Dtf2d(
+                "UTC",
+                utcDate.Year, utcDate.Month, utcDate.Day,
+                utcDate.Hour, utcDate.Minute,
+                GetSecondOfMinuteWithFraction(utcDate),
+                ref utc1, ref utc2);
+            return (utc1, utc2);
+        }
+
+        public static double GetJulianDateTT(DateTime date) {
+            var (tt1, tt2) = GetJulianDateTTParts(date);
+            return tt1 + tt2;
+        }
+
+
+        public static (double, double) GetJulianDateTTParts(DateTime date) {
+            var utcDate = date.ToUniversalTime();
+            double tai1 = 0, tai2 = 0, tt1 = 0, tt2 = 0;
+
+            double utc1 = 0, utc2 = 0;
+            SOFA.Dtf2d(
+                "UTC",
+                utcDate.Year, utcDate.Month, utcDate.Day,
+                utcDate.Hour, utcDate.Minute,
+                GetSecondOfMinuteWithFraction(utcDate),
+                ref utc1, ref utc2);
+
+            SOFA.UtcTai(utc1, utc2, ref tai1, ref tai2);
+            SOFA.TaiTt(tai1, tai2, ref tt1, ref tt2);
+
+            return (tt1, tt2);
         }
 
         public static double MathMod(double a, double b) {
@@ -145,7 +185,8 @@ namespace NINA.Astrometry {
         public static double DeltaT(DateTime date, DatabaseInteraction db = null) {
             var utcDate = date.ToUniversalTime();
             double utc1 = 0, utc2 = 0, tai1 = 0, tai2 = 0;
-            SOFA.Dtf2d("UTC", utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, (double)utcDate.Second + (double)utcDate.Millisecond / 1000.0, ref utc1, ref utc2);
+
+            SOFA.Dtf2d("UTC", utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, GetSecondOfMinuteWithFraction(utcDate), ref utc1, ref utc2);
             SOFA.UtcTai(utc1, utc2, ref tai1, ref tai2);
 
             var utc = utc1 + utc2;
@@ -154,9 +195,9 @@ namespace NINA.Astrometry {
             return deltaT;
         }
 
-        private static double DeltaUTToday = 0.0;
-        private static double DeltaUTYesterday = 0.0;
-        private static double DeltaUTTomorrow = 0.0;
+        private static double? DeltaUTToday;
+        private static double? DeltaUTYesterday;
+        private static double? DeltaUTTomorrow;
         private static ConcurrentDictionary<DateTime, double> DeltaUTCache = new ConcurrentDictionary<DateTime, double>();
         private static DateTime DeltaUTReference;
 
@@ -170,36 +211,34 @@ namespace NINA.Astrometry {
             if (DeltaUTReference != DateTime.UtcNow.Date) {
                 // Clear the cache when a app is open longer than a day
                 DeltaUTReference = DateTime.UtcNow.Date;
-                DeltaUTYesterday = 0d;
-                DeltaUTToday = 0d;
-                DeltaUTTomorrow = 0d;
+                DeltaUTYesterday = null;
+                DeltaUTToday = null;
+                DeltaUTTomorrow = null;
             }
 
             var utcDate = date.ToUniversalTime();
 
             if (utcDate.Date == DateTime.UtcNow.Date) {
-                if (DeltaUTToday != 0) {
-                    return DeltaUTToday;
+                if (DeltaUTToday.HasValue) {
+                    return DeltaUTToday.Value;
                 }
             }
 
             if (utcDate.Date == DateTime.UtcNow.Date - TimeSpan.FromDays(1)) {
-                if (DeltaUTYesterday != 0) {
-                    return DeltaUTYesterday;
+                if (DeltaUTYesterday.HasValue) {
+                    return DeltaUTYesterday.Value;
                 }
             }
 
             if (utcDate.Date == DateTime.UtcNow.Date + TimeSpan.FromDays(1)) {
-                if (DeltaUTTomorrow != 0) {
-                    return DeltaUTTomorrow;
+                if (DeltaUTTomorrow.HasValue) {
+                    return DeltaUTTomorrow.Value;
                 }
             }
 
             var deltaUT = 0d;
-            if (DeltaUTCache.TryGetValue(utcDate.Date, out deltaUT)) {
-                if(deltaUT != 0) {
-                    return deltaUT;
-                }
+            if (DeltaUTCache.TryGetValue(utcDate.Date, out var cached)) {
+                return cached;
             }
 
             db = db ?? new DatabaseInteraction();
@@ -222,9 +261,7 @@ namespace NINA.Astrometry {
             }
 
             try {
-                if (!DeltaUTCache.ContainsKey(utcDate.Date)) {
-                    DeltaUTCache.AddOrUpdate(utcDate.Date, deltaUT, (a, b) => b);
-                }                
+                DeltaUTCache.AddOrUpdate(utcDate.Date, deltaUT, (a, b) => b);
             } catch(Exception) { }
             
 
@@ -237,14 +274,15 @@ namespace NINA.Astrometry {
         /// <param name="longitude"></param>
         /// <returns>Sidereal Time in hours</returns>
         public static double GetLocalSiderealTime(DateTime date, double longitude, DatabaseInteraction db = null) {
-            var jd = GetJulianDate(date);
+            var deltaT = DeltaT(date, db);
+            var (tt1, tt2) = GetJulianDateTTParts(date);
 
-            long jd_high = (long)jd;
-            double jd_low = jd - jd_high;
-
+            var ut_high = (long)tt1;
+            var ut_low = (tt1 - ut_high) + tt2 - SecondsToDays(deltaT);
             double lst = 0;
-            NOVAS.SiderealTime(jd_high, jd_low, DeltaT(date, db), NOVAS.GstType.GreenwichApparentSiderealTime, NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref lst);
+            NOVAS.SiderealTime(ut_high, ut_low, deltaT, NOVAS.GstType.GreenwichApparentSiderealTime, NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref lst);
             lst = lst + DegreesToHours(longitude);
+
             return lst;
         }
 
@@ -340,7 +378,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetNightTimes(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new AstronomicalTwilightRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate().Result;
+            var t = riseAndSet.Calculate();
 
             return riseAndSet;
         }
@@ -352,7 +390,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetNauticalNightTimes(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new NauticalTwilightRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate().Result;
+            var t = riseAndSet.Calculate();
 
             return riseAndSet;
         }
@@ -364,7 +402,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetCivilNightTimes(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new CivilTwilightRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate().Result;
+            var t = riseAndSet.Calculate();
 
             return riseAndSet;
         }
@@ -377,7 +415,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new MoonRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate().Result;
+            var t = riseAndSet.Calculate();
 
             return riseAndSet;
         }
@@ -390,7 +428,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetSunRiseAndSet(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new SunRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate().Result;
+            var t = riseAndSet.Calculate();
 
             return riseAndSet;
         }
@@ -560,15 +598,19 @@ namespace NINA.Astrometry {
             return Regex.IsMatch(value, pattern);
         }
 
+        [Obsolete("Use function without jd")]
         public static NOVAS.SkyPosition GetMoonPosition(DateTime date, double jd, ObserverInfo oberverInfo) {
+            return GetMoonPosition(date, oberverInfo);
+        }
+        public static NOVAS.SkyPosition GetMoonPosition(DateTime date, ObserverInfo observerInfo) {
             var deltaT = DeltaT(date);
 
             var onSurface = new NOVAS.OnSurface() {
-                Latitude = oberverInfo.Latitude,
-                Longitude = oberverInfo.Longitude,
-                Height = oberverInfo.Elevation,
-                Temperature = oberverInfo.Temperature,
-                Pressure = oberverInfo.Pressure
+                Latitude = observerInfo.Latitude,
+                Longitude = observerInfo.Longitude,
+                Height = observerInfo.Elevation,
+                Temperature = observerInfo.Temperature,
+                Pressure = observerInfo.Pressure
             };
 
             var obs = new NOVAS.Observer() {
@@ -585,21 +627,29 @@ namespace NINA.Astrometry {
 
             var skyPosition = new NOVAS.SkyPosition();
 
-            var jdTt = jd + SecondsToDays(deltaT);
-            _ = NOVAS.Place(jdTt, celestialObject, obs, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref skyPosition);
+            var jdTt = GetJulianDateTT(date);
+            var error = NOVAS.Place(jdTt, celestialObject, obs, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref skyPosition);
+            if (error != 0) {
+                Logger.Warning($"Failed to calculate moon position for date {date}, latitude {observerInfo.Latitude}, longitude {observerInfo.Longitude}, elevation {observerInfo.Elevation}, temperature {observerInfo.Temperature}, pressure {observerInfo.Pressure} - Novas return code: " + error);
+            }
 
             return skyPosition;
         }
 
+        [Obsolete("Use function without jd")]
         public static NOVAS.SkyPosition GetSunPosition(DateTime date, double jd, ObserverInfo oberverInfo) {
+            return GetSunPosition(date, oberverInfo);
+        }
+
+        public static NOVAS.SkyPosition GetSunPosition(DateTime date, ObserverInfo observerInfo) {
             var deltaT = DeltaT(date);
 
             var onSurface = new NOVAS.OnSurface() {
-                Latitude = oberverInfo.Latitude,
-                Longitude = oberverInfo.Longitude,
-                Height = oberverInfo.Elevation,
-                Temperature = oberverInfo.Temperature,
-                Pressure = oberverInfo.Pressure
+                Latitude = observerInfo.Latitude,
+                Longitude = observerInfo.Longitude,
+                Height = observerInfo.Elevation,
+                Temperature = observerInfo.Temperature,
+                Pressure = observerInfo.Pressure
             };
 
             var obs = new NOVAS.Observer() {
@@ -616,15 +666,24 @@ namespace NINA.Astrometry {
 
             var skyPosition = new NOVAS.SkyPosition();
 
-            var jdTt = jd + SecondsToDays(deltaT);
-            _ = NOVAS.Place(jdTt, celestialObject, obs, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref skyPosition);
+            var jdTt = GetJulianDateTT(date);
+            var error = NOVAS.Place(jdTt, celestialObject, obs, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref skyPosition);
+            if (error != 0) {
+                Logger.Warning($"Failed to calculate sun position for date {date}, latitude {observerInfo.Latitude}, longitude {observerInfo.Longitude}, elevation {observerInfo.Elevation}, temperature {observerInfo.Temperature}, pressure {observerInfo.Pressure} - Novas return code: " + error);
+            }
 
             return skyPosition;
         }
 
+        [Obsolete("Use function without jd")]
         public static Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition> GetMoonAndSunPosition(DateTime date, double jd, ObserverInfo observerInfo = null) {
             if (observerInfo == null) { observerInfo = new ObserverInfo(); }
             return new Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition>(GetMoonPosition(date, jd, observerInfo), GetSunPosition(date, jd, observerInfo));
+        }
+
+        public static Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition> GetMoonAndSunPosition(DateTime date, ObserverInfo observerInfo = null) {
+            if (observerInfo == null) { observerInfo = new ObserverInfo(); }
+            return new Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition>(GetMoonPosition(date, observerInfo), GetSunPosition(date, observerInfo));
         }
 
         [Obsolete("Use function with NINA.Astrometry.ObserverInfo parameter")]
@@ -633,8 +692,7 @@ namespace NINA.Astrometry {
         }
 
         public static double GetMoonPositionAngle(DateTime date, ObserverInfo observerInfo) {
-            var jd = GetJulianDate(date);
-            var tuple = GetMoonAndSunPosition(date, jd, observerInfo);
+            var tuple = GetMoonAndSunPosition(date, observerInfo);
             var moonPosition = tuple.Item1;
             var sunPosition = tuple.Item2;
 
@@ -654,8 +712,7 @@ namespace NINA.Astrometry {
         }
 
         private static double CalculateMoonIllumination(DateTime date, ObserverInfo observerInfo) {
-            var jd = GetJulianDate(date);
-            var tuple = GetMoonAndSunPosition(date, jd, observerInfo);
+            var tuple = GetMoonAndSunPosition(date, observerInfo);
             var moonPosition = tuple.Item1;
             var sunPosition = tuple.Item2;
 
@@ -726,8 +783,7 @@ namespace NINA.Astrometry {
         }
 
         public static double GetMoonAltitude(DateTime date, ObserverInfo observerInfo) {
-            var jd = GetJulianDate(date);
-            var moon = GetMoonPosition(date, jd, observerInfo);
+            var moon = GetMoonPosition(date, observerInfo);
 
             var siderealTime = GetLocalSiderealTime(date, observerInfo.Longitude);
             var hourAngle = HoursToDegrees(GetHourAngle(siderealTime, moon.RA));
@@ -736,8 +792,7 @@ namespace NINA.Astrometry {
         }
 
         public static double GetSunAltitude(DateTime date, ObserverInfo observerInfo) {
-            var jd = GetJulianDate(date);
-            var sun = GetSunPosition(date, jd, observerInfo);
+            var sun = GetSunPosition(date, observerInfo);
 
             var siderealTime = GetLocalSiderealTime(date, observerInfo.Longitude);
             var hourAngle = HoursToDegrees(GetHourAngle(siderealTime, sun.RA));

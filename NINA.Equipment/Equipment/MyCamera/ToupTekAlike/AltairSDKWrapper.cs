@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
@@ -81,57 +82,79 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
     }
 
     public class AltairSDKWrapper : IToupTekAlikeCameraSDK {
+        private readonly Lock lockObj = new();
         private Altaircam sdk;
 
         public string Category => "Altair";
 
         public IToupTekAlikeCameraSDK Open(string id) {
+            using var _ = lockObj.EnterScope();
             this.sdk = Altaircam.Open(id);
             return this;
         }
 
-        public uint MaxSpeed => sdk.MaxSpeed;
+        public uint MaxSpeed {
+            get {
+                using var _ = lockObj.EnterScope();
+                return sdk.MaxSpeed;
+            }
+        }
 
-        public bool MonoMode => sdk.MonoMode;
+        public bool MonoMode {
+            get {
+                using var _ = lockObj.EnterScope();
+                return sdk.MonoMode;
+            }
+        }
 
         public void Close() {
+            using var _ = lockObj.EnterScope();
             sdk.Close();
             sdk = null;
         }
 
         public bool get_ExpoAGain(out ushort gain) {
+            using var _ = lockObj.EnterScope();
             return sdk.get_ExpoAGain(out gain);
         }
 
         public void get_ExpoAGainRange(out ushort min, out ushort max, out ushort def) {
+            using var _ = lockObj.EnterScope();
             sdk.get_ExpoAGainRange(out min, out max, out def);
         }
 
         public void get_ExpTimeRange(out uint min, out uint max, out uint def) {
+            using var _ = lockObj.EnterScope();
             sdk.get_ExpTimeRange(out min, out max, out def);
         }
 
         public void get_Option(ToupTekAlikeOption option, out int target) {
+            using var _ = lockObj.EnterScope();
             sdk.get_Option(option.ToAltair(), out target);
         }
 
         public bool get_RawFormat(out uint fourCC, out uint bitDepth) {
+            using var _ = lockObj.EnterScope();
             return sdk.get_RawFormat(out fourCC, out bitDepth);
         }
 
         public void get_Size(out int width, out int height) {
+            using var _ = lockObj.EnterScope();
             sdk.get_Size(out width, out height);
         }
 
         public void get_Speed(out ushort speed) {
+            using var _ = lockObj.EnterScope();
             sdk.get_Speed(out speed);
         }
 
         public void get_Temperature(out short temp) {
+            using var _ = lockObj.EnterScope();
             sdk.get_Temperature(out temp);
         }
 
         public bool PullImage(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
+            using var _ = lockObj.EnterScope();
             Altaircam.FrameInfoV4 altairInfo;
             var result = sdk.PullImage(data, 0, bitDepth, 0, out altairInfo);
             info = altairInfo.ToFrameInfo();
@@ -139,47 +162,61 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
         }
 
         public bool put_ROI(uint x, uint y, uint width, uint height) {
+            using var _ = lockObj.EnterScope();
             return sdk.put_Roi(x, y, width, height);
         }
 
         public bool put_AutoExpoEnable(bool v) {
+            using var _ = lockObj.EnterScope();
             return sdk.put_AutoExpoEnable(v);
         }
 
         public bool put_ExpoAGain(ushort value) {
+            using var _ = lockObj.EnterScope();
             return sdk.put_ExpoAGain(value);
         }
 
         public bool put_ExpoTime(uint usTime) {
+            using var _ = lockObj.EnterScope();
             return sdk.put_ExpoTime(usTime);
         }
 
         public bool put_Option(ToupTekAlikeOption option, int v) {
+            using var _ = lockObj.EnterScope();
             return sdk.put_Option(option.ToAltair(), v);
         }
 
         public bool put_Speed(ushort value) {
+            using var _ = lockObj.EnterScope();
             return sdk.put_Speed(value);
         }
 
         private ToupTekAlikeCallback toupTekAlikeCallback;
+        private Altaircam.DelegateEventCallback nativeCallback;
 
         public bool StartPullModeWithCallback(ToupTekAlikeCallback toupTekAlikeCallback) {
+            using var _ = lockObj.EnterScope();
             this.toupTekAlikeCallback = toupTekAlikeCallback;
-            var delegateCb = new Altaircam.DelegateEventCallback(EventCallback);
+            nativeCallback ??= new Altaircam.DelegateEventCallback(EventCallback);
 
-            return sdk.StartPullModeWithCallback(delegateCb);
+            return sdk.StartPullModeWithCallback(nativeCallback);
         }
 
         private void EventCallback(Altaircam.eEVENT nEvent) {
-            toupTekAlikeCallback(nEvent.ToEvent());
+            ToupTekAlikeCallback cb;
+            using (lockObj.EnterScope()) {
+                cb = toupTekAlikeCallback;
+            }
+            cb?.Invoke(nEvent.ToEvent());
         }
 
         public bool Trigger(ushort v) {
+            using var _ = lockObj.EnterScope();
             return sdk.Trigger(v);
         }
 
         public string Version() {
+            using var _ = lockObj.EnterScope();
             return Altaircam.Version();
         }
     }

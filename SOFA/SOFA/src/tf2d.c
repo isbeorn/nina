@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 #include <stdlib.h>
 
 int iauTf2d(char s, int ihour, int imin, double sec, double *days)
@@ -39,11 +40,11 @@ int iauTf2d(char s, int ihour, int imin, double sec, double *days)
 **  3)  If there are multiple errors, the status value reflects only the
 **      first, the smallest taking precedence.
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
 
@@ -59,10 +60,12 @@ int iauTf2d(char s, int ihour, int imin, double sec, double *days)
    if ( sec < 0.0 || sec >= 60.0 ) return 3;
    return 0;
 
+/* Finished. */
+
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

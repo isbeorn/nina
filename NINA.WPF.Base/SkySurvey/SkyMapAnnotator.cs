@@ -92,14 +92,25 @@ namespace NINA.WPF.Base.SkySurvey {
             }
 
             if (ActiveCatalogues == null) {
-                ActiveCatalogues = (await dbInstance.GetCatalogues(50, ct))?.Select(x => new ActiveCatalogue(x, true)).ToList() ?? new List<ActiveCatalogue>();
-                foreach (var item in ActiveCatalogues) {
-                    item.PropertyChanged += (sender, e) => {
+                var catalogues = await dbInstance.GetCatalogues(50, ct);
+                var settings = profileService.ActiveProfile.FramingAssistantSettings;
+
+                ActiveCatalogues = catalogues?.Select(x => {
+
+                    bool isActive = !settings.DisabledCatalogues.Contains(x);
+                    var activeCat = new ActiveCatalogue(x, isActive);
+
+                    activeCat.PropertyChanged += (s, e) => {
                         if (e.PropertyName == nameof(ActiveCatalogue.Active)) {
+                            SaveDisabledCatalogues();
                             UpdateSkyMap();
                         }
                     };
-                }
+
+                    return activeCat;
+                }).ToList() ?? new List<ActiveCatalogue>();
+
+                UpdateShowAllCataloguesState();
             }
 
             ConstellationsInViewport.Clear();
@@ -176,6 +187,11 @@ namespace NINA.WPF.Base.SkySurvey {
         [ObservableProperty]
         private BitmapSource skyMapOverlay;
 
+        [ObservableProperty]
+        private bool showAllCatalogues = true;
+        private List<string> DisabledCatalogues =>
+               profileService.ActiveProfile.FramingAssistantSettings?.DisabledCatalogues ?? new List<string>();
+
         partial void OnAnnotateConstellationBoundariesChanged(bool oldValue, bool newValue) {
             if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries != newValue)
                 profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries = newValue;
@@ -194,6 +210,44 @@ namespace NINA.WPF.Base.SkySurvey {
         partial void OnAnnotateGridChanged(bool oldValue, bool newValue) {
             if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid != newValue)
                 profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid = newValue;
+        }
+
+        partial void OnShowAllCataloguesChanged(bool oldValue, bool newValue) {
+            if (ActiveCatalogues == null) return;
+
+            foreach (var catalogue in ActiveCatalogues) {
+                catalogue.Active = newValue;
+            }
+
+            SaveDisabledCatalogues();
+            UpdateSkyMap();
+        }
+        private void SaveDisabledCatalogues() {
+
+            if (ActiveCatalogues == null) return;
+
+            var settings = profileService.ActiveProfile.FramingAssistantSettings;
+            settings.DisabledCatalogues = ActiveCatalogues
+                .Where(x => !x.Active)
+                .Select(x => x.Name)
+                .ToList();
+        }
+        private void UpdateShowAllCataloguesState() {
+
+            if (ActiveCatalogues == null || !ActiveCatalogues.Any()) return;
+
+            bool newState;
+            if (ActiveCatalogues.All(c => c.Active)) {
+                newState = true;
+            } else if (ActiveCatalogues.All(c => !c.Active)) {
+                newState = false;
+            } else {
+                return;
+            }
+
+            if (ShowAllCatalogues != newState) {
+                ShowAllCatalogues = newState;
+            }
         }
 
         private void LoadSettings() {

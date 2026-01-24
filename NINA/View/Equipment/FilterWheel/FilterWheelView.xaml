@@ -203,6 +203,175 @@
                         </StackPanel>
                     </DataTemplate>
 
+                    <DataTemplate x:Key="Oasis">
+                        <StackPanel Orientation="Vertical">
+                            <DockPanel Margin="0,0,0,6">
+                                <TextBlock
+                                    MinWidth="100"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblOasisDeviceId}" />
+                                <TextBox
+                                    Width="75"
+                                    HorizontalAlignment="Right"
+                                    MaxLength="8"
+                                    Text="{Binding FilterWheelAlias}">
+                                    <TextBox.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblDeviceIdTooltip}" />
+                                        </ToolTip>
+                                    </TextBox.ToolTip>
+                                </TextBox>
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisSpeed}">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblOasisSpeedTooltip}" />
+                                        </ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <ComboBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    ItemsSource="{Binding Speeds}"
+                                    SelectedIndex="{Binding Speed}">
+                                    <ComboBox.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblOasisSpeedTooltip}" />
+                                        </ToolTip>
+                                    </ComboBox.ToolTip>
+                                </ComboBox>
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6" Visibility="{Binding HasTurboMode, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisTurboMode}">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblOasisTurboModeTooltip}" />
+                                        </ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    IsChecked="{Binding TurboMode}">
+                                    <CheckBox.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblOasisTurboModeTooltip}" />
+                                        </ToolTip>
+                                    </CheckBox.ToolTip>
+                                </CheckBox>
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisAutorun}">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblOasisAutorunTooltip}" />
+                                        </ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    IsChecked="{Binding Autorun}">
+                                    <CheckBox.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblOasisAutorunTooltip}" />
+                                        </ToolTip>
+                                    </CheckBox.ToolTip>
+                                </CheckBox>
+                            </DockPanel>
+                            <DockPanel Margin="0,6,0,6">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisBoardTemperature}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    Text="{Binding BoardTemperature, StringFormat={}{0}&#176;C}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisState}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    Text="{Binding StateText}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisCounter}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    Text="{Binding Counter}">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblOasisCounterTooltip}" />
+                                        </ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <ninactrl:AsyncProcessButton
+                                    Width="150"
+                                    Height="25"
+                                    Margin="0,0,0,5"
+                                    HorizontalAlignment="Right"
+                                    ButtonText="{ns:Loc LblCalibrate}"
+                                    Command="{Binding CalibrateOfwCommand}"
+                                    ToolTip="{ns:Loc LblCalibrate}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <ninactrl:AsyncProcessButton
+                                    Width="150"
+                                    Height="25"
+                                    Margin="0,0,0,5"
+                                    HorizontalAlignment="Right"
+                                    ButtonText="{ns:Loc LblOasisSyncFocusOffsets}"
+                                    Command="{Binding SyncFocusOffsetsCommand}"
+                                    ToolTip="{ns:Loc LblOasisSyncFocusOffsetsTooltip}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <ninactrl:AsyncProcessButton
+                                    Width="150"
+                                    Height="25"
+                                    Margin="0,0,0,5"
+                                    HorizontalAlignment="Right"
+                                    ButtonText="{ns:Loc LblOasisStoreFocusOffsets}"
+                                    Command="{Binding StoreFocusOffsetsCommand}"
+                                    ToolTip="{ns:Loc LblOasisStoreFocusOffsetsTooltip}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <ninactrl:AsyncProcessButton
+                                    Width="150"
+                                    Height="25"
+                                    Margin="0,0,0,5"
+                                    HorizontalAlignment="Right"
+                                    ButtonText="{ns:Loc LblOasisSyncFilterNames}"
+                                    Command="{Binding SyncNamesCommand}"
+                                    ToolTip="{ns:Loc LblOasisSyncNamesTooltip}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <ninactrl:AsyncProcessButton
+                                    Width="150"
+                                    Height="25"
+                                    Margin="0,0,0,5"
+                                    HorizontalAlignment="Right"
+                                    ButtonText="{ns:Loc LblOasisStoreFilterNames}"
+                                    Command="{Binding StoreNamesCommand}"
+                                    ToolTip="{ns:Loc LblOasisStoreNamesTooltip}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </DataTemplate>
+
                     <DataTemplate x:Key="ToupTekAlike">
                         <StackPanel Orientation="Vertical">
                             <DockPanel Margin="0,0,0,6">
@@ -228,6 +397,7 @@
                         x:Key="ContentSelector"
                         Default="{StaticResource Default}"
                         FailedToLoadTemplate="{StaticResource Failed}"
+                        Oasis="{StaticResource Oasis}"
                         PlayerOne="{StaticResource PlayerOne}"
                         Postfix="{x:Static wpfutil:DataTemplatePostfix.FilterWheelSettings}"
                         ToupTekAlike="{StaticResource ToupTekAlike}"

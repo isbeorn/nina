@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauBi00(double *dpsibi, double *depsbi, double *dra)
 /*
@@ -6,11 +7,12 @@ void iauBi00(double *dpsibi, double *depsbi, double *dra)
 **   i a u B i 0 0
 **  - - - - - - - -
 **
-**  Frame bias components of IAU 2000 precession-nutation models (part
-**  of MHB2000 with additions).
+**  Frame bias components of IAU 2000 precession-nutation models;  part
+**  of the Mathews-Herring-Buffett (MHB2000) nutation series, with
+**  additions.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  canonical model.
 **
@@ -41,16 +43,16 @@ void iauBi00(double *dpsibi, double *depsbi, double *dra)
 **     Astrophys., 387, 700, 2002.
 **
 **     Mathews, P.M., Herring, T.A., Buffet, B.A., "Modeling of nutation
-**     and precession   New nutation series for nonrigid Earth and
+**     and precession:  New nutation series for nonrigid Earth and
 **     insights into the Earth's interior", J.Geophys.Res., 107, B4,
-**     2002.  The MHB2000 code itself was obtained on 9th September 2002
+**     2002.  The MHB2000 code itself was obtained on 2002 September 9
 **     from ftp://maia.usno.navy.mil/conv2000/chapter5/IAU2000A.
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
 /* The frame bias corrections in longitude and obliquity */
@@ -66,12 +68,12 @@ void iauBi00(double *dpsibi, double *depsbi, double *dra)
    *depsbi = DEBIAS;
    *dra = DRA0;
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

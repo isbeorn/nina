@@ -9,7 +9,7 @@ void iauPvxpv(double a[2][3], double b[2][3], double axb[2][3])
 **  Outer (=vector=cross) product of two pv-vectors.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  vector/matrix support function.
 **
@@ -35,11 +35,11 @@ void iauPvxpv(double a[2][3], double b[2][3], double axb[2][3])
 **     iauPxp       vector product of two p-vectors
 **     iauPpp       p-vector plus p-vector
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double wa[2][3], wb[2][3], axbd[3], adxb[3];
@@ -57,12 +57,12 @@ void iauPvxpv(double a[2][3], double b[2][3], double axb[2][3])
    iauPxp(wa[1], wb[0], adxb);
    iauPpp(axbd, adxb, axb[1]);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

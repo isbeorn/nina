@@ -46,34 +46,32 @@ void iauAtoiq(const char *type,
 **
 **  Notes:
 **
-**  1) "Observed" Az,El means the position that would be seen by a
+**  1) "Observed" Az,ZD means the position that would be seen by a
 **     perfect geodetically aligned theodolite.  This is related to
 **     the observed HA,Dec via the standard rotation, using the geodetic
 **     latitude (corrected for polar motion), while the observed HA and
-**     RA are related simply through the Earth rotation angle and the
-**     site longitude.  "Observed" RA,Dec or HA,Dec thus means the
-**     position that would be seen by a perfect equatorial with its
-**     polar axis aligned to the Earth's axis of rotation.  By removing
-**     from the observed place the effects of atmospheric refraction and
-**     diurnal aberration, the CIRS RA,Dec is obtained.
+**     (CIO-based) RA are related simply through the Earth rotation
+**     angle and the site longitude.  "Observed" RA,Dec or HA,Dec thus
+**     means the position that would be seen by a perfect equatorial
+**     with its polar axis aligned to the Earth's axis of rotation.
 **
 **  2) Only the first character of the type argument is significant.
 **     "R" or "r" indicates that ob1 and ob2 are the observed right
-**     ascension and declination;  "H" or "h" indicates that they are
-**     hour angle (west +ve) and declination;  anything else ("A" or
-**     "a" is recommended) indicates that ob1 and ob2 are azimuth (north
-**     zero, east 90 deg) and zenith distance.  (Zenith distance is used
-**     rather than altitude in order to reflect the fact that no
-**     allowance is made for depression of the horizon.)
+**     ascension (CIO-based) and declination;  "H" or "h" indicates that
+**     they are hour angle (west +ve) and declination;  anything else
+**     ("A" or "a" is recommended) indicates that ob1 and ob2 are
+**     azimuth (north zero, east 90 deg) and zenith distance.  (Zenith
+**     distance is used rather than altitude in order to reflect the
+**     fact that no allowance is made for depression of the horizon.)
 **
 **  3) The accuracy of the result is limited by the corrections for
 **     refraction, which use a simple A*tan(z) + B*tan^3(z) model.
 **     Providing the meteorological parameters are known accurately and
-**     there are no gross local effects, the predicted observed
+**     there are no gross local effects, the predicted intermediate
 **     coordinates should be within 0.05 arcsec (optical) or 1 arcsec
 **     (radio) for a zenith distance of less than 70 degrees, better
 **     than 30 arcsec (optical or radio) at 85 degrees and better than
-**     20 arcmin (optical) or 30 arcmin (radio) at the horizon.
+**     20 arcmin (optical) or 25 arcmin (radio) at the horizon.
 **
 **     Without refraction, the complementary functions iauAtioq and
 **     iauAtoiq are self-consistent to better than 1 microarcsecond all
@@ -90,18 +88,21 @@ void iauAtoiq(const char *type,
 **     iauC2s       p-vector to spherical
 **     iauAnp       normalize angle into range 0 to 2pi
 **
-**  This revision:   2013 October 9
+**  This revision:   2022 August 30
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
+/* Minimum sin(alt) for refraction purposes */
+   const double SELMIN = 0.05;
+
    int c;
    double c1, c2, sphi, cphi, ce, xaeo, yaeo, zaeo, v[3],
           xmhdo, ymhdo, zmhdo, az, sz, zdo, refa, refb, tz, dref,
           zdt, xaet, yaet, zaet, xmhda, ymhda, zmhda,
-          f, xhd, yhd, zhd, xpl, ypl, w, hma;
+          f, xhd, yhd, zhd, sx, cx, sy, cy, hma;
 
 
 /* Coordinate type. */
@@ -163,7 +164,7 @@ void iauAtoiq(const char *type,
 /* Fast algorithm using two constant model. */
    refa = astrom->refa;
    refb = astrom->refb;
-   tz = sz / zaeo;
+   tz = sz / ( zaeo > SELMIN ? zaeo : SELMIN );
    dref = ( refa + refb*tz*tz ) * tz;
    zdt = zdo + dref;
 
@@ -185,12 +186,13 @@ void iauAtoiq(const char *type,
    zhd = f * zmhda;
 
 /* Polar motion. */
-   xpl = astrom->xpl;
-   ypl = astrom->ypl;
-   w = xpl*xhd - ypl*yhd + zhd;
-   v[0] = xhd - xpl*w;
-   v[1] = yhd + ypl*w;
-   v[2] = w - ( xpl*xpl + ypl*ypl ) * zhd;
+   sx = sin(astrom->xpl);
+   cx = cos(astrom->xpl);
+   sy = sin(astrom->ypl);
+   cy = cos(astrom->ypl);
+   v[0] = cx*xhd + sx*sy*yhd - sx*cy*zhd;
+   v[1] = cy*yhd + sy*zhd;
+   v[2] = sx*xhd - cx*sy*yhd + cx*cy*zhd;
 
 /* To spherical -HA,Dec. */
    iauC2s(v, &hma, di);
@@ -202,8 +204,8 @@ void iauAtoiq(const char *type,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 double iauFaom03(double t)
 /*
@@ -10,7 +11,7 @@ double iauFaom03(double t)
 **  mean longitude of the Moon's ascending node.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  canonical model.
 **
@@ -34,13 +35,13 @@ double iauFaom03(double t)
 **     IERS Technical Note No. 32, BKG (2004)
 **
 **     Simon, J.-L., Bretagnon, P., Chapront, J., Chapront-Touze, M.,
-**     Francou, G., Laskar, J. 1994, Astron.Astrophys. 282, 663-683
+**     Francou, G., Laskar, J., 1994, Astron.Astrophys. 282, 663-683.
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double a;
@@ -56,10 +57,12 @@ double iauFaom03(double t)
 
    return a;
 
+/* Finished. */
+
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

@@ -986,7 +986,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         [RelayCommand]
         private Task SlewToCoordinatesAltAz(CancellationToken token) {
-            return Task.Run(() => SlewToTopocentricCoordinates(InputCoordinatesAltAz.Coordinates, token));
+            if (telescopeInfo.CanSlewAltAz) {
+                return Task.Run(() => SlewToTopocentricCoordinates(InputCoordinatesAltAz.Coordinates, token));
+            } else {
+                return Task.Run(() => SlewToCoordinatesAsync(InputCoordinatesAltAz.Coordinates.Transform(Epoch.J2000), token));
+            }
         }
 
         private Task<bool> SlewToCoordinatesInternal(object obj) {

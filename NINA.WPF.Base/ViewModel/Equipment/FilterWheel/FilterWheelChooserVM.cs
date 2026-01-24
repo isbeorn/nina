@@ -12,25 +12,27 @@
 
 #endregion "copyright"
 
+using Astroasis.AstroasisSDK;
 using FLI;
-using NINA.Equipment.Equipment.MyFilterWheel;
+using NINA.Core.Locale;
 using NINA.Core.Utility;
+using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
+using NINA.Equipment.Equipment.MyFilterWheel;
+using NINA.Equipment.Equipment.MyFocuser;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Equipment.SDK.CameraSDKs.AtikSDK;
+using NINA.Equipment.SDK.CameraSDKs.PlayerOneSDK;
+using NINA.Equipment.SDK.CameraSDKs.SBIGSDK;
+using NINA.Equipment.Utility;
 using NINA.Profile.Interfaces;
 using QHYCCD;
 using System;
 using System.Collections.Generic;
-using ZWOptical.EFWSDK;
-using NINA.Equipment.SDK.CameraSDKs.AtikSDK;
-using NINA.Equipment.Utility;
-using NINA.Core.Locale;
-using NINA.Equipment.Interfaces;
-using NINA.Equipment.Equipment;
-using NINA.Equipment.Equipment.MyCamera;
-using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
-using NINA.Equipment.SDK.CameraSDKs.SBIGSDK;
 using System.Threading.Tasks;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.Equipment.SDK.CameraSDKs.PlayerOneSDK;
+using ZWOptical.EFWSDK;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
@@ -265,7 +267,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }
-                
+
+                /* Oasis filter wheels */
+                try {
+                    Logger.Trace("Adding Oasis Filter Wheels");
+                    int[] ids = new int[AOFilterWheel.OFW_MAX_NUM];
+                    AOFilterWheel.FilterWheelScan(out var ofws, ids);
+                    for (int i = 0; i < ofws; i++) {
+                        var ofw= new OasisFilterWheel(ids[i], profileService);
+                        Logger.Debug($"Adding Oasis Filter Wheel: {ofw.Name}");
+                        devices.Add(ofw);
+                    }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 /* Plugin Providers */
                 foreach (var provider in await equipmentProviders.GetProviders()) {
                     try {

@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Core.Enum;
+using System.Collections.Generic;
 
 namespace NINA.Profile.Interfaces {
 
@@ -28,5 +29,6 @@ namespace NINA.Profile.Interfaces {
         bool AnnotateConstellations { get; set; }
         bool AnnotateDSO { get; set; }
         bool AnnotateGrid { get; set; }
+        List<string> DisabledCatalogues { get; set; }
     }
 }

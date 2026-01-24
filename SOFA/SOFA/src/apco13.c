@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 int iauApco13(double utc1, double utc2, double dut1,
               double elong, double phi, double hm, double xp, double yp,
@@ -55,7 +56,7 @@ int iauApco13(double utc1, double utc2, double dut1,
 **      eral   double       "local" Earth rotation angle (radians)
 **      refa   double       refraction constant A (radians)
 **      refb   double       refraction constant B (radians)
-**     eo     double*    equation of the origins (ERA-GST)
+**     eo     double*    equation of the origins (ERA-GST, radians)
 **
 **  Returned (function value):
 **            int        status: +1 = dubious year (Note 2)
@@ -178,11 +179,11 @@ int iauApco13(double utc1, double utc2, double dut1,
 **     iauApco      astrometry parameters, ICRS-observed
 **     iauEors      equation of the origins, given NPB matrix and s
 **
-**  This revision:   2013 December 5
+**  This revision:   2022 May 3
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    int j;
@@ -232,8 +233,8 @@ int iauApco13(double utc1, double utc2, double dut1,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================
