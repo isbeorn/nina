@@ -1284,7 +1284,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
     <value>Bit ölçeklemeyi etkinleştir</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>16 bit'e ölçeklendirme ile 10/12/14 bit görüntüleri kaydedin. (Kendi sürücülerini kullanmak koşuluyla sadece Altair, Omegon, SVBony, RisingCam ve ToupTek kameralar)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Etkin</value>
@@ -6955,6 +6955,9 @@ Ayrıca, kullanılan ASCOM sürücüsünün de bu 32 bit derinliği desteklemesi
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Katalog görüntüsünü değiştir</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Show all catalogues</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Hedef Alt.</value>
   </data>
@@ -7444,5 +7447,10 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Flash version</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
   </data>
 </root>
