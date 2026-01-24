@@ -1287,7 +1287,7 @@ No caso de ser necessário efectuar a refrigeração de forma mais prolongada, a
     <value>Ativar escala de bits</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Guarda imagens de 10/12/14 bits em 16 bits. (Apenas relevante ao usar o driver nativo para as cameras Altair, Omegon, SVBony, RisingCam e ToupTek)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Activado</value>
@@ -6952,6 +6952,9 @@ Além disso, é essecial que o driver ASCOM usado suporte também a profundidade
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Ativar a Exibição do Catálogo</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Show all catalogues</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Alt. Desejada</value>
   </data>
@@ -7441,5 +7444,10 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Flash version</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
   </data>
 </root>
