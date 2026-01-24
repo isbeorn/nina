@@ -1282,8 +1282,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>비트 스케일링 활성화</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>10/12/14비트 이미지를 16비트로 스케일링하여 저장합니다.
-(Altair, Oemgon, SVBony, RisingCam 및 Toup Tek 카메라만 해당. 네이티브 드라이버 사용 시)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>활성화됨</value>
@@ -6983,6 +6982,9 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>카탈로그 표시 전환</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Show all catalogues</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>타겟 고도</value>
   </data>
@@ -7472,5 +7474,10 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Flash version</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
   </data>
 </root>
