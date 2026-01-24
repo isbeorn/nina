@@ -1283,7 +1283,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>Habilita escalado de bits</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Guardar imágenes de 10/12/14 bits con escalado de 16 bits. (Solo relevante para las cámaras Altair, Omegon, SVBony, RisingCam y ToupTek, al usar el controlador nativo)</value>
+    <value>Guardar imágenes de 8/10/12/14 bits con escalado a 16 bits. (Solo relevante para las cámaras Altair, Moravian, Omegon, RisingCam, SVBony y ToupTek, al usar el controlador nativo)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Habilitado</value>
@@ -6954,6 +6954,9 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Alternar visualización del catálogo</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Mostrar todos los catálogos</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Alt del objetivo</value>
   </data>
@@ -7441,5 +7444,10 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Versión Flash</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
   </data>
 </root>
