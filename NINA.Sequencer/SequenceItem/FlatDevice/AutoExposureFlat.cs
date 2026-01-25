@@ -493,10 +493,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         [IsExpression (Default = 10)]
-        private double minExposure;
+        public partial double MinExposure { get; set; }
 
         [IsExpression (Default = 20)]
-        private double maxExposure;
+        public partial double MaxExposure { get; set; }
 
         private double histogramTargetPercentage;
 

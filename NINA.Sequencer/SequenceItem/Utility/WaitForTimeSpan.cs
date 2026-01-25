@@ -49,7 +49,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         [IsExpression(Default = 60, Range = [1, ExpressionRange.NO_MAXIMUM])]
-        private double time;
+        public partial double Time { get; set; }
 
         private IList<string> issues = new List<string>();
 

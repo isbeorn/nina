@@ -81,7 +81,7 @@ namespace NINA.Sequencer.Conditions {
         }
 
         [IsExpression (Default = 0, Range = [0, 100])]
-        private double userMoonIllumination;
+        public partial double UserMoonIllumination { get; set; }
 
         [JsonProperty]
         public ComparisonOperatorEnum Comparator {

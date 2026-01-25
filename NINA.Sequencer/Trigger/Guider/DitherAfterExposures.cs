@@ -82,7 +82,7 @@ namespace NINA.Sequencer.Trigger.Guider {
 
 
         [IsExpression(Default = 3, Range = [0, 32])]
-        private int afterExposures;
+        public partial int AfterExposures { get; set; }
 
         private IList<string> issues = new List<string>();
 

@@ -99,10 +99,10 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         }
 
         [IsExpression (Default = 5)]
-        private double amount;
+        public partial double Amount { get; set; }
 
         [IsExpression]
-        private double deltaT;
+        public partial double DeltaT { get; set; }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             await TriggerRunner.Run(progress, token);

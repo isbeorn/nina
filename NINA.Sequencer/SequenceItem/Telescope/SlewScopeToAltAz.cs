@@ -97,8 +97,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        [IsExpression (Range = [-90, 90], HasValidator = true)]
-        private double alt;
+        [IsExpression (Default = 0, Range = [-90, 90], HasValidator = true)]
+        public partial double Alt { get; set; }
 
         partial void AltExpressionValidator(Logic.Expression expr) {
             // When the decimal value changes, we update the HMS values
@@ -111,8 +111,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             Protect = false;
         }
 
-        [IsExpression (Range = [0, 360], HasValidator = true)]
-        private double az;
+        [IsExpression (Default = 0, Range = [0, 360], HasValidator = true)]
+        public partial double Az { get; set; }
 
         partial void AzExpressionValidator(Logic.Expression expr) {
             // When the decimal value changes, we update the HMS values

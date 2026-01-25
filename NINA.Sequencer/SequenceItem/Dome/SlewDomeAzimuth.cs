@@ -60,7 +60,7 @@ namespace NINA.Sequencer.SequenceItem.Dome {
         }
 
         [IsExpression (Default = 0, Range = [0, 359.99])]
-        private double azimuthDegrees;
+        public partial double AzimuthDegrees { get; set; }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             return domeMediator.SlewToAzimuth(AzimuthDegrees, token);

@@ -101,7 +101,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         }
 
         [IsExpression]
-        private int xfilter;
+        public partial int Xfilter { get; set; }
 
         private IProfileService profileService;
         private IFilterWheelMediator filterWheelMediator;

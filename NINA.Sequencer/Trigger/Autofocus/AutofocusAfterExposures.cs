@@ -92,7 +92,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         }
 
         [IsExpression (Default = 5)]
-        private int afterExposures;
+        public partial int AfterExposures { get; set; }
 
         public int ProgressExposures { get; private set; }
 

@@ -54,8 +54,8 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
 
         private IFocuserMediator focuserMediator;
 
-        [IsExpression]
-        private int relativePosition = 0;
+        [IsExpression(Default = 0)]
+        public partial int RelativePosition { get; set; }
 
         private IList<string> issues = new List<string>();
 

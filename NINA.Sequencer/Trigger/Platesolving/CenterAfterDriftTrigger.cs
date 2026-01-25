@@ -130,7 +130,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         public InputCoordinates Coordinates { get; set; }
 
         [IsExpression (Default = 10, Range = [0, 60, ExpressionRange.MIN_EXCLUSIVE], HasValidator = true)]
-        private double distanceArcMinutes;
+        public partial double DistanceArcMinutes { get; set; }
 
         partial void DistanceArcMinutesExpressionValidator(Expression expr) {
             RaisePropertyChanged("DistancePixels");
@@ -174,7 +174,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         }
 
         [IsExpression (Default = 1, Range = [1, ExpressionRange.NO_MAXIMUM])]
-        private int afterExposures;
+        public partial int AfterExposures { get; set; }
 
         private void PlatesolvingImageFollower_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             var follower = (PlatesolvingImageFollower)sender;
