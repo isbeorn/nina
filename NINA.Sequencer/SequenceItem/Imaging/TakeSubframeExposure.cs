@@ -102,7 +102,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression (Default = 1, Range = [1, 100])]
+        [IsExpression (Default = 100, Range = [1, 100])]
         public partial double ROIPct { get; set; }
 
         [IsExpression(Default = 60, Range = [0, 3600])]
@@ -227,7 +227,6 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             get {
                 return new SubframeType[] { SubframeType.ROI, SubframeType.DIMENSIONS };
             }
-            set { }
         }
 
         private SubframeType iROIOption = SubframeType.ROI;

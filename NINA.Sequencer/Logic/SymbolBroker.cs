@@ -48,200 +48,140 @@ using System.Windows.Input;
 using static NINA.Sequencer.Logic.Symbol;
 
 namespace NINA.Sequencer.Logic {
-    public class SymbolBroker : DockableVM, ISymbolBrokerProviderApi , ITelescopeConsumer, ISwitchConsumer, IWeatherDataConsumer, IFocuserConsumer, IFilterWheelConsumer,
+
+    public class SymbolBroker : DockableVM, ISymbolBrokerProviderApi, ITelescopeConsumer, ISwitchConsumer, IWeatherDataConsumer, IFocuserConsumer, IFilterWheelConsumer,
         IDomeConsumer, ISafetyMonitorConsumer, ICameraConsumer, IFlatDeviceConsumer, IRotatorConsumer {
 
+        private static List<string> _symbolProviders =
+            new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel" };
+
+        private static string[] _weatherData = new string[] { "CloudCover", "DewPoint", "Humidity", "Pressure", "RainRate", "SkyBrightness", "SkyQuality", "SkyTemperature",
+            "StarFWHM", "Temperature", "WindDirection", "WindGust", "WindSpeed"};
+
+        private static Symbol[] CoverConstants = new Symbol[] {
+            new Symbol("CoverUnknown", 0),
+            new Symbol("CoverNeitherOpenNorClosed", 1),
+            new Symbol("CoverClosed", 2),
+            new Symbol("CoverOpen", 3),
+            new Symbol("CoverError", 4),
+            new Symbol("CoverNotPresent", 5)
+        };
+
+        private static Symbol[] PierConstants = new Symbol[] {
+            new Symbol("PierUnknown", -1),
+            new Symbol("PierEast", 0),
+            new Symbol("PierWest", 1)
+        };
+
+        private static Symbol[] ShutterConstants = new Symbol[] {
+            new Symbol("ShutterUnknown", -1),
+            new Symbol("ShutterOpen", 0),
+            new Symbol("ShutterClosed", 1),
+            new Symbol("ShutterOpening", 2),
+            new Symbol("ShutterClosing", 3),
+            new Symbol("ShutterError", 4)
+        };
+        private readonly ConcurrentDictionary<string, IList<SymbolFunction>> _functions = new(StringComparer.OrdinalIgnoreCase);
+
+        private ICameraMediator _cameraMediator;
+        private ConditionWatchdog _conditionWatchdog;
+        private ConcurrentDictionary<string, IList<Symbol>> _dataSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
+
+        private IDomeMediator _domeMediator;
+        private IFilterWheelMediator _filterWheelMediator;
+        private IFlatDeviceMediator _flatMediator;
+        private IFocuserMediator _focuserMediator;
+        private ConcurrentDictionary<string, IList<Symbol>> _hiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
+
+        private IImagingMediator _imagingMediator;
+        private IProfileService _profileService;
+        private IList<string> _providers = new List<string>();
+
+        private ISafetyMonitorMediator _safetyMonitorMediator;
+        private ISwitchMediator _switchMediator;
+        private ITelescopeMediator _telescopeMediator;
+        private IWeatherDataMediator _weatherDataMediator;
+        private IRotatorMediator _rotatorMediator;
+        public static readonly char DELIMITER = '_';
+
         public SymbolBroker(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
-            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
+                                                                                            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
             IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator) : base(profileService) {
-            SwitchMediator = switchMediator;
-            WeatherDataMediator = weatherDataMediator;
-            CameraMediator = cameraMediator;
-            DomeMediator = domeMediator;
-            FlatMediator = flatMediator;
-            FilterWheelMediator = filterWheelMediator;
-            ProfileService = profileService;
-            RotatorMediator = rotatorMediator;
-            SafetyMonitorMediator = safetyMonitorMediator;
-            FocuserMediator = focuserMediator;
-            TelescopeMediator = telescopeMediator;
-            GuiderMediator = guiderMediator;
-            ImagingMediator = imagingMediator;
+            _switchMediator = switchMediator;
+            _weatherDataMediator = weatherDataMediator;
+            _cameraMediator = cameraMediator;
+            _domeMediator = domeMediator;
+            _flatMediator = flatMediator;
+            _filterWheelMediator = filterWheelMediator;
+            _profileService = profileService;
+            _rotatorMediator = rotatorMediator;
+            _safetyMonitorMediator = safetyMonitorMediator;
+            _focuserMediator = focuserMediator;
+            _telescopeMediator = telescopeMediator;
+            _imagingMediator = imagingMediator;
 
-            imagingMediator.ImagePrepared += SetImageSymbols;
+            _imagingMediator.ImagePrepared += SetImageSymbols;
 
-            TelescopeMediator.RegisterConsumer(this);
-            SwitchMediator.RegisterConsumer(this);
-            WeatherDataMediator.RegisterConsumer(this);
-            FocuserMediator.RegisterConsumer(this);
-            DomeMediator.RegisterConsumer(this);
-            SafetyMonitorMediator.RegisterConsumer(this);
-            FilterWheelMediator.RegisterConsumer(this);
-            CameraMediator.RegisterConsumer(this);
-            FlatMediator.RegisterConsumer(this);
-            RotatorMediator.RegisterConsumer(this);
+            _telescopeMediator.RegisterConsumer(this);
+            _switchMediator.RegisterConsumer(this);
+            _weatherDataMediator.RegisterConsumer(this);
+            _focuserMediator.RegisterConsumer(this);
+            _domeMediator.RegisterConsumer(this);
+            _safetyMonitorMediator.RegisterConsumer(this);
+            _filterWheelMediator.RegisterConsumer(this);
+            _cameraMediator.RegisterConsumer(this);
+            _flatMediator.RegisterConsumer(this);
+            _rotatorMediator.RegisterConsumer(this);
 
             // Register the default Providers
-            foreach (string provider in SymbolProviders) {
+            foreach (string provider in _symbolProviders) {
                 RegisterSymbolProvider(provider);
             }
             // Register the core functions
             RegisterCoreFunctions();
 
             UpdateNINASymbols();
-            ConditionWatchdog = new ConditionWatchdog(UpdateNINASymbols, TimeSpan.FromSeconds(3));
-            ConditionWatchdog.Start();
+            _conditionWatchdog = new ConditionWatchdog(UpdateNINASymbols, TimeSpan.FromSeconds(3));
+            _conditionWatchdog.Start();
         }
-
-        private ConcurrentDictionary<string, IList<Symbol>> DataSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
-
-        private ConcurrentDictionary<string, IList<Symbol>> HiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
-
-        private readonly ConcurrentDictionary<string, IList<SymbolFunction>> _functions = new(StringComparer.OrdinalIgnoreCase);
-
-        public static readonly char DELIMITER = '_';
-
-        private static List<string> SymbolProviders =
-            new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel" };
-
-        public bool TryGetSymbol(string key, out Symbol symbol) {
-            Symbol sym;
-            if (GetSymbol(key, out sym)) {
-                symbol = sym;
-                return true;
-            } else if (sym is AmbiguousSymbol) {
-                symbol = sym;
-                return false;
-            }
-            symbol = null;
-            return false;
-        }
-
-        private bool GetSymbol(string key, out Symbol symbol) {
-            IList<Symbol> list;
-            string prefix = null;
-
-            if (DataSymbols.TryGetValue(key, out list) && list.Count == 1) {
-                symbol = list[0];
-                return true;
-            }
-
-            if (key.IndexOf(DELIMITER) > 0) {
-                string[] parts = key.Split(DELIMITER, 2);
-                if (parts.Length == 2) {
-                    key = parts[1];
-                    prefix = parts[0];
-                }
-            }
-
-            if (!DataSymbols.TryGetValue(key, out list)) {
-                symbol = null;
-                return false;
-            }
-
-            if (prefix != null) {
-                foreach (Symbol kvp in list) {
-                    if (kvp.Category == prefix) {
-                        symbol = kvp;
-                        return true;
-                    }
-                }
-            }
-
-            // If the list has one item, we're done
-            if (list.Count == 1) {
-                symbol = list[0];
-                return true;
-            }
-
-            // Ambiguous
-            symbol = new AmbiguousSymbol(key, list);
-            return false;
-        }
-
-        public bool TryGetValue(string key, out object value) {
-            Symbol d;
-            if (GetSymbol(key, out d)) {
-                Symbol sym = d as Symbol;
-                if (sym != null) {
-                    value = sym.Value;
-                    return true;
-                }
-            } else {
-                if (d is AmbiguousSymbol a) {
-                    value = a;
-                    return false;
-                }
-            }
-            value = null;
-            return false;
-        }
-
-        // DATA SYMBOLS
-
-        private static string[] WeatherData = new string[] { "CloudCover", "DewPoint", "Humidity", "Pressure", "RainRate", "SkyBrightness", "SkyQuality", "SkyTemperature",
-            "StarFWHM", "Temperature", "WindDirection", "WindGust", "WindSpeed"};
-
-        public static string RemoveSpecialCharacters(string str) {
-            if (str == null) {
-                return "__Null__";
-            }
-            StringBuilder sb = new StringBuilder();
-            foreach (char c in str) {
-                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_') {
-                    sb.Append(c);
-                }
-            }
-            return sb.ToString();
-        }
-
-        private static ISwitchMediator SwitchMediator { get; set; }
-        private static IWeatherDataMediator WeatherDataMediator { get; set; }
-        private static ICameraMediator CameraMediator { get; set; }
-        private static IDomeMediator DomeMediator { get; set; }
-        private static IFlatDeviceMediator FlatMediator { get; set; }
-        private static IFilterWheelMediator FilterWheelMediator { get; set; }
-        private static IProfileService ProfileService { get; set; }
-        private static IRotatorMediator RotatorMediator { get; set; }
-        private static ISafetyMonitorMediator SafetyMonitorMediator { get; set; }
-        private static IFocuserMediator FocuserMediator { get; set; }
-        private static ITelescopeMediator TelescopeMediator { get; set; }
-        private static IGuiderMediator GuiderMediator { get; set; }
-        private static IImagingMediator ImagingMediator { get; set; }
-        private static ConditionWatchdog ConditionWatchdog { get; set; }
-
         private void AddHiddenSymbol(string source, Symbol sym) {
             IList<Symbol> symList;
-            if (!HiddenSymbols.TryGetValue(source, out symList)) {
+            if (!_hiddenSymbols.TryGetValue(source, out symList)) {
                 symList = new List<Symbol>();
-                HiddenSymbols.TryAdd(source, symList);
+                _hiddenSymbols.TryAdd(source, symList);
             }
             symList.Add(sym);
         }
 
-        public IList<Symbol> GetHiddenSymbols(string source) {
-            IList<Symbol> syms = null;
-            HiddenSymbols.TryGetValue(source, out syms);
-            return syms;
+        private void AddOptionalImageSymbol(IStarDetectionAnalysis analysis, string name) {
+            if (analysis.HasProperty(name)) {
+                var v = analysis.GetType().GetProperty(name).GetValue(analysis, null);
+                if (v is double vDouble) {
+                    AddOrUpdateSymbol("Image", name, Math.Round(vDouble, 2));
+                }
+            }
         }
 
-        void AddOrUpdateSymbol(string source, string token, object value) {
+        private void AddOrUpdateSymbol(string source, string token, object value) {
             AddOrUpdateSymbol(source, token, value, null, SymbolType.SYMBOL_NORMAL);
         }
-        void AddOrUpdateSymbol(string source, string token, object value, SymbolType type) {
+
+        private void AddOrUpdateSymbol(string source, string token, object value, SymbolType type) {
             AddOrUpdateSymbol(source, token, value, null, type);
         }
-        void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values) {
+
+        private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values) {
             AddOrUpdateSymbol(source, token, value, values, SymbolType.SYMBOL_NORMAL);
         }
+
         private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values, SymbolType type) {
-            if (!Providers.Contains(source)) {
-                Providers.Add(source);
+            if (!_providers.Contains(source)) {
+                _providers.Add(source);
             }
 
-            if (!DataSymbols.TryGetValue(token, out IList<Symbol> list)) {
+            if (!_dataSymbols.TryGetValue(token, out IList<Symbol> list)) {
                 list = new List<Symbol>();
-                DataSymbols[token] = list;
+                _dataSymbols[token] = list;
                 Symbol sym = new Symbol(token, value, source, values, type);
                 if (type == SymbolType.SYMBOL_HIDDEN) {
                     AddHiddenSymbol(source, sym);
@@ -271,11 +211,137 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+        private SymbolFunction GetFunction(string key) {
+            // 1) Direct lookup - if exactly one function matches the key, return it.
+            if (_functions.TryGetValue(key, out var list) && list.Count == 1) {
+                return list[0];
+            }
+
+            // 2) Parse prefix if key contains a delimiter (e.g., "prefix_key").
+            string prefix = null;
+            int delimiterIndex = key.IndexOf(DELIMITER);
+
+            if (delimiterIndex > 0) {
+                // Split only once: "prefix_key" → ["prefix", "key"]
+                var parts = key.Split(DELIMITER, 2);
+                if (parts.Length == 2) {
+                    prefix = parts[0];
+                    key = parts[1]; // lookup is performed on the key part
+                }
+            }
+
+            // 3) Lookup base key (after removing prefix if present).
+            if (!_functions.TryGetValue(key, out list)) {
+                throw new ArgumentException("Function not found: " + key); // not found
+            }
+
+            // 4) If a prefix is available, use it to disambiguate between multiple functions.
+            if (prefix != null) {
+                foreach (var f in list) {
+                    if (f.Category == prefix) {
+                        return f;
+                    }
+                }
+            }
+
+            // 5) If only one symbol exists at this point, return it.
+            if (list.Count == 1) {
+                return list[0];
+            }
+
+            // 6) Multiple symbols remain → ambiguous.
+            throw new ArgumentException("Ambiguous function symbol: " + key);
+        }
+
+        private bool GetSymbol(string key, out Symbol symbol) {
+            IList<Symbol> list;
+            string prefix = null;
+
+            if (_dataSymbols.TryGetValue(key, out list) && list.Count == 1) {
+                symbol = list[0];
+                return true;
+            }
+
+            if (key.IndexOf(DELIMITER) > 0) {
+                string[] parts = key.Split(DELIMITER, 2);
+                if (parts.Length == 2) {
+                    key = parts[1];
+                    prefix = parts[0];
+                }
+            }
+
+            if (!_dataSymbols.TryGetValue(key, out list)) {
+                symbol = null;
+                return false;
+            }
+
+            if (prefix != null) {
+                foreach (Symbol kvp in list) {
+                    if (kvp.Category == prefix) {
+                        symbol = kvp;
+                        return true;
+                    }
+                }
+            }
+
+            // If the list has one item, we're done
+            if (list.Count == 1) {
+                symbol = list[0];
+                return true;
+            }
+
+            // Ambiguous
+            symbol = new AmbiguousSymbol(key, list);
+            return false;
+        }
+
+        private void RegisterCoreFunctions() {
+            foreach (var fn in new MathFunctions(this)) {
+                RegisterFunction(fn.Category, fn);
+            }
+
+            foreach (var fn in new LogicFunctions(this)) {
+                RegisterFunction(fn.Category, fn);
+            }
+
+            foreach (var fn in new TimeFunctions(this)) {
+                RegisterFunction(fn.Category, fn);
+            }
+
+            foreach (var fn in new StringFunctions(this)) {
+                RegisterFunction(fn.Category, fn);
+            }
+
+            foreach (var fn in new UtilityFunctions(this)) {
+                RegisterFunction(fn.Category, fn);
+            }
+        }
+
+        private void RegisterFunction(string source, SymbolFunction function) {
+            if (source != function.Category) {
+                throw new ArgumentException("Function category does not match source provider.");
+            }
+
+            if (!_providers.Contains(source)) {
+                _providers.Add(source);
+            }
+
+            if (!_functions.ContainsKey(function.Key)) {
+                _functions[function.Key] = new List<SymbolFunction>();
+            }
+
+            if (_functions[function.Key].Any(x => x.Category == source)) {
+                throw new ArgumentException("Function symbol already registered: " + function.Key + " in category " + source);
+            }
+
+            _functions[function.Key].Add(function);
+        }
+
         private void RemoveAllSymbols(string source) {
             int count = 0;
             var keysToRemove = new List<string>();
 
-            foreach (var kvp in DataSymbols) {
+            foreach (var kvp in _dataSymbols) {
                 var list = kvp.Value;
 
                 for (int i = list.Count - 1; i >= 0; i--) {
@@ -291,7 +357,7 @@ namespace NINA.Sequencer.Logic {
             }
 
             foreach (var key in keysToRemove) {
-                DataSymbols.Remove(key, out _);
+                _dataSymbols.Remove(key, out _);
             }
 
             Logger.Info($"Removing all symbols from: {source} ({count})");
@@ -300,13 +366,13 @@ namespace NINA.Sequencer.Logic {
         private bool RemoveSymbol(string source, string key) {
             IList<Symbol> list;
 
-            if (!DataSymbols.TryGetValue(key, out list)) {
+            if (!_dataSymbols.TryGetValue(key, out list)) {
                 return false;
             }
 
             if (list.Count == 1) {
                 if (list[0].Category == source) {
-                    DataSymbols.Remove(key, out _);
+                    _dataSymbols.Remove(key, out _);
                     return true;
                 }
                 return false;
@@ -327,39 +393,121 @@ namespace NINA.Sequencer.Logic {
             return true;
         }
 
-        private IList<string> Providers = new List<string>();
+        private Task UpdateNINASymbols() {
+            var observer = new ObserverInfo() {
+                Latitude = _profileService.ActiveProfile.AstrometrySettings.Latitude,
+                Longitude = _profileService.ActiveProfile.AstrometrySettings.Longitude,
+                Elevation = _profileService.ActiveProfile.AstrometrySettings.Elevation
+            };
 
-        private static Symbol[] PierConstants = new Symbol[] {
-            new Symbol("PierUnknown", -1),
-            new Symbol("PierEast", 0),
-            new Symbol("PierWest", 1)
-        };
+            NOVAS.SkyPosition sunPos = AstroUtil.GetSunPosition(DateTime.Now, observer);
+            Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
+            TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), observer.Elevation);
 
-        private static Symbol[] ShutterConstants = new Symbol[] {
-            new Symbol("ShutterUnknown", -1),
-            new Symbol("ShutterOpen", 0),
-            new Symbol("ShutterClosed", 1),
-            new Symbol("ShutterOpening", 2),
-            new Symbol("ShutterClosing", 3),
-            new Symbol("ShutterError", 4)
-        };
+            AddOrUpdateSymbol("NINA", "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, observer));
+            AddOrUpdateSymbol("NINA", "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now, observer));
+            AddOrUpdateSymbol("NINA", "SunAltitude", tc.Altitude.Degree);
+            AddOrUpdateSymbol("NINA", "SunAzimuth", tc.Azimuth.Degree);
 
-        private static Symbol[] CoverConstants = new Symbol[] {
-            new Symbol("CoverUnknown", 0),
-            new Symbol("CoverNeitherOpenNorClosed", 1),
-            new Symbol("CoverClosed", 2),
-            new Symbol("CoverOpen", 3),
-            new Symbol("CoverError", 4),
-            new Symbol("CoverNotPresent", 5)
-        };
+            double lst = AstroUtil.GetLocalSiderealTimeNow(_profileService.ActiveProfile.AstrometrySettings.Longitude);
+            if (lst < 0) {
+                lst = AstroUtil.EuclidianModulus(lst, 24);
+            }
+            AddOrUpdateSymbol("NINA", "LocalSiderealTime", lst);
 
-        private void AddOptionalImageSymbol(IStarDetectionAnalysis analysis, string name) {
-            if (analysis.HasProperty(name)) {
-                var v = analysis.GetType().GetProperty(name).GetValue(analysis, null);
-                if (v is double vDouble) {
-                    AddOrUpdateSymbol("Image", name, Math.Round(vDouble, 2));
+            TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+            double timeSeconds = Math.Floor(time.TotalSeconds);
+            AddOrUpdateSymbol("NINA", "ApplicationUptime", timeSeconds);
+
+            AddOrUpdateSymbol("NINA", "ProfileName", _profileService.ActiveProfile.Name);
+            AddOrUpdateSymbol("NINA", "ProfileId", _profileService.ActiveProfile.Id);
+
+            return Task.CompletedTask;
+        }
+
+        // DATA SYMBOLS
+        public static string RemoveSpecialCharacters(string str) {
+            if (str == null) {
+                return "__Null__";
+            }
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in str) {
+                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_') {
+                    sb.Append(c);
                 }
             }
+            return sb.ToString();
+        }
+
+        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value) {
+            if (provider == null) {
+                throw new ArgumentNullException(nameof(provider));
+            }
+            AddOrUpdateSymbol(provider.GetProviderName(), token, value);
+        }
+
+        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
+            if (provider == null) {
+                throw new ArgumentNullException(nameof(provider));
+            }
+            AddOrUpdateSymbol(provider.GetProviderName(), token, value, values);
+        }
+
+        public void Dispose() {
+        }
+
+        public IReadOnlyCollection<SymbolFunction> GetFunctions() {
+            return _functions.Values.SelectMany(l => l).ToList();
+        }
+
+        public IList<Symbol> GetHiddenSymbols(string source) {
+            IList<Symbol> syms = null;
+            _hiddenSymbols.TryGetValue(source, out syms);
+            return syms;
+        }
+
+        public List<Symbol> GetSymbols() {
+            IList<Symbol> ss = new List<Symbol>();
+
+            foreach (var kvp in _dataSymbols) {
+                IList<Symbol> sources = kvp.Value;
+                foreach (Symbol ds in sources) {
+                    Symbol symCopy = new Symbol(kvp.Key, ds.Value, ds.Category, ds.Constants, ds.Type);
+                    ss.Add(symCopy);
+                }
+            }
+            return ss.Where(x => x.Type == SymbolType.SYMBOL_NORMAL).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
+        }
+
+        public void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile) {
+            result = null;
+            isVolatile = false;
+
+            var fn = GetFunction(name);
+
+            fn.ValidateArgs(name, args);
+            result = fn.Implementation(args);
+            isVolatile = fn.IsVolatile;
+        }
+
+        public void RegisterFunction(ISymbolProvider symbolProvider, SymbolFunction symbolFunction) {
+            RegisterFunction(symbolProvider.GetProviderName(), symbolFunction);
+        }
+
+        public ISymbolProvider RegisterSymbolProvider(string name) {
+            if (_providers.Contains(name)) {
+                throw new ArgumentException("Symbol Provider name is already registered.");
+            }
+            _providers.Add(name);
+            return new SymbolProvider(name, this);
+        }
+
+        public bool RemoveSymbol(ISymbolProvider provider, string token) {
+            if (provider == null) {
+                throw new ArgumentNullException(nameof(provider));
+            }
+
+            return RemoveSymbol(provider.GetProviderName(), token);
         }
 
         public void SetImageSymbols(object sender, ImagePreparedEventArgs e) {
@@ -392,82 +540,35 @@ namespace NINA.Sequencer.Logic {
             AddOptionalImageSymbol(analysis, "FWHM");
         }
 
-        private Task UpdateNINASymbols() {
-
-            var observer = new ObserverInfo() {
-                Latitude = ProfileService.ActiveProfile.AstrometrySettings.Latitude,
-                Longitude = ProfileService.ActiveProfile.AstrometrySettings.Longitude,
-                Elevation = ProfileService.ActiveProfile.AstrometrySettings.Elevation
-            };
-
-            NOVAS.SkyPosition sunPos = AstroUtil.GetSunPosition(DateTime.Now, AstroUtil.GetJulianDate(DateTime.Now), observer);
-            Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
-            TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), observer.Elevation);
-
-            AddOrUpdateSymbol("NINA", "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, observer));
-            AddOrUpdateSymbol("NINA", "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now, observer));
-            AddOrUpdateSymbol("NINA", "SunAltitude", tc.Altitude.Degree);
-            AddOrUpdateSymbol("NINA", "SunAzimuth", tc.Azimuth.Degree);
-
-            double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
-            if (lst < 0) {
-                lst = AstroUtil.EuclidianModulus(lst, 24);
+        public bool TryGetSymbol(string key, out Symbol symbol) {
+            Symbol sym;
+            if (GetSymbol(key, out sym)) {
+                symbol = sym;
+                return true;
+            } else if (sym is AmbiguousSymbol) {
+                symbol = sym;
+                return false;
             }
-            AddOrUpdateSymbol("NINA", "LocalSiderealTime", lst);
-
-            TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
-            double timeSeconds = Math.Floor(time.TotalSeconds);
-            AddOrUpdateSymbol("NINA", "ApplicationUptime", timeSeconds);
-
-            AddOrUpdateSymbol("NINA", "ProfileName", ProfileService.ActiveProfile.Name);
-            AddOrUpdateSymbol("NINA", "ProfileId", ProfileService.ActiveProfile.Id);
-
-            return Task.CompletedTask;
+            symbol = null;
+            return false;
         }
-
-        public ISymbolProvider RegisterSymbolProvider(string name) {
-            if (Providers.Contains(name)) {
-                throw new ArgumentException("Symbol Provider name is already registered.");
-            }
-            Providers.Add(name);
-            return new SymbolProvider(name, this);
-        }
-
-        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value) {
-            if (provider == null) {
-                throw new ArgumentNullException(nameof(provider));
-            }
-            AddOrUpdateSymbol(provider.GetProviderName(), token, value);
-        }
-
-        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
-            if (provider == null) {
-                throw new ArgumentNullException(nameof(provider));
-            }
-            AddOrUpdateSymbol(provider.GetProviderName(), token, value, values);
-        }
-
-        public bool RemoveSymbol(ISymbolProvider provider, string token) {
-            if (provider == null) {
-                throw new ArgumentNullException(nameof(provider));
-            }
-
-            return RemoveSymbol(provider.GetProviderName(), token);
-        }
-
-        public List<Symbol> GetSymbols() {
-            IList<Symbol> ss = new List<Symbol>();
-
-            foreach (var kvp in DataSymbols) {
-                IList<Symbol> sources = kvp.Value;
-                foreach (Symbol ds in sources) {
-                    Symbol symCopy = new Symbol(kvp.Key, ds.Value, ds.Category, ds.Constants, ds.Type);
-                    ss.Add(symCopy);
+        public bool TryGetValue(string key, out object value) {
+            Symbol d;
+            if (GetSymbol(key, out d)) {
+                Symbol sym = d as Symbol;
+                if (sym != null) {
+                    value = sym.Value;
+                    return true;
+                }
+            } else {
+                if (d is AmbiguousSymbol a) {
+                    value = a;
+                    return false;
                 }
             }
-            return ss.Where(x => x.Type == SymbolType.SYMBOL_NORMAL).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
+            value = null;
+            return false;
         }
-
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
             if (deviceInfo.Connected) {
                 AddOrUpdateSymbol("Mount", "Altitude", deviceInfo.Altitude);
@@ -488,10 +589,6 @@ namespace NINA.Sequencer.Logic {
                 RemoveSymbol("Mount", "SideOfPier");
             }
         }
-
-        public void Dispose() {
-        }
-
         public void UpdateDeviceInfo(SwitchInfo deviceInfo) {
             if (deviceInfo.Connected) {
                 foreach (ISwitch sw in deviceInfo.ReadonlySwitches) {
@@ -510,7 +607,7 @@ namespace NINA.Sequencer.Logic {
 
         public void UpdateDeviceInfo(WeatherDataInfo deviceInfo) {
             if (deviceInfo.Connected) {
-                foreach (string dataName in WeatherData) {
+                foreach (string dataName in _weatherData) {
                     PropertyInfo info = deviceInfo.GetType().GetProperty(dataName);
                     if (info != null) {
                         object val = info.GetValue(deviceInfo);
@@ -526,11 +623,6 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        public void UpdateEndAutoFocusRun(AutoFocusInfo info) {
-        }
-        public void UpdateUserFocused(FocuserInfo info) {
-        }
-
         public void UpdateDeviceInfo(FocuserInfo deviceInfo) {
             if (deviceInfo.Connected) {
                 AddOrUpdateSymbol("Focuser", "Position", deviceInfo.Position);
@@ -539,12 +631,11 @@ namespace NINA.Sequencer.Logic {
                 RemoveSymbol("Focuser", "Position");
                 RemoveSymbol("Focuser", "Temperature");
             }
-
         }
 
         public void UpdateDeviceInfo(Equipment.Equipment.MyFilterWheel.FilterWheelInfo deviceInfo) {
             if (deviceInfo.Connected) {
-                var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                var f = _profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 foreach (FilterInfo filterInfo in f) {
                     AddOrUpdateSymbol("Filter", RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
                 }
@@ -553,7 +644,7 @@ namespace NINA.Sequencer.Logic {
                     AddOrUpdateSymbol("FilterWheel", "CurrentFilterIndex", deviceInfo.SelectedFilter.Position);
                 }
             } else {
-                var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                var f = _profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 foreach (FilterInfo filterInfo in f) {
                     RemoveSymbol("Filter", RemoveSpecialCharacters(filterInfo.Name));
                 }
@@ -627,108 +718,10 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        private void RegisterCoreFunctions() {
-            foreach (var fn in new MathFunctions(this)) {
-                RegisterFunction(fn.Category, fn);
-            }
-
-            foreach (var fn in new LogicFunctions(this)) {
-                RegisterFunction(fn.Category, fn);
-            }
-
-            foreach (var fn in new TimeFunctions(this)) {
-                RegisterFunction(fn.Category, fn);
-            }
-
-            foreach (var fn in new StringFunctions(this)) {
-                RegisterFunction(fn.Category, fn);
-            }
-
-            foreach (var fn in new UtilityFunctions(this)) {
-                RegisterFunction(fn.Category, fn);
-            }
+        public void UpdateEndAutoFocusRun(AutoFocusInfo info) {
         }
 
-        public void RegisterFunction(ISymbolProvider symbolProvider, SymbolFunction symbolFunction) {
-            RegisterFunction(symbolProvider.GetProviderName(), symbolFunction);
-        }
-
-        private void RegisterFunction(string source, SymbolFunction function) {
-            if (source != function.Category) {
-                throw new ArgumentException("Function category does not match source provider.");
-            }
-
-            if (!Providers.Contains(source)) {
-                Providers.Add(source);
-            }
-
-            if (!_functions.ContainsKey(function.Key)) {
-                _functions[function.Key] = new List<SymbolFunction>();
-            }
-
-            if (_functions[function.Key].Any(x => x.Category == source)) {
-                throw new ArgumentException("Function symbol already registered: " + function.Key + " in category " + source);
-            }
-
-            _functions[function.Key].Add(function);
-        }
-
-        private SymbolFunction GetFunction(string key) {
-            // 1) Direct lookup - if exactly one function matches the key, return it.
-            if (_functions.TryGetValue(key, out var list) && list.Count == 1) {
-                return list[0];
-            }
-
-            // 2) Parse prefix if key contains a delimiter (e.g., "prefix_key").
-            string prefix = null;
-            int delimiterIndex = key.IndexOf(DELIMITER);
-
-            if (delimiterIndex > 0) {
-                // Split only once: "prefix_key" → ["prefix", "key"]
-                var parts = key.Split(DELIMITER, 2);
-                if (parts.Length == 2) {
-                    prefix = parts[0];
-                    key = parts[1]; // lookup is performed on the key part
-                }
-            }
-
-            // 3) Lookup base key (after removing prefix if present).
-            if (!_functions.TryGetValue(key, out list)) {
-                throw new ArgumentException("Function not found: " + key); // not found
-            }
-
-            // 4) If a prefix is available, use it to disambiguate between multiple functions.
-            if (prefix != null) {
-                foreach (var f in list) {
-                    if (f.Category == prefix) {
-                        return f;
-                    }
-                }
-            }
-
-            // 5) If only one symbol exists at this point, return it.
-            if (list.Count == 1) {
-                return list[0];
-            }
-
-            // 6) Multiple symbols remain → ambiguous.
-            throw new ArgumentException("Ambiguous function symbol: " + key);
-        }
-
-
-        public void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile) {
-            result = null;
-            isVolatile = false;
-
-            var fn = GetFunction(name);
-
-            fn.ValidateArgs(name, args);
-            result = fn.Implementation(args);
-            isVolatile = fn.IsVolatile;
-        }
-
-        public IReadOnlyCollection<SymbolFunction> GetFunctions() {
-            return _functions.Values.SelectMany(l => l).ToList();
+        public void UpdateUserFocused(FocuserInfo info) {
         }
     }
 }

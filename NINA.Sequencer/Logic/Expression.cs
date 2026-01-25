@@ -1,15 +1,10 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NCalc;
+﻿using NCalc;
 using NCalc.Exceptions;
 using NCalc.Handlers;
 using Newtonsoft.Json;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
-using NINA.Core.Utility.ColorSchema;
-using NINA.Profile.Interfaces;
-using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Expressions;
-using OxyPlot;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -24,8 +19,24 @@ namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
 
+        private static readonly int ONE_YEAR = 365 * 24 * 60 * 60;
+
+        private NCalc.Expression _cachedNCalcExpression = null;
+
+        // Parameters are NCalc Parameters used in the call to NCalc.Evaluate()
+        private Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+        // Resolved are the Symbol's that have been found (from the References)
+        private Dictionary<string, UserSymbol> resolved = new Dictionary<string, UserSymbol>();
+        // References are the parsed tokens used in the Expr
+        private HashSet<string> references = new HashSet<string>();
+
+        public static readonly bool DATE_VALUES_ALLOWED = true;
+
+        public static readonly bool STRING_VALUES_ALLOWED = true;
+
         public Expression() { }
-        
+
         public Expression (Expression cloneMe, ISequenceEntity context, Action<Expression> validator = null) {
             Definition = cloneMe.Definition;
             SymbolBroker = cloneMe.SymbolBroker;
@@ -52,33 +63,7 @@ namespace NINA.Sequencer.Logic {
             Symbol = symbol;
         }
 
-        public static readonly bool STRING_VALUES_ALLOWED = true;
-        public static readonly bool DATE_VALUES_ALLOWED = true;
-
-        public ISymbolBroker SymbolBroker { get; set; }
-
-        public bool HasError => !string.IsNullOrEmpty(Error);
- 
-        public virtual string Error {
-            get => field;
-            set {
-                if (value != field) {
-                    field = value;
-                    RaisePropertyChanged(nameof(ValueString));
-                    RaisePropertyChanged(nameof(IsExpression));
-                    RaisePropertyChanged(nameof(IsAnnotated));
-                    RaisePropertyChanged(nameof(Error));
-                    RaisePropertyChanged(nameof(StringValue));
-                    RaisePropertyChanged(nameof(InfoButtonColor));
-                }
-            }
-        }
-
-        public bool Dirty { get; set; }
         public ISequenceEntity Context { get; set; }
-
-        public Action<Expression> Validator { get; set; }
-
         public double Default {
             get => field;
             set {
@@ -86,11 +71,6 @@ namespace NINA.Sequencer.Logic {
                 RaisePropertyChanged();
             }
         } = double.NaN;
-
-        public string Type { get; set; } = "double";
-
-        public bool Volatile { get; set; } = false;
-        public bool GlobalVolatile { get; set; } = false;
 
         public string DefaultString {
             get {
@@ -107,241 +87,6 @@ namespace NINA.Sequencer.Logic {
                 field = value;
             }
         } = null;
-
-        /// <summary>
-        /// Specifies the allowed numeric range for this expression.
-        /// 
-        /// The array must contain exactly three elements:
-        /// 
-        ///     Range[0] = Minimum value
-        ///     Range[1] = Maximum value
-        ///     Range[2] = Boundary flags (encoded as an integer bitmask)
-        ///
-        /// The boundary flags determine whether the min/max boundaries are
-        /// inclusive or exclusive. They use the ExpressionRange flags:
-        ///
-        ///     ExpressionRange.MIN_EXCLUSIVE = 1   // bit 0
-        ///     ExpressionRange.MAX_EXCLUSIVE = 2   // bit 1
-        ///
-        /// Meaning of Range[2]:
-        ///
-        ///     0 (binary 00) → Min inclusive, Max inclusive
-        ///     1 (binary 01) → Min exclusive, Max inclusive
-        ///     2 (binary 10) → Min inclusive, Max exclusive
-        ///     3 (binary 11) → Min exclusive, Max exclusive
-        ///
-        /// Example:
-        ///
-        ///     Range = new double[] { 0, 10, 3 };
-        ///
-        /// Means: 0 < value < 10 (both sides exclusive).
-        ///
-        /// This field is optional; if null, no range checking occurs.
-        /// </summary>
-        public double[]? Range { get; set; }
-        public bool IsExpression { get; set; } = false;
-        public bool IsSyntaxError { get; set; } = false;
-        public bool IsAnnotated {
-            get => IsExpression || ForceAnnotated || Error != null;
-        }
-
-        public bool ForceAnnotated { get; set; } = false;
-        public string StringValue { get; set; }
-
-        public virtual double Value {
-            get {
-                if (double.IsNaN(field) && !double.IsNaN(Default)) {
-                    return Default;
-                }
-                return field;
-            }
-            set {
-                if (value != field) {
-                    if ("int".Equals(Type)) {
-                        if (StringValue != null) {
-                            Error = Loc.Instance["LblMustBeInteger"];
-                        }
-                        ForceAnnotated = false;
-                        if (Definition.Length > 0 && Double.Floor(value) != value) {
-                            value = Double.Floor(value);
-                            ForceAnnotated = true;
-                        }
-                        RaisePropertyChanged(nameof(IsAnnotated));
-                    }
-                    field = value;
-                    if (Range != null) {
-                        CheckRange((double)value);
-                    } 
-                    if (Validator != null) {
-                        Validator(this);
-                    }
-                    RaisePropertyChanged(nameof(StringValue));
-                    RaisePropertyChanged(nameof(Value));
-                    RaisePropertyChanged(nameof(ValueString));
-                    RaisePropertyChanged(nameof(IsExpression));
-                }
-            }
-        } = double.NaN;
-
-        private void CheckRange(double value) {
-            if (Range?.Length < 3) { return; }
-
-            int r = Convert.ToInt32(Range[2], CultureInfo.InvariantCulture);
-
-            bool minExclusive = (r & ExpressionRange.MIN_EXCLUSIVE) == ExpressionRange.MIN_EXCLUSIVE;
-            bool maxExclusive = (r & ExpressionRange.MAX_EXCLUSIVE) == ExpressionRange.MAX_EXCLUSIVE;
-
-            double min = Range[0] + (((r & ExpressionRange.MIN_EXCLUSIVE) == ExpressionRange.MIN_EXCLUSIVE) ? 1e-8 : 0);
-            double max = Range[1] == 0 ? double.MaxValue : Range[1] - (((r & ExpressionRange.MAX_EXCLUSIVE) == ExpressionRange.MAX_EXCLUSIVE) ? 1e-8 : 0);
-
-            bool outOfRange =
-                (minExclusive ? value <= min : value < min) ||
-                (maxExclusive ? value >= max : value > max);
-
-            if (!outOfRange) { return; }
-
-            string msgKey;
-
-            if (Range[1] == 0) {
-                if (minExclusive) {
-                    msgKey = "Lbl_Expressions_CheckRange_RangeGreaterThan";
-                } else {
-                    msgKey = "Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals";
-                }
-            } else if (!minExclusive && !maxExclusive) {
-                msgKey = "Lbl_Expressions_CheckRange_RangeInclusiveInclusive";
-            } else if (!minExclusive && maxExclusive) {
-                msgKey = "Lbl_Expressions_CheckRange_RangeInclusiveExclusive";
-            } else if (minExclusive && !maxExclusive) {
-                msgKey = "Lbl_Expressions_CheckRange_RangeExclusiveInclusive";
-            } else {
-                msgKey = "Lbl_Expressions_CheckRange_RangeExclusiveExclusive";
-            }
-
-            Error = string.Format(CultureInfo.InvariantCulture, Loc.Instance[msgKey], Range[0], Range[1]);
-        }
-        
-        public SolidColorBrush InfoButtonColor {
-            get {
-                if (Error == null) return new SolidColorBrush(Colors.White);
-                return JustWarnings(Error) ?
-                    new SolidColorBrush(Colors.Orange) :
-                    new SolidColorBrush(Colors.Red);
-            }
-            set { }
-        }
-
-        public static bool JustWarnings(string error) {
-            string[] errors = error.Split(";");
-            bool red = false;
-            bool orange = false;
-            foreach (string e in errors) {
-                // Note "External" not used currently
-                if (e.Contains(Loc.Instance["LblNotEvaluated"]) || e.Contains("External")) {
-                    orange = true;
-                } else {
-                    red = true;
-                }
-            }
-            if (orange && !red) return true;
-            return false;
-        }
-        public string ExprErrors {
-            get {
-                if (Error == null) {
-                    return Loc.Instance["NoErrors"];
-                } else if (JustWarnings(Error)) {
-                    return Error; // string.Format(Loc.Instance["LblWarnings"], Error);
-                } else {
-                    return Error; // string.Format(Loc.Instance["LblErrors"], Error);
-                }
-            }
-            set { }
-        }
-
-        public void Validate(IList<string> issues) {
-            if (Context == null) {
-                return;
-            }
-            if (Error != null || Volatile) {
-                if (Definition != null && Definition.Length == 0 && Value == Default) {
-                    Error = null;
-                }
-                Evaluate(true);
-                foreach (KeyValuePair<string, UserSymbol> kvp in Resolved) {
-                    if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
-                        GlobalVolatile = true;
-                    }
-                }
-            } else if (double.IsNaN(Value) && Definition?.Length > 0) {
-                Error = Loc.Instance["LblNotEvaluated"];
-            } else if (Resolved.Count != References.Count) {
-                // Why would this happen... track down?
-                Evaluate();
-            } else if (Definition.Length != 0 && Value == Default && Error == null) {
-                // This seems very wrong to me; need to figure it out
-                Evaluate(true);
-            }
-        }
-
-        public void Validate() {
-            Validate(null);
-        }
-
-        public static void ValidateExpressions(IList<string> issues, params Expression[] exprs) {
-            foreach (Expression expr in exprs) {
-                expr.Validate();
-                if (expr != null && expr.Error != null && !Expression.JustWarnings(expr.Error)) {
-                    issues.Add(expr.Error);
-                }
-            }
-        }
-
-        public UserSymbol Symbol { get; set; } = null;
-
-        private static readonly int ONE_YEAR = 365 * 24 * 60 * 60;
-
-        public string ValueString {
-            get {
-                if (Error != null) return Error;
-                if (Value is double.NegativeInfinity) {
-                    return StringValue;
-                }
-                long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
-                long end = start + (2 * ONE_YEAR);
-                if (DATE_VALUES_ALLOWED && Value > start && Value < end) {
-                    var local = CoreUtil.UnixTimeStampToDateTime(Value).ToLocalTime();
-                    var today = DateTime.Today;
-                    if (local.Date == today.AddDays(1)) {
-                        return local.ToShortTimeString() + " " + Loc.Instance["LblTomorrow"];
-                    } else if (local.Date == today.AddDays(-1)) {
-                        return local.ToShortTimeString() + " " + Loc.Instance["LblYesterday"];
-                    } else if (local.Date == today) {
-                        return local.ToShortTimeString();
-                    } else
-                        return local.ToString(CultureInfo.CurrentCulture);
-                } else {
-                    if (!double.IsNaN(Default) && Value == Default) {
-                        return DefaultString;
-                    }
-
-                    return Value.ToString(CultureInfo.InvariantCulture);
-                }
-            }
-            set { }
-        }
-
-        // References are the parsed tokens used in the Expr
-        private HashSet<string> references { get; set; } = new HashSet<string>();
-        public IReadOnlyCollection<string> References => references;
-
-        // Resolved are the Symbol's that have been found (from the References)
-        private Dictionary<string, UserSymbol> resolved = new Dictionary<string, UserSymbol>();
-        public IReadOnlyDictionary<string, UserSymbol> Resolved => resolved.AsReadOnly();
-
-        // Parameters are NCalc Parameters used in the call to NCalc.Evaluate()
-        private Dictionary<string, object> parameters = new Dictionary<string, object>();
-        public IReadOnlyDictionary<string, object> Parameters => parameters.AsReadOnly();
 
         [JsonProperty]
         public virtual string Definition {
@@ -408,11 +153,11 @@ namespace NINA.Sequencer.Logic {
                         // We always want to show the result if not a Symbol
                         //IsExpression = true;
                     }
-                // The following lines make no sense to me; it would capture literally {ddd} where d are digits.
-                // The "should be" would match any double and would be covered by previous clause
-                // Leaving this here temporarily in case something comes to mind
-                //} else if (Regex.IsMatch(value, "{(\\d+)}")) { // Should be /^\d*\.?\d*$/
-                //    IsExpression = false;
+                    // The following lines make no sense to me; it would capture literally {ddd} where d are digits.
+                    // The "should be" would match any double and would be covered by previous clause
+                    // Leaving this here temporarily in case something comes to mind
+                    //} else if (Regex.IsMatch(value, "{(\\d+)}")) { // Should be /^\d*\.?\d*$/
+                    //    IsExpression = false;
                 } else {
                     IsExpression = true;
 
@@ -453,22 +198,222 @@ namespace NINA.Sequencer.Logic {
                 RaisePropertyChanged(nameof(IsAnnotated));
             }
         } = "";
-        public void RemoveParameter(string identifier) {
-            parameters.Remove(identifier);
-            resolved.Remove(identifier);
-            Evaluate();
+
+        public bool Dirty { get; set; }
+        public virtual string Error {
+            get => field;
+            set {
+                if (value != field) {
+                    field = value;
+                    RaisePropertyChanged(nameof(ValueString));
+                    RaisePropertyChanged(nameof(IsExpression));
+                    RaisePropertyChanged(nameof(IsAnnotated));
+                    RaisePropertyChanged(nameof(Error));
+                    RaisePropertyChanged(nameof(StringValue));
+                    RaisePropertyChanged(nameof(InfoButtonColor));
+                }
+            }
         }
 
-        public void ReferenceRemoved(UserSymbol sym) {
-            // A definition we use was removed
-            string identifier = sym.Identifier;
-            parameters.Remove(identifier);
-            resolved.Remove(identifier);
-            Evaluate();
+        public string ExprErrors {
+            get {
+                if (Error == null) {
+                    return Loc.Instance["NoErrors"];
+                } else if (JustWarnings(Error)) {
+                    return Error; // string.Format(Loc.Instance["LblWarnings"], Error);
+                } else {
+                    return Error; // string.Format(Loc.Instance["LblErrors"], Error);
+                }
+            }
         }
+
+        public bool ForceAnnotated { get; set; } = false;
+        public bool GlobalVolatile { get; set; } = false;
+        public bool HasError => !string.IsNullOrEmpty(Error);
+        public SolidColorBrush InfoButtonColor {
+            get {
+                if (Error == null) return new SolidColorBrush(Colors.White);
+                return JustWarnings(Error) ?
+                    new SolidColorBrush(Colors.Orange) :
+                    new SolidColorBrush(Colors.Red);
+            }
+        }
+
+        public bool IsAnnotated {
+            get => IsExpression || ForceAnnotated || Error != null;
+        }
+
+        public bool IsExpression { get; set; } = false;
+        public bool IsSyntaxError { get; set; } = false;
+        public IReadOnlyDictionary<string, object> Parameters => parameters.AsReadOnly();
+        /// <summary>
+        /// Specifies the allowed numeric range for this expression.
+        /// 
+        /// The array must contain exactly three elements:
+        /// 
+        ///     Range[0] = Minimum value
+        ///     Range[1] = Maximum value
+        ///     Range[2] = Boundary flags (encoded as an integer bitmask)
+        ///
+        /// The boundary flags determine whether the min/max boundaries are
+        /// inclusive or exclusive. They use the ExpressionRange flags:
+        ///
+        ///     ExpressionRange.MIN_EXCLUSIVE = 1   // bit 0
+        ///     ExpressionRange.MAX_EXCLUSIVE = 2   // bit 1
+        ///
+        /// Meaning of Range[2]:
+        ///
+        ///     0 (binary 00) → Min inclusive, Max inclusive
+        ///     1 (binary 01) → Min exclusive, Max inclusive
+        ///     2 (binary 10) → Min inclusive, Max exclusive
+        ///     3 (binary 11) → Min exclusive, Max exclusive
+        ///
+        /// Example:
+        ///
+        ///     Range = new double[] { 0, 10, 3 };
+        ///
+        /// Means: 0 < value < 10 (both sides exclusive).
+        ///
+        /// This field is optional; if null, no range checking occurs.
+        /// </summary>
+        public double[]? Range { get; set; }
+
+        public IReadOnlyCollection<string> References => references;
+        public IReadOnlyDictionary<string, UserSymbol> Resolved => resolved.AsReadOnly();
+        public string StringValue { get; set; }
+        public UserSymbol Symbol { get; set; } = null;
+        public ISymbolBroker SymbolBroker { get; set; }
+        public string Type { get; set; } = "double";
+        public Action<Expression> Validator { get; set; }
+        public virtual double Value {
+            get {
+                if (double.IsNaN(field) && !double.IsNaN(Default)) {
+                    return Default;
+                }
+                return field;
+            }
+            set {
+                if (value != field) {
+                    if ("int".Equals(Type)) {
+                        if (StringValue != null) {
+                            Error = Loc.Instance["LblMustBeInteger"];
+                        }
+                        ForceAnnotated = false;
+                        if (Definition.Length > 0 && Double.Floor(value) != value) {
+                            value = Double.Floor(value);
+                            ForceAnnotated = true;
+                        }
+                        RaisePropertyChanged(nameof(IsAnnotated));
+                    }
+                    field = value;
+                    if (Range != null) {
+                        CheckRange((double)value);
+                    }
+                    if (Validator != null) {
+                        Validator(this);
+                    }
+                    RaisePropertyChanged(nameof(StringValue));
+                    RaisePropertyChanged(nameof(Value));
+                    RaisePropertyChanged(nameof(ValueString));
+                    RaisePropertyChanged(nameof(IsExpression));
+                }
+            }
+        } = double.NaN;
+
+        public string ValueString {
+            get {
+                if (Error != null) return Error;
+                if (double.IsNegativeInfinity(Value)) {
+                    return StringValue;
+                }
+                long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
+                long end = start + (2 * ONE_YEAR);
+                if (DATE_VALUES_ALLOWED && Value > start && Value < end) {
+                    var local = CoreUtil.UnixTimeStampToDateTime(Value).ToLocalTime();
+                    var today = DateTime.Today;
+                    if (local.Date == today.AddDays(1)) {
+                        return local.ToShortTimeString() + " " + Loc.Instance["LblTomorrow"];
+                    } else if (local.Date == today.AddDays(-1)) {
+                        return local.ToShortTimeString() + " " + Loc.Instance["LblYesterday"];
+                    } else if (local.Date == today) {
+                        return local.ToShortTimeString();
+                    } else
+                        return local.ToString(CultureInfo.CurrentCulture);
+                } else {
+                    if (!double.IsNaN(Default) && Value == Default) {
+                        return DefaultString;
+                    }
+
+                    return Value.ToString(CultureInfo.InvariantCulture);
+                }
+            }
+        }
+
+        public bool Volatile { get; set; } = false;
+        private void AddError(string s) {
+            if (Error == null) {
+                Error = s;
+            } else {
+                Error = Error + "; " + s;
+            }
+        }
+
         private void AddParameter(string reference, object value) {
             parameters.Add(reference, value);
         }
+
+        private void CheckRange(double value) {
+            if (Range?.Length < 3) { return; }
+
+            int r = Convert.ToInt32(Range[2], CultureInfo.InvariantCulture);
+
+            bool minExclusive = (r & ExpressionRange.MIN_EXCLUSIVE) == ExpressionRange.MIN_EXCLUSIVE;
+            bool maxExclusive = (r & ExpressionRange.MAX_EXCLUSIVE) == ExpressionRange.MAX_EXCLUSIVE;
+
+            double min = Range[0] + (((r & ExpressionRange.MIN_EXCLUSIVE) == ExpressionRange.MIN_EXCLUSIVE) ? 1e-8 : 0);
+            double max = Range[1] == 0 ? double.MaxValue : Range[1] - (((r & ExpressionRange.MAX_EXCLUSIVE) == ExpressionRange.MAX_EXCLUSIVE) ? 1e-8 : 0);
+
+            bool outOfRange =
+                (minExclusive ? value <= min : value < min) ||
+                (maxExclusive ? value >= max : value > max);
+
+            if (!outOfRange) { return; }
+
+            string msgKey;
+
+            if (Range[1] == 0) {
+                if (minExclusive) {
+                    msgKey = "Lbl_Expressions_CheckRange_RangeGreaterThan";
+                } else {
+                    msgKey = "Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals";
+                }
+            } else if (!minExclusive && !maxExclusive) {
+                msgKey = "Lbl_Expressions_CheckRange_RangeInclusiveInclusive";
+            } else if (!minExclusive && maxExclusive) {
+                msgKey = "Lbl_Expressions_CheckRange_RangeInclusiveExclusive";
+            } else if (minExclusive && !maxExclusive) {
+                msgKey = "Lbl_Expressions_CheckRange_RangeExclusiveInclusive";
+            } else {
+                msgKey = "Lbl_Expressions_CheckRange_RangeExclusiveExclusive";
+            }
+
+            Error = string.Format(CultureInfo.InvariantCulture, Loc.Instance[msgKey], Range[0], Range[1]);
+        }
+        private void ExtensionFunction(string name, FunctionArgs args) {
+            try {
+                SymbolBroker.InvokeFunction(name, args, out var result, out var isVolatile);
+                args.Result = result;
+
+                if (isVolatile) {
+                    // Always check again on validation
+                    GlobalVolatile = true;
+                }
+            } catch (Exception ex) {
+                Logger.Error($"Error evaluating function {name}: {ex.Message}");
+                throw new NCalcEvaluationException(ex.Message);
+            }
+        }
+
         private void Resolve(string reference, UserSymbol sym) {
             parameters.Remove(reference);
             resolved.Remove(reference);
@@ -482,21 +427,30 @@ namespace NINA.Sequencer.Logic {
                 }
             }
         }
-        public void Refresh() {
-            parameters.Clear();
-            resolved.Clear();
-            Evaluate();
-        }
 
-        private void AddError(string s) {
-            if (Error == null) {
-                Error = s;
-            } else {
-                Error = Error + "; " + s;
+        public static bool JustWarnings(string error) {
+            string[] errors = error.Split(";");
+            bool red = false;
+            bool orange = false;
+            foreach (string e in errors) {
+                // Note "External" not used currently
+                if (e.Contains(Loc.Instance["LblNotEvaluated"]) || e.Contains("External")) {
+                    orange = true;
+                } else {
+                    red = true;
+                }
+            }
+            if (orange && !red) return true;
+            return false;
+        }
+        public static void ValidateExpressions(IList<string> issues, params Expression[] exprs) {
+            foreach (Expression expr in exprs) {
+                expr.Validate();
+                if (expr != null && expr.Error != null && !Expression.JustWarnings(expr.Error)) {
+                    issues.Add(expr.Error);
+                }
             }
         }
-
-        private NCalc.Expression _cachedNCalcExpression = null;
 
         public void Evaluate() {
             Evaluate(false);
@@ -691,21 +645,27 @@ namespace NINA.Sequencer.Logic {
                 }
                 Dirty = false;
 
-            }        }
-
-        private void ExtensionFunction(string name, FunctionArgs args) {
-            try {
-                SymbolBroker.InvokeFunction(name, args, out var result, out var isVolatile);
-                args.Result = result;
-
-                if (isVolatile) {
-                    // Always check again on validation
-                    GlobalVolatile = true;
-                }
-            } catch (Exception ex) {
-                Logger.Error($"Error evaluating function {name}: {ex.Message}");
-                throw new NCalcEvaluationException(ex.Message);
             }
+        }
+
+        public void ReferenceRemoved(UserSymbol sym) {
+            // A definition we use was removed
+            string identifier = sym.Identifier;
+            parameters.Remove(identifier);
+            resolved.Remove(identifier);
+            Evaluate();
+        }
+
+        public void Refresh() {
+            parameters.Clear();
+            resolved.Clear();
+            Evaluate();
+        }
+
+        public void RemoveParameter(string identifier) {
+            parameters.Remove(identifier);
+            resolved.Remove(identifier);
+            Evaluate();
         }
 
         public override string ToString() {
@@ -731,5 +691,33 @@ namespace NINA.Sequencer.Logic {
             );
         }
 
+        public void Validate(IList<string> issues) {
+            if (Context == null) {
+                return;
+            }
+            if (Error != null || Volatile) {
+                if (Definition != null && Definition.Length == 0 && Value == Default) {
+                    Error = null;
+                }
+                Evaluate(true);
+                foreach (KeyValuePair<string, UserSymbol> kvp in Resolved) {
+                    if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
+                        GlobalVolatile = true;
+                    }
+                }
+            } else if (double.IsNaN(Value) && Definition?.Length > 0) {
+                Error = Loc.Instance["LblNotEvaluated"];
+            } else if (Resolved.Count != References.Count) {
+                // Why would this happen... track down?
+                Evaluate();
+            } else if (Definition.Length != 0 && Value == Default && Error == null) {
+                // This seems very wrong to me; need to figure it out
+                Evaluate(true);
+            }
+        }
+
+        public void Validate() {
+            Validate(null);
+        }
     }
 }

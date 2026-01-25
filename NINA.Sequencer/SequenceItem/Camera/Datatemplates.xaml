@@ -31,13 +31,19 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="{ns:Loc LblTemperature}" Exp="{Binding TemperatureExpression}" Unit="°C" />
+                    <logic:ExprControl
+                        Exp="{Binding TemperatureExpression}"
+                        Label="{ns:Loc LblTemperature}"
+                        Unit="°C" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <logic:ExprControl Label="{ns:Loc LblMinDuration}" Exp="{Binding DurationExpression}" Unit="min" />
+                    <logic:ExprControl
+                        Exp="{Binding DurationExpression}"
+                        Label="{ns:Loc LblMinDuration}"
+                        Unit="min" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
@@ -46,7 +52,10 @@
     <DataTemplate DataType="{x:Type local:WarmCamera}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprControl Label="{ns:Loc LblMinDuration}" Exp="{Binding DurationExpression}" Unit="min" />
+                <logic:ExprControl
+                    Exp="{Binding DurationExpression}"
+                    Label="{ns:Loc LblMinDuration}"
+                    Unit="min" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>

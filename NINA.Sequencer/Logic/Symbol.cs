@@ -12,32 +12,35 @@
 
 #endregion "copyright"
 
-using Google.Protobuf.WellKnownTypes;
 using NINA.Core.Utility;
-using NmeaParser.Gnss.Ntrip;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Windows.Input;
 
 namespace NINA.Sequencer.Logic {
 
+    public class AmbiguousSymbol : Symbol {
+
+        public AmbiguousSymbol(string key, IList<Symbol> symbols) : base(key, null, null, ((List<Symbol>)symbols).ToArray(), SymbolType.SYMBOL_NORMAL) {
+        }
+
+        public Symbol[] Symbols => Constants;
+    }
+
     public class Symbol : BaseINPC {
-        // The name of the Symbol
-        private string key;
-        // The Symbol's current value
-        private object value;
-        // The Symbol's current value or (if available) the constant for that value (for the Symbols sidebar)
-        private object valueName;
         // Category of this Symbol (typically, the source - device - of the data)
         private string category;
+
         // Constants used with this Symbol (or null)
         private Symbol[] constants;
+
+        // The name of the Symbol
+        private string key;
         // The type of the Symbol
         private SymbolType type;
 
-        public enum SymbolType { SYMBOL_NORMAL, SYMBOL_CONSTANT, SYMBOL_HIDDEN }
-
+        // The Symbol's current value
+        private object value;
         public Symbol(string key, object value, string category, Symbol[] constants, SymbolType type) {
             this.key = key;
             this.value = value;
@@ -53,11 +56,16 @@ namespace NINA.Sequencer.Logic {
             this.category = null;
         }
 
+        public enum SymbolType { SYMBOL_NORMAL, SYMBOL_CONSTANT, SYMBOL_HIDDEN }
+        public string Category { get { return category; } }
+        public Symbol[] Constants { get { return constants; } }
         public string Key { get { return key; } }
+        public SymbolType Type { get { return type; } }
+
         public object Value {
             get => value;
             set {
-                this.value = (object)value;
+                this.value = value;
                 RaisePropertyChanged(nameof(Value));
             }
         }
@@ -81,11 +89,6 @@ namespace NINA.Sequencer.Logic {
                 RaisePropertyChanged(nameof(ValueName));
             }
         }
-
-        public SymbolType Type { get { return type; } }
-        public string Category { get { return category; } }
-        public Symbol[] Constants { get { return constants; } }
-
         public override string ToString() {
             return string.Create(
                 CultureInfo.InvariantCulture,
@@ -93,13 +96,4 @@ namespace NINA.Sequencer.Logic {
             );
         }
     }
-
-    public class AmbiguousSymbol : Symbol {
-
-        public AmbiguousSymbol(string key, IList<Symbol> symbols) : base(key, null, null, ((List<Symbol>)symbols).ToArray(), SymbolType.SYMBOL_NORMAL) {
-        }
-
-        public Symbol[] Symbols => Constants;
-    }
-
 }

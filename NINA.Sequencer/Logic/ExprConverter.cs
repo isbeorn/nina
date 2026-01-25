@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Data;
 
 namespace NINA.Sequencer.Logic {
@@ -40,21 +41,37 @@ namespace NINA.Sequencer.Logic {
         private const int ONE_YEAR = 365 * 24 * 60 * 60;
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-            Expression expr = values[VALUE_EXP] as Expression;
-
-            if (NowInSeconds == 0) {
-                NowInSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-                NowPlusOneYear = NowInSeconds + ONE_YEAR;
-                NowMinusOneYear = NowInSeconds - ONE_YEAR;
-            }
-
             try {
+                // Basic safety checks
+                if (values == null || values.Length <= VALUE_EXP) { 
+                    return "";
+                }
+
+                var rawExpr = values[VALUE_EXP];
+
+                // WPF sentinel values
+                if (ReferenceEquals(rawExpr, DependencyProperty.UnsetValue) ||
+                    ReferenceEquals(rawExpr, Binding.DoNothing) ||
+                    rawExpr is null) {
+                    return "";
+                }
+
+                if (rawExpr is not Expression expr) { 
+                    return "{??}";
+                }
+
+                if (NowInSeconds == 0) {
+                    NowInSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
+                    NowPlusOneYear = NowInSeconds + ONE_YEAR;
+                    NowMinusOneYear = NowInSeconds - ONE_YEAR;
+                }
+
                 if (expr != null) {
                     if (expr.Error != null) {
                         return ""; // "{" + expr.Error + "}";
                     } else if (expr.Definition.Length == 0) {
                         return "";
-                    }  else if (!expr.IsExpression && !expr.ForceAnnotated) {
+                    } else if (!expr.IsExpression && !expr.ForceAnnotated) {
                         // Never seen; don't localize yet
                         return "{Not an Expression}";
                     }
@@ -84,7 +101,7 @@ namespace NINA.Sequencer.Logic {
                                     }
                                 }
                             }
-                        
+
                         }
                         //                } else if (Double.IsNaN(expr.Value)) {
                         //                    txt = "Not evaluated";
@@ -97,16 +114,10 @@ namespace NINA.Sequencer.Logic {
                     return "{??}";
                 }
             } catch (Exception ex) {
-                Logger.Error("ExprConverter: " + ex.Message);
-                Logger.Error(ex.StackTrace);
+                Logger.Error("ExprConverter: ", ex);
                 // Never seen; don't localize yet...
                 return "{Exception}";
             }
-        }
-
- 
-        object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
-            throw new NotImplementedException();
         }
 
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
