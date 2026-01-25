@@ -7395,6 +7395,63 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
     <value>El enfocador Oasis seleccionado no está disponible. Por favor, compruebe la conexión y vuelva a escanear dispositivos.</value>
   </data>
+  <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
+    <value>El enfocador Oasis seleccionado no está disponible. Por favor, compruebe la conexión y vuelva a escanear dispositivos.</value>
+  </data>
+  <data name="LblOasisTurboMode" xml:space="preserve">
+    <value>Modo Turbo</value>
+  </data>
+  <data name="LblOasisDeviceId" xml:space="preserve">
+    <value>ID del dispositivo</value>
+  </data>
+  <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
+    <value>ID del dispositivo</value>
+  </data>
+  <data name="LblOasisState" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
+    <value>Sincronizar desplazamiento de enfoque</value>
+  </data>
+  <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
+    <value>Almacenar desplazamientos de enfoque</value>
+  </data>
+  <data name="LblOasisSyncFilterNames" xml:space="preserve">
+    <value>Sincronizar nombres de filtros</value>
+  </data>
+  <data name="LblOasisStoreFilterNames" xml:space="preserve">
+    <value>Guardar nombres de filtros</value>
+  </data>
+  <data name="LblOasisAutorun" xml:space="preserve">
+    <value>Autorun</value>
+  </data>
+  <data name="LblOasisSpeedTooltip" xml:space="preserve">
+    <value>Seleccione la velocidad normal o lenta cuando la temperatura ambiente es muy baja para asegurar que los filtros se pueden cambiar sin problemas.</value>
+  </data>
+  <data name="LblOasisTurboModeTooltip" xml:space="preserve">
+    <value>Activar el modo turbo para aumentar el torque del motor. Esto puede ser útil cuando la temperatura ambiente es muy baja. Asegúrese de que el puerto USB del host tiene una capacidad de al menos 5V, 1A.</value>
+  </data>
+  <data name="LblOasisAutorunTooltip" xml:space="preserve">
+    <value>Active esta opción cuando desee que los filtros se cambien automáticamente a la última posición durante el encendido.</value>
+  </data>
+  <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
+    <value>Lee los desplazamientos de enfoque almacenados en el dispositivo Oasis y actualiza los desplazamientos de enfoque en NINA.</value>
+  </data>
+  <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
+    <value>Sube y almacena los desplazamientos de enfoque de NINA en la rueda de filtro Oasis.</value>
+  </data>
+  <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
+    <value>Lee los nombres de filtro almacenados en el dispositivo Oasis y actualiza las etiquetas de filtro en NINA.</value>
+  </data>
+  <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
+    <value>Sube y almacena los nombres de los filtros de NINA en la rueda de filtros Oasis.</value>
+  </data>
+  <data name="LblOasisCounter" xml:space="preserve">
+    <value>Contador</value>
+  </data>
+  <data name="LblOasisCounterTooltip" xml:space="preserve">
+    <value>Indicador que muestra cuántas posiciones de filtro han sido rotadas desde que la rueda de filtros ha sido encendida.</value>
+  </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>Bluetooth</value>
   </data>
