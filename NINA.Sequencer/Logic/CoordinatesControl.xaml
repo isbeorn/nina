@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="NINA.Sequencer.Logic.CoordinatesControl"
+﻿<UserControl
+    x:Class="NINA.Sequencer.Logic.CoordinatesControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
@@ -13,14 +14,14 @@
     xmlns:view="clr-namespace:NINA.View.Sequencer">
 
     <StackPanel
-         DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:CoordinatesControl}}}"
-         Orientation="Horizontal"
-         Visibility="{Binding Path=Inherited, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+        DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:CoordinatesControl}}}"
+        Orientation="Horizontal"
+        Visibility="{Binding Path=Inherited, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
         <TextBox
-             MinWidth="30"
-             Margin="5,4,0,0"
-             TextAlignment="Right">
+            MinWidth="30"
+            Margin="5,4,0,0"
+            TextAlignment="Right">
             <TextBox.Text>
                 <Binding Path="Coords.RAHours" UpdateSourceTrigger="LostFocus">
                     <Binding.ValidationRules>
@@ -31,9 +32,9 @@
         </TextBox>
         <TextBlock VerticalAlignment="Center">h</TextBlock>
         <TextBox
-             MinWidth="30"
-             Margin="5,4,0,0"
-             TextAlignment="Right">
+            MinWidth="30"
+            Margin="5,4,0,0"
+            TextAlignment="Right">
             <TextBox.Text>
                 <Binding Path="Coords.RAMinutes" UpdateSourceTrigger="LostFocus">
                     <Binding.ValidationRules>
@@ -44,11 +45,14 @@
         </TextBox>
         <TextBlock VerticalAlignment="Center">m</TextBlock>
         <TextBox
-             MinWidth="35"
-             Margin="5,4,0,0"
-             TextAlignment="Right">
+            MinWidth="35"
+            Margin="5,4,0,0"
+            TextAlignment="Right">
             <TextBox.Text>
-                <Binding Path="Coords.RASeconds" StringFormat="N1" UpdateSourceTrigger="LostFocus">
+                <Binding
+                    Path="Coords.RASeconds"
+                    StringFormat="N1"
+                    UpdateSourceTrigger="LostFocus">
                     <Binding.ValidationRules>
                         <rules:SecondsRule />
                     </Binding.ValidationRules>
@@ -56,17 +60,25 @@
             </TextBox.Text>
         </TextBox>
         <TextBlock VerticalAlignment="Center">s</TextBlock>
-        <logic:ExprControl Margin="5,0,0,0" Label="{ns:Loc LblDecimal}" Unit=")" DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}" Exp="{Binding RaExpression, Mode=TwoWay}" />
+        <logic:ExprControl
+            Margin="5,0,0,0"
+            DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}"
+            Exp="{Binding RaExpression, Mode=TwoWay}"
+            Label="{ns:Loc LblDecimal}"
+            Unit=")" />
         <TextBlock
-             Margin="10,0,10,0"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center"
-             Text="|" />
-        <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
+            Margin="10,0,10,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="|" />
+        <TextBlock
+            Margin="10,0,0,0"
+            VerticalAlignment="Center"
+            Text="{ns:Loc LblDec}" />
         <TextBox
-             MinWidth="30"
-             Margin="5,4,0,0"
-             TextAlignment="Right">
+            MinWidth="30"
+            Margin="5,4,0,0"
+            TextAlignment="Right">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
                     <Binding Path="Coords.NegativeDec" />
@@ -80,9 +92,9 @@
         </TextBox>
         <TextBlock VerticalAlignment="Center">d</TextBlock>
         <TextBox
-             MinWidth="30"
-             Margin="5,4,0,0"
-             TextAlignment="Right">
+            MinWidth="30"
+            Margin="5,4,0,0"
+            TextAlignment="Right">
             <TextBox.Text>
                 <Binding Path="Coords.DecMinutes" UpdateSourceTrigger="LostFocus">
                     <Binding.ValidationRules>
@@ -93,11 +105,14 @@
         </TextBox>
         <TextBlock VerticalAlignment="Center">m</TextBlock>
         <TextBox
-             MinWidth="35"
-             Margin="5,4,0,0"
-             TextAlignment="Right">
+            MinWidth="35"
+            Margin="5,4,0,0"
+            TextAlignment="Right">
             <TextBox.Text>
-                <Binding Path="Coords.DecSeconds" StringFormat="N1" UpdateSourceTrigger="LostFocus">
+                <Binding
+                    Path="Coords.DecSeconds"
+                    StringFormat="N1"
+                    UpdateSourceTrigger="LostFocus">
                     <Binding.ValidationRules>
                         <rules:SecondsRule />
                     </Binding.ValidationRules>
@@ -105,17 +120,25 @@
             </TextBox.Text>
         </TextBox>
         <TextBlock VerticalAlignment="Center">s</TextBlock>
-		<logic:ExprControl Margin="5,0,0,0" Label="{ns:Loc LblDecimal}" Unit=")" DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}" Exp="{Binding DecExpression, Mode=TwoWay}" />
-        <StackPanel 
-            Orientation="Horizontal" 
+        <logic:ExprControl
+            Margin="5,0,0,0"
             DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}"
+            Exp="{Binding DecExpression, Mode=TwoWay}"
+            Label="{ns:Loc LblDecimal}"
+            Unit=")" />
+        <StackPanel
+            DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}"
+            Orientation="Horizontal"
             Visibility="{Binding UsesRotation, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             <TextBlock
                 Margin="10,0,10,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
-            <logic:ExprControl Label="{ns:Loc LblRotation}" Unit="°"  Exp="{Binding PositionAngleExpression, Mode=TwoWay}" />
+            <logic:ExprControl
+                Exp="{Binding PositionAngleExpression, Mode=TwoWay}"
+                Label="{ns:Loc LblRotation}"
+                Unit="°" />
         </StackPanel>
     </StackPanel>
 

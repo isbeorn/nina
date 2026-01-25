@@ -30,7 +30,7 @@
     <DataTemplate DataType="{x:Type local:MoveFocuserAbsolute}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprControl Label="{ns:Loc LblPosition}" Exp="{Binding PositionExpression}" />
+                <logic:ExprControl Exp="{Binding PositionExpression}" Label="{ns:Loc LblPosition}" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
@@ -47,7 +47,7 @@
     <DataTemplate DataType="{x:Type local:MoveFocuserRelative}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprControl Label="{ns:Loc LblRelativePosition}" Exp="{Binding RelativePositionExpression}" />
+                <logic:ExprControl Exp="{Binding RelativePositionExpression}" Label="{ns:Loc LblRelativePosition}" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
@@ -65,7 +65,10 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="{ns:Loc LblSlope}" Exp="{Binding SlopeExpression}" Unit="steps/°C" />
+                    <logic:ExprControl
+                        Exp="{Binding SlopeExpression}"
+                        Label="{ns:Loc LblSlope}"
+                        Unit="steps/°C" />
                     <TextBlock
                         Margin="20,0,0,0"
                         VerticalAlignment="Center"
@@ -75,7 +78,11 @@
                         Margin="5,0,8,0"
                         VerticalAlignment="Center"
                         IsChecked="{Binding Absolute}" />
-                    <logic:ExprControl IsEnabled="{Binding Absolute}" Label="{ns:Loc LblIntercept}" Exp="{Binding InterceptExpression}" Unit="steps" />
+                    <logic:ExprControl
+                        Exp="{Binding InterceptExpression}"
+                        IsEnabled="{Binding Absolute}"
+                        Label="{ns:Loc LblIntercept}"
+                        Unit="steps" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

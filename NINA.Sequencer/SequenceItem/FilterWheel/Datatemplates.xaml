@@ -34,8 +34,8 @@
                     <ComboBox
                         Margin="5,0,0,0"
                         IsEditable="True"
-                        Text="{Binding ComboBoxText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                        SelectionChanged="FilterSelectionChanged">
+                        SelectionChanged="FilterSelectionChanged"
+                        Text="{Binding ComboBoxText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
                         <ComboBox.Resources>
                             <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
                         </ComboBox.Resources>
@@ -46,10 +46,7 @@
                             </CompositeCollection>
                         </ComboBox.ItemsSource>
                     </ComboBox>
-                    <logic:ExprComboControl
-                        Exp="{Binding Path=XfilterExpression, Mode=TwoWay}" 
-                        Combo="{Binding Path=FilterNames}"
-                        />
+                    <logic:ExprComboControl Combo="{Binding Path=FilterNames}" Exp="{Binding Path=XfilterExpression, Mode=TwoWay}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

@@ -30,7 +30,7 @@
     <DataTemplate DataType="{x:Type local:MoveRotatorMechanical}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprControl Label="{ns:Loc LblMechanicalPosition}" Exp="{Binding MechanicalPositionExpression}"/>
+                <logic:ExprControl Exp="{Binding MechanicalPositionExpression}" Label="{ns:Loc LblMechanicalPosition}" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>

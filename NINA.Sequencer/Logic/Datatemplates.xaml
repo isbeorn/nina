@@ -20,28 +20,28 @@
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View.Sequencer"
-    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
-    xmlns:wpfbehaviors="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base">
+    xmlns:wpfbehaviors="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base">
 
     <ControlTemplate x:Key="PowerupsButtons">
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 
             <Button
-                   Width="25"
-                   Height="25"
-                   Margin="25,0,0,0"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Center"
-                   Command="{Binding DisableEnableCommand}"
-                   Style="{StaticResource SecondaryBackgroundButton}"
-                   Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                Width="25"
+                Height="25"
+                Margin="25,0,0,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Command="{Binding DisableEnableCommand}"
+                Style="{StaticResource SecondaryBackgroundButton}"
+                Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                 <Grid>
                     <Path
-                           Margin="5"
-                           Data="{StaticResource PowerSVG}"
-                           Fill="{StaticResource ButtonForegroundBrush}"
-                           Stretch="Uniform"
-                           UseLayoutRounding="True" />
+                        Margin="5"
+                        Data="{StaticResource PowerSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                 </Grid>
                 <Button.ToolTip>
                     <ToolTip>
@@ -51,21 +51,21 @@
             </Button>
 
             <Button
-                    Width="25"
-                    Height="25"
-                    Margin="25,0,0,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Command="{Binding DetachCommand}"
-                    Style="{StaticResource SecondaryBackgroundButton}"
-                    Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                Width="25"
+                Height="25"
+                Margin="25,0,0,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Command="{Binding DetachCommand}"
+                Style="{StaticResource SecondaryBackgroundButton}"
+                Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                 <Grid>
                     <Path
-                            Margin="5"
-                            Data="{StaticResource TrashCanSVG}"
-                            Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform"
-                            UseLayoutRounding="True" />
+                        Margin="5"
+                        Data="{StaticResource TrashCanSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                 </Grid>
                 <Button.ToolTip>
                     <ToolTip>

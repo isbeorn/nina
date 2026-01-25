@@ -331,54 +331,58 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" />
-					<TextBlock
+                    <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-					<!--  TODO - Show as a percentage - it is stored as a fraction in code  -->
-					<TextBlock
-                          Margin="5,-2,0,0"
-                          VerticalAlignment="Center"
-                          Text="Subsample" />
-					<ComboBox
-                          Margin="5,0,0,0"
-                          ItemsSource="{Binding Source={util:EnumBindingSource {x:Type local:SubframeType}}}"
-                          SelectedItem="{Binding ROIOption}" />
-					<StackPanel Orientation="Horizontal" Visibility="{Binding IsROI, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-						<TextBlock
-                              Margin="7.5,-2,7.5,0"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              Text="|" />
-						<logic:ExprControl Label="{ns:Loc LblROI}" Exp="{Binding ROIPctExpression}" Unit="%" ToolTip="{ns:Loc LblROIPercentageTooltip}" />
-					</StackPanel>
-					<StackPanel Orientation="Horizontal" Visibility="{Binding IsROI, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-						<TextBlock
-                              Margin="7.5,-2,7.5,0"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              Text="|" />
-						<logic:ExprControl Label="{ns:Loc LblLeft}" Exp="{Binding LeftExpression}" />
-						<TextBlock
-                              Margin="7.5,-2,7.5,0"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              Text="|" />
-						<logic:ExprControl Label="{ns:Loc LblTop}" Exp="{Binding TopExpression}" />
-						<TextBlock
-                              Margin="7.5,-2,7.5,0"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              Text="|" />
-						<logic:ExprControl Label="{ns:Loc LblWidth}" Exp="{Binding WidthExpression}" />
-						<TextBlock
-                              Margin="7.5,-2,7.5,0"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              Text="|" />
-						<logic:ExprControl Label="{ns:Loc LblHeight}" Exp="{Binding HeightExpression}" />
-					</StackPanel>
+                    <!--  TODO - Show as a percentage - it is stored as a fraction in code  -->
+                    <TextBlock
+                        Margin="5,-2,0,0"
+                        VerticalAlignment="Center"
+                        Text="Subsample" />
+                    <ComboBox
+                        Margin="5,0,0,0"
+                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type local:SubframeType}}}"
+                        SelectedItem="{Binding ROIOption}" />
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsROI, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <TextBlock
+                            Margin="7.5,-2,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+                        <logic:ExprControl
+                            Exp="{Binding ROIPctExpression}"
+                            Label="{ns:Loc LblROI}"
+                            ToolTip="{ns:Loc LblROIPercentageTooltip}"
+                            Unit="%" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsROI, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                        <TextBlock
+                            Margin="7.5,-2,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+                        <logic:ExprControl Exp="{Binding LeftExpression}" Label="{ns:Loc LblLeft}" />
+                        <TextBlock
+                            Margin="7.5,-2,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+                        <logic:ExprControl Exp="{Binding TopExpression}" Label="{ns:Loc LblTop}" />
+                        <TextBlock
+                            Margin="7.5,-2,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+                        <logic:ExprControl Exp="{Binding WidthExpression}" Label="{ns:Loc LblWidth}" />
+                        <TextBlock
+                            Margin="7.5,-2,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+                        <logic:ExprControl Exp="{Binding HeightExpression}" Label="{ns:Loc LblHeight}" />
+                    </StackPanel>
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

@@ -30,7 +30,7 @@
     <DataTemplate DataType="{x:Type local:SlewDomeAzimuth}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprControl Label="{ns:Loc LblDomeAzimuth}" Exp="{Binding AzimuthDegreesExpression}"/>
+                <logic:ExprControl Exp="{Binding AzimuthDegreesExpression}" Label="{ns:Loc LblDomeAzimuth}" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
