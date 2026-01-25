@@ -53,8 +53,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         [IsExpression]
-        private double predicate;
- 
+        public partial double Predicate { get; set; }
+
         private IList<string> issues = new List<string>();
 
         public IList<string> Issues {

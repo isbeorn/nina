@@ -92,7 +92,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         [IsExpression(Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
-        private double offset;
+        public partial double Offset { get; set; }
 
         partial void OffsetExpressionValidator(Expression expr) {
             if (expr.Error == null) {

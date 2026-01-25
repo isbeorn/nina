@@ -32,20 +32,19 @@ namespace NINA.Sequencer.Generators {
         public void Initialize(IncrementalGeneratorInitializationContext context) {
 
             //Uncomment to attach a debugger for source generation
-//#if DEBUG
-//            if (!Debugger.IsAttached) {//
-//                Debugger.Launch();
-//            }
-//#endif 
+            //#if DEBUG
+            //            if (!Debugger.IsAttached) {//
+            //                Debugger.Launch();
+            //            }
+            //#endif 
 
             var propertyDeclarations = context.SyntaxProvider.CreateSyntaxProvider(
-                predicate: static (node, ct) => IsPropertyWithAttributes(node) || IsCandidateField(node),
-                transform: static (ctx, ct) => GetFieldPropertyInfoOrNull(ctx)
+                predicate: static (node, ct) => IsCandidatePartialProperty(node),
+                transform: static (ctx, ct) => GetPropertyInfoOrNull(ctx)
             ).Where(m => m is not null);
 
-            var allProperties = propertyDeclarations.Collect();
-
-            context.RegisterSourceOutput(allProperties, Execute);
+                    var allProperties = propertyDeclarations.Collect();
+                    context.RegisterSourceOutput(allProperties, Execute);
         }
 
         private void Execute(SourceProductionContext context, ImmutableArray<PropertyInfo?> propertyInfos) {
@@ -106,39 +105,58 @@ namespace NINA.Sequencer.Generators {
         private static bool IsPropertyWithAttributes(SyntaxNode node) {
             return node is PropertyDeclarationSyntax pds && pds.AttributeLists.Count > 0;
         }
-        static bool IsCandidateField(SyntaxNode node) {
-            // The node must represent a field declaration
-            if (node is not VariableDeclaratorSyntax { Parent: VariableDeclarationSyntax { Parent: FieldDeclarationSyntax { AttributeLists.Count: > 0 } fieldNode } }) {
-
+        private static bool IsCandidatePartialProperty(SyntaxNode node) {
+            if (node is not PropertyDeclarationSyntax pds)
                 return false;
-            }
 
+            if (pds.AttributeLists.Count == 0)
+                return false;
+
+            // Must be partial
+            if (!pds.Modifiers.Any(SyntaxKind.PartialKeyword))
+                return false;
+
+            // Must be an auto-like signature (no bodies / expression bodies)
+            if (pds.ExpressionBody is not null)
+                return false;
+
+            if (pds.AccessorList is null)
+                return false;
+
+            foreach (var acc in pds.AccessorList.Accessors) {
+                // C# 12 partial property declaration uses semicolon accessors
+                // e.g. get; set; (no bodies)
+                if (acc.Body is not null || acc.ExpressionBody is not null)
+                    return false;
+
+                if (acc.SemicolonToken.IsKind(SyntaxKind.None))
+                    return false;
+            }
 
             return true;
         }
 
-        private static PropertyInfo? GetFieldPropertyInfoOrNull(GeneratorSyntaxContext context) {
-            // node must be PropertyDeclarationSyntax due to predicate
-            if (context.Node is not VariableDeclaratorSyntax && context.Node is not PropertyDeclarationSyntax) { return null; }
+        private static PropertyInfo? GetPropertyInfoOrNull(GeneratorSyntaxContext context) {
+            if (context.Node is not PropertyDeclarationSyntax)
+                return null;
 
-            var symbol = context.SemanticModel.GetDeclaredSymbol(context.Node);
-            if (symbol == null) return null;
+            var symbol = context.SemanticModel.GetDeclaredSymbol(context.Node) as IPropertySymbol;
+            if (symbol is null)
+                return null;
 
-            // Look for [IsExpressionAttribute]
             var myPropAttr = symbol.GetAttributes()
                 .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "NINA.Sequencer.Generators.IsExpressionAttribute");
 
-            if (myPropAttr == null) return null;
+            if (myPropAttr is null)
+                return null;
 
-            IEnumerable<KeyValuePair<string, TypedConstant>> args = myPropAttr.NamedArguments;
+            var args = myPropAttr.NamedArguments;
 
-            // If found, we can also extract the ExtraInfo argument, if desired
-            // (If you want to handle multiple arguments or advanced scenarios, adapt accordingly.)
             var extraInfo = (myPropAttr.ConstructorArguments.Length > 0)
                 ? myPropAttr.ConstructorArguments[0].Value?.ToString() ?? ""
                 : "";
 
-            return new PropertyInfo(symbol.ContainingType, symbol, true, args, extraInfo);
+            return new PropertyInfo(symbol.ContainingType, symbol, args, extraInfo);
         }
 
         private static string GeneratePartialClass(string namespaceName, string className, IGrouping<string, PropertyInfo?> properties, string broker) {
@@ -155,14 +173,8 @@ namespace NINA.Sequencer.Generators {
 
             foreach (var prop in properties) {
                 if (prop is null) continue;
-                string propName = prop.PropertySymbol.Name;
-                if (prop.IsDefinedByField) {
-                    if (prop.PropertySymbol.Name.StartsWith("_")) {
-                        propName = prop.PropertySymbol.Name.Substring(1, 2).ToUpper() + propName.Substring(2);
-                    } else {
-                        propName = prop.PropertySymbol.Name.Substring(0, 1).ToUpper() + propName.Substring(1);
-                    }
-                }
+                var propSym = prop.PropertySymbol;
+                string propName = propSym.Name;
                 string fieldName = propName.Substring(0, 1).ToLower() + propName.Substring(1);
                 string fieldNameExpression = fieldName + "Expression";
                 string propNameExpression = propName + "Expression";
@@ -171,7 +183,7 @@ namespace NINA.Sequencer.Generators {
                 bool jsonIgnore = false;
                 bool hasDefault = false;
 
-                IFieldSymbol fieldSymbol = (IFieldSymbol)prop.PropertySymbol;
+                IPropertySymbol fieldSymbol = (IPropertySymbol)prop.PropertySymbol;
                 string fieldType = fieldSymbol.Type.Name;
                 if (fieldType == "Int32") fieldType = "int";
 
@@ -246,7 +258,7 @@ namespace NINA.Sequencer.Generators {
         [Json";
                     propertiesSource += jsonIgnore ? "Ignore" : "Property";
                     propertiesSource += $@"]
-        public {fieldType} {propName} {{
+        public partial {fieldType} {propName} {{
             get => {proxy};
             set {{
                 {propNameExpression}.Definition = Convert.ToString(value, CultureInfo.InvariantCulture);
@@ -257,7 +269,7 @@ namespace NINA.Sequencer.Generators {
                 } else {
                     propertiesSource += $@"
         [JsonProperty (Order = 0)]
-        public {fieldType} {propName} {{
+        public partial {fieldType} {propName} {{
             get {{ 
                 {propNameExpression}.Evaluate(true); 
                 return ({fieldType}) {propNameExpression}.";
@@ -320,17 +332,16 @@ namespace {namespaceName}
         }
 
         private sealed record PropertyInfo {
-            public PropertyInfo(INamedTypeSymbol containingType, ISymbol propertySymbol, bool isDefinedByField, IEnumerable<KeyValuePair<string, TypedConstant>> args, string broker) {
+            public PropertyInfo(INamedTypeSymbol containingType, IPropertySymbol propertySymbol,
+                IEnumerable<KeyValuePair<string, TypedConstant>> args, string broker) {
                 ContainingType = containingType;
                 PropertySymbol = propertySymbol;
-                IsDefinedByField = isDefinedByField;
                 Args = args;
                 Broker = broker;
             }
 
             public INamedTypeSymbol ContainingType { get; }
-            public ISymbol PropertySymbol { get; }
-            public bool IsDefinedByField { get; }
+            public IPropertySymbol PropertySymbol { get; }
             public IEnumerable<KeyValuePair<string, TypedConstant>> Args;
             public string Broker;
         }

@@ -52,7 +52,7 @@ namespace NINA.Sequencer.SequenceItem.Camera {
         private ICameraMediator cameraMediator;
 
         [IsExpression (Default = 0)]
-        private double duration;
+        public partial double Duration { get; set; }
 
         private IList<string> issues = new List<string>();
 

@@ -52,7 +52,7 @@ namespace NINA.Sequencer.SequenceItem.Rotator {
         private IRotatorMediator rotatorMediator;
 
         [IsExpression (Default = 0, Range = [0, 359.99])]
-        private float mechanicalPosition = 0;
+        public partial float MechanicalPosition { get; set; }
 
         private IList<string> issues = new List<string>();
 

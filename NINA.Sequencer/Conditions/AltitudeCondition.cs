@@ -74,7 +74,7 @@ namespace NINA.Sequencer.Conditions {
         }
 
         [IsExpression(Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
-        private double offset;
+        public partial double Offset { get; set; }
 
         partial void OffsetExpressionValidator(Expression expr) {
             if (expr.Error == null) {
@@ -166,7 +166,7 @@ namespace NINA.Sequencer.Conditions {
         private InputCoordinates coordinates = new InputCoordinates();
 
         [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
-        private double ra = 0;
+        public partial double Ra { get; set; }
 
         partial void RaExpressionValidator(Expression expr) {
             // When the decimal value changes, we update the HMS values
@@ -180,7 +180,7 @@ namespace NINA.Sequencer.Conditions {
         }
 
         [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true)]
-        private double dec = 0;
+        public partial double Dec { get; set; }
 
         partial void DecExpressionValidator(Expression expr) {
             // When the decimal value changes, we update the HMS values
@@ -201,7 +201,7 @@ namespace NINA.Sequencer.Conditions {
         }
 
         [IsExpression(Default = 0, Range = [0, 360], HasValidator = true)]
-        private double positionAngle = 0;
+        public partial double PositionAngle { get; set; }
 
         partial void PositionAngleExpressionValidator(Expression expr) {
             if (expr.Error == null) {

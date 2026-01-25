@@ -101,11 +101,11 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         }
 
         [IsExpression (Default = 5, Range = [1, 1000])]
-        private double amount;
+        public partial double Amount { get; set; }
 
 
         [IsExpression (Default = 10, Range = [3, 1000])]
-        private int sampleSize;
+        public partial int SampleSize { get; set; }
 
         private bool trendPerFilter = true; // default true to keep the original behaviour creating an HFR trend per filter 
 

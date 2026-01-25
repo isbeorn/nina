@@ -59,7 +59,7 @@ namespace NINA.Sequencer.Conditions {
         }
 
         [IsExpression(Default = 0, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
-        private double offset;
+        public partial double Offset { get; set; }
 
         partial void OffsetExpressionValidator(Expression expr) {
             if (expr.Error == null) {

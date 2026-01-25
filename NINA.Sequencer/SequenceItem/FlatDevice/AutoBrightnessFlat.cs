@@ -428,10 +428,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         [IsExpression (Default = 20, Range = [1, 100])]
-        private int minBrightness;
+        public partial int MinBrightness { get; set; }
 
         [IsExpression (Default = 100, Range = [1, 100])]
-        private int maxBrightness;
+        public partial int MaxBrightness { get; set; }
 
         private double histogramTargetPercentage;
 

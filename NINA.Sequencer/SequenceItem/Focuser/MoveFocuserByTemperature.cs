@@ -56,7 +56,7 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
         private IFocuserMediator focuserMediator;
 
         [IsExpression (Default = 1)]
-        private double slope = 1;
+        public partial double Slope { get; set; }
 
         private bool absolute = true;
 
@@ -70,7 +70,7 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
         }
 
         [IsExpression (Default = 0)]
-        private double intercept = 0;
+        public partial double Intercept { get; set; }
 
         private IList<string> issues = new List<string>();
 
@@ -92,7 +92,7 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
                 result = focuserMediator.MoveFocuser((int)position, token);
             } else {
                 Logger.Info($"Moving Focuser By Temperature Relative - Slope {Slope}");
-                result = focuserMediator.MoveFocuserByTemperatureRelative(info.Temperature, slope, token);
+                result = focuserMediator.MoveFocuserByTemperatureRelative(info.Temperature, Slope, token);
             }
 
             return result;

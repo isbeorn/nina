@@ -71,7 +71,7 @@ namespace NINA.Sequencer.SequenceItem.Switch {
         }
 
         [IsExpression (Default = 1)]
-        private double value;
+        public partial double Value { get; set; }
 
         private short switchIndex;
 

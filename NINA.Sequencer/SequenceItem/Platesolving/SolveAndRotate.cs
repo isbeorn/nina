@@ -109,7 +109,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         }
 
         [IsExpression(Default = 0, Range = [0, 360])]
-        private double positionAngle = 0;
+        public partial double PositionAngle { get; set; }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             PositionAngleExpression.Evaluate();

@@ -39,7 +39,7 @@ namespace NINA.Sequencer.Conditions {
         }
 
         [IsExpression]
-        private double predicate;
+        public partial double Predicate { get; set; }
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(LoopWhile)}, Predicate: {PredicateExpression.Definition}";

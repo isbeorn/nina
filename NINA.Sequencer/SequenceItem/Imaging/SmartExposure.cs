@@ -156,7 +156,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         [IsExpression(HasValidator = true)]
-        private int dither;
+        public partial int Dither { get; set; }
         partial void DitherExpressionValidator(Logic.Expression expr) {
             DitherAfterExposures dae = GetDitherAfterExposures();
             if (dae != null) {
@@ -165,7 +165,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         [IsExpression(Default = 1, HasValidator = true)]
-        private int iterations;
+        public partial int Iterations { get; set; }
         partial void IterationsExpressionValidator(Logic.Expression expr) {
             if (Conditions.Count > 0) {
                 GetLoopCondition().Iterations = (int)expr.Value;

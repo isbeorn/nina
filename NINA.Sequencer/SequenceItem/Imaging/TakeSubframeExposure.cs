@@ -103,22 +103,22 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         [IsExpression (Default = 1, Range = [1, 100])]
-        private double rOIPct;
+        public partial double ROIPct { get; set; }
 
         [IsExpression(Default = 60, Range = [1, 3600])]
-        private double exposureTime;
+        public partial double ExposureTime { get; set; }
 
         [IsExpression(Default = 0, HasValidator = true)]
-        private double left;
+        public partial double Left { get; set; }
 
         [IsExpression(Default = 0, HasValidator = true)]
-        private double top;
+        public partial double Top { get; set; }
 
         [IsExpression(Default = 1, HasValidator = true, Range = [1, ExpressionRange.NO_MAXIMUM])]
-        private double width;
+        public partial double Width { get; set; }
 
         [IsExpression(Default = 1, HasValidator = true, Range = [1, ExpressionRange.NO_MAXIMUM])]
-        private double height;
+        public partial double Height { get; set; }
 
         // Backward compatibility
         [JsonProperty]
@@ -161,7 +161,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         [IsExpression(Default = -1, DefaultString = "LblCamera", HasValidator = true)]
-        private int gain;
+        public partial int Gain { get; set; }
 
         partial void GainExpressionValidator(Expression expr) {
             if (CameraInfo != null && CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
@@ -170,7 +170,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         [IsExpression(Default = -1, DefaultString = "LblCamera", HasValidator = true)]
-        private int offset;
+        public partial int Offset { get; set; }
 
         partial void OffsetExpressionValidator(Expression expr) {
             if (CameraInfo != null && CameraInfo.CanSetOffset && Offset > -1 && (Offset < CameraInfo.OffsetMin || Offset > CameraInfo.OffsetMax)) {

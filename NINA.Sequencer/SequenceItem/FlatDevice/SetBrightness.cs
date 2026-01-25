@@ -58,7 +58,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         [IsExpression]
-        private int brightness;
+        public partial int Brightness { get; set; }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             await flatDeviceMediator.SetBrightness(Brightness, progress, token);
