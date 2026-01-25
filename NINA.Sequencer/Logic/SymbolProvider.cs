@@ -38,6 +38,10 @@ namespace NINA.Sequencer.Logic {
             broker.AddOrUpdateSymbol(this, token, value, values);
         }
 
+        public void AddOrUpdateHiddenSymbol(string token, object value, Symbol[] values) {
+            broker.AddOrUpdateHiddenSymbol(this, token, value, values);
+        }
+
         public bool RemoveSymbol(string token) {
             return broker.RemoveSymbol(this, token);
         }

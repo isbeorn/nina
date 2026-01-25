@@ -173,6 +173,9 @@ namespace NINA.Sequencer.Logic {
         private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values) {
             AddOrUpdateSymbol(source, token, value, values, SymbolType.SYMBOL_NORMAL);
         }
+        private void AddOrUpdateHiddenSymbol(string source, string token, object value, Symbol[] values) {
+            AddOrUpdateSymbol(source, token, value, values, SymbolType.SYMBOL_HIDDEN);
+        }
 
         private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values, SymbolType type) {
             if (!_providers.Contains(source)) {
@@ -451,6 +454,13 @@ namespace NINA.Sequencer.Logic {
                 throw new ArgumentNullException(nameof(provider));
             }
             AddOrUpdateSymbol(provider.GetProviderName(), token, value, values);
+        }
+
+        public void AddOrUpdateHiddenSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
+            if (provider == null) {
+                throw new ArgumentNullException(nameof(provider));
+            }
+            AddOrUpdateHiddenSymbol(provider.GetProviderName(), token, value, values);
         }
 
         public void Dispose() {
