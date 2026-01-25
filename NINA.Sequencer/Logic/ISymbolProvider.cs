@@ -11,6 +11,8 @@ namespace NINA.Sequencer.Logic
 
         public void AddOrUpdateSymbol(string token, object value, Symbol[] values);
 
+        public void AddOrUpdateHiddenSymbol(string token, object value, Symbol[] values);
+
         public bool RemoveSymbol(string token);
 
         public string GetProviderName();
