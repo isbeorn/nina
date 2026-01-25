@@ -51,16 +51,12 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-
-        [JsonProperty(propertyName: "Coordinates")]
-        private InputCoordinates DeprecatedCoordinates {
-            set => coordinates = value;
-        }
-
-
         private InputCoordinates coordinates = new InputCoordinates();
 
-        [JsonIgnore]
+        /// <summary>
+        /// This field is used for backwards compatibility when deserializing older sequences or saving it in >=3.3 and going backwards
+        /// </summary>
+        [JsonProperty]        
         public InputCoordinates Coordinates {
             get {
                 return coordinates;
