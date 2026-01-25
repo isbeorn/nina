@@ -17,7 +17,7 @@
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
                     <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControlVariable}}"/>
-                    <Binding Path="Exp.ValueString" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControlVariable}}"/>
+                    <Binding Path="Exp.ValueString" Mode="OneWay" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControlVariable}}"/>
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>

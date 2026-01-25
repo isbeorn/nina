@@ -227,7 +227,6 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             get {
                 return new SubframeType[] { SubframeType.ROI, SubframeType.DIMENSIONS };
             }
-            set { }
         }
 
         private SubframeType iROIOption = SubframeType.ROI;
