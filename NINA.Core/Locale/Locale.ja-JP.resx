@@ -7372,6 +7372,63 @@ If exposure count is not important to you, enable this option to avoid having to
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
     <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
   </data>
+  <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
+    <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
+  </data>
+  <data name="LblOasisTurboMode" xml:space="preserve">
+    <value>Turbo mode</value>
+  </data>
+  <data name="LblOasisDeviceId" xml:space="preserve">
+    <value>Device ID</value>
+  </data>
+  <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
+    <value>Device ID</value>
+  </data>
+  <data name="LblOasisState" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
+    <value>Sync focus offsets</value>
+  </data>
+  <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
+    <value>Store focus offsets</value>
+  </data>
+  <data name="LblOasisSyncFilterNames" xml:space="preserve">
+    <value>Sync filter names</value>
+  </data>
+  <data name="LblOasisStoreFilterNames" xml:space="preserve">
+    <value>Store filter names</value>
+  </data>
+  <data name="LblOasisAutorun" xml:space="preserve">
+    <value>Autorun</value>
+  </data>
+  <data name="LblOasisSpeedTooltip" xml:space="preserve">
+    <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
+  </data>
+  <data name="LblOasisTurboModeTooltip" xml:space="preserve">
+    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port has at least 5V,1A power supply capacity.</value>
+  </data>
+  <data name="LblOasisAutorunTooltip" xml:space="preserve">
+    <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
+  </data>
+  <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
+    <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
+  </data>
+  <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
+    <value>Uploads and stores the NINA focus offsets to the Oasis filter wheel.</value>
+  </data>
+  <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
+    <value>Reads the filter names stored on the Oasis device and updates the NINA filter labels.</value>
+  </data>
+  <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
+    <value>Uploads and stores the NINA filter names to the Oasis filter wheel.</value>
+  </data>
+  <data name="LblOasisCounter" xml:space="preserve">
+    <value>Counter</value>
+  </data>
+  <data name="LblOasisCounterTooltip" xml:space="preserve">
+    <value>Indicator that shows how many filter slots have been rotated since the filter wheel powered up.</value>
+  </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>Bluetooth</value>
   </data>
