@@ -29,6 +29,7 @@ namespace NINA.Sequencer.Logic {
     internal interface ISymbolBrokerProviderApi  : ISymbolBroker, IDockableVM {
         void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value);
         void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values);
+        void AddOrUpdateHiddenSymbol(ISymbolProvider provider, string token, object value, Symbol[] values);
         bool RemoveSymbol(ISymbolProvider provider, string token);
         void RegisterFunction(ISymbolProvider provider, SymbolFunction function);
     }
