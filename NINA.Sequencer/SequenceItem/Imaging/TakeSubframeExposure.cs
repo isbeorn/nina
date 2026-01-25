@@ -105,7 +105,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         [IsExpression (Default = 1, Range = [1, 100])]
         public partial double ROIPct { get; set; }
 
-        [IsExpression(Default = 60, Range = [1, 3600])]
+        [IsExpression(Default = 60, Range = [0, 3600])]
         public partial double ExposureTime { get; set; }
 
         [IsExpression(Default = 0, HasValidator = true)]
