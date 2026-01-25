@@ -400,7 +400,7 @@ namespace NINA.Sequencer.Logic {
                 Elevation = ProfileService.ActiveProfile.AstrometrySettings.Elevation
             };
 
-            NOVAS.SkyPosition sunPos = AstroUtil.GetSunPosition(DateTime.Now, AstroUtil.GetJulianDate(DateTime.Now), observer);
+            NOVAS.SkyPosition sunPos = AstroUtil.GetSunPosition(DateTime.Now, observer);
             Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
             TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), observer.Elevation);
 
