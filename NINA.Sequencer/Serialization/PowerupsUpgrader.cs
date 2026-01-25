@@ -516,6 +516,8 @@ namespace NINA.Sequencer.Serialization {
                     case "AutofocusTrigger":
                     case "LogThis":
                     case "TemplateByReference":
+                    case "SequentialContainer":   // For upgrading CVContainer
+                    case "ForEachList":
                         break;
 
                     case "SafeTrigger":
