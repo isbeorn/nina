@@ -34,6 +34,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         [SetUp]
         public void Setup() {
             symbolBrokerMock = new Mock<ISymbolBroker>();
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>();
             progressMock = new Mock<IProgress<ApplicationStatus>>();
         }
 
@@ -150,7 +151,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var mockProvider = new Mock<ISymbolProvider>();
             var capturedExitCode = -999; // Sentinel value
 
-            symbolBrokerMock.Setup(x => x.GetInternalProvider("NINA"))
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>()
+                .Setup(x => x.GetInternalProvider("NINA"))
                 .Returns(mockProvider.Object);
 
             mockProvider.Setup(x => x.AddOrUpdateSymbol("LastExternalScriptExitCode", It.IsAny<int>()))
@@ -180,7 +182,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var mockProvider = new Mock<ISymbolProvider>();
             var capturedExitCode = -999;
 
-            symbolBrokerMock.Setup(x => x.GetInternalProvider("NINA"))
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>()
+                .Setup(x => x.GetInternalProvider("NINA"))
                 .Returns(mockProvider.Object);
 
             mockProvider.Setup(x => x.AddOrUpdateSymbol("LastExternalScriptExitCode", It.IsAny<int>()))
@@ -211,7 +214,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var mockProvider = new Mock<ISymbolProvider>();
             var capturedExitCode = -999;
 
-            symbolBrokerMock.Setup(x => x.GetInternalProvider("NINA"))
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>()
+                .Setup(x => x.GetInternalProvider("NINA"))
                 .Returns(mockProvider.Object);
 
             mockProvider.Setup(x => x.AddOrUpdateSymbol("LastExternalScriptExitCode", It.IsAny<int>()))
@@ -239,7 +243,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         [Test]
         public async Task ExternalScript_Execute_HandlesNullProvider_Gracefully() {
             // Arrange
-            symbolBrokerMock.Setup(x => x.GetInternalProvider("NINA"))
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>()
+                .Setup(x => x.GetInternalProvider("NINA"))
                 .Returns((ISymbolProvider)null);
 
             var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
@@ -259,7 +264,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var mockProvider = new Mock<ISymbolProvider>();
             var capturedExitCode = -999;
 
-            symbolBrokerMock.Setup(x => x.GetInternalProvider("NINA"))
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>()
+                .Setup(x => x.GetInternalProvider("NINA"))
                 .Returns(mockProvider.Object);
 
             var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
