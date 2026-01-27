@@ -25,7 +25,6 @@ namespace NINA.Sequencer.Logic {
         IList<Symbol> GetHiddenSymbols(string source);
         IReadOnlyCollection<SymbolFunction> GetFunctions();
         void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile);
-        ISymbolProvider GetInternalProvider(string name);
     }
     internal interface ISymbolBrokerProviderApi  : ISymbolBroker, IDockableVM {
         void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value);

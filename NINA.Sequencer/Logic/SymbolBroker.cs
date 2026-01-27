@@ -55,6 +55,8 @@ namespace NINA.Sequencer.Logic {
         private static List<string> _symbolProviders =
             new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel" };
 
+        private static int _internalSymbolProviderCount = _symbolProviders.Count;
+
         private static string[] _weatherData = new string[] { "CloudCover", "DewPoint", "Humidity", "Pressure", "RainRate", "SkyBrightness", "SkyQuality", "SkyTemperature",
             "StarFWHM", "Temperature", "WindDirection", "WindGust", "WindSpeed"};
 
@@ -154,8 +156,10 @@ namespace NINA.Sequencer.Logic {
         }
 
         public ISymbolProvider GetInternalProvider(string name) {
-            if (_providers.Contains(name)) {
-                return new SymbolProvider(name, this);
+            for (int i = 0; i < _internalSymbolProviderCount; i++) {
+                if (string.Equals(_symbolProviders[i], name, StringComparison.OrdinalIgnoreCase)) {
+                    return new SymbolProvider(name, this);
+                }
             }
             return null;
         }

@@ -57,7 +57,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             });
             _symbolBroker = symbolBroker;
             _progress = progress;
-            _ninaProvider = _symbolBroker.GetInternalProvider("NINA");
+            _ninaProvider = (_symbolBroker as ISymbolBrokerProviderApi)?.GetInternalProvider("NINA");
         }
 
         private ExternalScript(ExternalScript cloneMe) : this(cloneMe._symbolBroker, cloneMe._progress) {
