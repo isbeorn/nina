@@ -103,14 +103,25 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSize}" Exp="{Binding SampleSizeExpression}"/>
-                        <!--<TextBox.ToolTip>
+                    <logic:ExprControl Exp="{Binding SampleSizeExpression}" Label="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSize}" />
+                    <!--<TextBox.ToolTip>
                             <TextBlock
                                 HorizontalAlignment="Left"
                                 Text="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSizeTooltip}"
                                 TextAlignment="Left" />
                         </TextBox.ToolTip>-->
-                    <logic:ExprControl Label="{ns:Loc LblAmount}" Exp="{Binding AmountExpression}" Unit="%"/>
+                    <logic:ExprControl
+                        Exp="{Binding AmountExpression}"
+                        Label="{ns:Loc LblAmount}"
+                        Unit="%" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text=" | " />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter}" />
                     <CheckBox
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
@@ -282,7 +293,7 @@
     <DataTemplate DataType="{x:Type af:AutofocusAfterExposures}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprControl Label="{ns:Loc LblAfterExposures}" Exp="{Binding AfterExposuresExpression}"/>
+                <logic:ExprControl Exp="{Binding AfterExposuresExpression}" Label="{ns:Loc LblAfterExposures}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -317,7 +328,7 @@
     <DataTemplate DataType="{x:Type g:DitherAfterExposures}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprControl Label="{ns:Loc LblAfterExposures}" Exp="{Binding AfterExposuresExpression}" />
+                <logic:ExprControl Exp="{Binding AfterExposuresExpression}" Label="{ns:Loc LblAfterExposures}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -327,7 +338,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding ProgressExposures}" />
                     <TextBlock Text="/" />
-                    <!--Because we're not bound to an Expression, changing the Definition won't trigger PropertyChanged on the old AfterExposures property-->
+                    <!--  Because we're not bound to an Expression, changing the Definition won't trigger PropertyChanged on the old AfterExposures property  -->
                     <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposuresExpression.Value}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
@@ -395,10 +406,10 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
-                        <logic:ExprControl Label="{ns:Loc LblEvaluteAfterExposures}" Exp="{Binding AfterExposuresExpression}"/>
+                        <logic:ExprControl Exp="{Binding AfterExposuresExpression}" Label="{ns:Loc LblEvaluteAfterExposures}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <logic:ExprControl Label="{ns:Loc LblMaxArcmin}" Exp="{Binding DistanceArcMinutesExpression}"/>
+                        <logic:ExprControl Exp="{Binding DistanceArcMinutesExpression}" Label="{ns:Loc LblMaxArcmin}" />
                         <TextBlock
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"

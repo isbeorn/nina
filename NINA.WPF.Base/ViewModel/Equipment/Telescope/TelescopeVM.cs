@@ -459,9 +459,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                         Logger.Error(string.Format("Unable to set mount elevation to {0}!", targetElevation));
                                         Notification.ShowError(string.Format(Loc.Instance["LblUnableToSetMountElevation"], Math.Round(targetElevation, 3)));
                                     }
+                                } else if (syncMode == TelescopeLocationSyncDirection.NOSYNC) {
+                                    Logger.Info("Location sync disabled by user choice.");
                                 }
-
-
                             }
 
                             TelescopeInfo.CopyFrom(new TelescopeInfo {

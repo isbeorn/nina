@@ -39,7 +39,7 @@
             VerticalAlignment="Center"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
-            Foreground="{StaticResource PrimaryBrush}"
+            Foreground="{StaticResource SequencerExpressionTextBrush}"
             HintTextMargin="0,-2,0,0"
             HintTextOpacity="0.65"
             TextAlignment="Center"
@@ -60,7 +60,7 @@
             Margin="2,2,0,0"
             VerticalAlignment="Center"
             FontStyle="Italic"
-            Foreground="{StaticResource PrimaryBrush}"
+            Foreground="{StaticResource SequencerExpressionTextBrush}"
             Visibility="{Binding Exp.IsAnnotated, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             >
             <TextBlock.Text>
