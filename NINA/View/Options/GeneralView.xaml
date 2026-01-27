@@ -600,7 +600,7 @@
                             <TextBlock
                                 Width="170"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblSequencerExpressions}" />
+                                Text="{ns:Loc LblSequencerExpressionValues}" />
                             <xceed:ColorPicker
                                 Width="80"
                                 HorizontalAlignment="Stretch"
@@ -824,7 +824,7 @@
                             <TextBlock
                                 Width="170"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblSequencerExpressions}" />
+                                Text="{ns:Loc LblSequencerExpressionValues}" />
                             <xceed:ColorPicker
                                 Width="80"
                                 HorizontalAlignment="Stretch"
