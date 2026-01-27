@@ -30,6 +30,7 @@ namespace NINA.Core.Utility.ExternalCommand {
             this.progress = progress;
         }
 
+        [Obsolete]
         public async Task<bool> RunSequenceCompleteCommandTask(string sequenceCompleteCommand, CancellationToken ct) {
             if (!CommandExists(sequenceCompleteCommand)) {
                 Logger.Error($"Command not found: {sequenceCompleteCommand}");

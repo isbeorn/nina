@@ -124,7 +124,7 @@ namespace NINA.Sequencer.Logic {
 
             _telescopeMediator.RegisterConsumer(this);
             _switchMediator.RegisterConsumer(this);
-            _weatherDataMediator.RegisterConsumer(this);
+            _weatherDataMediator.RegisterConsumer(this);    
             _focuserMediator.RegisterConsumer(this);
             _domeMediator.RegisterConsumer(this);
             _safetyMonitorMediator.RegisterConsumer(this);
@@ -151,6 +151,13 @@ namespace NINA.Sequencer.Logic {
                 _hiddenSymbols.TryAdd(source, symList);
             }
             symList.Add(sym);
+        }
+
+        public ISymbolProvider GetInternalProvider(string name) {
+            if (_providers.Contains(name)) {
+                return new SymbolProvider(name, this);
+            }
+            return null;
         }
 
         private void AddOptionalImageSymbol(IStarDetectionAnalysis analysis, string name) {
