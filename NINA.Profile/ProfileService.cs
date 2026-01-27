@@ -359,6 +359,10 @@ namespace NINA.Profile {
                         if (eventHandlerLocation != null) {
                             Application.Current.Dispatcher?.Invoke(eventHandlerLocation, this, null);
                         }
+                        var eventHorizonChanged = HorizonChanged;
+                        if (eventHorizonChanged != null) {
+                            Application.Current.Dispatcher?.Invoke(eventHorizonChanged, this, null);
+                        }
                         RegisterChangedEventHandlers();
                     } catch (Exception ex) {
                         Logger.Error(ex);
