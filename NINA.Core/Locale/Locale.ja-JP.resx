@@ -7373,10 +7373,10 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
   </data>
   <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
+    <value>選択したOasisフィルターホイールは利用できません。デバイスの接続を確認し、再スキャンしてください。</value>
   </data>
   <data name="LblOasisTurboMode" xml:space="preserve">
-    <value>Turbo mode</value>
+    <value>ターボモード</value>
   </data>
   <data name="LblOasisDeviceId" xml:space="preserve">
     <value>Device ID</value>
