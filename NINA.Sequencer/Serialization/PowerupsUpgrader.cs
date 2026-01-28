@@ -189,7 +189,7 @@ namespace NINA.Sequencer.Serialization {
                 // Update in the exprDef
                 if (newSymbol != null) {
                     exprDef = exprDef.Replace(p, newSymbol);
-                    Logger.Info($"Powerups Upgrade: Updated symbol '{p}' to '{newSymbol}' in expression '{exprDef}'");
+                    Logger.Info($"Updated symbol '{p}' to '{newSymbol}' in expression '{exprDef}'");
                 }
             }
             return exprDef;
@@ -534,11 +534,40 @@ namespace NINA.Sequencer.Serialization {
                         }
                         break;
 
+                    case "GSSend":
+                        ISequenceContainer c = item.GetType().GetProperty("Condition").GetValue(item, null) as ISequenceContainer;
+                        ISequenceContainer gss = item as ISequenceContainer;
+                        if (c != null) {
+                            gss.Items.Clear();
+                            for (int j = 0; j < c.Items.Count; j++) {
+                                ISequenceItem oldItem = c.Items[j];
+                                ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                                gss.Add(newItem); 
+                            }
+                            c.Items.Clear();
+                        }
+                        break;
+
                     case "IfFailed":
                     case "IfTimeout":
                         UpdateIfContainer(item);
                         break;
 
+                    case "DIYTrigger":
+                        ISequenceContainer triggerRunner = trigger.GetType().GetProperty("TriggerRunner").GetValue(trigger, null) as ISequenceContainer;
+                        ISequenceContainer triggerInstructions = trigger.GetType().GetProperty("Instructions").GetValue(trigger, null) as ISequenceContainer;
+                        if (triggerRunner != null && triggerInstructions != null && triggerRunner.Items.Count > 0) {
+                            triggerInstructions.Items.Clear();
+                            ISequenceContainer instructions = triggerRunner.Items as ISequenceContainer;
+                            for (int i = 0; i < triggerRunner.Items.Count; i++) {
+                                ISequenceItem oldItem = triggerRunner.Items[i];
+                                ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                                triggerInstructions.Add(newItem); // Temporarily add clone to expand collection
+                                newItem.AttachNewParent(triggerInstructions);
+                            }
+                            triggerRunner.Items.Clear();
+                        }
+                        break;
 
                     // Unchanged (no Expressions)
                     case "IfContainer":
