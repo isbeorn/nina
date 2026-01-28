@@ -27,14 +27,7 @@ using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Trigger.Guider;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data.Entity.Migrations.Model;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
-using static System.Data.Entity.Infrastructure.Design.Executor;
 
 namespace NINA.Sequencer.Serialization {
     public class PowerupsUpgrader {
@@ -104,7 +97,7 @@ namespace NINA.Sequencer.Serialization {
             PropertyInfo pi = t.GetProperty(propertyName);
             object expr = pi.GetValue(item);
             pi = expr.GetType().GetProperty("Expression");
-            return pi.GetValue(expr) as string;
+            return UpdateSymbols(pi.GetValue(expr) as string);
         }
 
         private static void PutExpr(Type t, ISequenceEntity item, string propertyName, string value) {
@@ -152,6 +145,54 @@ namespace NINA.Sequencer.Serialization {
                     }
                     break;
             }
+        }
+
+        private static readonly IDictionary<string, object> EmptyReferences = new Dictionary<string, object>();
+
+        private static readonly IReadOnlyDictionary<string, string> SymbolUpgradeMap = new Dictionary<string, string> {
+            {"TIME", "ApplicationUptime"},
+            {"RightAscension", "RightAscensionJ2000" },
+            {"Declination", "DeclinationJ2000" },
+            {"FocuserPosition", "Focuser_Position"},
+            {"FocuserTemperature", "Focuser_Temperature" },
+            {"SensorTemp", "Camera_Temperature" },
+            {"camera__PixelSize", "Camera_PixelSize" },
+            {"camera__XSize", "Camera_XSize" },
+            {"camera__YSize", "Camera_YSize" },
+            {"camera__CoolerPower", "Camera_CoolerPower" },
+            {"camera__CoolerOn", "Camera_CoolerOn" },
+            {"RotatorPosition", "Rotator_Position" }
+
+
+        };
+
+        private static string GetUpgradedSymbol(string oldSymbol) {
+            return SymbolUpgradeMap.TryGetValue(oldSymbol, out var newSymbol) ? newSymbol : null;
+        }
+
+        private static string UpdateSymbols(string exprDef) {
+            if (string.IsNullOrEmpty(exprDef)) {
+                return exprDef;
+            }
+            NCalc.Expression e = new NCalc.Expression(exprDef, NCalc.ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
+            e.Parameters = EmptyReferences;
+            try {
+                e.Evaluate();
+            } catch (NCalc.Exceptions.NCalcParserException) {
+                return exprDef;
+            } catch (Exception) {
+                // That's ok, because we just want to find the symbol references
+            }
+            foreach (var p in e.GetParameterNames()) {
+                // See if the symbol needs to be updated
+                string newSymbol = GetUpgradedSymbol(p);
+                // Update in the exprDef
+                if (newSymbol != null) {
+                    exprDef = exprDef.Replace(p, newSymbol);
+                    Logger.Info($"Powerups Upgrade: Updated symbol '{p}' to '{newSymbol}' in expression '{exprDef}'");
+                }
+            }
+            return exprDef;
         }
 
         private static void UpdateIfContainer(ISequenceItem item) {
@@ -319,7 +360,7 @@ namespace NINA.Sequencer.Serialization {
                     case "SwitchFilter": {
                             SwitchFilter newObj = CreateNewItem<SwitchFilter>(item);
                             PropertyInfo pi = t.GetProperty("FilterExpr");
-                            newObj.ComboBoxText = (string)pi.GetValue(item);
+                            newObj.ComboBoxText = UpdateSymbols(pi.GetValue(item) as string);
                             newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
@@ -329,9 +370,9 @@ namespace NINA.Sequencer.Serialization {
                             ISequenceContainer smart = item as ISequenceContainer;
                             TakeExposure oldTe = (TakeExposure)smart.Items[1];
                             TakeExposure newTe = (TakeExposure)newObj.Items[1];
-                            newTe.ExposureTimeExpression.Definition = oldTe?.ExposureTimeExpression.Definition;
-                            newTe.GainExpression.Definition = oldTe?.GainExpression.Definition;
-                            newTe.OffsetExpression.Definition = oldTe?.OffsetExpression.Definition;
+                            newTe.ExposureTimeExpression.Definition = UpdateSymbols(oldTe?.ExposureTimeExpression.Definition);
+                            newTe.GainExpression.Definition = UpdateSymbols(oldTe?.GainExpression.Definition);
+                            newTe.OffsetExpression.Definition = UpdateSymbols(oldTe?.OffsetExpression.Definition);
                             newTe.Binning = oldTe?.Binning;
                             newTe.ImageType = oldTe?.ImageType;
                             SwitchFilter oldSf = (SwitchFilter)smart.Items[0];
@@ -347,9 +388,9 @@ namespace NINA.Sequencer.Serialization {
                             ISequenceContainer smart = item as ISequenceContainer;
                             TakeExposure oldTe = (TakeExposure)smart.Items[0];
                             TakeExposure newTe = (TakeExposure)newObj.Items[0];
-                            newTe.ExposureTimeExpression.Definition = oldTe?.ExposureTimeExpression.Definition;
-                            newTe.GainExpression.Definition = oldTe?.GainExpression.Definition;
-                            newTe.OffsetExpression.Definition = oldTe?.OffsetExpression.Definition;
+                            newTe.ExposureTimeExpression.Definition = UpdateSymbols(oldTe?.ExposureTimeExpression.Definition);
+                            newTe.GainExpression.Definition = UpdateSymbols(oldTe?.GainExpression.Definition);
+                            newTe.OffsetExpression.Definition = UpdateSymbols(oldTe?.OffsetExpression.Definition);
                             newTe.Binning = oldTe?.Binning;
                             newTe.ImageType = oldTe?.ImageType;
                             newObj.AttachNewParent(item.Parent);
@@ -371,7 +412,7 @@ namespace NINA.Sequencer.Serialization {
                     case "SetConstant": {
                             GlobalConstant newObj = CreateNewItem<GlobalConstant>(item);
                             PropertyInfo pi = t.GetProperty("Definition");
-                            newObj.Expr.Definition = (string)pi.GetValue(item);
+                            newObj.Expr.Definition = UpdateSymbols(pi.GetValue(item) as string);
                             pi = t.GetProperty("Identifier");
                             newObj.Identifier = (string)pi.GetValue(item);
                             newObj.AttachNewParent(item.Parent);
@@ -380,7 +421,7 @@ namespace NINA.Sequencer.Serialization {
                     case "SetGlobalVariable": {
                             GlobalVariable newObj = CreateNewItem<GlobalVariable>(item);
                             PropertyInfo pi = t.GetProperty("OriginalDefinition");
-                            newObj.OriginalExpr.Definition = (string)pi.GetValue(item);
+                            newObj.OriginalExpr.Definition = UpdateSymbols(pi.GetValue(item) as string);
                             pi = t.GetProperty("Identifier");
                             newObj.Identifier = (string)pi.GetValue(item);
                             newObj.AttachNewParent(item.Parent);
@@ -389,7 +430,7 @@ namespace NINA.Sequencer.Serialization {
                     case "SetVariable": {
                             Variable newObj = CreateNewItem<Variable>(item);
                             PropertyInfo pi = t.GetProperty("OriginalDefinition");
-                            newObj.OriginalExpr.Definition = (string)pi.GetValue(item);
+                            newObj.OriginalExpr.Definition = UpdateSymbols(pi.GetValue(item) as string);
                             pi = t.GetProperty("Identifier");
                             newObj.Identifier = (string)pi.GetValue(item);
                             newObj.AttachNewParent(item.Parent);
@@ -402,7 +443,7 @@ namespace NINA.Sequencer.Serialization {
                             pi = t.GetProperty("Expr");
                             object expr = pi.GetValue(item);
                             pi = expr.GetType().GetProperty("Expression");
-                            string exp = pi.GetValue(expr) as string;
+                            string exp = UpdateSymbols(pi.GetValue(expr) as string);
                             if (exp != null) {
                                 newObj.Expr.Definition = exp;
                             }
@@ -470,7 +511,7 @@ namespace NINA.Sequencer.Serialization {
                     case "IfConstant":
                         Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
-                            e.Definition = jObject["IfExpr"]["Expression"].ToString();
+                            e.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
                             item.Name += " [Powerups 3=>4";
                         }
                         UpdateIfContainer(item);
@@ -479,7 +520,7 @@ namespace NINA.Sequencer.Serialization {
                     case "IfThenElse":
                         Expression e1 = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
-                            e1.Definition = jObject["IfExpr"]["Expression"].ToString();
+                            e1.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
                             item.Name += " [Powerups 3=>4";
                         }
                         UpdateIfThenElse(item);
@@ -488,8 +529,8 @@ namespace NINA.Sequencer.Serialization {
                     case "WhenSwitch":
                         Expression e2 = (Expression)trigger.GetType().GetProperty("PredicateExpression").GetValue(trigger, null);
                         if (jObject["IfExpr"] != null) {
-                            e2.Definition = jObject["IfExpr"]["Expression"].ToString();
-                            item.Name += " [Powerups 3=>4";
+                            e2.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
+                            trigger.Name += " [Powerups 3=>4";  // Also fixed: should be trigger.Name, not item.Name
                         }
                         break;
 
