@@ -34,6 +34,5 @@ namespace NINA.Sequencer.Logic {
         bool RemoveSymbol(ISymbolProvider provider, string token);
         void RegisterFunction(ISymbolProvider provider, SymbolFunction function);
         ISymbolProvider GetInternalProvider(string name);
-        public IReadOnlyCollection<ISymbolProvider> GetMyProviders();
     }
 }
