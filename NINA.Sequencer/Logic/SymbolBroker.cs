@@ -93,9 +93,12 @@ namespace NINA.Sequencer.Logic {
         private IFilterWheelMediator _filterWheelMediator;
         private IFlatDeviceMediator _flatMediator;
         private IFocuserMediator _focuserMediator;
+        private IImagingMediator _imagingMediator;
+
         private ConcurrentDictionary<string, IList<Symbol>> _hiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
-        private IImagingMediator _imagingMediator;
+        private readonly ConcurrentDictionary<string, string> _providerOwnership = new ConcurrentDictionary<string, string>();
+
         private IProfileService _profileService;
         private IList<string> _providers = new List<string>();
 
@@ -514,13 +517,38 @@ namespace NINA.Sequencer.Logic {
         public void RegisterFunction(ISymbolProvider symbolProvider, SymbolFunction symbolFunction) {
             RegisterFunction(symbolProvider.GetProviderName(), symbolFunction);
         }
-
         public ISymbolProvider RegisterSymbolProvider(string name) {
+            // Check if provider already exists
             if (_providers.Contains(name)) {
-                throw new ArgumentException("Symbol Provider name is already registered.");
+                throw new ArgumentException($"Symbol provider '{name}' is already registered.");
             }
+
+            var callingAssembly = Assembly.GetCallingAssembly();
+            var provider = new SymbolProvider(name, this);
+
+            // Track which assembly registered this provider
+            _providerOwnership[name] = callingAssembly.FullName;
             _providers.Add(name);
-            return new SymbolProvider(name, this);
+
+            return provider;
+        }
+
+        public IReadOnlyCollection<ISymbolProvider> GetMyProviders() {
+            var callingAssembly = Assembly.GetCallingAssembly();
+            var assemblyName = callingAssembly.FullName;
+
+            var ownedProviders = _providerOwnership
+                .Where(kvp => kvp.Value == assemblyName)
+                .Select(kvp => kvp.Key)
+                .ToList();
+
+            // Return the actual provider instances
+            var result = new List<ISymbolProvider>();
+            foreach (var providerName in ownedProviders) {
+                result.Add(new SymbolProvider(providerName, this));
+            }
+
+            return result.AsReadOnly();
         }
 
         public bool RemoveSymbol(ISymbolProvider provider, string token) {

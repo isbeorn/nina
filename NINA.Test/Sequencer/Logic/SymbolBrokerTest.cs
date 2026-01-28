@@ -623,7 +623,7 @@ namespace NINA.Test.Sequencer.Logic {
             var cameraInfo = new CameraInfo {
                 Connected = true,
                 Temperature = -10.5,
-            }; 
+            };
             var weatherDataInfo = new WeatherDataInfo {
                 Connected = true,
                 Temperature = -20.5,
@@ -770,7 +770,7 @@ namespace NINA.Test.Sequencer.Logic {
             symbols.Should().NotContain(x => x.Category == "Camera" && x.Key == "XSize");
 
             // Act 2
-            broker.UpdateDeviceInfo(new CameraInfo {  Connected = false });
+            broker.UpdateDeviceInfo(new CameraInfo { Connected = false });
             var symbols2 = broker.GetSymbols();
 
             // Assert 2
@@ -852,7 +852,7 @@ namespace NINA.Test.Sequencer.Logic {
 
             // Assert
             success.Should().BeTrue();
-            ValidateSymbol("Test_MySymbol",false);
+            ValidateSymbol("Test_MySymbol", false);
         }
 
         [Test]
@@ -893,6 +893,58 @@ namespace NINA.Test.Sequencer.Logic {
             // Assert
             symbols.Should().NotBeNull();
             symbols.Should().Contain(x => x.Category == "Camera" && x.Key == "XSize" && x.Type == Symbol.SymbolType.SYMBOL_HIDDEN);
+        }
+
+       [Test]
+        public void SymbolBroker_GetMyProviders_ReturnsOnlyProvidersRegisteredByCallingAssembly() {
+            // Arrange
+            var provider1 = broker.RegisterSymbolProvider("TestProvider1");
+            var provider2 = broker.RegisterSymbolProvider("TestProvider2");
+
+            // Act
+            var myProviders = broker.GetMyProviders();
+
+            // Assert
+            myProviders.Should().NotBeNull();
+            myProviders.Count.Should().BeGreaterOrEqualTo(2);
+
+            var providerNames = myProviders.Select(p => p.GetProviderName()).ToList();
+            providerNames.Should().Contain("TestProvider1");
+            providerNames.Should().Contain("TestProvider2");
+        }
+
+        [Test]
+        public void SymbolBroker_GetMyProviders_DoesNotReturnInternalProviders() {
+            // Arrange
+            var provider = broker.RegisterSymbolProvider("MyCustomProvider");
+
+            // Act
+            var myProviders = broker.GetMyProviders();
+
+            // Assert
+            var providerNames = myProviders.Select(p => p.GetProviderName()).ToList();
+
+            // Should NOT contain NINA's internal providers (registered by SymbolBroker constructor)
+            providerNames.Should().NotContain("NINA");
+            providerNames.Should().NotContain("Image");
+            providerNames.Should().NotContain("Camera");
+            providerNames.Should().NotContain("Mount");
+
+            // Should contain our custom provider
+            providerNames.Should().Contain("MyCustomProvider");
+        }
+
+        [Test]
+        public void SymbolBroker_GetMyProviders_ReturnsReadOnlyCollection() {
+            // Arrange
+            var provider = broker.RegisterSymbolProvider("TestProvider");
+
+            // Act
+            var myProviders = broker.GetMyProviders();
+
+            // Assert
+            myProviders.Should().NotBeNull();
+            myProviders.Should().BeAssignableTo<System.Collections.Generic.IReadOnlyCollection<ISymbolProvider>>();
         }
     }
 }
