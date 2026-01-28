@@ -55,6 +55,8 @@ namespace NINA.Sequencer.Logic {
         private static List<string> _symbolProviders =
             new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel" };
 
+        private static int _internalSymbolProviderCount = _symbolProviders.Count;
+
         private static string[] _weatherData = new string[] { "CloudCover", "DewPoint", "Humidity", "Pressure", "RainRate", "SkyBrightness", "SkyQuality", "SkyTemperature",
             "StarFWHM", "Temperature", "WindDirection", "WindGust", "WindSpeed"};
 
@@ -91,9 +93,12 @@ namespace NINA.Sequencer.Logic {
         private IFilterWheelMediator _filterWheelMediator;
         private IFlatDeviceMediator _flatMediator;
         private IFocuserMediator _focuserMediator;
+        private IImagingMediator _imagingMediator;
+
         private ConcurrentDictionary<string, IList<Symbol>> _hiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
-        private IImagingMediator _imagingMediator;
+        private readonly ConcurrentDictionary<string, string> _providerOwnership = new ConcurrentDictionary<string, string>();
+
         private IProfileService _profileService;
         private IList<string> _providers = new List<string>();
 
@@ -124,7 +129,7 @@ namespace NINA.Sequencer.Logic {
 
             _telescopeMediator.RegisterConsumer(this);
             _switchMediator.RegisterConsumer(this);
-            _weatherDataMediator.RegisterConsumer(this);
+            _weatherDataMediator.RegisterConsumer(this);    
             _focuserMediator.RegisterConsumer(this);
             _domeMediator.RegisterConsumer(this);
             _safetyMonitorMediator.RegisterConsumer(this);
@@ -151,6 +156,15 @@ namespace NINA.Sequencer.Logic {
                 _hiddenSymbols.TryAdd(source, symList);
             }
             symList.Add(sym);
+        }
+
+        public ISymbolProvider GetInternalProvider(string name) {
+            for (int i = 0; i < _internalSymbolProviderCount; i++) {
+                if (string.Equals(_symbolProviders[i], name, StringComparison.OrdinalIgnoreCase)) {
+                    return new SymbolProvider(name, this);
+                }
+            }
+            return null;
         }
 
         private void AddOptionalImageSymbol(IStarDetectionAnalysis analysis, string name) {
@@ -503,13 +517,38 @@ namespace NINA.Sequencer.Logic {
         public void RegisterFunction(ISymbolProvider symbolProvider, SymbolFunction symbolFunction) {
             RegisterFunction(symbolProvider.GetProviderName(), symbolFunction);
         }
-
         public ISymbolProvider RegisterSymbolProvider(string name) {
+            // Check if provider already exists
             if (_providers.Contains(name)) {
-                throw new ArgumentException("Symbol Provider name is already registered.");
+                throw new ArgumentException($"Symbol provider '{name}' is already registered.");
             }
+
+            var callingAssembly = Assembly.GetCallingAssembly();
+            var provider = new SymbolProvider(name, this);
+
+            // Track which assembly registered this provider
+            _providerOwnership[name] = callingAssembly.FullName;
             _providers.Add(name);
-            return new SymbolProvider(name, this);
+
+            return provider;
+        }
+
+        public IReadOnlyCollection<ISymbolProvider> GetMyProviders() {
+            var callingAssembly = Assembly.GetCallingAssembly();
+            var assemblyName = callingAssembly.FullName;
+
+            var ownedProviders = _providerOwnership
+                .Where(kvp => kvp.Value == assemblyName)
+                .Select(kvp => kvp.Key)
+                .ToList();
+
+            // Return the actual provider instances
+            var result = new List<ISymbolProvider>();
+            foreach (var providerName in ownedProviders) {
+                result.Add(new SymbolProvider(providerName, this));
+            }
+
+            return result.AsReadOnly();
         }
 
         public bool RemoveSymbol(ISymbolProvider provider, string token) {

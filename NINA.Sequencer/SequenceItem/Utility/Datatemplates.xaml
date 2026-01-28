@@ -274,7 +274,8 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Text="{Binding Script}"
-                        TextAlignment="Left" />
+                        TextAlignment="Left"
+                        ToolTip="{Binding ProcessedScriptAnnotated}" />
                     <Button
                         Grid.Column="2"
                         Width="20"
