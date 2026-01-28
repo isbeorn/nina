@@ -469,7 +469,7 @@ namespace NINA.Sequencer.Serialization {
                     case "AddImagePattern": {
                             if (jObject.ContainsKey("iExpr")) {
                                 PutExpr(t, item, "ExprExpression", GetExpr(t, item, "iExpr"));
-                                item.Name += " [Powerups 3=>4";
+                                item.Name += " [Upgraded";
                             }
                             return obj;
                         }
@@ -477,7 +477,7 @@ namespace NINA.Sequencer.Serialization {
                     case "RepeatUntilAllSucceed": {
                             if (jObject.ContainsKey("iWaitExpr")) {
                                 PutExpr(t, item, "WaitExpression", GetExpr(t, item, "iWaitExpr"));
-                                item.Name += " [Powerups 3=>4";
+                                item.Name += " [Upgraded";
                             }
                             UpdateIfContainer(item);
                             return obj;
@@ -497,14 +497,14 @@ namespace NINA.Sequencer.Serialization {
                                 PutExpr(t, item, "IExprExpression", GetExpr(t, item, "iIExpr"));
                                 PutExpr(t, item, "VExprExpression", GetExpr(t, item, "iVExpr"));
                             }
-                            item.Name += " [Powerups 3=>4";
+                            item.Name += " [Upgraded";
                         }
                         return obj;
 
                     case "ConditionalTrigger":
                         if (jObject.ContainsKey("iIfExpr")) {
                             PutExpr(t, trigger, "PredicateExpression", GetExpr(t, trigger, "iIfExpr"));
-                            trigger.Name += " [Powerups 3=>4";
+                            trigger.Name += " [Upgraded";
                         }
                         return obj;
 
@@ -512,7 +512,7 @@ namespace NINA.Sequencer.Serialization {
                         Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
-                            item.Name += " [Powerups 3=>4";
+                            item.Name += " [Upgraded";
                         }
                         UpdateIfContainer(item);
                         break;
@@ -521,7 +521,7 @@ namespace NINA.Sequencer.Serialization {
                         Expression e1 = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e1.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
-                            item.Name += " [Powerups 3=>4";
+                            item.Name += " [Upgraded";
                         }
                         UpdateIfThenElse(item);
                         break;
@@ -530,7 +530,7 @@ namespace NINA.Sequencer.Serialization {
                         Expression e2 = (Expression)trigger.GetType().GetProperty("PredicateExpression").GetValue(trigger, null);
                         if (jObject["IfExpr"] != null) {
                             e2.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
-                            trigger.Name += " [Powerups 3=>4";  // Also fixed: should be trigger.Name, not item.Name
+                            trigger.Name += " [Upgraded";  // Also fixed: should be trigger.Name, not item.Name
                         }
                         break;
 
