@@ -492,7 +492,7 @@ namespace NINA.Plugin {
         }
 
         private CompositionContainer GetContainer(ComposablePartCatalog catalog) {
-            var container = new CompositionContainer(catalog);
+            var container = new CompositionContainer(catalog, CompositionOptions.DisableSilentRejection | CompositionOptions.IsThreadSafe);
             container.ComposeExportedValue(profileService);
             container.ComposeExportedValue(cameraMediator);
             container.ComposeExportedValue(telescopeMediator);
@@ -646,7 +646,7 @@ namespace NINA.Plugin {
         }
 
 
-        private IOrderedEnumerable<T> AssignSequenceEntity<T>(IEnumerable<Lazy<T, Dictionary<string, object>>> imports, IApplicationResourceDictionary resourceDictionary, string pluginName) where T : ISequenceEntity {
+        private IOrderedEnumerable<T> AssignSequenceEntity<T>(IEnumerable<Lazy<T, IDictionary<string, object>>> imports, IApplicationResourceDictionary resourceDictionary, string pluginName) where T : ISequenceEntity {
             var items = new List<T>();
             foreach (var importItem in imports) {
                 try {
@@ -732,16 +732,16 @@ namespace NINA.Plugin {
     public class PartsImport {
 
         [ImportMany(typeof(ISequenceItem))]
-        public IEnumerable<Lazy<ISequenceItem, Dictionary<string, object>>> ItemImports { get; private set; }
+        public IEnumerable<Lazy<ISequenceItem, IDictionary<string, object>>> ItemImports { get; private set; }
 
         [ImportMany(typeof(ISequenceCondition))]
-        public IEnumerable<Lazy<ISequenceCondition, Dictionary<string, object>>> ConditionImports { get; private set; }
+        public IEnumerable<Lazy<ISequenceCondition, IDictionary<string, object>>> ConditionImports { get; private set; }
 
         [ImportMany(typeof(ISequenceTrigger))]
-        public IEnumerable<Lazy<ISequenceTrigger, Dictionary<string, object>>> TriggerImports { get; private set; }
+        public IEnumerable<Lazy<ISequenceTrigger, IDictionary<string, object>>> TriggerImports { get; private set; }
 
         [ImportMany(typeof(ISequenceContainer))]
-        public IEnumerable<Lazy<ISequenceContainer, Dictionary<string, object>>> ContainerImports { get; private set; }
+        public IEnumerable<Lazy<ISequenceContainer, IDictionary<string, object>>> ContainerImports { get; private set; }
 
         [ImportMany(typeof(ResourceDictionary))]
         public IEnumerable<ResourceDictionary> DataTemplateImports { get; private set; }
