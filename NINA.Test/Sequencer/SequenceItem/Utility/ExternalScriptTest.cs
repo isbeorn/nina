@@ -40,7 +40,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
         [Test]
         public void ExternalScript_Clone_GoodClone() {
-            var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
+            var sut = new ExternalScript(symbolBrokerMock.Object);
             sut.Icon = new System.Windows.Media.GeometryGroup();
             var item2 = (ExternalScript)sut.Clone();
 
@@ -53,7 +53,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
         [Test]
         public void ExternalScriptTest_GetEstimatedDuration_Test() {
-            var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
+            var sut = new ExternalScript(symbolBrokerMock.Object);
             var estimate = sut.GetEstimatedDuration();
             estimate.Should().Be(TimeSpan.Zero);
         }
@@ -61,7 +61,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         [Test]
         public void ExternalScript_ProcessedScript_ReplacesMultipleExpressions() {
             // Arrange
-            var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
+            var sut = new ExternalScript(symbolBrokerMock.Object);
             // Need this so that evaluation of Expressions doesn't fail
             sut.AttachNewParent(new SequentialContainer());
 
@@ -92,7 +92,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         [Test]
         public void ExternalScript_ProcessedScript_HandlesArithmeticExpression() {
             // Arrange
-            var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
+            var sut = new ExternalScript(symbolBrokerMock.Object);
             // Need this so that evaluation of Expressions doesn't fail
             sut.AttachNewParent(new SequentialContainer());
 
@@ -123,7 +123,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         [Test]
         public void ExternalScript_ProcessedScript_ErrorInExpression_ReturnsError() {
             // Arrange
-            var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
+            var sut = new ExternalScript(symbolBrokerMock.Object);
             // Need this so that evaluation of Expressions doesn't fail
             sut.AttachNewParent(new SequentialContainer());
 
@@ -191,7 +191,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
                     capturedExitCode = (int)value;
                 });
 
-            var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
+            var sut = new ExternalScript(symbolBrokerMock.Object);
 
             // Use full path to cmd.exe with exit code 42
             sut.Script = $"{Environment.GetEnvironmentVariable("SystemRoot")}\\System32\\cmd.exe /c exit 42";
@@ -223,7 +223,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
                     capturedExitCode = (int)value;
                 });
 
-            var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
+            var sut = new ExternalScript(symbolBrokerMock.Object);
 
             // Use a non-existent command to trigger an exception
             sut.Script = "this_command_does_not_exist_12345.exe";
@@ -247,7 +247,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
                 .Setup(x => x.GetInternalProvider("NINA"))
                 .Returns((ISymbolProvider)null);
 
-            var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
+            var sut = new ExternalScript(symbolBrokerMock.Object);
             sut.Script = $"{Environment.GetEnvironmentVariable("SystemRoot")}\\System32\\cmd.exe /c exit 0";
 
             var progress = new Progress<ApplicationStatus>();
@@ -268,7 +268,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
                 .Setup(x => x.GetInternalProvider("NINA"))
                 .Returns(mockProvider.Object);
 
-            var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
+            var sut = new ExternalScript(symbolBrokerMock.Object);
             sut.AttachNewParent(new SequentialContainer());
 
             symbolBrokerMock.Setup(x => x.TryGetValue("TestValue", out It.Ref<object>.IsAny))

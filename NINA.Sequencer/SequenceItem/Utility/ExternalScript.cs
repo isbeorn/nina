@@ -39,11 +39,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     public class ExternalScript : SequenceItem, IValidatable {
         public System.Windows.Input.ICommand OpenDialogCommand { get; private set; }
         private ISymbolBroker _symbolBroker;
-        private IProgress<ApplicationStatus> _progress;
         private ISymbolProvider _ninaProvider;   
 
         [ImportingConstructor]
-        public ExternalScript(ISymbolBroker symbolBroker, IProgress<ApplicationStatus> progress) {
+        public ExternalScript(ISymbolBroker symbolBroker) {
             OpenDialogCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>((object o) => {
                 Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
                 dialog.Title = Loc.Instance["Lbl_SequenceItem_Utility_ExternalScript_Name"];
@@ -56,11 +55,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 }
             });
             _symbolBroker = symbolBroker;
-            _progress = progress;
             _ninaProvider = (_symbolBroker as ISymbolBrokerProviderApi)?.GetInternalProvider("NINA");
         }
 
-        private ExternalScript(ExternalScript cloneMe) : this(cloneMe._symbolBroker, cloneMe._progress) {
+        private ExternalScript(ExternalScript cloneMe) : this(cloneMe._symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
@@ -142,7 +140,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             Logger.Info("External Script, script = " + Script + ", processed script = " + ProcessedScript);
             string sequenceCompleteCommand = ProcessedScript;
-            var success = await RunSequenceCompleteCommandTask(sequenceCompleteCommand, token);
+            var success = await RunCommand(sequenceCompleteCommand, progress, token);
             if (!success) {
                 throw new SequenceEntityFailedException(Loc.Instance["LblExternalCommandFailed"]);
             }
@@ -169,7 +167,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         // Code below is from the obsolete ExternalCommandExecutor class
-        public async Task<bool> RunSequenceCompleteCommandTask(string sequenceCompleteCommand, CancellationToken ct) {
+        public async Task<bool> RunCommand(string sequenceCompleteCommand, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             if (!CommandExists(sequenceCompleteCommand)) {
                 Logger.Error($"Command not found: {sequenceCompleteCommand}");
                 _ninaProvider?.AddOrUpdateSymbol("LastExternalScriptExitCode", -1);
@@ -190,14 +188,14 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
                 DataReceivedEventHandler outputDataReceivedCallback = (object sender, DataReceivedEventArgs e) => {
                     if (!string.IsNullOrWhiteSpace(e.Data)) {
-                        StatusUpdate(src, e.Data);
+                        StatusUpdate(progress, src, e.Data);
                         Logger.Info($"STDOUT: {e.Data}");
                     }
                 };
                 process.OutputDataReceived += outputDataReceivedCallback;
                 DataReceivedEventHandler errorDataReceivedCallback = (object sender, DataReceivedEventArgs e) => {
                     if (!string.IsNullOrWhiteSpace(e.Data)) {
-                        StatusUpdate(src, e.Data);
+                        StatusUpdate(progress, src, e.Data);
                         Logger.Error($"STDERR: {e.Data}");
                     }
                 };
@@ -222,13 +220,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 // Set Symbol here as well (-1)
                 _ninaProvider?.AddOrUpdateSymbol("LastExternalScriptExitCode", -1);
             } finally {
-                StatusUpdate(src, "");
+                StatusUpdate(progress, src, "");
             }
             return false;
         }
 
-        private void StatusUpdate(string src, string data) {
-            _progress?.Report(new ApplicationStatus() {
+        private void StatusUpdate(IProgress<ApplicationStatus> progress, string src, string data) {
+            progress?.Report(new ApplicationStatus() {
                 Source = src,
                 Status = data,
             });
