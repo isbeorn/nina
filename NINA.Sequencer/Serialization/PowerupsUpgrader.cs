@@ -275,6 +275,28 @@ namespace NINA.Sequencer.Serialization {
                 //Logger.Info("Powerups Upgrade: " + t);
                 switch (t.Name) {
                     // The following are updates from Powerups + instructions to NINA instructions
+                    case "ExternalScript": {
+                            ExternalScript newObj = CreateNewItem<ExternalScript>(item);
+                            PropertyInfo pi = t.GetProperty("Script");
+                            string script = pi.GetValue(item) as string;
+                            
+                            // Extract and update each expression in braces
+                            if (!string.IsNullOrEmpty(script)) {
+                                script = System.Text.RegularExpressions.Regex.Replace(
+                                    script,
+                                    @"\{([^}]+)\}",
+                                    match => {
+                                        string expr = match.Groups[1].Value;
+                                        string updated = UpdateSymbols(expr);
+                                        return "{" + updated + "}";
+                                    }
+                                );
+                            }
+                            
+                            newObj.Script = script;
+                            return newObj;
+                        }
+
                     case "DitherAfterExposures": {
                             DitherAfterExposures newObj = CreateNewTrigger<DitherAfterExposures>(trigger.Name);
                             newObj.AfterExposuresExpression.Definition = GetExpr(t, trigger, "AfterExpr");
