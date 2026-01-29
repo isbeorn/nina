@@ -189,11 +189,7 @@ namespace NINA.Sequencer.Serialization {
                 // Update in the exprDef
                 if (newSymbol != null) {
                     exprDef = exprDef.Replace(p, newSymbol);
-<<<<<<< HEAD
                     Logger.Info($"Updated symbol '{p}' to '{newSymbol}' in expression '{exprDef}'");
-=======
-                    Logger.Info($"Powerups Upgrade: Updated symbol '{p}' to '{newSymbol}' in expression '{exprDef}'");
->>>>>>> 696a2ba8ae4be159cb6fc36f14811e85427e6e7c
                 }
             }
             return exprDef;
@@ -417,11 +413,7 @@ namespace NINA.Sequencer.Serialization {
                             // Local Constants become Scoped Variables
                             Variable newObj = CreateNewItem<Variable>(item);
                             PropertyInfo pi = t.GetProperty("Definition");
-<<<<<<< HEAD
                             newObj.OriginalExpr.Definition = UpdateSymbols(pi.GetValue(item) as string);
-=======
-                            newObj.Expr.Definition = UpdateSymbols(pi.GetValue(item) as string);
->>>>>>> 696a2ba8ae4be159cb6fc36f14811e85427e6e7c
                             pi = t.GetProperty("Identifier");
                             newObj.Identifier = (string)pi.GetValue(item);
                             newObj.AttachNewParent(item.Parent);
@@ -521,11 +513,7 @@ namespace NINA.Sequencer.Serialization {
                         Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
-<<<<<<< HEAD
                             item.Name += " [Upgraded";
-=======
-                            item.Name += " [Powerups 3=>4";
->>>>>>> 696a2ba8ae4be159cb6fc36f14811e85427e6e7c
                         }
                         UpdateIfContainer(item);
                         break;
@@ -534,11 +522,7 @@ namespace NINA.Sequencer.Serialization {
                         Expression e1 = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e1.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
-<<<<<<< HEAD
                             item.Name += " [Upgraded";
-=======
-                            item.Name += " [Powerups 3=>4";
->>>>>>> 696a2ba8ae4be159cb6fc36f14811e85427e6e7c
                         }
                         UpdateIfThenElse(item);
                         break;
@@ -547,7 +531,6 @@ namespace NINA.Sequencer.Serialization {
                         Expression e2 = (Expression)trigger.GetType().GetProperty("PredicateExpression").GetValue(trigger, null);
                         if (jObject["IfExpr"] != null) {
                             e2.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
-<<<<<<< HEAD
                             trigger.Name += " [Upgraded";  // Also fixed: should be trigger.Name, not item.Name
                         }
                         break;
@@ -563,9 +546,6 @@ namespace NINA.Sequencer.Serialization {
                                 gss.Add(newItem); 
                             }
                             c.Items.Clear();
-=======
-                            trigger.Name += " [Powerups 3=>4";  // Also fixed: should be trigger.Name, not item.Name
->>>>>>> 696a2ba8ae4be159cb6fc36f14811e85427e6e7c
                         }
                         break;
 

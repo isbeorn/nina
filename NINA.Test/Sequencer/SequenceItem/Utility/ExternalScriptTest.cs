@@ -160,7 +160,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
                     capturedExitCode = (int)value;
                 });
 
-            var sut = new ExternalScript(symbolBrokerMock.Object, progressMock.Object);
+            var sut = new ExternalScript(symbolBrokerMock.Object);
 
             // Use full path to cmd.exe
             sut.Script = $"{Environment.GetEnvironmentVariable("SystemRoot")}\\System32\\cmd.exe /c exit 0";
