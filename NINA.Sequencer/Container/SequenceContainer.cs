@@ -442,7 +442,7 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        public bool Remove(ISequenceItem item) {
+        public virtual bool Remove(ISequenceItem item) {
             lock (lockObj) {
                 if (item.Parent == this) {
                     item.AttachNewParent(null);
@@ -454,7 +454,7 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        public bool Remove(ISequenceCondition condition) {
+        public virtual bool Remove(ISequenceCondition condition) {
             lock (lockObj) {
                 if (condition.Parent == this) {
                     condition.AttachNewParent(null);
@@ -466,7 +466,7 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        public bool Remove(ISequenceTrigger trigger) {
+        public virtual bool Remove(ISequenceTrigger trigger) {
             lock (lockObj) {
                 if (trigger.Parent == this) {
                     trigger.AttachNewParent(null);
