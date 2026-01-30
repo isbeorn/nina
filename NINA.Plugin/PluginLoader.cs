@@ -673,11 +673,6 @@ namespace NINA.Plugin {
                         string category = categoryObj.ToString();
                         item.Category = GrabLabel(category);
                     }
-                    if (importItem.Metadata.TryGetValue("Hidden", out var hiddenObj)) {
-                        if (hiddenObj is bool hidden) {
-                            item.HiddenByDefault = hidden;
-                        }
-                    }
                     item.SymbolBroker = symbolBroker;
                     items.Add(item);
                 } catch (Exception ex) {

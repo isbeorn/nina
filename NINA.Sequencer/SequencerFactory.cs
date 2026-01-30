@@ -56,32 +56,22 @@ namespace NINA.Sequencer {
             Triggers = new ObservableCollection<ISequenceTrigger>(triggers);
             Container = new ObservableCollection<ISequenceContainer>(container);
 
-            var entityOptions = new PluginOptionsAccessor(profileService, Guid.Parse("E7C2BE8E-479B-4DBA-A0B0-D513B77F9A54"));
+            var enitityOptions = new PluginOptionsAccessor(profileService, Guid.Parse("E7C2BE8E-479B-4DBA-A0B0-D513B77F9A54"));
             var allEntities = new List<SidebarEntity>();
             var sidebarItems = new List<SidebarEntity>();
             var sidebarConditions = new List<SidebarEntity>();
             var sidebarTriggers = new List<SidebarEntity>();
-
             foreach (var item in Items) {
-                // Skip items that are hidden by default
-                if (!item.HiddenByDefault) {
-                    sidebarItems.Add(new SidebarEntity(item, entityOptions));
-                    allEntities.Add(new SidebarEntity(item, entityOptions));
-                }
+                sidebarItems.Add(new SidebarEntity(item, enitityOptions));
+                allEntities.Add(new SidebarEntity(item, enitityOptions));
             }
             foreach (var condition in Conditions) {
-                // Skip conditions that are hidden by default
-                if (!condition.HiddenByDefault) {
-                    sidebarConditions.Add(new SidebarEntity(condition, entityOptions));
-                    allEntities.Add(new SidebarEntity(condition, entityOptions));
-                }
+                sidebarConditions.Add(new SidebarEntity(condition, enitityOptions));
+                allEntities.Add(new SidebarEntity(condition, enitityOptions));
             }
             foreach (var trigger in Triggers) {
-                // Skip triggers that are hidden by default
-                if (!trigger.HiddenByDefault) {
-                    sidebarTriggers.Add(new SidebarEntity(trigger, entityOptions));
-                    allEntities.Add(new SidebarEntity(trigger, entityOptions));
-                }
+                sidebarTriggers.Add(new SidebarEntity(trigger, enitityOptions));
+                allEntities.Add(new SidebarEntity(trigger, enitityOptions));
             }
 
             ItemsView = CollectionViewSource.GetDefaultView(allEntities);

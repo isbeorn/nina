@@ -39,8 +39,6 @@ namespace NINA.Sequencer {
             PropertyChanged += OnPropertyChanged;
         }
 
-        public bool HiddenByDefault { get; set; } = false;
-
         private Dictionary<string, System.Reflection.PropertyInfo> propertyInfoByname = new Dictionary<string, System.Reflection.PropertyInfo>();
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
             System.Reflection.PropertyInfo propInf;
