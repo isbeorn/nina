@@ -13,7 +13,6 @@
 #endregion "copyright"
 
 using System;
-using System.Collections.Generic; 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NINA.Core.Utility;
@@ -62,8 +61,8 @@ namespace NINA.Sequencer.Serialization {
                 foreach (var upgrader in Factory.Upgraders) {
                     if (string.Equals(upgrader.AssemblyName, pluginName, StringComparison.OrdinalIgnoreCase)) {
                         return upgrader;
-                    }   
-                }   
+                    }
+                }
             }
             return null;
         }

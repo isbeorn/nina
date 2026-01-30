@@ -11,7 +11,6 @@ namespace NINA.Sequencer {
         bool CanUpgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage);
         object? Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object? current);
     }
-    
     public sealed class SequenceUpgradeContext {
         public required JsonSerializer Serializer { get; init; }
         public required Type RequestedType { get; init; }
@@ -27,4 +26,3 @@ namespace NINA.Sequencer {
         AfterPopulate
     }
 }
-    
