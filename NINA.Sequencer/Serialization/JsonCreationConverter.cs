@@ -141,8 +141,7 @@ namespace NINA.Sequencer.Serialization {
 
                         // Only create upgradeContext if an upgrader exists
                         SequenceUpgradeContext upgradeContext = null;
-                        if (upgrader != null)
-                        {
+                        if (upgrader != null) {
                             upgradeContext = new SequenceUpgradeContext {
                                 Serializer = serializer,
                                 RequestedType = objectType,
