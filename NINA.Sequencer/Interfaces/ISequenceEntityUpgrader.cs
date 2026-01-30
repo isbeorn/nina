@@ -7,10 +7,9 @@ using Newtonsoft.Json;
 namespace NINA.Sequencer {
     public interface ISequenceEntityUpgrader : ISequenceEntity {
         string Name { get; }
-        SequenceUpgradeStage Stage { get; }
-        bool CanUpgrade(SequenceUpgradeContext context);
+        bool CanUpgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage);
 
-        object? Upgrade(SequenceUpgradeContext context, object? current);
+        object? Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object? current);
     }
 
     public sealed class SequenceUpgradeContext {
