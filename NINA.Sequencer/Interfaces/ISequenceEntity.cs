@@ -17,10 +17,11 @@ using NINA.Sequencer.DragDrop;
 using NINA.Sequencer.Logic;
 using System;
 using System.Windows.Media;
+using System.ComponentModel;
 
 namespace NINA.Sequencer {
 
-    public interface ISequenceEntity : ICloneable, IDroppable {
+    public interface ISequenceEntity : INotifyPropertyChanged, ICloneable, IDroppable {
         string Name { get; set; }
 
         /// <summary>
@@ -37,6 +38,11 @@ namespace NINA.Sequencer {
         /// Indicator that the item is currently active and running
         /// </summary>
         SequenceEntityStatus Status { get; set; }
+
+        /// <summary>
+        /// When true, this sequence entity will be hidden from the instruction list by default
+        /// </summary>
+        bool HiddenByDefault { get; set; }
 
         /// <summary>
         /// When the sequencer is started this method is called
