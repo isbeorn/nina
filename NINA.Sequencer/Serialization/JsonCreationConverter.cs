@@ -59,8 +59,11 @@ namespace NINA.Sequencer.Serialization {
 
         private ISequenceEntityUpgrader GetUpgraderForPlugin(string pluginName) {
             if (Factory != null) {
-                var upgrader = Factory.Upgraders?.Find(u => u.PluginName.Equals(pluginName, StringComparison.OrdinalIgnoreCase));
-                return upgrader;
+                foreach (var upgrader in Factory.Upgraders) {
+                    if (string.Equals(upgrader.AssemblyName, pluginName, StringComparison.OrdinalIgnoreCase)) {
+                        return upgrader;
+                    }   
+                }   
             }
             return null;
         }
