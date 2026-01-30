@@ -4,7 +4,10 @@ using Newtonsoft.Json;
 
 namespace NINA.Sequencer {
     public interface ISequenceEntityUpgrader {
+        // Pretty name
         string Name { get; set; }
+        // Plugin assembly name
+        string AssemblyName { get; set; }
         bool CanUpgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage);
         object? Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object? current);
     }

@@ -478,16 +478,6 @@ namespace NINA.Plugin {
                 var pluginTriggers = AssignSequenceEntity(parts.TriggerImports, resourceDictionary, pluginName);
                 var pluginContainers = AssignSequenceEntity(parts.ContainerImports, resourceDictionary, pluginName);
 
-                // Upgraders don't implement ISequenceEntity, so handle them separately
-                Upgraders = parts.UpgraderImports.Select(u => {
-                    var upgrader = u.Value;
-                    // Set the Name property from metadata
-                    //if (u.Metadata.TryGetValue("Name", out var nameObj)) {
-                    //}
-                    upgrader.Name = (catalog as AssemblyCatalog)?.Assembly.GetName().Name ?? "Unknown";
-                    return upgrader;
-                }).ToList();
-
                 Items = Items.Concat(pluginItems).ToList();
                 Conditions = Conditions.Concat(pluginConditions).ToList();
                 Triggers = Triggers.Concat(pluginTriggers).ToList();
@@ -495,6 +485,18 @@ namespace NINA.Plugin {
                 DockableVMs = DockableVMs.Concat(parts.DockableVMImports).ToList();
                 PluggableBehaviors = PluggableBehaviors.Concat(parts.PluggableBehaviorImports).ToList();
                 DeviceProviders = DeviceProviders.Concat(parts.DeviceProviderImports).ToList();
+
+                // Upgraders don't implement ISequenceEntity, so handle them separately
+                Upgraders = parts.UpgraderImports.Select(u => {
+                    var upgrader = u.Value;
+                    // Set the Name property from metadata
+                    if (u.Metadata.TryGetValue("Name", out var nameObj)) {
+                        upgrader.Name = (string)nameObj;
+                    }
+                    upgrader.AssemblyName = (catalog as AssemblyCatalog)?.Assembly.GetName().Name ?? "Unknown";
+                    return upgrader;
+                }).ToList();
+
             } catch (Exception ex) {
                 Logger.Error(ex);
                 throw;

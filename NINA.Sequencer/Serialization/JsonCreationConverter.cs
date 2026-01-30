@@ -57,6 +57,14 @@ namespace NINA.Sequencer.Serialization {
             return string.Empty;
         }
 
+        private ISequenceEntityUpgrader GetUpgraderForPlugin(string pluginName) {
+            if (Factory != null) {
+                var upgrader = Factory.Upgraders?.Find(u => u.PluginName.Equals(pluginName, StringComparison.OrdinalIgnoreCase));
+                return upgrader;
+            }
+            return null;
+        }
+
         public override object ReadJson(JsonReader reader,
                                         Type objectType,
                                          object existingValue,
@@ -79,7 +87,7 @@ namespace NINA.Sequencer.Serialization {
 
                         // Extract plugin name and get upgrader
                         string pluginName = ExtractPluginName(originalType);
-                        ISequenceEntityUpgrader upgrader = null; // SequenceEntityUpgraderRegistry.GetUpgraderForPlugin(pluginName);
+                        ISequenceEntityUpgrader upgrader = GetUpgraderForPlugin(pluginName);
 
                         // Only create upgradeContext if an upgrader exists
                         SequenceUpgradeContext upgradeContext = null;
