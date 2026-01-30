@@ -139,14 +139,18 @@ namespace NINA.Sequencer.Serialization {
                         string pluginName = SequenceEntityUpgraderRegistry.ExtractPluginName(originalType);
                         var upgrader = SequenceEntityUpgraderRegistry.GetUpgraderForPlugin(pluginName);
 
-                        // Create upgrade context ONCE
-                        var upgradeContext = new SequenceUpgradeContext {
-                            Serializer = serializer,
-                            RequestedType = objectType,
-                            Json = jObject,
-                            OriginalTypeString = originalType,
-                            Factory = SequenceEntityUpgraderRegistry.Factory
-                        };
+                        // Only create upgradeContext if an upgrader exists
+                        SequenceUpgradeContext upgradeContext = null;
+                        if (upgrader != null)
+                        {
+                            upgradeContext = new SequenceUpgradeContext {
+                                Serializer = serializer,
+                                RequestedType = objectType,
+                                Json = jObject,
+                                OriginalTypeString = originalType,
+                                Factory = SequenceEntityUpgraderRegistry.Factory
+                            };
+                        }
 
                         // BeforeCreate stage
                         if (upgrader != null && upgrader.CanUpgrade(upgradeContext, SequenceUpgradeStage.BeforeCreate)) {
@@ -154,21 +158,13 @@ namespace NINA.Sequencer.Serialization {
                                 var beforeCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.BeforeCreate, null);
                                 if (beforeCreateResult is JObject modifiedJObject) {
                                     jObject = modifiedJObject;
-                                    // Update the JObject in context
-                                    upgradeContext = new SequenceUpgradeContext {
-                                        Serializer = serializer,
-                                        RequestedType = objectType,
-                                        Json = modifiedJObject,
-                                        OriginalTypeString = originalType,
-                                        Factory = SequenceEntityUpgraderRegistry.Factory
-                                    };
                                 }
                             } catch (Exception ex) {
                                 Logger.Warning($"BeforeCreate upgrade failed for type {originalType}: {ex.Message}");
                             }
                         }
 
-                        // Create target object
+                        // Create target object (uses the potentially modified jObject)
                         target = Create(objectType, jObject);
 
                         // AfterCreate stage

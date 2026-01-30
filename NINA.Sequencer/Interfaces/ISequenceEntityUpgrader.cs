@@ -1,17 +1,14 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace NINA.Sequencer {
-    public interface ISequenceEntityUpgrader : ISequenceEntity {
-        string Name { get; }
+    public interface ISequenceEntityUpgrader {
+        string Name { get; set; }
         bool CanUpgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage);
-
         object? Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object? current);
     }
-
+    
     public sealed class SequenceUpgradeContext {
         public required JsonSerializer Serializer { get; init; }
         public required Type RequestedType { get; init; }
@@ -27,3 +24,4 @@ namespace NINA.Sequencer {
         AfterPopulate
     }
 }
+    

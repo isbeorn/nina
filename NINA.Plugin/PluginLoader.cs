@@ -477,7 +477,16 @@ namespace NINA.Plugin {
         var pluginConditions = AssignSequenceEntity(parts.ConditionImports, resourceDictionary, pluginName);
         var pluginTriggers = AssignSequenceEntity(parts.TriggerImports, resourceDictionary, pluginName);
         var pluginContainers = AssignSequenceEntity(parts.ContainerImports, resourceDictionary, pluginName);
-        var pluginUpgraders = AssignSequenceEntity(parts.UpgraderImports, resourceDictionary, pluginName);
+        
+        // Upgraders don't implement ISequenceEntity, so handle them separately
+        var pluginUpgraders = parts.UpgraderImports.Select(u => {
+            var upgrader = u.Value;
+            // Set the Name property from metadata
+            if (u.Metadata.TryGetValue("Name", out var nameObj)) {
+                upgrader.Name = nameObj.ToString();
+            }
+            return upgrader;
+        }).ToList();
 
         Items = Items.Concat(pluginItems).ToList();
         Conditions = Conditions.Concat(pluginConditions).ToList();
