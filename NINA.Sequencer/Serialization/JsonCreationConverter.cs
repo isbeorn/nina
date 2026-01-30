@@ -29,7 +29,6 @@ namespace NINA.Sequencer.Serialization {
     public static class SequenceEntityUpgraderRegistry {
         // Dictionary keyed by plugin name -> single upgrader that handles all stages
         private static Dictionary<string, ISequenceEntityUpgrader> _upgraders = new Dictionary<string, ISequenceEntityUpgrader>();
-        private static ISequencerFactory _factory;
 
         /// <summary>
         /// Register a single upgrader for a plugin (handles all stages)
@@ -39,18 +38,6 @@ namespace NINA.Sequencer.Serialization {
             _upgraders[pluginName] = upgrader;
             Logger.Info($"Registered upgrader for {pluginName}");
         }
-
-        /// <summary>
-        /// Register the sequencer factory for use in upgrade contexts
-        /// </summary>
-        public static void RegisterFactory(ISequencerFactory factory) {
-            _factory = factory;
-        }
-
-        /// <summary>
-        /// Get factory instance
-        /// </summary>
-        public static ISequencerFactory Factory => _factory;
 
         /// <summary>
         /// Get upgrader for a specific plugin
@@ -99,6 +86,8 @@ namespace NINA.Sequencer.Serialization {
 
         public override bool CanWrite => false;
 
+        public ISequencerFactory Factory;
+        
         public override object ReadJson(JsonReader reader,
                                         Type objectType,
                                          object existingValue,
@@ -131,7 +120,7 @@ namespace NINA.Sequencer.Serialization {
                                 RequestedType = objectType,
                                 Json = jObject,
                                 OriginalTypeString = originalType,
-                                Factory = SequenceEntityUpgraderRegistry.Factory
+                                Factory = Factory
                             };
                         }
 

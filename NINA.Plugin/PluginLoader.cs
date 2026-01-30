@@ -498,6 +498,7 @@ namespace NINA.Plugin {
             var upgrader = pluginUpgraders.First(); // Should only be one per plugin
             // Extract assembly name from the catalog - this will be "WhenPlugin", "NINA.Sequencer", etc.
             var assemblyName = (catalog as AssemblyCatalog)?.Assembly.GetName().Name ?? "Unknown";
+            // Is this a good place to register the upgrader?
             SequenceEntityUpgraderRegistry.RegisterUpgrader(assemblyName, upgrader);
         }
 

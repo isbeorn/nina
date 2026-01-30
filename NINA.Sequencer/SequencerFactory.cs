@@ -102,8 +102,6 @@ namespace NINA.Sequencer {
             ItemsView = CollectionViewSource.GetDefaultView(allEntities);
 
             profileService.ProfileChanged += ProfileService_ProfileChanged;
-
-            SequenceEntityUpgraderRegistry.RegisterFactory(this);
         }
 
         private void ProfileService_ProfileChanged(object sender, EventArgs e) {
