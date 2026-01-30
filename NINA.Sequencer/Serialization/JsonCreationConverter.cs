@@ -33,28 +33,20 @@ using static NINA.Astrometry.NOVAS;
 namespace NINA.Sequencer.Serialization {
 
     /// <summary>
-    /// Non-generic static storage for upgraders to avoid generic type parameter issues
+    /// Non-generic static storage for upgraders - one per plugin
     /// </summary>
     public static class SequenceEntityUpgraderRegistry {
-        // Dictionary keyed by (pluginName, stage) -> list of upgraders
-        private static Dictionary<(string pluginName, SequenceUpgradeStage stage), List<ISequenceEntityUpgrader>> _upgraders 
-            = new Dictionary<(string, SequenceUpgradeStage), List<ISequenceEntityUpgrader>>();
-        
+        // Dictionary keyed by plugin name -> single upgrader that handles all stages
+        private static Dictionary<string, ISequenceEntityUpgrader> _upgraders = new Dictionary<string, ISequenceEntityUpgrader>();
         private static ISequencerFactory _factory;
 
         /// <summary>
-        /// Register upgraders from a specific plugin, indexed by plugin name and stage
+        /// Register a single upgrader for a plugin (handles all stages)
         /// </summary>
-        public static void RegisterUpgraders(string pluginName, IEnumerable<ISequenceEntityUpgrader> upgraders) {
-            if (string.IsNullOrWhiteSpace(pluginName) || upgraders == null) return;
-
-            foreach (var upgrader in upgraders) {
-                var key = (pluginName, upgrader.Stage);
-                if (!_upgraders.ContainsKey(key)) {
-                    _upgraders[key] = new List<ISequenceEntityUpgrader>();
-                }
-                _upgraders[key].Add(upgrader);
-            }
+        public static void RegisterUpgrader(string pluginName, ISequenceEntityUpgrader upgrader) {
+            if (string.IsNullOrWhiteSpace(pluginName) || upgrader == null) return;
+            _upgraders[pluginName] = upgrader;
+            Logger.Info($"Registered upgrader for {pluginName}");
         }
 
         /// <summary>
@@ -70,17 +62,14 @@ namespace NINA.Sequencer.Serialization {
         public static ISequencerFactory Factory => _factory;
 
         /// <summary>
-        /// Get upgraders for a specific plugin and stage
+        /// Get upgrader for a specific plugin
         /// </summary>
-        public static IEnumerable<ISequenceEntityUpgrader> GetUpgradersForPlugin(string pluginName, SequenceUpgradeStage stage) {
+        public static ISequenceEntityUpgrader GetUpgraderForPlugin(string pluginName) {
             if (string.IsNullOrWhiteSpace(pluginName)) {
-                return Enumerable.Empty<ISequenceEntityUpgrader>();
+                return null;
             }
 
-            var key = (pluginName, stage);
-            return _upgraders.TryGetValue(key, out var upgraders) 
-                ? upgraders 
-                : Enumerable.Empty<ISequenceEntityUpgrader>();
+            return _upgraders.TryGetValue(pluginName, out var upgrader) ? upgrader : null;
         }
 
         /// <summary>
@@ -146,10 +135,11 @@ namespace NINA.Sequencer.Serialization {
                             jObject["$type"] = token;
                         }
 
-                        // Extract plugin name from originalType (e.g., "WhenPlugin.When.ExpressionCondition, WhenPlugin" -> "WhenPlugin")
+                        // Extract plugin name and get upgrader
                         string pluginName = SequenceEntityUpgraderRegistry.ExtractPluginName(originalType);
+                        var upgrader = SequenceEntityUpgraderRegistry.GetUpgraderForPlugin(pluginName);
 
-                        // Create upgrade context for plugin upgraders
+                        // Create upgrade context ONCE
                         var upgradeContext = new SequenceUpgradeContext {
                             Serializer = serializer,
                             RequestedType = objectType,
@@ -158,63 +148,53 @@ namespace NINA.Sequencer.Serialization {
                             Factory = SequenceEntityUpgraderRegistry.Factory
                         };
 
-                        // Run BeforeCreate upgraders for this specific plugin
-                        object beforeCreateResult = null;
-                        var beforeCreateUpgraders = SequenceEntityUpgraderRegistry.GetUpgradersForPlugin(pluginName, SequenceUpgradeStage.BeforeCreate);
-                        foreach (var upgrader in beforeCreateUpgraders) {
+                        // BeforeCreate stage
+                        if (upgrader != null && upgrader.CanUpgrade(upgradeContext, SequenceUpgradeStage.BeforeCreate)) {
                             try {
-                                if (upgrader.CanUpgrade(upgradeContext)) {
-                                    beforeCreateResult = upgrader.Upgrade(upgradeContext, beforeCreateResult);
-                                    // If upgrader modified the JObject, update it and recreate context
-                                    if (beforeCreateResult is JObject modifiedJObject) {
-                                        jObject = modifiedJObject;
-                                        upgradeContext = new SequenceUpgradeContext {
-                                            Serializer = serializer,
-                                            RequestedType = objectType,
-                                            Json = modifiedJObject,
-                                            OriginalTypeString = originalType,
-                                            Factory = SequenceEntityUpgraderRegistry.Factory
-                                        };
-                                    }
+                                var beforeCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.BeforeCreate, null);
+                                if (beforeCreateResult is JObject modifiedJObject) {
+                                    jObject = modifiedJObject;
+                                    // Update the JObject in context
+                                    upgradeContext = new SequenceUpgradeContext {
+                                        Serializer = serializer,
+                                        RequestedType = objectType,
+                                        Json = modifiedJObject,
+                                        OriginalTypeString = originalType,
+                                        Factory = SequenceEntityUpgraderRegistry.Factory
+                                    };
                                 }
                             } catch (Exception ex) {
-                                Logger.Warning($"BeforeCreate upgrader '{upgrader.Name}' failed for type {originalType}: {ex.Message}");
+                                Logger.Warning($"BeforeCreate upgrade failed for type {originalType}: {ex.Message}");
                             }
                         }
 
-                        // Create target object based on JObject
+                        // Create target object
                         target = Create(objectType, jObject);
 
-                        // Run AfterCreate upgraders for this specific plugin
-                        var afterCreateUpgraders = SequenceEntityUpgraderRegistry.GetUpgradersForPlugin(pluginName, SequenceUpgradeStage.AfterCreate);
-                        foreach (var upgrader in afterCreateUpgraders) {
+                        // AfterCreate stage
+                        if (upgrader != null && upgrader.CanUpgrade(upgradeContext, SequenceUpgradeStage.AfterCreate)) {
                             try {
-                                if (upgrader.CanUpgrade(upgradeContext)) {
-                                    var upgraded = upgrader.Upgrade(upgradeContext, target);
-                                    if (upgraded != null && upgraded is T typedUpgraded) {
-                                        target = typedUpgraded;
-                                    }
+                                var afterCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterCreate, target);
+                                if (afterCreateResult != null && afterCreateResult is T typedResult) {
+                                    target = typedResult;
                                 }
                             } catch (Exception ex) {
-                                Logger.Warning($"AfterCreate upgrader '{upgrader.Name}' failed for type {originalType}: {ex.Message}");
+                                Logger.Warning($"AfterCreate upgrade failed for type {originalType}: {ex.Message}");
                             }
                         }
-                  
+
                         // Populate the object properties
                         serializer.Populate(jObject.CreateReader(), target);
 
-                        // Run AfterPopulate upgraders for this specific plugin
-                        var afterPopulateUpgraders = SequenceEntityUpgraderRegistry.GetUpgradersForPlugin(pluginName, SequenceUpgradeStage.AfterPopulate);
-                        foreach (var upgrader in afterPopulateUpgraders) {
+                        // AfterPopulate stage
+                        if (upgrader != null && upgrader.CanUpgrade(upgradeContext, SequenceUpgradeStage.AfterPopulate)) {
                             try {
-                                if (upgrader.CanUpgrade(upgradeContext)) {
-                                    var upgraded = upgrader.Upgrade(upgradeContext, target);
-                                    if (upgraded != null && upgraded is T typedUpgraded) {
-                                        target = typedUpgraded;
-                                    }
+                                var afterPopulateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterPopulate, target);
+                                if (afterPopulateResult != null && afterPopulateResult is T typedResult) {
+                                    target = typedResult;
                                 }
                             } catch (Exception ex) {
-                                Logger.Warning($"AfterPopulate upgrader '{upgrader.Name}' failed for type {originalType}: {ex.Message}");
+                                Logger.Warning($"AfterPopulate upgrade failed for type {originalType}: {ex.Message}");
                             }
                         }
 

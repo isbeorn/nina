@@ -464,41 +464,41 @@ namespace NINA.Plugin {
         }
 
         private void Compose(ComposablePartCatalog catalog, string pluginName) {
-            try {
-                var container = GetContainer(catalog);
-                var parts = new PartsImport();
-                container.ComposeParts(parts);
+    try {
+        var container = GetContainer(catalog);
+        var parts = new PartsImport();
+        container.ComposeParts(parts);
 
-                foreach (var template in parts.DataTemplateImports) {
-                    Application.Current?.Resources.MergedDictionaries.Add(template);
-                }
-
-                var pluginItems = AssignSequenceEntity(parts.ItemImports, resourceDictionary, pluginName);
-                var pluginConditions = AssignSequenceEntity(parts.ConditionImports, resourceDictionary, pluginName);
-                var pluginTriggers = AssignSequenceEntity(parts.TriggerImports, resourceDictionary, pluginName);
-                var pluginContainers = AssignSequenceEntity(parts.ContainerImports, resourceDictionary, pluginName);
-                var pluginUpgraders = AssignSequenceEntity(parts.UpgraderImports, resourceDictionary, pluginName);  // ADD THIS LINE
-
-                Items = Items.Concat(pluginItems).ToList();
-                Conditions = Conditions.Concat(pluginConditions).ToList();
-                Triggers = Triggers.Concat(pluginTriggers).ToList();
-                Container = Container.Concat(pluginContainers).ToList();
-
-                // ADD THESE LINES:
-                var assemblyName = string.IsNullOrEmpty(pluginName) ? "NINA.Sequencer" : pluginName;
-                if (pluginUpgraders.Any()) {
-                    SequenceEntityUpgraderRegistry.RegisterUpgraders(assemblyName, pluginUpgraders);
-                    Logger.Info($"Registered {pluginUpgraders.Count()} upgrader(s) for {assemblyName}");
-                }
-
-                DockableVMs = DockableVMs.Concat(parts.DockableVMImports).ToList();
-                PluggableBehaviors = PluggableBehaviors.Concat(parts.PluggableBehaviorImports).ToList();
-                DeviceProviders = DeviceProviders.Concat(parts.DeviceProviderImports).ToList();
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                throw;
-            }
+        foreach (var template in parts.DataTemplateImports) {
+            Application.Current?.Resources.MergedDictionaries.Add(template);
         }
+
+        var pluginItems = AssignSequenceEntity(parts.ItemImports, resourceDictionary, pluginName);
+        var pluginConditions = AssignSequenceEntity(parts.ConditionImports, resourceDictionary, pluginName);
+        var pluginTriggers = AssignSequenceEntity(parts.TriggerImports, resourceDictionary, pluginName);
+        var pluginContainers = AssignSequenceEntity(parts.ContainerImports, resourceDictionary, pluginName);
+        var pluginUpgraders = AssignSequenceEntity(parts.UpgraderImports, resourceDictionary, pluginName);
+
+        Items = Items.Concat(pluginItems).ToList();
+        Conditions = Conditions.Concat(pluginConditions).ToList();
+        Triggers = Triggers.Concat(pluginTriggers).ToList();
+        Container = Container.Concat(pluginContainers).ToList();
+
+        // Register single upgrader for this plugin
+        if (pluginUpgraders.Any()) {
+            var upgrader = pluginUpgraders.First(); // Should only be one per plugin
+            var assemblyName = string.IsNullOrEmpty(pluginName) ? "NINA.Sequencer" : pluginName;
+            SequenceEntityUpgraderRegistry.RegisterUpgrader(assemblyName, upgrader);
+        }
+
+        DockableVMs = DockableVMs.Concat(parts.DockableVMImports).ToList();
+        PluggableBehaviors = PluggableBehaviors.Concat(parts.PluggableBehaviorImports).ToList();
+        DeviceProviders = DeviceProviders.Concat(parts.DeviceProviderImports).ToList();
+    } catch (Exception ex) {
+        Logger.Error(ex);
+        throw;
+    }
+}
         private CompositionContainer GetContainer(ComposablePartCatalog catalog) {
             var container = new CompositionContainer(catalog, CompositionOptions.DisableSilentRejection | CompositionOptions.IsThreadSafe);
             container.ComposeExportedValue(profileService);
