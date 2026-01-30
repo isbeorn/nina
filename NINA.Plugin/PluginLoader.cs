@@ -36,6 +36,7 @@ using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility.DateTimeProvider;
+using NINA.Sequencer.Serialization;
 using NINA.WPF.Base.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
@@ -476,11 +477,19 @@ namespace NINA.Plugin {
                 var pluginConditions = AssignSequenceEntity(parts.ConditionImports, resourceDictionary, pluginName);
                 var pluginTriggers = AssignSequenceEntity(parts.TriggerImports, resourceDictionary, pluginName);
                 var pluginContainers = AssignSequenceEntity(parts.ContainerImports, resourceDictionary, pluginName);
+                var pluginUpgraders = AssignSequenceEntity(parts.UpgraderImports, resourceDictionary, pluginName);  // ADD THIS LINE
 
                 Items = Items.Concat(pluginItems).ToList();
                 Conditions = Conditions.Concat(pluginConditions).ToList();
                 Triggers = Triggers.Concat(pluginTriggers).ToList();
                 Container = Container.Concat(pluginContainers).ToList();
+
+                // ADD THESE LINES:
+                var assemblyName = string.IsNullOrEmpty(pluginName) ? "NINA.Sequencer" : pluginName;
+                if (pluginUpgraders.Any()) {
+                    SequenceEntityUpgraderRegistry.RegisterUpgraders(assemblyName, pluginUpgraders);
+                    Logger.Info($"Registered {pluginUpgraders.Count()} upgrader(s) for {assemblyName}");
+                }
 
                 DockableVMs = DockableVMs.Concat(parts.DockableVMImports).ToList();
                 PluggableBehaviors = PluggableBehaviors.Concat(parts.PluggableBehaviorImports).ToList();
@@ -490,7 +499,6 @@ namespace NINA.Plugin {
                 throw;
             }
         }
-
         private CompositionContainer GetContainer(ComposablePartCatalog catalog) {
             var container = new CompositionContainer(catalog, CompositionOptions.DisableSilentRejection | CompositionOptions.IsThreadSafe);
             container.ComposeExportedValue(profileService);
@@ -731,29 +739,32 @@ namespace NINA.Plugin {
 
     public class PartsImport {
 
-        [ImportMany(typeof(ISequenceItem))]
-        public IEnumerable<Lazy<ISequenceItem, IDictionary<string, object>>> ItemImports { get; private set; }
+    [ImportMany(typeof(ISequenceItem))]
+    public IEnumerable<Lazy<ISequenceItem, IDictionary<string, object>>> ItemImports { get; private set; }
 
-        [ImportMany(typeof(ISequenceCondition))]
-        public IEnumerable<Lazy<ISequenceCondition, IDictionary<string, object>>> ConditionImports { get; private set; }
+    [ImportMany(typeof(ISequenceCondition))]
+    public IEnumerable<Lazy<ISequenceCondition, IDictionary<string, object>>> ConditionImports { get; private set; }
 
-        [ImportMany(typeof(ISequenceTrigger))]
-        public IEnumerable<Lazy<ISequenceTrigger, IDictionary<string, object>>> TriggerImports { get; private set; }
+    [ImportMany(typeof(ISequenceTrigger))]
+    public IEnumerable<Lazy<ISequenceTrigger, IDictionary<string, object>>> TriggerImports { get; private set; }
 
-        [ImportMany(typeof(ISequenceContainer))]
-        public IEnumerable<Lazy<ISequenceContainer, IDictionary<string, object>>> ContainerImports { get; private set; }
+    [ImportMany(typeof(ISequenceContainer))]
+    public IEnumerable<Lazy<ISequenceContainer, IDictionary<string, object>>> ContainerImports { get; private set; }
 
-        [ImportMany(typeof(ResourceDictionary))]
-        public IEnumerable<ResourceDictionary> DataTemplateImports { get; private set; }
+    [ImportMany(typeof(ISequenceEntityUpgrader))]
+    public IEnumerable<Lazy<ISequenceEntityUpgrader, IDictionary<string, object>>> UpgraderImports { get; private set; }
 
-        [ImportMany(typeof(IDockableVM))]
-        public IEnumerable<IDockableVM> DockableVMImports { get; private set; }
+    [ImportMany(typeof(ResourceDictionary))]
+    public IEnumerable<ResourceDictionary> DataTemplateImports { get; private set; }
 
-        [ImportMany(typeof(IPluggableBehavior))]
-        public IEnumerable<IPluggableBehavior> PluggableBehaviorImports { get; private set; }
+    [ImportMany(typeof(IDockableVM))]
+    public IEnumerable<IDockableVM> DockableVMImports { get; private set; }
 
-        [ImportMany(typeof(IEquipmentProvider))]
-        public IEnumerable<IEquipmentProvider> DeviceProviderImports { get; private set; }
+    [ImportMany(typeof(IPluggableBehavior))]
+    public IEnumerable<IPluggableBehavior> PluggableBehaviorImports { get; private set; }
+
+    [ImportMany(typeof(IEquipmentProvider))]
+    public IEnumerable<IEquipmentProvider> DeviceProviderImports { get; private set; }
 
 
     }
