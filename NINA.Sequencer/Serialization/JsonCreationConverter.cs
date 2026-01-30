@@ -23,51 +23,6 @@ using NINA.Sequencer.Trigger;
 
 namespace NINA.Sequencer.Serialization {
 
-    /// <summary>
-    /// Non-generic static storage for upgraders - one per plugin
-    /// </summary>
-    public static class SequenceEntityUpgraderRegistry {
-        // Dictionary keyed by plugin name -> single upgrader that handles all stages
-        private static Dictionary<string, ISequenceEntityUpgrader> _upgraders = new Dictionary<string, ISequenceEntityUpgrader>();
-
-        /// <summary>
-        /// Register a single upgrader for a plugin (handles all stages)
-        /// </summary>
-        public static void RegisterUpgrader(string pluginName, ISequenceEntityUpgrader upgrader) {
-            if (string.IsNullOrWhiteSpace(pluginName) || upgrader == null) return;
-            _upgraders[pluginName] = upgrader;
-            Logger.Info($"Registered upgrader for {pluginName}");
-        }
-
-        /// <summary>
-        /// Get upgrader for a specific plugin
-        /// </summary>
-        public static ISequenceEntityUpgrader GetUpgraderForPlugin(string pluginName) {
-            if (string.IsNullOrWhiteSpace(pluginName)) {
-                return null;
-            }
-
-            return _upgraders.TryGetValue(pluginName, out var upgrader) ? upgrader : null;
-        }
-
-        /// <summary>
-        /// Extract plugin/assembly name from a type string like "Namespace.Type, AssemblyName"
-        /// </summary>
-        public static string ExtractPluginName(string typeString) {
-            if (string.IsNullOrWhiteSpace(typeString)) {
-                return string.Empty;
-            }
-
-            // Format: "Namespace.Type, AssemblyName"
-            var parts = typeString.Split(',');
-            if (parts.Length >= 2) {
-                return parts[1].Trim();
-            }
-
-            return string.Empty;
-        }
-    }
-
     public abstract class JsonCreationConverter<T> : JsonConverter {
 
         /// <summary>
@@ -87,7 +42,21 @@ namespace NINA.Sequencer.Serialization {
         public override bool CanWrite => false;
 
         public ISequencerFactory Factory;
-        
+
+        public static string ExtractPluginName(string typeString) {
+            if (string.IsNullOrWhiteSpace(typeString)) {
+                return string.Empty;
+            }
+
+            // Format: "Namespace.Type, AssemblyName"
+            var parts = typeString.Split(',');
+            if (parts.Length >= 2) {
+                return parts[1].Trim();
+            }
+
+            return string.Empty;
+        }
+
         public override object ReadJson(JsonReader reader,
                                         Type objectType,
                                          object existingValue,
@@ -109,8 +78,8 @@ namespace NINA.Sequencer.Serialization {
                         string originalType = token?.ToString();
 
                         // Extract plugin name and get upgrader
-                        string pluginName = SequenceEntityUpgraderRegistry.ExtractPluginName(originalType);
-                        var upgrader = SequenceEntityUpgraderRegistry.GetUpgraderForPlugin(pluginName);
+                        string pluginName = ExtractPluginName(originalType);
+                        ISequenceEntityUpgrader upgrader = null; // SequenceEntityUpgraderRegistry.GetUpgraderForPlugin(pluginName);
 
                         // Only create upgradeContext if an upgrader exists
                         SequenceUpgradeContext upgradeContext = null;

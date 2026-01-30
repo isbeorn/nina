@@ -96,7 +96,7 @@ namespace NINA.ViewModel.Sequencer {
 
             Task.Run(async () => {
                 await pluginProvider.Load();
-                this.factory = new SequencerFactory(profileService, pluginProvider.Items, pluginProvider.Conditions, pluginProvider.Triggers, pluginProvider.Container, pluginProvider.DateTimeProviders);
+                this.factory = new SequencerFactory(profileService, pluginProvider.Items, pluginProvider.Conditions, pluginProvider.Triggers, pluginProvider.Container, pluginProvider.DateTimeProviders, pluginProvider.Upgraders);
 
                 this.simpleSequenceVM = new SimpleSequenceVM(profileService, sequenceMediator, cameraMediator, applicationStatusMediator, nighttimeCalculator, planetariumFactory, framingAssistantVM, applicationMediator, factory);
                 this.sequence2VM = new Sequence2VM(profileService, commandLineOptions, sequenceMediator, applicationMediator, applicationStatusMediator, cameraMediator, factory, symbolBroker);

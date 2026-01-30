@@ -464,52 +464,42 @@ namespace NINA.Plugin {
         }
 
         private void Compose(ComposablePartCatalog catalog, string pluginName) {
-    try {
-        var container = GetContainer(catalog);
-        var parts = new PartsImport();
-        container.ComposeParts(parts);
+            try {
+                var container = GetContainer(catalog);
+                var parts = new PartsImport();
+                container.ComposeParts(parts);
 
-        foreach (var template in parts.DataTemplateImports) {
-            Application.Current?.Resources.MergedDictionaries.Add(template);
-        }
+                foreach (var template in parts.DataTemplateImports) {
+                    Application.Current?.Resources.MergedDictionaries.Add(template);
+                }
 
-        var pluginItems = AssignSequenceEntity(parts.ItemImports, resourceDictionary, pluginName);
-        var pluginConditions = AssignSequenceEntity(parts.ConditionImports, resourceDictionary, pluginName);
-        var pluginTriggers = AssignSequenceEntity(parts.TriggerImports, resourceDictionary, pluginName);
-        var pluginContainers = AssignSequenceEntity(parts.ContainerImports, resourceDictionary, pluginName);
-        
-        // Upgraders don't implement ISequenceEntity, so handle them separately
-        var pluginUpgraders = parts.UpgraderImports.Select(u => {
-            var upgrader = u.Value;
-            // Set the Name property from metadata
-            if (u.Metadata.TryGetValue("Name", out var nameObj)) {
-                upgrader.Name = nameObj.ToString();
+                var pluginItems = AssignSequenceEntity(parts.ItemImports, resourceDictionary, pluginName);
+                var pluginConditions = AssignSequenceEntity(parts.ConditionImports, resourceDictionary, pluginName);
+                var pluginTriggers = AssignSequenceEntity(parts.TriggerImports, resourceDictionary, pluginName);
+                var pluginContainers = AssignSequenceEntity(parts.ContainerImports, resourceDictionary, pluginName);
+
+                // Upgraders don't implement ISequenceEntity, so handle them separately
+                Upgraders = parts.UpgraderImports.Select(u => {
+                    var upgrader = u.Value;
+                    // Set the Name property from metadata
+                    //if (u.Metadata.TryGetValue("Name", out var nameObj)) {
+                    //}
+                    upgrader.Name = (catalog as AssemblyCatalog)?.Assembly.GetName().Name ?? "Unknown";
+                    return upgrader;
+                }).ToList();
+
+                Items = Items.Concat(pluginItems).ToList();
+                Conditions = Conditions.Concat(pluginConditions).ToList();
+                Triggers = Triggers.Concat(pluginTriggers).ToList();
+                Container = Container.Concat(pluginContainers).ToList();
+                DockableVMs = DockableVMs.Concat(parts.DockableVMImports).ToList();
+                PluggableBehaviors = PluggableBehaviors.Concat(parts.PluggableBehaviorImports).ToList();
+                DeviceProviders = DeviceProviders.Concat(parts.DeviceProviderImports).ToList();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                throw;
             }
-            return upgrader;
-        }).ToList();
-
-        Items = Items.Concat(pluginItems).ToList();
-        Conditions = Conditions.Concat(pluginConditions).ToList();
-        Triggers = Triggers.Concat(pluginTriggers).ToList();
-        Container = Container.Concat(pluginContainers).ToList();
-
-        // Register single upgrader for this plugin using the actual assembly name
-        if (pluginUpgraders.Any()) {
-            var upgrader = pluginUpgraders.First(); // Should only be one per plugin
-            // Extract assembly name from the catalog - this will be "WhenPlugin", "NINA.Sequencer", etc.
-            var assemblyName = (catalog as AssemblyCatalog)?.Assembly.GetName().Name ?? "Unknown";
-            // Is this a good place to register the upgrader?
-            SequenceEntityUpgraderRegistry.RegisterUpgrader(assemblyName, upgrader);
         }
-
-        DockableVMs = DockableVMs.Concat(parts.DockableVMImports).ToList();
-        PluggableBehaviors = PluggableBehaviors.Concat(parts.PluggableBehaviorImports).ToList();
-        DeviceProviders = DeviceProviders.Concat(parts.DeviceProviderImports).ToList();
-    } catch (Exception ex) {
-        Logger.Error(ex);
-        throw;
-    }
-}
         private CompositionContainer GetContainer(ComposablePartCatalog catalog) {
             var container = new CompositionContainer(catalog, CompositionOptions.DisableSilentRejection | CompositionOptions.IsThreadSafe);
             container.ComposeExportedValue(profileService);
@@ -568,6 +558,7 @@ namespace NINA.Plugin {
         public IDictionary<IPluginManifest, bool> Plugins { get; private set; }
         public IList<IEquipmentProvider> DeviceProviders { get; private set; }
         public IList<Assembly> Assemblies { get; private set; } = new List<Assembly>();
+        public IList<ISequenceEntityUpgrader> Upgraders { get; private set; }
 
         private readonly IProfileService profileService;
         private readonly ICameraMediator cameraMediator;
