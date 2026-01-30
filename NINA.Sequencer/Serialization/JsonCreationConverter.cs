@@ -14,21 +14,12 @@
 
 using System;
 using System.Collections.Generic; 
-using System.Linq;
-using System.Reflection;
-using Microsoft.Extensions.Logging.Configuration;
-using Microsoft.Xaml.Behaviors;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NINA.Core.Utility;
 using NINA.Sequencer.Conditions;
-using NINA.Sequencer.Container;
-using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
-using Parlot.Fluent;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
-using static NINA.Astrometry.NOVAS;
 
 namespace NINA.Sequencer.Serialization {
 
@@ -128,13 +119,6 @@ namespace NINA.Sequencer.Serialization {
                         jObject.TryGetValue("$type", out token);
                         string originalType = token?.ToString();
 
-                        Upgrade lite = Upgrade.NINA;
-                        (lite, token) = PowerupsLiteSimpleMigration(token?.ToString());
-
-                        if (lite == Upgrade.Lite) {
-                            jObject["$type"] = token;
-                        }
-
                         // Extract plugin name and get upgrader
                         string pluginName = SequenceEntityUpgraderRegistry.ExtractPluginName(originalType);
                         var upgrader = SequenceEntityUpgraderRegistry.GetUpgraderForPlugin(pluginName);
@@ -223,18 +207,6 @@ namespace NINA.Sequencer.Serialization {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
             throw new NotImplementedException();
         }
-
-        private enum Upgrade { NINA, Lite, None }
-
-        // When all that's needed is changing the $type
-        private (Upgrade, string) PowerupsLiteSimpleMigration(string token) => token switch {
-            "WhenPlugin.When.CVContainer, WhenPlugin" => (Upgrade.Lite, "NINA.Sequencer.Container.SequentialContainer, NINA.Sequencer"),
-            // Complex types
-            "WhenPlugin.When.Call, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Call, WhenPlugin"), // No change),
-            "WhenPlugin.When.Return, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Return, WhenPlugin"), // No change),
-
-            _ => (Upgrade.NINA, token)
-        };
 
         protected Type GetType(string typeString) {
             var t = Type.GetType(typeString);
