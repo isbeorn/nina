@@ -743,33 +743,31 @@ namespace NINA.Plugin {
 
     public class PartsImport {
 
-    [ImportMany(typeof(ISequenceItem))]
-    public IEnumerable<Lazy<ISequenceItem, IDictionary<string, object>>> ItemImports { get; private set; }
+        [ImportMany(typeof(ISequenceItem))]
+        public IEnumerable<Lazy<ISequenceItem, IDictionary<string, object>>> ItemImports { get; private set; }
 
-    [ImportMany(typeof(ISequenceCondition))]
-    public IEnumerable<Lazy<ISequenceCondition, IDictionary<string, object>>> ConditionImports { get; private set; }
+        [ImportMany(typeof(ISequenceCondition))]
+        public IEnumerable<Lazy<ISequenceCondition, IDictionary<string, object>>> ConditionImports { get; private set; }
 
-    [ImportMany(typeof(ISequenceTrigger))]
-    public IEnumerable<Lazy<ISequenceTrigger, IDictionary<string, object>>> TriggerImports { get; private set; }
+        [ImportMany(typeof(ISequenceTrigger))]
+        public IEnumerable<Lazy<ISequenceTrigger, IDictionary<string, object>>> TriggerImports { get; private set; }
 
-    [ImportMany(typeof(ISequenceContainer))]
-    public IEnumerable<Lazy<ISequenceContainer, IDictionary<string, object>>> ContainerImports { get; private set; }
+        [ImportMany(typeof(ISequenceContainer))]
+        public IEnumerable<Lazy<ISequenceContainer, IDictionary<string, object>>> ContainerImports { get; private set; }
 
-    [ImportMany(typeof(ISequenceEntityUpgrader))]
-    public IEnumerable<Lazy<ISequenceEntityUpgrader, IDictionary<string, object>>> UpgraderImports { get; private set; }
+        [ImportMany(typeof(ISequenceEntityUpgrader))]
+        public IEnumerable<Lazy<ISequenceEntityUpgrader, IDictionary<string, object>>> UpgraderImports { get; private set; }
 
-    [ImportMany(typeof(ResourceDictionary))]
-    public IEnumerable<ResourceDictionary> DataTemplateImports { get; private set; }
+        [ImportMany(typeof(ResourceDictionary))]
+        public IEnumerable<ResourceDictionary> DataTemplateImports { get; private set; }
 
-    [ImportMany(typeof(IDockableVM))]
-    public IEnumerable<IDockableVM> DockableVMImports { get; private set; }
+        [ImportMany(typeof(IDockableVM))]
+        public IEnumerable<IDockableVM> DockableVMImports { get; private set; }
 
-    [ImportMany(typeof(IPluggableBehavior))]
-    public IEnumerable<IPluggableBehavior> PluggableBehaviorImports { get; private set; }
+        [ImportMany(typeof(IPluggableBehavior))]
+        public IEnumerable<IPluggableBehavior> PluggableBehaviorImports { get; private set; }
 
-    [ImportMany(typeof(IEquipmentProvider))]
-    public IEnumerable<IEquipmentProvider> DeviceProviderImports { get; private set; }
-
-
+        [ImportMany(typeof(IEquipmentProvider))]
+        public IEnumerable<IEquipmentProvider> DeviceProviderImports { get; private set; }
     }
 }

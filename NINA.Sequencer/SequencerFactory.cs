@@ -60,22 +60,22 @@ namespace NINA.Sequencer {
             Container = new ObservableCollection<ISequenceContainer>(container);
             Upgraders = new ObservableCollection<ISequenceEntityUpgrader>(upgraders);
 
-            var enitityOptions = new PluginOptionsAccessor(profileService, Guid.Parse("E7C2BE8E-479B-4DBA-A0B0-D513B77F9A54"));
+            var entityOptions = new PluginOptionsAccessor(profileService, Guid.Parse("E7C2BE8E-479B-4DBA-A0B0-D513B77F9A54"));
             var allEntities = new List<SidebarEntity>();
             var sidebarItems = new List<SidebarEntity>();
             var sidebarConditions = new List<SidebarEntity>();
             var sidebarTriggers = new List<SidebarEntity>();
             foreach (var item in Items) {
-                sidebarItems.Add(new SidebarEntity(item, enitityOptions));
-                allEntities.Add(new SidebarEntity(item, enitityOptions));
+                sidebarItems.Add(new SidebarEntity(item, entityOptions));
+                allEntities.Add(new SidebarEntity(item, entityOptions));
             }
             foreach (var condition in Conditions) {
-                sidebarConditions.Add(new SidebarEntity(condition, enitityOptions));
-                allEntities.Add(new SidebarEntity(condition, enitityOptions));
+                sidebarConditions.Add(new SidebarEntity(condition, entityOptions));
+                allEntities.Add(new SidebarEntity(condition, entityOptions));
             }
             foreach (var trigger in Triggers) {
-                sidebarTriggers.Add(new SidebarEntity(trigger, enitityOptions));
-                allEntities.Add(new SidebarEntity(trigger, enitityOptions));
+                sidebarTriggers.Add(new SidebarEntity(trigger, entityOptions));
+                allEntities.Add(new SidebarEntity(trigger, entityOptions));
             }
 
             ItemsView = CollectionViewSource.GetDefaultView(allEntities);
