@@ -104,7 +104,7 @@ namespace NINA.Sequencer.Serialization {
                         }
 
                         // BeforeCreate stage
-                        if (upgrader != null && upgrader.CanUpgrade(upgradeContext, SequenceUpgradeStage.BeforeCreate)) {
+                        if (upgrader != null) {
                             try {
                                 var beforeCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.BeforeCreate, null);
                                 if (beforeCreateResult is JObject modifiedJObject) {
@@ -119,7 +119,7 @@ namespace NINA.Sequencer.Serialization {
                         target = Create(objectType, jObject);
 
                         // AfterCreate stage
-                        if (upgrader != null && upgrader.CanUpgrade(upgradeContext, SequenceUpgradeStage.AfterCreate)) {
+                        if (upgrader != null) {
                             try {
                                 var afterCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterCreate, target);
                                 if (afterCreateResult != null && afterCreateResult is T typedResult) {
@@ -134,7 +134,7 @@ namespace NINA.Sequencer.Serialization {
                         serializer.Populate(jObject.CreateReader(), target);
 
                         // AfterPopulate stage
-                        if (upgrader != null && upgrader.CanUpgrade(upgradeContext, SequenceUpgradeStage.AfterPopulate)) {
+                        if (upgrader != null) {
                             try {
                                 var afterPopulateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterPopulate, target);
                                 if (afterPopulateResult != null && afterPopulateResult is T typedResult) {
