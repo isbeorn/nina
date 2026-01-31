@@ -8,6 +8,7 @@ namespace NINA.Sequencer {
         string Name { get; set; }
         // Plugin assembly name
         string AssemblyName { get; set; }
+        // This can be removed, but requires new nugets so hold off for now...
         bool CanUpgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage);
         object? Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object? current);
     }
