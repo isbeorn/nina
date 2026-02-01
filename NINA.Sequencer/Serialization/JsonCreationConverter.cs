@@ -115,8 +115,22 @@ namespace NINA.Sequencer.Serialization {
                             }
                         }
 
-                        // Create target object (uses the potentially modified jObject)
-                        target = Create(objectType, jObject);
+                        // Create stage
+                        if (upgrader != null) {
+                            try {
+                                var createResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.Create, target);
+                                if (createResult != null && createResult is T typedResult) {
+                                    target = typedResult;
+                                } else {
+                                    target = Create(objectType, jObject);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Warning($"Create upgrade failed for type {originalType}: {ex.Message}");
+                            }
+                        } else {
+                            // Create target object (uses the potentially modified jObject)
+                            target = Create(objectType, jObject);
+                        }
 
                         // AfterCreate stage
                         if (upgrader != null) {

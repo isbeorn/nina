@@ -23,6 +23,7 @@ namespace NINA.Sequencer {
 
     public enum SequenceUpgradeStage {
         BeforeCreate,
+        Create,
         AfterCreate,
         AfterPopulate
     }

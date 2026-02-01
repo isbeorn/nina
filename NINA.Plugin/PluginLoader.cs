@@ -56,6 +56,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Trinet.Core.IO.Ntfs;
+using NINA.Sequencer.Interfaces;
 
 namespace NINA.Plugin {
 
