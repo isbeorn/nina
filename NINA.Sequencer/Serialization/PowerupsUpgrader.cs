@@ -41,7 +41,7 @@ namespace NINA.Sequencer.Serialization {
             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(itemFactory, null);
             ISequenceItem newItem = (ISequenceItem)newObj;
-            newItem.Name += "[" + item.Name + " =>NINA";
+            newItem.Name += " [" + item.Name + " =>NINA";
             newItem.Attempts = item.Attempts;
             newItem.ErrorBehavior = item.ErrorBehavior;
             return newObj;
@@ -49,21 +49,21 @@ namespace NINA.Sequencer.Serialization {
         private static T CreateNewContainer<T>(string oldName) {
             var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(containerFactory, null);
-            ((ISequenceContainer)newObj).Name += "[" + oldName + " =>NINA";
+            ((ISequenceContainer)newObj).Name += " [" + oldName + " =>NINA";
             return newObj;
         }
 
         private static T CreateNewCondition<T>(string oldName) {
             var method = containerFactory.GetType().GetMethod(nameof(conditionFactory.GetCondition)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(conditionFactory, null);
-            ((ISequenceCondition)newObj).Name += "[" + oldName + " =>NINA";
+            ((ISequenceCondition)newObj).Name += " [" + oldName + " =>NINA";
             return newObj;
         }
 
         private static T CreateNewTrigger<T>(string oldName) {
             var method = triggerFactory.GetType().GetMethod(nameof(triggerFactory.GetTrigger)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(triggerFactory, null);
-            ((ISequenceTrigger)newObj).Name += "[" + oldName + " =>NINA";
+            ((ISequenceTrigger)newObj).Name += " [" + oldName + " =>NINA";
             return newObj;
         }
 
@@ -189,7 +189,7 @@ namespace NINA.Sequencer.Serialization {
                 // Update in the exprDef
                 if (newSymbol != null) {
                     exprDef = exprDef.Replace(p, newSymbol);
-                    Logger.Info($"Powerups Upgrade: Updated symbol '{p}' to '{newSymbol}' in expression '{exprDef}'");
+                    Logger.Info($"Updated symbol '{p}' to '{newSymbol}' in expression '{exprDef}'");
                 }
             }
             return exprDef;
@@ -275,6 +275,28 @@ namespace NINA.Sequencer.Serialization {
                 //Logger.Info("Powerups Upgrade: " + t);
                 switch (t.Name) {
                     // The following are updates from Powerups + instructions to NINA instructions
+                    case "ExternalScript": {
+                            ExternalScript newObj = CreateNewItem<ExternalScript>(item);
+                            PropertyInfo pi = t.GetProperty("Script");
+                            string script = pi.GetValue(item) as string;
+                            
+                            // Extract and update each expression in braces
+                            if (!string.IsNullOrEmpty(script)) {
+                                script = System.Text.RegularExpressions.Regex.Replace(
+                                    script,
+                                    @"\{([^}]+)\}",
+                                    match => {
+                                        string expr = match.Groups[1].Value;
+                                        string updated = UpdateSymbols(expr);
+                                        return "{" + updated + "}";
+                                    }
+                                );
+                            }
+                            
+                            newObj.Script = script;
+                            return newObj;
+                        }
+
                     case "DitherAfterExposures": {
                             DitherAfterExposures newObj = CreateNewTrigger<DitherAfterExposures>(trigger.Name);
                             newObj.AfterExposuresExpression.Definition = GetExpr(t, trigger, "AfterExpr");
@@ -410,9 +432,10 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "SetConstant": {
-                            GlobalConstant newObj = CreateNewItem<GlobalConstant>(item);
+                            // Local Constants become Scoped Variables
+                            Variable newObj = CreateNewItem<Variable>(item);
                             PropertyInfo pi = t.GetProperty("Definition");
-                            newObj.Expr.Definition = UpdateSymbols(pi.GetValue(item) as string);
+                            newObj.OriginalExpr.Definition = UpdateSymbols(pi.GetValue(item) as string);
                             pi = t.GetProperty("Identifier");
                             newObj.Identifier = (string)pi.GetValue(item);
                             newObj.AttachNewParent(item.Parent);
@@ -469,7 +492,7 @@ namespace NINA.Sequencer.Serialization {
                     case "AddImagePattern": {
                             if (jObject.ContainsKey("iExpr")) {
                                 PutExpr(t, item, "ExprExpression", GetExpr(t, item, "iExpr"));
-                                item.Name += " [Powerups 3=>4";
+                                item.Name += " [Upgraded";
                             }
                             return obj;
                         }
@@ -477,7 +500,7 @@ namespace NINA.Sequencer.Serialization {
                     case "RepeatUntilAllSucceed": {
                             if (jObject.ContainsKey("iWaitExpr")) {
                                 PutExpr(t, item, "WaitExpression", GetExpr(t, item, "iWaitExpr"));
-                                item.Name += " [Powerups 3=>4";
+                                item.Name += " [Upgraded";
                             }
                             UpdateIfContainer(item);
                             return obj;
@@ -497,14 +520,14 @@ namespace NINA.Sequencer.Serialization {
                                 PutExpr(t, item, "IExprExpression", GetExpr(t, item, "iIExpr"));
                                 PutExpr(t, item, "VExprExpression", GetExpr(t, item, "iVExpr"));
                             }
-                            item.Name += " [Powerups 3=>4";
+                            item.Name += " [Upgraded";
                         }
                         return obj;
 
                     case "ConditionalTrigger":
                         if (jObject.ContainsKey("iIfExpr")) {
                             PutExpr(t, trigger, "PredicateExpression", GetExpr(t, trigger, "iIfExpr"));
-                            trigger.Name += " [Powerups 3=>4";
+                            trigger.Name += " [Upgraded";
                         }
                         return obj;
 
@@ -512,7 +535,7 @@ namespace NINA.Sequencer.Serialization {
                         Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
-                            item.Name += " [Powerups 3=>4";
+                            item.Name += " [Upgraded";
                         }
                         UpdateIfContainer(item);
                         break;
@@ -521,7 +544,7 @@ namespace NINA.Sequencer.Serialization {
                         Expression e1 = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e1.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
-                            item.Name += " [Powerups 3=>4";
+                            item.Name += " [Upgraded";
                         }
                         UpdateIfThenElse(item);
                         break;
@@ -530,7 +553,21 @@ namespace NINA.Sequencer.Serialization {
                         Expression e2 = (Expression)trigger.GetType().GetProperty("PredicateExpression").GetValue(trigger, null);
                         if (jObject["IfExpr"] != null) {
                             e2.Definition = UpdateSymbols(jObject["IfExpr"]["Expression"].ToString());
-                            trigger.Name += " [Powerups 3=>4";  // Also fixed: should be trigger.Name, not item.Name
+                            trigger.Name += " [Upgraded";  // Also fixed: should be trigger.Name, not item.Name
+                        }
+                        break;
+
+                    case "GSSend":
+                        ISequenceContainer c = item.GetType().GetProperty("Condition").GetValue(item, null) as ISequenceContainer;
+                        ISequenceContainer gss = item as ISequenceContainer;
+                        if (c != null) {
+                            gss.Items.Clear();
+                            for (int j = 0; j < c.Items.Count; j++) {
+                                ISequenceItem oldItem = c.Items[j];
+                                ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                                gss.Add(newItem); 
+                            }
+                            c.Items.Clear();
                         }
                         break;
 
@@ -539,6 +576,21 @@ namespace NINA.Sequencer.Serialization {
                         UpdateIfContainer(item);
                         break;
 
+                    case "DIYTrigger":
+                        ISequenceContainer triggerRunner = trigger.GetType().GetProperty("TriggerRunner").GetValue(trigger, null) as ISequenceContainer;
+                        ISequenceContainer triggerInstructions = trigger.GetType().GetProperty("Instructions").GetValue(trigger, null) as ISequenceContainer;
+                        if (triggerRunner != null && triggerInstructions != null && triggerRunner.Items.Count > 0) {
+                            triggerInstructions.Items.Clear();
+                            ISequenceContainer instructions = triggerRunner.Items as ISequenceContainer;
+                            for (int i = 0; i < triggerRunner.Items.Count; i++) {
+                                ISequenceItem oldItem = triggerRunner.Items[i];
+                                ISequenceItem newItem = oldItem.Clone() as ISequenceItem;
+                                triggerInstructions.Add(newItem); // Temporarily add clone to expand collection
+                                newItem.AttachNewParent(triggerInstructions);
+                            }
+                            triggerRunner.Items.Clear();
+                        }
+                        break;
 
                     // Unchanged (no Expressions)
                     case "IfContainer":
