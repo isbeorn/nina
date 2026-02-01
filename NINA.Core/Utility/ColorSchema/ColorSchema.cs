@@ -585,6 +585,9 @@ namespace NINA.Core.Utility.ColorSchema {
         public Color SequencerExpressionTextColor {
             get => sequencerExpressionTextColor;
             set {
+                if (value == new Color()) {
+                    value = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+                }
                 if (sequencerExpressionTextColor != value) {
                     sequencerExpressionTextColor = value;
                     RaisePropertyChanged();
