@@ -16,6 +16,9 @@ using System.Windows;
 
 namespace NINA.Core.Utility.Notification {
     public interface INotificationWorkAreaProvider {
+        bool IsTopMost { get; }
+        Window Owner { get; }
+
         /// <summary>
         /// Returns a rectangle in screen coordinates where notifications should live.
         /// </summary>
