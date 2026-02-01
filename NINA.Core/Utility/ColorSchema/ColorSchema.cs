@@ -528,7 +528,7 @@ namespace NINA.Core.Utility.ColorSchema {
             get => crosshairColor;
             set {
                 if(value == new Color()) {
-                    value = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+                    value = (Color)ColorConverter.ConvertFromString("#FF848484");
                 }
                 if (crosshairColor != value) {
                     crosshairColor = value;
@@ -586,7 +586,7 @@ namespace NINA.Core.Utility.ColorSchema {
             get => sequencerExpressionTextColor;
             set {
                 if (value == new Color()) {
-                    value = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+                    value = (Color)ColorConverter.ConvertFromString("#FFF5F4FA");
                 }
                 if (sequencerExpressionTextColor != value) {
                     sequencerExpressionTextColor = value;
