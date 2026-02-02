@@ -40,7 +40,7 @@ namespace NINA.Sequencer.Serialization {
                 new SequenceItemCreationConverter(factory, c),
                 new SequenceConditionCreationConverter(factory),
                 new SequenceTriggerCreationConverter(factory),
-                new SequenceDateTimeProviderCreationConverter(factory.DateTimeProviders)
+                new SequenceDateTimeProviderCreationConverter(factory)
             };
         }
 

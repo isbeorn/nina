@@ -24,6 +24,10 @@ namespace NINA.Sequencer.Serialization {
 
     public abstract class JsonCreationConverter<T> : JsonConverter {
 
+        public JsonCreationConverter(ISequencerFactory factory) {
+            Factory = factory;
+        }
+
         /// <summary>
         /// Create an instance of objectType, based properties in the JSON object
         /// </summary>

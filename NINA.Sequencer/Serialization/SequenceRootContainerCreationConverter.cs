@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 namespace NINA.Sequencer.Serialization {
 
     public class SequenceRootContainerCreationConverter : JsonCreationConverter<ISequenceRootContainer> {
+        public SequenceRootContainerCreationConverter(ISequencerFactory factory) : base(factory) { }
 
         public override ISequenceRootContainer Create(Type objectType, JObject jObject) {
             return new SequenceRootContainer();

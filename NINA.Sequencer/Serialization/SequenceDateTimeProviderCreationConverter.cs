@@ -25,8 +25,8 @@ namespace NINA.Sequencer.Serialization {
     public class SequenceDateTimeProviderCreationConverter : JsonCreationConverter<IDateTimeProvider> {
         private IList<IDateTimeProvider> dateTimeProviders;
 
-        public SequenceDateTimeProviderCreationConverter(IList<IDateTimeProvider> dateTimeProviders) {
-            this.dateTimeProviders = dateTimeProviders;
+        public SequenceDateTimeProviderCreationConverter(ISequencerFactory factory) : base(factory) {
+            this.dateTimeProviders = factory.DateTimeProviders;
         }
 
         public override IDateTimeProvider Create(Type objectType, JObject jObject) {

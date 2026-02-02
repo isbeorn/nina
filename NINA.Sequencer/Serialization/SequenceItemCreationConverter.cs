@@ -24,8 +24,7 @@ namespace NINA.Sequencer.Serialization {
     public class SequenceItemCreationConverter : JsonCreationConverter<ISequenceItem> {
         private SequenceContainerCreationConverter sequenceContainerCreationConverter;
 
-        public SequenceItemCreationConverter(ISequencerFactory factory, SequenceContainerCreationConverter sequenceContainerCreationConverter) {
-            Factory = factory;
+        public SequenceItemCreationConverter(ISequencerFactory factory, SequenceContainerCreationConverter sequenceContainerCreationConverter) :base(factory) {
             this.sequenceContainerCreationConverter = sequenceContainerCreationConverter;
         }
 

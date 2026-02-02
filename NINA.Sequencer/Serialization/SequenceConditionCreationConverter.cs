@@ -22,9 +22,7 @@ namespace NINA.Sequencer.Serialization {
 
     public class SequenceConditionCreationConverter : JsonCreationConverter<ISequenceCondition> {
 
-        public SequenceConditionCreationConverter(ISequencerFactory factory) {
-            Factory = factory;
-        }
+        public SequenceConditionCreationConverter(ISequencerFactory factory) : base(factory) { }
 
         public override ISequenceCondition Create(Type objectType, JObject jObject) {
             if (jObject.TryGetValue("$type", out var token)) {

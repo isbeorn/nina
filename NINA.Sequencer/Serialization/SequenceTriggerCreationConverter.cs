@@ -21,9 +21,7 @@ namespace NINA.Sequencer.Serialization {
 
     public class SequenceTriggerCreationConverter : JsonCreationConverter<ISequenceTrigger> {
 
-        public SequenceTriggerCreationConverter(ISequencerFactory factory) {
-            Factory = factory;
-        }
+        public SequenceTriggerCreationConverter(ISequencerFactory factory) :base(factory) { }
 
         public override ISequenceTrigger Create(Type objectType, JObject jObject) {
             if (jObject.TryGetValue("$type", out var token)) {
