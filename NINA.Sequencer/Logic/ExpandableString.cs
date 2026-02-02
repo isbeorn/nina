@@ -20,13 +20,14 @@ using System.Text.RegularExpressions;
 
 namespace NINA.Sequencer.Logic {
 
-    // Represents a string that can contain NINA expressions in the format {expression}
-    // which are expanded/evaluated when the Expanded property is accessed.
+    /// <summary>
+    /// Represents a string that can contain NINA expressions in the format {expression} 
+    /// which are expanded/evaluated when the Expanded property is accessed.
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-
     public class ExpandableString : INotifyPropertyChanged {
         private static readonly Regex ExpressionPattern = new Regex(@"\{([^\}]+)\}", RegexOptions.Compiled);
-
+        
         private string _rawValue;
         private string _expandedValue;
         private ISymbolBroker _symbolBroker;
@@ -34,13 +35,23 @@ namespace NINA.Sequencer.Logic {
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Creates a new ExpandableString with no value
+        /// </summary>
         public ExpandableString() {
         }
 
+        /// <summary>
+        /// Creates a new ExpandableString with the specified raw value
+        /// </summary>
+        /// <param name="value">The raw string value that may contain expressions</param>
         public ExpandableString(string value) {
             _rawValue = value;
         }
 
+        /// <summary>
+        /// Gets or sets the raw string value (may contain expressions in {expression} format)
+        /// </summary>
         [JsonProperty]
         public string Value {
             get => _rawValue?.Trim();
@@ -56,6 +67,9 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+        /// <summary>
+        /// Gets the expanded string with all expressions evaluated and replaced
+        /// </summary>
         public string Expanded {
             get {
                 if (_expandedValue != null) {
@@ -75,7 +89,7 @@ namespace NINA.Sequencer.Logic {
                         Expression ex = new Expression(toReplace, _parent);
                         ex.SymbolBroker = _symbolBroker;
                         ex.Evaluate(true);
-
+                        
                         if (ex.Error != null) {
                             Error = ex.Error;
                             return "Error";
@@ -95,10 +109,20 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+        /// <summary>
+        /// Gets the last error that occurred during expression expansion, or null if no error
+        /// </summary>
         public string Error { get; private set; }
 
+        /// <summary>
+        /// Gets whether the last expansion had an error
+        /// </summary>
         public bool HasError => Error != null;
 
+        /// <summary>
+        /// Sets the symbol broker used for evaluating expressions
+        /// </summary>
+        /// <param name="symbolBroker">The symbol broker to use</param>
         public void SetSymbolBroker(ISymbolBroker symbolBroker) {
             if (_symbolBroker != symbolBroker) {
                 _symbolBroker = symbolBroker;
@@ -107,6 +131,10 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+        /// <summary>
+        /// Sets the parent sequence container used for expression context
+        /// </summary>
+        /// <param name="parent">The parent container</param>
         public void SetParent(ISequenceContainer parent) {
             if (_parent != parent) {
                 _parent = parent;
@@ -115,6 +143,9 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+        /// <summary>
+        /// Invalidates the cached expanded value, forcing re-evaluation on next access
+        /// </summary>
         public void Invalidate() {
             _expandedValue = null;
             OnPropertyChanged(nameof(Expanded));
@@ -130,12 +161,16 @@ namespace NINA.Sequencer.Logic {
             return Value ?? string.Empty;
         }
 
-        // Implicit conversion from string to ExpandableString
+        /// <summary>
+        /// Implicit conversion from string to ExpandableString
+        /// </summary>
         public static implicit operator string(ExpandableString expandableString) {
             return expandableString?.Value;
         }
 
-        // Implicit conversion from ExpandableString to string
+        /// <summary>
+        /// Implicit conversion from ExpandableString to string
+        /// </summary>
         public static implicit operator ExpandableString(string value) {
             return new ExpandableString(value);
         }
