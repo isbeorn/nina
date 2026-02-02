@@ -262,18 +262,22 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    
-                    <logic:ExpandableStringControl
-                        Label="{ns:Loc LblScript}"
-                        Parent="{Binding Parent}"
-                        SymbolBroker="{Binding SymbolBroker}"
-                        Text="{Binding Script, Mode=TwoWay}" />
-                    
-                    <Button
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblScript}" />
+                    <TextBox
                         Grid.Column="1"
+                        MinWidth="40"
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Text="{Binding Script}"
+                        TextAlignment="Left"
+                        ToolTip="{Binding ProcessedScriptAnnotated}" />
+                    <Button
+                        Grid.Column="2"
                         Width="20"
                         Height="20"
                         Margin="5,0,0,0"

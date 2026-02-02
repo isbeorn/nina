@@ -39,9 +39,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     public class ExternalScript : SequenceItem, IValidatable {
         public System.Windows.Input.ICommand OpenDialogCommand { get; private set; }
         private ISymbolBroker _symbolBroker;
-        private ISymbolProvider _ninaProvider;
-
-        public ISymbolBroker SymbolBroker => _symbolBroker;
+        private ISymbolProvider _ninaProvider;   
 
         [ImportingConstructor]
         public ExternalScript(ISymbolBroker symbolBroker) {
