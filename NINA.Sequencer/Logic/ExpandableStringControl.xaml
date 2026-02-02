@@ -16,12 +16,12 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        
-        <TextBlock 
+
+        <TextBlock
             VerticalAlignment="Center" 
-            Text="{Binding Label, ElementName=root}" 
+            Text="{Binding Label, ElementName=root}"
             Visibility="{Binding Label, ElementName=root, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
-        
+
         <TextBox
             Grid.Column="1"
             MinWidth="40"
