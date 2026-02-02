@@ -21,10 +21,9 @@ using NINA.Sequencer.Container;
 namespace NINA.Sequencer.Serialization {
 
     public class SequenceConditionCreationConverter : JsonCreationConverter<ISequenceCondition> {
-        private ISequencerFactory factory;
 
         public SequenceConditionCreationConverter(ISequencerFactory factory) {
-            this.factory = factory;
+            Factory = factory;
         }
 
         public override ISequenceCondition Create(Type objectType, JObject jObject) {
@@ -34,8 +33,8 @@ namespace NINA.Sequencer.Serialization {
                     return new UnknownSequenceCondition(token?.ToString());
                 }
                 try {
-                    var method = factory.GetType().GetMethod(nameof(factory.GetCondition)).MakeGenericMethod(new Type[] { t });
-                    var obj = method.Invoke(factory, null);
+                    var method = Factory.GetType().GetMethod(nameof(Factory.GetCondition)).MakeGenericMethod(new Type[] { t });
+                    var obj = method.Invoke(Factory, null);
                     if (obj == null) {
                         Logger.Error($"Encountered unknown sequence condition: {token?.ToString()}");
                         return new UnknownSequenceCondition(token?.ToString());

@@ -34,6 +34,7 @@ namespace NINA.Sequencer {
         ICollectionView TriggersView { get; }
         IList<ISequenceTrigger> Triggers { get; }
         IList<IDateTimeProvider> DateTimeProviders { get; }
+        IList<ISequenceEntityUpgrader> Upgraders { get; }
         string ViewFilter { get; set; }
 
         T GetCondition<T>() where T : ISequenceCondition;
