@@ -115,10 +115,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             ditherPixels = profileService.ActiveProfile.GuiderSettings.DitherPixels;
             ditherSettleTime = profileService.ActiveProfile.GuiderSettings.SettleTime;
 
-            this.Add(new Annotation(symbolBroker));
-            this.Add(new Annotation(symbolBroker));
+            this.Add(new Annotation());
+            this.Add(new Annotation());
             this.Add(switchFilter);
-            this.Add(new Annotation(symbolBroker));
+            this.Add(new Annotation());
 
             var container = new SequentialContainer();
             container.Add(loopCondition);

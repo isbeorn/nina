@@ -37,10 +37,10 @@
     <DataTemplate DataType="{x:Type local:Annotation}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExpandableStringControl
-                    Parent="{Binding Parent}"
-                    SymbolBroker="{Binding SymbolBroker}"
-                    Text="{Binding Text, Mode=TwoWay}" />
+                <TextBox
+                    AcceptsReturn="True"
+                    Text="{Binding Text, Mode=TwoWay}"
+                    TextWrapping="Wrap" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>

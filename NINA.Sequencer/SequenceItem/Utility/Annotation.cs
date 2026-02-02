@@ -1,4 +1,4 @@
-﻿    #region "copyright"
+﻿#region "copyright"
 
 /*
     Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -14,7 +14,6 @@
 
 using Newtonsoft.Json;
 using NINA.Core.Model;
-using NINA.Sequencer.Logic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -32,16 +31,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Annotation : SequenceItem {
-        private ISymbolBroker _symbolBroker;
-
-        public ISymbolBroker SymbolBroker => _symbolBroker;
 
         [ImportingConstructor]
-        public Annotation(ISymbolBroker symbolBroker) {
-            _symbolBroker = symbolBroker;
-        }
+        public Annotation() { }
 
-        private Annotation(Annotation cloneMe) : this(cloneMe._symbolBroker) {
+        private Annotation(Annotation cloneMe) : base(cloneMe) {
             CopyMetaData(cloneMe);
         }
 
