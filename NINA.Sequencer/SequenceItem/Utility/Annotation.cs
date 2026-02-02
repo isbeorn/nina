@@ -1,4 +1,4 @@
-﻿    #region "copyright"
+﻿#region "copyright"
 
 /*
     Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -14,6 +14,7 @@
 
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
 using NINA.Sequencer.Logic;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public string Text { get; set; }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            string processedText = ExpressionExpander.Expand(Text, _symbolBroker, Parent);
+            Logger.Info($"Annotation: {processedText}");
             return Task.CompletedTask;
         }
 

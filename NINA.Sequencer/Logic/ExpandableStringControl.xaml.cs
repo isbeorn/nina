@@ -13,15 +13,11 @@
 #endregion "copyright"
 
 using NINA.Sequencer.SequenceItem;
-using System;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace NINA.Sequencer.Logic {
     public partial class ExpandableStringControl : UserControl {
-        private static readonly Regex ExpressionPattern = new Regex(@"\{([^\}]+)\}", RegexOptions.Compiled);
-
         public ExpandableStringControl() {
             InitializeComponent();
         }
@@ -44,7 +40,7 @@ namespace NINA.Sequencer.Logic {
 
         public static readonly DependencyProperty SymbolBrokerProperty =
             DependencyProperty.Register(nameof(SymbolBroker), typeof(ISymbolBroker), typeof(ExpandableStringControl),
-                new PropertyMetadata(null, OnSymbolBrokerChanged));
+                new PropertyMetadata(null));
 
         public string Text {
             get => (string)GetValue(TextProperty);
@@ -81,42 +77,9 @@ namespace NINA.Sequencer.Logic {
             control.UpdateProcessedText();
         }
 
-        private static void OnSymbolBrokerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var control = (ExpandableStringControl)d;
-            control.UpdateProcessedText();
-        }
-
         private void UpdateProcessedText() {
-            string value = Text?.Trim();
-            if (string.IsNullOrEmpty(value)) {
-                ProcessedText = value;
-                return;
-            }
-
-            if (SymbolBroker == null) {
-                ProcessedText = value;
-                return;
-            }
-
-            try {
-                value = ExpressionPattern.Replace(value, match => {
-                    string toReplace = match.Groups[1].Value;
-                    Expression ex = new Expression(toReplace, Parent);
-                    ex.SymbolBroker = SymbolBroker;
-                    ex.Evaluate(true);
-                    if (ex.Error != null) {
-                        return "Error";
-                    } else if (ex.StringValue != null) {
-                        return ex.StringValue;
-                    } else {
-                        return ex.ValueString;
-                    }
-                });
-            } catch (InvalidOperationException) {
-                value = "Error";
-            }
-
-            ProcessedText = "As processed: " + value;
+            string expanded = ExpressionExpander.Expand(Text, SymbolBroker, Parent);
+            ProcessedText = string.IsNullOrEmpty(expanded) ? expanded : "As processed: " + expanded;
         }
     }
 }
