@@ -17,29 +17,29 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace NINA.Sequencer.Logic {
-    public partial class ExpandableStringControl : UserControl {
-        public ExpandableStringControl() {
+    public partial class ExprStringControl : UserControl {
+        public ExprStringControl() {
             InitializeComponent();
         }
 
         public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register(nameof(Text), typeof(string), typeof(ExpandableStringControl),
+            DependencyProperty.Register(nameof(Text), typeof(string), typeof(ExprStringControl),
                 new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnTextChanged));
 
         public static readonly DependencyProperty LabelProperty =
-            DependencyProperty.Register(nameof(Label), typeof(string), typeof(ExpandableStringControl),
+            DependencyProperty.Register(nameof(Label), typeof(string), typeof(ExprStringControl),
                 new PropertyMetadata(null));
 
         public static readonly DependencyProperty ProcessedTextProperty =
-            DependencyProperty.Register(nameof(ProcessedText), typeof(string), typeof(ExpandableStringControl),
+            DependencyProperty.Register(nameof(ProcessedText), typeof(string), typeof(ExprStringControl),
                 new PropertyMetadata(string.Empty));
 
         public static readonly DependencyProperty ParentProperty =
-            DependencyProperty.Register(nameof(Parent), typeof(ISequenceItem), typeof(ExpandableStringControl),
+            DependencyProperty.Register(nameof(Parent), typeof(ISequenceItem), typeof(ExprStringControl),
                 new PropertyMetadata(null, OnParentChanged));
 
         public static readonly DependencyProperty SymbolBrokerProperty =
-            DependencyProperty.Register(nameof(SymbolBroker), typeof(ISymbolBroker), typeof(ExpandableStringControl),
+            DependencyProperty.Register(nameof(SymbolBroker), typeof(ISymbolBroker), typeof(ExprStringControl),
                 new PropertyMetadata(null));
 
         public string Text {
@@ -68,12 +68,12 @@ namespace NINA.Sequencer.Logic {
         }
 
         private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var control = (ExpandableStringControl)d;
+            var control = (ExprStringControl)d;
             control.UpdateProcessedText();
         }
 
         private static void OnParentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var control = (ExpandableStringControl)d;
+            var control = (ExprStringControl)d;
             control.UpdateProcessedText();
         }
 

@@ -37,7 +37,7 @@
     <DataTemplate DataType="{x:Type local:Annotation}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExpandableStringControl
+                <logic:ExprStringControl
                     Parent="{Binding Parent}"
                     SymbolBroker="{Binding SymbolBroker}"
                     Text="{Binding Text, Mode=TwoWay}" />
@@ -265,13 +265,13 @@
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-
-                    <logic:ExpandableStringControl
+                    
+                    <logic:ExprStringControl
                         Label="{ns:Loc LblScript}"
                         Parent="{Binding Parent}"
                         SymbolBroker="{Binding SymbolBroker}"
                         Text="{Binding Script, Mode=TwoWay}" />
-
+                    
                     <Button
                         Grid.Column="1"
                         Width="20"
