@@ -56,6 +56,17 @@ namespace NINA.Sequencer.Serialization {
             return string.Empty;
         }
 
+        private class NullUpgrader : ISequenceEntityUpgrader {
+            public string Name { get; set; } = string.Empty;
+            public string AssemblyName { get; set; }
+            public SequenceUpgradeStage Stages => 0;
+            public object Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object entity) {
+                return entity;
+            }
+        }
+
+        private ISequenceEntityUpgrader NoUpgrader = new NullUpgrader();
+
         private ISequenceEntityUpgrader GetUpgraderForPlugin(string pluginName) {
             if (Factory != null) {
                 foreach (var upgrader in Factory.Upgraders) {
@@ -64,7 +75,7 @@ namespace NINA.Sequencer.Serialization {
                     }
                 }
             }
-            return null;
+            return NoUpgrader;
         }
 
         public override object ReadJson(JsonReader reader,
@@ -93,7 +104,7 @@ namespace NINA.Sequencer.Serialization {
 
                         // Only create upgradeContext if an upgrader exists
                         SequenceUpgradeContext upgradeContext = null;
-                        if (upgrader != null) {
+                        if (upgrader != NoUpgrader) {
                             upgradeContext = new SequenceUpgradeContext {
                                 Serializer = serializer,
                                 RequestedType = objectType,
@@ -104,7 +115,7 @@ namespace NINA.Sequencer.Serialization {
                         }
 
                         // BeforeCreate stage
-                        if (upgrader != null) {
+                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.BeforeCreate)) {
                             try {
                                 var beforeCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.BeforeCreate, null);
                                 if (beforeCreateResult is JObject modifiedJObject) {
@@ -116,7 +127,7 @@ namespace NINA.Sequencer.Serialization {
                         }
 
                         // Create stage
-                        if (upgrader != null) {
+                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.Create)) {
                             try {
                                 var createResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.Create, target);
                                 if (createResult != null && createResult is T typedResult) {
@@ -133,7 +144,7 @@ namespace NINA.Sequencer.Serialization {
                         }
 
                         // AfterCreate stage
-                        if (upgrader != null) {
+                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.AfterCreate)) {
                             try {
                                 var afterCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterCreate, target);
                                 if (afterCreateResult != null && afterCreateResult is T typedResult) {
@@ -148,7 +159,7 @@ namespace NINA.Sequencer.Serialization {
                         serializer.Populate(jObject.CreateReader(), target);
 
                         // AfterPopulate stage
-                        if (upgrader != null) {
+                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.AfterPopulate)) {
                             try {
                                 var afterPopulateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterPopulate, target);
                                 if (afterPopulateResult != null && afterPopulateResult is T typedResult) {

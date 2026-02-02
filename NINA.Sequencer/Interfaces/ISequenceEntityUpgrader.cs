@@ -8,8 +8,8 @@ namespace NINA.Sequencer {
         string Name { get; set; }
         // Plugin assembly name
         string AssemblyName { get; set; }
-        // This can be removed, but requires new nugets so hold off for now...
-        bool CanUpgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage);
+        // The SequenceUpgradeStages handled (OR'd together)
+        SequenceUpgradeStage Stages { get; }
         object? Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object? current);
     }
     public sealed class SequenceUpgradeContext {
@@ -21,10 +21,11 @@ namespace NINA.Sequencer {
         public ISequencerFactory Factory { get; init; }
     }
 
+    [Flags]
     public enum SequenceUpgradeStage {
-        BeforeCreate,
-        Create,
-        AfterCreate,
-        AfterPopulate
+        BeforeCreate = 1,
+        Create = 2,
+        AfterCreate = 4,
+        AfterPopulate = 8
     }
 }
