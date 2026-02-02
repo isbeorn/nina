@@ -44,7 +44,7 @@ namespace NINA.Sequencer.Serialization {
 
         public override bool CanWrite => false;
 
-        protected ISequencerFactory Factory { get; }
+        protected ISequencerFactory Factory;
 
         public static string ExtractPluginName(string typeString) {
             if (string.IsNullOrWhiteSpace(typeString)) {
