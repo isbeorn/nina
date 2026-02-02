@@ -38,8 +38,7 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <logic:ExprStringControl
-                    Parent="{Binding Parent}"
-                    SymbolBroker="{Binding SymbolBroker}"
+                    SequenceItem="{Binding}"
                     Text="{Binding Text, Mode=TwoWay}" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
@@ -268,8 +267,7 @@
                     
                     <logic:ExprStringControl
                         Label="{ns:Loc LblScript}"
-                        Parent="{Binding Parent}"
-                        SymbolBroker="{Binding SymbolBroker}"
+                        SequenceItem="{Binding}"
                         Text="{Binding Script, Mode=TwoWay}" />
                     
                     <Button

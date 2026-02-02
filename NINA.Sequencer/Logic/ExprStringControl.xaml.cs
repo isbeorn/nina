@@ -34,13 +34,9 @@ namespace NINA.Sequencer.Logic {
             DependencyProperty.Register(nameof(ProcessedText), typeof(string), typeof(ExprStringControl),
                 new PropertyMetadata(string.Empty));
 
-        public static readonly DependencyProperty ParentProperty =
-            DependencyProperty.Register(nameof(Parent), typeof(ISequenceItem), typeof(ExprStringControl),
-                new PropertyMetadata(null, OnParentChanged));
-
-        public static readonly DependencyProperty SymbolBrokerProperty =
-            DependencyProperty.Register(nameof(SymbolBroker), typeof(ISymbolBroker), typeof(ExprStringControl),
-                new PropertyMetadata(null));
+        public static readonly DependencyProperty SequenceItemProperty =
+            DependencyProperty.Register(nameof(SequenceItem), typeof(ISequenceItem), typeof(ExprStringControl),
+                new PropertyMetadata(null, OnSequenceItemChanged));
 
         public string Text {
             get => (string)GetValue(TextProperty);
@@ -57,14 +53,9 @@ namespace NINA.Sequencer.Logic {
             private set => SetValue(ProcessedTextProperty, value);
         }
 
-        public ISequenceItem Parent {
-            get => (ISequenceItem)GetValue(ParentProperty);
-            set => SetValue(ParentProperty, value);
-        }
-
-        public ISymbolBroker SymbolBroker {
-            get => (ISymbolBroker)GetValue(SymbolBrokerProperty);
-            set => SetValue(SymbolBrokerProperty, value);
+        public ISequenceItem SequenceItem {
+            get => (ISequenceItem)GetValue(SequenceItemProperty);
+            set => SetValue(SequenceItemProperty, value);
         }
 
         private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -72,13 +63,18 @@ namespace NINA.Sequencer.Logic {
             control.UpdateProcessedText();
         }
 
-        private static void OnParentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+        private static void OnSequenceItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var control = (ExprStringControl)d;
             control.UpdateProcessedText();
         }
 
         private void UpdateProcessedText() {
-            string expanded = ExpressionExpander.Expand(Text, SymbolBroker, Parent);
+            if (SequenceItem == null) {
+                ProcessedText = Text;
+                return;
+            }
+
+            string expanded = ExpressionExpander.Expand(Text, SequenceItem.SymbolBroker, SequenceItem.Parent);
             ProcessedText = string.IsNullOrEmpty(expanded) ? expanded : "As processed: " + expanded;
         }
     }
