@@ -23,10 +23,7 @@ namespace NINA.Sequencer.Logic {
     // Represents a string that can contain NINA expressions in the format {expression}
     // which are expanded/evaluated when the Expanded property is accessed.
     [JsonObject(MemberSerialization.OptIn)]
-
     public class ExpandableString : INotifyPropertyChanged {
-        private static readonly Regex ExpressionPattern = new Regex(@"\{([^\}]+)\}", RegexOptions.Compiled);
-
         private string _rawValue;
         private string _expandedValue;
         private ISymbolBroker _symbolBroker;
@@ -70,25 +67,8 @@ namespace NINA.Sequencer.Logic {
                 Error = null;
 
                 try {
-                    value = ExpressionPattern.Replace(value, match => {
-                        string toReplace = match.Groups[1].Value;
-                        Expression ex = new Expression(toReplace, _parent);
-                        ex.SymbolBroker = _symbolBroker;
-                        ex.Evaluate(true);
-
-                        if (ex.Error != null) {
-                            Error = ex.Error;
-                            return "Error";
-                        } else if (ex.StringValue != null) {
-                            return ex.StringValue;
-                        } else if (ex.Value is double doubleValue) {
-                            // Truncate to 5 decimal places
-                            double truncated = Math.Truncate(doubleValue * 100000) / 100000;
-                            return truncated.ToString("F5");
-                        } else {
-                            return ex.ValueString;
-                        }
-                    });
+                    // Use the shared ExpressionExpander logic
+                    value = ExpressionExpander.Expand(value, _symbolBroker, _parent);
                 } catch (InvalidOperationException ex) {
                     Error = ex.Message;
                     value = "Error";
