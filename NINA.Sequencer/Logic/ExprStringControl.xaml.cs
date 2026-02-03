@@ -34,9 +34,9 @@ namespace NINA.Sequencer.Logic {
             DependencyProperty.Register(nameof(ProcessedText), typeof(string), typeof(ExprStringControl),
                 new PropertyMetadata(string.Empty));
 
-        public static readonly DependencyProperty SequenceItemProperty =
-            DependencyProperty.Register(nameof(SequenceItem), typeof(ISequenceItem), typeof(ExprStringControl),
-                new PropertyMetadata(null, OnSequenceItemChanged));
+        public static readonly DependencyProperty AcceptsReturnProperty =
+            DependencyProperty.Register(nameof(AcceptsReturn), typeof(bool), typeof(ExprStringControl),
+                new PropertyMetadata(false));
 
         public string Text {
             get => (string)GetValue(TextProperty);
@@ -53,9 +53,9 @@ namespace NINA.Sequencer.Logic {
             private set => SetValue(ProcessedTextProperty, value);
         }
 
-        public ISequenceItem SequenceItem {
-            get => (ISequenceItem)GetValue(SequenceItemProperty);
-            set => SetValue(SequenceItemProperty, value);
+        public bool AcceptsReturn {
+            get => (bool)GetValue(AcceptsReturnProperty);
+            set => SetValue(AcceptsReturnProperty, value);
         }
 
         private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -63,18 +63,14 @@ namespace NINA.Sequencer.Logic {
             control.UpdateProcessedText();
         }
 
-        private static void OnSequenceItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var control = (ExprStringControl)d;
-            control.UpdateProcessedText();
-        }
-
         private void UpdateProcessedText() {
-            if (SequenceItem == null) {
+            var sequenceItem = DataContext as ISequenceItem;
+            if (sequenceItem == null) {
                 ProcessedText = Text;
                 return;
             }
 
-            string expanded = ExpressionExpander.Expand(Text, SequenceItem.SymbolBroker, SequenceItem.Parent);
+            string expanded = ExpressionExpander.Expand(Text, sequenceItem.SymbolBroker, sequenceItem.Parent);
             ProcessedText = string.IsNullOrEmpty(expanded) ? expanded : "As processed: " + expanded;
         }
     }
