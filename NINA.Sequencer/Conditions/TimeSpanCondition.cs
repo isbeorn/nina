@@ -166,7 +166,7 @@ namespace NINA.Sequencer.Conditions {
         public override void ResetProgress() {
             Status = SequenceEntityStatus.CREATED;
             previousRemainingTime = null;
-            startTime = DateTime.UtcNow;
+            startTime = null; // DateTime.UtcNow;
         }
 
         public override string ToString() {

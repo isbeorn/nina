@@ -37,7 +37,7 @@
     <DataTemplate DataType="{x:Type local:Annotation}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprStringControl Text="{Binding Text, Mode=TwoWay}" />
+                <logic:ExprStringControl Label="{ns:Loc Lbl_SequenceItem_Utility_Annotation_Name}" Text="{Binding Text, Mode=TwoWay}" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
@@ -55,14 +55,6 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <logic:ExprStringControl Label="{ns:Loc LblMessage}" AcceptsReturn="True" Text="{Binding Text, Mode=TwoWay}" />
-                    <!--<TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMessage}" />
-                    <TextBox
-                        Grid.Column="1"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        AcceptsReturn="True"
-                        Text="{Binding Text, Mode=TwoWay}"
-                        TextWrapping="Wrap" />-->
                 </Grid>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

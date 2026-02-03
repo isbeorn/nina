@@ -70,8 +70,7 @@ namespace NINA.Sequencer.Logic {
                 return;
             }
 
-            string expanded = ExpressionExpander.Expand(Text, sequenceItem.SymbolBroker, sequenceItem.Parent);
-            ProcessedText = string.IsNullOrEmpty(expanded) ? expanded : "As processed: " + expanded;
+            ProcessedText = ExpressionExpander.Expand(Text, sequenceItem.SymbolBroker, sequenceItem.Parent);
         }
     }
 }

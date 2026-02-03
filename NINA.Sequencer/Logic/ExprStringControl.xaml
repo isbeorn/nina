@@ -18,10 +18,19 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <TextBlock
-            VerticalAlignment="Center" 
-            Text="{Binding Label, ElementName=root}"
-            Visibility="{Binding Label, ElementName=root, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+        <!-- Maybe the colon/space should be an option or part of the localized label -->
+        <StackPanel
+            Orientation="Horizontal"
+            VerticalAlignment="Center"
+            Visibility="{Binding Label, ElementName=root, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+            <TextBlock
+               VerticalAlignment="Center" 
+               Text="{Binding Label, ElementName=root}" />
+
+            <TextBlock
+               VerticalAlignment="Center"
+               Text=": " />
+        </StackPanel>
 
         <TextBox
             Grid.Column="1"
