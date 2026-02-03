@@ -330,7 +330,7 @@ namespace NINA.Utility {
                     f.GetService<ITwilightCalculator>(),
                     f.GetService<IImageSaveMediator>(),
                     f.GetService<ISymbolBroker>()));
-                
+
                 services.AddSingleton<IImageSaveController, ImageSaveController>();
                 services.AddSingleton<ISequenceNavigationVM, SequenceNavigationVM>();
                 services.AddTransient<IMyMessageBoxVM, MyMessageBoxVM>();
