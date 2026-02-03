@@ -18,6 +18,7 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Serialization;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility.DateTimeProvider;
 using System;
@@ -41,6 +42,7 @@ namespace NINA.Sequencer {
         public IList<ISequenceTrigger> Triggers { get; private set; }
         public IList<ISequenceContainer> Container { get; private set; }
         public IList<IDateTimeProvider> DateTimeProviders { get; private set; }
+        public IList<ISequenceEntityUpgrader> Upgraders { get; private set; }
 
         public SequencerFactory(
                 IProfileService profileService,
@@ -48,30 +50,32 @@ namespace NINA.Sequencer {
                 IList<ISequenceCondition> conditions,
                 IList<ISequenceTrigger> triggers,
                 IList<ISequenceContainer> container,
-                IList<IDateTimeProvider> dateTimeProviders
+                IList<IDateTimeProvider> dateTimeProviders,
+                IList<ISequenceEntityUpgrader> upgraders
         ) {
             DateTimeProviders = new List<IDateTimeProvider>(dateTimeProviders);
             Items = new ObservableCollection<ISequenceItem>(items);
             Conditions = new ObservableCollection<ISequenceCondition>(conditions);
             Triggers = new ObservableCollection<ISequenceTrigger>(triggers);
             Container = new ObservableCollection<ISequenceContainer>(container);
+            Upgraders = new ObservableCollection<ISequenceEntityUpgrader>(upgraders);
 
-            var enitityOptions = new PluginOptionsAccessor(profileService, Guid.Parse("E7C2BE8E-479B-4DBA-A0B0-D513B77F9A54"));
+            var entityOptions = new PluginOptionsAccessor(profileService, Guid.Parse("E7C2BE8E-479B-4DBA-A0B0-D513B77F9A54"));
             var allEntities = new List<SidebarEntity>();
             var sidebarItems = new List<SidebarEntity>();
             var sidebarConditions = new List<SidebarEntity>();
             var sidebarTriggers = new List<SidebarEntity>();
             foreach (var item in Items) {
-                sidebarItems.Add(new SidebarEntity(item, enitityOptions));
-                allEntities.Add(new SidebarEntity(item, enitityOptions));
+                sidebarItems.Add(new SidebarEntity(item, entityOptions));
+                allEntities.Add(new SidebarEntity(item, entityOptions));
             }
             foreach (var condition in Conditions) {
-                sidebarConditions.Add(new SidebarEntity(condition, enitityOptions));
-                allEntities.Add(new SidebarEntity(condition, enitityOptions));
+                sidebarConditions.Add(new SidebarEntity(condition, entityOptions));
+                allEntities.Add(new SidebarEntity(condition, entityOptions));
             }
             foreach (var trigger in Triggers) {
-                sidebarTriggers.Add(new SidebarEntity(trigger, enitityOptions));
-                allEntities.Add(new SidebarEntity(trigger, enitityOptions));
+                sidebarTriggers.Add(new SidebarEntity(trigger, entityOptions));
+                allEntities.Add(new SidebarEntity(trigger, entityOptions));
             }
 
             ItemsView = CollectionViewSource.GetDefaultView(allEntities);

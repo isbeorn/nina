@@ -13,24 +13,20 @@
 #endregion "copyright"
 
 using System;
-using System.Reflection;
-using Microsoft.Extensions.Logging.Configuration;
-using Microsoft.Xaml.Behaviors;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NINA.Core.Utility;
 using NINA.Sequencer.Conditions;
-using NINA.Sequencer.Container;
-using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
-using Parlot.Fluent;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
-using static NINA.Astrometry.NOVAS;
 
 namespace NINA.Sequencer.Serialization {
 
     public abstract class JsonCreationConverter<T> : JsonConverter {
+
+        public JsonCreationConverter(ISequencerFactory factory) {
+            Factory = factory;
+        }
 
         /// <summary>
         /// Create an instance of objectType, based properties in the JSON object
@@ -48,35 +44,49 @@ namespace NINA.Sequencer.Serialization {
 
         public override bool CanWrite => false;
 
-        /*
-         * There are a number of upgrade cases:
-         * 1) Upgrading NINA 3.2 instructions to NINA 3.3
-         *    These require PowerupsUpgrader.UpgradeInstruction, which creates and populates the NINA 3.3 instruction
-         * 2) Upgrading Powerups 3.2 + instructions into newly created NINA 3.3 instructions
-         *    These would be LoopWhile and WaitUntil
-         * 3) Upgrading Powerups 3.2 instructions without Expressions to Powerups 3.3 instructions
-         *    These don't require anything
-         * 4) Upgrading Powerups 3.2 instructions with Expressions to Powerups 3.3 instructions
-         *    These require PowerupsUpgrader.PreUpgradeInstruction to allow the 3.2 instructions to be deserialized
-         *    And then PowerupsUpgrader.UpgradeInstruction to populate Expressions from the old Expr class
-         */
+        protected ISequencerFactory Factory;
+
+        public static string ExtractPluginName(string typeString) {
+            if (string.IsNullOrWhiteSpace(typeString)) {
+                return string.Empty;
+            }
+
+            // Format: "Namespace.Type, AssemblyName"
+            var parts = typeString.Split(',');
+            if (parts.Length >= 2) {
+                return parts[1].Trim();
+            }
+
+            return string.Empty;
+        }
+
+        private class NullUpgrader : ISequenceEntityUpgrader {
+            public string Name { get; set; } = string.Empty;
+            public string AssemblyName { get; set; }
+            public SequenceUpgradeStage Stages => 0;
+            public object Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object entity) {
+                return entity;
+            }
+        }
+
+        private ISequenceEntityUpgrader NoUpgrader = new NullUpgrader();
+
+        private ISequenceEntityUpgrader GetUpgraderForPlugin(string pluginName) {
+            if (Factory != null) {
+                foreach (var upgrader in Factory.Upgraders) {
+                    if (string.Equals(upgrader.AssemblyName, pluginName, StringComparison.OrdinalIgnoreCase)) {
+                        return upgrader;
+                    }
+                }
+            }
+            return NoUpgrader;
+        }
 
         public override object ReadJson(JsonReader reader,
                                         Type objectType,
                                          object existingValue,
                                          JsonSerializer serializer) {
             if (reader.TokenType == JsonToken.Null) return null;
-
-            // There's got to be a better way to do this...
-            if (this is JsonCreationConverter<ISequenceContainer> c) {
-                PowerupsUpgrader.RegisterContainerConverter(c);
-            } else if (this is JsonCreationConverter<ISequenceCondition> q) {
-                PowerupsUpgrader.RegisterConditionConverter(q);
-            } else if (this is JsonCreationConverter<ISequenceItem> i) {
-                PowerupsUpgrader.RegisterItemConverter(i);
-            } else if (this is JsonCreationConverter<ISequenceTrigger> t) {
-                PowerupsUpgrader.RegisterTriggerConverter(t);
-            }
 
             // Load JObject from stream
             JObject jObject = JObject.Load(reader);
@@ -90,33 +100,84 @@ namespace NINA.Sequencer.Serialization {
                     } else {
                         JToken token;
                         jObject.TryGetValue("$type", out token);
-                        string originalType = token.ToString();
+                        string originalType = token?.ToString();
 
-                        Upgrade lite = Upgrade.NINA;
-                        (lite, token) = PowerupsLiteSimpleMigration(token?.ToString());
+                        // Extract plugin name and get upgrader
+                        string pluginName = ExtractPluginName(originalType);
+                        ISequenceEntityUpgrader upgrader = GetUpgraderForPlugin(pluginName);
 
-                        if (lite == Upgrade.Lite) {
-                            jObject["$type"] = token;
+                        // Only create upgradeContext if an upgrader exists
+                        SequenceUpgradeContext upgradeContext = null;
+                        if (upgrader != NoUpgrader) {
+                            upgradeContext = new SequenceUpgradeContext {
+                                Serializer = serializer,
+                                RequestedType = objectType,
+                                Json = jObject,
+                                OriginalTypeString = originalType,
+                                Factory = Factory
+                            };
                         }
 
-                        // Create target object based on JObject
-                        target = Create(objectType, jObject);
-
-                        if (originalType.EndsWith(", WhenPlugin")) {
-                            PowerupsUpgrader.PreUpgradeInstruction(originalType, jObject);
+                        // BeforeCreate stage
+                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.BeforeCreate)) {
+                            try {
+                                var beforeCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.BeforeCreate, null);
+                                if (beforeCreateResult is JObject modifiedJObject) {
+                                    jObject = modifiedJObject;
+                                }
+                            } catch (Exception ex) {
+                                Logger.Warning($"BeforeCreate upgrade failed for type {originalType}: {ex.Message}");
+                            }
                         }
-                   
+
+                        // Create stage
+                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.Create)) {
+                            try {
+                                var createResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.Create, target);
+                                if (createResult != null && createResult is T typedResult) {
+                                    target = typedResult;
+                                } else {
+                                    target = Create(objectType, jObject);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Warning($"Create upgrade failed for type {originalType}: {ex.Message}");
+                            }
+                        } else {
+                            // Create target object (uses the potentially modified jObject)
+                            target = Create(objectType, jObject);
+                        }
+
+                        // AfterCreate stage
+                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.AfterCreate)) {
+                            try {
+                                var afterCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterCreate, target);
+                                if (afterCreateResult != null && afterCreateResult is T typedResult) {
+                                    target = typedResult;
+                                }
+                            } catch (Exception ex) {
+                                Logger.Warning($"AfterCreate upgrade failed for type {originalType}: {ex.Message}");
+                            }
+                        }
+
                         // Populate the object properties
                         serializer.Populate(jObject.CreateReader(), target);
 
-                        if (jObject.TryGetValue("$type", out token)) {
-                            if (originalType.EndsWith(", WhenPlugin")) {
-                                ISequenceEntity oldTarget = target as ISequenceEntity;
-                                ISequenceEntity newTarget = (T)PowerupsUpgrader.UpgradeInstruction(target, jObject) as ISequenceEntity;
-                                if (newTarget.Parent == null) {
-                                    newTarget.AttachNewParent(oldTarget.Parent);
+                        // AfterPopulate stage
+                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.AfterPopulate)) {
+                            try {
+                                var afterPopulateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterPopulate, target);
+                                if (afterPopulateResult != null && afterPopulateResult is T typedResult) {
+                                    target = typedResult;
                                 }
-                                target = (T)newTarget;
+                            } catch (Exception ex) {
+                                Logger.Warning($"AfterPopulate upgrade failed for type {originalType}: {ex.Message}");
+                            }
+                        }
+
+                        // Handle parent attachment if target was replaced
+                        if (target is ISequenceEntity entity && entity.Parent == null) {
+                            if (existingValue is ISequenceEntity existingEntity && existingEntity.Parent != null) {
+                                entity.AttachNewParent(existingEntity.Parent);
                             }
                         }
                     }
@@ -143,18 +204,6 @@ namespace NINA.Sequencer.Serialization {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
             throw new NotImplementedException();
         }
-
-        private enum Upgrade { NINA, Lite, None }
-
-        // When all that's needed is changing the $type
-        private (Upgrade, string) PowerupsLiteSimpleMigration(string token) => token switch {
-            "WhenPlugin.When.CVContainer, WhenPlugin" => (Upgrade.Lite, "NINA.Sequencer.Container.SequentialContainer, NINA.Sequencer"),
-            // Complex types
-            "WhenPlugin.When.Call, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Call, WhenPlugin"), // No change),
-            "WhenPlugin.When.Return, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Return, WhenPlugin"), // No change),
-
-            _ => (Upgrade.NINA, token)
-        };
 
         protected Type GetType(string typeString) {
             var t = Type.GetType(typeString);

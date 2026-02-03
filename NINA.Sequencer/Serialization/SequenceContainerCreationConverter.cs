@@ -20,11 +20,8 @@ using NINA.Core.Utility;
 namespace NINA.Sequencer.Serialization {
 
     public class SequenceContainerCreationConverter : JsonCreationConverter<ISequenceContainer> {
-        private ISequencerFactory factory;
 
-        public SequenceContainerCreationConverter(ISequencerFactory factory) {
-            this.factory = factory;
-        }
+        public SequenceContainerCreationConverter(ISequencerFactory factory) : base(factory) { }
 
         public override ISequenceContainer Create(Type objectType, JObject jObject) {
             if (jObject.TryGetValue("$type", out var token)) {
@@ -33,8 +30,8 @@ namespace NINA.Sequencer.Serialization {
                     return new UnknownSequenceContainer(token?.ToString());
                 }
                 try {
-                    var method = factory.GetType().GetMethod(nameof(factory.GetContainer)).MakeGenericMethod(new Type[] { t });
-                    var obj = method.Invoke(factory, null);
+                    var method = Factory.GetType().GetMethod(nameof(Factory.GetContainer)).MakeGenericMethod(new Type[] { t });
+                    var obj = method.Invoke(Factory, null);
                     if(obj == null) {
                         Logger.Error($"Encountered unknown sequence container: {token?.ToString()}");
                         return new UnknownSequenceContainer(token?.ToString());                        

@@ -36,6 +36,7 @@ using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility.DateTimeProvider;
+using NINA.Sequencer.Serialization;
 using NINA.WPF.Base.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
@@ -55,6 +56,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Trinet.Core.IO.Ntfs;
+using NINA.Sequencer.Interfaces;
 
 namespace NINA.Plugin {
 
@@ -481,16 +483,26 @@ namespace NINA.Plugin {
                 Conditions = Conditions.Concat(pluginConditions).ToList();
                 Triggers = Triggers.Concat(pluginTriggers).ToList();
                 Container = Container.Concat(pluginContainers).ToList();
-
                 DockableVMs = DockableVMs.Concat(parts.DockableVMImports).ToList();
                 PluggableBehaviors = PluggableBehaviors.Concat(parts.PluggableBehaviorImports).ToList();
                 DeviceProviders = DeviceProviders.Concat(parts.DeviceProviderImports).ToList();
+
+                // Upgraders don't implement ISequenceEntity, so handle them separately
+                Upgraders = parts.UpgraderImports.Select(u => {
+                    var upgrader = u.Value;
+                    // Set the Name property from metadata
+                    if (u.Metadata.TryGetValue("Name", out var nameObj)) {
+                        upgrader.Name = (string)nameObj;
+                    }
+                    upgrader.AssemblyName = (catalog as AssemblyCatalog)?.Assembly.GetName().Name ?? "Unknown";
+                    return upgrader;
+                }).ToList();
+
             } catch (Exception ex) {
                 Logger.Error(ex);
                 throw;
             }
         }
-
         private CompositionContainer GetContainer(ComposablePartCatalog catalog) {
             var container = new CompositionContainer(catalog, CompositionOptions.DisableSilentRejection | CompositionOptions.IsThreadSafe);
             container.ComposeExportedValue(profileService);
@@ -549,6 +561,7 @@ namespace NINA.Plugin {
         public IDictionary<IPluginManifest, bool> Plugins { get; private set; }
         public IList<IEquipmentProvider> DeviceProviders { get; private set; }
         public IList<Assembly> Assemblies { get; private set; } = new List<Assembly>();
+        public IList<ISequenceEntityUpgrader> Upgraders { get; private set; }
 
         private readonly IProfileService profileService;
         private readonly ICameraMediator cameraMediator;
@@ -743,6 +756,9 @@ namespace NINA.Plugin {
         [ImportMany(typeof(ISequenceContainer))]
         public IEnumerable<Lazy<ISequenceContainer, IDictionary<string, object>>> ContainerImports { get; private set; }
 
+        [ImportMany(typeof(ISequenceEntityUpgrader))]
+        public IEnumerable<Lazy<ISequenceEntityUpgrader, IDictionary<string, object>>> UpgraderImports { get; private set; }
+
         [ImportMany(typeof(ResourceDictionary))]
         public IEnumerable<ResourceDictionary> DataTemplateImports { get; private set; }
 
@@ -754,7 +770,5 @@ namespace NINA.Plugin {
 
         [ImportMany(typeof(IEquipmentProvider))]
         public IEnumerable<IEquipmentProvider> DeviceProviderImports { get; private set; }
-
-
     }
 }
