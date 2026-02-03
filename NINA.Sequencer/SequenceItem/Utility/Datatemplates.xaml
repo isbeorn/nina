@@ -37,10 +37,14 @@
     <DataTemplate DataType="{x:Type local:Annotation}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
+<<<<<<< HEAD
                 <TextBox
                     AcceptsReturn="True"
                     Text="{Binding Text, Mode=TwoWay}"
                     TextWrapping="Wrap" />
+=======
+                <logic:ExprStringControl Text="{Binding Text, Mode=TwoWay}" />
+>>>>>>> expand
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
@@ -57,14 +61,15 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMessage}" />
+                    <logic:ExprStringControl Label="{ns:Loc LblMessage}" AcceptsReturn="True" Text="{Binding Text, Mode=TwoWay}" />
+                    <!--<TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMessage}" />
                     <TextBox
                         Grid.Column="1"
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
                         AcceptsReturn="True"
                         Text="{Binding Text, Mode=TwoWay}"
-                        TextWrapping="Wrap" />
+                        TextWrapping="Wrap" />-->
                 </Grid>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
@@ -266,8 +271,17 @@
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
+<<<<<<< HEAD
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblScript}" />
                     <TextBox
+=======
+                    
+                    <logic:ExprStringControl
+                        Label="{ns:Loc LblScript}"
+                        Text="{Binding Script, Mode=TwoWay}" />
+                    
+                    <Button
+>>>>>>> expand
                         Grid.Column="1"
                         MinWidth="40"
                         Margin="5,0,0,0"
