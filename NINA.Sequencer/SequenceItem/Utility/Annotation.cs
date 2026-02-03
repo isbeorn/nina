@@ -33,11 +33,16 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Annotation : SequenceItem {
+        private ISymbolBroker _symbolBroker;
+
+        public ISymbolBroker SymbolBroker => _symbolBroker;
 
         [ImportingConstructor]
-        public Annotation() { }
+        public Annotation(ISymbolBroker symbolBroker) {
+            _symbolBroker = symbolBroker;
+        }
 
-        private Annotation(Annotation cloneMe) : base(cloneMe) {
+        private Annotation(Annotation cloneMe) : this(cloneMe._symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
