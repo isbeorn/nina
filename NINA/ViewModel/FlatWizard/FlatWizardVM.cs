@@ -58,6 +58,7 @@ using NINA.WPF.Base.Mediator;
 using System.Reflection;
 using NINA.Sequencer.Container;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NINA.Sequencer.Logic;
 
 namespace NINA.ViewModel.FlatWizard {
     internal partial class FlatWizardVM : DockableVM, IFlatWizardVM {
@@ -72,6 +73,7 @@ namespace NINA.ViewModel.FlatWizard {
         private readonly IMyMessageBoxVM messageBox;
         private readonly ITwilightCalculator twilightCalculator;
         private readonly INighttimeCalculator nighttimeCalculator;
+        private readonly ISymbolBroker symbolBroker;
         private ObserveAllCollection<FilterInfo> watchedFilterList;
 
         public FlatWizardVM(IProfileService profileService,
@@ -85,7 +87,8 @@ namespace NINA.ViewModel.FlatWizard {
                             IMyMessageBoxVM messageBox,
                             INighttimeCalculator nighttimeCalculator,
                             ITwilightCalculator twilightCalculator,
-                            IImageSaveMediator imageSaveMediator) : base(profileService) {
+                            IImageSaveMediator imageSaveMediator,
+                            ISymbolBroker symbolBroker) : base(profileService) {
             Title = Loc.Instance["LblFlatWizard"];
             ImageGeometry = imageGeometryProvider.GetImageGeometry("FlatWizardSVG");
 
@@ -136,6 +139,7 @@ namespace NINA.ViewModel.FlatWizard {
             this.messageBox = messageBox;
             this.twilightCalculator = twilightCalculator;
             this.nighttimeCalculator = nighttimeCalculator;
+            this.symbolBroker = symbolBroker;
 
             TargetName = "FlatWizard";
         }
@@ -462,7 +466,7 @@ namespace NINA.ViewModel.FlatWizard {
                     autoBrightnessFlat.GetIterations().Iterations = FlatCount;
                     break;
                 case FlatWizardMode.SKYFLAT:
-                    sequenceItem = new SkyFlat(profileService, cameraMediator, telescopeMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, twilightCalculator);
+                    sequenceItem = new SkyFlat(profileService, cameraMediator, telescopeMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, twilightCalculator, symbolBroker);
                     var skyflat = sequenceItem as SkyFlat;
                     skyflat.GetSwitchFilterItem().Filter = settings.Filter;
                     skyflat.GetExposureItem().Binning = settings.Settings.Binning;

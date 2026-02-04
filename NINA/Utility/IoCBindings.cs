@@ -328,7 +328,8 @@ namespace NINA.Utility {
                     f.GetService<IFlatDeviceMediator>(), f.GetService<IImageGeometryProvider>(), f.GetService<IApplicationStatusMediator>(), f.GetService<IMyMessageBoxVM>(),
                     f.GetService<INighttimeCalculator>(),
                     f.GetService<ITwilightCalculator>(),
-                    f.GetService<IImageSaveMediator>()));
+                    f.GetService<IImageSaveMediator>(),
+                    f.GetService<ISymbolBroker>()));
 
                 services.AddSingleton<IImageSaveController, ImageSaveController>();
                 services.AddSingleton<ISequenceNavigationVM, SequenceNavigationVM>();
