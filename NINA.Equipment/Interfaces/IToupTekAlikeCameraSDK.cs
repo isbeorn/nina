@@ -36,6 +36,8 @@ namespace NINA.Equipment.Interfaces {
 
         bool put_Speed(ushort value);
 
+        bool AAF(ToupTekAlikeAAF action, int outVal, out int inVal);
+
         bool get_ExpoAGain(out ushort gain);
 
         bool put_AutoExpoEnable(bool v);
@@ -626,4 +628,36 @@ namespace NINA.Equipment.Interfaces {
         /* Bit range: [0, 8] */
         OPTION_BITRANGE = 0x7a
     };
+
+    public enum ToupTekAlikeAAF : int {
+        AAF_SETPOSITION = 0x01,
+        AAF_GETPOSITION = 0x02,
+        AAF_SETZERO = 0x03,
+        AAF_SETDIRECTION = 0x05,
+        AAF_GETDIRECTION = 0x06,
+        AAF_SETMAXINCREMENT = 0x07,
+        AAF_GETMAXINCREMENT = 0x08,
+        AAF_SETFINE = 0x09,
+        AAF_GETFINE = 0x0a,
+        AAF_SETCOARSE = 0x0b,
+        AAF_GETCOARSE = 0x0c,
+        AAF_SETBUZZER = 0x0d,
+        AAF_GETBUZZER = 0x0e,
+        AAF_SETBACKLASH = 0x0f,
+        AAF_GETBACKLASH = 0x10,
+        AAF_GETAMBIENTTEMP = 0x12,
+        /* in 0.1 degrees Celsius, such as: 32 means 3.2 degrees Celsius */
+        AAF_GETTEMP = 0x14,
+        AAF_ISMOVING = 0x16,
+        AAF_HALT = 0x17,
+        AAF_SETMAXSTEP = 0x1b,
+        AAF_GETMAXSTEP = 0x1c,
+        AAF_GETSTEPSIZE = 0x1e,
+        /* Range: min value */
+        AAF_RANGEMIN = 0xfd,
+        /* Range: max value */
+        AAF_RANGEMAX = 0xfe,
+        /* Range: default value */
+        AAF_RANGEDEF = 0xff
+    }
 }
