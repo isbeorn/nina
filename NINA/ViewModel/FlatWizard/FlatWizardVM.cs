@@ -496,7 +496,7 @@ namespace NINA.ViewModel.FlatWizard {
             }
 
             // Wrap the item into a dso container, for the target name to apply
-            var container = new DeepSkyObjectContainer(profileService, nighttimeCalculator, null, null, null, cameraMediator, filterWheelMediator);
+            var container = new DeepSkyObjectContainer(profileService, nighttimeCalculator, null, null, null, cameraMediator, filterWheelMediator, symbolBroker);
             container.Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon) {
                 TargetName = TargetName,                
                 InputCoordinates = new InputCoordinates() {
