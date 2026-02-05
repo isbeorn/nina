@@ -730,6 +730,54 @@
                             </Grid>
                         </StackPanel>
                     </DataTemplate>
+                    <DataTemplate x:Key="ToupTekAlike">
+                        <StackPanel
+                            VerticalAlignment="Top"
+                            Grid.IsSharedSizeScope="True"
+                            Orientation="Vertical">
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ToupTekAlikeLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoSetMaxStep}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    Text="{Binding TargetMaxStep}" />
+                            </Grid>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ToupTekAlikeLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoReversed}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding Reversed}" />
+                            </Grid>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ToupTekAlikeLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <Button
+                                    Grid.ColumnSpan="2"
+                                    Width="200"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding ResetPositionCommand}">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoResetZeroPosition}" />
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
                     <DataTemplate x:Key="Failed">
                         <TextBlock
                             Margin="5"
@@ -743,6 +791,7 @@
                         FailedToLoadTemplate="{StaticResource Failed}"
                         Oasis="{StaticResource Oasis}"
                         Postfix="{x:Static wpfutil:DataTemplatePostfix.FocuserSettings}"
+                        ToupTekAlike="{StaticResource ToupTekAlike}"
                         Zwo="{StaticResource Zwo}" />
                 </Grid.Resources>
                 <!--  Binding to Focuser.Focuser as the focuser is a decorated class and needs to bind to the internal Focuser instance  -->
