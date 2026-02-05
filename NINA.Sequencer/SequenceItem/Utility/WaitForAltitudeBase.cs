@@ -13,17 +13,17 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
     public abstract class WaitForAltitudeBase : SequenceItem {
 
-        private IList<string> issues = new List<string>();
-
         public WaitForAltitudeBase(IProfileService profileService, bool useCustomHorizon) {
             ProfileService = profileService;
-            Data = new WaitLoopData(profileService, useCustomHorizon, CalculateExpectedTime, GetType().Name);
+            Data = new WaitLoopData(profileService, useCustomHorizon, GetType().Name);
         }
 
         public IProfileService ProfileService { get; set; }
 
         [JsonProperty]
         public WaitLoopData Data { get; set; }
+
+        private IList<string> issues = new List<string>();
 
         public IList<string> Issues {
             get => issues;

@@ -20,6 +20,7 @@ using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Sequencer.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.Utility;
 using System;
 using System.Collections.Generic;
@@ -40,13 +41,17 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [JsonObject(MemberSerialization.OptIn)]
     public class MessageBox : SequenceItem {
         private IWindowServiceFactory windowServiceFactory;
+        private ISymbolBroker _symbolBroker;
+
+        public ISymbolBroker SymbolBroker => _symbolBroker;
 
         [ImportingConstructor]
-        public MessageBox(IWindowServiceFactory windowServiceFactory) {
+        public MessageBox(IWindowServiceFactory windowServiceFactory, ISymbolBroker symbolBroker) {
             this.windowServiceFactory = windowServiceFactory;
+            _symbolBroker = symbolBroker;
         }
 
-        private MessageBox(MessageBox cloneMe) : this(cloneMe.windowServiceFactory) {
+        private MessageBox(MessageBox cloneMe) : this(cloneMe.windowServiceFactory, cloneMe._symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
@@ -60,9 +65,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public string Text { get; set; }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            // Expand expressions in the text before displaying
+            string expandedText = ExpressionExpander.Expand(Text, _symbolBroker, Parent);
 
             var service = windowServiceFactory.Create();
-            var msgBoxResult = new MessageBoxResult(Text);
+            var msgBoxResult = new MessageBoxResult(expandedText);
 
             using (token.Register(() => service?.Close())) {
                 await service.ShowDialog(msgBoxResult, Loc.Instance["Lbl_Sequencer_Title"]);

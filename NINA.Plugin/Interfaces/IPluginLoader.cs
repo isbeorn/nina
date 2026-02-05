@@ -14,6 +14,7 @@
 
 using NINA.Core.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
@@ -35,6 +36,7 @@ namespace NINA.Plugin.Interfaces {
         IList<IDockableVM> DockableVMs { get; }
         IList<IPluggableBehavior> PluggableBehaviors { get; }
         IList<IEquipmentProvider> DeviceProviders { get; }
+        IList<ISequenceEntityUpgrader> Upgraders { get; }
 
         Task Load();
     }
