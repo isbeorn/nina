@@ -1117,58 +1117,70 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         }
 
         private async Task RunListener() {
-            var jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
+            var jls = new JsonLoadSettings {
+                LineInfoHandling = LineInfoHandling.Ignore,
+                CommentHandling = CommentHandling.Ignore
+            };
+
             _clientCTS?.Dispose();
             _clientCTS = new CancellationTokenSource();
+            var ct = _clientCTS.Token;
 
             try {
                 using var client = new TcpClient(AddressFamily.InterNetwork) {
                     NoDelay = true,
                 };
 
-                await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort, ct);
+
                 Connected = true;
                 _tcs.TrySetResult(true);
 
                 using NetworkStream s = client.GetStream();
 
+                using var reader = new StreamReader(
+                    s,
+                    Encoding.UTF8,
+                    detectEncodingFromByteOrderMarks: true,
+                    bufferSize: 4096,
+                    leaveOpen: true);
+
                 while (true) {
-                    var state = GetState(client);
-                    if (state == TcpState.CloseWait) {
+                    ct.ThrowIfCancellationRequested();
+
+                    string? line = await reader.ReadLineAsync(ct);
+
+                    if (line is null)
                         throw new Exception(Loc.Instance["LblPhd2ServerConnectionLost"]);
+
+                    if (line.Length == 0 || line[0] != '{') {
+                        continue;
                     }
 
-                    var message = string.Empty;
-                    while (s.DataAvailable) {
-                        byte[] response = new byte[1024];
-                        await s.ReadAsync(response, _clientCTS.Token);
-                        message += Encoding.ASCII.GetString(response);
+                    JObject o;
+                    try {
+                        o = JObject.Parse(line, jls);
+                    } catch {
+                        continue;
                     }
 
-                    var lines = message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                    foreach (string line in lines) {
-                        if (!string.IsNullOrEmpty(line) && line.StartsWith('{')) {
-                            JObject o = JObject.Parse(line, jls);
-                            JToken t = o.GetValue("Event");
-                            string phdevent = "";
-                            if (t != null) {
-                                phdevent = t.ToString();
-                                Logger.Trace($"PHD2 event received - {o}");
-                                await ProcessEvent(phdevent, o);
-                            }
-                        }
+                    var t = o.GetValue("Event");
+                    if (t is null) {
+                        continue;
                     }
 
-                    await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
+                    var phdevent = t.ToString();
+                    Logger.Trace($"PHD2 event received - {o}");
+                    await ProcessEvent(phdevent, o);
                 }
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError(String.Format(Loc.Instance["LblPHDErrorMsg"], ex.Message));
+                Notification.ShowError(string.Format(Loc.Instance["LblPHDErrorMsg"], ex.Message));
                 throw;
             } finally {
                 Settling = false;
-                AppState = new PhdEventAppState() { State = "" };
+                AppState = new PhdEventAppState { State = "" };
                 PixelScale = 0.0d;
                 Connected = false;
                 _tcs.TrySetResult(false);
