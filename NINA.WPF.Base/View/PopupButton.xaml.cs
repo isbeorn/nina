@@ -68,10 +68,15 @@ namespace NINA.WPF.Base.View {
             if (DateTime.UtcNow - lastCloseTime < TimeSpan.FromMilliseconds(200)) { ToggleButtonPopup.IsChecked = false; return; }
             PopupControl.IsOpen = true;
             DependencyObject elem = PopupContent;
-            foreach (var index in FocusIndex.Split(",")) {
-                elem = VisualTreeHelper.GetChild(elem, int.Parse(index));
+            if (!string.IsNullOrWhiteSpace(FocusIndex)) {
+                foreach (var index in FocusIndex.Split(",")) {
+                    if (elem == null || !int.TryParse(index, out var i) || i < 0 || i >= VisualTreeHelper.GetChildrenCount(elem)) {
+                        break;
+                    }
+                    elem = VisualTreeHelper.GetChild(elem, i);
+                }
             }
-            (elem as FrameworkElement).Focus();
+            (elem as FrameworkElement)?.Focus();
             OpenCommand?.Execute(PopupControl);
         }
 
