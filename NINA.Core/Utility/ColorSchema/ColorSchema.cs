@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -525,7 +526,12 @@ namespace NINA.Core.Utility.ColorSchema {
 
         [DataMember]
         public Color CrosshairColor {
-            get => crosshairColor;
+            get {
+                if (crosshairColor == new Color()) {
+                    crosshairColor = (Color)ColorConverter.ConvertFromString("#FF848484");
+                }
+                return crosshairColor;
+            }
             set {
                 if(value == new Color()) {
                     value = (Color)ColorConverter.ConvertFromString("#FF848484");
@@ -583,7 +589,12 @@ namespace NINA.Core.Utility.ColorSchema {
 
         [DataMember]
         public Color SequencerExpressionTextColor {
-            get => sequencerExpressionTextColor;
+            get {
+                if (sequencerExpressionTextColor == new Color()) {
+                    sequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFF5F4FA");
+                }
+                return sequencerExpressionTextColor;
+            }
             set {
                 if (value == new Color()) {
                     value = (Color)ColorConverter.ConvertFromString("#FFF5F4FA");
