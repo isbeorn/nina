@@ -22,6 +22,7 @@ using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyDome;
 using NINA.Equipment.Equipment.MyFlatDevice;
 using NINA.Equipment.Equipment.MyFocuser;
+using NINA.Equipment.Equipment.MyGuider;
 using NINA.Equipment.Equipment.MyRotator;
 using NINA.Equipment.Equipment.MySafetyMonitor;
 using NINA.Equipment.Equipment.MySwitch;
@@ -50,7 +51,7 @@ using static NINA.Sequencer.Logic.Symbol;
 namespace NINA.Sequencer.Logic {
 
     public class SymbolBroker : DockableVM, ISymbolBrokerProviderApi, ITelescopeConsumer, ISwitchConsumer, IWeatherDataConsumer, IFocuserConsumer, IFilterWheelConsumer,
-        IDomeConsumer, ISafetyMonitorConsumer, ICameraConsumer, IFlatDeviceConsumer, IRotatorConsumer {
+        IDomeConsumer, ISafetyMonitorConsumer, ICameraConsumer, IFlatDeviceConsumer, IRotatorConsumer, IGuiderConsumer {
 
         private static List<string> _symbolProviders =
             new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel" };
@@ -94,7 +95,7 @@ namespace NINA.Sequencer.Logic {
         private IFlatDeviceMediator _flatMediator;
         private IFocuserMediator _focuserMediator;
         private IImagingMediator _imagingMediator;
-
+        private IGuiderMediator _guiderMediator;
         private ConcurrentDictionary<string, IList<Symbol>> _hiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
         private readonly ConcurrentDictionary<string, string> _providerOwnership = new ConcurrentDictionary<string, string>();
@@ -124,6 +125,7 @@ namespace NINA.Sequencer.Logic {
             _focuserMediator = focuserMediator;
             _telescopeMediator = telescopeMediator;
             _imagingMediator = imagingMediator;
+            _guiderMediator = guiderMediator;
 
             _imagingMediator.ImagePrepared += SetImageSymbols;
 
@@ -137,6 +139,7 @@ namespace NINA.Sequencer.Logic {
             _cameraMediator.RegisterConsumer(this);
             _flatMediator.RegisterConsumer(this);
             _rotatorMediator.RegisterConsumer(this);
+            _guiderMediator.RegisterConsumer(this);
 
             // Register the default Providers
             foreach (string provider in _symbolProviders) {
@@ -149,6 +152,7 @@ namespace NINA.Sequencer.Logic {
             _conditionWatchdog = new ConditionWatchdog(UpdateNINASymbols, TimeSpan.FromSeconds(3));
             _conditionWatchdog.Start();
         }
+
         private void AddHiddenSymbol(string source, Symbol sym) {
             IList<Symbol> symList;
             if (!_hiddenSymbols.TryGetValue(source, out symList)) {
@@ -304,6 +308,11 @@ namespace NINA.Sequencer.Logic {
             // If the list has one item, we're done
             if (list.Count == 1) {
                 symbol = list[0];
+                if (!string.IsNullOrWhiteSpace(prefix) && !symbol.Key.Contains(prefix)) {
+                    symbol = null;
+                    return false;
+                }
+
                 return true;
             }
 
@@ -434,7 +443,7 @@ namespace NINA.Sequencer.Logic {
 
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
             double timeSeconds = Math.Floor(time.TotalSeconds);
-            AddOrUpdateSymbol("NINA", "ApplicationUptime", timeSeconds);
+            AddOrUpdateSymbol("NINA", "Uptime", timeSeconds);
 
             AddOrUpdateSymbol("NINA", "ProfileName", _profileService.ActiveProfile.Name);
             AddOrUpdateSymbol("NINA", "ProfileId", _profileService.ActiveProfile.Id);
@@ -619,7 +628,8 @@ namespace NINA.Sequencer.Logic {
             return false;
         }
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
-            if (deviceInfo.Connected) {
+            AddOrUpdateSymbol("Mount", "Connected", deviceInfo.Connected);
+            if (deviceInfo.Connected) {                
                 AddOrUpdateSymbol("Mount", "Altitude", deviceInfo.Altitude);
                 AddOrUpdateSymbol("Mount", "Azimuth", deviceInfo.Azimuth);
                 AddOrUpdateSymbol("Mount", "AtPark", deviceInfo.AtPark);
@@ -639,6 +649,7 @@ namespace NINA.Sequencer.Logic {
             }
         }
         public void UpdateDeviceInfo(SwitchInfo deviceInfo) {
+            AddOrUpdateSymbol("Switch", "Connected", deviceInfo.Connected);
             if (deviceInfo.Connected) {
                 foreach (ISwitch sw in deviceInfo.ReadonlySwitches) {
                     string key = RemoveSpecialCharacters(sw.Name);
@@ -655,6 +666,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void UpdateDeviceInfo(WeatherDataInfo deviceInfo) {
+            AddOrUpdateSymbol("Weather", "Connected", deviceInfo.Connected);
             if (deviceInfo.Connected) {
                 foreach (string dataName in _weatherData) {
                     PropertyInfo info = deviceInfo.GetType().GetProperty(dataName);
@@ -673,6 +685,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void UpdateDeviceInfo(FocuserInfo deviceInfo) {
+            AddOrUpdateSymbol("Focuser", "Connected", deviceInfo.Connected);
             if (deviceInfo.Connected) {
                 AddOrUpdateSymbol("Focuser", "Position", deviceInfo.Position);
                 AddOrUpdateSymbol("Focuser", "Temperature", deviceInfo.Temperature);
@@ -683,6 +696,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void UpdateDeviceInfo(Equipment.Equipment.MyFilterWheel.FilterWheelInfo deviceInfo) {
+            AddOrUpdateSymbol("FilterWheel", "Connected", deviceInfo.Connected);
             if (deviceInfo.Connected) {
                 var f = _profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 foreach (FilterInfo filterInfo in f) {
@@ -702,6 +716,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void UpdateDeviceInfo(DomeInfo deviceInfo) {
+            AddOrUpdateSymbol("Dome", "Connected", deviceInfo.Connected);
             if (deviceInfo.Connected) {
                 AddOrUpdateSymbol("Dome", "ShutterStatus", (int)deviceInfo.ShutterStatus, ShutterConstants);
                 AddOrUpdateSymbol("Dome", "Azimuth", deviceInfo.Azimuth);
@@ -716,6 +731,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void UpdateDeviceInfo(SafetyMonitorInfo deviceInfo) {
+            AddOrUpdateSymbol("Safety", "Connected", deviceInfo.Connected);
             if (profileService.ActiveProfile.SafetyMonitorSettings.Id != "No_Device") {
                 AddOrUpdateSymbol("Safety", "IsSafe", deviceInfo.Connected && deviceInfo.IsSafe);
             } else {
@@ -724,6 +740,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
+            AddOrUpdateSymbol("Camera", "Connected", deviceInfo.Connected);
             if (deviceInfo.Connected) {
                 AddOrUpdateSymbol("Camera", "Temperature", deviceInfo.Temperature);
                 AddOrUpdateSymbol("Camera", "TemperatureSetPoint", deviceInfo.TemperatureSetPoint);
@@ -746,6 +763,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void UpdateDeviceInfo(FlatDeviceInfo deviceInfo) {
+            AddOrUpdateSymbol("FlatPanel", "Connected", deviceInfo.Connected);
             if (deviceInfo.Connected) {
                 AddOrUpdateSymbol("FlatPanel", "LightOn", deviceInfo.LightOn);
                 AddOrUpdateSymbol("FlatPanel", "Brightness", deviceInfo.Brightness);
@@ -758,6 +776,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
+            AddOrUpdateSymbol("Rotator", "Connected", deviceInfo.Connected);
             if (deviceInfo.Connected) {
                 AddOrUpdateSymbol("Rotator", "Position", deviceInfo.Position);
                 AddOrUpdateSymbol("Rotator", "MechanicalPosition", deviceInfo.MechanicalPosition);
@@ -771,6 +790,23 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void UpdateUserFocused(FocuserInfo info) {
+        }
+
+        public void UpdateDeviceInfo(GuiderInfo deviceInfo) {
+            AddOrUpdateSymbol("Guider", "Connected", deviceInfo.Connected);
+            if (deviceInfo.Connected && deviceInfo.RMSError is not null) {
+                AddOrUpdateSymbol("Guider", "RMSTotal", deviceInfo.RMSError.Total.Arcseconds);
+                AddOrUpdateSymbol("Guider", "RMSRA", deviceInfo.RMSError.RA.Arcseconds);
+                AddOrUpdateSymbol("Guider", "RMSDec", deviceInfo.RMSError.Dec.Arcseconds);
+                AddOrUpdateSymbol("Guider", "PeakRA", deviceInfo.RMSError.PeakRA.Arcseconds);
+                AddOrUpdateSymbol("Guider", "PeakDec", deviceInfo.RMSError.PeakDec.Arcseconds);
+            } else {
+                RemoveSymbol("Guider", "RMSTotal");
+                RemoveSymbol("Guider", "RMSRA");
+                RemoveSymbol("Guider", "RMSDec");
+                RemoveSymbol("Guider", "PeakRA");
+                RemoveSymbol("Guider", "PeakDec");
+            }
         }
     }
 }

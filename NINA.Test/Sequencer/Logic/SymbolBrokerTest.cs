@@ -6,6 +6,7 @@ using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyDome;
 using NINA.Equipment.Equipment.MyFlatDevice;
 using NINA.Equipment.Equipment.MyFocuser;
+using NINA.Equipment.Equipment.MyGuider;
 using NINA.Equipment.Equipment.MyRotator;
 using NINA.Equipment.Equipment.MySafetyMonitor;
 using NINA.Equipment.Equipment.MySwitch;
@@ -76,7 +77,7 @@ namespace NINA.Test.Sequencer.Logic {
             if (expectedSuccess) {
                 symbol.Should().NotBeNull();
                 if (expectedValue is not null) {
-                    symbol.Value.Should().Be(expectedValue);
+                    symbol.Value.Should().Be(expectedValue, $"Key {key} should be {expectedValue}");
                     symbol.Type.Should().Be(isHidden ? Symbol.SymbolType.SYMBOL_HIDDEN : Symbol.SymbolType.SYMBOL_NORMAL);
                 }
             } else {
@@ -100,7 +101,7 @@ namespace NINA.Test.Sequencer.Logic {
             // Assert
             ValidateSymbol(key: "NINA_ProfileId", expectedSuccess: true);
             ValidateSymbol(key: "NINA_ProfileName", expectedSuccess: true);
-            ValidateSymbol(key: "NINA_ApplicationUptime", expectedSuccess: true);
+            ValidateSymbol(key: "NINA_Uptime", expectedSuccess: true);
             ValidateSymbol(key: "NINA_LocalSiderealTime", expectedSuccess: true);
             ValidateSymbol(key: "NINA_SunAzimuth", expectedSuccess: true);
             ValidateSymbol(key: "NINA_SunAltitude", expectedSuccess: true);
@@ -564,9 +565,51 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
+            ValidateSymbol(key: "Dome_Connected", expectedSuccess: true, expectedValue: false);
             ValidateSymbol(key: "Dome_ShutterStatus", expectedSuccess: false);
             ValidateSymbol(key: "Dome_DomeAltitude", expectedSuccess: false);
             ValidateSymbol(key: "Dome_DomeAzimuth", expectedSuccess: false);
+        }
+
+        [Test]
+        public void SymbolBroker_UpdateDeviceInfo_Guider_Disconnected_HasSymbols() {
+            // Arrange
+            var info = new GuiderInfo {
+                Connected = true,
+                RMSError = new RMSError(rA: 1.5, dec: 2.5, peakRA: 3.7, peakDec: 4.8, total: 2.0, scale: 1) {
+                    
+                },
+            };
+
+            // Act
+            broker.UpdateDeviceInfo(info);
+
+            // Assert
+            ValidateSymbol(key: "Guider_Connected", expectedSuccess: true, expectedValue: true);
+            ValidateSymbol(key: "Guider_PeakRA", expectedSuccess: true, 3.7);
+            ValidateSymbol(key: "Guider_PeakDec", expectedSuccess: true, 4.8);
+            ValidateSymbol(key: "Guider_RMSTotal", expectedSuccess: true, 2.0);
+            ValidateSymbol(key: "Guider_RMSRA", expectedSuccess: true, 1.5);
+            ValidateSymbol(key: "Guider_RMSDec", expectedSuccess: true, 2.5);
+        }
+
+        [Test]
+        public void SymbolBroker_UpdateDeviceInfo_Guider_Disconnected_HasNoSymbols() {
+            // Arrange
+            var info = new GuiderInfo {
+                Connected = false,
+            };
+
+            // Act
+            broker.UpdateDeviceInfo(new GuiderInfo { Connected = true });
+            broker.UpdateDeviceInfo(info);
+
+            // Assert
+            ValidateSymbol(key: "Guider_Connected", expectedSuccess: true, expectedValue: false);
+            ValidateSymbol(key: "Guider_PeakRA", expectedSuccess: false);
+            ValidateSymbol(key: "Guider_PeakDec", expectedSuccess: false);
+            ValidateSymbol(key: "Guider_RMSRA", expectedSuccess: false);
+            ValidateSymbol(key: "Guider_RMSDec", expectedSuccess: false);
         }
 
         [Test]
@@ -748,6 +791,28 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         [Test]
+        public void SymbolBroker_AmbiguityTest() {
+            var info = new CameraInfo {
+                Connected = true,
+                TemperatureSetPoint = -15.0,
+                Temperature = -10.5,
+                XSize = 4000,
+                YSize = 3000,
+                PixelSize = 4.54
+            };
+
+            broker.UpdateDeviceInfo(info);
+            ValidateSymbol("Camera_Connected", true, true);
+            ValidateSymbol("FilterWheel_Connected", false, false);
+            ValidateSymbol("Connected", true, true);
+
+            broker.UpdateDeviceInfo(new CameraInfo { Connected = false });
+            ValidateSymbol("Camera_Connected", true, false);
+            ValidateSymbol("FilterWheel_Connected", false, false);
+            ValidateSymbol("Connected", true, false);
+        }
+
+        [Test]
         public void SymbolBroker_GetSymbols_ReturnAllSymbols() {
             // Arrange
             var info = new CameraInfo {
@@ -768,6 +833,7 @@ namespace NINA.Test.Sequencer.Logic {
             symbols.Should().Contain(x => x.Category == "NINA");
             symbols.Should().Contain(x => x.Category == "Camera");
             symbols.Should().NotContain(x => x.Category == "Camera" && x.Key == "XSize");
+            ValidateSymbol("Camera_Connected", true, true);
 
             // Act 2
             broker.UpdateDeviceInfo(new CameraInfo { Connected = false });
@@ -776,7 +842,8 @@ namespace NINA.Test.Sequencer.Logic {
             // Assert 2
             symbols2.Should().NotBeNull();
             symbols2.Should().Contain(x => x.Category == "NINA");
-            symbols2.Should().NotContain(x => x.Category == "Camera");
+            ValidateSymbol("Camera_Connected", true, false);
+            symbols2.Should().NotContain(x => x.Category == "Camera" && x.Key == "XSize");
         }
 
         [Test]
