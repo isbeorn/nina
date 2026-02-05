@@ -17,6 +17,7 @@ using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Image.ImageAnalysis;
 using NINA.Interfaces;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Logic;
 using NINA.Utility;
 using NINA.ViewModel;
 using NINA.ViewModel.FlatWizard;
@@ -133,6 +134,11 @@ namespace NINA {
                     PluginsVM = pluginsVM,
                     GlobalObjects = globalObjects,
                 };
+
+                sw = Stopwatch.StartNew();
+                var symbolBroker = serviceProvider.GetService<ISymbolBroker>();
+                Debug.Print($"Time to create SymbolBrokerVM {sw.Elapsed}");
+
                 Debug.Print($"Time to create MainWindowVM {sw.Elapsed}");
 
                 return mainWindowVM;

@@ -13,12 +13,15 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Generators;
 using NINA.Sequencer.Trigger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,7 +40,7 @@ namespace NINA.Sequencer.Serialization {
                 new SequenceItemCreationConverter(factory, c),
                 new SequenceConditionCreationConverter(factory),
                 new SequenceTriggerCreationConverter(factory),
-                new SequenceDateTimeProviderCreationConverter(factory.DateTimeProviders)
+                new SequenceDateTimeProviderCreationConverter(factory)
             };
         }
 
@@ -56,5 +59,6 @@ namespace NINA.Sequencer.Serialization {
 
             return container;
         }
+
     }
 }

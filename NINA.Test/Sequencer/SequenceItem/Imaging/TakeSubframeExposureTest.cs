@@ -17,25 +17,17 @@ using Moq;
 using NINA.Image.ImageData;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Profile.Interfaces;
-using NINA.Sequencer;
 using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.ViewModel.ImageHistory;
 using Nito.AsyncEx;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using NINA.Image.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Core.Utility;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Core.Model.Equipment;
 using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.Core.Locale;
 
 namespace NINA.Test.Sequencer.SequenceItem.Imaging {
 
@@ -69,6 +61,11 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             sut.Binning = new BinningMode(2,2);
             sut.ExposureTime = 100;
             sut.ExposureCount = 100;
+            sut.LeftExpression = new NINA.Sequencer.Logic.Expression("30", null);
+            sut.TopExpression = new NINA.Sequencer.Logic.Expression("40", null);
+            sut.WidthExpression = new NINA.Sequencer.Logic.Expression("50", null);
+            sut.HeightExpression = new NINA.Sequencer.Logic.Expression("60", null);
+            sut.ROIOption = sut.ROIOptions[0];
             var item2 = (TakeSubframeExposure)sut.Clone();
 
             item2.Should().NotBeSameAs(sut);
@@ -82,6 +79,11 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             item2.Offset.Should().Be(sut.Offset);
             item2.ImageType.Should().Be(sut.ImageType);
             item2.ROI.Should().Be(sut.ROI);
+            item2.LeftExpression.Definition.Should().Be(sut.LeftExpression.Definition);
+            item2.TopExpression.Definition.Should().Be(sut.TopExpression.Definition);
+            item2.WidthExpression.Definition.Should().Be(sut.WidthExpression.Definition);   
+            item2.HeightExpression.Definition.Should().Be(sut.HeightExpression.Definition);
+            item2.ROIOption.Should().Be(sut.ROIOption);
         }
 
         [Test]
@@ -191,6 +193,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             sut.Binning = new BinningMode(binning, binning);
             sut.ImageType = imageType;
             sut.ROI = roi;
+            sut.ROIOption = SubframeType.ROI;
 
             await sut.Execute(default, default);
 
@@ -216,6 +219,53 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
 
             imageSaveMediatorMock.Verify(x => x.Enqueue(It.Is<IImageData>(d => d == imageDataMock.Object), It.Is<Task<IRenderedImage>>(t => t == prepareTask), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
             historyMock.Verify(x => x.Add(1, imageType), Times.Exactly(historycalls));
+        }
+        [Test]
+        [TestCase(100, 10, 20, 1)]
+        [TestCase(5, 2, 1, 3)]
+        [TestCase(100, 10, 20, 30)]
+        public async Task Execute_WithDimensions_NoIssues_CanSubsample_LogicCalled(int left, int top, int width, int height) {
+            var imageMock = new Mock<IExposureData>();
+            var imageDataMock = new Mock<IImageData>();
+            var stats = new Mock<IImageStatistics>();
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageFileSettings.FilePath).Returns(TestContext.CurrentContext.TestDirectory);
+            imageDataMock.SetupGet(x => x.Statistics).Returns(new AsyncLazy<IImageStatistics>(() => Task.FromResult(stats.Object)));
+            imageDataMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData() { Image = new ImageParameter { Id = 1 } });
+            imageMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData() { Image = new ImageParameter { Id = 1 } });
+            imageMock.Setup(x => x.ToImageData(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(imageDataMock.Object));
+            var imageTask = Task.FromResult(imageMock.Object);
+            var prepareTask = Task.FromResult(new Mock<IRenderedImage>().Object);
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = true, CanSubSample = true, XSize = 100, YSize = 50 });
+            imagingMediatorMock.Setup(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>())).Returns(imageTask);
+            imagingMediatorMock.Setup(x => x.PrepareImage(It.IsAny<IImageData>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>())).Returns(prepareTask);
+
+            var sut = new TakeSubframeExposure(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, historyMock.Object);
+            sut.ROIOption = SubframeType.DIMENSIONS;
+            sut.LeftExpression = new NINA.Sequencer.Logic.Expression(left.ToString(), null);
+            sut.TopExpression = new NINA.Sequencer.Logic.Expression(top.ToString(), null);
+            sut.WidthExpression = new NINA.Sequencer.Logic.Expression(width.ToString(), null);
+            sut.HeightExpression = new NINA.Sequencer.Logic.Expression(height.ToString(), null);
+
+
+            await sut.Execute(default, default);
+
+            imagingMediatorMock.Verify(
+                x => x.CaptureImage(
+                    It.Is<CaptureSequence>(
+                        cs =>
+                            cs.ProgressExposureCount == 0
+                            && cs.TotalExposureCount == 1
+                            && cs.EnableSubSample
+                            && cs.SubSambleRectangle.X == left
+                            && cs.SubSambleRectangle.Y == top
+                            && cs.SubSambleRectangle.Width == width
+                            && cs.SubSambleRectangle.Height == height
+
+                    ),
+                    It.IsAny<CancellationToken>(),
+                    It.IsAny<IProgress<ApplicationStatus>>(),
+                    It.IsAny<string>()
+                ), Times.Once);
         }
 
         [Test]

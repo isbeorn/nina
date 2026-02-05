@@ -27,5 +27,6 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
 
     public interface IOptionsVM {
         void AddImagePattern(ImagePattern pattern);
+        void RemoveImagePattern(string key);
     }
 }

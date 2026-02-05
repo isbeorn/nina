@@ -23,6 +23,7 @@
     <SolidColorBrush x:Key="NotificationErrorTextBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationErrorTextColor}" />
     <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.SecondaryBackgroundColor}" />
     <SolidColorBrush x:Key="TertiaryBackgroundBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.TertiaryBackgroundColor}" />
+    <SolidColorBrush x:Key="SequencerExpressionTextBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.SequencerExpressionTextColor}" />
 
     <SolidColorBrush x:Key="AltPrimaryBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.PrimaryColor}" />
     <SolidColorBrush x:Key="AltSecondaryBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.SecondaryColor}" />
@@ -39,4 +40,5 @@
     <SolidColorBrush x:Key="AltNotificationErrorTextBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.NotificationErrorTextColor}" />
     <SolidColorBrush x:Key="AltSecondaryBackgroundBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.SecondaryBackgroundColor}" />
     <SolidColorBrush x:Key="AltTertiaryBackgroundBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.TertiaryBackgroundColor}" />
+    <SolidColorBrush x:Key="AltSequencerExpressionTextBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.SequencerExpressionTextColor}" />
 </ResourceDictionary>
