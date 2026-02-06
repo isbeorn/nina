@@ -181,6 +181,15 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             return sdk.put_Speed(value);
         }
 
+        public bool AAF(ToupTekAlikeAAF action, int outVal, out int inVal) {
+            inVal = 0;
+            return false;
+        }
+
+        public bool AAF(ToupTekAlikeAAF action, int outVal) {
+            return false;
+        }
+
         private ToupTekAlikeCallback toupTekAlikeCallback;
         private Omegonprocam.DelegateEventCallback nativeCallback;
 
