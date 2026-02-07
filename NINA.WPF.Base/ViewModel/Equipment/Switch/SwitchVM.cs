@@ -265,7 +265,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
                             return true;
                         } else {
-                            Notification.ShowError(String.Format(Loc.Instance["LblUnableToconnectTo"], DeviceChooserVM.SelectedDevice.Name));
                             SwitchInfo.Connected = false;
                             this.SwitchHub = null;
                             return false;
