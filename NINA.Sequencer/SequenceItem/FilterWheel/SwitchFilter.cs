@@ -78,10 +78,18 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         private void MatchFilter() {
             try {
                 var idx = this.Filter?.Position ?? -1;
-                this.filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == this.Filter?.Name);
+                var filterName = this.Filter?.Name;
+                this.filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == filterName);
                 if (this.Filter == null && idx >= 0) {
                     this.filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == idx);
                 }
+
+                // Update ComboBoxText and raise property changed notifications
+                if (this.Filter != null) {
+                    comboBoxText = this.Filter.Name;
+                    RaisePropertyChanged(nameof(ComboBoxText));
+                }
+                RaisePropertyChanged(nameof(Filter));
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
