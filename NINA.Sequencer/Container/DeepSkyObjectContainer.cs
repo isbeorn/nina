@@ -13,34 +13,37 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Astrometry;
+using NINA.Astrometry.Interfaces;
 using NINA.Core.Enum;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.Model.Equipment;
+using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
+using NINA.Equipment.Exceptions;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container.ExecutionStrategy;
+using NINA.Sequencer.Interfaces;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Sequencer.Trigger;
-using NINA.Core.Utility;
-using NINA.Astrometry;
+using NINA.Sequencer.Utility;
+using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Equipment.Exceptions;
-using NINA.Core.Utility.Notification;
-using NINA.Core.Locale;
-using NINA.Astrometry.Interfaces;
-using NINA.Equipment.Interfaces;
-using NINA.WPF.Base.Interfaces.ViewModel;
 using System.Windows;
-using System.Collections.Generic;
-using NINA.Sequencer.Interfaces;
-using NINA.Core.Model.Equipment;
-using NINA.Equipment.Interfaces.Mediator;
-using NINA.Sequencer.SequenceItem.Imaging;
-using NINA.Sequencer.Utility;
+using System.Windows.Input;
 
 namespace NINA.Sequencer.Container {
 
@@ -61,6 +64,7 @@ namespace NINA.Sequencer.Container {
         private INighttimeCalculator nighttimeCalculator;
         private bool exposureInfoListExpanded;
         private AsyncObservableCollection<ExposureInfo> exposureInfoList;
+        private readonly ISymbolBroker symbolBroker;
 
         private InputTarget target;
 
@@ -72,7 +76,8 @@ namespace NINA.Sequencer.Container {
                 IApplicationMediator applicationMediator,
                 IPlanetariumFactory planetariumFactory,
                 ICameraMediator cameraMediator,
-                IFilterWheelMediator filterWheelMediator) : base(new SequentialStrategy()) {
+                IFilterWheelMediator filterWheelMediator,
+                ISymbolBroker symbolBroker) : base(new SequentialStrategy()) {
             this.profileService = profileService;
             this.nighttimeCalculator = nighttimeCalculator;
             this.applicationMediator = applicationMediator;
@@ -80,6 +85,7 @@ namespace NINA.Sequencer.Container {
             this.planetariumFactory = planetariumFactory;
             this.cameraMediator = cameraMediator;
             this.filterWheelMediator = filterWheelMediator;
+            this.symbolBroker = symbolBroker;
             Task.Run(() => NighttimeData = nighttimeCalculator.Calculate());
             ExposureInfoList = new AsyncObservableCollection<ExposureInfo>();
             Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
@@ -176,7 +182,7 @@ namespace NINA.Sequencer.Container {
         }
 
         public override object Clone() {
-            var clone = new DeepSkyObjectContainer(profileService, nighttimeCalculator, framingAssistantVM, applicationMediator, planetariumFactory, cameraMediator, filterWheelMediator) {
+            var clone = new DeepSkyObjectContainer(profileService, nighttimeCalculator, framingAssistantVM, applicationMediator, planetariumFactory, cameraMediator, filterWheelMediator, symbolBroker) {
                 Icon = Icon,
                 Name = Name,
                 Category = Category,
@@ -298,7 +304,7 @@ namespace NINA.Sequencer.Container {
 
         public ExposureInfo GetOrCreateExposureCountForItemAndCurrentFilter(IExposureItem exposureItem, double roi) {
             lock (ExposureInfoList) {
-                if(exposureItem.ImageType != Equipment.Model.CaptureSequence.ImageTypes.LIGHT) {
+                if (exposureItem.ImageType != Equipment.Model.CaptureSequence.ImageTypes.LIGHT) {
                     return null;
                 }
 
@@ -360,5 +366,25 @@ namespace NINA.Sequencer.Container {
             RaisePropertyChanged(nameof(ExposureInfoSummary));
         }
 
+        public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            // Add Symbols for Target
+            ISymbolBrokerProviderApi broker = symbolBroker as ISymbolBrokerProviderApi;
+            ISymbolProvider provider = broker.GetInternalProvider("NINA");
+            try {
+                if (Target != null && Target.DeepSkyObject != null && Target.DeepSkyObject.Coordinates != null) {
+                    broker.AddOrUpdateSymbol(provider, "TargetName", Target.TargetName);
+                    broker.AddOrUpdateSymbol(provider, "TargetRAJ2000", Target.DeepSkyObject.Coordinates.RA);
+                    broker.AddOrUpdateSymbol(provider, "TargetDecJ2000", Target.DeepSkyObject.Coordinates.Dec);
+                    broker.AddOrUpdateSymbol(provider, "TargetPositionAngle", Target.DeepSkyObject.RotationPositionAngle);
+                }
+                await base.Execute(progress, token);
+            } finally {
+                // Remove Symbols for Target; no harm if they don't exist
+                broker.RemoveSymbol(provider, "TargetName");
+                broker.RemoveSymbol(provider, "TargetRAJ2000");
+                broker.RemoveSymbol(provider, "TargetDecJ2000");
+                broker.RemoveSymbol(provider, "TargetPositionAngle");
+            }
+        }
     }
 }

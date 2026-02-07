@@ -16,14 +16,14 @@
             MinWidth="20"
             Margin="5,-3,0,-5"
             VerticalAlignment="Center"
-            Foreground="{StaticResource ButtonBackgroundSelectedBrush}"
+            Foreground="{StaticResource SequencerExpressionTextBrush}"
             Text="{Binding Exp.Definition, RelativeSource={RelativeSource AncestorType={x:Type local:ExprControlVariable}}}"
             ToolTip="Foo"
             ToolTipOpening="ShowConstants" />
         <TextBlock
             Margin="5,-4,10,-4"
             VerticalAlignment="Center"
-            Foreground="{StaticResource ButtonBackgroundSelectedBrush}">
+            Foreground="{StaticResource SequencerExpressionTextBrush}">
             <TextBlock.Visibility>
                 <Binding
                     Converter="{StaticResource BooleanToVisibilityCollapsedConverter}"
