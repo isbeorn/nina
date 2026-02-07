@@ -9,7 +9,7 @@ void iauPom00(double xp, double yp, double sp, double rpom[3][3])
 **  Form the matrix of polar motion for a given date, IAU 2000.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  support function.
 **
@@ -25,7 +25,7 @@ void iauPom00(double xp, double yp, double sp, double rpom[3][3])
 **  1) The arguments xp and yp are the coordinates (in radians) of the
 **     Celestial Intermediate Pole with respect to the International
 **     Terrestrial Reference System (see IERS Conventions 2003),
-**     measured along the meridians to 0 and 90 deg west respectively.
+**     measured along the meridians 0 and 90 deg west respectively.
 **
 **  2) The argument sp is the TIO locator s', in radians, which
 **     positions the Terrestrial Intermediate Origin on the equator.  It
@@ -51,11 +51,11 @@ void iauPom00(double xp, double yp, double sp, double rpom[3][3])
 **     McCarthy, D. D., Petit, G. (eds.), IERS Conventions (2003),
 **     IERS Technical Note No. 32, BKG (2004)
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
 
@@ -65,12 +65,12 @@ void iauPom00(double xp, double yp, double sp, double rpom[3][3])
    iauRy(-xp, rpom);
    iauRx(-yp, rpom);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

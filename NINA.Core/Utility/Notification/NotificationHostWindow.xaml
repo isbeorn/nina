@@ -21,7 +21,6 @@
     ResizeMode="NoResize"
     ShowInTaskbar="False"
     SizeToContent="WidthAndHeight"
-    Topmost="True"
     WindowStyle="None"
     mc:Ignorable="d">
 

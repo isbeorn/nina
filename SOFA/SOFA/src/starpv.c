@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 int iauStarpv(double ra, double dec,
               double pmr, double pmd, double px, double rv,
@@ -11,7 +12,7 @@ int iauStarpv(double ra, double dec,
 **  Convert star catalog coordinates to position+velocity vector.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  support function.
 **
@@ -118,11 +119,11 @@ int iauStarpv(double ra, double dec,
 **
 **     Stumpff, P., 1985, Astron.Astrophys. 144, 232-240.
 **
-**  This revision:  2017 March 16
+**  This revision:  2023 May 4
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
 /* Smallest allowed parallax */
@@ -135,7 +136,7 @@ int iauStarpv(double ra, double dec,
    static const int IMAX = 100;
 
    int i, iwarn;
-   double w, r, rd, rad, decd, v, x[3], usr[3], ust[3],
+   double w, r, rd, rad, decd, v, pu[3], usr[3], ust[3],
           vsr, vst, betst, betsr, bett, betr,
           dd, ddel, ur[3], ut[3],
           d = 0.0, del = 0.0,       /* to prevent */
@@ -153,7 +154,7 @@ int iauStarpv(double ra, double dec,
    }
    r = DR2AS / w;
 
-/* Radial velocity (au/day). */
+/* Radial speed (au/day). */
    rd = DAYSEC * rv * 1e3 / DAU;
 
 /* Proper motion (radian/day). */
@@ -171,9 +172,9 @@ int iauStarpv(double ra, double dec,
    }
 
 /* Isolate the radial component of the velocity (au/day). */
-   iauPn(pv[0], &w, x);
-   vsr = iauPdp(x, pv[1]);
-   iauSxp(vsr, x, usr);
+   iauPn(pv[0], &w, pu);
+   vsr = iauPdp(pu, pv[1]);
+   iauSxp(vsr, pu, usr);
 
 /* Isolate the transverse component of the velocity (au/day). */
    iauPmp(pv[1], usr, ust);
@@ -183,7 +184,7 @@ int iauStarpv(double ra, double dec,
    betsr = vsr / DC;
    betst = vst / DC;
 
-/* Determine the inertial-to-observed relativistic correction terms. */
+/* Determine the observed-to-inertial correction terms. */
    bett = betst;
    betr = betsr;
    for (i = 0; i < IMAX; i++) {
@@ -204,23 +205,24 @@ int iauStarpv(double ra, double dec,
    }
    if (i >= IMAX) iwarn += 4;
 
-/* Replace observed radial velocity with inertial value. */
-   w = (betsr != 0.0) ? d + del / betsr : 1.0;
-   iauSxp(w, usr, ur);
-
-/* Replace observed tangential velocity with inertial value. */
+/* Scale observed tangential velocity vector into inertial (au/d). */
    iauSxp(d, ust, ut);
 
-/* Combine the two to obtain the inertial space velocity. */
+/* Compute inertial radial velocity vector (au/d). */
+   iauSxp(DC*(d*betsr+del), pu, ur);
+
+/* Combine the two to obtain the inertial space velocity vector. */
    iauPpp(ur, ut, pv[1]);
 
 /* Return the status. */
    return iwarn;
 
+/* Finished. */
+
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

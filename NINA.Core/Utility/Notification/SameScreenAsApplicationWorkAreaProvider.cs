@@ -20,6 +20,9 @@ using System.Windows.Media;
 
 namespace NINA.Core.Utility.Notification {
     public sealed class SameScreenAsApplicationWorkAreaProvider : INotificationWorkAreaProvider {
+        public bool IsTopMost => true;
+
+        public Window Owner => null;
 
         public Rect GetWorkArea() {
             var app = Application.Current;

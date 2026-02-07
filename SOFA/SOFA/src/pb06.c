@@ -12,7 +12,7 @@ void iauPb06(double date1, double date2,
 **  bias (the offset between ICRS and mean J2000.0) is included.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  support function.
 **
@@ -68,11 +68,11 @@ void iauPb06(double date1, double date2,
 **     iauPmat06    PB matrix, IAU 2006
 **     iauRz        rotate around Z-axis
 **
-**  This revision:  2020 May 27
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double r[3][3], y, x;
@@ -102,10 +102,12 @@ void iauPb06(double date1, double date2,
    x = r[1][1];
    *bzeta = ( x != 0.0 || y != 0.0 ) ? - atan2(y,x) : 0.0;
 
+/* Finished. */
+
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

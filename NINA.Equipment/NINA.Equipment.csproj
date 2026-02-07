@@ -55,12 +55,12 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ASCOM.Alpaca.Components" Version="2.2.1" />
-    <PackageReference Include="ASCOM.Alpaca.Device" Version="2.2.1" />
-    <PackageReference Include="ASCOM.Com.Components" Version="2.2.1" />
+    <PackageReference Include="ASCOM.Alpaca.Components" Version="3.0.0" />
+    <PackageReference Include="ASCOM.Alpaca.Device" Version="3.0.0" />
+    <PackageReference Include="ASCOM.Com.Components" Version="3.0.0" />
     <PackageReference Include="Castle.Core" Version="5.2.1" />
     <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
-    <PackageReference Include="Google.Protobuf.Tools" Version="3.33.1" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.33.4" />
     <PackageReference Include="Grpc.Tools" Version="2.76.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -80,7 +80,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.2.0.9001</Version>
+    <Version>3.3.0.1000-canary</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the Equipment components of N.I.N.A. to interact and connect to various types of astronomy equipment.</Description>

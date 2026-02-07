@@ -127,6 +127,15 @@ namespace NINA.ViewModel {
             } catch (Exception) {
                 OgmaSDKVersion = Loc.Instance["LblNotInstalled"];
             }
+
+            try {
+                var cxusbdll = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "External", "x64", Path.Combine("Moravian", "cXusb.dll"));
+                if (File.Exists(cxusbdll)) {
+                    MoravianSDKVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(cxusbdll).FileVersion ?? Loc.Instance["LblNotInstalled"];
+                }
+            } catch {
+                MoravianSDKVersion = Loc.Instance["LblNotInstalled"];
+            }
         }
 
         public string AltairSDKVersion { get; }
@@ -145,5 +154,6 @@ namespace NINA.ViewModel {
         public string PlayerOneSDKVersion { get; }
         public string ASTPANSDKVersion { get; }
         public string OgmaSDKVersion { get; }
+        public string MoravianSDKVersion { get; }
     }
 }

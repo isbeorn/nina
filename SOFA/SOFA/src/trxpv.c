@@ -9,7 +9,7 @@ void iauTrxpv(double r[3][3], double pv[2][3], double trpv[2][3])
 **  Multiply a pv-vector by the transpose of an r-matrix.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  vector/matrix support function.
 **
@@ -18,20 +18,26 @@ void iauTrxpv(double r[3][3], double pv[2][3], double trpv[2][3])
 **     pv       double[2][3]    pv-vector
 **
 **  Returned:
-**     trpv     double[2][3]    r * pv
+**     trpv     double[2][3]    r^T * pv
 **
-**  Note:
-**     It is permissible for pv and trpv to be the same array.
+**  Notes:
+**
+**  1) The algorithm is for the simple case where the r-matrix r is not
+**     a function of time.  The case where r is a function of time leads
+**     to an additional velocity component equal to the product of the
+**     derivative of the transpose of r and the position vector.
+**
+**  2) It is permissible for pv and rpv to be the same array.
 **
 **  Called:
 **     iauTr        transpose r-matrix
 **     iauRxpv      product of r-matrix and pv-vector
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double tr[3][3];
@@ -43,12 +49,12 @@ void iauTrxpv(double r[3][3], double pv[2][3], double trpv[2][3])
 /* Matrix tr * vector pv -> vector trpv. */
    iauRxpv(tr, pv, trpv);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

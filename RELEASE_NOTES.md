@@ -22,30 +22,68 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - 160 stars have been added to the manual focus target list to cover more stars of different magnitudes across the sky
 - Filterwheels will now poll in the background their position in case the wheel is moved by another client. This ensures that N.I.N.A. always has the correct filter position even when the wheel was moved outside of N.I.N.A.
 - Enhanced sequencer exit handling to more reliably detect actual changes and prevent false-positive change prompts.
+- Clicking on slew Alt/Az in the Mount equipment page with Mount drivers that do not support slewing to Alt/Az, will now fallback to slewing to RA/Dec coordinates instead of doing nothing.
 
 ## Features
+
+### **Sequencer Expressions**
+- **Expression support for sequence items**
+  - Many sequence item parameters can now optionally use expressions instead of fixed values.
+  - Expressions can reference live data such as device state, weather conditions, image statistics, and time-based values as well as user-defined constants and variables.
+  - Simple numeric values continue to work exactly as before.
+  - This brings the core functionality previously available via the **Sequencer Powerups** plugin directly into N.I.N.A.
+
+- **Expression editor with symbol and function sidebar**
+  - A new sidebar is available when editing expression-enabled fields.
+  - Displays all currently available **symbols**, grouped by category (e.g. mount, camera, weather, image data).
+  - Lists all supported **functions** (math, logic, time, string, and utility helpers).
+  - Users familiar with the **Sequencer Powerups** plugin will recognize the workflow and capabilities.
+
+- **Built-in expression functions**
+  - Includes common mathematical operations, logical and conditional helpers, time-based functions, and string utilities.
+  - Functions can be freely combined with symbols to build complex expressions.
+
+- **Seamless migration and backward compatibility**
+  - Existing sequences continue to work without any changes.
+  - Expression support is opt-in per field; fields that do not use expressions behave exactly as before.
+  - When loading older sequences, existing values are preserved and automatically interpreted as simple expressions.
+
+- **Plugin support (opt-in)**
+  - Expression support for plugin-provided sequence items is **opt-in** and requires plugin updates.
+  - Plugins must explicitly adopt the new expression system to expose expression-enabled fields.
+  - Plugins that are not updated continue to function normally, but their sequence items will not offer expression support.
 
 ### **Device Management**
 - **ASCOM Alpaca Direct Drivers**
     - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
 - **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
   - The ToupTek based filter wheels are now available as a native driver.
+  - The ToupTek based focusers are now available as a native driver.
 - **Oasis Focuser Native Driver**
   - The Oasis focuser is now available as a native driver.
+- **Oasis Filter Wheel Native Driver**
+  - The Oasis filter wheel is now available as a native driver.
 - **PlayerOne FilterWheel**
   - Added setting to change unidirectional mode
   - While connecting the app will wait for the filter wheel homing to finish before proceeding
+- **Moravian Instruments Cameras and Integrated Filter Wheels**
+  - Added native drivers for Moravian Instruments cameras and integrated filter wheels
 
 ### **User Interface & Usability**
 - **Sky Atlas Improvements**  
   - Deep sky objects can now be filtered and sorted by their upper transit time
 - **Framing Assistant Improvements** 
-  - In HiPS 2 FITS Sky Survey different HiPS sky maps can now be selected like CTA-FRAM, Mellinger, Northern Sky Narrowband Survey and more for better target planning. 
+  - In HiPS 2 FITS Sky Survey different HiPS sky maps can now be selected like CTA-FRAM, Mellinger, Northern Sky Narrowband Survey and more for better target planning.
+  - Toogle Catalogue Display: visibility of individual catalogues is no stored in settings and a new "show all catalogues" toogle been added   
 - **New Toast Notification System**
   - Replaced the external ToastNotifications package with a fully native WPF implementation.
   - Improved reliability, lifetime handling, and positioning across multiple monitors.
   - Added configurable notification placement: primary screen, same screen as the app, or application window, as well as adjustable corner positioning via Options > General > Advanced.
   - Notifications now reposition automatically on window moves, DPI changes, and display configuration changes.
+
+### File formats
+- **XISF ZStandard Compression**
+  - Added support for ZStandard compression in XISF files.
 
 
 # Version 3.2

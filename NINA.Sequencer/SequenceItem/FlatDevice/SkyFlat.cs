@@ -18,6 +18,7 @@ using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Guider;
 using NINA.Sequencer.SequenceItem.Imaging;
@@ -54,6 +55,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         private IImageSaveMediator imageSaveMediator;
         private ITwilightCalculator twilightCalculator;
         private ITelescopeMediator telescopeMediator;
+        private ISymbolBroker symbolBroker;
 
         private bool cameraIsLinear = true;
 
@@ -74,7 +76,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                        IImageSaveMediator imageSaveMediator,
                        IImageHistoryVM imageHistoryVM,
                        IFilterWheelMediator filterWheelMediator,
-                       ITwilightCalculator twilightCalculator) :
+                       ITwilightCalculator twilightCalculator,
+                       ISymbolBroker symbolBroker) :  // Add this parameter
             this(
                 null,
                 profileService,
@@ -82,6 +85,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 imagingMediator,
                 imageSaveMediator,
                 twilightCalculator,
+                symbolBroker,  // Add this parameter
                 new SwitchFilter(profileService, filterWheelMediator),
                 new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.FLAT },
                 new LoopCondition() { Iterations = 1 }
@@ -100,6 +104,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             IImagingMediator imagingMediator,
             IImageSaveMediator imageSaveMediator,
             ITwilightCalculator twilightCalculator,
+            ISymbolBroker symbolBroker,
             SwitchFilter switchFilter,
             TakeExposure takeExposure,
             LoopCondition loopCondition
@@ -110,13 +115,14 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             this.imageSaveMediator = imageSaveMediator;
             this.twilightCalculator = twilightCalculator;
             this.telescopeMediator = telescopeMediator;
+            this.symbolBroker = symbolBroker;  // Add this line
             ditherPixels = profileService.ActiveProfile.GuiderSettings.DitherPixels;
             ditherSettleTime = profileService.ActiveProfile.GuiderSettings.SettleTime;
 
-            this.Add(new Annotation());
-            this.Add(new Annotation());
+            this.Add(new Annotation(symbolBroker));  // Pass symbolBroker
+            this.Add(new Annotation(symbolBroker));  // Pass symbolBroker
             this.Add(switchFilter);
-            this.Add(new Annotation());
+            this.Add(new Annotation(symbolBroker));  // Pass symbolBroker
 
             var container = new SequentialContainer();
             container.Add(loopCondition);
@@ -169,6 +175,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 imagingMediator,
                 imageSaveMediator,
                 twilightCalculator,
+                symbolBroker,  // Add this parameter
                 (SwitchFilter)this.GetSwitchFilterItem().Clone(),
                 (TakeExposure)this.GetExposureItem().Clone(),
                 (LoopCondition)this.GetIterations().Clone()

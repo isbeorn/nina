@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauPr00(double date1, double date2, double *dpsipr, double *depspr)
 /*
@@ -10,7 +11,7 @@ void iauPr00(double date1, double date2, double *dpsipr, double *depspr)
 **  (part of MHB2000).
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  canonical model.
 **
@@ -71,11 +72,11 @@ void iauPr00(double date1, double date2, double *dpsipr, double *depspr)
 **     Wallace, P.T., "Software for Implementing the IAU 2000
 **     Resolutions", in IERS Workshop 5.1 (2002).
 **
-**  This revision:  2013 June 18
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double t;
@@ -92,12 +93,12 @@ void iauPr00(double date1, double date2, double *dpsipr, double *depspr)
    *dpsipr = PRECOR * t;
    *depspr = OBLCOR * t;
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

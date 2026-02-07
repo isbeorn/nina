@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 #include <float.h>
 
 int iauJd2cal(double dj1, double dj2,
@@ -11,7 +12,7 @@ int iauJd2cal(double dj1, double dj2,
 **  Julian Date to Gregorian year, month, day, and fraction of a day.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  support function.
 **
@@ -61,13 +62,13 @@ int iauJd2cal(double dj1, double dj2,
 **     Section 12.92 (p604).
 **
 **     Klein, A., A Generalized Kahan-Babuska-Summation-Algorithm.
-**     Computing 76, 279-293 (2006), Section 3.
+**     Computing, 76, 279-293 (2006), Section 3.
 **
-**  This revision:  2020 June 24
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
 /* Minimum and maximum allowed JD */
@@ -147,12 +148,15 @@ int iauJd2cal(double dj1, double dj2,
    *iy = (int) (100L * (n - 49L) + i + l);
    *fd = f;
 
+/* Success. */
    return 0;
+
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

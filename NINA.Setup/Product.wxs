@@ -101,6 +101,7 @@
       <ComponentGroupRef Id="External_x64_FTDI_files" />
       <ComponentGroupRef Id="External_x64_Risingcam_files" />
       <ComponentGroupRef Id="External_x64_MGEN_files" />
+      <ComponentGroupRef Id="External_x64_Moravian_files"/>
       <ComponentGroupRef Id="External_x64_SVBony_files" />
       <ComponentGroupRef Id="External_x64_SBIG_files" />
       <ComponentGroupRef Id="External_x64_MallinCam_files" />
@@ -232,6 +233,7 @@
               <Directory Id="External_x64_SOFA" Name="SOFA" />
               <Directory Id="External_x64_FTDI" Name="FTDI" />
               <Directory Id="External_x64_MGEN" Name="MGEN" />
+              <Directory Id="External_x64_Moravian" Name="Moravian" />
               <Directory Id="External_x64_Risingcam" Name="Risingcam" />
               <Directory Id="External_x64_VCRedis" Name="VCRedis" />
               <Directory Id="External_x64_SVBony" Name="SVBony" />
@@ -435,6 +437,9 @@
       <Component Id="EntityFramework.SqlServer.dll" Guid="18df716e-b515-49c3-a315-23c5a943a404" Bitness="$(var.Win64)">
         <File Id="EntityFramework.SqlServer.dll" Name="EntityFramework.SqlServer.dll" Source="$(var.NINA_TargetDir)EntityFramework.SqlServer.dll" />
       </Component>
+      <Component Id="ExtendedNumerics.BigDecimal.dll" Guid="fa07ee45-e1d7-421d-b4de-50072cf282b0">
+        <File Id="ExtendedNumerics.BigDecimal.dll" Name="ExtendedNumerics.BigDecimal.dll" Source="$(var.NINA_TargetDir)ExtendedNumerics.BigDecimal.dll" />
+      </Component>
       <Component Id="Fastenshtein.dll" Guid="3A028268-64BC-4C7E-9895-56BEC5BA259C" Bitness="$(var.Win64)">
         <File Id="Fastenshtein.dll" Name="Fastenshtein.dll" Source="$(var.NINA_TargetDir)Fastenshtein.dll" />
       </Component>
@@ -471,11 +476,53 @@
       <Component Id="MdXaml.Plugins.dll" Guid="b1a6f459-2b0a-4887-a162-7e7dd6b3bc93">
         <File Id="MdXaml.Plugins.dll" Name="MdXaml.Plugins.dll" Source="$(var.NINA_TargetDir)MdXaml.Plugins.dll" />
       </Component>
+      <Component Id="Microsoft.Bcl.AsyncInterfaces.dll" Guid="5b060757-599f-452c-8538-714df4d37dea">
+        <File Id="Microsoft.Bcl.AsyncInterfaces.dll" Name="Microsoft.Bcl.AsyncInterfaces.dll" Source="$(var.NINA_TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
+      </Component>
+      <Component Id="Microsoft.CodeAnalysis.CSharp.dll" Guid="8a2dc0cb-30fd-4a8a-8e85-fc1d81b4fb2a">
+        <File Id="Microsoft.CodeAnalysis.CSharp.dll" Name="Microsoft.CodeAnalysis.CSharp.dll" Source="$(var.NINA_TargetDir)Microsoft.CodeAnalysis.CSharp.dll" />
+      </Component>
+      <Component Id="Microsoft.CodeAnalysis.dll" Guid="27641079-0b3e-4740-a2aa-9790ab837625">
+        <File Id="Microsoft.CodeAnalysis.dll" Name="Microsoft.CodeAnalysis.dll" Source="$(var.NINA_TargetDir)Microsoft.CodeAnalysis.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Configuration.Abstractions.dll" Guid="13542e26-d152-45e1-8c7a-50b65500ee3f">
+        <File Id="Microsoft.Extensions.Configuration.Abstractions.dll" Name="Microsoft.Extensions.Configuration.Abstractions.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Configuration.Abstractions.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Configuration.Binder.dll" Guid="3ade6f24-f064-440f-9a23-a2e2dbf07dd8">
+        <File Id="Microsoft.Extensions.Configuration.Binder.dll" Name="Microsoft.Extensions.Configuration.Binder.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Configuration.Binder.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Configuration.dll" Guid="43a755b8-039f-4483-b2e3-6214455378b9">
+        <File Id="Microsoft.Extensions.Configuration.dll" Name="Microsoft.Extensions.Configuration.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Configuration.dll" />
+      </Component>
       <Component Id="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Guid="fc905efb-a8f2-4bf6-8937-f1b5e2e6754d">
         <File Id="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Name="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
       </Component>
       <Component Id="Microsoft.Extensions.DependencyInjection.dll" Guid="082c4359-5a69-47f4-8043-130071793997">
         <File Id="Microsoft.Extensions.DependencyInjection.dll" Name="Microsoft.Extensions.DependencyInjection.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.DependencyInjection.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Logging.Abstractions.dll" Guid="455a3bc1-0f54-4d0a-9884-979fe24c80a9">
+        <File Id="Microsoft.Extensions.Logging.Abstractions.dll" Name="Microsoft.Extensions.Logging.Abstractions.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Logging.Abstractions.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Logging.Configuration.dll" Guid="c14f6547-28f0-421f-a163-624935b8ec1c">
+        <File Id="Microsoft.Extensions.Logging.Configuration.dll" Name="Microsoft.Extensions.Logging.Configuration.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Logging.Configuration.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Logging.Console.dll" Guid="76941819-a40e-4787-b736-77879ae1f37a">
+        <File Id="Microsoft.Extensions.Logging.Console.dll" Name="Microsoft.Extensions.Logging.Console.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Logging.Console.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Logging.dll" Guid="6a217110-cab9-418f-bb31-bc3f63d20413">
+        <File Id="Microsoft.Extensions.Logging.dll" Name="Microsoft.Extensions.Logging.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Logging.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Logging.TraceSource.dll" Guid="7272f701-e59b-4e71-8b2f-336378aef6e7">
+        <File Id="Microsoft.Extensions.Logging.TraceSource.dll" Name="Microsoft.Extensions.Logging.TraceSource.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Logging.TraceSource.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Options.ConfigurationExtensions.dll" Guid="5b4afd35-c20f-4287-8fea-3ce35b9ab024">
+        <File Id="Microsoft.Extensions.Options.ConfigurationExtensions.dll" Name="Microsoft.Extensions.Options.ConfigurationExtensions.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Options.dll" Guid="ecf75adc-55ed-41bc-8b2f-55856cc06311">
+        <File Id="Microsoft.Extensions.Options.dll" Name="Microsoft.Extensions.Options.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Options.dll" />
+      </Component>
+      <Component Id="Microsoft.Extensions.Primitives.dll" Guid="b214f008-9914-45be-a39c-18f5ec0029ce">
+        <File Id="Microsoft.Extensions.Primitives.dll" Name="Microsoft.Extensions.Primitives.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Primitives.dll" />
       </Component>
       <Component Id="Microsoft.Xaml.Behaviors.dll" Guid="69093258-81a8-4474-bdb7-d69732bfc56e" Bitness="$(var.Win64)">
         <File Id="Microsoft.Xaml.Behaviors.dll" Name="Microsoft.Xaml.Behaviors.dll" Source="$(var.NINA_TargetDir)Microsoft.Xaml.Behaviors.dll" />
@@ -488,6 +535,12 @@
       </Component>
       <Component Id="nikoncswrapper.dll" Guid="2153f113-e26c-4195-a71e-5afcf9eba0b5" Bitness="$(var.Win64)">
         <File Id="nikoncswrapper.dll" Name="nikoncswrapper.dll" Source="$(var.nikoncswrapper_TargetDir)nikoncswrapper.dll" />
+      </Component>
+      <Component Id="NCalc.Core.dll" Guid="49be3dcd-b28a-4df8-8414-2bd04ca9d970">
+          <File Id="NCalc.Core.dll" Name="NCalc.Core.dll" Source="$(var.NINA_TargetDir)NCalc.Core.dll" />
+      </Component>
+      <Component Id="NCalc.Sync.dll" Guid="b6d06c81-da22-4969-8279-7225b0375265">
+          <File Id="NCalc.Sync.dll" Name="NCalc.Sync.dll" Source="$(var.NINA_TargetDir)NCalc.Sync.dll" />
       </Component>
       <Component Id="NINA.Astrometry.dll" Guid="aa12c384-5308-485c-b979-419bb08fd488" Bitness="$(var.Win64)">
         <File Id="NINA.Astrometry.dll" Name="NINA.Astrometry.dll" Source="$(var.NINA.Astrometry_TargetDir)NINA.Astrometry.dll" />
@@ -567,6 +620,12 @@
       <Component Id="NINA.Sequencer.pdb" Guid="d1f1818e-82b6-4fb3-92cb-2701c5cd8d0c">
         <File Id="NINA.Sequencer.pdb" Name="NINA.Sequencer.pdb" Source="$(var.NINA_TargetDir)NINA.Sequencer.pdb" />
       </Component>
+      <Component Id="NINA.Sequencer.Generators.dll" Guid="69997c19-f931-4bb7-b985-d4c956a7a40a">
+        <File Id="NINA.Sequencer.Generators.dll" Name="NINA.Sequencer.Generators.dll" Source="$(var.NINA_TargetDir)NINA.Sequencer.Generators.dll" />
+      </Component>
+      <Component Id="NINA.Sequencer.Generators.pdb" Guid="E574C2E2-0E68-452D-B705-0AFF9D28C1B7">
+        <File Id="NINA.Sequencer.Generators.pdb" Name="NINA.Sequencer.Generators.pdb" Source="$(var.NINA_TargetDir)NINA.Sequencer.Generators.pdb" />
+      </Component>
       <Component Id="NINA.WPF.Base.dll" Guid="da3b598c-5da9-46a8-a70d-a9a0c86705a4" Bitness="$(var.Win64)">
         <File Id="NINA.WPF.Base.dll" Name="NINA.WPF.Base.dll" Source="$(var.NINA.WPF.Base_TargetDir)NINA.WPF.Base.dll" />
       </Component>
@@ -626,6 +685,9 @@
       </Component>
       <Component Id="OxyPlot.Wpf.Shared.dll" Guid="1397eef9-0f27-4c92-be3c-f66dfdcd2b50">
         <File Id="OxyPlot.Wpf.Shared.dll" Name="OxyPlot.Wpf.Shared.dll" Source="$(var.NINA_TargetDir)OxyPlot.Wpf.Shared.dll" />
+      </Component>
+      <Component Id="Parlot.dll" Guid="094dabf0-2f58-490b-a300-2884807f192a">
+        <File Id="Parlot.dll" Name="Parlot.dll" Source="$(var.NINA_TargetDir)Parlot.dll" />
       </Component>
       <Component Id="Serilog.dll" Guid="addc1650-2365-452a-a91d-064507e40e77" Bitness="$(var.Win64)">
         <File Id="Serilog.dll" Name="Serilog.dll" Source="$(var.NINA_TargetDir)Serilog.dll" />
@@ -1446,6 +1508,9 @@
       <Component Id="wpfgfx_cor3.dll" Guid="0472e370-5dd8-4ee9-ba87-10fae5e3f89a">
         <File Id="wpfgfx_cor3.dll" Name="wpfgfx_cor3.dll" Source="$(var.NINA_TargetDir)wpfgfx_cor3.dll" />
       </Component>
+      <Component Id="ZstdSharp.dll" Guid="1b50b5b3-72f9-4a62-99e3-be76b50ad9fa">
+        <File Id="ZstdSharp.dll" Name="ZstdSharp.dll" Source="$(var.NINA_TargetDir)ZstdSharp.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
@@ -2192,8 +2257,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x64_SOFA_files" Directory="External_x64_SOFA">
-      <Component Id="External_x64_SOFA_SOFAlib.dll" Guid="7e84f09e-ef65-4075-93f9-34a61f47a2af" Bitness="$(var.Win64)">
-        <File Id="External_x64_SOFA_SOFAlib.dll" Name="SOFAlib.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFAlib.dll" />
+      <Component Id="External_x64_SOFA_SOFA-2023-10-11.dll" Guid="81FF5D30-3236-4516-89F9-C2FD3C655A22" Bitness="$(var.Win64)">
+        <File Id="External_x64_SOFA_SOFA-2023-10-11.dll" Name="SOFA-2023-10-11.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFA-2023-10-11.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -2211,6 +2276,27 @@
       </Component>
     </ComponentGroup>
   </Fragment>
+  
+  <Fragment>
+    <ComponentGroup Id="External_x64_Moravian_files" Directory="External_x64_Moravian">
+      <Component Id="External_x64_Moravian_cXusb.dll" Guid="a30750ce-390b-436b-bad6-d6e65db11646" Bitness="$(var.Win64)">
+        <File Id="External_x64_Moravian_cXusb.dll" Name="cXusb.dll" Source="$(var.NINA_TargetDir)External\x64\Moravian\cXusb.dll" />
+      </Component>
+      <Component Id="External_x64_Moravian_gXeth.dll" Guid="acd8db3b-4722-411c-8c71-4175bd009663" Bitness="$(var.Win64)">
+        <File Id="External_x64_Moravian_gXeth.dll" Name="gXeth.dll" Source="$(var.NINA_TargetDir)External\x64\Moravian\gXeth.dll" />
+      </Component>
+      <Component Id="External_x64_Moravian_gXusb.dll" Guid="93bd191e-1ae2-4f8d-9783-8c572170ecb0" Bitness="$(var.Win64)">
+        <File Id="External_x64_Moravian_gXusb.dll" Name="gXusb.dll" Source="$(var.NINA_TargetDir)External\x64\Moravian\gXusb.dll" />
+      </Component>
+      <Component Id="External_x64_Moravian_sfw.dll" Guid="04cd8866-59ff-45d3-95ef-d71cdee21a80" Bitness="$(var.Win64)">
+        <File Id="External_x64_Moravian_sfw.dll" Name="sfw.dll" Source="$(var.NINA_TargetDir)External\x64\Moravian\sfw.dll" />
+      </Component>
+      <Component Id="External_x64_Moravian_sfweth.dll" Guid="a0f5e73d-ac07-4843-8146-ebf9bbb77fe2" Bitness="$(var.Win64)">
+        <File Id="External_x64_Moravian_sfweth.dll" Name="sfweth.dll" Source="$(var.NINA_TargetDir)External\x64\Moravian\sfweth.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  
   <Fragment>
     <ComponentGroup Id="External_x64_Risingcam_files" Directory="External_x64_Risingcam">
       <Component Id="External_x64_Risingcam_nncam.dll" Guid="4686cc8e-bd19-4fed-8da5-4fc026b4d614" Bitness="$(var.Win64)">
@@ -2275,6 +2361,9 @@
     <ComponentGroup Id="External_x64_Oasis_files" Directory="External_x64_Oasis">
       <Component Id="External_x64_Oasis_OasisFocuser.dll" Guid="8e45b1b1-e320-484b-97b5-cd5512a7f9bd" Bitness="$(var.Win64)">
         <File Id="External_x64_Oasis_OasisFocuser.dll" Name="OasisFocuser.dll" Source="$(var.NINA_ProjectDir)External\x64\Oasis\OasisFocuser.dll" />
+      </Component>
+      <Component Id="External_x64_Oasis_OasisFilterWheel.dll" Guid="F0C72D3B-C4EF-4221-9227-55C60C86DEF7" Bitness="$(var.Win64)">
+        <File Id="External_x64_Oasis_OasisFilterWheel.dll" Name="OasisFilterWheel.dll" Source="$(var.NINA_ProjectDir)External\x64\Oasis\OasisFilterWheel.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

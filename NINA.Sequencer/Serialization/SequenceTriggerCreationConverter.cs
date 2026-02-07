@@ -20,11 +20,8 @@ using NINA.Core.Utility;
 namespace NINA.Sequencer.Serialization {
 
     public class SequenceTriggerCreationConverter : JsonCreationConverter<ISequenceTrigger> {
-        private ISequencerFactory factory;
 
-        public SequenceTriggerCreationConverter(ISequencerFactory factory) {
-            this.factory = factory;
-        }
+        public SequenceTriggerCreationConverter(ISequencerFactory factory) :base(factory) { }
 
         public override ISequenceTrigger Create(Type objectType, JObject jObject) {
             if (jObject.TryGetValue("$type", out var token)) {
@@ -34,8 +31,8 @@ namespace NINA.Sequencer.Serialization {
                     return new UnknownSequenceTrigger(token?.ToString());
                 }
                 try {
-                    var method = factory.GetType().GetMethod(nameof(factory.GetTrigger)).MakeGenericMethod(new Type[] { t });
-                    var obj = method.Invoke(factory, null);
+                    var method = Factory.GetType().GetMethod(nameof(Factory.GetTrigger)).MakeGenericMethod(new Type[] { t });
+                    var obj = method.Invoke(Factory, null);
                     if (obj == null) {
                         Logger.Error($"Encountered unknown sequence trigger: {token?.ToString()}");
                         return new UnknownSequenceTrigger(token?.ToString());
