@@ -576,12 +576,11 @@
     <value>修改</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>曝光计数</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence has been modified since it was last saved (changes to {0}).
-        
-Do you want to continue and lose the changes anyway?</value>
+    <value>本序列自上次保存后有修改 ({0} 已改变)
+确定要放弃所有改动并直接关闭？</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>关闭已修改的序列</value>
@@ -1292,7 +1291,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>开启位扩增</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>将10/12/14位图像扩展至16位后保存。(仅支持使用原生驱动的Altair、Omegon、SVBony、RisingCam和ToupTek相机)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>已启用</value>
@@ -1787,7 +1786,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>ID</value>
   </data>
   <data name="LblIllumination" xml:space="preserve">
-    <value>光照</value>
+    <value>月相</value>
   </data>
   <data name="LblImage" xml:space="preserve">
     <value>图像</value>
@@ -2439,7 +2438,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>星图偏好设置</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Import the currently selected planetarium object to update name and coordinates</value>
+    <value>从星图软件中导入选中的天体对象，更新以下名称和坐标信息</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>来自选定目标的坐标</value>
@@ -3320,7 +3319,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>转向南天</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>中天时间</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>趋势线和双曲线</value>
@@ -4460,14 +4459,12 @@ Do you want to continue and lose the changes anyway?</value>
     <value>HFR增加后自动对焦</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-<value>HFR trend per filter</value>
-</data>
+    <value>分滤镜计算 HFR 趋势</value>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-<value>When disabled, the HFR trend is evaluated across all filters combined. 
-This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
-and a temperature sensitive optics on a quickly changing ambient temperature. 
-Note: This mode requires that HFR differences between filters in your setup are small.</value>
-</data>
+    <value>禁用后，将所有滤镜合并以计算 HFR 趋势。这有助于加快自动对焦触发，尤其适用于成像过程中频繁更换滤镜，或对温度敏感的光学系统处于温度快速变化环境的场景。
+注意：禁用该功能后，需确保不同滤镜间的 HFR 差异较小。</value>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>自上次自动对焦运行或序列拍摄开始后，当温度加给定量（以度表示）后，启动自动对焦</value>
   </data>
@@ -6237,7 +6234,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>任意</value>
   </data>
   <data name="LblAnyDuration" xml:space="preserve">
-    <value>任意持续时间</value>
+    <value>任意可见时间</value>
   </data>
   <data name="LblFromTime" xml:space="preserve">
     <value>从</value>
@@ -6543,7 +6540,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>你可以对连接的ZWO设备命名，最长为8个ASCII字符，用于区分多个同型号的设备。</value>
   </data>
   <data name="LblDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>可以为已连接设备命名，最长为8个ASCII字符，用于区分同型号的设备。</value>
   </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>单向</value>
@@ -6682,7 +6679,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>位置同步</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
-    <value>关键词</value>
+    <value>提示</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
     <value>同步到应用程序</value>
@@ -6944,14 +6941,14 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>设定使用 HTTP 或 HTTPS 进行 ASCOM Alpaca 设备搜寻 (默认：关闭)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
-    <value>使用IPv4</value>
+    <value>使用 IPv4</value>
     <comment>If ASCOM Alpaca should use IPv4</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>使用IPv4来搜寻 ASCOM Alpaca 设备(默认：开启)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
-    <value>使用IPv6</value>
+    <value>使用 IPv6</value>
     <comment>If ASCOM Alpaca should use IPv6</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
@@ -6959,6 +6956,9 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>切换目录显示</value>
+  </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Show all catalogues</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>目标高度角</value>
@@ -7198,253 +7198,661 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Civil dawn</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
-    <value>Refuse mount unpark if shutter is not open</value>
+    <value>天窗未打开时不要解除停放</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
-    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+    <value>当圆顶天窗或屋顶未打开时，无法解除停放</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
-    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+    <value>如果天窗或屋顶状态处于：已关闭、关闭中、打开中或错误时，拒绝解除停放支架。 只有在天窗或屋顶报告已打开状态时才允许解除停放</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
-    <value>There is no civil dawn at your location today.</value>
+    <value>你所在的位置今天没有民用晨光。</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
-    <value>There is no civil dusk at your location today.</value>
+    <value>你所在的位置今天没有民用昏影。</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
-    <value>There is no astronomical dawn at your location today.</value>
+    <value>你所在的位置今天没有天文晨光。</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
-    <value>There is no astronomical dusk at your location today.</value>
+    <value>你所在的位置今天没有天文昏影。</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
-    <value>There is no nautical dawn at your location today.</value>
+    <value>你所在的位置今天没有航海晨光。</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
-    <value>There is no nautical dusk at your location today.</value>
+    <value>你所在的位置今天没有航海昏影。</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
-    <value>There is no sunrise at your location today.</value>
+    <value>你所在的位置今天没有日出。</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
-    <value>There is no sunset at your location today.</value>
+    <value>你所在的位置今天没有日落。</value>
   </data>
   <data name="LblUnableToConnectTo" xml:space="preserve">
-    <value>Unable to connect to {0}</value>
+    <value>无法连接到 {0}</value>
     <comment>Parameters: {0}=Url or device etc</comment>
   </data>
   <data name="LblCameraNoSupport16bit" xml:space="preserve">
-    <value>Camera does not support 16 bit mode</value>
+    <value>相机不支持16位</value>
   </data>
   <data name="LblExposureInProgress" xml:space="preserve">
-    <value>Another exposure still in progress. Cancel it to start another.</value>
+    <value>某次曝光仍在进行中。取消以开始新的曝光。</value>
   </data>
   <data name="LblFailedToConnectDevice" xml:space="preserve">
-    <value>Failed to connect {0}, {1}</value>
+    <value>连接到 {0}, {1} 失败</value>
     <comment>Parameters: 0=Device ID, 1=error message</comment>
   </data>
   <data name="LblGenericCameraError" xml:space="preserve">
-    <value>Camera reported a generic error and needs to be reconnected!</value>
+    <value>相机出现一般性错误，需重新连接！</value>
   </data>
   <data name="LblCameraDisconnected" xml:space="preserve">
-    <value>Camera disconnected! Maybe USB connection was interrupted.</value>
+    <value>相机断开连接！USB连接可能已中断。</value>
   </data>
   <data name="LblMetaGuideListenerError" xml:space="preserve">
-    <value>MetaGuide Listener Error: {0}</value>
+    <value>MetaGuide 监听器错误: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPostFailed" xml:space="preserve">
-    <value>Failed to post {0} message</value>
+    <value>发布 {0} 消息失败</value>
     <comment>Parameters: {0}=message type</comment>
   </data>
   <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
-    <value>Guiding is not active. Unable to dither</value>
+    <value>导星未启动。无法抖动</value>
   </data>
   <data name="LblFailedCommsMGENDither" xml:space="preserve">
-    <value>Failed to communicate to MGEN during dithering</value>
+    <value>抖动时无法和 MGEN 通信</value>
   </data>
   <data name="LblPHDError" xml:space="preserve">
-    <value>PHD Error: {0}
-CODE: {1}</value>
+    <value>PHD 错误: {0}
+代码: {1}</value>
     <comment>Parameters: {0}=error message, {1}=error code</comment>
   </data>
   <data name="LblPHDErrorMsg" xml:space="preserve">
-    <value>PHD Error: {0}</value>
+    <value>PHD 错误: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblTWCNoAPIKey" xml:space="preserve">
-    <value>There is no TheWeatherCompany API key configured.</value>
+    <value>未配置 TheWeatherCompany API 密钥。</value>
   </data>
   <data name="LblFileNotExist" xml:space="preserve">
-    <value>File {0} does not exist</value>
+    <value>文件 {0} 不存在</value>
     <comment>Parameters: {0}=file path</comment>
   </data>
   <data name="LblASTAPNoOutputFile" xml:space="preserve">
-    <value>ASTAP - Plate solve failed. No output file found.</value>
+    <value>ASTAP - 解析失败。未输出文件。</value>
   </data>
   <data name="LblASTAPSolveFailed" xml:space="preserve">
-    <value>ASTAP - Plate solve failed.
+    <value>ASTAP - 解析失败。
 {0}
 {1}</value>
     <comment>Parameters: {0}=warning, {1}=error</comment>
   </data>
   <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
-    <value>Error plate solving with Astrometry.net. {0}</value>
+    <value>使用 Astrometry.net 解析时出错。 {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblExposureOverMax" xml:space="preserve">
-    <value>The predicted exposure of {0}s is longer than the maximum allowed.
-Stopping sky flat acquisition.</value>
+    <value>预计曝光时间 ({0}s) 大于允许的最大值。
+停止天空平场拍摄。</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblExposureUnderMin" xml:space="preserve">
-    <value>The predicted exposure of {0}s is shorter than the minimum allowed.
-Stopping sky flat acquisition.</value>
+    <value>预计曝光时间 ({0}s) 小于允许的最小值。
+停止天空平场拍摄。</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
-    <value>Skyflat correction did not work and is outside of tolerance:
-first exposure time {0:#.####}
-current exposure time {1:#.####}
-elapsed time: {2:#.##}
-mean adu: {3:#.##}.
-The sky flat exposure time will be determined again and the exposure will be repeated.</value>
+    <value>天空平场拍摄失败，某些量超出了允许值：
+第一次曝光时间 {0:#.####}
+当前曝光时间 {1:#.####}
+经过时间： {2:#.##}
+平均 ADU： {3:#.##}
+将重新曝光以确定天空平场曝光时间。</value>
     <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
   </data>
   <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
-    <value>Failed to restore previous filter position: {0}</value>
+    <value>恢复初始滤镜失败： {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblFailedToChangeFilter" xml:space="preserve">
-    <value>Failed to change filter: {0}</value>
+    <value>更换滤镜失败: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSetShiftRateFailed" xml:space="preserve">
-    <value>Set shift rate failed. {0}</value>
+    <value>设置偏移速率失败。 {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPrepareImageFailed" xml:space="preserve">
-    <value>Failed to prepare image for display: {0}</value>
+    <value>准备待显示图像失败: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
-    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+    <value>仅曝光计数改变时，不要提示保存序列</value>
   </data>
   <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
-    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
-You'll normally be prompted to save the sequence to save the changed exposure count.
-
-If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+    <value>
+运行序列后，其曝光计数会发生变化。即便没有手动修改序列，软件仍将提示保存变化的曝光计数。
+如果不关注曝光计数，请启用此选项以避免运行后弹出保存提示。</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
-    <value>Day Rollover Time</value>
+    <value>日期变更时刻</value>
   </data>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
-    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+    <value>由于该指令未指定具体日期，将在显示的日期变更时刻切换日期到新的一天。</value>
   </data>
   <data name="LblInitializing" xml:space="preserve">
-    <value>Initializing</value>
+    <value>正在初始化</value>
   </data>
   <data name="LblOasisClearStallPrompt" xml:space="preserve">
-    <value>Clear stall?</value>
+    <value>解除限位？</value>
   </data>
   <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value>Focuser stalled. You need to manually clear stall.</value>
+    <value>电调已到限位。您需要手动解除限位。</value>
   </data>
   <data name="LblBeepOnStartup" xml:space="preserve">
-    <value>Beep on startup</value>
+    <value>启动提示音</value>
   </data>
   <data name="LblBeepOnMove" xml:space="preserve">
-    <value>Beep on move</value>
+    <value>移动提示音</value>
   </data>
   <data name="LblOasisHeating" xml:space="preserve">
-    <value>Heating</value>
+    <value>加热</value>
   </data>
   <data name="LblOasisHeatingTemperature" xml:space="preserve">
-    <value>Heating temperature</value>
+    <value>加热温度</value>
   </data>
   <data name="LblOasisStallDetection" xml:space="preserve">
-    <value>Stall detection</value>
+    <value>限位检测</value>
   </data>
   <data name="LblOasisIsStalled" xml:space="preserve">
-    <value>Is stalled</value>
+    <value>是否限位</value>
   </data>
   <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value>USB capacity</value>
+    <value>USB 容量</value>
   </data>
   <data name="LblOasisSpeed" xml:space="preserve">
-    <value>Speed</value>
+    <value>速度</value>
   </data>
   <data name="LblOasisClearStall" xml:space="preserve">
-    <value>Clear stall</value>
+    <value>解除限位</value>
   </data>
   <data name="LblOasisDcPower" xml:space="preserve">
-    <value>DC power</value>
+    <value>DC功率</value>
   </data>
   <data name="LblOasisBoardHeating" xml:space="preserve">
-    <value>Board heating</value>
+    <value>设备板加热</value>
   </data>
   <data name="LblOasisHeatingPower" xml:space="preserve">
-    <value>Heating power</value>
+    <value>加热功率</value>
   </data>
   <data name="LblOasisBoardTemperature" xml:space="preserve">
-    <value>Board temperature</value>
+    <value>设备板温度</value>
   </data>
   <data name="LblOasisSyncPosition" xml:space="preserve">
-    <value>Sync position</value>
+    <value>同步位置</value>
   </data>
   <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
-    <value>Set current position to sync position?</value>
+    <value>设置当前位置为同步位置？</value>
   </data>
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+    <value>选择的 Oasis 电调不可用。请检查连接并重新扫描设备。</value>
+  </data>
+  <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
+    <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
+  </data>
+  <data name="LblOasisTurboMode" xml:space="preserve">
+    <value>Turbo mode</value>
+  </data>
+  <data name="LblOasisDeviceId" xml:space="preserve">
+    <value>Device ID</value>
+  </data>
+  <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
+    <value>Device ID</value>
+  </data>
+  <data name="LblOasisState" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
+    <value>Sync focus offsets</value>
+  </data>
+  <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
+    <value>Store focus offsets</value>
+  </data>
+  <data name="LblOasisSyncFilterNames" xml:space="preserve">
+    <value>Sync filter names</value>
+  </data>
+  <data name="LblOasisStoreFilterNames" xml:space="preserve">
+    <value>Store filter names</value>
+  </data>
+  <data name="LblOasisAutorun" xml:space="preserve">
+    <value>Autorun</value>
+  </data>
+  <data name="LblOasisSpeedTooltip" xml:space="preserve">
+    <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
+  </data>
+  <data name="LblOasisTurboModeTooltip" xml:space="preserve">
+    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port has at least 5V,1A power supply capacity.</value>
+  </data>
+  <data name="LblOasisAutorunTooltip" xml:space="preserve">
+    <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
+  </data>
+  <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
+    <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
+  </data>
+  <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
+    <value>Uploads and stores the NINA focus offsets to the Oasis filter wheel.</value>
+  </data>
+  <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
+    <value>Reads the filter names stored on the Oasis device and updates the NINA filter labels.</value>
+  </data>
+  <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
+    <value>Uploads and stores the NINA filter names to the Oasis filter wheel.</value>
+  </data>
+  <data name="LblOasisCounter" xml:space="preserve">
+    <value>Counter</value>
+  </data>
+  <data name="LblOasisCounterTooltip" xml:space="preserve">
+    <value>Indicator that shows how many filter slots have been rotated since the filter wheel powered up.</value>
   </data>
   <data name="LblBluetooth" xml:space="preserve">
-    <value>Bluetooth</value>
+    <value>蓝牙</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
-    <value>ASCOM Alpaca IP Setup</value>
+    <value>ASCOM Alpaca IP 设置</value>
   </data>
   <data name="LblAlpacaDirectServiceType" xml:space="preserve">
-    <value>Service Type</value>
+    <value>服务协议类型</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
   <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
-    <value>IP Address</value>
+    <value>IP 地址</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
-    <value>Port</value>
+    <value>端口</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
-    <value>Device Number</value>
+    <value>设备编号</value>
+  </data>
+  <data name="LblSymbols" xml:space="preserve">
+    <value>Symbols</value>
+  </data>
+  <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
+    <value>No other data for {0}</value>
+    <comment>{0} will be filled with the category name</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
+    <value>Additional Symbols:</value>
+    <comment>The prefix for additional data rows for symbol tooltips</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
+    <value>Options:</value>
+    <comment>The prefix per symbol for additional options</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
+    <value>Click any symbol to copy it to the clipboard.</value>
+  </data>
+  <data name="LblTrue" xml:space="preserve">
+    <value>True</value>
+  </data>
+  <data name="LblFalse" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="LblDecimal" xml:space="preserve">
+    <value>(Decimal: </value>
+    <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
+  </data>
+  <data name="LblWarnings" xml:space="preserve">
+    <value>Warning(s): {0}</value>
+  </data>
+  <data name="LblNoErrors" xml:space="preserve">
+    <value>No errors</value>
+  </data>
+  <data name="LblErrors" xml:space="preserve">
+    <value>Error(s): {0}</value>
+  </data>
+  <data name="LblNotEvaluated" xml:space="preserve">
+    <value>Not Evaluated</value>
+    <comment>As in, a variable is not yet evaluated</comment>
+  </data>
+  <data name="LblTomorrow" xml:space="preserve">
+    <value>tomorrow</value>
+  </data>
+  <data name="LblYesterday" xml:space="preserve">
+    <value>yesterday</value>
+  </data>
+  <data name="LblUndefined" xml:space="preserve">
+    <value>Undefined</value>
+    <comment>As in "Undefined: &lt;variable name&gt;"</comment>
+  </data>
+  <data name="LblSyntaxError" xml:space="preserve">
+    <value>Syntax error</value>
+    <comment>Used when an Expression can't be parsed</comment>
+  </data>
+  <data name="LblMustBeInteger" xml:space="preserve">
+    <value>Value must be an Integer</value>
+  </data>
+  <data name="LblAnd" xml:space="preserve">
+    <value>and</value>
+  </data>
+  <data name="LblAlreadyDefined" xml:space="preserve">
+    <value>is already defined</value>
+    <comment>As in &lt;variable&gt; is already defined</comment>
+  </data>
+  <data name="LblConstantVariable" xml:space="preserve">
+    <value>The Constant/Variable</value>
+    <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
+  </data>
+  <data name="LblNoSymbols" xml:space="preserve">
+    <value>No defined Constant/Variable is used in this expression</value>
+  </data>
+  <data name="LblNotYetDefined" xml:space="preserve">
+    <value> The Constant/Variable is not yet defined</value>
+  </data>
+  <data name="LblValueBetween" xml:space="preserve">
+    <value>Value must be between {0} and {1}</value>
+  </data>
+  <data name="LblVariable" xml:space="preserve">
+    <value>Variable:</value>
+  </data>
+  <data name="LblInitially" xml:space="preserve">
+    <value>Initially</value>
+  </data>
+  <data name="LblNewValue" xml:space="preserve">
+    <value>New Value</value>
+  </data>
+  <data name="LblIsAmbiguous" xml:space="preserve">
+    <value>is ambiguous, use one of</value>
+    <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
+  </data>
+  <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
+    <value>Symbols</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
+    <value>Creates a Variable whose value can be used in Expressions</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
+    <value>Define Variable</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
+    <value>Creates a Constant whose value can be used in Expressions</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
+    <value>Define Constant</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
+    <value>Set Variable</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
+    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
+    <value>Set Variable to Date/Time</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
+    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+  </data>
+  <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
+    <value>Loop While</value>
+  </data>
+  <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
+    <value>Loops while the Expression is not false</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
+    <value>Wait Until</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
+    <value>Waits until the Expression is true</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
+    <value>Random double value between 0.0 and 1.0.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
+    <value>Current Unix timestamp in seconds.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
+    <value>Hour component (0-23) of a datetime or the current time.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
+    <value>Minute component (0-59) of a datetime or the current time.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
+    <value>Day of the month (1-31) of a datetime or the current date.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
+    <value>Month (1-12) of a datetime or the current date.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
+    <value>Year component of a datetime or the current date.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
+    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
+    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
+    <value>Datetime plus the specified hours (Unix timestamp).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
+    <value>Seconds elapsed since the given datetime (Unix timestamp).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
+    <value>Datetime formatted using the specified .NET format string.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
+    <value>Whether the string starts with the specified prefix.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
+    <value>Length of the given string, or -1 if the value is not a string.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
+    <value>Concatenation of two strings.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
+    <value>Character at the specified zero-based index, or empty if out of bounds.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
+    <value>Whether the string contains the specified substring.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
+    <value>Whether the string ends with the specified suffix.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
+    <value>Substring of the given string; empty if out of range.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
+    <value>Lower-case version of the string (invariant).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
+    <value>Upper-case version of the string (invariant).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
+    <value>Absolute value of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
+    <value>Angle whose cosine is the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
+    <value>Angle whose sine is the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
+    <value>Angle whose tangent is the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
+    <value>Arithmetic mean of all arguments.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
+    <value>Smallest integer greater than or equal to the number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
+    <value>Cosine of the specified angle.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
+    <value>e raised to the specified power.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
+    <value>Largest integer less than or equal to the number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
+    <value>IEEE remainder of x / y.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
+    <value>Natural logarithm of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
+    <value>Logarithm of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
+    <value>Base-10 logarithm of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
+    <value>Larger of two numbers.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
+    <value>Smaller of two numbers.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
+    <value>Number raised to the specified power.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
+    <value>Rounded value to the nearest integer or specified decimal places.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
+    <value>Sign of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
+    <value>Sine of the specified angle.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
+    <value>Square root of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
+    <value>Tangent of the specified angle.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
+    <value>Integral part of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
+    <value>Mathematical modulus (x mod y). Result is in [0, y) for positive y.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
+    <value>Value clamped to the inclusive range [min, max].</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
+    <value>Whether x is between min and max (inclusive).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
+    <value>Conversion from radians to degrees.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
+    <value>Conversion from degrees to radians.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
+    <value>Sum of all arguments.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
+    <value>Whether an element is in a set of values.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
+    <value>Conditional value based on a condition.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
+    <value>Conditional value based on multiple conditions, with a default.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
+    <value>Whether a symbol name is defined in the symbol table.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
+    <value>Logical negation of a boolean value.</value>
+  </data>
+  <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
+    <value>Click any function to copy it to the clipboard.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions" xml:space="preserve">
+    <value>Functions</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
+    <value>Usage</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
+    <value>Function '{0}' expects no arguments, but got {1}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
+    <value>Function '{0}' expects exactly one argument, but got {1}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
+    <value>Function '{0}' expects exactly {1} arguments, but got {2}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
+    <value>Function '{0}' expects between {1} and {2} arguments, but got {3}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
+    <value>Value must be greater than or equal to {0}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
+    <value>Value must be greater than {0}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
+    <value>Value must be between {0} and {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
+    <value>Value must be between {0} and less than {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
+    <value>Value must be greater than {0} and up to {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
+    <value>Value must be greater than {0} and less than {1}.</value>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
-    <value>Notification work area</value>
+    <value>通知显示窗口</value>
   </data>
   <data name="LblNotificationCorner" xml:space="preserve">
-    <value>Notification corner</value>
+    <value>通知显示位置</value>
   </data>
   <data name="LblNotificationTopLeft" xml:space="preserve">
-    <value>Top left</value>
+    <value>左上方</value>
   </data>
   <data name="LblNotificationTopRight" xml:space="preserve">
-    <value>Top right</value>
+    <value>右上方</value>
   </data>
   <data name="LblNotificationBottomLeft" xml:space="preserve">
-    <value>Bottom left</value>
+    <value>左下方</value>
   </data>
   <data name="LblNotificationBottomRight" xml:space="preserve">
-    <value>Bottom right</value>
+    <value>右下方</value>
   </data>
   <data name="LblNotificationPrimaryScreen" xml:space="preserve">
-    <value>Primary screen</value>
+    <value>主屏幕</value>
   </data>
   <data name="LblNotificationSameScreenAsApplication" xml:space="preserve">
-    <value>Same screen as application</value>
+    <value>应用窗口所在屏幕</value>
   </data>
   <data name="LblNotificationApplication" xml:space="preserve">
-    <value>Application</value>
+    <value>应用中</value>
+  </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Flash version</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
+  </data>
+  <data name="LblDimensions" xml:space="preserve">
+    <value>Dimensions</value>
+    <comment>Label for entering subframe dimensions</comment>
+  </data>
+  <data name="LblTop" xml:space="preserve">
+    <value>Top</value>
+  </data>
+  <data name="LblLeft" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="LblSequencerExpressionValues" xml:space="preserve">
+    <value>Sequencer expressions values</value>
   </data>
 </root>
