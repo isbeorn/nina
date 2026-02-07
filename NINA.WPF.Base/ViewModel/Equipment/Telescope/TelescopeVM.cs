@@ -255,6 +255,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         try {
                             progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblWaitingForTelescopeToUnpark"] });
                             await Telescope.Unpark(timeoutCts.Token);
+                            try { Telescope.TrackingEnabled = false; } catch { }
 
                             success = true;
                             await updateTimer.WaitForNextUpdate(timeoutCts.Token);
