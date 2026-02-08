@@ -303,7 +303,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding ProgressExposures}" />
                     <TextBlock Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposures}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposuresExpression.Value}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
         </view:SequenceBlockView>
