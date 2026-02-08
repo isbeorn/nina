@@ -23,6 +23,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Filterwheels will now poll in the background their position in case the wheel is moved by another client. This ensures that N.I.N.A. always has the correct filter position even when the wheel was moved outside of N.I.N.A.
 - Enhanced sequencer exit handling to more reliably detect actual changes and prevent false-positive change prompts.
 - Clicking on slew Alt/Az in the Mount equipment page with Mount drivers that do not support slewing to Alt/Az, will now fallback to slewing to RA/Dec coordinates instead of doing nothing.
+- The manual focuser step buttons now use configurable multipliers. Users can adjust the small step (default 0.5x) and large step (default 5.0x) multipliers in Options > Imaging > Autofocus.
 
 ## Features
 

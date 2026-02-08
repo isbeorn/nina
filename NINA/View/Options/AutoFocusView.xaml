@@ -80,6 +80,39 @@
                                 Text="{Binding AutoFocusStepSize}" />
                         </UniformGrid>
 
+                        <StackPanel>
+                            <UniformGrid Margin="0,5,0,0" Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblManualStepSmallMultiplier}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblManualStepSmallMultiplierTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Height="25"
+                                    HorizontalAlignment="Stretch"
+                                    Text="{Binding ManualStepSmallMultiplier}" />
+                            </UniformGrid>
+                            <UniformGrid Margin="0,5,0,0" Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblManualStepLargeMultiplier}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblManualStepLargeMultiplierTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Height="25"
+                                    HorizontalAlignment="Stretch"
+                                    Text="{Binding ManualStepLargeMultiplier}" />
+                            </UniformGrid>
+                        </StackPanel>
+
                         <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock
                                 MinWidth="200"

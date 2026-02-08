@@ -39,5 +39,7 @@ namespace NINA.Profile.Interfaces {
         BacklashCompensationModel BacklashCompensationModel { get; set; }
         int AutoFocusTimeoutSeconds { get; set; }
         double RSquaredThreshold { get; set; }
+        double ManualStepSmallMultiplier { get; set; }
+        double ManualStepLargeMultiplier { get; set; }
     }
 }
