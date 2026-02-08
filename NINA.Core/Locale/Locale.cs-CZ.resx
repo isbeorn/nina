@@ -1285,7 +1285,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
     <value>Povolit bitové měřítko</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>10/12/14 bit obraz je rozšířen na 16 bitů a uložen. (Pouze pro kamery Altair, Omegon, SVBony, RisingCam, ToupTek, s nativními ovladači)</value>
+    <value>Ukládejte 8/10/12/14 bitové snímky s převodem na 16 bitů. (Platí pouze pro kamery Altair, Moravian, Omegon, RisingCam, SVBony a ToupTek při použití nativního ovladače.)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Povoleno</value>
@@ -4460,14 +4460,14 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
     <value>AutoOstření Po Změně HFR</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-<value>Trend HFR podle filtru</value>
-</data>
+    <value>Trend HFR podle filtru</value>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-<value>Pokud je tato funkce vypnuta, trend HFR se hodnotí napříč všemi filtry dohromady. 
+    <value>Pokud je tato funkce vypnuta, trend HFR se hodnotí napříč všemi filtry dohromady. 
 To může pomoci spustit automatické zaostřování dříve, zejména při snímání s častými změnami filtrů
 a optikou citlivou na teplotu v rychle se měnící okolní teplotě. 
 Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastavení byly malé.</value>
-</data>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>Spouštěč, který spouští auto-ostření po změně teploty o danou částku ve stupních od posledního automatického spuštění nebo zahájení sekvence</value>
   </data>
@@ -6960,6 +6960,9 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Přepnout Katalog Zobrazení</value>
   </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Zobrazit všechny katalogy</value>
+  </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Cílová Alt</value>
   </data>
@@ -7400,6 +7403,63 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
     <value>Vybraný zaostřovač Oasis není k dispozici. Zkontrolujte připojení a znovu vyhledejte zařízení.</value>
   </data>
+  <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
+    <value>Vybrané filtrové kolo Oasis není k dispozici. Zkontrolujte připojení a znovu vyhledejte zařízení.</value>
+  </data>
+  <data name="LblOasisTurboMode" xml:space="preserve">
+    <value>Režim Turbo</value>
+  </data>
+  <data name="LblOasisDeviceId" xml:space="preserve">
+    <value>ID Zařízení</value>
+  </data>
+  <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
+    <value>ID Zařízení</value>
+  </data>
+  <data name="LblOasisState" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
+    <value>Synchronizace ofsetů zaostření</value>
+  </data>
+  <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
+    <value>Uložit ofsety zaostření</value>
+  </data>
+  <data name="LblOasisSyncFilterNames" xml:space="preserve">
+    <value>Synchronizovat názvy filtrů</value>
+  </data>
+  <data name="LblOasisStoreFilterNames" xml:space="preserve">
+    <value>Uložit názvy filtrů</value>
+  </data>
+  <data name="LblOasisAutorun" xml:space="preserve">
+    <value>Autorun</value>
+  </data>
+  <data name="LblOasisSpeedTooltip" xml:space="preserve">
+    <value>Pokud je okolní teplota velmi nízká, vyberte normální nebo pomalou rychlost, aby bylo zajištěno plynulé přepínání filtrů.</value>
+  </data>
+  <data name="LblOasisTurboModeTooltip" xml:space="preserve">
+    <value>Zapněte režim turbo pro zvýšení točivého momentu motoru. To může být užitečné, když je okolní teplota velmi nízká. Ujistěte se, že port USB má napájecí kapacitu alespoň 5V, 1A.</value>
+  </data>
+  <data name="LblOasisAutorunTooltip" xml:space="preserve">
+    <value>Tuto možnost povolte, pokud chcete, aby se filtry při zapnutí automaticky přepnuly do poslední polohy.</value>
+  </data>
+  <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
+    <value>Čte kompenzace zaostření uložené v zařízení Oasis a aktualizuje kompenzace zaostření NINA.</value>
+  </data>
+  <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
+    <value>Nahraje a uloží ofsety zaostření NINA do filtrového kola Oasis.</value>
+  </data>
+  <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
+    <value>Čte názvy filtrů uložené v zařízení Oasis a aktualizuje štítky filtrů NINA.</value>
+  </data>
+  <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
+    <value>Nahraje a uloží názvy filtrů NINA do filtrového kola Oasis.</value>
+  </data>
+  <data name="LblOasisCounter" xml:space="preserve">
+    <value>Počítadlo</value>
+  </data>
+  <data name="LblOasisCounterTooltip" xml:space="preserve">
+    <value>Indikátor, který ukazuje, kolik filtrů bylo otočeno od zapnutí filtračního kola.</value>
+  </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>Bluetooth</value>
   </data>
@@ -7419,6 +7479,337 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Číslo Zařízení</value>
+  </data>
+  <data name="LblSymbols" xml:space="preserve">
+    <value>Symboly</value>
+  </data>
+  <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
+    <value>Žádné další údaje pro {0}</value>
+    <comment>{0} will be filled with the category name</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
+    <value>Další Symboly:</value>
+    <comment>The prefix for additional data rows for symbol tooltips</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
+    <value>Možnosti:</value>
+    <comment>The prefix per symbol for additional options</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
+    <value>Kliknutím na libovolný symbol jej zkopírujete do schránky.</value>
+  </data>
+  <data name="LblTrue" xml:space="preserve">
+    <value>Pravda</value>
+  </data>
+  <data name="LblFalse" xml:space="preserve">
+    <value>Nepravda</value>
+  </data>
+  <data name="LblDecimal" xml:space="preserve">
+    <value>(Desetinná místa: </value>
+    <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
+  </data>
+  <data name="LblWarnings" xml:space="preserve">
+    <value>Varování: {0}</value>
+  </data>
+  <data name="LblNoErrors" xml:space="preserve">
+    <value>Žádné chyby</value>
+  </data>
+  <data name="LblErrors" xml:space="preserve">
+    <value>Chyba(y): {0}</value>
+  </data>
+  <data name="LblNotEvaluated" xml:space="preserve">
+    <value>Nehodnoceno</value>
+    <comment>As in, a variable is not yet evaluated</comment>
+  </data>
+  <data name="LblTomorrow" xml:space="preserve">
+    <value>zítra</value>
+  </data>
+  <data name="LblYesterday" xml:space="preserve">
+    <value>včera</value>
+  </data>
+  <data name="LblUndefined" xml:space="preserve">
+    <value>Nedefinováno</value>
+    <comment>As in "Undefined: &lt;variable name&gt;"</comment>
+  </data>
+  <data name="LblSyntaxError" xml:space="preserve">
+    <value>Syntaktická chyba</value>
+    <comment>Used when an Expression can't be parsed</comment>
+  </data>
+  <data name="LblMustBeInteger" xml:space="preserve">
+    <value>Hodnota musí být celé číslo</value>
+  </data>
+  <data name="LblAnd" xml:space="preserve">
+    <value>a</value>
+  </data>
+  <data name="LblAlreadyDefined" xml:space="preserve">
+    <value>je již definováno</value>
+    <comment>As in &lt;variable&gt; is already defined</comment>
+  </data>
+  <data name="LblConstantVariable" xml:space="preserve">
+    <value>Konstanta/Proměnná</value>
+    <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
+  </data>
+  <data name="LblNoSymbols" xml:space="preserve">
+    <value>V tomto výrazu není použita žádná definovaná konstanta/proměnná</value>
+  </data>
+  <data name="LblNotYetDefined" xml:space="preserve">
+    <value> Konstanta/proměnná ještě není definována</value>
+  </data>
+  <data name="LblValueBetween" xml:space="preserve">
+    <value>Hodnota musí být mezi {0} a {1}</value>
+  </data>
+  <data name="LblVariable" xml:space="preserve">
+    <value>Proměnná:</value>
+  </data>
+  <data name="LblInitially" xml:space="preserve">
+    <value>Zpočátku</value>
+  </data>
+  <data name="LblNewValue" xml:space="preserve">
+    <value>Nová Hodnota</value>
+  </data>
+  <data name="LblIsAmbiguous" xml:space="preserve">
+    <value>je nejednoznačné, použijte jedno z</value>
+    <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
+  </data>
+  <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
+    <value>Symboly</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
+    <value>Vytvoří Proměnnou, jejíž hodnotu lze použít ve Výrazech</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
+    <value>Definovat Proměnnou</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
+    <value>Vytvoří Konstantu, jejíž hodnotu lze použít ve Výrazech</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
+    <value>Definovat Konstantu</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
+    <value>Nastavit Proměnnou</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
+    <value>Pokud byla proměnná již dříve definována, její hodnota se stane výsledkem Výrazu</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
+    <value>Nastavit Proměnnou na Datum/Čas</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
+    <value>Pokud byla proměnná již dříve definována, její hodnota se stane zadaným Datem/Časem</value>
+  </data>
+  <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
+    <value>Cyklus dokud</value>
+  </data>
+  <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
+    <value>Cyklus, dokud výraz není nepravdivý</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
+    <value>Počkejte, až</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
+    <value>Čeká, dokud výraz není pravdivý</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
+    <value>Náhodná dvojitá hodnota mezi 0,0 a 1,0.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
+    <value>Aktuální časové razítko Unixu v sekundách.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
+    <value>Hodinová složka (0–23) datového času nebo aktuálního času.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
+    <value>Minutová složka (0–59) datového času nebo aktuálního času.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
+    <value>Den v měsíci (1–31) datumu a času nebo aktuálního data.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
+    <value>Month (1-12) of a datetime or the current date.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
+    <value>Rok jako součást data a času nebo aktuálního data.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
+    <value>Den v týdnu jako celé číslo (0 = neděle … 6 = sobota).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
+    <value>Datum a čas plus zadané minuty (časové razítko Unix).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
+    <value>Datum a čas plus zadané hodiny (časové razítko Unix).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
+    <value>Sekundy, které uplynuly od daného data a času (časové razítko Unix).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
+    <value>Datetime formátováno pomocí zadaného formátovacího řetězce .NET.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
+    <value>Zda řetězec začíná zadanou předponou.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
+    <value>Délka daného řetězce nebo -1, pokud hodnota není řetězec.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
+    <value>Spojení dvou řetězců.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
+    <value>Znak na zadaném indexu s nulovým počátkem, nebo prázdný, pokud je mimo rozsah.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
+    <value>Zda řetězec obsahuje zadaný podřetězec.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
+    <value>Zda řetězec končí zadanou příponou.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
+    <value>Podřetězec zadaného řetězce; prázdný, pokud je mimo rozsah.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
+    <value>Malá písmena řetězce (neměnná).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
+    <value>Verze řetězce s velkými písmeny (neměnná).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
+    <value>Absolutní hodnota čísla.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
+    <value>Úhel, jehož kosinus je zadané číslo.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
+    <value>Úhel, jehož sinus je zadané číslo.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
+    <value>Úhel, jehož tečna je zadané číslo.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
+    <value>Aritmetický průměr všech argumentů.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
+    <value>Nejmenší celé číslo větší nebo rovné danému číslu.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
+    <value>Kosinus zadaného úhlu.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
+    <value>e umocněno na zadanou mocninu.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
+    <value>Největší celé číslo menší nebo rovné danému číslu.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
+    <value>IEEE zbytek z x / y.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
+    <value>Přirozený logaritmus čísla.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
+    <value>Logaritmus čísla.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
+    <value>Logaritmus čísla v desítkové soustavě.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
+    <value>Větší ze dvou čísel.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
+    <value>Menší ze dvou čísel.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
+    <value>Číslo umocněné na zadanou mocninu.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
+    <value>Zaokrouhlená hodnota na nejbližší celé číslo nebo zadané desetinné místo.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
+    <value>Znak čísla.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
+    <value>Sinus zadaného úhlu.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
+    <value>Odmocnina čísla.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
+    <value>Tečna zadaného úhlu.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
+    <value>Nedílná součást čísla.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
+    <value>Matematický modul (x mod y). Výsledek je v intervalu [0, y) pro kladné y.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
+    <value>Hodnota omezená na rozsah [min, max].</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
+    <value>Zda x leží mezi min a max (včetně).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
+    <value>Převod z radiánů na stupně.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
+    <value>Převod ze stupňů na radiány.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
+    <value>Součet všech argumentů.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
+    <value>Zda je prvek součástí sady hodnot.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
+    <value>Podmíněná hodnota založená na podmínce.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
+    <value>Podmíněná hodnota založená na více podmínkách, s výchozí hodnotou.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
+    <value>Zda je název symbolu definován v tabulce symbolů.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
+    <value>Logická negace booleovské hodnoty.</value>
+  </data>
+  <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
+    <value>Kliknutím na libovolnou funkci ji zkopírujete do schránky.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions" xml:space="preserve">
+    <value>Funkce</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
+    <value>Použití</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
+    <value>Funkce „{0}“ neočekává žádné argumenty, ale obdržela {1}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
+    <value>Funkce „{0}“ očekává přesně jeden argument, ale dostala {1}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
+    <value>Funkce „{0}“ očekává přesně {1} argumentů, ale dostala {2}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
+    <value>Funkce „{0}“ očekává {1} až {2} argumenty, ale dostala {3}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
+    <value>Hodnota musí být větší nebo rovna {0}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
+    <value>Hodnota musí být větší než {0}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
+    <value>Hodnota musí být mezi {0} a {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
+    <value>Hodnota musí být mezi {0} a menší než {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
+    <value>Hodnota musí být větší než {0} a menší než {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
+    <value>Hodnota musí být větší než {0} a menší než {1}.</value>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>Pracovní oblast oznámení</value>
@@ -7446,5 +7837,26 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
   </data>
   <data name="LblNotificationApplication" xml:space="preserve">
     <value>Aplikace</value>
+  </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Verze Flash</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
+  </data>
+  <data name="LblDimensions" xml:space="preserve">
+    <value>Rozměry</value>
+    <comment>Label for entering subframe dimensions</comment>
+  </data>
+  <data name="LblTop" xml:space="preserve">
+    <value>Nahoře</value>
+  </data>
+  <data name="LblLeft" xml:space="preserve">
+    <value>Vlevo</value>
+  </data>
+  <data name="LblSequencerExpressionValues" xml:space="preserve">
+    <value>Hodnoty výrazů sekvenceru</value>
   </data>
 </root>
