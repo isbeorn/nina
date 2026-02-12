@@ -3,7 +3,20 @@
 If N.I.N.A. helps you on your journey to capture amazing deep sky images, please consider a donation. Every contribution helps keep the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
-# Version 3.3
+### <span style="color:orange;">Nightly Build: USE WITH CAUTION</span>
+### <span style="color:orange;">
+Nightly builds are preview versions containing active development work.
+
+They may be unstable and change frequently.
+Running outdated nightly builds is strongly discouraged.
+
+Before using nightly builds, consider backing up your profiles located at:
+%localappdata%\NINA
+
+This allows you to safely return to a stable release if needed.
+</span>
+
+# Version 3.3 NIGHTLY
 
 ## General
 - The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
@@ -23,6 +36,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Filterwheels will now poll in the background their position in case the wheel is moved by another client. This ensures that N.I.N.A. always has the correct filter position even when the wheel was moved outside of N.I.N.A.
 - Enhanced sequencer exit handling to more reliably detect actual changes and prevent false-positive change prompts.
 - Clicking on slew Alt/Az in the Mount equipment page with Mount drivers that do not support slewing to Alt/Az, will now fallback to slewing to RA/Dec coordinates instead of doing nothing.
+- The manual focuser step buttons now use configurable multipliers. Users can adjust the small step (default 0.5x) and large step (default 5.0x) multipliers in Options > Imaging > Autofocus.
+- Debayer algorithm has been optimized to work fast even on older CPUs
+- Sky brightness readings in the Weather device windows have been increased from 2 decimal places to 5 so that measurements obtained in low light conditions are adequately displayed.
 
 ## Behavioral Changes
 - Unparking the mount no longer automatically starts sidereal tracking. Tracking will begin automatically during a slew to a target, as usual.

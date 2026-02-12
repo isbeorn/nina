@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -62,7 +62,6 @@ namespace NINA.Sequencer.Serialization {
 
         private class NullUpgrader : ISequenceEntityUpgrader {
             public string Name { get; set; } = string.Empty;
-            public string AssemblyName { get; set; }
             public SequenceUpgradeStage Stages => 0;
             public object Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object entity) {
                 return entity;
@@ -74,7 +73,8 @@ namespace NINA.Sequencer.Serialization {
         private ISequenceEntityUpgrader GetUpgraderForPlugin(string pluginName) {
             if (Factory != null) {
                 foreach (var upgrader in Factory.Upgraders) {
-                    if (string.Equals(upgrader.AssemblyName, pluginName, StringComparison.OrdinalIgnoreCase)) {
+                    var assemblyName = upgrader.GetType().Assembly.GetName().Name;
+                    if (string.Equals(assemblyName, pluginName, StringComparison.OrdinalIgnoreCase)) {
                         return upgrader;
                     }
                 }

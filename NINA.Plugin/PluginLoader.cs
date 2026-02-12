@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -252,6 +252,7 @@ namespace NINA.Plugin {
                     PluggableBehaviors = new List<IPluggableBehavior>();
                     DeviceProviders = new List<IEquipmentProvider>();
                     Plugins = new Dictionary<IPluginManifest, bool>();
+                    Upgraders = new List<ISequenceEntityUpgrader>();
 
                     AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
@@ -487,16 +488,15 @@ namespace NINA.Plugin {
                 PluggableBehaviors = PluggableBehaviors.Concat(parts.PluggableBehaviorImports).ToList();
                 DeviceProviders = DeviceProviders.Concat(parts.DeviceProviderImports).ToList();
 
-                // Upgraders don't implement ISequenceEntity, so handle them separately
-                Upgraders = parts.UpgraderImports.Select(u => {
+                var upgraderImports = parts.UpgraderImports.Select(u => {
                     var upgrader = u.Value;
                     // Set the Name property from metadata
-                    if (u.Metadata.TryGetValue("Name", out var nameObj)) {
+                    if (string.IsNullOrEmpty(upgrader.Name) && u.Metadata.TryGetValue("Name", out var nameObj)) {
                         upgrader.Name = (string)nameObj;
                     }
-                    upgrader.AssemblyName = (catalog as AssemblyCatalog)?.Assembly.GetName().Name ?? "Unknown";
                     return upgrader;
-                }).ToList();
+                });
+                Upgraders = Upgraders.Concat(upgraderImports).ToList();
 
             } catch (Exception ex) {
                 Logger.Error(ex);
