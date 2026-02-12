@@ -1585,6 +1585,18 @@ Do you want to continue and lose the changes anyway?</value>
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
     <value>Το μέγεθος ενός βήματος που χρησιμοποιείται για την αυτόματη εστίαση. Το βήμα θα πρέπει να είναι μικρότερο από την ανοχή του σημείου της κρίσιμης εστίασης</value>
   </data>
+  <data name="LblManualStepSmallMultiplier" xml:space="preserve">
+    <value>Small Step Multiplier</value>
+  </data>
+  <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+  </data>
+  <data name="LblManualStepLargeMultiplier" xml:space="preserve">
+    <value>Large Step Multiplier</value>
+  </data>
+  <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+  </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Backlash ΜΕΣΑ/ΕΞΩ</value>
   </data>
