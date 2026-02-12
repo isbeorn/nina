@@ -595,6 +595,20 @@
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding ColorSchema.NotificationWarningTextColor}" />
                         </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSequencerExpressionValues}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.SequencerExpressionTextColor}"
+                                ShowStandardColors="False"
+                                ShowTabHeaders="False" />
+                        </StackPanel>
                     </StackPanel>
                     <StackPanel Margin="5,0,0,0" Orientation="Vertical">
                         <Button
@@ -804,6 +818,20 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltColorSchema.NotificationWarningTextColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSequencerExpressionValues}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.SequencerExpressionTextColor}"
+                                ShowStandardColors="False"
+                                ShowTabHeaders="False" />
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Margin="5,0,0,0" Orientation="Vertical">

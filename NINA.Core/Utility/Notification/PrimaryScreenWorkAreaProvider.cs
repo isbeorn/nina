@@ -16,6 +16,10 @@ using System.Windows;
 
 namespace NINA.Core.Utility.Notification {
     public sealed class PrimaryScreenWorkAreaProvider : INotificationWorkAreaProvider {
+        public bool IsTopMost => true;
+
+        public Window Owner => null;
+
         public Rect GetWorkArea() {
             var workArea = SystemParameters.WorkArea;
             return new Rect(workArea.Left, workArea.Top, workArea.Width, workArea.Height);

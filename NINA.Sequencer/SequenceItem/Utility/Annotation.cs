@@ -14,6 +14,8 @@
 
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Sequencer.Logic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -31,11 +33,16 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Annotation : SequenceItem {
+        private ISymbolBroker _symbolBroker;
+
+        public ISymbolBroker SymbolBroker => _symbolBroker;
 
         [ImportingConstructor]
-        public Annotation() { }
+        public Annotation(ISymbolBroker symbolBroker) {
+            _symbolBroker = symbolBroker;
+        }
 
-        private Annotation(Annotation cloneMe) : base(cloneMe) {
+        private Annotation(Annotation cloneMe) : this(cloneMe._symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
@@ -43,6 +50,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public string Text { get; set; }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            string processedText = ExpressionExpander.Expand(Text, _symbolBroker, Parent);
+            Logger.Info($"Annotation: {processedText}");
             return Task.CompletedTask;
         }
 

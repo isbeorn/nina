@@ -38,6 +38,7 @@ using NINA.Core.Model.Equipment;
 using NINA.Core.Utility.Notification;
 using NINA.PlateSolving.Interfaces;
 using NINA.Equipment.Interfaces;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Platesolving {
 
@@ -70,6 +71,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                                                         plateSolverFactory,
                                                                         windowServiceFactory) {
             this.rotatorMediator = rotatorMediator;
+            this.UsesRotation = true;
         }
 
         private CenterAndRotate(CenterAndRotate cloneMe) : this(cloneMe.profileService,
@@ -86,10 +88,12 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         }
 
         public override object Clone() {
-            return new CenterAndRotate(this) {
-                Coordinates = Coordinates?.Clone(),
-                PositionAngle = PositionAngle
-            };
+            CenterAndRotate clone = new CenterAndRotate(this);
+            clone.Coordinates = Coordinates?.Clone();
+            clone.PositionAngle = PositionAngle;
+            clone.UsesRotation = true;
+            UpdateExpressions(clone, this);
+            return clone;
         }
 
         /// <summary>
@@ -97,16 +101,6 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         /// </summary>
         [JsonProperty(propertyName: "Rotation")]
         public double DeprecatedRotation { set => PositionAngle = 360 - value; }
-
-        private double positionAngle = 0;
-        [JsonProperty]
-        public double PositionAngle {
-            get => positionAngle;
-            set {
-                positionAngle = AstroUtil.EuclidianModulus(value, 360);
-                RaisePropertyChanged();
-            }
-        }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             if (telescopeMediator.GetInfo().AtPark) {
@@ -237,28 +231,24 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         }
 
         public override void AfterParentChanged() {
-            var contextCoordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
-            if (contextCoordinates != null) {
-                Coordinates.Coordinates = contextCoordinates.Coordinates;
-                PositionAngle = contextCoordinates.PositionAngle;
-                Inherited = true;
-            } else {
-                Inherited = false;
-            }
+            base.AfterParentChanged();
             Validate();
         }
 
-        public override bool Validate() {
-            var i = new List<string>();
-            if (!telescopeMediator.GetInfo().Connected) {
-                i.Add(Loc.Instance["LblTelescopeNotConnected"]);
+        public new bool Validate() {
+            Issues.Clear();
+            var info = telescopeMediator.GetInfo();
+            if (!info.Connected) {
+                Issues.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
             if (!rotatorMediator.GetInfo().Connected) {
-                i.Add(Loc.Instance["LblRotatorNotConnected"]);
+                Issues.Add(Loc.Instance["LblRotatorNotConnected"]);
             }
-            Issues = i;
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression, PositionAngleExpression);
+            RaisePropertyChanged("Issues");
             return Issues.Count == 0;
         }
+
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(CenterAndRotate)}, Coordinates {Coordinates?.Coordinates}, Position Angle: {PositionAngle}°";

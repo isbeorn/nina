@@ -135,6 +135,13 @@ namespace NINA.ViewModel {
             customPatterns.Add(pattern);
             RecreatePatterns();
         }
+        public void RemoveImagePattern(string key) {
+            var pattern = customPatterns.FirstOrDefault(p => p.Key == key);
+            if (pattern != null) {
+                customPatterns.Remove(pattern);
+                RecreatePatterns();
+            }
+        }
 
         private void RecreatePatterns() {
             var patterns = ImagePatterns.CreateExample();

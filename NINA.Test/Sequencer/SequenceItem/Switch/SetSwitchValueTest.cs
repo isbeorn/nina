@@ -56,7 +56,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Switch {
 
         [Test]
         public void Validate_NoIssues() {
-            switchMediatorMock.Setup(x => x.GetInfo()).Returns(new SwitchInfo() { Connected = true, WritableSwitches = new System.Collections.ObjectModel.ReadOnlyCollection<IWritableSwitch>(new List<IWritableSwitch>() { new Mock<IWritableSwitch>().Object }) });
+            var dummy = new Mock<IWritableSwitch>();
+            dummy.SetupGet(x => x.Maximum).Returns(1);
+            switchMediatorMock.Setup(x => x.GetInfo()).Returns(new SwitchInfo() { Connected = true, WritableSwitches = new System.Collections.ObjectModel.ReadOnlyCollection<IWritableSwitch>(new List<IWritableSwitch>() { dummy.Object }) });
 
             var sut = new SetSwitchValue(switchMediatorMock.Object);
             sut.SwitchIndex = 0;

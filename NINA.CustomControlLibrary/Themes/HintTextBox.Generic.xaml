@@ -31,13 +31,13 @@
                             TextWrapping="Wrap" />
                         <TextBlock
                             x:Name="PART_HintText"
-                            Margin="5,0,0,0"
+                            Margin="{TemplateBinding HintTextMargin}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             Background="Transparent"
                             Foreground="{TemplateBinding Foreground}"
                             IsHitTestVisible="False"
-                            Opacity="0.4"
+                            Opacity="{TemplateBinding HintTextOpacity}"
                             Text="{TemplateBinding HintText}"
                             TextAlignment="{TemplateBinding TextAlignment}">
                             <TextBlock.Style>

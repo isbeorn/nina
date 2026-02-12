@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -55,6 +56,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FF000000")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Classic",
@@ -73,6 +75,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF000000"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FF000000"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FF000000")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Dark",
@@ -91,6 +94,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FF550C18")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Seance",
@@ -109,6 +113,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FF000000")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Persian",
@@ -127,6 +132,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Persian Faint",
@@ -145,6 +151,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "High Contrast",
@@ -163,6 +170,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Black Coral",
@@ -181,6 +189,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFF7F7FF"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFF7F7FF"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFDEDEE8")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Arsenic",
@@ -199,6 +208,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFF8E9E9"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFF8E9E9"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Vivid Malachite",
@@ -217,6 +227,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Shark",
@@ -235,6 +246,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFA9AAAC"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFA9AAAC"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFEDEDED")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Slate",
@@ -253,6 +265,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFB0B3B9")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Wisteria",
@@ -271,6 +284,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Navy",
@@ -289,6 +303,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF6FC3DF"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FF6FC3DF"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FF6FC3DF")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Dark Nebula",
@@ -307,6 +322,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFF0F8FF"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFF0F8FF"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFF5F4FA")
             });
             schemas.Items.Add(new ColorSchema() {
                 Name = "Dichromacy",
@@ -325,6 +341,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFEAF430"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFEAF430"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFEAF430")
             });
 
 
@@ -344,7 +361,8 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFBA5E07"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFF0F8FF"),
-                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFF0F8FF")
+                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFF0F8FF"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFF5F4FA")
             });
 
 
@@ -364,7 +382,8 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
-                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A")
+                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
+                SequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FF550C18")
             });
 
 
@@ -390,6 +409,7 @@ namespace NINA.Core.Utility.ColorSchema {
         private Color secondaryBackgroundColor;
         private Color backgroundColor;
         private Color borderColor;
+        private Color sequencerExpressionTextColor;
 
         [DataMember]
         public String Name { get; set; }
@@ -506,10 +526,15 @@ namespace NINA.Core.Utility.ColorSchema {
 
         [DataMember]
         public Color CrosshairColor {
-            get => crosshairColor;
+            get {
+                if (crosshairColor == new Color()) {
+                    crosshairColor = (Color)ColorConverter.ConvertFromString("#FF848484");
+                }
+                return crosshairColor;
+            }
             set {
                 if(value == new Color()) {
-                    value = (Color)ColorConverter.ConvertFromString("#FFFFFF00");
+                    value = (Color)ColorConverter.ConvertFromString("#FF848484");
                 }
                 if (crosshairColor != value) {
                     crosshairColor = value;
@@ -557,6 +582,25 @@ namespace NINA.Core.Utility.ColorSchema {
             set {
                 if (notificationErrorTextColor != value) {
                     notificationErrorTextColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [DataMember]
+        public Color SequencerExpressionTextColor {
+            get {
+                if (sequencerExpressionTextColor == new Color()) {
+                    sequencerExpressionTextColor = (Color)ColorConverter.ConvertFromString("#FFF5F4FA");
+                }
+                return sequencerExpressionTextColor;
+            }
+            set {
+                if (value == new Color()) {
+                    value = (Color)ColorConverter.ConvertFromString("#FFF5F4FA");
+                }
+                if (sequencerExpressionTextColor != value) {
+                    sequencerExpressionTextColor = value;
                     RaisePropertyChanged();
                 }
             }

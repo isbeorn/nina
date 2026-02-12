@@ -134,6 +134,7 @@ namespace NINA.Profile {
             schema.NotificationWarningTextColor = ColorSchema.NotificationWarningTextColor;
             schema.NotificationErrorColor = ColorSchema.NotificationErrorColor;
             schema.NotificationErrorTextColor = ColorSchema.NotificationErrorTextColor;
+            schema.SequencerExpressionTextColor = ColorSchema.SequencerExpressionTextColor;
             ColorSchema = schema;
         }
 
@@ -155,6 +156,7 @@ namespace NINA.Profile {
             schema.NotificationWarningTextColor = AltColorSchema.NotificationWarningTextColor;
             schema.NotificationErrorColor = AltColorSchema.NotificationErrorColor;
             schema.NotificationErrorTextColor = AltColorSchema.NotificationErrorTextColor;
+            schema.SequencerExpressionTextColor = AltColorSchema.SequencerExpressionTextColor;
             AltColorSchema = schema;
         }
     }
