@@ -1587,6 +1587,18 @@ Když je tato aktivace deaktivována, aplikace pouze přeskočí Start expozice 
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
     <value>Velikost jednoho ostřícího kroku použitého pro automatické zaostřování. Jeden krok musí být menší než tolerance kritického bodu zaostření</value>
   </data>
+  <data name="LblManualStepSmallMultiplier" xml:space="preserve">
+    <value>Malý krok Multiplikátor</value>
+  </data>
+  <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
+    <value>Multiplikátor pro malý krok ručního ostření (výchozí hodnota: 0,5)</value>
+  </data>
+  <data name="LblManualStepLargeMultiplier" xml:space="preserve">
+    <value>Velký multiplikátor kroku</value>
+  </data>
+  <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
+    <value>Multiplikátor pro velký krok ručního ostření (výchozí hodnota: 5,0)</value>
+  </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Zpětná vůle DOVNITŘ/VEN</value>
   </data>
