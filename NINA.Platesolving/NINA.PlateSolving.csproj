@@ -56,7 +56,7 @@
     <Version>3.3.0.1000-canary</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
-    <Copyright>Copyright ©  2016 - 2025 Stefan Berg and the N.I.N.A. contributors</Copyright>
+    <Copyright>Copyright ©  2016 - 2026 Stefan Berg and the N.I.N.A. contributors</Copyright>
     <PackageProjectUrl>https://nighttime-imaging.eu/</PackageProjectUrl>
     <PackageIcon>ninasplash.png</PackageIcon>
     <RepositoryUrl>https://github.com/isbeorn/nina.git</RepositoryUrl>
