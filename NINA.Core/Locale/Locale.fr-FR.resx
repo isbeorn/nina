@@ -1594,6 +1594,18 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
     <value>La taille d'un pas moteur utilisé pour la focalisation automatique. Cette taille devrait être inférieure à la zone du point focal critique (CFZ)</value>
   </data>
+  <data name="LblManualStepSmallMultiplier" xml:space="preserve">
+    <value>Small Step Multiplier</value>
+  </data>
+  <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+  </data>
+  <data name="LblManualStepLargeMultiplier" xml:space="preserve">
+    <value>Large Step Multiplier</value>
+  </data>
+  <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+  </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Jeu IN/OUT</value>
   </data>
