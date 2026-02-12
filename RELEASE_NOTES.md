@@ -38,6 +38,7 @@ This allows you to safely return to a stable release if needed.
 - Clicking on slew Alt/Az in the Mount equipment page with Mount drivers that do not support slewing to Alt/Az, will now fallback to slewing to RA/Dec coordinates instead of doing nothing.
 - The manual focuser step buttons now use configurable multipliers. Users can adjust the small step (default 0.5x) and large step (default 5.0x) multipliers in Options > Imaging > Autofocus.
 - Debayer algorithm has been optimized to work fast even on older CPUs
+- Sky brightness readings in the Weather device windows have been increased from 2 decimal places to 5 so that measurements obtained in low light conditions are adequately displayed.
 
 ## Behavioral Changes
 - Unparking the mount no longer automatically starts sidereal tracking. Tracking will begin automatically during a slew to a target, as usual.
