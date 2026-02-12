@@ -1590,6 +1590,18 @@ Quan es desactivi aquest, l'aplicació només saltarà a l'inici de l'exposició
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
     <value>La mida de pas d'enfocament utilitzat per a l'enfocament automàtic. Un pas ha de ser inferior a la tolerància del punt d’enfocament crític</value>
   </data>
+  <data name="LblManualStepSmallMultiplier" xml:space="preserve">
+    <value>Small Step Multiplier</value>
+  </data>
+  <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+  </data>
+  <data name="LblManualStepLargeMultiplier" xml:space="preserve">
+    <value>Large Step Multiplier</value>
+  </data>
+  <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+  </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Backlash DINS/FORA</value>
   </data>
