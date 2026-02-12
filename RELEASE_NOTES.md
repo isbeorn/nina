@@ -3,7 +3,20 @@
 If N.I.N.A. helps you on your journey to capture amazing deep sky images, please consider a donation. Every contribution helps keep the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
-# Version 3.3
+### <span style="color:orange;">Nightly Build: USE WITH CAUTION</span>
+### <span style="color:orange;">
+Nightly builds are preview versions containing active development work.
+
+They may be unstable and change frequently.
+Running outdated nightly builds is strongly discouraged.
+
+Before using nightly builds, consider backing up your profiles located at:
+%localappdata%\NINA
+
+This allows you to safely return to a stable release if needed.
+</span>
+
+# Version 3.3 NIGHTLY
 
 ## General
 - The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
