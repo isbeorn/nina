@@ -80,8 +80,13 @@ namespace NINA.Core.Utility.Notification {
                 return;
             }
 
+            var owner = workAreaProvider.Owner;            
+            var topMost = workAreaProvider.IsTopMost;
+
             hostWindow = new NotificationHostWindow {
-                DataContext = this
+                DataContext = this,
+                Owner = owner,
+                Topmost = topMost
             };
             hostWindow.Show();
             hostWindow.Hide();

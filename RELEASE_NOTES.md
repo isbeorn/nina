@@ -25,13 +25,46 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Clicking on slew Alt/Az in the Mount equipment page with Mount drivers that do not support slewing to Alt/Az, will now fallback to slewing to RA/Dec coordinates instead of doing nothing.
 - Debayer algorithm has been optimized to work fast even on older CPUs
 
+## Behavioral Changes
+- Unparking the mount no longer automatically starts sidereal tracking. Tracking will begin automatically during a slew to a target, as usual.
+  - This change only affects mount drivers that previously started tracking immediately upon unparking; drivers that did not exhibit this behavior are unaffected.
+  - Preventing automatic tracking on unpark avoids unexpected mount movement and reduces the risk of pier collisions or other unintended motion, while ensuring consistent and predictable behavior across drivers.
+
 ## Features
+
+### **Sequencer Expressions**
+- **Expression support for sequence items**
+  - Many sequence item parameters can now optionally use expressions instead of fixed values.
+  - Expressions can reference live data such as device state, weather conditions, image statistics, and time-based values as well as user-defined constants and variables.
+  - Simple numeric values continue to work exactly as before.
+  - This brings the core functionality previously available via the **Sequencer Powerups** plugin directly into N.I.N.A.
+
+- **Expression editor with symbol and function sidebar**
+  - A new sidebar is available when editing expression-enabled fields.
+  - Displays all currently available **symbols**, grouped by category (e.g. mount, camera, weather, image data).
+  - Lists all supported **functions** (math, logic, time, string, and utility helpers).
+  - Users familiar with the **Sequencer Powerups** plugin will recognize the workflow and capabilities.
+
+- **Built-in expression functions**
+  - Includes common mathematical operations, logical and conditional helpers, time-based functions, and string utilities.
+  - Functions can be freely combined with symbols to build complex expressions.
+
+- **Seamless migration and backward compatibility**
+  - Existing sequences continue to work without any changes.
+  - Expression support is opt-in per field; fields that do not use expressions behave exactly as before.
+  - When loading older sequences, existing values are preserved and automatically interpreted as simple expressions.
+
+- **Plugin support (opt-in)**
+  - Expression support for plugin-provided sequence items is **opt-in** and requires plugin updates.
+  - Plugins must explicitly adopt the new expression system to expose expression-enabled fields.
+  - Plugins that are not updated continue to function normally, but their sequence items will not offer expression support.
 
 ### **Device Management**
 - **ASCOM Alpaca Direct Drivers**
     - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
 - **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
   - The ToupTek based filter wheels are now available as a native driver.
+  - The ToupTek based focusers are now available as a native driver.
 - **Oasis Focuser Native Driver**
   - The Oasis focuser is now available as a native driver.
 - **Oasis Filter Wheel Native Driver**

@@ -19,6 +19,7 @@ using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Extensions;
 using NINA.Sequencer.Container.ExecutionStrategy;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility;
@@ -70,6 +71,7 @@ namespace NINA.Sequencer.Container {
                     ClearContainer(Items[0] as ISequenceContainer);
                     ClearContainer(Items[1] as ISequenceContainer);
                     ClearContainer(Items[2] as ISequenceContainer);
+                    UserSymbol.ClearUserSymbols();
                     GC.Collect(2);
                 }
             }

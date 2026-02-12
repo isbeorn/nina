@@ -13,7 +13,9 @@
 #endregion "copyright"
 
 using FluentAssertions;
+using Moq;
 using NINA.Sequencer;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Utility;
 using NUnit.Framework;
 using System;
@@ -29,7 +31,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
         [Test]
         public void Annotation_Clone_GoodClone() {
-            var sut = new Annotation();
+            var symbolBrokerMock = new Mock<ISymbolBroker>();
+            var sut = new Annotation(symbolBrokerMock.Object);
             sut.Icon = new System.Windows.Media.GeometryGroup();
             var item2 = (Annotation)sut.Clone();
 
@@ -42,7 +45,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
         [Test]
         public void AnnotationTest_GetEstimatedDuration_Test() {
-            var sut = new Annotation();
+            var symbolBrokerMock = new Mock<ISymbolBroker>();
+            var sut = new Annotation(symbolBrokerMock.Object);
 
             var estimate = sut.GetEstimatedDuration();
 

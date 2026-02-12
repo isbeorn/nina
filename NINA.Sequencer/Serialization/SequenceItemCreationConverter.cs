@@ -22,11 +22,9 @@ using System.Diagnostics;
 namespace NINA.Sequencer.Serialization {
 
     public class SequenceItemCreationConverter : JsonCreationConverter<ISequenceItem> {
-        private ISequencerFactory factory;
         private SequenceContainerCreationConverter sequenceContainerCreationConverter;
 
-        public SequenceItemCreationConverter(ISequencerFactory factory, SequenceContainerCreationConverter sequenceContainerCreationConverter) {
-            this.factory = factory;
+        public SequenceItemCreationConverter(ISequencerFactory factory, SequenceContainerCreationConverter sequenceContainerCreationConverter) :base(factory) {
             this.sequenceContainerCreationConverter = sequenceContainerCreationConverter;
         }
 
@@ -49,8 +47,8 @@ namespace NINA.Sequencer.Serialization {
                     return new UnknownSequenceItem(token?.ToString());
                 }
                 try {
-                    var method = factory.GetType().GetMethod(nameof(factory.GetItem)).MakeGenericMethod(new Type[] { t });
-                    var obj = method.Invoke(factory, null);
+                    var method = Factory.GetType().GetMethod(nameof(Factory.GetItem)).MakeGenericMethod(new Type[] { t });
+                    var obj = method.Invoke(Factory, null);
                     if (obj == null) {
                         Logger.Error($"Encountered unknown sequence item: {token?.ToString()}");
                         return new UnknownSequenceItem(token?.ToString());

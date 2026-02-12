@@ -9,10 +9,12 @@ applies to:
     - AsyncEnumerator
     - CommunityToolkit.Mvvm
     - CoreWCF.WebHttp
+    - ExtendedNumerics.BigDecimal
     - Fastenshtein
     - K4os.Compression.LZ4
     - MdXaml
     - Newtonsoft.Json
+    - NCalcSync
     - Nito.AsyncEx 
     - Nito.Disposables
     - Nito.Mvvm.Async

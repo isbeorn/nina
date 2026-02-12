@@ -26,6 +26,7 @@ using System.Windows.Media;
 using NINA.Sequencer.Utility;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
+using NINA.Sequencer.Logic;
 using System.Diagnostics;
 
 namespace NINA.Sequencer.SequenceItem {
@@ -46,10 +47,12 @@ namespace NINA.Sequencer.SequenceItem {
             Name = cloneMe.Name;
             Category = cloneMe.Category;
             Description = cloneMe.Description;
+            SymbolBroker = cloneMe.SymbolBroker;
             Attempts = cloneMe.Attempts;
             ErrorBehavior = cloneMe.ErrorBehavior;
         }
 
+        private ISymbolBroker symbolBroker;
         private string name;
         private bool showMenu;
         private SequenceEntityStatus status = SequenceEntityStatus.CREATED;
@@ -69,6 +72,14 @@ namespace NINA.Sequencer.SequenceItem {
             }
             
         });
+
+        public ISymbolBroker SymbolBroker {
+            get => symbolBroker;
+            set {
+                symbolBroker = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string Name {
             get => name;

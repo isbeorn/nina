@@ -161,7 +161,8 @@
                     FontWeight="{TemplateBinding FontWeight}"
                     Foreground="{TemplateBinding Foreground}"
                     IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                    Style="{StaticResource ExpanderDownHeaderStyle}" />
+                    Style="{StaticResource ExpanderDownHeaderStyle}"
+                    ToolTip="{TemplateBinding ToolTip}" />
                 <ContentPresenter
                     x:Name="ExpandSite"
                     Margin="{TemplateBinding Padding}"
@@ -210,7 +211,8 @@
                     FontWeight="{TemplateBinding FontWeight}"
                     Foreground="{TemplateBinding Foreground}"
                     IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                    Style="{StaticResource ExpanderRightHeaderStyle}" />
+                    Style="{StaticResource ExpanderRightHeaderStyle}"
+                    ToolTip="{TemplateBinding ToolTip}" />
                 <ContentPresenter
                     x:Name="ExpandSite"
                     Margin="{TemplateBinding Padding}"

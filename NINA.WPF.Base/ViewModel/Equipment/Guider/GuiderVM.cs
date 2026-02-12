@@ -305,6 +305,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                 }
                 var handler = GuideEvent;
                 handler?.Invoke(this, e);
+                BroadcastGuiderInfo();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
