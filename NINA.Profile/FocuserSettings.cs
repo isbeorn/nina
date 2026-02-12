@@ -51,6 +51,8 @@ namespace NINA.Profile {
             backlashCompensationModel = BacklashCompensationModel.OVERSHOOT;
             autoFocusTimeoutSeconds = 600;
             rSquaredThreshold = 0.7;
+            manualStepSmallMultiplier = 0.5;
+            manualStepLargeMultiplier = 5.0;
         }
 
         private string id;
@@ -352,6 +354,32 @@ namespace NINA.Profile {
 
                 if (rSquaredThreshold != value) {
                     rSquaredThreshold = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double manualStepSmallMultiplier;
+
+        [DataMember]
+        public double ManualStepSmallMultiplier {
+            get => manualStepSmallMultiplier;
+            set {
+                if (manualStepSmallMultiplier != value) {
+                    manualStepSmallMultiplier = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double manualStepLargeMultiplier;
+
+        [DataMember]
+        public double ManualStepLargeMultiplier {
+            get => manualStepLargeMultiplier;
+            set {
+                if (manualStepLargeMultiplier != value) {
+                    manualStepLargeMultiplier = value;
                     RaisePropertyChanged();
                 }
             }
