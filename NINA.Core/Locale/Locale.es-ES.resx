@@ -1585,6 +1585,18 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
     <value>El tamaño de un paso de enfoque usado para el auto enfoque. Un paso debería ser inferior a la tolerancia del punto de enfoque critico</value>
   </data>
+  <data name="LblManualStepSmallMultiplier" xml:space="preserve">
+    <value>Multiplicador de paso pequeño</value>
+  </data>
+  <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
+    <value>Multiplicador para paso pequeño manual del enfocador (predeterminado: 0,5)</value>
+  </data>
+  <data name="LblManualStepLargeMultiplier" xml:space="preserve">
+    <value>Multiplicador de paso grande</value>
+  </data>
+  <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
+    <value>Multiplicador para el paso grande manual del enfocador (por defecto: 5,0)</value>
+  </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Backlash Dentro/Fuera</value>
   </data>
