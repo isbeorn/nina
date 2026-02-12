@@ -23,7 +23,7 @@ namespace NINA.Astrometry {
     /// http://www.iausofa.org/current_C.html#Downloads
     /// </summary>
     public static class SOFA {
-        private const string DLLNAME = "SOFA-2023-10-11.dll";
+        private const string DLLNAME = "SOFA_2023_10_11.dll";
 
         static SOFA() {
             DllLoader.LoadDll(Path.Combine("SOFA", DLLNAME));
