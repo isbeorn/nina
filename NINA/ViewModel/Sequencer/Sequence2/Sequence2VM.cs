@@ -368,7 +368,7 @@ namespace NINA.ViewModel.Sequencer {
         private void LoadSequenceFromFile(string file) {
             try {
                 var json = File.ReadAllText(file);
-                var container = SequenceJsonConverter.Deserialize(json);
+                var container = SequenceJsonConverter.Deserialize(json, file);
                 if (container is ISequenceRootContainer root) {
                     SavePath = file;
                     Sequencer.MainContainer = root;

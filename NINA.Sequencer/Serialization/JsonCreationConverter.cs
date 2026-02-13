@@ -64,7 +64,8 @@ namespace NINA.Sequencer.Serialization {
                     }
                 }
             } catch (Exception ex) {
-                Logger.Error("Failed to deserialize sequence entity", ex);
+                var sourcePath = serializer?.Context.Context as string ?? string.Empty;
+                Logger.Error($"Failed to deserialize sequence entity. File='{sourcePath}'", ex);
                 var unknownEntityName = "";
                 if (jObject.TryGetValue("$type", out var token)) {
                     unknownEntityName = token?.ToString() ?? "";
