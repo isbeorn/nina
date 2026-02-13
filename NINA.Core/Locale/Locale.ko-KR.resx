@@ -1584,6 +1584,18 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
     <value>오토포커스에 사용되는 초점 단계의 크기입니다. 한 단계는 임계 허용 오차보다 작아야 합니다.</value>
   </data>
+  <data name="LblManualStepSmallMultiplier" xml:space="preserve">
+    <value>Small Step Multiplier</value>
+  </data>
+  <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+  </data>
+  <data name="LblManualStepLargeMultiplier" xml:space="preserve">
+    <value>Large Step Multiplier</value>
+  </data>
+  <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+  </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>백래시 인/아웃</value>
   </data>

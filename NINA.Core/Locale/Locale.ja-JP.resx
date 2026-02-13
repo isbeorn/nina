@@ -1580,6 +1580,18 @@ Do you want to continue and lose the changes anyway?</value>
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
     <value>フォーカスのワンステップサイズ。ワンステップは焦点公差限界点よりも小さいほうが望ましい。</value>
   </data>
+  <data name="LblManualStepSmallMultiplier" xml:space="preserve">
+    <value>Small Step Multiplier</value>
+  </data>
+  <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+  </data>
+  <data name="LblManualStepLargeMultiplier" xml:space="preserve">
+    <value>Large Step Multiplier</value>
+  </data>
+  <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+  </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>バックラッシュ　IN側/OUT側</value>
   </data>

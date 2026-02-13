@@ -1586,6 +1586,18 @@ Bu tetikleyici devre dışı bırakıldığında, uygulama sadece Pozlamayı Ba�
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
     <value>Otomatik odaklama için kullanılan bir odak adımının boyutu. Bir adım kritik odak noktası toleransından daha az olmalıdır</value>
   </data>
+  <data name="LblManualStepSmallMultiplier" xml:space="preserve">
+    <value>Small Step Multiplier</value>
+  </data>
+  <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+  </data>
+  <data name="LblManualStepLargeMultiplier" xml:space="preserve">
+    <value>Large Step Multiplier</value>
+  </data>
+  <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
+    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+  </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Dişli boşluğu İÇ/DIŞ</value>
   </data>
