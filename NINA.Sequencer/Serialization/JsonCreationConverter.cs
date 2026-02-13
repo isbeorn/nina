@@ -46,6 +46,9 @@ namespace NINA.Sequencer.Serialization {
 
         protected ISequencerFactory Factory;
 
+        private static string GetSourcePath(JsonSerializer serializer) =>
+            serializer?.Context.Context as string ?? string.Empty;
+
         public static string ExtractPluginName(string typeString) {
             if (string.IsNullOrWhiteSpace(typeString)) {
                 return string.Empty;
@@ -185,7 +188,8 @@ namespace NINA.Sequencer.Serialization {
 
                 return target;
             } catch (Exception ex) {
-                Logger.Error("Failed to deserialize sequence entity", ex);
+                var sourcePath = GetSourcePath(serializer);
+                Logger.Error($"Deserialize failed. File='{sourcePath}', Error={ex.Message}");
                 var unknownEntityName = "";
                 if (jObject.TryGetValue("$type", out var token)) {
                     unknownEntityName = token?.ToString() ?? "";

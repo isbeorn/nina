@@ -392,7 +392,7 @@ namespace NINA.ViewModel.Sequencer {
             try {
                 UserSymbol.ClearUserSymbols();
                 var json = File.ReadAllText(file);
-                var container = SequenceJsonConverter.Deserialize(json);
+                var container = SequenceJsonConverter.Deserialize(json, file);
                 if (container is ISequenceRootContainer root) {
                     SavePath = file;
                     Sequencer.MainContainer = root;
