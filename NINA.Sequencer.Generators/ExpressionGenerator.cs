@@ -181,7 +181,6 @@ namespace NINA.Sequencer.Generators {
                 bool hasValidator = false;
                 string? proxy = null;
                 bool jsonIgnore = false;
-                bool hasDefault = false;
 
                 IPropertySymbol fieldSymbol = (IPropertySymbol)prop.PropertySymbol;
                 string fieldType = fieldSymbol.Type.Name;
@@ -215,10 +214,9 @@ namespace NINA.Sequencer.Generators {
                         }
                         propertiesSource += $@"
                     {fieldNameExpression}.{kvp.Key} = new double[] {{{min.ToString(CultureInfo.InvariantCulture)}, {max.ToString(CultureInfo.InvariantCulture)}, {r.ToString(CultureInfo.InvariantCulture)}}};";
-                    } else if (kvp.Key == "Default") {
+                    } else if (kvp.Key == "Default" || kvp.Key == "AutoValue") {
                         propertiesSource += $@"
                     {fieldNameExpression}.{kvp.Key} = {Convert.ToString(kvp.Value.Value, CultureInfo.InvariantCulture)};";
-                        hasDefault = true;
                     } else if (kvp.Key == "DefaultString") {
                         propertiesSource += $@"
                     {fieldNameExpression}.{kvp.Key} = ""{kvp.Value.Value}"";";
@@ -285,7 +283,7 @@ namespace NINA.Sequencer.Generators {
                     if (fieldType == "String") {
                         propertiesSource += "value;";
                     } else {
-                        propertiesSource += $@"(value == {propNameExpression}.Default && {propNameExpression}.DefaultString != null) ? String.Empty : Convert.ToString(value, CultureInfo.InvariantCulture);";
+                        propertiesSource += $@"((value == {propNameExpression}.Default || value == {propNameExpression}.AutoValue) && {propNameExpression}.DefaultString != null) ? String.Empty : Convert.ToString(value, CultureInfo.InvariantCulture);";
                     }
                     propertiesSource += $@"
             }}
@@ -357,6 +355,11 @@ namespace {namespaceName}
         public double Default {
             get { return _def; }
             set { _def = value; }
+        }
+        public double _AutoValue = Double.NaN;
+        public double AutoValue {
+            get { return _AutoValue; }
+            set { _AutoValue = value; }
         }
 
         public double[] _range = new double[3];
