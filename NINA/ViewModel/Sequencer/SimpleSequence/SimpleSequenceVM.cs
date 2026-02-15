@@ -989,14 +989,11 @@ namespace NINA.ViewModel {
                 filter.Filter = item.FilterType;
 
                 var exposure = simpleExposure.GetTakeExposure() as TakeExposure;
-                exposure.ExposureTimeExpression.Definition = item.ExposureTime.ToString();
-                exposure.ExposureTimeExpression.Evaluate();
+                exposure.ExposureTime = item.ExposureTime;
                 exposure.ImageType = item.ImageType;
                 exposure.Binning = item.Binning;
-                exposure.GainExpression.Definition = (item.Gain == -1) ? "" : item.Gain.ToString();
-                exposure.GainExpression.Evaluate();
-                exposure.OffsetExpression.Definition = (item.Offset == -1) ? "" : item.Offset.ToString();
-                exposure.OffsetExpression.Evaluate();
+                exposure.Gain = item.Gain;
+                exposure.Offset = item.Offset;
                 exposure.ExposureCount = item.ProgressExposureCount;
             }
 
