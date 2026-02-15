@@ -43,6 +43,7 @@ namespace NINA.Sequencer.Logic {
             Symbol = cloneMe.Symbol;
             Range = cloneMe.Range;
             Default = cloneMe.Default;
+            DefaultMarker = cloneMe.DefaultMarker;
             DefaultString = cloneMe.DefaultString;
             Validator = validator;
             Context = context;
@@ -65,6 +66,14 @@ namespace NINA.Sequencer.Logic {
 
         public ISequenceEntity Context { get; set; }
         public double Default {
+            get => field;
+            set {
+                field = value;
+                RaisePropertyChanged();
+            }
+        } = double.NaN;
+
+        public double DefaultMarker {
             get => field;
             set {
                 field = value;
