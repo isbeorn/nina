@@ -214,7 +214,7 @@ namespace NINA.Sequencer.Generators {
                         }
                         propertiesSource += $@"
                     {fieldNameExpression}.{kvp.Key} = new double[] {{{min.ToString(CultureInfo.InvariantCulture)}, {max.ToString(CultureInfo.InvariantCulture)}, {r.ToString(CultureInfo.InvariantCulture)}}};";
-                    } else if (kvp.Key == "Default" || kvp.Key == "DefaultMarker") {
+                    } else if (kvp.Key == "Default" || kvp.Key == "AutoValue") {
                         propertiesSource += $@"
                     {fieldNameExpression}.{kvp.Key} = {Convert.ToString(kvp.Value.Value, CultureInfo.InvariantCulture)};";
                     } else if (kvp.Key == "DefaultString") {
@@ -283,7 +283,7 @@ namespace NINA.Sequencer.Generators {
                     if (fieldType == "String") {
                         propertiesSource += "value;";
                     } else {
-                        propertiesSource += $@"((value == {propNameExpression}.Default || value == {propNameExpression}.DefaultMarker) && {propNameExpression}.DefaultString != null) ? String.Empty : Convert.ToString(value, CultureInfo.InvariantCulture);";
+                        propertiesSource += $@"((value == {propNameExpression}.Default || value == {propNameExpression}.AutoValue) && {propNameExpression}.DefaultString != null) ? String.Empty : Convert.ToString(value, CultureInfo.InvariantCulture);";
                     }
                     propertiesSource += $@"
             }}
@@ -356,10 +356,10 @@ namespace {namespaceName}
             get { return _def; }
             set { _def = value; }
         }
-        public double _defaultMarker = Double.NaN;
-        public double DefaultMarker {
-            get { return _defaultMarker; }
-            set { _defaultMarker = value; }
+        public double _AutoValue = Double.NaN;
+        public double AutoValue {
+            get { return _AutoValue; }
+            set { _AutoValue = value; }
         }
 
         public double[] _range = new double[3];
