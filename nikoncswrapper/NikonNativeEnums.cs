@@ -339,7 +339,34 @@ namespace Nikon
         kNkMAIDCameraType_Nikon1V3 = 63,              // Nikon1V3
         kNkMAIDCameraType_D5 = 64,                    // D5
         kNkMAIDCameraType_Nikon1V3_NotSupported = 65, // Nikon1V3 Unsupported firm
-        kNkMAIDCameraType_D500 = 66
+        kNkMAIDCameraType_D500 = 66,
+        kNkMAIDCameraType_D5_FU1 = 67,       // D5 Firmup 1
+        kNkMAIDCameraType_D5600 = 68,        // D5600
+        kNkMAIDCameraType_D7500 = 69,        // D7500
+        kNkMAIDCameraType_D5_FU2 = 70,       // D5 Firmup 2
+        kNkMAIDCameraType_D850 = 71,         // D850
+        kNkMAIDCameraType_Z_7 = 72,          // Z_7
+        kNkMAIDCameraType_Z_6 = 73,          // Z_6
+        kNkMAIDCameraType_Z_50 = 74,         // Z_50
+        kNkMAIDCameraType_D780 = 75,         // D780
+        kNkMAIDCameraType_Z_7_FU1 = 77, // Z_7 Firmup 1
+        kNkMAIDCameraType_Z_6_FU1 = 78,      // Z_6 Firmup 1
+        kNkMAIDCameraType_D6 = 79,           // D6
+        kNkMAIDCameraType_Z_5 = 80,          // Z_5
+        kNkMAIDCameraType_Z_7_FU2 = 81,      // Z_7 Firmup 2
+        kNkMAIDCameraType_Z_6_FU2 = 82,      // Z_6 Firmup 2
+        kNkMAIDCameraType_Z_6II = 83,        // Z_6II
+        kNkMAIDCameraType_Z_7_FU3 = 84, // Z_7 Firmup 3
+        kNkMAIDCameraType_Z_6_FU3 = 85, // Z_6 Firmup 3
+        kNkMAIDCameraType_Z_7II = 86,        // Z_7II
+        kNkMAIDCameraType_Z_9 = 87,          // Z_9
+        kNkMAIDCameraType_Z_6II_FU1 = 88,     // Z_6II Firmup 1
+        kNkMAIDCameraType_Z_8 = 89,           // Z 8
+        kNkMAIDCameraType_Z_9_FU1 = 90,       // Z_9 Firmup 1
+        kNkMAIDCameraType_Z_9_FU2 = 91,       // Z_9 Firmup 2
+        kNkMAIDCameraType_Z_9_FU3 = 92,       // Z_9 Firmup 3
+        kNkMAIDCameraType_Z_9_FU4 = 93,       // Z_9 Firmup 4
+        kNkMAIDCameraType_Z_8_FU1 = 94,		 // Z_8 Firmup 1
     }
 
     public enum eNkMAIDCapability : int
@@ -964,6 +991,101 @@ namespace Nikon
         kNkMAIDCapability_FlickerReductionSetting = 34035,
         kNkMAIDCapability_ExposureCompFlashUsed = 34036,
         kNkMAIDCapability_LiveViewImageStatus = 34071,
+        kNkMAIDCapability_LiveViewZoomArea = 34072,
+        kNkMAIDCapability_TrackingAFArea = 34073,
+        kNkMAIDCapability_MovieAfSpeed = 34074,
+        kNkMAIDCapability_MovieAfSpeedWhenToApply = 34075,
+        kNkMAIDCapability_MovieAfTrackingSensitivity = 34076,
+        kNkMAIDCapability_GetManualSettingLensData = 34077,
+        kNkMAIDCapability_StillCaptureModeSaveFrame = 34078,
+        kNkMAIDCapability_StillFocusAreaMode = 34079,
+        kNkMAIDCapability_ChangeMonitorOffStatus = 34080,
+        kNkMAIDCapability_RemainingExposureTime = 34081,
+        kNkMAIDCapability_ExtendedShutterSpeedsManual = 34082,
+        kNkMAIDCapability_QuietReleaseMode = 34083,
+        kNkMAIDCapability_AutoAreaAFFaceDetection = 34084,
+        kNkMAIDCapability_Slot2JpegImageSize = 34085,
+        kNkMAIDCapability_GroupAreaFaceDetection = 34086,
+        kNkMAIDCapability_SinglePointAFWatchArea = 34087,
+        kNkMAIDCapability_RearControlPanel = 34088,
+        kNkMAIDCapability_FlushBurstPrioritize = 34089,
+        kNkMAIDCapability_BracketingBurstOptions = 34090,
+        kNkMAIDCapability_3DTrackingFaceDetection = 34091,
+        kNkMAIDCapability_AutoAreaAFStartingPoint = 34092,
+        kNkMAIDCapability_CustomGroupingsC1 = 34093,
+        kNkMAIDCapability_LiveViewWBTuneColorTemp = 34094,
+        kNkMAIDCapability_LiveViewWBTuneColorAdjust = 34095,
+        kNkMAIDCapability_LockExposureEx = 34096,
+        kNkMAIDCapability_InitiatePixelMapping = 34097,
+        kNkMAIDCapability_CustomGroupingsC2 = 34098,
+        kNkMAIDCapability_ElectronicFrontCurtainShutterEx = 34099,
+        kNkMAIDCapability_AutoFlashIsoSensitivityControl = 34100,
+        kNkMAIDCapability_PreCaptureAsync = 34101,
+        kNkMAIDCapability_LiveViewImageCompression = 34102,
+        kNkMAIDCapability_CaptureIntervalTimer = 34103,
+        kNkMAIDCapability_CaptureFocusShift = 34104,
+        kNkMAIDCapability_TerminateCaptureIntervalTimer = 34105,
+        kNkMAIDCapability_TerminateCaptureFocusShift = 34106,
+        kNkMAIDCapability_GetIntervalTimerCaptureInfo = 34107,
+        kNkMAIDCapability_GetFocusShiftCaptureInfo = 34108,
+        kNkMAIDCapability_SpecialShootingMode = 34109,
+        kNkMAIDCapability_MovieH265ToneMode = 34110,
+        kNkMAIDCapability_MovieProResToneMode = 34111,
+        kNkMAIDCapability_AFSubjectDetection = 34112,
+        kNkMAIDCapability_MovieAFSubjectDetection = 34113,
+        kNkMAIDCapability_KeepExposureWhenFNumberChanges = 34114,
+        kNkMAIDCapability_StarlightView = 34115,
+        kNkMAIDCapability_ShutterSoundEffect = 34116,
+        kNkMAIDCapability_AFWhenSubjectNotDetected = 34117,
+        kNkMAIDCapability_SilentMode = 34118,
+        kNkMAIDCapability_GetPicCtrlDataList = 34119,
+        kNkMAIDCapability_GetMoviePicCtrlDataList = 34120,
+        kNkMAIDCapability_ISOAutoHighLimitEx = 34121,
+        kNkMAIDCapability_FlashISOAutoHighLimitEx = 34122,
+        kNkMAIDCapability_MovieISOAutoHighLimitEx = 34123,
+        kNkMAIDCapability_ShootingLimitEx = 34124,
+        kNkMAIDCapability_MovieShutterSpeedLockSetting = 34125,
+        kNkMAIDCapability_MovieApertureLockSetting = 34126,
+        kNkMAIDCapability_ViewMode = 34127,
+        kNkMAIDCapability_ViewModeEaseOfViewing = 34128,
+        kNkMAIDCapability_ViewModeWhiteBalance = 34129,
+        kNkMAIDCapability_ViewModeWBTuneColorTemp = 34130,
+        kNkMAIDCapability_ViewModeWBTuneColorAdjust = 34131,
+        kNkMAIDCapability_ToneMode = 34132,
+        kNkMAIDCapability_MovieExtendedIsoStepManual = 34133,
+        kNkMAIDCapability_MovieExtendedShutterSpeedsManual = 34134,
+        kNkMAIDCapability_SkinSoftening = 34135,
+        kNkMAIDCapability_MovieSkinSoftening = 34136,
+        kNkMAIDCapability_PortraitImpressionBalance = 34137,
+        kNkMAIDCapability_MoviePortraitImpressionBalance = 34138,
+        kNkMAIDCapability_PictureControlHLG = 34139,
+        kNkMAIDCapability_PreCapturePreReleaseBurst = 34140,
+        kNkMAIDCapability_PreCapturePostReleaseBurst = 34141,
+        kNkMAIDCapability_ExtendedOverSampling = 34142,
+        kNkMAIDCapability_GetPicCtrlHLGDataList = 34143,
+        kNkMAIDCapability_GetPortraitImpressionBalanceDataList = 34144,
+        kNkMAIDCapability_SetPortraitImpressionBalanceData = 34145,
+        kNkMAIDCapability_GetMoviePortraitImpressionBalanceDataList = 34146,
+        kNkMAIDCapability_SetMoviePortraitImpressionBalanceData = 34147,
+        kNkMAIDCapability_WBTuneColorAdjust2 = 34148,
+        kNkMAIDCapability_MovieWBTuneColorAdjust2 = 34149,
+        kNkMAIDCapability_MovieScreenSizeEx = 34150,
+        kNkMAIDCapability_ViewModeWBTuneColorAdjust2 = 34151,
+        kNkMAIDCapability_MovieNRaw12bitToneMode = 34152,
+        kNkMAIDCapability_MovieProResRawHq12bitToneMode = 34153,
+        kNkMAIDCapability_MovieQualityNRaw = 34154,
+        kNkMAIDCapability_HiResZoom = 34155,
+        kNkMAIDCapability_ViewModeShowEffectsOfSettings = 34156,
+        kNkMAIDCapability_HighFrequencyFlickerReduction = 34157,
+        kNkMAIDCapability_EnableDXImageSize = 34158,
+        kNkMAIDCapability_ImageSizeDX = 34159,
+        kNkMAIDCapability_FlickerReductionShutterSpeed = 34160,
+        kNkMAIDCapability_SetFlickerReductionShutterSpeed = 34161,
+        kNkMAIDCapability_MovieHighFrequencyFlickerReduction = 34162,
+        kNkMAIDCapability_FmmManual2 = 34163,
+        kNkMAIDCapability_F0Manual2 = 34164,
+        kNkMAIDCapability_ManualSettingLensName = 34165,
+        kNkMAIDCapability_GetManualSettingLensData2 = 34166,
     }
 
     public enum eNkMAIDCapAreaCrop : int
@@ -1111,7 +1233,9 @@ namespace Nikon
     {
         kNkMAIDCompressRAWEx_Uncompressed = 0,      // Uncompressed
         kNkMAIDCompressRAWEx_Compressed = 1,        // Compressed
-        kNkMAIDCompressRAWEx_LosslessCompressed = 2 // Lossless compressed
+        kNkMAIDCompressRAWEx_LosslessCompressed = 2, // Lossless compressed
+        kNkMAIDCompressRAWEx_HighEfficiency_Quality = 3, // HighEfficiency_Quality
+        kNkMAIDCompressRAWEx_HighEfficiency = 4,    // HighEfficiency
     }
 
     public enum eNkMAIDContrastAF : int
@@ -1280,20 +1404,30 @@ namespace Nikon
         kNkMAIDEvent_CapChange = 4,
         kNkMAIDEvent_OrphanedChildren = 5,
         kNkMAIDEvent_CapChangeValueOnly = 6,
-        kNkMAIDEvent_AddPreviewImage = 263,            // 0x107
-        kNkMAIDEvent_CaptureComplete = 264,            // 0x108
-        kNkMAIDEvent_AddChildInCard = 265,             // 0x109
-        kNkMAIDEvent_RecordingInterrupted = 266,       // 0x10A
-        kNkMAIDEvent_CapChangeOperationOnly = 267,     // 0x10B
-        kNkMAIDEvent_1stCaptureComplete = 268,         // 0x10C
-        kNkMAIDEvent_MirrorUpCancelComplete = 269,     // 0x10D
-        kNkMAIDEvent_SBAdded = 270,                    // 0x10E
-        kNkMAIDEvent_SBRemoved = 271,                  // 0x10F
-        kNkMAIDEvent_SBAttrChanged = 272,              // 0x110
-        kNkMAIDEvent_SBGroupAttrChanged = 273,         // 0x111// kNkMAIDEvent_DX2Origin + 11(0x112) is  reserved.
-        kNkMAIDEvent_ActiveSelectionInterrupted = 275, // 0x113
-        kNkMAIDEvent_StoreRemoved = 276,               // 0x114
-        kNkMAIDEvent_MovieRecordComplete = 277         // 0x115
+        kNkMAIDEvent_AddPreviewImage = 263,                         // 0x107
+        kNkMAIDEvent_CaptureComplete = 264,                         // 0x108
+        kNkMAIDEvent_AddChildInCard = 265,                          // 0x109
+        kNkMAIDEvent_RecordingInterrupted = 266,                    // 0x10A
+        kNkMAIDEvent_CapChangeOperationOnly = 267,                  // 0x10B
+        kNkMAIDEvent_1stCaptureComplete = 268,                      // 0x10C
+        kNkMAIDEvent_MirrorUpCancelComplete = 269,                  // 0x10D
+        kNkMAIDEvent_SBAdded = 270,                                 // 0x10E
+        kNkMAIDEvent_SBRemoved = 271,                               // 0x10F
+        kNkMAIDEvent_SBAttrChanged = 272,                           // 0x110
+        kNkMAIDEvent_SBGroupAttrChanged = 273,                      // 0x111// kNkMAIDEvent_DX2Origin + 11(0x112) is  reserved.
+        kNkMAIDEvent_ActiveSelectionInterrupted = 275,              // 0x113
+        kNkMAIDEvent_StoreRemoved = 276,                            // 0x114
+        kNkMAIDEvent_MovieRecordComplete = 277,                     // 0x115
+        kNkMAIDEvent_RequestLiveViewStart = 278,                    //0x116
+        kNkMAIDEvent_StartMovieRecord = 279,                        //0x117
+        kNkMAIDEvent_LiveViewStateChanged	= 280,                  //0x118  not supported.
+        kNkMAIDEvent_PictureControlAdjustChanged = 281,             //0x119
+        kNkMAIDEvent_ManualSettingLensDataChanged = 282,            //0x11A
+        kNkMAIDEvent_PixelMappingComplete = 283,                    //0x11B
+        kNkMAIDEvent_CaptureSkip = 284,                             //0x11C
+        kNkMAIDEvent_OpenCaptureComplete = 285,                     //0x11D 
+        kNkMAIDEvent_PortraitImpressionBalanceAdjustChanged = 286,  //0x11E
+        kNkMAIDEvent_PictureControlHLGAdjustChanged = 287,          //0x11F
     }
 
     public enum eNkMAIDExchangeDialsEx : int
@@ -2232,16 +2366,19 @@ namespace Nikon
     public enum eNkMAIDIPTCPresetInfo : int
     {
         kNkMAIDIPTCPresetInfo_ALL = 0, // All Preset.
-        kNkMAIDIPTCPresetInfo_1 = 1,   // Preset No.1.
-        kNkMAIDIPTCPresetInfo_2 = 2,   // Preset No.2.
-        kNkMAIDIPTCPresetInfo_3 = 3,   // Preset No.3.
+        kNkMAIDIPTCPresetInfo_1 = 1,   // Preset No.1. NMS-IPTC Preset No.1.
+        kNkMAIDIPTCPresetInfo_2 = 2,   // Preset No.2. NMS-IPTC Preset No.2.
+        kNkMAIDIPTCPresetInfo_3 = 3,   // Preset No.3. ...
         kNkMAIDIPTCPresetInfo_4 = 4,   // Preset No.4.
         kNkMAIDIPTCPresetInfo_5 = 5,   // Preset No.5.
         kNkMAIDIPTCPresetInfo_6 = 6,   // Preset No.6.
         kNkMAIDIPTCPresetInfo_7 = 7,   // Preset No.7.
         kNkMAIDIPTCPresetInfo_8 = 8,   // Preset No.8.
         kNkMAIDIPTCPresetInfo_9 = 9,   // Preset No.9.
-        kNkMAIDIPTCPresetInfo_10 = 10  // Preset No.10.
+        kNkMAIDIPTCPresetInfo_10 = 10,  // Preset No.10. NMS-IPTC Preset No.10.
+        kNkMAIDIPTCPresetInfo_11 = 11,  // Preset No.11. XMP-IPTC Preset No.1.
+        kNkMAIDIPTCPresetInfo_12 = 12,  // Preset No.12. XMP-IPTC Preset No.2.
+        kNkMAIDIPTCPresetInfo_13 = 13,  // Preset No.13. XMP-IPTC Preset No.3.
     }
 
     public enum eNkMAIDIPTCPresetSelect : int
@@ -2256,7 +2393,10 @@ namespace Nikon
         kNkMAIDIPTCPresetSelect_7 = 7,
         kNkMAIDIPTCPresetSelect_8 = 8,
         kNkMAIDIPTCPresetSelect_9 = 9,
-        kNkMAIDIPTCPresetSelect_10 = 10
+        kNkMAIDIPTCPresetSelect_10 = 10,
+        kNkMAIDIPTCPresetSelect_11 = 11,
+        kNkMAIDIPTCPresetSelect_12 = 12,
+        kNkMAIDIPTCPresetSelect_13 = 13,
     }
 
     public enum eNkMAIDISOAutoHiLimit : int
@@ -2936,11 +3076,12 @@ namespace Nikon
         kNkMAIDLensType_G = 16,        // G type
         kNkMAIDLensType_E = 32,        // E type
         kNkMAIDLensType_STM = 64,      // STM
+        kNkMAIDLensType_CD = 128,    //constantly distortion
         kNkMAIDLensType_VR = 256,      // VR
         kNkMAIDLensType_DX = 4096,     // DX
         kNkMAIDLensType_AFS = 65536,   // AF-S lens
         kNkMAIDLensType_AD = 1048576,  // Auto Distortion
-        kNkMAIDLensType_RET = 16777216 // Retractable lens
+        kNkMAIDLensType_RET = 16777216, // Retractable lens
     }
 
     public enum eNkMAIDLensTypeNikon1 : int
@@ -2963,20 +3104,24 @@ namespace Nikon
 
     public enum eNkMAIDLimitAFAreaMode2 : int
     {
+        kNkMAIDLimitAFAreaMode2_Dynamic9 = 1,     // Bit0:Dynamic AF mode (9 points)
         kNkMAIDLimitAFAreaMode2_Dynamic25 = 2,    // Bit1:Dynamic AF mode (25 points)
         kNkMAIDLimitAFAreaMode2_Dynamic72 = 4,    // Bit2:Dynamic AF mode (72 points)
         kNkMAIDLimitAFAreaMode2_Dynamic153 = 16,  // Bit4:Dynamic AF mode (153 points)
         kNkMAIDLimitAFAreaMode2_3DTtracking = 32, // Bit5:3D-tracking
         kNkMAIDLimitAFAreaMode2_Group = 64,       // Bit6:Group-area AF mode
-        kNkMAIDLimitAFAreaMode2_Auto = 128        // Bit7:Auto-area AF mode
+        kNkMAIDLimitAFAreaMode2_Auto = 128,       // Bit7:Auto-area AF mode
+        kNkMAIDLimitAFAreaMode2_Group_HL = 256,   // Bit8:Group-area AF mode (Horizontal) mode
+        kNkMAIDLimitAFAreaMode2_Group_VL = 512,   // Bit9:Group-area AF mode (Vertical) mode
     }
 
     public enum eNkMAIDLiveViewAF : int
     {
-        kNkMAIDLiveViewAF_Face = 0,           // Face detection system AF
-        kNkMAIDLiveViewAF_Wide = 1,           // Wide area AF
-        kNkMAIDLiveViewAF_Normal = 2,         // Normal area AF
-        kNkMAIDLiveViewAF_SubjectTracking = 3 // Target tracking AF
+        kNkMAIDLiveViewAF_Face = 0,            // Face detection system AF
+        kNkMAIDLiveViewAF_Wide = 1,            // Wide area AF
+        kNkMAIDLiveViewAF_Normal = 2,          // Normal area AF
+        kNkMAIDLiveViewAF_SubjectTracking = 3, // Target tracking AF
+        kNkMAIDLiveViewAF_Spot = 5,            // Spot area AF
     }
 
     public enum eNkMAIDLiveViewDriveMode : int
@@ -3026,31 +3171,33 @@ namespace Nikon
 
     public enum eNkMAIDLiveViewProhibit : int
     {
-        kNkMAIDLiveViewProhibit_ExpModeScene = -2147483648, // Bit31:ExposureMode is SCENE.
-        kNkMAIDLiveViewProhibit_CF = 1,                     // Bit0:The recording destination is the CF.
-        kNkMAIDLiveViewProhibit_Sequence = 4,               // Bit2:Sequence error
-        kNkMAIDLiveViewProhibit_Button = 16,                // Bit4:Fully pressed button error
-        kNkMAIDLiveViewProhibit_FEE = 32,                   // Bit5:The aperture value is being set by the lens aperture ring.
-        kNkMAIDLiveViewProhibit_Bulb = 64,                  // Bit6:Bulb error(0: Invalid, 1: Valid)
-        kNkMAIDLiveViewProhibit_Mirrorup = 128,             // Bit7:During cleaning mirror-up operation
-        kNkMAIDLiveViewProhibit_Battery = 256,              // Bit8:During insufficiency of battery(0: Invalid, 1: Valid)
-        kNkMAIDLiveViewProhibit_TTL = 512,                  // Bit9:TTL error(0: Invalid, 1: Valid)
-        kNkMAIDLiveViewProhibit_ApertureRing = 1024,        // Bit10:While the aperture value operation by the lens aperture ring is valid
-        kNkMAIDLiveViewProhibit_NonCPU = 2048,              // Bit11:The CPU lens is not mounted and the exposure mode is not M.
-        kNkMAIDLiveViewProhibit_SdramImg = 4096,            // Bit12:There is an image whose recording destination is SDRAM.
-        kNkMAIDLiveViewProhibit_MirrorMode = 8192,          // Bit13:The release mode is [Mirror-up].
-        kNkMAIDLiveViewProhibit_NoCardLock = 16384,         // Bit14:The recording destination is the card or the card & SDRAM,//      and the card is not inserted with the release disabled without a card.
-        kNkMAIDLiveViewProhibit_Capture = 32768,            // Bit15:During processing by the shooting command(*Until the shooting operation ends.)
-        kNkMAIDLiveViewProhibit_EffectMode = 65536,         // Bit16:ExposureMode is EFFECTS.
-        kNkMAIDLiveViewProhibit_TempRise = 131072,          // Bit17:The live view cannot be started when the temperature rises.
-        kNkMAIDLiveViewProhibit_CardProtect = 262144,       // Bit18:Card protected
-        kNkMAIDLiveViewProhibit_CardError = 524288,         // Bit19:Card error
-        kNkMAIDLiveViewProhibit_CardUnformat = 1048576,     // Bit20:Card unformatted
-        kNkMAIDLiveViewProhibit_BulbWarning = 2097152,      // Bit21:During bulb warning.
-        kNkMAIDLiveViewProhibit_DuringMirrorup = 4194304,   // Bit22:Release mode is mirror up and during cleaning mirror-up operation.
+        kNkMAIDLiveViewProhibit_ExpModeScene = -2147483648,    // Bit31:ExposureMode is SCENE.
+        kNkMAIDLiveViewProhibit_CF = 1,                        // Bit0:The recording destination is the CF.
+        kNkMAIDLiveViewProhibit_Sequence = 4,                  // Bit2:Sequence error
+        kNkMAIDLiveViewProhibit_ImageSensor = 8,               // Bit3:Image sensor factor
+        kNkMAIDLiveViewProhibit_Button = 16,                   // Bit4:Fully pressed button error
+        kNkMAIDLiveViewProhibit_FEE = 32,                      // Bit5:The aperture value is being set by the lens aperture ring.
+        kNkMAIDLiveViewProhibit_Bulb = 64,                     // Bit6:Bulb error(0: Invalid, 1: Valid)
+        kNkMAIDLiveViewProhibit_Mirrorup = 128,                // Bit7:During cleaning mirror-up operation
+        kNkMAIDLiveViewProhibit_Battery = 256,                 // Bit8:During insufficiency of battery(0: Invalid, 1: Valid)
+        kNkMAIDLiveViewProhibit_TTL = 512,                     // Bit9:TTL error(0: Invalid, 1: Valid)
+        kNkMAIDLiveViewProhibit_ApertureRing = 1024,           // Bit10:While the aperture value operation by the lens aperture ring is valid
+        kNkMAIDLiveViewProhibit_NonCPU = 2048,                 // Bit11:The CPU lens is not mounted and the exposure mode is not M.
+        kNkMAIDLiveViewProhibit_SdramImg = 4096,               // Bit12:There is an image whose recording destination is SDRAM.
+        kNkMAIDLiveViewProhibit_MirrorMode = 8192,             // Bit13:The release mode is [Mirror-up].
+        kNkMAIDLiveViewProhibit_NoCardLock = 16384,            // Bit14:The recording destination is the card or the card & SDRAM,//      and the card is not inserted with the release disabled without a card.
+        kNkMAIDLiveViewProhibit_Capture = 32768,               // Bit15:During processing by the shooting command(*Until the shooting operation ends.)
+        kNkMAIDLiveViewProhibit_EffectMode = 65536,            // Bit16:ExposureMode is EFFECTS.
+        kNkMAIDLiveViewProhibit_TempRise = 131072,             // Bit17:The live view cannot be started when the temperature rises.
+        kNkMAIDLiveViewProhibit_CardProtect = 262144,          // Bit18:Card protected
+        kNkMAIDLiveViewProhibit_CardError = 524288,            // Bit19:Card error
+        kNkMAIDLiveViewProhibit_CardUnformat = 1048576,        // Bit20:Card unformatted
+        kNkMAIDLiveViewProhibit_BulbWarning = 2097152,         // Bit21:During bulb warning.
+        kNkMAIDLiveViewProhibit_DuringMirrorup = 4194304,      // Bit22:Release mode is mirror up and during cleaning mirror-up operation.
         kNkMAIDLiveViewProhibit_DuringLiveView = 8388608,
-        kNkMAIDLiveViewProhibit_Retractable = 16777216,     // Bit24:The lens is retracting.
-        kNkMAIDLiveViewProhibit_RecordingImage = 67108864   // Bit26:During image recording.
+        kNkMAIDLiveViewProhibit_Retractable = 16777216,        // Bit24:The lens is retracting.
+        kNkMAIDLiveViewProhibit_RecordingImage = 67108864,     // Bit26:During image recording.
+        kNkMAIDLiveViewProhibit_MountAdapterFWVer = 268435456, // Bit28:Version upgrade notification warning when mount adapter is attached.
     }
 
     public enum eNkMAIDLiveViewScreenDispSetting : int
@@ -3808,6 +3955,16 @@ namespace Nikon
         kNkMAIDResult_High_Temperature = 170,
         kNkMAIDResult_InvalidSBAttributeValue = 171,
         kNkMAIDResult_CameraModeNotAdjustFnumber = 172,
+        kNkMAIDResult_RecInCard = 173,
+        kNkMAIDResult_RecInExternalDevice = 174,
+        kNkMAIDResult_RecInCardAndExternalDevice = 175,
+        kNkMAIDResult_SBSettingError = 176,
+        kNkMAIDResult_InvalidData = 177,
+        kNkMAIDResult_MountAdapterFWVer = 178,
+        kNkMAIDResult_AlreadyTerminated = 179,
+        kNkMAIDResult_UnSupportedLens = 180,
+        kNkMAIDResult_FirmUpErrorLens = 181,
+        kNkMAIDResult_HDRNoShootingWarning = 182,
         kNkMAIDResult_AutoFocusFailed = 385,               // From Nikon Scan 3.1
         kNkMAIDResult_NoFilm = 386,                        // From Nikon Scan 3.1
         kNkMAIDResult_NoAction = 639                       // From Nikon Scan 3.1
