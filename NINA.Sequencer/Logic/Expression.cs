@@ -81,21 +81,35 @@ namespace NINA.Sequencer.Logic {
             }
         } = double.NaN;
 
+        public bool IsValid { get; set; } = false;
+
+        private string iDefaultString;
+
         public string DefaultString {
+            // First things first; this Property is only used if Definition is empty
             get {
-                if (double.IsNaN(Default) && Definition.Length == 0 && Double.IsNaN(AutoValue)) {
-                    return "";
-                } else if (string.IsNullOrWhiteSpace(field)) {
-                    return Default.ToString(CultureInfo.InvariantCulture);
-                } else if (field.StartsWith("Lbl")) {
-                    return $"{{{Loc.Instance[field]}}}";
+                // If Definition is Empty, use DefaultString field (localized or not)
+                // Otherwise, use the actual Default value
+                try {
+                    if ((Value == AutoValue || !IsValid) && !string.IsNullOrWhiteSpace(iDefaultString)) {
+                        if (iDefaultString.StartsWith("Lbl")) {
+                            return $"{{{Loc.Instance[iDefaultString]}}}";
+                        } else {
+                            return iDefaultString;
+                        }
+                    } else {
+                        return Default.ToString(CultureInfo.InvariantCulture);
+                    }
+                } finally {
                 }
-                return field;
             }
             set {
-                field = value;
+                iDefaultString = value;
+                RaisePropertyChanged(nameof(DefaultString));
             }
-        } = null;
+        }
+
+        public string foo = "Foo";
 
         [JsonProperty]
         public virtual string Definition {
@@ -122,6 +136,7 @@ namespace NINA.Sequencer.Logic {
                     ForceAnnotated = false;
                     RaisePropertyChanged(nameof(Error));
                     RaisePropertyChanged(nameof(IsAnnotated));
+                    RaisePropertyChanged(nameof(DefaultString));
                     return;
                 }
 
@@ -205,6 +220,7 @@ namespace NINA.Sequencer.Logic {
                 RaisePropertyChanged(nameof(ValueString));
                 RaisePropertyChanged(nameof(StringValue));
                 RaisePropertyChanged(nameof(IsAnnotated));
+                RaisePropertyChanged(nameof(DefaultString));
             }
         } = "";
 
