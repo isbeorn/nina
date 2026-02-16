@@ -38,6 +38,9 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/SplitButton.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- Override the global key with the NINA-local converter -->
+            <local:MinusOneToBaseValueConverter x:Key="MinusOneToBaseValueConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -1170,7 +1173,7 @@
                                         UpdateSourceTrigger="PropertyChanged">
                                         <Binding
                                             Mode="TwoWay"
-                                            Path="Items[1].Gain"
+                                            Path="Items[1].GainExpression"
                                             UpdateSourceTrigger="PropertyChanged" />
                                         <Binding
                                             Mode="OneWay"
@@ -1184,24 +1187,11 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock
-                                Margin="5,0,5,0"
-                                VerticalAlignment="Center"
-                                TextAlignment="Center">
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
-                                        <Binding
-                                            Mode="TwoWay"
-                                            Path="Items[1].Gain"
-                                            UpdateSourceTrigger="PropertyChanged" />
-                                        <Binding
-                                            Mode="OneWay"
-                                            Path="Data.DefaultGain"
-                                            Source="{StaticResource CameraInfo}"
-                                            UpdateSourceTrigger="PropertyChanged" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
+                             <TextBlock 
+                                 Margin="5,0,5,0"
+                                 VerticalAlignment="Center"
+                                 TextAlignment="Center"
+                                 Text="{Binding Items[1].GainExpression, Converter={StaticResource MinusOneToEmptyStringConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -1265,7 +1255,7 @@
                                     <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
                                         <Binding
                                             Mode="TwoWay"
-                                            Path="Items[1].Gain"
+                                            Path="Items[1].GainExpression"
                                             UpdateSourceTrigger="PropertyChanged" />
                                         <Binding
                                             Mode="OneWay"
@@ -1338,12 +1328,11 @@
                                     <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
                                         <Binding
                                             Mode="TwoWay"
-                                            Path="Items[1].Offset"
+                                            Path="Items[1].OffsetExpression"
                                             UpdateSourceTrigger="PropertyChanged" />
                                         <Binding
                                             Mode="OneWay"
-                                            Path="Data.DefaultOffset"
-                                            Source="{StaticResource CameraInfo}"
+                                            Path="Items[1].OffsetExpression.Value"
                                             UpdateSourceTrigger="PropertyChanged" />
                                     </MultiBinding>
                                 </TextBlock.Text>
