@@ -175,17 +175,17 @@
                         <TextBlock
                             Margin="10,-2,0,0"
                             VerticalAlignment="Center"
-                            Foreground="{StaticResource ButtonBackgroundSelectedBrush}"
+                            Foreground="{StaticResource SequencerExpressionTextBrush}"
                             Text="{}{" />
                         <TextBlock
                             Margin="0,-2,0,0"
                             VerticalAlignment="Center"
-                            Foreground="{StaticResource ButtonBackgroundSelectedBrush}"
+                            Foreground="{StaticResource SequencerExpressionTextBrush}"
                             Text="{Binding TimeString}" />
                         <TextBlock
                             Margin="0,-2,0,0"
                             VerticalAlignment="Center"
-                            Foreground="{StaticResource ButtonBackgroundSelectedBrush}"
+                            Foreground="{StaticResource SequencerExpressionTextBrush}"
                             Text="{}}" />
                     </StackPanel>
                 </StackPanel>
