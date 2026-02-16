@@ -81,7 +81,14 @@ namespace NINA.Sequencer.Logic {
             }
         } = double.NaN;
 
-        public bool IsValid { get; set; } = false;
+        public bool IsValid {
+            get;
+            set {
+                field = value;
+                RaisePropertyChanged();
+            }
+        } = false;
+
 
         private string iDefaultString;
 
