@@ -83,7 +83,7 @@ namespace NINA.Sequencer.Logic {
 
         public string DefaultString {
             get {
-                if (double.IsNaN(Default) && Definition.Length == 0) {
+                if (double.IsNaN(Default) && Definition.Length == 0 && Double.IsNaN(AutoValue)) {
                     return "";
                 } else if (string.IsNullOrWhiteSpace(field)) {
                     return Default.ToString(CultureInfo.InvariantCulture);
@@ -349,7 +349,7 @@ namespace NINA.Sequencer.Logic {
                     } else
                         return local.ToString(CultureInfo.CurrentCulture);
                 } else {
-                    if (!double.IsNaN(Default) && Value == Default) {
+                    if ((Value == AutoValue) || (!double.IsNaN(Default) && Value == Default)) {
                         return DefaultString;
                     }
 
