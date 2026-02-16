@@ -396,10 +396,16 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
             if (GainExpression.Default != CameraInfo.DefaultGain) {
                 GainExpression.Default = CameraInfo.DefaultGain;
+                if (GainExpression.Definition.Length == 0) {
+                    GainExpression.Definition = "";
+                }
             }
 
             if (OffsetExpression.Default != CameraInfo.DefaultOffset) {
                 OffsetExpression.Default = CameraInfo.DefaultOffset;
+                if (OffsetExpression.Definition.Length == 0) {
+                    OffsetExpression.Definition = "";
+                }
             }
 
             Expression.ValidateExpressions(i, ExposureTimeExpression, GainExpression, OffsetExpression, LeftExpression, TopExpression, WidthExpression, HeightExpression);
