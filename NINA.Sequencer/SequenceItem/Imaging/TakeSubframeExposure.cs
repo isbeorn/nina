@@ -376,6 +376,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         public bool Validate() {
             var i = new List<string>();
             CameraInfo = this.cameraMediator.GetInfo();
+            GainExpression.IsValid = OffsetExpression.IsValid = CameraInfo.Connected;
             if (!CameraInfo.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
             } else {

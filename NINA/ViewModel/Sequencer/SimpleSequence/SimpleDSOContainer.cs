@@ -54,6 +54,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Converters;
 
 namespace NINA.Sequencer.Container {
 
@@ -130,6 +131,18 @@ namespace NINA.Sequencer.Container {
             this.rotateLoopCondition = factory.GetCondition<LoopCondition>();
             this.rotateLoopCondition.Iterations = 1;
             WeakEventManager<INighttimeCalculator, EventArgs>.AddHandler(nighttimeCalculator, nameof(nighttimeCalculator.OnReferenceDayChanged), NighttimeCalculator_OnReferenceDayChanged);
+
+            SimpleSequenceWatchdog = new ConditionWatchdog(ValidateExposures, TimeSpan.FromSeconds(5));
+        }
+
+        private ConditionWatchdog SimpleSequenceWatchdog;
+
+        private Task ValidateExposures() {
+            var exposures = Items.OfType<SimpleExposure>();
+            foreach (var exp in exposures) {
+                _ = exp.Validate();
+            }
+            return Task.CompletedTask;
         }
 
         public override ICommand ResetProgressCommand => new RelayCommand(
@@ -138,7 +151,7 @@ namespace NINA.Sequencer.Container {
                    base.ResetProgressCommand.Execute(o);
                }
            }
-       );
+        );
 
         public ISimpleExposure ActiveExposure {
             get => activeExposure;
@@ -237,6 +250,8 @@ namespace NINA.Sequencer.Container {
                 item = new SimpleExposure(factory);
                 this.Add(item);
             }
+
+            SimpleSequenceWatchdog.Start();
 
             item.PropertyChanged += Item_PropertyChanged1;
 
@@ -586,6 +601,10 @@ namespace NINA.Sequencer.Container {
         public NighttimeData NighttimeData { get; private set; }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+
+            // Seems safe to cancel, whether it was running or not
+            SimpleSequenceWatchdog.Cancel();
+
             var startup = CreateStartupContainer();
             await startup.Execute(progress, token);
 

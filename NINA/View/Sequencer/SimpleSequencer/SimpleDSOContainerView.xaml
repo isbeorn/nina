@@ -38,6 +38,7 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/SplitButton.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <local:CameraGainOffsetConverter x:Key="CameraGainOffsetConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -1165,12 +1166,12 @@
                                 </ComboBox.ItemsSource>
                                 <ComboBox.SelectedValue>
                                     <MultiBinding
-                                        Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                        Converter="{StaticResource CameraGainOffsetConverter}"
                                         Mode="TwoWay"
                                         UpdateSourceTrigger="PropertyChanged">
                                         <Binding
                                             Mode="TwoWay"
-                                            Path="Items[1].Gain"
+                                            Path="Items[1].GainExpression"
                                             UpdateSourceTrigger="PropertyChanged" />
                                         <Binding
                                             Mode="OneWay"
@@ -1184,24 +1185,11 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock
-                                Margin="5,0,5,0"
-                                VerticalAlignment="Center"
-                                TextAlignment="Center">
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
-                                        <Binding
-                                            Mode="TwoWay"
-                                            Path="Items[1].Gain"
-                                            UpdateSourceTrigger="PropertyChanged" />
-                                        <Binding
-                                            Mode="OneWay"
-                                            Path="Data.DefaultGain"
-                                            Source="{StaticResource CameraInfo}"
-                                            UpdateSourceTrigger="PropertyChanged" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
+                             <TextBlock 
+                                 Margin="5,0,5,0"
+                                 VerticalAlignment="Center"
+                                 TextAlignment="Center"
+                                 Text="{Binding Items[1].GainExpression, Converter={StaticResource MinusOneToEmptyStringConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -1224,10 +1212,10 @@
                                 MinWidth="40"
                                 Margin="5,0,0,0"
                                 VerticalAlignment="Center"
-                                HorizontalContentAlignment="Right"
+                                HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Foreground="{StaticResource PrimaryBrush}"
-                                TextAlignment="Right">
+                                TextAlignment="Center">
                                 <ninactrl:HintTextBox.HintText>
                                     <Binding
                                         Converter="{StaticResource CameraDefaultValueConverter}"
@@ -1262,15 +1250,14 @@
                                 VerticalAlignment="Center"
                                 TextAlignment="Center">
                                 <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                    <MultiBinding Converter="{StaticResource CameraGainOffsetConverter}" UpdateSourceTrigger="LostFocus">
                                         <Binding
                                             Mode="TwoWay"
-                                            Path="Items[1].Gain"
+                                            Path="Items[1].GainExpression"
                                             UpdateSourceTrigger="PropertyChanged" />
                                         <Binding
                                             Mode="OneWay"
-                                            Path="Data.DefaultGain"
-                                            Source="{StaticResource CameraInfo}"
+                                            Path="Items[1].GainExpression.Value"
                                             UpdateSourceTrigger="PropertyChanged" />
                                     </MultiBinding>
                                 </TextBlock.Text>
@@ -1297,10 +1284,10 @@
                                 MinWidth="40"
                                 Margin="5,0,0,0"
                                 VerticalAlignment="Center"
-                                HorizontalContentAlignment="Right"
+                                HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Foreground="{StaticResource PrimaryBrush}"
-                                TextAlignment="Right">
+                                TextAlignment="Center">
                                 <ninactrl:HintTextBox.HintText>
                                     <Binding
                                         Converter="{StaticResource CameraDefaultValueConverter}"
@@ -1335,15 +1322,14 @@
                                 VerticalAlignment="Center"
                                 TextAlignment="Center">
                                 <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                    <MultiBinding Converter="{StaticResource CameraGainOffsetConverter}" UpdateSourceTrigger="LostFocus">
                                         <Binding
                                             Mode="TwoWay"
-                                            Path="Items[1].Offset"
+                                            Path="Items[1].OffsetExpression"
                                             UpdateSourceTrigger="PropertyChanged" />
                                         <Binding
                                             Mode="OneWay"
-                                            Path="Data.DefaultOffset"
-                                            Source="{StaticResource CameraInfo}"
+                                            Path="Items[1].OffsetExpression.Value"
                                             UpdateSourceTrigger="PropertyChanged" />
                                     </MultiBinding>
                                 </TextBlock.Text>

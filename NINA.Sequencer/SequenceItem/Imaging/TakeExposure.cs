@@ -257,6 +257,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         public bool Validate() {
             var i = new List<string>();
             CameraInfo = this.cameraMediator.GetInfo();
+            GainExpression.IsValid = OffsetExpression.IsValid = CameraInfo.Connected;
             if (!CameraInfo.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
             } else {
@@ -268,6 +269,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 }
             }
 
+            // Test added to simplify unit test...
             var fileSettings = profileService.ActiveProfile.ImageFileSettings;
 
             if (string.IsNullOrWhiteSpace(fileSettings.FilePath)) {

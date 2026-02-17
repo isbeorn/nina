@@ -14,14 +14,21 @@
 
 using FluentAssertions;
 using Moq;
-using NINA.Image.ImageData;
+using NINA.Core.Model;
+using NINA.Core.Model.Equipment;
+using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Model;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
+using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer;
-using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem.Imaging;
-using NINA.Equipment.Interfaces.Mediator;
 using NINA.ViewModel.ImageHistory;
+using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.ViewModel;
 using Nito.AsyncEx;
 using NUnit.Framework;
 using System;
@@ -30,12 +37,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Core.Utility;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Model.Equipment;
-using NINA.WPF.Base.Interfaces.ViewModel;
 
 namespace NINA.Test.Sequencer.SequenceItem.Imaging {
 
@@ -172,6 +173,61 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             var duration = sut.GetEstimatedDuration();
 
             duration.Should().Be(TimeSpan.FromSeconds(exposuretime));
+        }
+        
+        [Test]
+        public void DefaultGain_Plus_Clone_Test() {
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = true, DefaultGain = 23, DefaultOffset = 12 });
+            // Validate() needs ImageFileSettings
+            var profile = new NINA.Profile.Profile {
+                ImageFileSettings = new ImageFileSettings {
+                    FilePath = ""
+                }
+            };
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
+            var sut = new TakeExposure(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, historyMock.Object);
+
+            sut.Gain = -1;
+            sut.Validate();
+            // After validation, Gain should be the default
+            sut.Gain.Should().Be(23);
+
+            var item2 = (TakeExposure)sut.Clone();
+
+            item2.Should().NotBeSameAs(sut);
+            item2.Gain.Should().Be(23);
+            item2.Offset.Should().Be(sut.Offset);
+        }
+        
+        [Test]
+        public void DefaultGain_Plus_Clone_Test_CameraNotConnected() {
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = false });
+            // Validate() needs ImageFileSettings
+            var profile = new NINA.Profile.Profile {
+                ImageFileSettings = new ImageFileSettings {
+                    FilePath = ""
+                }
+            };
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
+            var sut = new TakeExposure(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, historyMock.Object);
+            sut.Gain = -1;
+            sut.Validate();
+            // After validation, Gain should still be -1, but it would never be used with a disconnected camera
+            sut.Gain.Should().Be(-1);
+
+            var item2 = (TakeExposure)sut.Clone();
+
+            item2.Should().NotBeSameAs(sut);
+            item2.Gain.Should().Be(-1);
+            item2.Offset.Should().Be(sut.Offset);
+
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = true, DefaultGain = 22, DefaultOffset = 55 });
+            sut.Validate();
+            sut.Gain.Should().Be(22);
+            sut.Offset.Should().Be(55);
+
+            sut.GainDefinition = "88";
+            sut.Gain.Should().Be(88);
         }
     }
 }
