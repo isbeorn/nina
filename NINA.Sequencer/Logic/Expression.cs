@@ -100,9 +100,9 @@ namespace NINA.Sequencer.Logic {
                 try {
                     if ((Value == AutoValue || !IsValid) && !string.IsNullOrWhiteSpace(iDefaultString)) {
                         if (iDefaultString.StartsWith("Lbl")) {
-                            return $"{{{Loc.Instance[iDefaultString]}}}";
+                            return $"{Loc.Instance[iDefaultString]}";
                         } else {
-                            return iDefaultString;
+                            return "{" + iDefaultString + "}";
                         }
                     } else {
                         return Default.ToString(CultureInfo.InvariantCulture);

@@ -1214,10 +1214,10 @@
                                 MinWidth="40"
                                 Margin="5,0,0,0"
                                 VerticalAlignment="Center"
-                                HorizontalContentAlignment="Right"
+                                HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Foreground="{StaticResource PrimaryBrush}"
-                                TextAlignment="Right">
+                                TextAlignment="Center">
                                 <ninactrl:HintTextBox.HintText>
                                     <Binding
                                         Converter="{StaticResource CameraDefaultValueConverter}"
@@ -1259,8 +1259,7 @@
                                             UpdateSourceTrigger="PropertyChanged" />
                                         <Binding
                                             Mode="OneWay"
-                                            Path="Data.DefaultGain"
-                                            Source="{StaticResource CameraInfo}"
+                                            Path="Items[1].GainExpression.Value"
                                             UpdateSourceTrigger="PropertyChanged" />
                                     </MultiBinding>
                                 </TextBlock.Text>
@@ -1287,10 +1286,10 @@
                                 MinWidth="40"
                                 Margin="5,0,0,0"
                                 VerticalAlignment="Center"
-                                HorizontalContentAlignment="Right"
+                                HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Foreground="{StaticResource PrimaryBrush}"
-                                TextAlignment="Right">
+                                TextAlignment="Center">
                                 <ninactrl:HintTextBox.HintText>
                                     <Binding
                                         Converter="{StaticResource CameraDefaultValueConverter}"

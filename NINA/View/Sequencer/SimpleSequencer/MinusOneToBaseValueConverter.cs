@@ -27,20 +27,26 @@ namespace NINA.View.SimpleSequencer {
     public sealed class MinusOneToBaseValueConverter : IMultiValueConverter {
 
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture) {
+            // Put ?? on screen so we'll be alerted there's a bug...
             if (value[0] == DependencyProperty.UnsetValue) {
                 return "(??)";
             }
 
             Expression expr = value[0] as Expression;
+            // Shouldn't ever happen, but ...
             if (expr == null) {
-                return "??";
+                return "(??)";
             }
-            if (!expr.IsValid) {
-                return "(" + Core.Locale.Loc.Instance["LblCamera"] + ")";
-            } else if (expr.Definition.Length == 0) {
-                return "(" + expr.Default.ToString() + ")";
+            
+            // Two cases, if the field is empty
+            if (expr.Definition.Length == 0) {
+                if (!expr.IsValid) {
+                    return "(" + Core.Locale.Loc.Instance["LblCamera"] + ")";
+                } else {
+                    return "(" + expr.Default.ToString() + ")";
+                }
             }
-            return expr.Value;
+            return expr.Value.ToString();
         }
 
         public object[] ConvertBack(object value, Type[] targetType, object parameter, CultureInfo culture) {
