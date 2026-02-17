@@ -269,12 +269,15 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 }
             }
 
-            var fileSettings = profileService.ActiveProfile.ImageFileSettings;
+            // Test added to simplify unit test...
+            if (profileService.ActiveProfile != null) {
+                var fileSettings = profileService.ActiveProfile.ImageFileSettings;
 
-            if (string.IsNullOrWhiteSpace(fileSettings.FilePath)) {
-                i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathEmpty"]);
-            } else if (!Directory.Exists(fileSettings.FilePath)) {
-                i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
+                if (string.IsNullOrWhiteSpace(fileSettings.FilePath)) {
+                    i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathEmpty"]);
+                } else if (!Directory.Exists(fileSettings.FilePath)) {
+                    i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
+                }
             }
 
             if (GainExpression.Default != CameraInfo.DefaultGain) {
