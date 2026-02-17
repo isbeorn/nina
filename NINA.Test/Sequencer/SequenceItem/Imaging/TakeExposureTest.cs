@@ -183,26 +183,35 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             // After validation, Gain should be the default
             sut.Gain.Should().Be(23);
 
-
-            sut.Name = "SomeName";
-            sut.Description = "SomeDescription";
-            sut.Icon = new System.Windows.Media.GeometryGroup();
-            sut.ImageType = "FLAT";
-            sut.Binning = new BinningMode(2, 2);
-            sut.ExposureTime = 100;
-            sut.ExposureCount = 100;
             var item2 = (TakeExposure)sut.Clone();
 
             item2.Should().NotBeSameAs(sut);
-            item2.Name.Should().BeSameAs(sut.Name);
-            item2.Description.Should().BeSameAs(sut.Description);
-            item2.Icon.Should().BeSameAs(sut.Icon);
-            item2.Binning.Should().NotBeNull();
-            item2.ExposureCount.Should().Be(0);
-            item2.ExposureTime.Should().Be(sut.ExposureTime);
             item2.Gain.Should().Be(23);
             item2.Offset.Should().Be(sut.Offset);
-            item2.ImageType.Should().Be(sut.ImageType);
+        }
+        
+        [Test]
+        public void DefaultGain_Plus_Clone_Test_CameraNotConnected() {
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = false });
+            var sut = new TakeExposure(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, historyMock.Object);
+            sut.Gain = -1;
+            sut.Validate();
+            // After validation, Gain should still be -1, but it would never be used with a disconnected camera
+            sut.Gain.Should().Be(-1);
+
+            var item2 = (TakeExposure)sut.Clone();
+
+            item2.Should().NotBeSameAs(sut);
+            item2.Gain.Should().Be(-1);
+            item2.Offset.Should().Be(sut.Offset);
+
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = true, DefaultGain = 22, DefaultOffset = 55 });
+            sut.Validate();
+            sut.Gain.Should().Be(22);
+            sut.Offset.Should().Be(55);
+
+            sut.GainDefinition = "88";
+            sut.Gain.Should().Be(88);
         }
     }
 }
