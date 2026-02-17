@@ -90,19 +90,17 @@ namespace NINA.Sequencer.Logic {
         } = false;
 
 
-        private string iDefaultString;
-
         public string DefaultString {
             // First things first; this Property is only used if Definition is empty
             get {
                 // If Definition is Empty, use DefaultString field (localized or not)
                 // Otherwise, use the actual Default value
                 try {
-                    if ((Value == AutoValue || !IsValid) && !string.IsNullOrWhiteSpace(iDefaultString)) {
-                        if (iDefaultString.StartsWith("Lbl")) {
-                            return $"{Loc.Instance[iDefaultString]}";
+                    if ((Value == AutoValue || !IsValid) && !string.IsNullOrWhiteSpace(field)) {
+                        if (field.StartsWith("Lbl")) {
+                            return $"{Loc.Instance[field]}";
                         } else {
-                            return "{" + iDefaultString + "}";
+                            return "{" + field + "}";
                         }
                     } else {
                         return Default.ToString(CultureInfo.InvariantCulture);
@@ -111,12 +109,10 @@ namespace NINA.Sequencer.Logic {
                 }
             }
             set {
-                iDefaultString = value;
+                field = value;
                 RaisePropertyChanged(nameof(DefaultString));
             }
         }
-
-        public string foo = "Foo";
 
         [JsonProperty]
         public virtual string Definition {

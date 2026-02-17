@@ -38,9 +38,7 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/SplitButton.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <!-- Override the global key with the NINA-local converter -->
-            <local:MinusOneToBaseValueConverter x:Key="MinusOneToBaseValueConverter" />
+            <local:CameraGainOffsetConverter x:Key="CameraGainOffsetConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -1168,7 +1166,7 @@
                                 </ComboBox.ItemsSource>
                                 <ComboBox.SelectedValue>
                                     <MultiBinding
-                                        Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                        Converter="{StaticResource CameraGainOffsetConverter}"
                                         Mode="TwoWay"
                                         UpdateSourceTrigger="PropertyChanged">
                                         <Binding
@@ -1252,7 +1250,7 @@
                                 VerticalAlignment="Center"
                                 TextAlignment="Center">
                                 <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                    <MultiBinding Converter="{StaticResource CameraGainOffsetConverter}" UpdateSourceTrigger="LostFocus">
                                         <Binding
                                             Mode="TwoWay"
                                             Path="Items[1].GainExpression"
@@ -1324,7 +1322,7 @@
                                 VerticalAlignment="Center"
                                 TextAlignment="Center">
                                 <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                    <MultiBinding Converter="{StaticResource CameraGainOffsetConverter}" UpdateSourceTrigger="LostFocus">
                                         <Binding
                                             Mode="TwoWay"
                                             Path="Items[1].OffsetExpression"

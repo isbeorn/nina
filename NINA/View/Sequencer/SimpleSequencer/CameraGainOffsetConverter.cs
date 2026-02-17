@@ -24,7 +24,7 @@ namespace NINA.View.SimpleSequencer {
     /// <summary>
     /// Local copy of the Core converter so this assembly can reference Sequencer types (e.g. Expression).
     /// </summary>
-    public sealed class MinusOneToBaseValueConverter : IMultiValueConverter {
+    public sealed class CameraGainOffsetConverter : IMultiValueConverter {
 
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture) {
             // Put ?? on screen so we'll be alerted there's a bug...

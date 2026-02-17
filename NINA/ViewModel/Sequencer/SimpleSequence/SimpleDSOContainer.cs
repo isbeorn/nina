@@ -137,8 +137,6 @@ namespace NINA.Sequencer.Container {
 
         private ConditionWatchdog SimpleSequenceWatchdog;
 
-        private bool WatchdogRunning = false;
-
         private Task ValidateExposures() {
             var exposures = Items.OfType<SimpleExposure>();
             foreach (var exp in exposures) {
@@ -253,10 +251,7 @@ namespace NINA.Sequencer.Container {
                 this.Add(item);
             }
 
-            if (!WatchdogRunning) {
-                SimpleSequenceWatchdog.Start();
-                WatchdogRunning = true;
-            }
+            SimpleSequenceWatchdog.Start();
 
             item.PropertyChanged += Item_PropertyChanged1;
 
@@ -607,10 +602,8 @@ namespace NINA.Sequencer.Container {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            if (WatchdogRunning) {
-                SimpleSequenceWatchdog.Cancel();
-                WatchdogRunning = false;
-            }
+            // Seems safe to cancel, whether it was running or not
+            SimpleSequenceWatchdog.Cancel();
 
             var startup = CreateStartupContainer();
             await startup.Execute(progress, token);
