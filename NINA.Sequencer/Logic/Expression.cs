@@ -632,14 +632,16 @@ namespace NINA.Sequencer.Logic {
                         if (eval is Boolean b) {
                             Value = b ? 1 : 0;
                         } else {
-                            try {
-                                Value = Convert.ToDouble(eval, CultureInfo.InvariantCulture);
-                                // Validate numeric values
+                            string str = eval as string;
+                            if (str != null &&
+                                double.TryParse(str, NumberStyles.Float | NumberStyles.AllowThousands,
+                                                CultureInfo.InvariantCulture, out var parsed)) {
+                                Value = parsed;
+
                                 if (Range != null) {
                                     CheckRange(Value);
                                 }
-                            } catch (Exception) {
-                                string str = eval as string;
+                            } else {
                                 if (STRING_VALUES_ALLOWED) {
                                     if (str != null) {
                                         StringValue = str;
