@@ -42,6 +42,7 @@ namespace NINA.Sequencer {
         private Dictionary<string, System.Reflection.PropertyInfo> propertyInfoByname = new Dictionary<string, System.Reflection.PropertyInfo>();
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
             System.Reflection.PropertyInfo propInf;
+            if (e?.PropertyName == null) { return; }
             if (propertyInfoByname.ContainsKey(e.PropertyName)) {
                 propInf = propertyInfoByname[e.PropertyName];
             } else {

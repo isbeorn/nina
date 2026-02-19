@@ -707,7 +707,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             }
             try {
                 string state = await GetAppState(3000);
-                if (state != PhdAppState.GUIDING && state != PhdAppState.CALIBRATING && state != PhdAppState.LOSTLOCK) {
+                if (state == PhdAppState.STOPPED) {
                     Logger.Info($"Phd2 - Stop Guiding skipped, as the app is already in state {state}");
                     return false;
                 }
