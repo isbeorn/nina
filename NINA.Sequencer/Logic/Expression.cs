@@ -41,9 +41,9 @@ namespace NINA.Sequencer.Logic {
             Definition = cloneMe.Definition;
             SymbolBroker = cloneMe.SymbolBroker;
             Symbol = cloneMe.Symbol;
+            Type = cloneMe.Type;
             Range = cloneMe.Range;
             Default = cloneMe.Default;
-            Type = cloneMe.Type;
             AutoValue = cloneMe.AutoValue;
             DefaultString = cloneMe.DefaultString;
             Validator = validator;
@@ -101,11 +101,11 @@ namespace NINA.Sequencer.Logic {
                     if ((Value == AutoValue || !IsValid) && !string.IsNullOrWhiteSpace(field)) {
                         if (field.StartsWith("Lbl")) {
                             return $"{Loc.Instance[field]}";
+                        } else if (Type == "String" && string.IsNullOrWhiteSpace(field)) {
+                            return "";
                         } else {
                             return "{" + field + "}";
                         }
-                    } else if (Type == "String" && string.IsNullOrWhiteSpace(field)) {
-                        return "";
                     } else {
                         return Default.ToString(CultureInfo.InvariantCulture);
                     }
