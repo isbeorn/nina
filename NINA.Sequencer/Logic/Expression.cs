@@ -43,6 +43,7 @@ namespace NINA.Sequencer.Logic {
             Symbol = cloneMe.Symbol;
             Range = cloneMe.Range;
             Default = cloneMe.Default;
+            Type = cloneMe.Type;
             AutoValue = cloneMe.AutoValue;
             DefaultString = cloneMe.DefaultString;
             Validator = validator;
@@ -103,6 +104,8 @@ namespace NINA.Sequencer.Logic {
                         } else {
                             return "{" + field + "}";
                         }
+                    } else if (Type == "String" && string.IsNullOrWhiteSpace(field)) {
+                        return "";
                     } else {
                         return Default.ToString(CultureInfo.InvariantCulture);
                     }
