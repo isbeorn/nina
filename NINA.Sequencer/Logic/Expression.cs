@@ -57,8 +57,7 @@ namespace NINA.Sequencer.Logic {
 
         public Expression(string definition, ISequenceEntity context, UserSymbol symbol) {
             if (symbol.Expr is Expression expr) {
-                // Don't set this, as it's a computed property
-                //DefaultString = expr.DefaultString;
+                DefaultString = expr.DefaultString;
                 Default = expr.Default;
             }
             Definition = definition;
