@@ -45,6 +45,17 @@ namespace Nikon {
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDCaptureFocusShift {
+        public UInt32 ulRemainingNumber;    // The number of shots remaining in the focus shift sequence
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDCaptureIntervalTimer {
+        public UInt32 ulRemainingNumber;    // The number of shots remaining in the interval timer sequence
+        public UInt32 ulRemainingTime;      // The remaining shooting time (units defined by camera firmware)
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
     public unsafe struct NkMAIDCMLProfile {
         public eNkMAIDColorSpace ulColorSpace;             // one of eNkMAIDColorSpace
         public UInt32 ulBits;                              // Bit depth of the supported image by this profile.
@@ -108,6 +119,19 @@ namespace Nikon {
         public UInt32 ulPicCtrlItem; // picture control item
         public UInt32 ulSize;        // the data sizer of pData
         public IntPtr pData;         // The pointer to Quick Adjust Param
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDGetFocusShiftCapInfo {
+        public UInt32 ulStatus;                 // The current state of focus shift shooting (0 = stopped, 1 = executing)
+        public UInt32 ulRemainingNumber;        // The number of shots remaining in the focus shift sequence
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDGetIntervalTimerCapInfo {
+        public UInt32 ulStatus;                     // The current state of interval timer shooting (0 = stopped/halted, 1 = executing)
+        public UInt32 ulRemainingNumber;            // The number of shots remaining in the interval timer sequence
+        public UInt32 ulRemainingTime;              // The remaining shooting time (units defined by camera firmware)
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -279,4 +303,85 @@ namespace Nikon {
         public UInt32 ulThumbnailRotate; // add for D70 One of eNkMAIDThumbnailRotate
         public IntPtr pThumbnailData;    // The pointer to Thumbnail Data
     }
+
+    // for kNkMAIDCapability_GetRecordingInfo
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDGetRecordingInfo {
+        public UInt32 ulIndexOfMov;     // Index of the target movie file,
+        public UInt32 ulTotalMovCount;  // The number of divided movie files
+        public UInt64 ullTotalMovSize;  // Total size of all divided movie files
+    }
+
+    // for kNkMAIDCapability_GetVideoImageEx (64-bit offsets for >4GB video)
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDGetVideoImageEx {
+        public UInt64 ullOffset;        // Offset address of file data before transfer
+        public UInt64 ullReadSize;      // size of acquired data
+        public UInt64 ullDataSize;      // size of buffer set to pData
+        public IntPtr pData;            // pointer to buffer
+    }
+
+    // for kNkMAIDCapability_TimeCodeOrigin
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDTimeCodeOrigin {
+        public byte ucTimeCodeInfo;         // 0 = Reset 1 = Enter manually 2 = Current time
+        public fixed byte ucTimeCode[3];    // [0] Hour 00-23 [1] Minute 00-59 [2] Second 00-59 All default to 0
+        public UInt32 ulFrame;              // Frame(*) 24fps (0-23) 25/50/100fps (0-24) 30/60/120fps (0-29)
+    }
+
+    // for kNkMAIDCapability_TrackingAFArea
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDTrackingAFArea {
+        public UInt32 ulTrackingStatus;     // 1 = Start Tracking; 0 = Stop tracking
+        public NkMAIDPoint stAfPoint;       // Coordinates of the AF area (used only when ulTrackingStatus == 1
+    }
+
+    // for kNkMAIDCapability_GetManualSettingLensData
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDGetManualSettingLensData {
+        public UInt32 ulLensID;             // 0xFFFFFFFF = All lens setting info; N = Lens ID
+        public UInt32 ulSize;               // size of pData
+        public IntPtr pData;                // Pointer to ManualSettingLens DataSet
+    }
+
+    // for kNkMAIDCapability_GetPicCtrlDataList / kNkMAIDCapability_GetMoviePicCtrlDataList
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDGetPicCtrlDataList {
+        public UInt32 ulPicCtrlItem;        // Target picture control
+        public UInt32 ulSize;               // data size of buffer where picture control list is output
+        public IntPtr pData;                // Pointer to picture control list
+    }
+
+    // for kNkMAIDCapability_GetPicCtrlHLGDataList
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDGetPicCtrlHLGDataList {
+        public UInt32 ulPicCtrlHLGItem;     // Undocumented in SDK pdf but from headers
+        public UInt32 ulSize;
+        public IntPtr pData;
+    }
+
+    // for kNkMAIDCapability_SetPortraitImpressionBalanceData / SetMoviePortraitImpressionBalanceData
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDPortraitImpressionBalanceData {
+        public UInt32 ulModeNumber;         // Mode number
+        public UInt32 ulSize;               // size of data
+        public IntPtr pData;                // pointer to data
+    }
+
+    // for kNkMAIDCapability_GetPortraitImpressionBalanceDataList / GetMoviePortraitImpressionBalanceDataList
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDGetPortraitImpressionBalanceDataList {
+        public UInt32 ulModeNumber;         // Mode number
+        public Int32 bDefaultFlg;           // Data to retrieve BOOL maps to Int32 in P/Invoke
+        public UInt32 ulSize;               // Data size of the buffer max 2+(6*N) bytes 
+        public IntPtr pData;                // Pointer of portrait impression balance data
+    }
+
+    // for kNkMAIDCapability_SetFlickerReductionShutterSpeed
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    public unsafe struct NkMAIDSetFlickReductShutterSpeed {
+        public UInt32 ulDir;                // 0 = High speed side; 1 = low speed side (direction of shutter speed change)
+        public UInt32 ulStep;               // 1 ~ 10 steps of shutter speed
+    }
+
 }
