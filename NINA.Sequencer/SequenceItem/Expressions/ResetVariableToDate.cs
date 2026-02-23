@@ -49,6 +49,9 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         public ResetVariableToDate(ResetVariableToDate copyMe) : this(copyMe.DateTimeProviders, copyMe.SelectedProvider) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
+                Hours = copyMe.Hours;
+                Minutes = copyMe.Minutes;
+                Seconds = copyMe.Seconds;
             }
         }
 
