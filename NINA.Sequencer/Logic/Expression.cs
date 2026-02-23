@@ -94,14 +94,15 @@ namespace NINA.Sequencer.Logic {
         public string DefaultString {
             // First things first; this Property is only used if Definition is empty
             get {
-                // If Definition is Empty, use DefaultString field (localized or not)
+                // If this is a String Expression and Definition is empty, use empty string
+                // If Definition is otherwise Empty, use DefaultString field (localized or not)
                 // Otherwise, use the actual Default value
                 try {
-                    if ((Value == AutoValue || !IsValid) && !string.IsNullOrWhiteSpace(field)) {
+                    if (Type == "String" && string.IsNullOrWhiteSpace(Definition)) {
+                        return "";
+                    } else if ((Value == AutoValue || !IsValid) && !string.IsNullOrWhiteSpace(field)) {
                         if (field.StartsWith("Lbl")) {
                             return $"{Loc.Instance[field]}";
-                        } else if (Type == "String" && string.IsNullOrWhiteSpace(field)) {
-                            return "";
                         } else if (field.StartsWith("{")) {
                             // Don't add braces if already in {curly braces} format
                             return field;
