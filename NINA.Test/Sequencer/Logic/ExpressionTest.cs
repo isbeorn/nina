@@ -397,5 +397,17 @@ namespace NINA.Test.Sequencer.Logic {
             sut.Value = 20;
             sut.Error.Should().Be("Value must be greater than 10 and less than 20.");
         }
+
+        [Test]
+        public void Expression_CheckDefault_NotDuplicated() {
+            var sut = CreateExpression("A + B");
+            // Simulate initial set of DefaultString (from generator)
+            sut.DefaultString = "20";
+            // Subsequent checks should be in one set of brackets
+            sut.DefaultString.Should().Be("{20}");
+            var sut2 = new Expression(sut, null);
+            // Regardless of "cloning"
+            sut2.DefaultString.Should().Be("{20}");
+        }
     }
 }
