@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright ï¿½ 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -887,23 +887,29 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             var trackingModes = ImmutableList.CreateBuilder<TrackingMode>();
             trackingModes.Add(TrackingMode.Sidereal);
 
-            foreach(DriveRate trackingRate in device.TrackingRates) {
-                switch (trackingRate) {
-                    case DriveRate.King:
-                        trackingModes.Add(TrackingMode.King);
-                        break;
+            try {
+                foreach(DriveRate trackingRate in device.TrackingRates) {
+                    switch (trackingRate) {
+                        case DriveRate.King:
+                            trackingModes.Add(TrackingMode.King);
+                            break;
 
-                    case DriveRate.Lunar:
-                        trackingModes.Add(TrackingMode.Lunar);
-                        break;
+                        case DriveRate.Lunar:
+                            trackingModes.Add(TrackingMode.Lunar);
+                            break;
 
-                    case DriveRate.Solar:
-                        trackingModes.Add(TrackingMode.Solar);
-                        break;
+                        case DriveRate.Solar:
+                            trackingModes.Add(TrackingMode.Solar);
+                            break;
+                    }
                 }
+            } catch (ASCOM.NotImplementedException) {
+                // TrackingRates requires ITelescopeV2+; V1 drivers don't implement it.
+                // Sidereal is already added above as the default.
+                Logger.Info($"{Name} - TrackingRates not implemented, defaulting to Sidereal only");
             }
 
-            if (device.CanSetRightAscensionRate && device.CanSetDeclinationRate) {
+            if (CanSetRightAscensionRate && CanSetDeclinationRate) {
                 trackingModes.Add(TrackingMode.Custom);
             }
             trackingModes.Add(TrackingMode.Stopped);
