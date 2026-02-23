@@ -18,7 +18,15 @@
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View.Sequencer">
 
-    <DataTemplate DataType="{x:Type local:Constant}">
+    <DataTemplate x:Key="NINA.Sequencer.SequenceItem.Expressions.GlobalConstant_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <TextBlock VerticalAlignment="Center" Text="{Binding Identifier}" />
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:GlobalConstant}">
         <view:SequenceBlockView DataContext="{Binding}">
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -33,6 +41,14 @@
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NINA.Sequencer.SequenceItem.Expressions.Variable_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <TextBlock VerticalAlignment="Center" Text="{Binding Identifier}" />
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:Variable}">
@@ -57,6 +73,46 @@
         </view:SequenceBlockView>
     </DataTemplate>
 
+    <DataTemplate x:Key="NINA.Sequencer.SequenceItem.Expressions.GlobalVariable_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <TextBlock VerticalAlignment="Center" Text="{Binding Identifier}" />
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:GlobalVariable}">
+        <view:SequenceBlockView DataContext="{Binding}">
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblName}" />
+                    <TextBox
+                        Height="20"
+                        MinWidth="40"
+                        Margin="5,-1,10,-2"
+                        Text="{Binding Identifier}"
+                        TextAlignment="Center" />
+                    <logic:ExprControl Exp="{Binding OriginalExpr, Mode=TwoWay}" Label="{ns:Loc LblInitially}" />
+                    <logic:ExprControlVariable
+                        Margin="10,0,0,0"
+                        Exp="{Binding Expr, Mode=TwoWay}"
+                        Label="Currently:"
+                        Visibility="{Binding Executed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NINA.Sequencer.SequenceItem.Expressions.ResetVariable_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Variable}" />
+                </StackPanel>
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:ResetVariable}">
         <view:SequenceBlockView DataContext="{Binding}">
             <view:SequenceBlockView.SequenceItemContent>
@@ -72,6 +128,16 @@
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NINA.Sequencer.SequenceItem.Expressions.ResetVariableToDate_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Variable}" />
+                </StackPanel>
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:ResetVariableToDate}">
