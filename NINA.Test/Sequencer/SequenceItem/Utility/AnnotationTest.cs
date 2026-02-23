@@ -31,8 +31,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
         [Test]
         public void Annotation_Clone_GoodClone() {
-            var symbolBrokerMock = new Mock<ISymbolBroker>();
-            var sut = new Annotation(symbolBrokerMock.Object);
+            var sut = new Annotation();
             sut.Icon = new System.Windows.Media.GeometryGroup();
             var item2 = (Annotation)sut.Clone();
 
@@ -45,8 +44,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
         [Test]
         public void AnnotationTest_GetEstimatedDuration_Test() {
-            var symbolBrokerMock = new Mock<ISymbolBroker>();
-            var sut = new Annotation(symbolBrokerMock.Object);
+            var sut = new Annotation();
 
             var estimate = sut.GetEstimatedDuration();
 

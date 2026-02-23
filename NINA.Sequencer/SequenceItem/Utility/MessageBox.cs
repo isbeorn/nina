@@ -41,17 +41,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [JsonObject(MemberSerialization.OptIn)]
     public class MessageBox : SequenceItem {
         private IWindowServiceFactory windowServiceFactory;
-        private ISymbolBroker _symbolBroker;
-
-        public ISymbolBroker SymbolBroker => _symbolBroker;
 
         [ImportingConstructor]
-        public MessageBox(IWindowServiceFactory windowServiceFactory, ISymbolBroker symbolBroker) {
+        public MessageBox(IWindowServiceFactory windowServiceFactory) {
             this.windowServiceFactory = windowServiceFactory;
-            _symbolBroker = symbolBroker;
         }
 
-        private MessageBox(MessageBox cloneMe) : this(cloneMe.windowServiceFactory, cloneMe._symbolBroker) {
+        private MessageBox(MessageBox cloneMe) : this(cloneMe.windowServiceFactory) {
             CopyMetaData(cloneMe);
         }
 
@@ -66,7 +62,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             // Expand expressions in the text before displaying
-            string expandedText = ExpressionExpander.Expand(Text, _symbolBroker, Parent);
+            string expandedText = ExpressionExpander.Expand(Text, SymbolBroker, Parent);
 
             var service = windowServiceFactory.Create();
             var msgBoxResult = new MessageBoxResult(expandedText);
