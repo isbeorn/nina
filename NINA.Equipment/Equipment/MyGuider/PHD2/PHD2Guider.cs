@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using Accord;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -1125,24 +1126,60 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
                 await Task.Delay(2000);
 
-                //Try to read the appstate and retry for 5 times. On slow systems the startup of phd can take a couple of seconds.
-                string appState = string.Empty;
-                int retries = 5;
-                do {
-                    try {
-                        retries--;
-                        appState = await GetAppState(2000);
-                    } catch (Exception) {
-                    }
-                } while (string.IsNullOrEmpty(appState) && retries > 0);
+                bool socketReady = false;
+                try {
+                    var settings = profileService.ActiveProfile.GuiderSettings;
+                    var instanceNumber = settings.PHD2InstanceNumber;
+                    var phd2Path = settings.PHD2Path;
+                    var port = settings.PHD2ServerPort;
+                    var host = phd2Ip;
+                    socketReady = await WaitForPhd2SocketAsync(
+                        host: host,
+                        port: port,
+                        timeout: TimeSpan.FromSeconds(10),
+                        pollInterval: TimeSpan.FromMilliseconds(500));
+                } catch (Exception) {
+                }
 
-                return !string.IsNullOrEmpty(appState);
+                return socketReady;
             } catch (FileNotFoundException ex) {
                 Logger.Error(Loc.Instance["LblPhd2PathNotFound"], ex);
                 Notification.ShowError(Loc.Instance["LblPhd2PathNotFound"]);
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Loc.Instance["LblPhd2StartProcessError"]);
+            }
+
+            return false;
+        }
+
+        private async Task<bool> WaitForPhd2SocketAsync(
+                IPAddress host,
+                int port,
+                TimeSpan timeout,
+                TimeSpan pollInterval,
+                CancellationToken ct = default) {
+            var sw = Stopwatch.StartNew();
+            Exception lastException = null;
+
+            while (sw.Elapsed < timeout) {
+                ct.ThrowIfCancellationRequested();
+
+                try {
+                    using var probe = new TcpClient(AddressFamily.InterNetwork) { NoDelay = true };
+
+                    await probe.ConnectAsync(host, port, ct);
+
+                    if (probe.Connected) { 
+                        return true;
+                    }
+                } catch (OperationCanceledException) {
+                    throw;
+                } catch (Exception ex) {
+                    lastException = ex;
+                }
+
+                await Task.Delay(pollInterval, ct);
             }
 
             return false;
