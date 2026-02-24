@@ -33,16 +33,12 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Annotation : SequenceItem {
-        private ISymbolBroker _symbolBroker;
-
-        public ISymbolBroker SymbolBroker => _symbolBroker;
 
         [ImportingConstructor]
-        public Annotation(ISymbolBroker symbolBroker) {
-            _symbolBroker = symbolBroker;
+        public Annotation() {
         }
 
-        private Annotation(Annotation cloneMe) : this(cloneMe._symbolBroker) {
+        private Annotation(Annotation cloneMe) : this() {
             CopyMetaData(cloneMe);
         }
 
@@ -50,7 +46,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public string Text { get; set; }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            string processedText = ExpressionExpander.Expand(Text, _symbolBroker, Parent);
+            string processedText = ExpressionExpander.Expand(Text, SymbolBroker, Parent);
             Logger.Info($"Annotation: {processedText}");
             return Task.CompletedTask;
         }
