@@ -907,6 +907,9 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                 // TrackingRates requires ITelescopeV2+; V1 drivers don't implement it.
                 // Sidereal is already added above as the default.
                 Logger.Info($"{Name} - TrackingRates not implemented, defaulting to Sidereal only");
+            } catch (Exception ex) {
+                // Some drivers (e.g. SiTech) throw the wrong exception type for unimplemented properties.
+                Logger.Warning($"{Name} - TrackingRates failed: {ex.Message}, defaulting to Sidereal only");
             }
 
             if (CanSetRightAscensionRate && CanSetDeclinationRate) {
@@ -988,6 +991,8 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                         } catch (ASCOM.NotImplementedException pnie) {
                             // TrackingRate Write can throw a PropertyNotImplementedException.
                             Logger.Debug(pnie.Message);
+                        } catch (Exception ex) {
+                            Logger.Warning($"{Name} - TrackingRate write failed: {ex.Message}");
                         }
                         device.Tracking = (value != TrackingMode.Stopped);
 
@@ -1017,6 +1022,8 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                 } catch (ASCOM.NotImplementedException pnie) {
                     // TrackingRate Write can throw a PropertyNotImplementedException.
                     Logger.Debug(pnie.Message);
+                } catch (Exception ex) {
+                    Logger.Warning($"{Name} - TrackingRate write failed: {ex.Message}");
                 }
                 if (this.CanSetTrackingEnabled) {
                     this.device.Tracking = true;
