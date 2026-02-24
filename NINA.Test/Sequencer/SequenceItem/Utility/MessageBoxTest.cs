@@ -33,8 +33,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         [Test]
         public void MessageBox_Clone_GoodClone() {
             var windowServiceFactory = new Mock<IWindowServiceFactory>().Object;
-            var symbolBroker = new Mock<ISymbolBroker>().Object;
-            var sut = new MessageBox(windowServiceFactory, symbolBroker);
+            var sut = new MessageBox(windowServiceFactory);
             sut.Icon = new System.Windows.Media.GeometryGroup();
             var item2 = (MessageBox)sut.Clone();
 
@@ -48,8 +47,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         [Test]
         public void MessageBoxTest_GetEstimatedDuration_Test() {
             var windowServiceFactory = new Mock<IWindowServiceFactory>().Object;
-            var symbolBroker = new Mock<ISymbolBroker>().Object;
-            var sut = new MessageBox(windowServiceFactory, symbolBroker);
+            var sut = new MessageBox(windowServiceFactory);
 
             var estimate = sut.GetEstimatedDuration();
 
