@@ -261,7 +261,8 @@ namespace NINA.Sequencer.Logic {
             }
 
             if (exp.Definition?.Length == 0 && exp.Range != null) {
-                tb.ToolTip = string.Format(Loc.Instance["LblValueBetween"], exp.Range[0], exp.Range[1]);
+                //tb.ToolTip = string.Format(Loc.Instance["LblValueBetween"], exp.Range[0], exp.Range[1]);
+                tb.ToolTip = exp.RangeString(null);
                 return;
             }
 

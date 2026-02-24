@@ -59,7 +59,7 @@ namespace NINA.Sequencer.Conditions {
 
         public IList<string> Issues { get; private set; }
 
-        [IsExpression(Default = 2, Range = [1, 0], HasValidator = true)]
+        [IsExpression(Default = 2, Range = [1, ExpressionRange.NO_MAXIMUM], HasValidator = true)]
         public partial int Iterations { get; set; }
 
         partial void IterationsExpressionValidator(Expression expr) {

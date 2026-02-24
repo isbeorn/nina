@@ -7,11 +7,8 @@ using NINA.Core.Utility;
 using NINA.Sequencer.SequenceItem.Expressions;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows.Media;
 using static NINA.Sequencer.Logic.UserSymbol;
 
@@ -394,7 +391,14 @@ namespace NINA.Sequencer.Logic {
         }
 
         private void CheckRange(double value) {
-            if (Range?.Length < 3) { return; }
+            string rangeString = RangeString(value);
+            if (rangeString != null) {
+                Error = rangeString;
+            }
+        }
+
+        public string? RangeString(double? value) {
+            if (Range?.Length < 3) { return null; }
 
             int r = Convert.ToInt32(Range[2], CultureInfo.InvariantCulture);
 
@@ -405,10 +409,11 @@ namespace NINA.Sequencer.Logic {
             double max = Range[1] == 0 ? double.MaxValue : Range[1] - (((r & ExpressionRange.MAX_EXCLUSIVE) == ExpressionRange.MAX_EXCLUSIVE) ? 1e-8 : 0);
 
             bool outOfRange =
-                (minExclusive ? value <= min : value < min) ||
-                (maxExclusive ? value >= max : value > max);
+                (value == null) ? true :
+                ((minExclusive ? value <= min : value < min) ||
+                (maxExclusive ? value >= max : value > max));
 
-            if (!outOfRange) { return; }
+            if (!outOfRange) { return null; }
 
             string msgKey;
 
@@ -427,8 +432,7 @@ namespace NINA.Sequencer.Logic {
             } else {
                 msgKey = "Lbl_Expressions_CheckRange_RangeExclusiveExclusive";
             }
-
-            Error = string.Format(CultureInfo.InvariantCulture, Loc.Instance[msgKey], Range[0], Range[1]);
+            return string.Format(CultureInfo.InvariantCulture, Loc.Instance[msgKey], Range[0], Range[1]);
         }
         private void ExtensionFunction(string name, FunctionArgs args) {
             try {
