@@ -3336,6 +3336,12 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Transit South</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Transit time</value>
   </data>
