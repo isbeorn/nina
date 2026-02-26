@@ -14,6 +14,7 @@
 
 using NINA.Astrometry.Body;
 using System;
+using System.Threading.Tasks;
 
 namespace NINA.Astrometry.RiseAndSet {
 
@@ -39,12 +40,17 @@ namespace NINA.Astrometry.RiseAndSet {
 
         protected abstract BasicBody GetBody(DateTime date);
 
+        [Obsolete("Use Compute instead")]
+        public virtual Task<bool> Calculate() {
+            return Task.FromResult(Compute());
+        }
+
         /// <summary>
         /// Calculates rise and set time
         /// Caveat: does not consider more than one rise and one set event
         /// </summary>
         /// <returns></returns>
-        public virtual bool Calculate() {
+        public virtual bool Compute() {
             // Check rise and set events in two hour periods
             var offset = 0;
 
@@ -110,8 +116,8 @@ namespace NINA.Astrometry.RiseAndSet {
                 const double discEps = 1e-10;
 
                 if (discriminant >= -discEps) {
-                    if (discriminant < 0) { 
-                        discriminant = 0; 
+                    if (discriminant < 0) {
+                        discriminant = 0;
                     }
                     double sqrtD = Math.Sqrt(discriminant);
 
@@ -133,11 +139,11 @@ namespace NINA.Astrometry.RiseAndSet {
                     if (x1Valid) x1 = Math.Clamp(x1, 0, 2);
                     if (x2Valid) x2 = Math.Clamp(x2, 0, 2);
 
-                    if (x1Valid) { 
-                        AssignEvent(x1, a, b, offsetDate); 
+                    if (x1Valid) {
+                        AssignEvent(x1, a, b, offsetDate);
                     }
-                    if (x2Valid) { 
-                        AssignEvent(x2, a, b, offsetDate); 
+                    if (x2Valid) {
+                        AssignEvent(x2, a, b, offsetDate);
                     }
                 }
                 offset += 2;

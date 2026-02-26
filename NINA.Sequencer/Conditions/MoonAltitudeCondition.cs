@@ -106,7 +106,7 @@ namespace NINA.Sequencer.Conditions {
         private DateTime CalculateExpectedDateTime(DateTime time) {
             // The MoonRiseAndSet already models refraction and moon disk size
             var customRiseAndSet = new MoonCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Observer.Elevation, GetDataOffset());
-            customRiseAndSet.Calculate();
+            customRiseAndSet.Compute();
             return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN || Data.Comparator == ComparisonOperatorEnum.GREATER_THAN_OR_EQUAL ? customRiseAndSet.Rise : customRiseAndSet.Set) ?? DateTime.MaxValue;
         }
     }
