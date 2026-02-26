@@ -107,7 +107,7 @@ namespace NINA.Sequencer.Logic {
                             return "{" + field + "}";
                         }
                     } else {
-                        return Default.ToString(CultureInfo.InvariantCulture);
+                        return "{" + Default.ToString(CultureInfo.InvariantCulture) + "}";
                     }
                 } finally {
                 }

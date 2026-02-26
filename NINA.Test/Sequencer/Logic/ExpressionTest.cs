@@ -409,5 +409,17 @@ namespace NINA.Test.Sequencer.Logic {
             // Regardless of "cloning"
             sut2.DefaultString.Should().Be("{20}");
         }
+        
+        [Test]
+        public void Expression_CheckDefault_Number() {
+            var sut = CreateExpression("A");
+            // Simulate initial set of DefaultString (from generator)
+            sut.Default = 20;
+            // Subsequent checks should be in one set of brackets
+            sut.DefaultString.Should().Be("{20}");
+            var sut2 = new Expression(sut, null);
+            // Regardless of "cloning"
+            sut2.DefaultString.Should().Be("{20}");
+        }
     }
 }
