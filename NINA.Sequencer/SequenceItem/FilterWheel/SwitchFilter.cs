@@ -77,16 +77,18 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         private void MatchFilter() {
             try {
-                var idx = this.Filter?.Position ?? -1;
-                var filterName = this.Filter?.Name;
-                this.filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == filterName);
-                if (this.Filter == null && idx >= 0) {
-                    this.filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == idx);
+                var idx = Filter?.Position ?? -1;
+                var filterName = Filter?.Name;
+                // Look up by name
+                filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == filterName);
+                // If not, look up by position
+                if (Filter == null && idx >= 0) {
+                    filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == idx);
                 }
 
                 // Update ComboBoxText and raise property changed notifications
-                if (this.Filter != null) {
-                    comboBoxText = this.Filter.Name;
+                if (Filter != null) {
+                    comboBoxText = Filter.Name;
                     RaisePropertyChanged(nameof(ComboBoxText));
                 }
                 RaisePropertyChanged(nameof(Filter));
@@ -131,6 +133,11 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             get => filter;
             set {
                 filter = value;
+                // Upgrades from 3.2 come here...
+                // This ensures that ComboBoxText is set properly
+                if (filter != null) {
+                    MatchFilter();
+                }
                 RaisePropertyChanged();
             }
         }
