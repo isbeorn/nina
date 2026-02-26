@@ -99,7 +99,7 @@ namespace NINA.Sequencer.Conditions {
 
         private DateTime CalculateExpectedDateTime(DateTime time) {
             var customRiseAndSet = new SunCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Observer.Elevation, GetDataOffset());
-            customRiseAndSet.Calculate();
+            customRiseAndSet.Compute();
             return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN || Data.Comparator == ComparisonOperatorEnum.GREATER_THAN_OR_EQUAL ? customRiseAndSet.Rise : customRiseAndSet.Set) ?? DateTime.MaxValue;
         }
 
