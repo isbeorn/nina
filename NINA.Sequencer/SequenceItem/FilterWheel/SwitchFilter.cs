@@ -177,7 +177,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             set {
                 comboBoxText = value;
 
-                if (comboBoxText == "(Current)") {
+                if (comboBoxText == NullFilter.Instance.Name) {
                     FilterWheelInfo info = filterWheelMediator.GetInfo();
                     if (info.Connected) {
                         Filter = info.SelectedFilter;
