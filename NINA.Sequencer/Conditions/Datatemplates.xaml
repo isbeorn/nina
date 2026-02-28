@@ -437,13 +437,12 @@
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAltitude}" />
-                        <TextBlock
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="&lt;" />
                         <logic:ExprControl Exp="{Binding OffsetExpression}" />
                     </StackPanel>
-                    <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding HasDsoParent}" />
+                    <logic:CoordinatesControl
+                        Margin="15,0,0,0"
+                        Coords="{Binding Data.Coordinates}"
+                        Inherited="{Binding HasDsoParent}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
