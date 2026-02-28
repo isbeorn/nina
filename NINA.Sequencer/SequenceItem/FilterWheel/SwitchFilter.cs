@@ -52,8 +52,9 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             MatchFilter();
             if (Filter != null) {
                 ComboBoxText = Filter.Name;
-            } else {
-                ComboBoxText = "(Current)";
+            } else if (string.IsNullOrWhiteSpace(ComboBoxText)) {
+                // Only set to (Current) if we have nothing there
+                ComboBoxText = NullFilter.Instance.Name;
             }
         }
 
@@ -235,5 +236,17 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(SwitchFilter)}, Filter: {Filter?.Name}";
         }
+
+        // We don't want any of these serialized; only ComboBoxTest
+       public bool ShouldSerializeXfilterExpression() {
+            return false;
+        }
+        public bool ShouldSerializeXfilter() {
+            return false;
+        }
+        public bool ShouldSerializeXfilterDefinition() {
+            return false;
+        }
+
     }
 }
