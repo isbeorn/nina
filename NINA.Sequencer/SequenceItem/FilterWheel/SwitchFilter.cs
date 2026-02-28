@@ -229,7 +229,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             return Issues.Count == 0;
         }
 
-        public override void AfterParentChanged() {            
+        public override void AfterParentChanged() {
             Validate();
         }
 
@@ -238,7 +238,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         }
 
         // We don't want any of these serialized; only ComboBoxTest
-       public bool ShouldSerializeXfilterExpression() {
+        public bool ShouldSerializeXfilterExpression() {
             return false;
         }
         public bool ShouldSerializeXfilter() {
@@ -247,6 +247,5 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         public bool ShouldSerializeXfilterDefinition() {
             return false;
         }
-
     }
 }
