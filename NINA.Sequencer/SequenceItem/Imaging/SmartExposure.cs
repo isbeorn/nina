@@ -116,11 +116,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
 
         private void SwitchFilter_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if(e.PropertyName == nameof(SwitchFilter.Filter)) {
-                if(this.Status == Core.Enum.SequenceEntityStatus.CREATED || this.Status == Core.Enum.SequenceEntityStatus.RUNNING) { 
+            if (e.PropertyName == nameof(SwitchFilter.Filter)) {
+                if (this.Status == Core.Enum.SequenceEntityStatus.CREATED || this.Status == Core.Enum.SequenceEntityStatus.RUNNING) {
                     try {
                         GetSwitchFilter().ResetProgress();
-                    } catch(Exception) { }                    
+                    } catch (Exception) { }
                 }
             }
         }
@@ -152,15 +152,6 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                     }
                     RaisePropertyChanged();
                 }
-            }
-        }
-
-        [IsExpression(HasValidator = true)]
-        public partial int Dither { get; set; }
-        partial void DitherExpressionValidator(Logic.Expression expr) {
-            DitherAfterExposures dae = GetDitherAfterExposures();
-            if (dae != null) {
-                dae.AfterExposures = (int)expr.Value;
             }
         }
 
@@ -215,7 +206,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
             Issues = issues;
 
-            Logic.Expression.ValidateExpressions(Issues, IterationsExpression, DitherExpression);
+            Logic.Expression.ValidateExpressions(Issues, IterationsExpression);
 
             RaisePropertyChanged(nameof(Issues));
 
