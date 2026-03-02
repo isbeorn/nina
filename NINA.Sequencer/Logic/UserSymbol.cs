@@ -76,6 +76,7 @@ namespace NINA.Sequencer.Logic {
             set {
                 _expr = value;
                 _expr.SymbolBroker = SymbolBroker;
+                _expr.Default = 0;
                 RaisePropertyChanged();
             }
         }
