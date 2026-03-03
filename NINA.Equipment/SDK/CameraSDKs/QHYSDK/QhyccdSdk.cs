@@ -21,13 +21,14 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
 namespace QHYCCD {
 
     public class QhySdk : IQhySdk {
         private const string DLLNAME = "qhyccd.dll";
 
-        private readonly object lockobj = new object();
+        private readonly Lock lockobj = new();
         private IntPtr handle = IntPtr.Zero;
 
         private bool sdkIsInitialized = false;
