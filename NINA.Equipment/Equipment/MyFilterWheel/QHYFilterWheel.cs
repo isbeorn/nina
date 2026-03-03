@@ -12,25 +12,25 @@
 
 #endregion "copyright"
 
-using NINA.Profile.Interfaces;
+using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Utility;
+using NINA.Profile.Interfaces;
 using QHYCCD;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Model.Equipment;
-using NINA.Equipment.Interfaces;
-using System.Collections.Generic;
-using System;
-using NINA.Equipment.Utility;
 
 namespace NINA.Equipment.Equipment.MyFilterWheel {
 
     public class QHYFilterWheel : BaseINPC, IFilterWheel {
         private QhySdk.QHYCCD_FILTER_WHEEL_INFO Info;
         private bool _connected = false;
-        private IProfileService profileService;
+        private readonly IProfileService profileService;
         private bool moveRequested = false;
         private string destinationPostition = string.Empty;
         public IQhySdk Sdk { get; set; } = QhySdk.Instance;
@@ -38,11 +38,11 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         public QHYFilterWheel(string fwheel, IProfileService profileService) {
             this.profileService = profileService;
 
-            StringBuilder FWheelId = new StringBuilder(32);
-            StringBuilder cameraModel = new StringBuilder(0);
+            string FWheelId;
+            var cameraModel = string.Empty;
 
-            FWheelId.Append(fwheel);
-            Sdk.GetModel(FWheelId, cameraModel);
+            FWheelId = fwheel;
+            Sdk.GetModel(FWheelId, out cameraModel);
 
             Info.Id = FWheelId;
             Sdk.Open(Info.Id);
@@ -91,14 +91,13 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             }
         }
 
-        public string Id => Info.Id.ToString();
+        public string Id => Info.Id;
         public string Name => Info.Name;
         public string DisplayName => Name;
         public string Category => "QHYCCD";
         public string Description => string.Format($"Integrated or 4-pin Filter Wheel on {Info.Id}");
         public string DriverInfo => "Native driver for QHY integrated or 4-pin filter wheels";
         public string DriverVersion => "1.0";
-        public short InterfaceVersion => 1;
 
         public int[] FocusOffsets => this.Filters.Select((x) => x.FocusOffset).ToArray();
 
@@ -154,7 +153,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             }
         }
 
-        public IList<string> SupportedActions => new List<string>();
+        public IList<string> SupportedActions => [];
 
         public void Disconnect() {
             Logger.Debug($"QHYCFW: Closing filter wheel {Name}");
@@ -164,7 +163,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             Sdk.ReleaseSdk();
         }
 
-        private object lockObj = new object();
+        private readonly object lockObj = new object();
         public AsyncObservableCollection<FilterInfo> Filters {
             get {
                 lock (lockObj) {

@@ -14,7 +14,6 @@
 
 using NINA.Core.Utility;
 using System.Collections.Generic;
-using System.Text;
 
 namespace QHYCCD {
 
@@ -22,9 +21,8 @@ namespace QHYCCD {
         public IQhySdk Sdk { get; set; } = QhySdk.Instance;
 
         public List<string> GetFilterWheels() {
-            StringBuilder cameraId = new StringBuilder(QhySdk.QHYCCD_ID_LEN);
-            StringBuilder cameraModel = new StringBuilder(0);
-            List<string> FWheels = new List<string>();
+            var cameraId = string.Empty;
+            var FWheels = new List<string>();
             uint positions;
             uint num;
 
@@ -36,9 +34,7 @@ namespace QHYCCD {
 
             if ((num = Sdk.Scan()) > 0) {
                 for (uint i = 0; i < num; i++) {
-                    Sdk.GetId(i, cameraId);
-                    Sdk.GetModel(cameraId, cameraModel);
-
+                    Sdk.GetId(i, out cameraId);
                     Sdk.Open(cameraId);
 
                     if (Sdk.IsCfwPlugged()) {
