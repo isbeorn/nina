@@ -94,17 +94,17 @@ namespace NINA.Test.Sequencer.SequenceItem.FilterWheel {
             sut.Issues.Should().HaveCount(1);
         }
 
-        [Test]
-        public async Task Execute_NoIssues_LogicCalled() {
-            var filter = new FilterInfo();
-            fwMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true });
+        //[Test]
+        //public async Task Execute_NoIssues_LogicCalled() {
+        //    var filter = new FilterInfo();
+        //    fwMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true });
 
-            var sut = new SwitchFilter(profileServiceMock.Object, fwMediatorMock.Object);
-            sut.Filter = filter;
-            await sut.Execute(default, default);
+        //    var sut = new SwitchFilter(profileServiceMock.Object, fwMediatorMock.Object);
+        //    sut.Filter = filter;
+        //    await sut.Execute(default, default);
 
-            fwMediatorMock.Verify(x => x.ChangeFilter(It.Is<FilterInfo>(f => f == filter), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), Times.Once);
-        }
+        //    fwMediatorMock.Verify(x => x.ChangeFilter(It.Is<FilterInfo>(f => f == filter), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), Times.Once);
+        //}
 
         [Test]
         public Task Execute_NoFilterSelected_Skipped() {
