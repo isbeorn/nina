@@ -137,9 +137,7 @@ namespace QHYCCD {
         }
 
         public uint GetReadMode(ref uint mode) {
-            lock (lockobj) {
-                return GetQHYCCDReadMode(handle, ref mode);
-            }
+            return GetQHYCCDReadMode(handle, ref mode);
         }
 
         public uint SetReadMode(uint mode) {
@@ -149,23 +147,19 @@ namespace QHYCCD {
         }
 
         public uint GetNumberOfReadModes(ref uint numModes) {
-            lock (lockobj) {
-                return GetQHYCCDNumberOfReadModes(handle, ref numModes);
-            }
+            return GetQHYCCDNumberOfReadModes(handle, ref numModes);
         }
 
         public uint GetReadModeName(uint mode, out string modeName) {
-            lock (lockobj) {
-                modeName = string.Empty;
-                byte[] buffer = new byte[QHYCCD_READMODE_NAME_LEN];
-                uint result = GetQHYCCDReadModeName(handle, mode, buffer);
+            modeName = string.Empty;
+            byte[] buffer = new byte[QHYCCD_READMODE_NAME_LEN];
+            uint result = GetQHYCCDReadModeName(handle, mode, buffer);
 
-                if (result == QHYCCD_SUCCESS) {
-                    modeName = NullTerminatedBytesToString(buffer);
-                }
-
-                return result;
+            if (result == QHYCCD_SUCCESS) {
+                modeName = NullTerminatedBytesToString(buffer);
             }
+
+            return result;
         }
 
         public uint ControlTemp(double targetTemp) {
@@ -181,27 +175,23 @@ namespace QHYCCD {
         }
 
         public void GetId(uint index, out string id) {
-            lock (lockobj) {
-                id = string.Empty;
-                byte[] buffer = new byte[QHYCCD_ID_LEN];
+            id = string.Empty;
+            byte[] buffer = new byte[QHYCCD_ID_LEN];
 
-                uint result = GetQHYCCDId(index, buffer);
-                CheckReturn(result, MethodBase.GetCurrentMethod(), index, new object[] { id });
+            uint result = GetQHYCCDId(index, buffer);
+            CheckReturn(result, MethodBase.GetCurrentMethod(), index, new object[] { id });
 
-                id = NullTerminatedBytesToString(buffer);
-            }
+            id = NullTerminatedBytesToString(buffer);
         }
 
         public void GetModel(string id, out string model) {
-            lock (lockobj) {
-                model = string.Empty;
-                byte[] modelBuffer = new byte[QHYCCD_MODEL_LEN];
+            model = string.Empty;
+            byte[] modelBuffer = new byte[QHYCCD_MODEL_LEN];
 
-                uint result = GetQHYCCDModel(id, modelBuffer);
-                CheckReturn(result, MethodBase.GetCurrentMethod(), new object[] { model });
+            uint result = GetQHYCCDModel(id, modelBuffer);
+            CheckReturn(result, MethodBase.GetCurrentMethod(), new object[] { model });
 
-                model = NullTerminatedBytesToString(modelBuffer);
-            }
+            model = NullTerminatedBytesToString(modelBuffer);
         }
 
         public uint GetParamMinMaxStep(CONTROL_ID controlId, ref double min, ref double max, ref double step) {
@@ -211,15 +201,11 @@ namespace QHYCCD {
         }
 
         public uint GetChipInfo(ref double chipW, ref double chipH, ref uint imageX, ref uint imageY, ref double pixelX, ref double pixelY, ref uint bpp) {
-            lock (lockobj) {
-                return GetQHYCCDChipInfo(handle, ref chipW, ref chipH, ref imageX, ref imageY, ref pixelX, ref pixelY, ref bpp);
-            }
+            return GetQHYCCDChipInfo(handle, ref chipW, ref chipH, ref imageX, ref imageY, ref pixelX, ref pixelY, ref bpp);
         }
 
         public uint GetEffectiveArea(ref uint startX, ref uint startY, ref uint imageX, ref uint imageY) {
-            lock (lockobj) {
-                return GetQHYCCDEffectiveArea(handle, ref startX, ref startY, ref imageX, ref imageY);
-            }
+            return GetQHYCCDEffectiveArea(handle, ref startX, ref startY, ref imageX, ref imageY);
         }
 
         public uint SetResolution(uint x, uint y, uint xSize, uint ySize) {
@@ -253,15 +239,11 @@ namespace QHYCCD {
         }
 
         public uint GetExposureRemaining() {
-            lock (lockobj) {
-                return GetQHYCCDExposureRemaining(handle);
-            }
+            return GetQHYCCDExposureRemaining(handle);
         }
 
         public uint GetPressure(ref double hpa) {
-            lock (lockobj) {
-                return GetQHYCCDPressure(handle, ref hpa);
-            }
+            return GetQHYCCDPressure(handle, ref hpa);
         }
 
         public uint GetHumidity(ref double rh) {
@@ -271,19 +253,15 @@ namespace QHYCCD {
         }
 
         public bool IsCfwPlugged() {
-            lock (lockobj) {
-                if (IsQHYCCDCFWPlugged(handle) == QHYCCD_SUCCESS) {
-                    return true;
-                }
-
-                return false;
+            if (IsQHYCCDCFWPlugged(handle) == QHYCCD_SUCCESS) {
+                return true;
             }
+
+            return false;
         }
 
         public uint GetCfwStatus(byte[] status) {
-            lock (lockobj) {
-                return GetQHYCCDCFWStatus(handle, status);
-            }
+            return GetQHYCCDCFWStatus(handle, status);
         }
 
         public uint SendOrderToCfw(string order, int length) {
