@@ -12,11 +12,19 @@
 
 #endregion "copyright"
 
+using Accord.Statistics.Models.Regression.Fitting;
+using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
+using NINA.Core.Locale;
 using NINA.Core.Model;
-using NINA.Profile.Interfaces;
-using NINA.Sequencer.Validations;
+using NINA.Core.Model.Equipment;
+using NINA.Core.Utility;
+using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Profile;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,14 +34,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Model.Equipment;
-using NINA.Core.Locale;
 using System.Windows;
-using NINA.Core.Utility;
-using NINA.Sequencer.Generators;
-using NINA.Profile;
-using NINA.Equipment.Equipment.MyFilterWheel;
-using Accord.Statistics.Models.Regression.Fitting;
 
 namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
@@ -47,23 +48,22 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
     public partial class SwitchFilter : SequenceItem, IValidatable {
 
+        private IProfileService profileService;
+        private IFilterWheelMediator filterWheelMediator;
+
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
-            MatchFilter();
-            if (Filter != null) {
-                ComboBoxText = Filter.Name;
+            if (Filter != null && string.IsNullOrEmpty(ComboBoxText)) {
+                // This is the upgrade from 3.2 case
+                SetupFilter(Filter.Name);
             } else if (string.IsNullOrWhiteSpace(ComboBoxText)) {
-                // Only set to (Current) if we have nothing there
-                ComboBoxText = NullFilter.Instance.Name;
+                SetupFilter(NullFilter.Instance.Name);
             }
-        }
-
-        [OnSerialized]
-        public void Serialized(StreamingContext context) {
         }
 
         [OnSerializing]
         public void Serializing(StreamingContext context) {
+            // We only save this in 3.2
             Filter = null;
         }
 
@@ -75,31 +75,45 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
             WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.ProfileChanged), ProfileService_ProfileChanged);
         }
-
-        private void MatchFilter() {
+        
+        private void SetupFilter(string filterString) {
             try {
-                var idx = Filter?.Position ?? -1;
-                var filterName = Filter?.Name;
-                // Look up by name
-                filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == filterName);
-                // If not, look up by position
-                if (Filter == null && idx >= 0) {
-                    filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == idx);
+                // Clone
+                if (filterString == null) return;
+                
+                // Use current filter selection, if we're connected
+                if (filterString == NullFilter.Instance.Name) {
+                    FilterWheelInfo info = filterWheelMediator.GetInfo();
+                    if (info.Connected) {
+                        filter = info.SelectedFilter;
+                    }
+                    return;
                 }
 
-                // Update ComboBoxText and raise property changed notifications
-                if (Filter != null) {
-                    comboBoxText = Filter.Name;
-                    RaisePropertyChanged(nameof(ComboBoxText));
+                // Setting the definition will lead to Evaluation
+                XfilterExpression.Definition = filterString;
+                // Simplest case is that the string is the name of a filter in the wheel
+                filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == filterString);
+                // If not, assume it's an Expression and find its value
+                if (Filter == null) {
+                    filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == (int)XfilterExpression.Value);
                 }
+                // Don't recurse; comboTextBox could be set from different places (including upgrade from 3.2)
+                comboBoxText = filterString;
                 RaisePropertyChanged(nameof(Filter));
+                RaisePropertyChanged(nameof(ComboBoxText));
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
         }
 
         private void ProfileService_ProfileChanged(object sender, EventArgs e) {
-            MatchFilter();
+            // We might have very different filter names
+            FilterNames.Clear();
+            // Force setup of current names
+            Validate();
+            // Find/setup the filter
+            SetupFilter(ComboBoxText);
         }
 
         private SwitchFilter(SwitchFilter cloneMe) : this(cloneMe.profileService, cloneMe.filterWheelMediator) {
@@ -107,26 +121,15 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         }
 
         partial void AfterClone(SwitchFilter clone) {
-            clone.ComboBoxText = this.ComboBoxText;
-            clone.filter = filter;
+            clone.comboBoxText = comboBoxText;
+            SetupFilter(comboBoxText);
         }
 
         [IsExpression]
         public partial int Xfilter { get; set; }
 
-        private IProfileService profileService;
-        private IFilterWheelMediator filterWheelMediator;
-
-        private IList<string> issues = new List<string>();
-
-        public IList<string> Issues {
-            get => issues;
-            set {
-                issues = value;
-                RaisePropertyChanged();
-            }
-        }
-
+        // Intentionally using this instead of field
+        // Filter (capital F) is ONLY set during upgrade from 3.2
         private FilterInfo filter;
 
         [JsonProperty]
@@ -134,28 +137,53 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             get => filter;
             set {
                 filter = value;
-                // Upgrades from 3.2 come here...
+                // ONLY upgrades from 3.2 come here...
                 // This ensures that ComboBoxText is set properly
                 if (filter != null) {
-                    MatchFilter();
+                    SetupFilter(filter.Name);
+                } else {
+                    SetupFilter(NullFilter.Instance.Name);
                 }
                 RaisePropertyChanged();
             }
         }
 
-        private int selectedFilter;
-
         public int SelectedFilter {
-            get => selectedFilter;
+            get => field;
             set {
+                // This is the case in which user selected from the ComboBox
+                field = value;
                 if (value == 0) {
-                    Filter = null;
-                    ComboBoxText = "(Current)";
+                    SetupFilter(NullFilter.Instance.Name);
                 } else {
-                    Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters[value - 1];
-                    ComboBoxText = Filter.Name;
+                    SetupFilter(profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters[value - 1].Name);
                 }
             }
+        }
+
+        // Intentionally using this instead of field
+        private string comboBoxText;
+
+        [JsonProperty]
+        public string ComboBoxText {
+            get => comboBoxText;
+            set {
+                // We come here from a number of places: Expression entry from ExprComboControl, upgrades from 3.2, or XfilterExpression evaluation.
+                // In the first two cases, we want to resolve the filter and set the expression; in the last case, we just want to update the ComboBoxText
+                // to match the expression's value without re-resolving the filter (which would cause a loop)
+                comboBoxText = value;
+                SetupFilter(value);
+            }
+        }
+
+        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            // ComboBoxText might have been set before a FW was connected, or a Symbol's value might have changed, so we need to re-resolve the filter here
+            XfilterExpression.Evaluate();
+            filter = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Position == XfilterExpression.Value);
+
+            return Filter == null
+                ? throw new SequenceItemSkippedException("Skipping SwitchFilter - No Filter was selected")
+                : filterWheelMediator.ChangeFilter(Filter, token, progress);
         }
 
 
@@ -167,45 +195,14 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             }
         }
 
-        private string comboBoxText = "";
+        private IList<string> issues = new List<string>();
 
-        [JsonProperty]
-        public string ComboBoxText {
-            get {
-                return comboBoxText;
-            }
+        public IList<string> Issues {
+            get => issues;
             set {
-                comboBoxText = value;
-
-                if (comboBoxText == NullFilter.Instance.Name) {
-                    FilterWheelInfo info = filterWheelMediator.GetInfo();
-                    if (info.Connected) {
-                        Filter = info.SelectedFilter;
-                    }
-                } else {
-                    Filter = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Name == comboBoxText);
-                    if (Filter == null) {
-                        XfilterExpression.Definition = comboBoxText;
-                        if (xfilterExpression.Error == null) {
-                            Filter = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
-                        }
-                    } else {
-                        xfilterExpression.Definition = "";
-                    }
-                }
-
+                issues = value;
                 RaisePropertyChanged();
             }
-        }
-        
-
-        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            // ComboBoxText might have been set before a FW was connected, or a Symbol's value might have changed, so we need to re-resolve the filter here
-            filter = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
-
-            return Filter == null
-                ? throw new SequenceItemSkippedException("Skipping SwitchFilter - No Filter was selected")
-                : filterWheelMediator.ChangeFilter(Filter, token, progress);
         }
 
         public bool Validate() {
@@ -215,6 +212,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                 i.Add(Loc.Instance["LblFilterWheelNotConnected"]);
             } else {
                 if (FilterNames.Count == 0) {
+                    // Lazy instantiation of FilterNames
                     var fwi = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters;
                     if (fwi != null) {
                         foreach (var fw in fwi) {
