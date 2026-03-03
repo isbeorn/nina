@@ -50,6 +50,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         private IProfileService profileService;
         private IFilterWheelMediator filterWheelMediator;
+        private static string NullFilterName => NullFilter.Instance.Name;
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
@@ -57,7 +58,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                 // This is the upgrade from 3.2 case
                 SetupFilter(Filter.Name);
             } else if (string.IsNullOrWhiteSpace(ComboBoxText)) {
-                SetupFilter(NullFilter.Instance.Name);
+                SetupFilter(NullFilterName);
             }
         }
 
@@ -87,6 +88,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                     if (info.Connected) {
                         filter = info.SelectedFilter;
                     }
+                    comboBoxText = filterString;
                     return;
                 }
 
@@ -139,11 +141,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                 filter = value;
                 // ONLY upgrades from 3.2 come here...
                 // This ensures that ComboBoxText is set properly
-                if (filter != null) {
-                    SetupFilter(filter.Name);
-                } else {
-                    SetupFilter(NullFilter.Instance.Name);
-                }
+                SetupFilter(filter != null ? filter.Name : NullFilterName);
                 RaisePropertyChanged();
             }
         }
@@ -153,11 +151,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             set {
                 // This is the case in which user selected from the ComboBox
                 field = value;
-                if (value == 0) {
-                    SetupFilter(NullFilter.Instance.Name);
-                } else {
-                    SetupFilter(profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters[value - 1].Name);
-                }
+                SetupFilter(value == 0 ? NullFilterName : profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters[value - 1].Name);
             }
         }
 
