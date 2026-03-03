@@ -1116,7 +1116,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         ImgData[i] = ImgDataBytes[i];
                     }
                 }
-                if (rv != QhySdk.QHYCCD_SUCCESS) {
+                if (rv != QhySdk.QHYCCD_SUCCESS && !ct.IsCancellationRequested) {
                     Logger.Warning($"QHYCCD: Failed to download image from camera! rv = {rv}");
                     throw new CameraDownloadFailedException(Loc.Instance["LblASIImageDownloadError"]);
                 }
