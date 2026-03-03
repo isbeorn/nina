@@ -76,6 +76,7 @@ namespace NINA.Sequencer.Logic {
             set {
                 _expr = value;
                 _expr.SymbolBroker = SymbolBroker;
+                _expr.Default = 0;
                 RaisePropertyChanged();
             }
         }
@@ -100,7 +101,9 @@ namespace NINA.Sequencer.Logic {
                         if (Debugging) {
                             Logger.Info("Removing " + value + " from " + sParent.Name);
                         }
-                        cached.TryRemove(value, out _);
+                        if (!cached.TryRemove(_identifier, out _)) {
+                            Logger.Warning("Could not remove " + value + " from " + sParent.Name);
+                        }
                         SymbolDirty(this);
                     }
                 }
@@ -159,7 +162,7 @@ namespace NINA.Sequencer.Logic {
                 dict[id] = this;
                 return id;
             }
-            Notification.ShowWarning(Loc.Instance["LblConstantVariable"] + " " + id + " " + Loc.Instance["LblAlreadyDefined"]);
+            Notification.ShowWarning(Loc.Instance["LblConstantVariable"] + " " + id + " " + Loc.Instance["LblAlreadyDefined"], TimeSpan.FromSeconds(5));
             return "";
         }
 
