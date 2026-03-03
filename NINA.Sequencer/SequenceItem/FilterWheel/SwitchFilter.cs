@@ -76,12 +76,12 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
             WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.ProfileChanged), ProfileService_ProfileChanged);
         }
-        
+
         private void SetupFilter(string filterString) {
             try {
                 // Clone
                 if (filterString == null) return;
-                
+
                 // Use current filter selection, if we're connected
                 if (filterString == NullFilter.Instance.Name) {
                     FilterWheelInfo info = filterWheelMediator.GetInfo();
@@ -94,7 +94,6 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
                 // Setting the definition will lead to Evaluation
                 XfilterExpression.Definition = filterString;
-                XfilterExpression.Evaluate(true);
                 // Simplest case is that the string is the name of a filter in the wheel
                 filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == filterString);
                 // If not, assume it's an Expression and find its value
