@@ -125,7 +125,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public AsyncObservableCollection<BinningMode> BinningModes {
             get {
                 if (_binningModes == null) {
-                    _binningModes = new AsyncObservableCollection<BinningMode>();
+                    _binningModes = [];
                     foreach (int f in SupportedBinFactors) {
                         /*
                          * QHY cameras are known to support only symmetrical bin modes
@@ -288,7 +288,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public bool EnableSubSample { get; set; }
         public double ExposureMax => Info.ExpMax / 1e6;
 
-        public IList<string> SupportedActions => new List<string>();
+        public IList<string> SupportedActions => [];
 
         public double ElectronsPerADU => double.NaN;        
 
@@ -327,7 +327,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int GainMax => Info.GainMax;
         public int GainMin => Info.GainMin;
-        public IList<int> Gains => new List<int>();
+        public IList<int> Gains => [];
         public bool HasBattery => false;
         public bool HasDewHeater => false;
         public bool HasSetupDialog => false;

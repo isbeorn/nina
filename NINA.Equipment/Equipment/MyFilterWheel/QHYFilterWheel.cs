@@ -154,7 +154,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             }
         }
 
-        public IList<string> SupportedActions => new List<string>();
+        public IList<string> SupportedActions => [];
 
         public void Disconnect() {
             Logger.Debug($"QHYCFW: Closing filter wheel {Name}");
