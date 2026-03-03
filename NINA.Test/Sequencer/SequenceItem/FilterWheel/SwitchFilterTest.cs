@@ -140,5 +140,129 @@ namespace NINA.Test.Sequencer.SequenceItem.FilterWheel {
 
             duration.Should().Be(TimeSpan.Zero);
         }
+
+        [Test]
+        public void Validate_WithMockedFilterWheel_FiltersRetrievedCorrectly() {
+            var filters = new Core.Utility.ObserveAllCollection<FilterInfo> {
+                new FilterInfo("Red", 0, 1),
+                new FilterInfo("Green", 0, 2),
+                new FilterInfo("Blue", 0, 3),
+                new FilterInfo("Luminance", 0, 4)
+            };
+
+            var profileMock = new Mock<IProfile>();
+            var filterWheelSettingsMock = new Mock<NINA.Profile.Interfaces.IFilterWheelSettings>();
+            filterWheelSettingsMock.Setup(x => x.FilterWheelFilters).Returns(filters);
+            profileMock.Setup(x => x.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
+            profileServiceMock.Setup(x => x.ActiveProfile).Returns(profileMock.Object);
+
+            fwMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true });
+
+            var sut = new SwitchFilter(profileServiceMock.Object, fwMediatorMock.Object);
+            sut.Validate();
+
+            sut.FilterNames.Should().HaveCount(4);
+            sut.FilterNames.Should().Contain("Red");
+            sut.FilterNames.Should().Contain("Green");
+            sut.FilterNames.Should().Contain("Blue");
+            sut.FilterNames.Should().Contain("Luminance");
+        }
+
+        [Test]
+        public async Task Execute_SwitchToSpecificFilter_FromComboBox() {
+            var redFilter = new FilterInfo("Red", 0, 1);
+            var greenFilter = new FilterInfo("Green", 0, 2);
+            var blueFilter = new FilterInfo("Blue", 0, 3);
+            var luminanceFilter = new FilterInfo("Luminance", 0, 4);
+
+            var filters = new Core.Utility.ObserveAllCollection<FilterInfo> {
+                redFilter,
+                greenFilter,
+                blueFilter,
+                luminanceFilter
+            };
+
+            var profileMock = new Mock<IProfile>();
+            var filterWheelSettingsMock = new Mock<NINA.Profile.Interfaces.IFilterWheelSettings>();
+            filterWheelSettingsMock.Setup(x => x.FilterWheelFilters).Returns(filters);
+            profileMock.Setup(x => x.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
+
+            var localProfileServiceMock = new Mock<IProfileService>();
+            localProfileServiceMock.Setup(x => x.ActiveProfile).Returns(profileMock.Object);
+
+            var symbolBrokerMock = new Mock<NINA.Sequencer.Logic.ISymbolBroker>();
+            symbolBrokerMock.Setup(x => x.TryGetValue("Red", out It.Ref<object>.IsAny))
+                .Callback(new TryGetValueCallback((string key, out object value) => { value = 1.0; }))
+                .Returns(true);
+            symbolBrokerMock.Setup(x => x.TryGetValue("Green", out It.Ref<object>.IsAny))
+                .Callback(new TryGetValueCallback((string key, out object value) => { value = 2.0; }))
+                .Returns(true);
+            symbolBrokerMock.Setup(x => x.TryGetValue("Blue", out It.Ref<object>.IsAny))
+                .Callback(new TryGetValueCallback((string key, out object value) => { value = 3.0; }))
+                .Returns(true);
+            symbolBrokerMock.Setup(x => x.TryGetValue("Luminance", out It.Ref<object>.IsAny))
+                .Callback(new TryGetValueCallback((string key, out object value) => { value = 4.0; }))
+                .Returns(true);
+
+            fwMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true });
+            fwMediatorMock.Setup(x => x.ChangeFilter(It.IsAny<FilterInfo>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .ReturnsAsync(greenFilter);
+
+            var sut = new SwitchFilter(localProfileServiceMock.Object, fwMediatorMock.Object);
+            sut.SymbolBroker = symbolBrokerMock.Object;
+
+            // Force XfilterExpression initialization and ensure it has the SymbolBroker
+            var expr = sut.XfilterExpression;
+            expr.SymbolBroker = symbolBrokerMock.Object;
+
+            sut.ComboBoxText = "Green";
+
+            await sut.Execute(default, default);
+
+            sut.Filter.Should().NotBeNull();
+            sut.Filter.Name.Should().Be("Green");
+
+            fwMediatorMock.Verify(x => x.ChangeFilter(
+                It.Is<FilterInfo>(f => f.Name == "Green" && f.Position == 2),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<IProgress<ApplicationStatus>>()), Times.Once);
+        }
+
+        private delegate void TryGetValueCallback(string key, out object value);
+
+        [Test]
+        public async Task Execute_SwitchToSpecificFilter_Via_UI() {
+            var redFilter = new FilterInfo("Red", 0, 1);
+            var greenFilter = new FilterInfo("Green", 0, 2);
+            var blueFilter = new FilterInfo("Blue", 0, 3);
+            var luminanceFilter = new FilterInfo("Luminance", 0, 4);
+
+            var filters = new Core.Utility.ObserveAllCollection<FilterInfo> {
+                redFilter,
+                greenFilter,
+                blueFilter,
+                luminanceFilter
+            };
+
+            var profileMock = new Mock<IProfile>();
+            var filterWheelSettingsMock = new Mock<NINA.Profile.Interfaces.IFilterWheelSettings>();
+            filterWheelSettingsMock.Setup(x => x.FilterWheelFilters).Returns(filters);
+            profileMock.Setup(x => x.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
+            profileServiceMock.Setup(x => x.ActiveProfile).Returns(profileMock.Object);
+
+            fwMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true });
+            fwMediatorMock.Setup(x => x.ChangeFilter(It.IsAny<FilterInfo>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .ReturnsAsync(greenFilter);
+
+            var sut = new SwitchFilter(profileServiceMock.Object, fwMediatorMock.Object);
+            sut.SelectedFilter = 2;
+
+            await sut.Execute(default, default);
+
+            fwMediatorMock.Verify(x => x.ChangeFilter(
+                It.Is<FilterInfo>(f => f.Name == "Green" && f.Position == 2),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<IProgress<ApplicationStatus>>()), Times.Once);
+        }
     }
 }

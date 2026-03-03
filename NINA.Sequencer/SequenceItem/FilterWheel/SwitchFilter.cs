@@ -172,8 +172,8 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             // ComboBoxText might have been set before a FW was connected, or a Symbol's value might have changed, so we need to re-resolve the filter here
-            XfilterExpression.Evaluate();
-            filter = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Position == XfilterExpression.Value);
+            XfilterExpression.Evaluate(true);
+            filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == (int)XfilterExpression.Value);
 
             return Filter == null
                 ? throw new SequenceItemSkippedException("Skipping SwitchFilter - No Filter was selected")
