@@ -38,11 +38,11 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         public QHYFilterWheel(string fwheel, IProfileService profileService) {
             this.profileService = profileService;
 
-            StringBuilder FWheelId = new StringBuilder(32);
-            StringBuilder cameraModel = new StringBuilder(0);
+            string FWheelId;
+            var cameraModel = string.Empty;
 
-            FWheelId.Append(fwheel);
-            Sdk.GetModel(FWheelId, cameraModel);
+            FWheelId = fwheel;
+            Sdk.GetModel(FWheelId, out cameraModel);
 
             Info.Id = FWheelId;
             Sdk.Open(Info.Id);
@@ -91,14 +91,13 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             }
         }
 
-        public string Id => Info.Id.ToString();
+        public string Id => Info.Id;
         public string Name => Info.Name;
         public string DisplayName => Name;
         public string Category => "QHYCCD";
         public string Description => string.Format($"Integrated or 4-pin Filter Wheel on {Info.Id}");
         public string DriverInfo => "Native driver for QHY integrated or 4-pin filter wheels";
         public string DriverVersion => "1.0";
-        public short InterfaceVersion => 1;
 
         public int[] FocusOffsets => this.Filters.Select((x) => x.FocusOffset).ToArray();
 

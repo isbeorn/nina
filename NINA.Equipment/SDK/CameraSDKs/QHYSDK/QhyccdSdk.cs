@@ -68,7 +68,7 @@ namespace QHYCCD {
             }
         }
 
-        public void Open(StringBuilder id) {
+        public void Open(string id) {
             lock (lockobj) {
                 Logger.Trace($"QhyccdSdk: Opening {id}, refCount={refCount}");
 
@@ -153,9 +153,17 @@ namespace QHYCCD {
             }
         }
 
-        public uint GetReadModeName(uint mode, StringBuilder modeName) {
+        public uint GetReadModeName(uint mode, out string modeName) {
             lock (lockobj) {
-                return GetQHYCCDReadModeName(handle, mode, modeName);
+                modeName = string.Empty;
+                byte[] buffer = new byte[QHYCCD_READMODE_NAME_LEN];
+                uint result = GetQHYCCDReadModeName(handle, mode, buffer);
+
+                if (result == QHYCCD_SUCCESS) {
+                    modeName = NullTerminatedBytesToString(buffer);
+                }
+
+                return result;
             }
         }
 
@@ -171,15 +179,27 @@ namespace QHYCCD {
             }
         }
 
-        public void GetId(uint index, StringBuilder id) {
+        public void GetId(uint index, out string id) {
             lock (lockobj) {
-                CheckReturn(GetQHYCCDId(index, id), MethodBase.GetCurrentMethod(), index, new object[] { id });
+                id = string.Empty;
+                byte[] buffer = new byte[QHYCCD_ID_LEN];
+
+                uint result = GetQHYCCDId(index, buffer);
+                CheckReturn(result, MethodBase.GetCurrentMethod(), index, new object[] { id });
+
+                id = NullTerminatedBytesToString(buffer);
             }
         }
 
-        public void GetModel(StringBuilder id, StringBuilder model) {
+        public void GetModel(string id, out string model) {
             lock (lockobj) {
-                CheckReturn(GetQHYCCDModel(id, model), MethodBase.GetCurrentMethod(), new object[] { model });
+                model = string.Empty;
+                byte[] modelBuffer = new byte[QHYCCD_MODEL_LEN];
+
+                uint result = GetQHYCCDModel(id, modelBuffer);
+                CheckReturn(result, MethodBase.GetCurrentMethod(), new object[] { model });
+
+                model = NullTerminatedBytesToString(modelBuffer);
             }
         }
 
@@ -442,6 +462,12 @@ namespace QHYCCD {
             lock (lockobj) {
                 return GetQHYCCDRollingShutterEndOffset(handle, row, ref offset);
             }
+        }
+
+        private static string NullTerminatedBytesToString(byte[] buffer) {
+            int length = Array.IndexOf(buffer, (byte)0);
+            if (length < 0) length = buffer.Length;
+            return Encoding.ASCII.GetString(buffer, 0, length);
         }
 
         #endregion Utility Methods
@@ -1063,10 +1089,10 @@ namespace QHYCCD {
         private static extern unsafe uint GetQHYCCDFWVersion(IntPtr handle, [Out] byte[] verBuf);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDId", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        private static extern unsafe uint GetQHYCCDId(uint index, StringBuilder id);
+        private static extern unsafe uint GetQHYCCDId(uint index, [Out] byte[] idBuf);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDModel", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        private static extern unsafe uint GetQHYCCDModel(StringBuilder id, StringBuilder model);
+        private static extern unsafe uint GetQHYCCDModel(string id, [Out] byte[] modelBuf);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDParam", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         private static extern unsafe double GetQHYCCDParam(IntPtr handle, CONTROL_ID controlid);
@@ -1081,7 +1107,7 @@ namespace QHYCCD {
         private static extern unsafe uint GetQHYCCDReadModeResolution(IntPtr handle, uint mode, ref uint width, ref uint height);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDReadModeName", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        private static extern unsafe uint GetQHYCCDReadModeName(IntPtr handle, uint mode, StringBuilder mode_name);
+        private static extern unsafe uint GetQHYCCDReadModeName(IntPtr handle, uint mode, [Out] byte[] nameBuf);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDReadMode", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         private static extern unsafe uint GetQHYCCDReadMode(IntPtr handle, ref uint mode);
@@ -1106,7 +1132,7 @@ namespace QHYCCD {
         private static extern unsafe uint IsQHYCCDControlAvailable(IntPtr handle, CONTROL_ID controlid);
 
         [DllImport(DLLNAME, EntryPoint = "OpenQHYCCD", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        private static extern unsafe IntPtr OpenQHYCCD(StringBuilder id);
+        private static extern IntPtr OpenQHYCCD(string id);
 
         [DllImport(DLLNAME, EntryPoint = "ReleaseQHYCCDResource", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         private static extern unsafe uint ReleaseQHYCCDResource();
@@ -1205,6 +1231,16 @@ namespace QHYCCD {
         /// model number and serial number, currently not to exceed 32 characters in length.
         /// </summary>
         public const int QHYCCD_ID_LEN = 32;
+
+        /// <summary>
+        /// Specifies the maximum length, in characters, for a QHYCCD model name.
+        /// </summary>
+        public const int QHYCCD_MODEL_LEN = 256;
+
+        /// <summary>
+        /// Specifies the maximum length, in characters, for a QHYCCD readout mode name.
+        /// </summary>
+        public const int QHYCCD_READMODE_NAME_LEN = 256;
 
         /// <summary>
         /// Values for tracking the current camera state within NINA
@@ -1377,7 +1413,7 @@ namespace QHYCCD {
             /// <summary>
             /// The camera's model name, including unique identifier
             /// </summary>
-            public StringBuilder Id;
+            public string Id;
 
             /// <summary>
             /// Image array size (bytes)
@@ -1403,7 +1439,7 @@ namespace QHYCCD {
             /// <summary>
             /// The camera's model name
             /// </summary>
-            public StringBuilder Model;
+            public string Model;
 
             /// <summary>
             /// Maximum sensor offset
@@ -1553,7 +1589,7 @@ namespace QHYCCD {
             /// <summary>
             /// The filter wheel's unique name
             /// </summary>
-            public StringBuilder Id;
+            public string Id;
 
             /// <summary>
             /// The filter wheel's full name, including camera model name

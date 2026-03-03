@@ -12,9 +12,7 @@
 
 #endregion "copyright"
 
-using System;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace QHYCCD {
 
@@ -24,7 +22,7 @@ namespace QHYCCD {
 
         void ReleaseSdk();
 
-        void Open(StringBuilder id);
+        void Open(string id);
 
         void Close();
 
@@ -46,15 +44,15 @@ namespace QHYCCD {
 
         uint GetNumberOfReadModes(ref uint numModes);
 
-        uint GetReadModeName(uint mode, StringBuilder modeName);
+        uint GetReadModeName(uint mode, out string modeName);
 
         uint ControlTemp(double targetTemp);
 
         uint ControlShutter(byte shutterState);
 
-        void GetId(uint index, StringBuilder id);
+        void GetId(uint index, out string id);
 
-        void GetModel(StringBuilder id, StringBuilder model);
+        void GetModel(string id, out string model);
 
         uint GetParamMinMaxStep(QhySdk.CONTROL_ID controlId, ref double min, ref double max, ref double step);
 

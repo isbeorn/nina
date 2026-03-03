@@ -31,7 +31,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,30 +52,31 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private readonly IExposureDataFactory exposureDataFactory;
         private CancellationTokenSource downloadExposureTaskCTS;
         private Task<IExposureData> downloadExposureTask;
+
         public IQhySdk Sdk { get; set; } = QhySdk.Instance;
 
         public QHYCamera(uint cameraIdx, IProfileService profileService, IExposureDataFactory exposureDataFactory) {
             this.profileService = profileService;
             this.exposureDataFactory = exposureDataFactory;
 
-            var cameraId = new StringBuilder(QhySdk.QHYCCD_ID_LEN);
-            var cameraModel = new StringBuilder(0);
+            var cameraId = string.Empty;
+            var cameraModel = string.Empty;
 
             /*
              * Camera model long form, eg: "QHY183C-c915484fa76ea7552"
              * The QHY SDK uses this to internally identify connected cameras
              * and this we need this to create a handle for our camera.
              */
-            Sdk.GetId(cameraIdx, cameraId);
+            Sdk.GetId(cameraIdx, out cameraId);
 
             /*
              * Camera model short form, eg: "QHY183C"
              * We use this to put in the camera equipment selection menu
              * rather than the long form above.
              */
-            Sdk.GetModel(cameraId, cameraModel);
+            Sdk.GetModel(cameraId, out cameraModel);
 
-            Name = cameraModel.ToString();
+            Name = cameraModel;
             Info.Index = cameraIdx;
             Info.Id = cameraId;
 
@@ -275,7 +275,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        public string Description => Info.Id.ToString();
+        public string Description => Info.Id;
 
         public bool DewHeaterOn {
             get => false;
@@ -350,9 +350,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public short MaxBinY => MaxBinX;
 
         public string Name {
-            get => Info.Model.ToString();
+            get => Info.Model;
             set {
-                Info.Model = new StringBuilder(value);
+                Info.Model = value;
                 RaiseAllPropertiesChanged();
             }
         }
@@ -754,8 +754,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             var success = false;
             double min = 0, max = 0, step = 0;
             var modeList = new List<string>();
-            var cameraID = new StringBuilder(QhySdk.QHYCCD_ID_LEN);
-            var modeName = new StringBuilder(0);
+            var cameraID = string.Empty;
             uint num_modes = 0;
             Info.HasReadoutSpeed = false;
 
@@ -769,7 +768,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 /*
                  * Get our selected camera's ID from the SDK
                  */
-                Sdk.GetId(Info.Index, cameraID);
+                Sdk.GetId(Info.Index, out cameraID);
 
                 /*
                  * CameraP is the handle we use to reference this camera
@@ -837,9 +836,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
                      */
                     if (num_modes > 1) {
                         for (uint i = 0; i < num_modes; i++) {
-                            ThrowOnFailure("GetQHYCCDReadModeName", Sdk.GetReadModeName(i, modeName));
+                            string modeName = string.Empty;
+                            ThrowOnFailure("GetQHYCCDReadModeName", Sdk.GetReadModeName(i, out modeName));
                             Logger.Debug($"QHYCCD: Found readout mode \"{modeName}\"");
-                            modeList.Add(modeName.ToString());
+                            modeList.Add(modeName);
                         }
                     }
                 }
