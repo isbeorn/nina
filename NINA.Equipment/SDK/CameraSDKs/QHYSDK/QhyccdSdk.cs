@@ -593,7 +593,7 @@ namespace QHYCCD {
             CONTROL_SPEED,
 
             /// <summary>
-            /// Bit depth of the image retreieved from the camera
+            /// Bit depth of the image retreived from the camera
             /// </summary>
             CONTROL_TRANSFERBIT,
 

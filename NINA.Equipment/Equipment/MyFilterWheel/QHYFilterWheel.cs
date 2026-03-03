@@ -12,25 +12,25 @@
 
 #endregion "copyright"
 
-using NINA.Profile.Interfaces;
+using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Utility;
+using NINA.Profile.Interfaces;
 using QHYCCD;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Model.Equipment;
-using NINA.Equipment.Interfaces;
-using System.Collections.Generic;
-using System;
-using NINA.Equipment.Utility;
 
 namespace NINA.Equipment.Equipment.MyFilterWheel {
 
     public class QHYFilterWheel : BaseINPC, IFilterWheel {
         private QhySdk.QHYCCD_FILTER_WHEEL_INFO Info;
         private bool _connected = false;
-        private IProfileService profileService;
+        private readonly IProfileService profileService;
         private bool moveRequested = false;
         private string destinationPostition = string.Empty;
         public IQhySdk Sdk { get; set; } = QhySdk.Instance;
@@ -164,7 +164,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             Sdk.ReleaseSdk();
         }
 
-        private object lockObj = new object();
+        private readonly object lockObj = new object();
         public AsyncObservableCollection<FilterInfo> Filters {
             get {
                 lock (lockObj) {

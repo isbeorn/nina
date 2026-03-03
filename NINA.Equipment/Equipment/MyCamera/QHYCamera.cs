@@ -261,13 +261,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
             get {
                 if (internalReconnect) { return tempCoolerPower; }
 
-                double rv = double.NaN;                
+                double rv = double.NaN;
                 if (Connected && CanSetTemperature) {
                     if ((rv = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_CURPWM)) != QhySdk.QHYCCD_ERROR) {
                         /*
                          * This needs to be returned as a percentage of Info.CoolerPwmMax.
                          */
-                        return (rv / Info.CoolerPwmMax) * 100;
+                        return rv / Info.CoolerPwmMax * 100;
                     }
                 }
 
@@ -290,7 +290,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public IList<string> SupportedActions => [];
 
-        public double ElectronsPerADU => double.NaN;        
+        public double ElectronsPerADU => double.NaN;
 
         /// <summary>
         // We store the camera's exposure times in microseconds
@@ -300,7 +300,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int Gain {
             get {
-                if(internalReconnect) { return tempGain; }
+                if (internalReconnect) { return tempGain; }
 
                 if (Connected && CanGetGain) {
                     double rv;
@@ -514,7 +514,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             get {
                 if (internalReconnect) { return tempTemperature; }
 
-                double rv = double.NaN;                
+                double rv = double.NaN;
                 if (Connected && Info.HasChipTemp) {
                     if ((rv = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_CURTEMP)) != QhySdk.QHYCCD_ERROR)
                         return rv;
@@ -706,7 +706,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             } catch (Exception ex) {
                 Logger.Error($"QHYCCD: Cooling thread failed to terminate within {COOLING_TIMEOUT}", ex);
             } finally {
-                try { cts?.Dispose(); } finally { }                
+                try { cts?.Dispose(); } finally { }
                 coolerWorkerCts = null;
                 coolerTask = null;
             }
@@ -931,7 +931,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     /*
                      * Initialize cooler's target temperature to 0C
                      */
-                    if (!internalReconnect) { 
+                    if (!internalReconnect) {
                         Info.CoolerTargetTemp = 0;
                     }
 
@@ -961,7 +961,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                  * it manually using QHYCCD_CAMERA_INFO.CurBin. We initialize the
                  * camera with 1x1 binning.
                  */
-                if (!internalReconnect) { 
+                if (!internalReconnect) {
                     Info.CurBin = 1;
                 }
                 SetBinning(Info.CurBin, Info.CurBin);
@@ -996,14 +996,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 QhyHasSensorAirPressure = Sdk.IsControl(QhySdk.CONTROL_ID.CAM_PRESSURE);
                 QhyHasSensorHumidity = Sdk.IsControl(QhySdk.CONTROL_ID.CAM_HUMIDITY);
 
-                if(!internalReconnect) {
+                if (!internalReconnect) {
                     if (QhyHasSensorAirPressure || QhyHasSensorHumidity) {
                         Logger.Debug("QHYCCD: Starting SensorStatsWorker task");
 
                         sensorStatsCts = new CancellationTokenSource();
                         sensorStatsTask = SensorStatsWorker(sensorStatsCts.Token);
                     }
-                }                
+                }
 
                 QhyFirmwareVersion = GetFirmwareVersion();
                 QhyFPGAVersion = GetFPGAVersion();
@@ -1049,7 +1049,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
 
             try {
-                if(!internalReconnect) {
+                if (!internalReconnect) {
                     Connected = false;
                     CancelCoolingSync();
                     CancelSensorStatsSync();
@@ -1117,7 +1117,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     }
                 }
                 if (rv != QhySdk.QHYCCD_SUCCESS) {
-                    Logger.Warning($"QHYCCD: Failed to download image from camera! rv = {rv }");
+                    Logger.Warning($"QHYCCD: Failed to download image from camera! rv = {rv}");
                     throw new CameraDownloadFailedException(Loc.Instance["LblASIImageDownloadError"]);
                 }
 
@@ -1138,7 +1138,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     width: (int)width,
                     height: (int)height,
                     bitDepth: BitDepth,
-                    isBayered: SensorType != SensorType.Monochrome && (BinX == 1 && BinY == 1),
+                    isBayered: SensorType != SensorType.Monochrome && BinX == 1 && BinY == 1,
                     metaData: metaData);
             }, ct);
         }
@@ -1178,8 +1178,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 starty = (StartPixelY + (uint)SubSampleY) / (uint)BinY;
                 uint subWidth = Math.Min((uint)SubSampleX + (uint)SubSampleWidth, QhyIncludeOverscan ? (uint)CameraXSize : Info.EffectiveArea.SizeX) - (uint)SubSampleX;
                 uint subHeight = Math.Min((uint)SubSampleY + (uint)SubSampleHeight, QhyIncludeOverscan ? (uint)CameraYSize : Info.EffectiveArea.SizeY) - (uint)SubSampleY;
-                sizex = (uint)subWidth / (uint)BinX;
-                sizey = (uint)subHeight / (uint)BinY;
+                sizex = subWidth / (uint)BinX;
+                sizey = subHeight / (uint)BinY;
             } else {
                 startx = StartPixelX / (uint)BinX;
                 starty = StartPixelY / (uint)BinY;
@@ -1187,8 +1187,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     sizex = (uint)CameraXSize / (uint)BinX;
                     sizey = (uint)CameraYSize / (uint)BinY;
                 } else {
-                    sizex = (uint)Info.EffectiveArea.SizeX / (uint)BinX;
-                    sizey = (uint)Info.EffectiveArea.SizeY / (uint)BinY;
+                    sizex = Info.EffectiveArea.SizeX / (uint)BinX;
+                    sizey = Info.EffectiveArea.SizeY / (uint)BinY;
                 }
             }
 
@@ -1209,7 +1209,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public void StartExposure(CaptureSequence sequence) {
             RaiseIfNotConnected();
             uint rv;
-            uint startx, starty, sizex, sizey;
             bool isSnap;
             short readoutMode;
 
@@ -1266,7 +1265,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 }
             }
 
-            if (!SetResolution(out startx, out starty, out sizex, out sizey)) {
+            if (!SetResolution(out _, out _, out uint sizex, out uint sizey)) {
                 return;
             }
 
@@ -1345,7 +1344,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 return;
             }
 
-            if (Sdk.SetBitsMode((uint)16) != QhySdk.QHYCCD_SUCCESS) {
+            if (Sdk.SetBitsMode(16) != QhySdk.QHYCCD_SUCCESS) {
                 CameraState = CameraStates.Error;
                 return;
             }
@@ -1364,8 +1363,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 }
             }
 
-            uint startx, starty, sizex, sizey;
-            if (!SetResolution(out startx, out starty, out sizex, out sizey)) {
+            if (!SetResolution(out _, out _, out uint sizex, out uint sizey)) {
                 Logger.Warning("QHYCCD: Failed to set resolution for video mode");
                 CameraState = CameraStates.Error;
                 return;
@@ -1509,39 +1507,39 @@ namespace NINA.Equipment.Equipment.MyCamera {
             TimeSpan utc_diff = DateTime.UtcNow - now_utc;
             if (Math.Abs(utc_diff.TotalMinutes) > 1) {
                 Logger.Warning("GPS is on, but extracted data is bad.");
-                return; 
+                return;
             }
 
             //PPS count
-            var pps = 256 * 256 * imgData[41] + 256 * imgData[42] + imgData[43];
+            var pps = (256 * 256 * imgData[41]) + (256 * imgData[42]) + imgData[43];
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_PPS", pps, "QHY pps"));
             //Frame number
-            var seqNumber = 256 * 256 * 256 * imgData[0] + 256 * 256 * imgData[1] + 256 * imgData[2] + imgData[3];
+            var seqNumber = (256 * 256 * 256 * imgData[0]) + (256 * 256 * imgData[1]) + (256 * imgData[2]) + imgData[3];
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_SEQ", seqNumber, "QHY sequence nr"));
             //The width of the image
-            var width = 256 * imgData[5] + imgData[6];
+            var width = (256 * imgData[5]) + imgData[6];
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_W", width, "QHY width"));
             //Height of the image
-            var height = 256 * imgData[7] + imgData[8];
+            var height = (256 * imgData[7]) + imgData[8];
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_H", height, "QHY height"));
             //latitude
-            var temp = 256 * 256 * 256 * imgData[9] + 256 * 256 * imgData[10] + 256 * imgData[11] + imgData[12];
+            var temp = (256 * 256 * 256 * imgData[9]) + (256 * 256 * imgData[10]) + (256 * imgData[11]) + imgData[12];
             var south = temp > 1000000000;
-            var deg = (temp % 1000000000) / 10000000;
-            var min = (temp % 10000000) / 100000;
-            var fractMin = (temp % 100000) / 100000.0;
-            var latitude = (deg + (min + fractMin) / 60.0) * (south ? -1 : 1);
+            var deg = temp % 1000000000 / 10000000;
+            var min = temp % 10000000 / 100000;
+            var fractMin = temp % 100000 / 100000.0;
+            var latitude = (deg + ((min + fractMin) / 60.0)) * (south ? -1 : 1);
             metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_LAT", latitude, "latitude"));
             //longitude
-            temp = 256 * 256 * 256 * imgData[13] + 256 * 256 * imgData[14] + 256 * imgData[15] + imgData[16];
+            temp = (256 * 256 * 256 * imgData[13]) + (256 * 256 * imgData[14]) + (256 * imgData[15]) + imgData[16];
             var west = temp > 1000000000;
-            deg = (temp % 1000000000) / 1000000;
-            min = (temp % 1000000) / 10000;
-            fractMin = (temp % 10000) / 10000.0;
-            var longitude = (deg + (min + fractMin) / 60.0) * (west ? -1 : 1);
+            deg = temp % 1000000000 / 1000000;
+            min = temp % 1000000 / 10000;
+            fractMin = temp % 10000 / 10000.0;
+            var longitude = (deg + ((min + fractMin) / 60.0)) * (west ? -1 : 1);
             metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_LON", longitude, "longitude"));
             //Shutter start time
-            var start_flag = (imgData[17] / 16) % 4;
+            var start_flag = imgData[17] / 16 % 4;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_SFLG", start_flag, "QHY start_flag"));
             metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_SST", ReceiverStatus(start_flag), "QHY start_flag status"));
             var start_sec = (256 * 256 * 256 * imgData[18]) + (256 * 256 * imgData[19]) + (256 * imgData[20]) + imgData[21];
@@ -1550,7 +1548,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_SUS", start_us, "[us] QHY start"));
             metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_SUTC", JulianSecToDateTime(start_sec, start_us).ToUniversalTime(), "QHY start_time"));
             //Shutter end time
-            var end_flag = (imgData[25] / 16) % 4;
+            var end_flag = imgData[25] / 16 % 4;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_EFLG", end_flag, "QHY end_flag"));
             metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_EST", ReceiverStatus(end_flag), "QHY end_flag status"));
             var end_sec = (256 * 256 * 256 * imgData[26]) + (256 * 256 * imgData[27]) + (256 * imgData[28]) + imgData[29];
@@ -1559,7 +1557,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_EUS", end_us, "[us] QHY end"));
             metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_EUTC", JulianSecToDateTime(end_sec, end_us).ToUniversalTime(), "QHY end_time"));
             //The current time
-            var now_flag = (imgData[33] / 16) % 4;
+            var now_flag = imgData[33] / 16 % 4;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_NFLG", now_flag, "QHY now_flag"));
             metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_NST", ReceiverStatus(now_flag), "QHY now_flag status"));
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_NSEC", now_sec, "[s] QHY now"));
