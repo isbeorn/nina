@@ -36,7 +36,7 @@ namespace NINA.Sequencer.Logic {
 
         public static readonly DependencyProperty AcceptsReturnProperty =
             DependencyProperty.Register(nameof(AcceptsReturn), typeof(bool), typeof(ExprStringControl),
-                new PropertyMetadata(false));
+                new PropertyMetadata(true));
 
         public string Text {
             get => (string)GetValue(TextProperty);

@@ -17,7 +17,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-
+    
         <!-- Maybe the colon/space should be an option or part of the localized label -->
         <StackPanel
             Orientation="Horizontal"
@@ -36,10 +36,8 @@
             Grid.Column="1"
             MinWidth="40"
             Margin="5,0,0,0"
-            Padding="5,0,5,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Center"
-            VerticalContentAlignment="Center"
             AcceptsReturn="{Binding AcceptsReturn, ElementName=root}"
             Text="{Binding Text, ElementName=root, UpdateSourceTrigger=LostFocus}"
             TextAlignment="Left"
@@ -47,12 +45,15 @@
             <TextBox.Style>
                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                     <Setter Property="Height" Value="35" />
+                    <Setter Property="Padding" Value="5,0,5,0" />
                     <Setter Property="TextWrapping" Value="NoWrap" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding AcceptsReturn, ElementName=root}" Value="True">
                             <Setter Property="Height" Value="Auto" />
-                            <Setter Property="MinHeight" Value="35" />
+                            <Setter Property="Padding" Value="5,2,5,2" />
                             <Setter Property="TextWrapping" Value="Wrap" />
+                            <Setter Property="VerticalContentAlignment" Value="Top" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
