@@ -27,11 +27,8 @@ using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,7 +45,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public SBIGCamera(ISbigSdk sdk, SBIG.CCD exposureCcd, DeviceQueryInfo queriedCameraInfo, IProfileService profileService, IExposureDataFactory exposureDataFactory) {
             this.sdk = sdk;
             this.exposureCcd = exposureCcd;
-            this.BinningModes = new AsyncObservableCollection<BinningMode>();
+            this.BinningModes = [];
             this.queriedCameraInfo = queriedCameraInfo;
             this.profileService = profileService;
             this.exposureDataFactory = exposureDataFactory;
@@ -399,7 +396,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public bool HasDewHeater => false;
 
-        public IList<string> SupportedActions => new List<string>();
+        public IList<string> SupportedActions => [];
 
         private SBIGCameraStatus _cameraStatus = SBIGCameraStatus.IDLE;
 
@@ -414,39 +411,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        public CameraStates CameraState {
-            get {
-                CameraStates cameraState;
-
-                switch (CameraStatus) {
-                    case SBIGCameraStatus.EXPOSING:
-                        cameraState = CameraStates.Exposing;
-                        break;
-
-                    case SBIGCameraStatus.DOWNLOAD:
-                        cameraState = CameraStates.Download;
-                        break;
-
-                    case SBIGCameraStatus.WAITING:
-                        cameraState = CameraStates.Waiting;
-                        break;
-
-                    case SBIGCameraStatus.ERROR:
-                        cameraState = CameraStates.Error;
-                        break;
-
-                    case SBIGCameraStatus.IDLE:
-                        cameraState = CameraStates.Idle;
-                        break;
-
-                    default:
-                        cameraState = CameraStates.NoState;
-                        break;
-                }
-
-                return cameraState;
-            }
-        }
+        public CameraStates CameraState => CameraStatus switch {
+            SBIGCameraStatus.EXPOSING => CameraStates.Exposing,
+            SBIGCameraStatus.DOWNLOAD => CameraStates.Download,
+            SBIGCameraStatus.WAITING => CameraStates.Waiting,
+            SBIGCameraStatus.ERROR => CameraStates.Error,
+            SBIGCameraStatus.IDLE => CameraStates.Idle,
+            _ => CameraStates.NoState,
+        };
 
         public bool CanSubSample => true;
         public bool EnableSubSample { get; set; }
@@ -481,7 +453,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        public IList<string> ReadoutModes => new List<string>() { "Default" };
+        public IList<string> ReadoutModes => ["Default"];
 
         public short ReadoutMode {
             get => 0;
@@ -839,7 +811,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int Gain { get => -1; set => throw new InvalidOperationException(); }
 
-        public IList<int> Gains => new List<int>() { };
+        public IList<int> Gains => [];
 
         public bool DewHeaterOn { get => false; set => throw new InvalidOperationException(); }
 
