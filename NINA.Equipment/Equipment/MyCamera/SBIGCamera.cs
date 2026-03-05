@@ -231,6 +231,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             PixelSizeY = unbinnedMode.Value.PixelHeightMicrons;
             CameraXSize = unbinnedMode.Value.Width;
             CameraYSize = unbinnedMode.Value.Height;
+            ElectronsPerADU = unbinnedMode.Value.ElectronsPerAdu;
 
             // For simplicity, only support on chip 2x2 and 3x3 binning modes
             // If there's user demand we could enable off chip, non-square, and greater than 3 binning modes
@@ -440,7 +441,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        private double _electronsPerADU;
+        private double _electronsPerADU = double.NaN;
 
         public double ElectronsPerADU {
             get => _electronsPerADU;
