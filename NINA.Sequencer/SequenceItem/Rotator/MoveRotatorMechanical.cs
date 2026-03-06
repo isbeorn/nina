@@ -37,14 +37,14 @@ namespace NINA.Sequencer.SequenceItem.Rotator {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class MoveRotatorMechanical : SequenceItem, IValidatable {
+    public partial class MoveRotatorMechanical : ExpressionSequenceItem, IValidatable {
 
         [ImportingConstructor]
-        public MoveRotatorMechanical(IRotatorMediator RotatorMediator) {
+        public MoveRotatorMechanical(IRotatorMediator RotatorMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.rotatorMediator = RotatorMediator;
         }
 
-        private MoveRotatorMechanical(MoveRotatorMechanical cloneMe) : this(cloneMe.rotatorMediator) {
+        private MoveRotatorMechanical(MoveRotatorMechanical cloneMe) : this(cloneMe.rotatorMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

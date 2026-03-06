@@ -42,13 +42,13 @@ namespace NINA.Sequencer.Conditions {
         private bool hasDsoParent;
 
         [ImportingConstructor]
-        public AboveHorizonCondition(IProfileService profileService) : base(profileService, useCustomHorizon: true) {
+        public AboveHorizonCondition(IProfileService profileService, ISymbolBroker symbolBroker) : base(profileService, useCustomHorizon: true, symbolBroker) {
             this.DateTime = new SystemDateTime();
             Data.Offset = 0;
             InterruptReason = "Target is below horizon";
         }
 
-        private AboveHorizonCondition(AboveHorizonCondition cloneMe) : this(cloneMe.ProfileService) {
+        private AboveHorizonCondition(AboveHorizonCondition cloneMe) : this(cloneMe.ProfileService, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

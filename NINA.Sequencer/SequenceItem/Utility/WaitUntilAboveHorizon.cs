@@ -43,13 +43,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private IProfileService ProfileService;
 
         [ImportingConstructor]
-        public WaitUntilAboveHorizon(IProfileService profileService) : base() {
+        public WaitUntilAboveHorizon(IProfileService profileService, ISymbolBroker symbolBroker) : base(symbolBroker) {
             Data = new WaitLoopData(profileService, true, GetType().Name);
             Data.Offset = 30;
             ProfileService = profileService;
         }
 
-        private WaitUntilAboveHorizon(WaitUntilAboveHorizon cloneMe) : this(cloneMe.ProfileService) {
+        private WaitUntilAboveHorizon(WaitUntilAboveHorizon cloneMe) : this(cloneMe.ProfileService, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

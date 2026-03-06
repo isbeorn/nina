@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.Composition;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Name", "Lbl_SequenceItem_Symbols_DefineVariable_Name")]
@@ -13,13 +14,13 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     public class GlobalVariable : Variable {
 
         [ImportingConstructor]
-        public GlobalVariable() : base() {
+        public GlobalVariable(ISymbolBroker symbolBroker) : base(symbolBroker) {
         }
 
         public GlobalVariable(GlobalVariable copyMe) : base(copyMe) {
         }
 
-        public GlobalVariable(string id, string def, ISequenceContainer parent) : base(id, def, parent) {
+        public GlobalVariable(string id, string def, ISequenceContainer parent, ISymbolBroker symbolBroker) : base(id, def, parent, symbolBroker) {
         }
 
         public override object Clone() {

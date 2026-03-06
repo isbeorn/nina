@@ -39,15 +39,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class MessageBox : SequenceItem {
+    public class MessageBox : ExpressionSequenceItem {
         private IWindowServiceFactory windowServiceFactory;
 
         [ImportingConstructor]
-        public MessageBox(IWindowServiceFactory windowServiceFactory) {
+        public MessageBox(IWindowServiceFactory windowServiceFactory, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.windowServiceFactory = windowServiceFactory;
         }
 
-        private MessageBox(MessageBox cloneMe) : this(cloneMe.windowServiceFactory) {
+        private MessageBox(MessageBox cloneMe) : this(cloneMe.windowServiceFactory, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

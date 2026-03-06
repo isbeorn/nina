@@ -43,12 +43,12 @@ namespace NINA.Sequencer.Conditions {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class MoonIlluminationCondition : SequenceCondition, IValidatable {
+    public partial class MoonIlluminationCondition : ExpressionSequenceCondition, IValidatable {
         private double currentMoonIllumination;
         private ComparisonOperatorEnum comparator;
 
         [ImportingConstructor]
-        public MoonIlluminationCondition() {
+        public MoonIlluminationCondition(ISymbolBroker symbolBroker) : base(symbolBroker) {
             Comparator = ComparisonOperatorEnum.GREATER_THAN;
 
             CalculateCurrentMoonState();
@@ -67,7 +67,7 @@ namespace NINA.Sequencer.Conditions {
             }
         }
 
-        private MoonIlluminationCondition(MoonIlluminationCondition cloneMe) : this() {
+        private MoonIlluminationCondition(MoonIlluminationCondition cloneMe) : this(cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

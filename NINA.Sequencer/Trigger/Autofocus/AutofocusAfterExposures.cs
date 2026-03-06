@@ -51,7 +51,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class AutofocusAfterExposures : SequenceTrigger, IValidatable {
+    public partial class AutofocusAfterExposures : ExpressionSequenceTrigger, IValidatable {
         private IProfileService profileService;
 
         private IImageHistoryVM history;
@@ -62,7 +62,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         private readonly ISafetyMonitorMediator safetyMonitorMediator;
 
         [ImportingConstructor]
-        public AutofocusAfterExposures(IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory, ISafetyMonitorMediator safetyMonitorMediator) : base() {
+        public AutofocusAfterExposures(IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory, ISafetyMonitorMediator safetyMonitorMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.history = history;
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
@@ -73,7 +73,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             TriggerRunner.Add(new RunAutofocus(profileService, history, cameraMediator, filterWheelMediator, focuserMediator, autoFocusVMFactory));
         }
 
-        private AutofocusAfterExposures(AutofocusAfterExposures cloneMe) : this(cloneMe.profileService, cloneMe.history, cloneMe.cameraMediator, cloneMe.filterWheelMediator, cloneMe.focuserMediator, cloneMe.autoFocusVMFactory, cloneMe.safetyMonitorMediator) {
+        private AutofocusAfterExposures(AutofocusAfterExposures cloneMe) : this(cloneMe.profileService, cloneMe.history, cloneMe.cameraMediator, cloneMe.filterWheelMediator, cloneMe.focuserMediator, cloneMe.autoFocusVMFactory, cloneMe.safetyMonitorMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

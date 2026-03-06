@@ -51,8 +51,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [JsonObject(MemberSerialization.OptIn)]
     public class TrainedDarkFlatExposure : SequentialContainer, IImmutableContainer {
 
-        private ISymbolBroker symbolBroker;
-
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
             this.Items.Clear();
@@ -65,16 +63,16 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
         [ImportingConstructor]
         public TrainedDarkFlatExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator,
-            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
+            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator, ISymbolBroker symbolBroker) :
             this(
                 null,
                 profileService,
                 new CloseCover(flatDeviceMediator),
-                new ToggleLight(flatDeviceMediator) { OnOff = false },
-                new SwitchFilter(profileService, filterWheelMediator),
-                new SetBrightness(flatDeviceMediator),
-                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.DARK },
-                new LoopCondition() { Iterations = 1 },
+                new ToggleLight(flatDeviceMediator, symbolBroker) { OnOff = false },
+                new SwitchFilter(profileService, filterWheelMediator, symbolBroker),
+                new SetBrightness(flatDeviceMediator, symbolBroker),
+                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker) { ImageType = CaptureSequence.ImageTypes.DARK },
+                new LoopCondition(symbolBroker) { Iterations = 1 },
                 new OpenCover(flatDeviceMediator)
 
             ) {

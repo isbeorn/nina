@@ -24,6 +24,7 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class SwitchFilter : SequenceItem, IValidatable {
+    public partial class SwitchFilter : ExpressionSequenceItem, IValidatable {
 
         private IProfileService profileService;
         private IFilterWheelMediator filterWheelMediator;
@@ -70,7 +71,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
 
         [ImportingConstructor]
-        public SwitchFilter(IProfileService profileservice, IFilterWheelMediator filterWheelMediator) {
+        public SwitchFilter(IProfileService profileservice, IFilterWheelMediator filterWheelMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.profileService = profileservice;
             this.filterWheelMediator = filterWheelMediator;
 
@@ -118,7 +119,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             SetupFilter(ComboBoxText);
         }
 
-        private SwitchFilter(SwitchFilter cloneMe) : this(cloneMe.profileService, cloneMe.filterWheelMediator) {
+        private SwitchFilter(SwitchFilter cloneMe) : this(cloneMe.profileService, cloneMe.filterWheelMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

@@ -46,7 +46,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class SmartExposure : SequentialContainer, IImmutableContainer, IValidatable {
+    public partial class SmartExposure : SequentialContainer, IUsesExpressions, IImmutableContainer, IValidatable {
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -64,12 +64,14 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 IImageHistoryVM imageHistoryVM,
                 IFilterWheelMediator filterWheelMediator,
                 IGuiderMediator guiderMediator,
-                ISafetyMonitorMediator safetyMonitorMediator) : this(
+                ISafetyMonitorMediator safetyMonitorMediator,
+                ISymbolBroker symbolBroker) : this(
                     null,
-                    new SwitchFilter(profileService, filterWheelMediator),
-                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM),
-                    new LoopCondition(),
-                    new DitherAfterExposures(guiderMediator, imageHistoryVM, profileService, safetyMonitorMediator)
+                    new SwitchFilter(profileService, filterWheelMediator, symbolBroker),
+                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker),
+                    new LoopCondition(symbolBroker),
+                    new DitherAfterExposures(guiderMediator, imageHistoryVM, profileService, safetyMonitorMediator, symbolBroker),
+                    symbolBroker
                 ) {
         }
 
@@ -81,7 +83,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 SwitchFilter switchFilter,
                 TakeExposure takeExposure,
                 LoopCondition loopCondition,
-                DitherAfterExposures ditherAfterExposures
+                DitherAfterExposures ditherAfterExposures,
+                ISymbolBroker symbolBroker
                 ) {
             this.Add(switchFilter);
             this.Add(takeExposure);
@@ -95,6 +98,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
             }
+            SymbolBroker = symbolBroker;
         }
         private SmartExposure(SmartExposure cloneMe) {
 
@@ -157,6 +161,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         [IsExpression(Default = 1, HasValidator = true)]
         public partial int Iterations { get; set; }
+        public ISymbolBroker SymbolBroker { get; set; }
+
         partial void IterationsExpressionValidator(Logic.Expression expr) {
             if (Conditions.Count > 0) {
                 GetLoopCondition().Iterations = (int)expr.Value;

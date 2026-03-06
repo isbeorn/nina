@@ -3,26 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Utility;
+using NINA.Sequencer.Validations;
+using System.Runtime.Serialization;
+using static NINA.Sequencer.Utility.ItemUtility;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
-    using Newtonsoft.Json;
-    using NINA.Astrometry;
-    using NINA.Core.Enum;
-    using NINA.Core.Locale;
-    using NINA.Core.Model;
-    using NINA.Core.Utility;
-    using NINA.Profile.Interfaces;
-    using NINA.Sequencer.Conditions;
-    using NINA.Sequencer.Utility;
-    using NINA.Sequencer.Validations;
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using static NINA.Sequencer.Utility.ItemUtility;
 
     public abstract class LoopForSunMoonAltitudeBase : LoopForAltitudeBase {
 
-        public LoopForSunMoonAltitudeBase(IProfileService profileService, bool useCustomHorizon) : base(profileService, useCustomHorizon) {
+        public LoopForSunMoonAltitudeBase(IProfileService profileService, bool useCustomHorizon, ISymbolBroker symbolBroker) : base(profileService, useCustomHorizon, symbolBroker) {
         }
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {

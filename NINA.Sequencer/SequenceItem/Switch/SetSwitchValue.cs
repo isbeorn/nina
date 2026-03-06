@@ -41,18 +41,18 @@ namespace NINA.Sequencer.SequenceItem.Switch {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class SetSwitchValue : SequenceItem, IValidatable {
+    public partial class SetSwitchValue : ExpressionSequenceItem, IValidatable {
         private ISwitchMediator switchMediator;
 
         [ImportingConstructor]
-        public SetSwitchValue(ISwitchMediator switchMediator) {
+        public SetSwitchValue(ISwitchMediator switchMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.switchMediator = switchMediator;
 
             WritableSwitches = new ReadOnlyCollection<IWritableSwitch>(CreateDummyList());
             SelectedSwitch = WritableSwitches.First();
         }
 
-        private SetSwitchValue(SetSwitchValue cloneMe) : this(cloneMe.switchMediator) {
+        private SetSwitchValue(SetSwitchValue cloneMe) : this(cloneMe.switchMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

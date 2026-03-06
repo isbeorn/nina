@@ -32,6 +32,18 @@ using NINA.Sequencer.Utility;
 using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Trigger {
+    [JsonObject(MemberSerialization.OptIn)]
+    public abstract class ExpressionSequenceTrigger : SequenceTrigger, IUsesExpressions {
+        public ExpressionSequenceTrigger(ISymbolBroker symbolBroker) : base() {
+            SymbolBroker = symbolBroker;
+        }
+        public ExpressionSequenceTrigger(ExpressionSequenceTrigger cloneMe) : base(cloneMe) {
+            SymbolBroker = cloneMe.SymbolBroker;
+        }
+
+        public ISymbolBroker SymbolBroker { get; set; }
+
+    }
 
     [JsonObject(MemberSerialization.OptIn)]
     public abstract class SequenceTrigger : SequenceEntityINPC, ISequenceTrigger {
@@ -49,7 +61,6 @@ namespace NINA.Sequencer.Trigger {
             Name = cloneMe.Name;
             Category = cloneMe.Category;
             Description = cloneMe.Description;
-            SymbolBroker = cloneMe.SymbolBroker;
         }
 
         [OnDeserializing]
@@ -59,8 +70,6 @@ namespace NINA.Sequencer.Trigger {
             this.TriggerRunner?.Triggers.Clear();
         }
 
-
-        public ISymbolBroker SymbolBroker { get; set; }
 
         public string Name { get; set; }
 

@@ -38,14 +38,14 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class MoveFocuserByTemperature : SequenceItem, IValidatable, IFocuserConsumer {
+    public partial class MoveFocuserByTemperature : ExpressionSequenceItem, IValidatable, IFocuserConsumer {
 
         [ImportingConstructor]
-        public MoveFocuserByTemperature(IFocuserMediator focuserMediator) {
+        public MoveFocuserByTemperature(IFocuserMediator focuserMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.focuserMediator = focuserMediator;
         }
 
-        private MoveFocuserByTemperature(MoveFocuserByTemperature cloneMe) : this(cloneMe.focuserMediator) {
+        private MoveFocuserByTemperature(MoveFocuserByTemperature cloneMe) : this(cloneMe.focuserMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

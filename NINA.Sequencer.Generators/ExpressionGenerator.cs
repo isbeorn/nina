@@ -62,6 +62,8 @@ namespace NINA.Sequencer.Generators {
                 bool hasUsesExpressions = classSymbol
                         .GetAttributes()
                         .Any(a => a.AttributeClass?.ToDisplayString() == "NINA.Sequencer.Generators.UsesExpressionsAttribute");
+                bool implementsIUsesExpressions = classSymbol.AllInterfaces
+                    .Any(i => i.ToDisplayString() == "NINA.Sequencer.Logic.IUsesExpressions");
 
                 foreach (var attribute in classSymbol.GetAttributes()) {
                     if (attribute.AttributeClass?.ToDisplayString() == "NINA.Sequencer.Generators.UsesExpressionsAttribute") {
@@ -90,6 +92,24 @@ namespace NINA.Sequencer.Generators {
 
                     context.ReportDiagnostic(diag);
                     // Do NOT generate code for this property
+                    continue;
+                }
+
+                if (!implementsIUsesExpressions) {
+                    var descriptor = new DiagnosticDescriptor(
+                        id: "EXP0002",
+                        title: "UsesExpressions contract error",
+                        messageFormat: "Class '{0}' is marked with [UsesExpressions], but does not implement NINA.Sequencer.Logic.IUsesExpressions.",
+                        category: "Usage",
+                        DiagnosticSeverity.Error,
+                        isEnabledByDefault: true);
+
+                    var diag = Diagnostic.Create(
+                        descriptor,
+                        classSymbol.Locations.FirstOrDefault(),
+                        classSymbol.Name);
+
+                    context.ReportDiagnostic(diag);
                     continue;
                 }
 

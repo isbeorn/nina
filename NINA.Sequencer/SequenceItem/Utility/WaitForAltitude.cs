@@ -43,14 +43,14 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private string aboveOrBelow;
  
         [ImportingConstructor]
-        public WaitForAltitude(IProfileService profileService) :base() {
+        public WaitForAltitude(IProfileService profileService, ISymbolBroker symbolBroker) :base(symbolBroker) {
             Data = new WaitLoopData(profileService, false, GetType().Name);
             Data.Offset = 30;
             AboveOrBelow = ">";
             ProfileService = profileService;
         }
 
-        private WaitForAltitude(WaitForAltitude cloneMe) : this(cloneMe.ProfileService) {
+        private WaitForAltitude(WaitForAltitude cloneMe) : this(cloneMe.ProfileService, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

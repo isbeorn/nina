@@ -22,6 +22,7 @@ using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
@@ -31,14 +32,14 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [ExportMetadata("Category", "Lbl_SequenceCategory_FlatDevice")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class ToggleLight : SequenceItem, IValidatable {
+    public class ToggleLight : ExpressionSequenceItem, IValidatable {
 
         [ImportingConstructor]
-        public ToggleLight(IFlatDeviceMediator flatDeviceMediator) {
+        public ToggleLight(IFlatDeviceMediator flatDeviceMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.flatDeviceMediator = flatDeviceMediator;
         }
 
-        private ToggleLight(ToggleLight cloneMe) : this(cloneMe.flatDeviceMediator) {
+        private ToggleLight(ToggleLight cloneMe) : this(cloneMe.flatDeviceMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

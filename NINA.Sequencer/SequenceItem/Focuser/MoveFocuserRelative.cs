@@ -38,14 +38,14 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class MoveFocuserRelative : SequenceItem, IValidatable {
+    public partial class MoveFocuserRelative : ExpressionSequenceItem, IValidatable {
 
         [ImportingConstructor]
-        public MoveFocuserRelative(IFocuserMediator focuserMediator) {
+        public MoveFocuserRelative(IFocuserMediator focuserMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.focuserMediator = focuserMediator;
         }
 
-        private MoveFocuserRelative(MoveFocuserRelative cloneMe) : this(cloneMe.focuserMediator) {
+        private MoveFocuserRelative(MoveFocuserRelative cloneMe) : this(cloneMe.focuserMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

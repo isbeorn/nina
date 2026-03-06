@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
-    using Newtonsoft.Json;
-    using NINA.Astrometry;
-    using NINA.Core.Enum;
-    using NINA.Profile.Interfaces;
-    using System.Collections.Generic;
 
-    public abstract class WaitForAltitudeBase : SequenceItem {
+    public abstract class WaitForAltitudeBase : ExpressionSequenceItem {
 
-        public WaitForAltitudeBase(IProfileService profileService, bool useCustomHorizon) {
+        public WaitForAltitudeBase(IProfileService profileService, bool useCustomHorizon, ISymbolBroker symbolBroker) : base(symbolBroker) {
             ProfileService = profileService;
             Data = new WaitLoopData(profileService, useCustomHorizon, GetType().Name);
         }

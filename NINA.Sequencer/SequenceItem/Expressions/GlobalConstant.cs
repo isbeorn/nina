@@ -13,12 +13,12 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     public class GlobalConstant : Constant {
 
         [ImportingConstructor]
-        public GlobalConstant() : base() {
+        public GlobalConstant(ISymbolBroker symbolBroker) : base(symbolBroker) {
             Name = Name;
             Icon = Icon;
         }
 
-        public GlobalConstant(GlobalConstant copyMe) : base() {
+        public GlobalConstant(GlobalConstant copyMe) : base(copyMe.SymbolBroker) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;

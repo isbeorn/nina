@@ -32,13 +32,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class Annotation : SequenceItem {
+    public class Annotation : ExpressionSequenceItem {
 
         [ImportingConstructor]
-        public Annotation() {
+        public Annotation(ISymbolBroker symbolBroker) : base(symbolBroker) {
         }
 
-        private Annotation(Annotation cloneMe) : this() {
+        private Annotation(Annotation cloneMe) : this(cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

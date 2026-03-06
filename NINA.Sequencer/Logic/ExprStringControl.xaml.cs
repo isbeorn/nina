@@ -65,12 +65,13 @@ namespace NINA.Sequencer.Logic {
 
         private void UpdateProcessedText() {
             var sequenceItem = DataContext as ISequenceItem;
-            if (sequenceItem == null) {
+            var usesExpressions = DataContext as IUsesExpressions;
+            if (sequenceItem == null || usesExpressions == null) {
                 ProcessedText = Text;
                 return;
             }
 
-            ProcessedText = ExpressionExpander.Expand(Text, sequenceItem.SymbolBroker, sequenceItem.Parent);
+            ProcessedText = ExpressionExpander.Expand(Text, usesExpressions.SymbolBroker, sequenceItem.Parent);
         }
     }
 }

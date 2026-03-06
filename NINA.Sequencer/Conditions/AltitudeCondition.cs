@@ -42,11 +42,11 @@ namespace NINA.Sequencer.Conditions {
         private bool hasDsoParent;
 
         [ImportingConstructor]
-        public AltitudeCondition(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
+        public AltitudeCondition(IProfileService profileService, ISymbolBroker symbolBroker) : base(profileService, useCustomHorizon: false, symbolBroker) {
             Data.Offset = 30;
             Data.Comparator = Core.Enum.ComparisonOperatorEnum.LESS_THAN;
         }
-        private AltitudeCondition(AltitudeCondition cloneMe) : this(cloneMe.ProfileService) {
+        private AltitudeCondition(AltitudeCondition cloneMe) : this(cloneMe.ProfileService, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

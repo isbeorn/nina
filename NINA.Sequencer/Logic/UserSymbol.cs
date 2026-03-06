@@ -32,7 +32,7 @@ namespace NINA.Sequencer.Logic {
 
     [JsonObject(MemberSerialization.OptIn)]
 
-    public abstract class UserSymbol : SequenceItem.SequenceItem, IValidatable {
+    public abstract class UserSymbol : SequenceItem.ExpressionSequenceItem, IValidatable {
 
         private static HashSet<string> LoggedOnce = new HashSet<string>();
 
@@ -51,12 +51,12 @@ namespace NINA.Sequencer.Logic {
         public ConcurrentDictionary<Expression, byte>  Consumers { get; } = new ConcurrentDictionary<Expression, byte>();
 
         [ImportingConstructor]
-        public UserSymbol() {
+        public UserSymbol(ISymbolBroker symbolBroker) : base(symbolBroker) {
             Name = Name;
             Icon = Icon;
         }
 
-        public UserSymbol(UserSymbol copyMe) : this() {
+        public UserSymbol(UserSymbol copyMe) : this(copyMe.SymbolBroker) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;

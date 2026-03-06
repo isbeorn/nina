@@ -42,7 +42,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     public partial class WaitForMoonAltitude : WaitForAltitudeBase, IValidatable {
 
         [ImportingConstructor]
-        public WaitForMoonAltitude(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
+        public WaitForMoonAltitude(IProfileService profileService, ISymbolBroker symbolBroker) : base(profileService, useCustomHorizon: false, symbolBroker) {
             Name = Name;
         }
 
@@ -53,7 +53,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
         }
 
-        private WaitForMoonAltitude(WaitForMoonAltitude cloneMe) : this(cloneMe.ProfileService) {
+        private WaitForMoonAltitude(WaitForMoonAltitude cloneMe) : this(cloneMe.ProfileService, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

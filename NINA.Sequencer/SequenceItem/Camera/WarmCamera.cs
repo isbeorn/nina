@@ -38,14 +38,14 @@ namespace NINA.Sequencer.SequenceItem.Camera {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class WarmCamera : SequenceItem, IValidatable {
+    public partial class WarmCamera : ExpressionSequenceItem, IValidatable {
 
         [ImportingConstructor]
-        public WarmCamera(ICameraMediator cameraMediator) {
+        public WarmCamera(ICameraMediator cameraMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.cameraMediator = cameraMediator;
         }
 
-        private WarmCamera(WarmCamera cloneMe) : this(cloneMe.cameraMediator) {
+        private WarmCamera(WarmCamera cloneMe) : this(cloneMe.cameraMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

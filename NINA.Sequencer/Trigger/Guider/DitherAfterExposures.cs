@@ -36,11 +36,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Locale;
-using NINA.Profile.Interfaces;
-using NINA.Sequencer.Utility;
-using NINA.Core.Utility;
-using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
 
@@ -54,14 +49,14 @@ namespace NINA.Sequencer.Trigger.Guider {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class DitherAfterExposures : SequenceTrigger, IValidatable {
+    public partial class DitherAfterExposures : ExpressionSequenceTrigger, IValidatable {
         private IGuiderMediator guiderMediator;
         private IImageHistoryVM history;
         private IProfileService profileService;
         private readonly ISafetyMonitorMediator safetyMonitorMediator;
 
         [ImportingConstructor]
-        public DitherAfterExposures(IGuiderMediator guiderMediator, IImageHistoryVM history, IProfileService profileService, ISafetyMonitorMediator safetyMonitorMediator) : base() {
+        public DitherAfterExposures(IGuiderMediator guiderMediator, IImageHistoryVM history, IProfileService profileService, ISafetyMonitorMediator safetyMonitorMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.guiderMediator = guiderMediator;
             this.history = history;
             this.profileService = profileService;
@@ -70,7 +65,7 @@ namespace NINA.Sequencer.Trigger.Guider {
             TriggerRunner.Add(new Dither(guiderMediator, profileService));
         }
 
-        private DitherAfterExposures(DitherAfterExposures cloneMe) : this(cloneMe.guiderMediator, cloneMe.history, cloneMe.profileService, cloneMe.safetyMonitorMediator) {
+        private DitherAfterExposures(DitherAfterExposures cloneMe) : this(cloneMe.guiderMediator, cloneMe.history, cloneMe.profileService, cloneMe.safetyMonitorMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

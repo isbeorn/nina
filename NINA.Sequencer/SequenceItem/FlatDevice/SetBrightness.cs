@@ -35,14 +35,14 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class SetBrightness : SequenceItem, IValidatable {
+    public partial class SetBrightness : ExpressionSequenceItem, IValidatable {
 
         [ImportingConstructor]
-        public SetBrightness(IFlatDeviceMediator flatDeviceMediator) {
+        public SetBrightness(IFlatDeviceMediator flatDeviceMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.flatDeviceMediator = flatDeviceMediator;
         }
 
-        private SetBrightness(SetBrightness cloneMe) : this(cloneMe.flatDeviceMediator) {
+        private SetBrightness(SetBrightness cloneMe) : this(cloneMe.flatDeviceMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

@@ -49,13 +49,12 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public partial class SkyFlat : SequentialContainer, IImmutableContainer {
+    public partial class SkyFlat : SequentialContainer, IUsesExpressions, IImmutableContainer {
         private IProfileService profileService;
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
         private ITwilightCalculator twilightCalculator;
         private ITelescopeMediator telescopeMediator;
-        private ISymbolBroker symbolBroker;
 
         private bool cameraIsLinear = true;
 
@@ -77,7 +76,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                        IImageHistoryVM imageHistoryVM,
                        IFilterWheelMediator filterWheelMediator,
                        ITwilightCalculator twilightCalculator,
-                       ISymbolBroker symbolBroker) :  // Add this parameter
+                       ISymbolBroker symbolBroker) :  
             this(
                 null,
                 profileService,
@@ -85,10 +84,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 imagingMediator,
                 imageSaveMediator,
                 twilightCalculator,
-                symbolBroker,  // Add this parameter
-                new SwitchFilter(profileService, filterWheelMediator),
-                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.FLAT },
-                new LoopCondition() { Iterations = 1 }
+                symbolBroker,  
+                new SwitchFilter(profileService, filterWheelMediator, symbolBroker),
+                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker) { ImageType = CaptureSequence.ImageTypes.FLAT },
+                new LoopCondition(symbolBroker) { Iterations = 1 }
             ) {
             HistogramTargetPercentage = 0.5;
             HistogramTolerancePercentage = 0.1;
@@ -115,14 +114,14 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             this.imageSaveMediator = imageSaveMediator;
             this.twilightCalculator = twilightCalculator;
             this.telescopeMediator = telescopeMediator;
-            this.symbolBroker = symbolBroker;  // Add this line
+            this.SymbolBroker = symbolBroker;
             ditherPixels = profileService.ActiveProfile.GuiderSettings.DitherPixels;
             ditherSettleTime = profileService.ActiveProfile.GuiderSettings.SettleTime;
 
-            this.Add(new Annotation());  // Pass symbolBroker
-            this.Add(new Annotation());  // Pass symbolBroker
+            this.Add(new Annotation(symbolBroker)); 
+            this.Add(new Annotation(symbolBroker)); 
             this.Add(switchFilter);
-            this.Add(new Annotation());  // Pass symbolBroker
+            this.Add(new Annotation(symbolBroker));
 
             var container = new SequentialContainer();
             container.Add(loopCondition);
@@ -175,7 +174,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 imagingMediator,
                 imageSaveMediator,
                 twilightCalculator,
-                symbolBroker,  // Add this parameter
+                SymbolBroker, 
                 (SwitchFilter)this.GetSwitchFilterItem().Clone(),
                 (TakeExposure)this.GetExposureItem().Clone(),
                 (LoopCondition)this.GetIterations().Clone()
@@ -506,6 +505,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 RaisePropertyChanged();
             }
         }
+
+        public ISymbolBroker SymbolBroker { get; set; }
 
         public override bool Validate() {
             var switchFilter = GetSwitchFilterItem();

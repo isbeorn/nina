@@ -61,7 +61,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                IDomeMediator domeMediator,
                                IDomeFollower domeFollower,
                                IPlateSolverFactory plateSolverFactory,
-                               IWindowServiceFactory windowServiceFactory) : base(profileService,
+                               IWindowServiceFactory windowServiceFactory,
+                               ISymbolBroker symbolBroker) : base(profileService,
                                                                         telescopeMediator,
                                                                         imagingMediator,
                                                                         filterWheelMediator,
@@ -69,7 +70,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                                                         domeMediator,
                                                                         domeFollower,
                                                                         plateSolverFactory,
-                                                                        windowServiceFactory) {
+                                                                        windowServiceFactory,
+                                                                        symbolBroker) {
             this.rotatorMediator = rotatorMediator;
             this.UsesRotation = true;
         }
@@ -83,7 +85,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                                                 cloneMe.domeMediator,
                                                                 cloneMe.domeFollower,
                                                                 cloneMe.plateSolverFactory,
-                                                                cloneMe.windowServiceFactory) {
+                                                                cloneMe.windowServiceFactory,
+                                                                cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

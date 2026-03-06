@@ -36,19 +36,19 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [Export(typeof(ISequenceItem))]
     [UsesExpressions]
 
-    public partial class WaitUntil : SequenceItem, IValidatable, ITrueFalse {
+    public partial class WaitUntil : ExpressionSequenceItem, IValidatable, ITrueFalse {
         private ISafetyMonitorMediator safetyMonitorMediator;
         protected ISequenceMediator sequenceMediator;
         private IProfileService profileService;
 
         [ImportingConstructor]
-        public WaitUntil(ISafetyMonitorMediator safetyMonitorMediator, ISequenceMediator seqMediator, IProfileService pService) {
+        public WaitUntil(ISafetyMonitorMediator safetyMonitorMediator, ISequenceMediator seqMediator, IProfileService pService, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.safetyMonitorMediator = safetyMonitorMediator;
             this.sequenceMediator = seqMediator;
             this.profileService = pService;
         }
 
-        private WaitUntil(WaitUntil cloneMe) : this(cloneMe.safetyMonitorMediator, cloneMe.sequenceMediator, cloneMe.profileService) {
+        private WaitUntil(WaitUntil cloneMe) : this(cloneMe.safetyMonitorMediator, cloneMe.sequenceMediator, cloneMe.profileService, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

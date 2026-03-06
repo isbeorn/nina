@@ -37,14 +37,14 @@ namespace NINA.Sequencer.SequenceItem.Dome {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class SlewDomeAzimuth : SequenceItem, IValidatable {
+    public partial class SlewDomeAzimuth : ExpressionSequenceItem, IValidatable {
 
         [ImportingConstructor]
-        public SlewDomeAzimuth(IDomeMediator domeMediator) {
+        public SlewDomeAzimuth(IDomeMediator domeMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.domeMediator = domeMediator;
         }
 
-        private SlewDomeAzimuth(SlewDomeAzimuth cloneMe) : this(cloneMe.domeMediator) {
+        private SlewDomeAzimuth(SlewDomeAzimuth cloneMe) : this(cloneMe.domeMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

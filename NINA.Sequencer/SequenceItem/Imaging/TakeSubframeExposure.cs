@@ -58,7 +58,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class TakeSubframeExposure : SequenceItem, IExposureItem, IValidatable {
+    public partial class TakeSubframeExposure : ExpressionSequenceItem, IExposureItem, IValidatable {
         private ICameraMediator cameraMediator;
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
@@ -67,7 +67,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         Task imageProcessingTask;
 
         [ImportingConstructor]
-        public TakeSubframeExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) {
+        public TakeSubframeExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, ISymbolBroker symbolBroker) : base(symbolBroker) {
             ImageType = CaptureSequence.ImageTypes.LIGHT;
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
@@ -77,7 +77,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             CameraInfo = this.cameraMediator.GetInfo();
         }
 
-        private TakeSubframeExposure(TakeSubframeExposure cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.imagingMediator, cloneMe.imageSaveMediator, cloneMe.imageHistoryVM) {
+        private TakeSubframeExposure(TakeSubframeExposure cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.imagingMediator, cloneMe.imageSaveMediator, cloneMe.imageHistoryVM, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

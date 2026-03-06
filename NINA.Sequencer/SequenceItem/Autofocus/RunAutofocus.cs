@@ -28,6 +28,7 @@ using NINA.Core.Model.Equipment;
 using NINA.Core.Locale;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.Interfaces;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Autofocus {
 
@@ -47,7 +48,7 @@ namespace NINA.Sequencer.SequenceItem.Autofocus {
 
         [ImportingConstructor]
         public RunAutofocus(
-            IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory) {
+            IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory) : base() {
             this.profileService = profileService;
             this.history = history;
             this.cameraMediator = cameraMediator;

@@ -19,7 +19,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     public partial class Variable : UserSymbol {
 
         [ImportingConstructor]
-        public Variable() : base() {
+        public Variable(ISymbolBroker symbolBroker) : base(symbolBroker) {
             Name = Name;
             Icon = Icon;
         }
@@ -31,8 +31,8 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
         }
 
-        public Variable(string id, string def, ISequenceContainer parent) {
-            Variable sv = new Variable();
+        public Variable(string id, string def, ISequenceContainer parent, ISymbolBroker symbolBroker) : base(symbolBroker) {
+            Variable sv = new Variable(symbolBroker);
             sv.AttachNewParent(parent);
             sv.Identifier = id;
             sv.Executed = true;

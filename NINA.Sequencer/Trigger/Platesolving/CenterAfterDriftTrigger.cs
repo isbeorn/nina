@@ -44,21 +44,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Locale;
-using NINA.WPF.Base.ViewModel;
-using NINA.Astrometry;
-using NINA.Sequencer.SequenceItem.Platesolving;
-using NINA.Core.Utility;
-using System.IO;
-using NINA.Core.Utility.Notification;
-using NINA.Sequencer.Utility;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Enum;
-using NINA.PlateSolving;
-using NINA.Core.Utility.WindowService;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Interfaces;
-using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.Generators;
 
@@ -72,7 +57,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class CenterAfterDriftTrigger : SequenceTrigger, IValidatable {
+    public partial class CenterAfterDriftTrigger : ExpressionSequenceTrigger, IValidatable {
         private IProfileService profileService;
         private ITelescopeMediator telescopeMediator;
         private IFilterWheelMediator filterWheelMediator;
@@ -91,7 +76,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         public CenterAfterDriftTrigger(
             IProfileService profileService, ITelescopeMediator telescopeMediator, IFilterWheelMediator filterWheelMediator, IGuiderMediator guiderMediator,
             IImagingMediator imagingMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator, IDomeFollower domeFollower, IImageSaveMediator imageSaveMediator,
-            IApplicationStatusMediator applicationStatusMediator, ISafetyMonitorMediator safetyMonitorMediator) : base() {
+            IApplicationStatusMediator applicationStatusMediator, ISafetyMonitorMediator safetyMonitorMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.filterWheelMediator = filterWheelMediator;
@@ -107,7 +92,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         }
 
         private CenterAfterDriftTrigger(CenterAfterDriftTrigger cloneMe) : this(cloneMe.profileService, cloneMe.telescopeMediator, cloneMe.filterWheelMediator, cloneMe.guiderMediator,
-            cloneMe.imagingMediator, cloneMe.cameraMediator, cloneMe.domeMediator, cloneMe.domeFollower, cloneMe.imageSaveMediator, cloneMe.applicationStatusMediator, cloneMe.safetyMonitorMediator) {
+            cloneMe.imagingMediator, cloneMe.cameraMediator, cloneMe.domeMediator, cloneMe.domeFollower, cloneMe.imageSaveMediator, cloneMe.applicationStatusMediator, cloneMe.safetyMonitorMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 
@@ -165,7 +150,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             var centerSequenceItem = new Center(profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator, 
-                domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory()) {
+                domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory(), SymbolBroker) {
                 Coordinates = Coordinates
             };
             await centerSequenceItem.Execute(progress, token);

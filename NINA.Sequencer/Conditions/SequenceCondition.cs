@@ -31,6 +31,18 @@ using NINA.Sequencer.Utility;
 using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Conditions {
+    [JsonObject(MemberSerialization.OptIn)]
+    public abstract class ExpressionSequenceCondition : SequenceCondition, IUsesExpressions {
+        public ExpressionSequenceCondition(ISymbolBroker symbolBroker) : base() {
+            SymbolBroker = symbolBroker;
+        }
+        public ExpressionSequenceCondition(ExpressionSequenceCondition cloneMe) : base(cloneMe) {
+            SymbolBroker = cloneMe.SymbolBroker;
+        }
+
+        public ISymbolBroker SymbolBroker { get; set; }
+
+    }
 
     [JsonObject(MemberSerialization.OptIn)]
     public abstract class SequenceCondition : SequenceEntityINPC, ISequenceCondition {
@@ -47,12 +59,10 @@ namespace NINA.Sequencer.Conditions {
             Name = cloneMe.Name;
             Category = cloneMe.Category;
             Description = cloneMe.Description;
-            SymbolBroker = cloneMe.SymbolBroker;
         }
 
         public string Name { get; set; }
 
-        public ISymbolBroker SymbolBroker { get; set; }
         public virtual bool AllowMultiplePerSet => false;
 
         public string Description { get; set; }

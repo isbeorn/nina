@@ -452,7 +452,7 @@ namespace NINA.ViewModel.FlatWizard {
             SequenceContainer sequenceItem;
             switch (FlatWizardMode) {
                 case FlatWizardMode.DYNAMICBRIGHTNESS:
-                    sequenceItem = new AutoBrightnessFlat(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, flatDeviceMediator);
+                    sequenceItem = new AutoBrightnessFlat(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, flatDeviceMediator, symbolBroker);
                     var autoBrightnessFlat = sequenceItem as AutoBrightnessFlat;
                     autoBrightnessFlat.GetSwitchFilterItem().Filter = settings.Filter;
                     autoBrightnessFlat.MaxBrightness = settings.Settings.MaxAbsoluteFlatDeviceBrightness;
@@ -480,7 +480,7 @@ namespace NINA.ViewModel.FlatWizard {
                     break;
                 case FlatWizardMode.DYNAMICEXPOSURE:
                 default:
-                    sequenceItem = new AutoExposureFlat(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, flatDeviceMediator);
+                    sequenceItem = new AutoExposureFlat(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, flatDeviceMediator, symbolBroker);
                     var autoExposureFlat = sequenceItem as AutoExposureFlat;
                     autoExposureFlat.GetSwitchFilterItem().Filter = settings.Filter;
                     autoExposureFlat.GetExposureItem().Binning = settings.Settings.Binning;

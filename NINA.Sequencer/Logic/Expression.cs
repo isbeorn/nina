@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Expressions;
 using System;
 using System.Collections.Generic;
@@ -546,7 +547,7 @@ namespace NINA.Sequencer.Logic {
                 bool ext = false;
 
                 if (SymbolBroker == null && Context != null) {
-                    SymbolBroker = Context.SymbolBroker;
+                    SymbolBroker = (Context as IUsesExpressions).SymbolBroker;
                 }
                 if (SymbolBroker == null && Symbol != null) {
                     SymbolBroker = Symbol.SymbolBroker;

@@ -38,11 +38,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class AutoExposureFlat : SequentialContainer, IImmutableContainer, IValidatable {
+    public partial class AutoExposureFlat : SequentialContainer, IUsesExpressions, IImmutableContainer, IValidatable {
         private IProfileService profileService;
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
-        private ISymbolBroker symbolBroker;
 
 
         private bool cameraIsLinear = true;
@@ -56,21 +55,21 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
         [ImportingConstructor]
         public AutoExposureFlat(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator,
-            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
+            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator, ISymbolBroker symbolBroker) :
             this(
                 null,
                 profileService,
                 imagingMediator,
                 imageSaveMediator,
                 new CloseCover(flatDeviceMediator),
-                new ToggleLight(flatDeviceMediator) { OnOff = true },
-                new SwitchFilter(profileService, filterWheelMediator),
-                new SetBrightness(flatDeviceMediator) { Brightness = 50 },
-                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.FLAT },
-                new LoopCondition() { Iterations = 1 },
-                new ToggleLight(flatDeviceMediator) { OnOff = false },
-                new OpenCover(flatDeviceMediator)
-
+                new ToggleLight(flatDeviceMediator, symbolBroker) { OnOff = true },
+                new SwitchFilter(profileService, filterWheelMediator, symbolBroker),
+                new SetBrightness(flatDeviceMediator, symbolBroker) { Brightness = 50 },
+                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker) { ImageType = CaptureSequence.ImageTypes.FLAT },
+                new LoopCondition(symbolBroker) { Iterations = 1 },
+                new ToggleLight(flatDeviceMediator, symbolBroker) { OnOff = false },
+                new OpenCover(flatDeviceMediator),
+                symbolBroker
             ) {
 
             HistogramTargetPercentage = 0.5;
@@ -89,7 +88,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             TakeExposure takeExposure,
             LoopCondition loopCondition,
             ToggleLight toggleLightOff,
-            OpenCover openCover
+            OpenCover openCover,
+            ISymbolBroker symbolBroker
         ) {
             this.profileService = profileService;
             this.imagingMediator = imagingMediator;
@@ -112,7 +112,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
             }
+            SymbolBroker = symbolBroker;
         }
+
+        public ISymbolBroker SymbolBroker { get; set; }
 
         partial void AfterClone(AutoExposureFlat clone) {
             // The order of these matters!

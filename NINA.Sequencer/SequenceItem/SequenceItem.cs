@@ -30,6 +30,17 @@ using NINA.Sequencer.Logic;
 using System.Diagnostics;
 
 namespace NINA.Sequencer.SequenceItem {
+    [JsonObject(MemberSerialization.OptIn)]
+    public abstract class ExpressionSequenceItem : SequenceItem, IUsesExpressions {
+        public ExpressionSequenceItem(ISymbolBroker symbolBroker) : base() {
+            SymbolBroker = symbolBroker;
+        }
+        public ExpressionSequenceItem(ExpressionSequenceItem cloneMe) : base(cloneMe) {
+            SymbolBroker = cloneMe.SymbolBroker;
+        }
+
+        public ISymbolBroker SymbolBroker { get; set; }
+    }
 
     [JsonObject(MemberSerialization.OptIn)]
     public abstract class SequenceItem : SequenceEntityINPC, ISequenceItem {
@@ -47,12 +58,10 @@ namespace NINA.Sequencer.SequenceItem {
             Name = cloneMe.Name;
             Category = cloneMe.Category;
             Description = cloneMe.Description;
-            SymbolBroker = cloneMe.SymbolBroker;
             Attempts = cloneMe.Attempts;
             ErrorBehavior = cloneMe.ErrorBehavior;
         }
 
-        private ISymbolBroker symbolBroker;
         private string name;
         private bool showMenu;
         private SequenceEntityStatus status = SequenceEntityStatus.CREATED;
@@ -72,14 +81,6 @@ namespace NINA.Sequencer.SequenceItem {
             }
             
         });
-
-        public ISymbolBroker SymbolBroker {
-            get => symbolBroker;
-            set {
-                symbolBroker = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public string Name {
             get => name;

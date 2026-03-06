@@ -39,10 +39,10 @@ namespace NINA.Sequencer.Conditions {
     public partial class SunAltitudeCondition : LoopForSunMoonAltitudeBase {
 
         [ImportingConstructor]
-        public SunAltitudeCondition(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
+        public SunAltitudeCondition(IProfileService profileService, ISymbolBroker symbolBroker) : base(profileService, useCustomHorizon: false, symbolBroker) {
             InterruptReason = "Sun is outside of the specified range";
         }
-        private SunAltitudeCondition(SunAltitudeCondition cloneMe) : this(cloneMe.ProfileService) {
+        private SunAltitudeCondition(SunAltitudeCondition cloneMe) : this(cloneMe.ProfileService, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

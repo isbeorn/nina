@@ -24,15 +24,15 @@ namespace NINA.Sequencer.Conditions {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class LoopWhile : SequenceCondition, IValidatable, ITrueFalse {
+    public partial class LoopWhile : ExpressionSequenceCondition, IValidatable, ITrueFalse {
 
 
         [ImportingConstructor]
-        public LoopWhile() {
+        public LoopWhile(ISymbolBroker symbolBroker) : base(symbolBroker) {
             ConditionWatchdog = new ConditionWatchdog(InterruptWhenFails, TimeSpan.FromSeconds(5));
         }
 
-        public LoopWhile(LoopWhile copyMe) : this() {
+        public LoopWhile(LoopWhile copyMe) : this(copyMe.SymbolBroker) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
             }

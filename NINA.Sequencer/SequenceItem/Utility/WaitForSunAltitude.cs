@@ -44,10 +44,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     public partial class WaitForSunAltitude : WaitForAltitudeBase, IValidatable {
 
         [ImportingConstructor]
-        public WaitForSunAltitude(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
+        public WaitForSunAltitude(IProfileService profileService, ISymbolBroker symbolBroker) : base(profileService, useCustomHorizon: false, symbolBroker) {
         }
 
-        private WaitForSunAltitude(WaitForSunAltitude cloneMe) : this(cloneMe.ProfileService) {
+        private WaitForSunAltitude(WaitForSunAltitude cloneMe) : this(cloneMe.ProfileService, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

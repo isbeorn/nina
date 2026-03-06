@@ -44,7 +44,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
-    public partial class TakeManyExposures : SequentialContainer, IImmutableContainer, IValidatable {
+    public partial class TakeManyExposures : SequentialContainer, IUsesExpressions, IImmutableContainer, IValidatable {
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -54,15 +54,18 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         [ImportingConstructor]
-        public TakeManyExposures(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) :
+        public TakeManyExposures(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, ISymbolBroker symbolBroker) :
                 this(
                     null,
-                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { Name = "Take Exposure" },
-                    new LoopCondition() { Name = "Loop for Iterations", Iterations = 1 }) {
+                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker) { Name = "Take Exposure" },
+                    new LoopCondition(symbolBroker) { Name = "Loop for Iterations", Iterations = 1 },
+                    symbolBroker) {
         }
 
+        public ISymbolBroker SymbolBroker { get; set; }
+
         private TakeManyExposures(
-                TakeManyExposures cloneMe, TakeExposure takeExposure, LoopCondition loopCondition) {
+                TakeManyExposures cloneMe, TakeExposure takeExposure, LoopCondition loopCondition, ISymbolBroker symbolBroker) {
             this.Add(takeExposure);
             this.Add(loopCondition);
 
@@ -71,6 +74,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
             }
+
+            SymbolBroker = symbolBroker;
         }
 
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;

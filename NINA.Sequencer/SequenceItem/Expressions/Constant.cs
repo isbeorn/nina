@@ -37,7 +37,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     public partial class Constant : UserSymbol, IValidatable {
 
         [ImportingConstructor]
-        public Constant() : base() {
+        public Constant(ISymbolBroker symbolBroker) : base(symbolBroker) {
             Name = Name;
             Icon = Icon;
         }

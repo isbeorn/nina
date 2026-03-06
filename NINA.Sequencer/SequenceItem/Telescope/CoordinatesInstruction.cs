@@ -25,12 +25,11 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class CoordinatesInstruction : SequenceItem, IValidatable {
+    public partial class CoordinatesInstruction : ExpressionSequenceItem, IValidatable {
 
-        public CoordinatesInstruction(ISequenceEntity e) {
+        public CoordinatesInstruction(ISymbolBroker symbolBroker) : base(symbolBroker) {
         }
-
-        public CoordinatesInstruction() {
+        public CoordinatesInstruction(CoordinatesInstruction cloneMe) : base(cloneMe) {
         }
 
         partial void AfterClone(CoordinatesInstruction clone) {

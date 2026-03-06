@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Utility;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Utility;
+using System.Runtime.Serialization;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
-    using Newtonsoft.Json;
-    using NINA.Astrometry;
-    using NINA.Core.Enum;
-    using NINA.Core.Utility;
-    using NINA.Profile.Interfaces;
-    using NINA.Sequencer.Conditions;
-    using NINA.Sequencer.Utility;
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
 
-    public abstract class LoopForAltitudeBase : SequenceCondition {
+    public abstract class LoopForAltitudeBase : ExpressionSequenceCondition {
 
         private IList<string> issues = new List<string>();
 
-        public LoopForAltitudeBase(IProfileService profileService, bool useCustomHorizon) {
+        public LoopForAltitudeBase(IProfileService profileService, bool useCustomHorizon, ISymbolBroker symbolBroker) : base(symbolBroker) {
             ProfileService = profileService;
             Data = new WaitLoopData(profileService, useCustomHorizon, GetType().Name);
             ConditionWatchdog = new ConditionWatchdog(Interrupt, TimeSpan.FromSeconds(5));

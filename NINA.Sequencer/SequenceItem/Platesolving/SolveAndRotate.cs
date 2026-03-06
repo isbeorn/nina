@@ -46,7 +46,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class SolveAndRotate : SequenceItem, IValidatable {
+    public partial class SolveAndRotate : ExpressionSequenceItem, IValidatable {
         protected IProfileService profileService;
         protected ITelescopeMediator telescopeMediator;
         protected IImagingMediator imagingMediator;
@@ -65,7 +65,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                IFilterWheelMediator filterWheelMediator,
                                IGuiderMediator guiderMediator,
                                IPlateSolverFactory plateSolverFactory,
-                               IWindowServiceFactory windowServiceFactory) {
+                               IWindowServiceFactory windowServiceFactory,
+                               ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.imagingMediator = imagingMediator;
@@ -83,7 +84,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                                                 cloneMe.filterWheelMediator,
                                                                 cloneMe.guiderMediator,
                                                                 cloneMe.plateSolverFactory,
-                                                                cloneMe.windowServiceFactory) {
+                                                                cloneMe.windowServiceFactory,
+                                                                cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

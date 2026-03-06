@@ -39,10 +39,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class WaitForTimeSpan : SequenceItem, IValidatable {
+    public partial class WaitForTimeSpan : ExpressionSequenceItem, IValidatable {
 
         [ImportingConstructor]
-        public WaitForTimeSpan() {
+        public WaitForTimeSpan(ISymbolBroker symbolBroker) : base(symbolBroker) {
         }
 
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {

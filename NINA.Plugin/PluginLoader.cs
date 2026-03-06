@@ -686,7 +686,6 @@ namespace NINA.Plugin {
                         string category = categoryObj.ToString();
                         item.Category = GrabLabel(category);
                     }
-                    item.SymbolBroker = symbolBroker;
                     items.Add(item);
                 } catch (Exception ex) {
                     // Skip item if anything fails

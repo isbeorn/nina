@@ -58,7 +58,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
-    public partial class AutofocusAfterTemperatureChangeTrigger : SequenceTrigger, IValidatable {
+    public partial class AutofocusAfterTemperatureChangeTrigger : ExpressionSequenceTrigger, IValidatable {
         private IProfileService profileService;
         private IImageHistoryVM history;
         private ICameraMediator cameraMediator;
@@ -69,7 +69,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         private double initialTemperature;
 
         [ImportingConstructor]
-        public AutofocusAfterTemperatureChangeTrigger(IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory, ISafetyMonitorMediator safetyMonitorMediator) : base() {
+        public AutofocusAfterTemperatureChangeTrigger(IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory, ISafetyMonitorMediator safetyMonitorMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.history = history;
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
@@ -80,7 +80,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             TriggerRunner.Add(new RunAutofocus(profileService, history, cameraMediator, filterWheelMediator, focuserMediator, autoFocusVMFactory));
         }
 
-        private AutofocusAfterTemperatureChangeTrigger(AutofocusAfterTemperatureChangeTrigger cloneMe) : this(cloneMe.profileService, cloneMe.history, cloneMe.cameraMediator, cloneMe.filterWheelMediator, cloneMe.focuserMediator, cloneMe.autoFocusVMFactory, cloneMe.safetyMonitorMediator) {
+        private AutofocusAfterTemperatureChangeTrigger(AutofocusAfterTemperatureChangeTrigger cloneMe) : this(cloneMe.profileService, cloneMe.history, cloneMe.cameraMediator, cloneMe.filterWheelMediator, cloneMe.focuserMediator, cloneMe.autoFocusVMFactory, cloneMe.safetyMonitorMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

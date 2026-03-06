@@ -36,13 +36,13 @@ namespace NINA.Sequencer.Conditions {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class LoopCondition : SequenceCondition, IValidatable {
+    public partial class LoopCondition : ExpressionSequenceCondition, IValidatable {
 
         [ImportingConstructor]
-        public LoopCondition() {
+        public LoopCondition(ISymbolBroker symbolBroker) : base(symbolBroker) {
         }
 
-        private LoopCondition(LoopCondition cloneMe) : this() {
+        private LoopCondition(LoopCondition cloneMe) : this(cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

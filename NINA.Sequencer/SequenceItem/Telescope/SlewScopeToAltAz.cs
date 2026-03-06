@@ -31,6 +31,7 @@ using NINA.Core.Utility.Notification;
 using System.Windows;
 using NINA.Sequencer.Generators;
 using System.Runtime.Serialization;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Telescope {
 
@@ -42,10 +43,10 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class SlewScopeToAltAz : SequenceItem, IValidatable {
+    public partial class SlewScopeToAltAz : ExpressionSequenceItem, IValidatable {
 
         [ImportingConstructor]
-        public SlewScopeToAltAz(IProfileService profileService, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) {
+        public SlewScopeToAltAz(IProfileService profileService, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, ISymbolBroker symbolBroker) : base(symbolBroker) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
@@ -57,7 +58,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             Coordinates?.SetPosition(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
         }
 
-        private SlewScopeToAltAz(SlewScopeToAltAz cloneMe) : this(cloneMe.profileService, cloneMe.telescopeMediator, cloneMe.guiderMediator) {
+        private SlewScopeToAltAz(SlewScopeToAltAz cloneMe) : this(cloneMe.profileService, cloneMe.telescopeMediator, cloneMe.guiderMediator, cloneMe.SymbolBroker) {
             CopyMetaData(cloneMe);
         }
 

@@ -40,9 +40,7 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         private Variable CreateVariable(string identifier, string definition = "0", ISequenceContainer parent = null) {
-            var variable = new Variable {
-                SymbolBroker = _symbolBroker.Object
-            };
+            var variable = new Variable(_symbolBroker.Object);
             variable.Expr = new Expression(definition, variable) { 
                 SymbolBroker = _symbolBroker.Object 
             };
@@ -57,9 +55,7 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         private Constant CreateConstant(string identifier, string definition = "0", ISequenceContainer parent = null) {
-            var constant = new Constant {
-                SymbolBroker = _symbolBroker.Object
-            };
+            var constant = new Constant(_symbolBroker.Object);
             constant.Expr = new Expression(definition, constant) { 
                 SymbolBroker = _symbolBroker.Object 
             };
@@ -71,9 +67,7 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         private GlobalVariable CreateGlobalVariable(string identifier, string definition = "0") {
-            var globalVar = new GlobalVariable {
-                SymbolBroker = _symbolBroker.Object
-            };
+            var globalVar = new GlobalVariable (_symbolBroker.Object);
             globalVar.Expr = new Expression(definition, globalVar) { 
                 SymbolBroker = _symbolBroker.Object 
             };
@@ -85,9 +79,7 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         private GlobalConstant CreateGlobalConstant(string identifier, string definition = "0") {
-            var globalConst = new GlobalConstant {
-                SymbolBroker = _symbolBroker.Object
-            };
+            var globalConst = new GlobalConstant (_symbolBroker.Object);
             globalConst.Expr = new Expression(definition, globalConst) { 
                 SymbolBroker = _symbolBroker.Object 
             };
@@ -97,8 +89,7 @@ namespace NINA.Test.Sequencer.Logic {
 
         private SequentialContainer CreateContainer(string name = "TestContainer") {
             var container = new SequentialContainer {
-                Name = name,
-                SymbolBroker = _symbolBroker.Object
+                Name = name
             };
             return container;
         }
@@ -663,9 +654,7 @@ namespace NINA.Test.Sequencer.Logic {
         public void UserSymbol_AfterParentChanged_WithEmptyIdentifier_ShouldNotAddToCache() {
             // arrange
             var container = CreateContainer();
-            var variable = new Variable {
-                SymbolBroker = _symbolBroker.Object
-            };
+            var variable = new Variable (_symbolBroker.Object);
             variable.Expr = new Expression("0", variable) { 
                 SymbolBroker = _symbolBroker.Object 
             };
