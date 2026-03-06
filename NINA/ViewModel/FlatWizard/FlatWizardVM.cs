@@ -453,7 +453,9 @@ namespace NINA.ViewModel.FlatWizard {
             switch (FlatWizardMode) {
                 case FlatWizardMode.DYNAMICBRIGHTNESS:
                     sequenceItem = new AutoBrightnessFlat(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, flatDeviceMediator);
+                    sequenceItem.SymbolBroker = symbolBroker;
                     var autoBrightnessFlat = sequenceItem as AutoBrightnessFlat;
+                    autoBrightnessFlat.GetSwitchFilterItem().SymbolBroker = symbolBroker;
                     autoBrightnessFlat.GetSwitchFilterItem().Filter = settings.Filter;
                     autoBrightnessFlat.MaxBrightness = settings.Settings.MaxAbsoluteFlatDeviceBrightness;
                     autoBrightnessFlat.MinBrightness = settings.Settings.MinAbsoluteFlatDeviceBrightness;
@@ -467,7 +469,9 @@ namespace NINA.ViewModel.FlatWizard {
                     break;
                 case FlatWizardMode.SKYFLAT:
                     sequenceItem = new SkyFlat(profileService, cameraMediator, telescopeMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, twilightCalculator, symbolBroker);
+                    sequenceItem.SymbolBroker = symbolBroker;
                     var skyflat = sequenceItem as SkyFlat;
+                    skyflat.GetSwitchFilterItem().SymbolBroker = symbolBroker;
                     skyflat.GetSwitchFilterItem().Filter = settings.Filter;
                     skyflat.GetExposureItem().Binning = settings.Settings.Binning;
                     skyflat.GetExposureItem().Gain = settings.Settings.Gain;
@@ -481,7 +485,9 @@ namespace NINA.ViewModel.FlatWizard {
                 case FlatWizardMode.DYNAMICEXPOSURE:
                 default:
                     sequenceItem = new AutoExposureFlat(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, flatDeviceMediator);
+                    sequenceItem.SymbolBroker = symbolBroker;
                     var autoExposureFlat = sequenceItem as AutoExposureFlat;
+                    autoExposureFlat.GetSwitchFilterItem().SymbolBroker = symbolBroker;
                     autoExposureFlat.GetSwitchFilterItem().Filter = settings.Filter;
                     autoExposureFlat.GetExposureItem().Binning = settings.Settings.Binning;
                     autoExposureFlat.GetExposureItem().Gain = settings.Settings.Gain;

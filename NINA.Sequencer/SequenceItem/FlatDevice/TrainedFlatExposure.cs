@@ -96,6 +96,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             this.Add(closeCover);
             this.Add(toggleLightOn);
             this.Add(switchFilter);
+            switchFilter.SymbolBroker = SymbolBroker;
             this.Add(setBrightness);
 
             var container = new SequentialContainer();

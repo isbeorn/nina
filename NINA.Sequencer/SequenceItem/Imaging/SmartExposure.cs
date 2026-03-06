@@ -84,6 +84,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 DitherAfterExposures ditherAfterExposures
                 ) {
             this.Add(switchFilter);
+            switchFilter.SymbolBroker = SymbolBroker;
             this.Add(takeExposure);
             this.Add(loopCondition);
             this.Add(ditherAfterExposures);
