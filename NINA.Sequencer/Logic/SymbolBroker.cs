@@ -110,6 +110,8 @@ namespace NINA.Sequencer.Logic {
         private IRotatorMediator _rotatorMediator;
         public static readonly char DELIMITER = '_';
 
+        public static SymbolBroker INSTANCE;
+
         public SymbolBroker(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
                                                                                             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
             IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator) : base(profileService) {
@@ -151,6 +153,8 @@ namespace NINA.Sequencer.Logic {
             UpdateNINASymbols();
             _conditionWatchdog = new ConditionWatchdog(UpdateNINASymbols, TimeSpan.FromSeconds(3));
             _conditionWatchdog.Start();
+
+            INSTANCE = this;
         }
 
         private void AddHiddenSymbol(string source, Symbol sym) {
