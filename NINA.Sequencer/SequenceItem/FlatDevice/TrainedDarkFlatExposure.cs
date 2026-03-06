@@ -96,15 +96,11 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             this.Add(closeCover);
             this.Add(toggleLightOff);
             this.Add(switchFilter);
-            switchFilter.SymbolBroker = SymbolBroker;
             this.Add(setBrightness);
-            setBrightness.SymbolBroker = SymbolBroker;
 
             var container = new SequentialContainer();
             container.Add(loopCondition);
-            loopCondition.SymbolBroker = SymbolBroker;
             container.Add(takeExposure);
-            takeExposure.SymbolBroker = SymbolBroker;
             this.Add(container);
             this.Add(openCover);
 
@@ -205,7 +201,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             ) {
                 KeepPanelClosed = KeepPanelClosed,
             };
-            Logic.SymbolBroker.FixupContainer(clone);
             return clone;
         }
 

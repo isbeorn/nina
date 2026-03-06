@@ -37,7 +37,7 @@ namespace NINA.Sequencer.Logic {
 
         public Expression (Expression cloneMe, ISequenceEntity context, Action<Expression> validator = null) {
             Definition = cloneMe.Definition;
-            SymbolBroker = Logic.SymbolBroker.INSTANCE;
+            SymbolBroker = cloneMe.SymbolBroker;
             Symbol = cloneMe.Symbol;
             Type = cloneMe.Type;
             Range = cloneMe.Range;
@@ -51,7 +51,6 @@ namespace NINA.Sequencer.Logic {
         public Expression(string definition, ISequenceEntity context) {
             Definition = definition;
             Context = context;
-            SymbolBroker = Logic.SymbolBroker.INSTANCE;
         }
 
         public Expression(string definition, ISequenceEntity context, UserSymbol symbol) {
@@ -62,7 +61,6 @@ namespace NINA.Sequencer.Logic {
             Definition = definition;
             Context = context;
             Symbol = symbol;
-            SymbolBroker = Logic.SymbolBroker.INSTANCE;
         }
 
         public ISequenceEntity Context { get; set; }

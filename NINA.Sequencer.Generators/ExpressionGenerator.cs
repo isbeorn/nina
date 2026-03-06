@@ -195,7 +195,8 @@ namespace NINA.Sequencer.Generators {
                 if ({fieldNameExpression} == null) {{
                     {fieldNameExpression} = new Expression(null, null);
                     {fieldNameExpression}.Context = this;
-                    {fieldNameExpression}.Type = ""{fieldType}"";";
+                    {fieldNameExpression}.Type = ""{fieldType}"";
+                    {fieldNameExpression}.SymbolBroker = SymbolBroker;";
                 foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
 
                     if (kvp.Key == "HasValidator") {
