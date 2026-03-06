@@ -65,7 +65,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         [OnSerializing]
         public void Serializing(StreamingContext context) {
             // We only save this in 3.2
-            Filter = null;
+            filter = null;
         }
 
 
