@@ -122,6 +122,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             this.Add(new Annotation());  // Pass symbolBroker
             this.Add(new Annotation());  // Pass symbolBroker
             this.Add(switchFilter);
+            switchFilter.SymbolBroker = SymbolBroker;
             this.Add(new Annotation());  // Pass symbolBroker
 
             var container = new SequentialContainer();
@@ -186,6 +187,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 HistogramTolerancePercentage = this.HistogramTolerancePercentage,
                 ShouldDither = this.ShouldDither
             };
+            Logic.SymbolBroker.FixupContainer(clone);
             return clone;
         }
 

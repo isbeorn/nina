@@ -33,6 +33,7 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic.SymbolFunctions;
 using NINA.WPF.Base.ViewModel;
 using System;
@@ -810,6 +811,21 @@ namespace NINA.Sequencer.Logic {
                 RemoveSymbol("Guider", "RMSDec");
                 RemoveSymbol("Guider", "PeakRA");
                 RemoveSymbol("Guider", "PeakDec");
+            }
+        }
+
+        public static void FixupContainer (SequentialContainer c) {
+            foreach (ISequenceEntity e in c.Items) {
+                e.SymbolBroker = INSTANCE;
+                if (e is SequentialContainer ec) {
+                    FixupContainer(ec);
+                }
+            }
+            foreach (ISequenceEntity e in c.Conditions) {
+                e.SymbolBroker = INSTANCE;
+            }
+            foreach (ISequenceEntity e in c.Triggers) {
+                e.SymbolBroker = INSTANCE;
             }
         }
     }

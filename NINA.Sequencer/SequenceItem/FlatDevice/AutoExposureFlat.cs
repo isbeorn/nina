@@ -98,6 +98,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             this.Add(closeCover);
             this.Add(toggleLightOn);
             this.Add(switchFilter);
+            switchFilter.SymbolBroker = SymbolBroker;
             this.Add(setBrightness);
 
             var container = new SequentialContainer();
@@ -132,6 +133,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             clone.HistogramTolerancePercentage = HistogramTolerancePercentage;
             clone.KeepPanelClosed = KeepPanelClosed;
             clone.IsExpanded = false;
+            Logic.SymbolBroker.FixupContainer(clone);
         }
 
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
