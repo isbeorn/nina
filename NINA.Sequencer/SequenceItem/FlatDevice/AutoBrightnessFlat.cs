@@ -128,7 +128,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             clone.HistogramTargetPercentage = HistogramTargetPercentage;
             clone.HistogramTolerancePercentage = HistogramTolerancePercentage;
             clone.KeepPanelClosed = KeepPanelClosed;
-           clone.IsExpanded = false;
+            clone.IsExpanded = false;
+            Logic.SymbolBroker.FixupContainer(clone);
         }
 
 

@@ -86,8 +86,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             this.Add(switchFilter);
             switchFilter.SymbolBroker = SymbolBroker;
             this.Add(takeExposure);
+            takeExposure.SymbolBroker = SymbolBroker;
             this.Add(loopCondition);
+            loopCondition.SymbolBroker = SymbolBroker;
             this.Add(ditherAfterExposures);
+            ditherAfterExposures.SymbolBroker = SymbolBroker;
 
             WeakEventManager<SwitchFilter, PropertyChangedEventArgs>.AddHandler(switchFilter, nameof(switchFilter.PropertyChanged), SwitchFilter_PropertyChanged);
 
@@ -112,7 +115,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             clone.Add((TakeExposure)GetTakeExposure().Clone());
             clone.Add((LoopCondition)GetLoopCondition().Clone());
             clone.Add((DitherAfterExposures)GetDitherAfterExposures().Clone());
-            // Weak thing...
+            Logic.SymbolBroker.FixupContainer(clone);
         }
 
 

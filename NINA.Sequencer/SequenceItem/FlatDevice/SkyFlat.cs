@@ -187,6 +187,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 HistogramTolerancePercentage = this.HistogramTolerancePercentage,
                 ShouldDither = this.ShouldDither
             };
+            Logic.SymbolBroker.FixupContainer(clone);
             return clone;
         }
 

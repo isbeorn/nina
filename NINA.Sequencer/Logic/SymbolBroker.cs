@@ -33,6 +33,7 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic.SymbolFunctions;
 using NINA.WPF.Base.ViewModel;
 using System;
@@ -110,6 +111,8 @@ namespace NINA.Sequencer.Logic {
         private IRotatorMediator _rotatorMediator;
         public static readonly char DELIMITER = '_';
 
+        private static SymbolBroker INSTANCE;
+
         public SymbolBroker(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
                                                                                             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
             IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator) : base(profileService) {
@@ -151,6 +154,8 @@ namespace NINA.Sequencer.Logic {
             UpdateNINASymbols();
             _conditionWatchdog = new ConditionWatchdog(UpdateNINASymbols, TimeSpan.FromSeconds(3));
             _conditionWatchdog.Start();
+
+            INSTANCE = this;
         }
 
         private void AddHiddenSymbol(string source, Symbol sym) {
@@ -806,6 +811,21 @@ namespace NINA.Sequencer.Logic {
                 RemoveSymbol("Guider", "RMSDec");
                 RemoveSymbol("Guider", "PeakRA");
                 RemoveSymbol("Guider", "PeakDec");
+            }
+        }
+
+        public static void FixupContainer (SequentialContainer c) {
+            foreach (ISequenceEntity e in c.Items) {
+                e.SymbolBroker = INSTANCE;
+                if (e is SequentialContainer ec) {
+                    FixupContainer(ec);
+                }
+            }
+            foreach (ISequenceEntity e in c.Conditions) {
+                e.SymbolBroker = INSTANCE;
+            }
+            foreach (ISequenceEntity e in c.Triggers) {
+                e.SymbolBroker = INSTANCE;
             }
         }
     }

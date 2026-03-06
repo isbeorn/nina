@@ -64,7 +64,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         private TakeManyExposures(
                 TakeManyExposures cloneMe, TakeExposure takeExposure, LoopCondition loopCondition) {
             this.Add(takeExposure);
+            takeExposure.SymbolBroker = SymbolBroker;
             this.Add(loopCondition);
+            loopCondition.SymbolBroker = SymbolBroker;
 
             IsExpanded = false;
 
@@ -117,6 +119,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         partial void AfterClone(TakeManyExposures clone) {
             clone.Add((TakeExposure)GetTakeExposure().Clone());
             clone.Add((LoopCondition)GetLoopCondition().Clone());
+            Logic.SymbolBroker.FixupContainer(clone);
         }
 
         private TakeManyExposures(TakeManyExposures cloneMe) {

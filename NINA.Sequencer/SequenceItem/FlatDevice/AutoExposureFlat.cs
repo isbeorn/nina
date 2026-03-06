@@ -133,6 +133,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             clone.HistogramTolerancePercentage = HistogramTolerancePercentage;
             clone.KeepPanelClosed = KeepPanelClosed;
             clone.IsExpanded = false;
+            Logic.SymbolBroker.FixupContainer(clone);
         }
 
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
