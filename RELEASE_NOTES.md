@@ -25,6 +25,7 @@ This allows you to safely return to a stable release if needed.
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 - ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
 - When updating the application, the color schema upgrades now properly apply updated or added colors
+- The native driver for SBIG cameras now provides the proper electrons/ADU value for the `EGAIN` keyword in image metadata
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
