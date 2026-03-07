@@ -37,7 +37,8 @@ namespace NINA.Sequencer.Logic {
 
         public Expression (Expression cloneMe, ISequenceEntity context, Action<Expression> validator = null) {
             Definition = cloneMe.Definition;
-            SymbolBroker = Logic.SymbolBroker.Instance;
+            Context = context;
+            SymbolBroker = context?.SymbolBroker;
             Symbol = cloneMe.Symbol;
             Type = cloneMe.Type;
             Range = cloneMe.Range;
@@ -45,13 +46,12 @@ namespace NINA.Sequencer.Logic {
             AutoValue = cloneMe.AutoValue;
             DefaultString = cloneMe.DefaultString;
             Validator = validator;
-            Context = context;
         }
 
         public Expression(string definition, ISequenceEntity context) {
             Definition = definition;
             Context = context;
-            SymbolBroker = Logic.SymbolBroker.Instance;
+            SymbolBroker = context?.SymbolBroker;
         }
 
         public Expression(string definition, ISequenceEntity context, UserSymbol symbol) {
@@ -62,7 +62,7 @@ namespace NINA.Sequencer.Logic {
             Definition = definition;
             Context = context;
             Symbol = symbol;
-            SymbolBroker = Logic.SymbolBroker.Instance;
+            SymbolBroker = context?.SymbolBroker;
         }
 
         public ISequenceEntity Context { get; set; }
@@ -316,7 +316,19 @@ namespace NINA.Sequencer.Logic {
         public IReadOnlyDictionary<string, UserSymbol> Resolved => resolved.AsReadOnly();
         public string StringValue { get; set; }
         public UserSymbol Symbol { get; set; } = null;
-        public ISymbolBroker SymbolBroker { get; set; }
+
+        private ISymbolBroker _symbolBroker;
+        public ISymbolBroker SymbolBroker {
+            get {
+                if (_symbolBroker == null && Context is SequenceEntityINPC entity) {
+                    // Walk up to root container to get SymbolBroker
+                    _symbolBroker = entity.GetSymbolBroker();
+                }
+                return _symbolBroker;
+            }
+            set => _symbolBroker = value;
+        }
+
         public string Type { get; set; } = "double";
         public Action<Expression> Validator { get; set; }
         public virtual double Value {
