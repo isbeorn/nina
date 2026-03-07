@@ -276,7 +276,18 @@
                         FontSize="18"
                         Foreground="{Binding InfoButtonColor}"
                         Text="&#x26A0;"
-                        Visibility="{Binding Error, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                        Visibility="{Binding Error, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                        <TextBlock.ToolTip>
+                            <TextBlock
+                                MinHeight="20"
+                                Margin="0,-2,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                FontStyle="Italic"
+                                Foreground="Orange"
+                                Text="{Binding Error}" />
+                        </TextBlock.ToolTip>
+                    </TextBlock>
                     <ComboBox
                         Margin="5,0,0,0"
                         IsEditable="True"
