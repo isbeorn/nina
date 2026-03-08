@@ -59,10 +59,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         }
 
         [Test]
-        public void ExternalScript_ProcessedScript_ReplacesMultipleExpressions() {
+        public void ExternalScript_Expand_ReplacesMultipleExpressions() {
             // Arrange
             var sut = new ExternalScript(symbolBrokerMock.Object);
-            // Need this so that evaluation of Expressions doesn't fail
             sut.AttachNewParent(new SequentialContainer());
 
             // Setup symbol broker with test symbols
@@ -82,18 +81,16 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             sut.Script = "script.exe --camera \"{Camera_Name}\" --temp {Camera_Temperature}";
 
             // Act
-            var result = sut.ProcessedScript;
+            var result = ExpressionExpander.Expand(sut.Script, sut.SymbolBroker, sut);
 
             // Assert
             result.Should().Be("script.exe --camera \"Test Camera\" --temp -10.5");
-            sut.ProcessedScriptError.Should().BeNull();
         }
 
         [Test]
-        public void ExternalScript_ProcessedScript_HandlesArithmeticExpression() {
+        public void ExternalScript_Expand_HandlesArithmeticExpression() {
             // Arrange
             var sut = new ExternalScript(symbolBrokerMock.Object);
-            // Need this so that evaluation of Expressions doesn't fail
             sut.AttachNewParent(new SequentialContainer());
 
             // Setup symbol broker with numeric test symbols
@@ -113,18 +110,16 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             sut.Script = "script.exe --gain {Camera_Gain} --total {Camera_Gain + Camera_Offset}";
 
             // Act
-            var result = sut.ProcessedScript;
+            var result = ExpressionExpander.Expand(sut.Script, sut.SymbolBroker, sut);
 
             // Assert
             result.Should().Be("script.exe --gain 100 --total 150");
-            sut.ProcessedScriptError.Should().BeNull();
         }
 
         [Test]
-        public void ExternalScript_ProcessedScript_ErrorInExpression_ReturnsError() {
+        public void ExternalScript_Expand_ErrorInExpression_ReturnsError() {
             // Arrange
             var sut = new ExternalScript(symbolBrokerMock.Object);
-            // Need this so that evaluation of Expressions doesn't fail
             sut.AttachNewParent(new SequentialContainer());
 
             // Setup symbol Broker to return false for unknown symbols
@@ -138,11 +133,10 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             sut.Script = "script.exe --value {UnknownSymbol}";
 
             // Act
-            var result = sut.ProcessedScript;
+            var result = ExpressionExpander.Expand(sut.Script, sut.SymbolBroker, sut);
 
             // Assert
             result.Should().Contain("Error");
-            sut.ProcessedScriptError.Should().NotBeNullOrEmpty();
         }
 
         [Test]
