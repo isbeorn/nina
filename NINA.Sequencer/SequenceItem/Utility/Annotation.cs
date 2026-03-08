@@ -46,7 +46,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public string Text { get; set; }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            string processedText = ExpressionExpander.Expand(Text, SymbolBroker, Parent);
+            string processedText = ExpressionExpander.Expand(Text, SymbolBroker, this);
             Logger.Info($"Annotation: {processedText}");
             return Task.CompletedTask;
         }
