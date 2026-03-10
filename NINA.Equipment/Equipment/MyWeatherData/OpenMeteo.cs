@@ -169,31 +169,20 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         }
 
         private async Task UpdateWorker(CancellationToken ct) {
-            try 
-            {
-                while (true) 
-                {
-                    try 
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(_queryPeriod), ct);
-                        await QueryWeather();
-                    }
-                    catch (Exception e) 
-                    {
-                        Logger.Debug($"OpenMeteo: Exception during update: {e.ToString()}");
-                    }
+            try {
+                while (true) {
+                    await Task.Delay(TimeSpan.FromSeconds(_queryPeriod), ct);
+                    await QueryWeather();
                 }
-                
-            } 
-            catch (OperationCanceledException)
-            {
+            } catch (OperationCanceledException) {
                 Logger.Debug("OpenMeteo: Update task cancelled");
                 throw;
-            } 
+            } catch (Exception e) {
+                Logger.Debug($"OpenMeteo: Exception during update: {e.ToString()}");
+            }
         }
 
-        private async Task QueryWeather()
-        {
+        private async Task QueryWeather() {
             var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
             var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
 
@@ -209,7 +198,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             Temperature = data.Current.Temperature;
             Pressure = data.Current.SurfacePressure;
             Humidity = data.Current.Humidity;
-            
+
             WindDirection = data.Current.WindDirection;
             WindSpeed = ConvertKilometerPerHourToMeterPerSecond(data.Current.WindSpeed);
             WindGust = ConvertKilometerPerHourToMeterPerSecond(data.Current.WindGusts);
@@ -219,8 +208,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             RainRate = data.Current.Precipitation;
         }
 
-        private double ConvertKilometerPerHourToMeterPerSecond(double kmh)
-        {
+        private double ConvertKilometerPerHourToMeterPerSecond(double kmh) {
             return kmh * 0.277778;
         }
 
@@ -270,7 +258,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         public void SendCommandBlind(string command, bool raw) {
             throw new NotImplementedException();
         }
-        
+
         public class OpenMeteoDataResponse {
 
             [JsonProperty(PropertyName = "current")]
@@ -280,10 +268,10 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
 
                 [JsonProperty(PropertyName = "temperature_2m")]
                 public double Temperature { get; set; } //degree celcius
-                
+
                 [JsonProperty(PropertyName = "surface_pressure")]
                 public double SurfacePressure { get; set; } //hPa
-                
+
                 [JsonProperty(PropertyName = "relative_humidity_2m")]
                 public double Humidity { get; set; } //percentage
 
@@ -292,13 +280,13 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
 
                 [JsonProperty(PropertyName = "cloud_cover")]
                 public double CloudCover { get; set; } //percentage
-                                
+
                 [JsonProperty(PropertyName = "wind_direction_10m")]
                 public double WindDirection { get; set; } // degree
 
                 [JsonProperty(PropertyName = "wind_speed_10m")]
                 public double WindSpeed { get; set; } // km/h
-                
+
                 [JsonProperty(PropertyName = "wind_gusts_10m")]
                 public double WindGusts { get; set; } // km/h
             }
