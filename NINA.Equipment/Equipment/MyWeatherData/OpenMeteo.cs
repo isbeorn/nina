@@ -169,27 +169,23 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         }
 
         private async Task UpdateWorker(CancellationToken ct) {
-            try 
+            while (true)
             {
-                while (true) 
+                try
                 {
-                    try 
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(_queryPeriod), ct);
-                        await QueryWeather();
-                    }
-                    catch (Exception e) 
-                    {
-                        Logger.Debug($"OpenMeteo: Exception during update: {e.ToString()}");
-                    }
+                    await Task.Delay(TimeSpan.FromSeconds(_queryPeriod), ct);
+                    await QueryWeather();
                 }
-                
-            } 
-            catch (OperationCanceledException)
-            {
-                Logger.Debug("OpenMeteo: Update task cancelled");
-                throw;
-            } 
+                catch (OperationCanceledException)
+                {
+                    Logger.Debug("OpenMeteo: Update task cancelled");
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    Logger.Debug($"OpenMeteo: Exception during update: {e.ToString()}");
+                }
+            }
         }
 
         private async Task QueryWeather()
