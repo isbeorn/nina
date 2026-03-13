@@ -22,7 +22,6 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Utility;
-using NINA.Sequencer.Logic;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
@@ -75,21 +74,6 @@ namespace NINA.Sequencer {
 
         public virtual ISequenceRootContainer GetSequenceRootContainer() {
             return ItemUtility.GetRootContainer(((ISequenceEntity)this).Parent);
-        }
-
-        public virtual ISymbolBroker GetSymbolBroker() {
-            var current = (ISequenceEntity)this;
-
-            // Walk up the parent chain until we find a SymbolBroker
-            while (current != null) {
-                if (current.SymbolBroker != null) {
-                    return current.SymbolBroker;
-                }
-                current = current.Parent;
-            }
-
-            // Should never happen - root container must have SymbolBroker set
-            return null;
         }
     }
 }
