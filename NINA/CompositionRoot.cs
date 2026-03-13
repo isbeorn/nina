@@ -41,6 +41,10 @@ namespace NINA {
                 Stopwatch sw;
 
                 sw = Stopwatch.StartNew();
+                var equipmentVM = serviceProvider.GetService<IEquipmentVM>();
+                Debug.Print($"Time to create IEquipmentVM {sw.Elapsed}");
+
+                sw = Stopwatch.StartNew();
                 var imageSaveController = serviceProvider.GetService<IImageSaveController>();
                 Debug.Print($"Time to create IImageSaveController {sw.Elapsed}");
 
@@ -59,11 +63,6 @@ namespace NINA {
                     Logger.Error(ex);
                 }
                 Debug.Print($"Time to initialize EDSDK {sw.Elapsed}");
-
-
-                sw = Stopwatch.StartNew();
-                var equipmentVM = serviceProvider.GetService<IEquipmentVM>();
-                Debug.Print($"Time to create IEquipmentVM {sw.Elapsed}");
 
                 sw = Stopwatch.StartNew();
                 var skyAtlasVM = serviceProvider.GetService<ISkyAtlasVM>();

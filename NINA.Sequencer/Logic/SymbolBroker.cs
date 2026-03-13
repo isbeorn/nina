@@ -129,6 +129,13 @@ namespace NINA.Sequencer.Logic {
             _imagingMediator = imagingMediator;
             _guiderMediator = guiderMediator;
 
+            // Register the default Providers
+            foreach (string provider in _symbolProviders) {
+                RegisterSymbolProvider(provider);
+            }
+            // Register the core functions
+            RegisterCoreFunctions();
+
             _imagingMediator.ImagePrepared += SetImageSymbols;
 
             _telescopeMediator.RegisterConsumer(this);
@@ -142,13 +149,6 @@ namespace NINA.Sequencer.Logic {
             _flatMediator.RegisterConsumer(this);
             _rotatorMediator.RegisterConsumer(this);
             _guiderMediator.RegisterConsumer(this);
-
-            // Register the default Providers
-            foreach (string provider in _symbolProviders) {
-                RegisterSymbolProvider(provider);
-            }
-            // Register the core functions
-            RegisterCoreFunctions();
 
             UpdateNINASymbols();
             _conditionWatchdog = new ConditionWatchdog(UpdateNINASymbols, TimeSpan.FromSeconds(3));
