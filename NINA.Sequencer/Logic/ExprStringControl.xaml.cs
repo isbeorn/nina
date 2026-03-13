@@ -66,6 +66,10 @@ namespace NINA.Sequencer.Logic {
             control.UpdateProcessedText();
         }
 
+        public void RefreshProcessedText(object sender, ToolTipEventArgs e) {
+            UpdateProcessedText();
+        }
+
         private void UpdateProcessedText() {
             var sequenceItem = DataContext as ISequenceItem;
             if (sequenceItem == null) {

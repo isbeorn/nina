@@ -41,6 +41,7 @@
             AcceptsReturn="{Binding AcceptsReturn, ElementName=root}"
             Text="{Binding Text, ElementName=root, UpdateSourceTrigger=LostFocus}"
             TextAlignment="Left"
+            ToolTipOpening="RefreshProcessedText"
             ToolTip="{Binding ProcessedText, ElementName=root}">
             <TextBox.Style>
                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
