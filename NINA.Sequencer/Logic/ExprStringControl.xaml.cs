@@ -49,7 +49,10 @@ namespace NINA.Sequencer.Logic {
         }
 
         public string ProcessedText {
-            get => (string)GetValue(ProcessedTextProperty);
+            get {
+                UpdateProcessedText();
+                return (string)GetValue(ProcessedTextProperty);
+            }
             private set => SetValue(ProcessedTextProperty, value);
         }
 

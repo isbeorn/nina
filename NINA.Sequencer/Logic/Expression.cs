@@ -376,6 +376,10 @@ namespace NINA.Sequencer.Logic {
                 } else {
                     if ((Value == AutoValue) || (!double.IsNaN(Default) && Value == Default)) {
                         return DefaultString;
+                    } else if (Symbol is Variable v && !v.Executed) {
+                        return Loc.Instance["LblNotEvaluated"];
+                    } else if (double.IsNaN(Value)) {
+                        return "";
                     }
 
                     return Value.ToString(CultureInfo.InvariantCulture);
