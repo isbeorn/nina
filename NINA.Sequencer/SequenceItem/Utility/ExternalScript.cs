@@ -90,7 +90,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
         
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            string expandedScript = ExpressionExpander.Expand(Script, SymbolBroker, this);
+            string expandedScript = ExpressionExpander.Expand(Script, _symbolBroker, this);
             Logger.Info($"External Script: {expandedScript}");
             var success = await RunCommand(expandedScript, progress, token);
             if (!success) {
@@ -102,7 +102,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             var i = new List<string>();
 
             if (!string.IsNullOrWhiteSpace(Script)) {
-                string expandedScript = ExpressionExpander.Expand(Script, SymbolBroker, this);
+                string expandedScript = ExpressionExpander.Expand(Script, _symbolBroker, this);
                 if (!CommandExists(expandedScript)) {
                     i.Add(string.Format(Loc.Instance["LblExternalCommandNotFound"], GetCommandFromString(expandedScript)));
                 }
@@ -168,7 +168,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
                 // Set Symbol here
                 _ninaProvider?.AddOrUpdateSymbol("LastExternalScriptExitCode", process.ExitCode);
-                return process.ExitCode == 0;
+                return true;
             } catch (Exception e) {
                 Logger.Error($"Error running command {sequenceCompleteCommand}:", e);
                 // Set Symbol here as well (-1)

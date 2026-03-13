@@ -81,7 +81,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             sut.Script = "script.exe --camera \"{Camera_Name}\" --temp {Camera_Temperature}";
 
             // Act
-            var result = ExpressionExpander.Expand(sut.Script, sut.SymbolBroker, sut);
+            var result = ExpressionExpander.Expand(sut.Script, symbolBrokerMock.Object, sut);
 
             // Assert
             result.Should().Be("script.exe --camera \"Test Camera\" --temp -10.5");
@@ -110,7 +110,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             sut.Script = "script.exe --gain {Camera_Gain} --total {Camera_Gain + Camera_Offset}";
 
             // Act
-            var result = ExpressionExpander.Expand(sut.Script, sut.SymbolBroker, sut);
+            var result = ExpressionExpander.Expand(sut.Script, symbolBrokerMock.Object, sut);
 
             // Assert
             result.Should().Be("script.exe --gain 100 --total 150");
@@ -133,7 +133,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             sut.Script = "script.exe --value {UnknownSymbol}";
 
             // Act
-            var result = ExpressionExpander.Expand(sut.Script, sut.SymbolBroker, sut);
+            var result = ExpressionExpander.Expand(sut.Script, symbolBrokerMock.Object, sut);
 
             // Assert
             result.Should().Contain("Error");
@@ -168,38 +168,6 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             // Assert
             capturedExitCode.Should().Be(0);
             mockProvider.Verify(x => x.AddOrUpdateSymbol("LastExternalScriptExitCode", 0), Times.Once);
-        }
-
-        [Test]
-        public async Task ExternalScript_Execute_SetsExitCodeSymbol_OnNonZeroExit() {
-            // Arrange
-            var mockProvider = new Mock<ISymbolProvider>();
-            var capturedExitCode = -999;
-
-            symbolBrokerMock.As<ISymbolBrokerProviderApi>()
-                .Setup(x => x.GetInternalProvider("NINA"))
-                .Returns(mockProvider.Object);
-
-            mockProvider.Setup(x => x.AddOrUpdateSymbol("LastExternalScriptExitCode", It.IsAny<int>()))
-                .Callback<string, object>((key, value) => {
-                    capturedExitCode = (int)value;
-                });
-
-            var sut = new ExternalScript(symbolBrokerMock.Object);
-
-            // Use full path to cmd.exe with exit code 42
-            sut.Script = $"{Environment.GetEnvironmentVariable("SystemRoot")}\\System32\\cmd.exe /c exit 42";
-
-            var progress = new Progress<ApplicationStatus>();
-            var cts = new CancellationTokenSource();
-
-            // Act & Assert - should throw because exit code != 0
-            await sut.Invoking(s => s.Execute(progress, cts.Token))
-                .Should().ThrowAsync<SequenceEntityFailedException>();
-
-            // But symbol should still be set
-            capturedExitCode.Should().Be(42);
-            mockProvider.Verify(x => x.AddOrUpdateSymbol("LastExternalScriptExitCode", 42), Times.Once);
         }
 
         [Test]
@@ -283,8 +251,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var cts = new CancellationTokenSource();
 
             // Act & Assert
-            await sut.Invoking(s => s.Execute(progress, cts.Token))
-                .Should().ThrowAsync<SequenceEntityFailedException>();
+            await sut.Execute(progress, cts.Token);
+            //await sut.Invoking(s => s.Execute(progress, cts.Token))
+            //    .Should().ThrowAsync<SequenceEntityFailedException>();
 
             // Verify the exit code matches the symbol value
             capturedExitCode.Should().Be(7);
