@@ -205,7 +205,6 @@ namespace NINA.ViewModel.Sequencer {
 
                     var rootContainer = SequencerFactory.GetContainer<SequenceRootContainer>();
                     rootContainer.Name = Loc.Instance["LblAdvancedSequenceTitle"];
-                    rootContainer.SymbolBroker = SymbolBroker;
                     rootContainer.Add(SequencerFactory.GetContainer<StartAreaContainer>());
                     rootContainer.Add(SequencerFactory.GetContainer<TargetAreaContainer>());
                     rootContainer.Add(SequencerFactory.GetContainer<EndAreaContainer>());
