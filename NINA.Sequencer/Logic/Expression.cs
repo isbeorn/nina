@@ -45,6 +45,7 @@ namespace NINA.Sequencer.Logic {
             AutoValue = cloneMe.AutoValue;
             DefaultString = cloneMe.DefaultString;
             Validator = validator;
+            Context = context;
         }
 
         public Expression(string definition, ISequenceEntity context) {
@@ -315,19 +316,7 @@ namespace NINA.Sequencer.Logic {
         public IReadOnlyDictionary<string, UserSymbol> Resolved => resolved.AsReadOnly();
         public string StringValue { get; set; }
         public UserSymbol Symbol { get; set; } = null;
-
-        private ISymbolBroker _symbolBroker;
-        public ISymbolBroker SymbolBroker {
-            get {
-                if (_symbolBroker == null && Context is SequenceEntityINPC entity) {
-                    // Walk up to root container to get SymbolBroker
-                    _symbolBroker = entity.GetSymbolBroker();
-                }
-                return _symbolBroker;
-            }
-            set => _symbolBroker = value;
-        }
-
+        public ISymbolBroker SymbolBroker { get; set; }
         public string Type { get; set; } = "double";
         public Action<Expression> Validator { get; set; }
         public virtual double Value {
