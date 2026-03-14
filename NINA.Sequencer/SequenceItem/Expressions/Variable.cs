@@ -31,15 +31,14 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
         }
 
-        public Variable(string id, string def, ISequenceContainer parent) {
-            Variable sv = new Variable();
-            sv.Identifier = id;
-            sv.Expr = new Expression(def, parent, sv);
-            sv.Expr.Symbol = sv;
-            sv.OriginalExpr = new Expression(def, parent, sv);
-            sv.AttachNewParent(parent);
-            sv.Executed = true;
-            sv.Expr.Evaluate();
+        public Variable(string id, string def, ISequenceContainer parent) : base() {
+            Identifier = id;
+            Expr = new Expression(def, parent, this);
+            Expr.Symbol = this;
+            OriginalExpr = new Expression(def, parent, this);
+            AttachNewParent(parent);
+            Executed = true;
+            Expr.Evaluate();
         }
 
         protected void PreClone(Variable clone) {
