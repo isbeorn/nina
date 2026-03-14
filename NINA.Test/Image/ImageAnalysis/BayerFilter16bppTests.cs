@@ -507,8 +507,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         [CancelAfter(180000)]
         [TestCaseSource(nameof(RealWorldFileFormatCases))]
         public async Task Demosaic_FileBackedRealWorldFormats_MatchReference(string extension) {
-            // Run each supported file type through the same file-backed assertions using one representative
-            // astro-camera resolution. The dedicated resolution-batch test below covers the wider size matrix.
+            // These cases intentionally go through disk instead of reusing the in-memory Bayer tests.
+            // Saving and reloading is what validates the FITS/XISF loader contract: raw 16-bit mosaic data
+            // must round-trip unchanged and Bayer metadata must come back intact for the later auto-pattern path.
+            // One representative astro-camera resolution is enough here because the dedicated batch below covers the size matrix.
             AstroCameraResolutionCase representativeResolution = AstroCameraResolutions[FormatCoverageResolutionKey];
             await AssertFileBackedRealWorldCase(
                 extension: extension,
@@ -600,6 +602,9 @@ namespace NINA.Test.Image.ImageAnalysis {
             Directory.CreateDirectory(tempDirectory);
             string filePath = Path.Combine(tempDirectory, "synthetic-frame" + extension);
 
+            // Persist and reload on purpose. The pure in-memory tests already validate the demosaic math directly;
+            // this helper covers the file-backed integration path, where CreateFromFile must preserve both the
+            // raw mosaic samples and the sensor metadata that ImageControlVM later uses when debayering loaded files.
             try {
                 WriteFileBackedFrame(filePath, sourcePixels, width, height, bayerPattern);
 
@@ -621,7 +626,8 @@ namespace NINA.Test.Image.ImageAnalysis {
 
                 int[,] filterPattern = GetImageUtilityBayerPattern(metadataDrivenBayerPattern);
 
-                // Mirror the camera-disconnected auto-pattern path used by ImageControlVM for loaded files.
+                // Mirror the camera-disconnected auto-pattern path used by ImageControlVM for loaded files,
+                // where the pattern comes from the metadata parsed during reload rather than from a live camera.
                 var debayered = loaded.RenderImage().Debayer(
                     saveColorChannels: false,
                     saveLumChannel: false,
