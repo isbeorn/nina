@@ -13,18 +13,60 @@
 #endregion "copyright"
 
 using Accord.Imaging;
+using NINA.Core.Enum;
+using NINA.Image.FileFormat;
+using NINA.Image.FileFormat.FITS;
+using NINA.Image.FileFormat.XISF;
 using NINA.Image.ImageAnalysis;
+using NINA.Image.ImageData;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Test.Image.ImageAnalysis {
 
     [TestFixture]
     public class BayerFilter16bppTests {
+        private readonly struct AstroCameraResolutionCase {
+            public AstroCameraResolutionCase(int width, int height) {
+                Width = width;
+                Height = height;
+            }
+
+            public int Width { get; }
+            public int Height { get; }
+        }
+
+        private static readonly IReadOnlyDictionary<string, AstroCameraResolutionCase> AstroCameraResolutions = new Dictionary<string, AstroCameraResolutionCase> {
+            // Cover a representative spread of astro-camera sensor sizes, including current high-resolution sensors,
+            // and run the same full-image reference comparison for every configured resolution.
+            ["Guide_1280x960"] = new AstroCameraResolutionCase(1280, 960),
+            ["Planetary_1936x1096"] = new AstroCameraResolutionCase(1936, 1096),
+            ["DeepSky_3096x2080"] = new AstroCameraResolutionCase(3096, 2080),
+            ["Square_3008x3008"] = new AstroCameraResolutionCase(3008, 3008),
+            ["FourThirds_4144x2822"] = new AstroCameraResolutionCase(4144, 2822),
+            ["IMX183_5496x3672"] = new AstroCameraResolutionCase(5496, 3672),
+            ["APS-C_6224x4168"] = new AstroCameraResolutionCase(6224, 4168),
+            ["FullFrame61MP_9576x6388"] = new AstroCameraResolutionCase(9576, 6388),
+            ["MediumFormat100MP_11648x8736"] = new AstroCameraResolutionCase(11648, 8736)
+        };
+
+        private const string FormatCoverageResolutionKey = "Planetary_1936x1096";
+        private const SensorType FileBackedBayerPattern = SensorType.RGGB;
+
+        private global::NINA.Test.ImageDataFactoryTestUtility dataFactoryUtility;
+
+        [SetUp]
+        public void SetUp() {
+            dataFactoryUtility = new global::NINA.Test.ImageDataFactoryTestUtility();
+        }
         private static IEnumerable<TestCaseData> AlternateBayerPatterns() {
             // Use a small set of representative Bayer layouts to ensure the filter honors overrides.
             // These patterns cover each color's position so the channel mapping logic is exercised.
@@ -51,6 +93,23 @@ namespace NINA.Test.Image.ImageAnalysis {
             // Include an odd width to exercise stride padding while still running the border-only path.
             // This validates the border logic against GDI+ row alignment rules.
             yield return new TestCaseData(3, 2).SetName("BorderOnly_OddWidth_EvenHeight");
+        }
+
+        private static IEnumerable<TestCaseData> RealWorldFileFormatCases() {
+            yield return new TestCaseData(".xisf").SetName("RealWorldFormat_XISF");
+            yield return new TestCaseData(".fits").SetName("RealWorldFormat_FITS");
+            yield return new TestCaseData(".fit").SetName("RealWorldFormat_FIT");
+            yield return new TestCaseData(".fts").SetName("RealWorldFormat_FTS");
+        }
+
+        private static IEnumerable<TestCaseData> AstroCameraResolutionCases() {
+            foreach (var resolution in AstroCameraResolutions) {
+                yield return new TestCaseData(
+                        resolution.Key,
+                        resolution.Value.Width,
+                        resolution.Value.Height)
+                    .SetName($"RealWorldResolution_{resolution.Key}");
+            }
         }
 
         [Test]
@@ -442,6 +501,39 @@ namespace NINA.Test.Image.ImageAnalysis {
             Assert.That(filter.FormatTranslations[PixelFormat.Format16bppGrayScale], Is.EqualTo(PixelFormat.Format48bppRgb));
         }
 
+        [Test]
+        [Category("BayerFilter16bppRealWorldFormats")]
+        [NonParallelizable]
+        [CancelAfter(180000)]
+        [TestCaseSource(nameof(RealWorldFileFormatCases))]
+        public async Task Demosaic_FileBackedRealWorldFormats_MatchReference(string extension) {
+            // Run each supported file type through the same file-backed assertions using one representative
+            // astro-camera resolution. The dedicated resolution-batch test below covers the wider size matrix.
+            AstroCameraResolutionCase representativeResolution = AstroCameraResolutions[FormatCoverageResolutionKey];
+            await AssertFileBackedRealWorldCase(
+                extension: extension,
+                width: representativeResolution.Width,
+                height: representativeResolution.Height,
+                bayerPattern: FileBackedBayerPattern);
+        }
+
+        [Test]
+        [Category("BayerFilter16bppRealWorldFormats")]
+        [NonParallelizable]
+        [CancelAfter(600000)]
+        [TestCaseSource(nameof(AstroCameraResolutionCases))]
+        public async Task Demosaic_FileBackedAstroCameraResolutions_MatchReference(
+            string resolutionName,
+            int width,
+            int height) {
+            // Use XISF for the resolution matrix so every defined astro-camera size exercises the full
+            // file-backed load path without multiplying runtime by every supported extension.
+            await AssertFileBackedRealWorldCase(
+                extension: ".xisf",
+                width: width,
+                height: height,
+                bayerPattern: FileBackedBayerPattern);
+        }
         private readonly struct ReferenceChannels {
             // Bundle the channel arrays so tests can pass reference results around cleanly.
             // This keeps the helper signatures compact and explicit.
@@ -471,6 +563,181 @@ namespace NINA.Test.Image.ImageAnalysis {
             }
 
             return pixels;
+        }
+
+        private static ushort[] CreatePseudoAstroPixels(int width, int height) {
+            // Generate deterministic data with gradients and sparse highlights to mimic a real frame's structure.
+            // This keeps the fixture synthetic while still looking like practical imaging data.
+            int pixelCount = width * height;
+            ushort[] pixels = new ushort[pixelCount];
+
+            for (int y = 0; y < height; y++) {
+                int rowOffset = y * width;
+                for (int x = 0; x < width; x++) {
+                    int background = 700 + ((x * 17 + y * 29) % 1200);
+                    int nebula = ((x * x + y * y) % 4096) / 2;
+                    int sparkle = (((x * 73856093) ^ (y * 19349663)) & 1023) < 2 ? 18000 : 0;
+                    int value = background + nebula + sparkle;
+
+                    if (value > ushort.MaxValue) {
+                        value = ushort.MaxValue;
+                    }
+
+                    pixels[rowOffset + x] = (ushort)value;
+                }
+            }
+
+            return pixels;
+        }
+
+        private async Task AssertFileBackedRealWorldCase(
+            string extension,
+            int width,
+            int height,
+            SensorType bayerPattern) {
+            ushort[] sourcePixels = CreatePseudoAstroPixels(width, height);
+            string tempDirectory = Path.Combine(TestContext.CurrentContext.TestDirectory, "BayerFilter16bppTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(tempDirectory);
+            string filePath = Path.Combine(tempDirectory, "synthetic-frame" + extension);
+
+            try {
+                WriteFileBackedFrame(filePath, sourcePixels, width, height, bayerPattern);
+
+                using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+                var loaded = await dataFactoryUtility.ImageDataFactory.CreateFromFile(
+                    path: filePath,
+                    bitDepth: 16,
+                    isBayered: true,
+                    rawConverter: RawConverterEnum.DCRAW,
+                    ct: cts.Token);
+
+                Assert.That(loaded.Properties.Width, Is.EqualTo(width), "Loaded width mismatch.");
+                Assert.That(loaded.Properties.Height, Is.EqualTo(height), "Loaded height mismatch.");
+                Assert.That(loaded.Data.FlatArray, Is.EqualTo(sourcePixels), "Loaded pixels should round-trip through file I/O unchanged.");
+                Assert.That(loaded.MetaData.Camera.SensorType, Is.EqualTo(bayerPattern), "Loaded sensor metadata should preserve the Bayer pattern.");
+
+                SensorType metadataDrivenBayerPattern = ResolveMetadataDrivenBayerPattern(loaded.MetaData);
+                Assert.That(metadataDrivenBayerPattern, Is.EqualTo(bayerPattern), "Loaded metadata should drive the same Bayer pattern the file was written with.");
+
+                int[,] filterPattern = GetImageUtilityBayerPattern(metadataDrivenBayerPattern);
+
+                // Mirror the camera-disconnected auto-pattern path used by ImageControlVM for loaded files.
+                var debayered = loaded.RenderImage().Debayer(
+                    saveColorChannels: false,
+                    saveLumChannel: false,
+                    bayerPattern: metadataDrivenBayerPattern);
+
+                Assert.That(debayered.BayerPattern, Is.EqualTo(metadataDrivenBayerPattern), "Debayered image should record the metadata-selected Bayer pattern.");
+                Assert.That(debayered.Image.PixelWidth, Is.EqualTo(width), "Debayered image width mismatch.");
+                Assert.That(debayered.Image.PixelHeight, Is.EqualTo(height), "Debayered image height mismatch.");
+                Assert.That(debayered.Image.Format, Is.EqualTo(System.Windows.Media.PixelFormats.Rgb48), "Debayered image should stay in 48-bit color.");
+
+                ReferenceChannels reference = ComputeDemosaicReference(
+                    sourcePixels,
+                    width,
+                    height,
+                    filterPattern,
+                    computeLum: false);
+
+                AssertDebayeredImageMatchesReference(debayered.Image, reference);
+            } finally {
+                if (Directory.Exists(tempDirectory)) {
+                    Directory.Delete(tempDirectory, recursive: true);
+                }
+            }
+        }
+
+        private static ImageMetaData CreateBayerMetaData(SensorType pattern) {
+            // Add Bayer metadata so FITS/XISF files carry realistic camera color filter information.
+            var metaData = new ImageMetaData();
+            metaData.Image.ImageType = "LIGHT";
+            metaData.Camera.SensorType = pattern;
+            metaData.Camera.BayerPattern = (BayerPatternEnum)pattern;
+            metaData.Camera.BayerOffsetX = 0;
+            metaData.Camera.BayerOffsetY = 0;
+            return metaData;
+        }
+
+        private static SensorType ResolveMetadataDrivenBayerPattern(ImageMetaData metaData) {
+            // Mirror the disconnected-camera auto-pattern path in ImageControlVM for loaded files.
+            return metaData.Camera.SensorType;
+        }
+
+        private static void AssertDebayeredImageMatchesReference(BitmapSource image, ReferenceChannels reference) {
+            using Bitmap bitmap = ImageUtility.BitmapFromSource(image, PixelFormat.Format48bppRgb);
+            var actual = Read48bppChannels(bitmap);
+
+            Assert.That(actual.Blue, Is.EqualTo(reference.Blue), "Debayered image B channel should match the reference image.");
+            Assert.That(actual.Green, Is.EqualTo(reference.Green), "Debayered image G channel should match the reference image.");
+            Assert.That(actual.Red, Is.EqualTo(reference.Red), "Debayered image R channel should match the reference image.");
+        }
+
+        private static void WriteFileBackedFrame(string filePath, ushort[] pixels, int width, int height, SensorType pattern) {
+            string extension = Path.GetExtension(filePath).ToLowerInvariant();
+            switch (extension) {
+                case ".xisf":
+                    WriteXisfFrame(filePath, pixels, width, height, pattern);
+                    break;
+                case ".fits":
+                case ".fit":
+                case ".fts":
+                    WriteFitsFrame(filePath, pixels, width, height, pattern);
+                    break;
+                default:
+                    Assert.Fail($"Unsupported test file extension: {Path.GetExtension(filePath)}");
+                    break;
+            }
+        }
+
+        private static void WriteFitsFrame(string filePath, ushort[] pixels, int width, int height, SensorType pattern) {
+            var fits = new FITS(pixels, width, height);
+            fits.PopulateHeaderCards(CreateBayerMetaData(pattern));
+
+            using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+            fits.Write(stream);
+        }
+
+        private static void WriteXisfFrame(string filePath, ushort[] pixels, int width, int height, SensorType pattern) {
+            var header = new XISFHeader();
+            header.AddImageMetaData(
+                new ImageProperties(width: width, height: height, bitDepth: 16, isBayered: true, gain: 0, offset: 0),
+                imageType: "LIGHT");
+            header.Populate(CreateBayerMetaData(pattern));
+
+            var xisf = new XISF(header);
+            xisf.AddAttachedImage(pixels, new FileSaveInfo {
+                FilePath = Path.GetDirectoryName(filePath) ?? string.Empty,
+                FilePattern = Path.GetFileNameWithoutExtension(filePath),
+                FileType = FileTypeEnum.XISF,
+                XISFCompressionType = XISFCompressionTypeEnum.NONE
+            });
+
+            using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+            xisf.Save(stream);
+        }
+
+        private static int[,] GetImageUtilityBayerPattern(SensorType pattern) {
+            // Keep these mappings in sync with ImageUtility.Debayer SensorType handling.
+            switch (pattern) {
+                case SensorType.RGGB:
+                    return new int[,] { { RGB.B, RGB.G }, { RGB.G, RGB.R } };
+                case SensorType.RGBG:
+                    return new int[,] { { RGB.G, RGB.B }, { RGB.G, RGB.R } };
+                case SensorType.GRGB:
+                    return new int[,] { { RGB.B, RGB.G }, { RGB.R, RGB.G } };
+                case SensorType.GRBG:
+                    return new int[,] { { RGB.G, RGB.B }, { RGB.R, RGB.G } };
+                case SensorType.GBGR:
+                    return new int[,] { { RGB.R, RGB.G }, { RGB.B, RGB.G } };
+                case SensorType.GBRG:
+                    return new int[,] { { RGB.G, RGB.R }, { RGB.B, RGB.G } };
+                case SensorType.BGRG:
+                    return new int[,] { { RGB.G, RGB.R }, { RGB.G, RGB.B } };
+                case SensorType.BGGR:
+                    return new int[,] { { RGB.R, RGB.G }, { RGB.G, RGB.B } };
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(pattern), pattern, "Unsupported Bayer pattern.");
+            }
         }
 
         private static Bitmap CreateGray16Bitmap(int width, int height, ushort[] sourcePixels) {
@@ -800,5 +1067,7 @@ namespace NINA.Test.Image.ImageAnalysis {
 
             return (blue, green, red);
         }
+
+
     }
 }
