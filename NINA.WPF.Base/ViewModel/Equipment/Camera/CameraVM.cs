@@ -91,7 +91,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 "Camera"
             );
 
-            profileService.ProfileChanged += async (object sender, EventArgs e) => {
+            profileService.ProfileChanged += async (sender, e) => {
                 await RescanDevicesCommand.ExecuteAsync(null);
                 RaiseAllPropertiesChanged();  // Reload DefaultGain, and other default camera settings
             };
@@ -204,9 +204,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 // Only wait if we're outside of the 1C tolerance at the start
                 if (duration > TimeSpan.Zero && totalDeltaTemp > 1.0d) {
                     // Stepped temp change
-                    double[] input = { 0, duration.TotalSeconds };
-                    double[] output = { currentTemp, temperature };
-                    OrdinaryLeastSquares leastSquares = new OrdinaryLeastSquares();
+                    double[] input = [0, duration.TotalSeconds];
+                    double[] output = [currentTemp, temperature];
+                    OrdinaryLeastSquares leastSquares = new();
                     var regression = leastSquares.Learn(input, output);
 
                     Logger.Debug($"Starting stepped temperature change with parameters: Start Temp: {currentTemp}, Target Temp: {temperature}, Duration: {duration.TotalMinutes}m, Slope: {regression.Slope}, Intercept: {regression.Intercept}");
@@ -589,22 +589,23 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         private Dictionary<string, object> GetCameraValues() {
-            Dictionary<string, object> cameraValues = new Dictionary<string, object>();
-            cameraValues.Add(nameof(CameraInfo.Connected), _cam?.Connected ?? false);
-            cameraValues.Add(nameof(CameraInfo.CoolerOn), _cam?.CoolerOn ?? false);
-            cameraValues.Add(nameof(CameraInfo.Temperature), _cam?.Temperature ?? double.NaN);
-            cameraValues.Add(nameof(CameraInfo.CoolerPower), _cam?.CoolerPower ?? double.NaN);
-            cameraValues.Add(nameof(CameraInfo.DewHeaterOn), _cam?.DewHeaterOn ?? false);
-            cameraValues.Add(nameof(CameraInfo.CameraState), _cam?.CameraState ?? CameraStates.NoState);
-            cameraValues.Add(nameof(CameraInfo.TemperatureSetPoint), _cam?.TemperatureSetPoint ?? double.NaN);
-            cameraValues.Add(nameof(CameraInfo.ElectronsPerADU), _cam?.ElectronsPerADU ?? double.NaN);
-            cameraValues.Add(nameof(CameraInfo.SubSampleX), _cam?.SubSampleX ?? -1);
-            cameraValues.Add(nameof(CameraInfo.SubSampleY), _cam?.SubSampleY ?? -1);
-            cameraValues.Add(nameof(CameraInfo.SubSampleWidth), _cam?.SubSampleWidth ?? -1);
-            cameraValues.Add(nameof(CameraInfo.SubSampleHeight), _cam?.SubSampleHeight ?? -1);
-            cameraValues.Add(nameof(CameraInfo.ReadoutMode), _cam?.ReadoutMode ?? 0);
-            cameraValues.Add(nameof(CameraInfo.ExposureMin), _cam?.ExposureMin ?? 0);
-            cameraValues.Add(nameof(CameraInfo.PixelSize), _cam?.PixelSizeX ?? 0);
+            Dictionary<string, object> cameraValues = new() {
+                { nameof(CameraInfo.Connected), _cam?.Connected ?? false },
+                { nameof(CameraInfo.CoolerOn), _cam?.CoolerOn ?? false },
+                { nameof(CameraInfo.Temperature), _cam?.Temperature ?? double.NaN },
+                { nameof(CameraInfo.CoolerPower), _cam?.CoolerPower ?? double.NaN },
+                { nameof(CameraInfo.DewHeaterOn), _cam?.DewHeaterOn ?? false },
+                { nameof(CameraInfo.CameraState), _cam?.CameraState ?? CameraStates.NoState },
+                { nameof(CameraInfo.TemperatureSetPoint), _cam?.TemperatureSetPoint ?? double.NaN },
+                { nameof(CameraInfo.ElectronsPerADU), _cam?.ElectronsPerADU ?? double.NaN },
+                { nameof(CameraInfo.SubSampleX), _cam?.SubSampleX ?? -1 },
+                { nameof(CameraInfo.SubSampleY), _cam?.SubSampleY ?? -1 },
+                { nameof(CameraInfo.SubSampleWidth), _cam?.SubSampleWidth ?? -1 },
+                { nameof(CameraInfo.SubSampleHeight), _cam?.SubSampleHeight ?? -1 },
+                { nameof(CameraInfo.ReadoutMode), _cam?.ReadoutMode ?? 0 },
+                { nameof(CameraInfo.ExposureMin), _cam?.ExposureMin ?? 0 },
+                { nameof(CameraInfo.PixelSize), _cam?.PixelSizeX ?? 0 }
+            };
 
             if (_cam != null && CameraInfo.CanSetGain) {
                 cameraValues.Add(nameof(CameraInfo.Gain), _cam?.Gain ?? -1);
