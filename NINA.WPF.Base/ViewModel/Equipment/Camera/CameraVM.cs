@@ -171,17 +171,16 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 });
 
                 if (Cam.Temperature < 20) {
-                    using (var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
-                        try {
-                            timeoutCts.CancelAfter(duration + TimeSpan.FromMinutes(15));
-                            await RegulateTemperature(20, duration, false, progressRouter, timeoutCts.Token);
-                        } catch(OperationCanceledException) { 
-                            if(ct.IsCancellationRequested == true) {
-                                throw;
-                            }
-                        } catch (CannotReachTargetTemperatureException) {
-                            Logger.Info("Could not reach warming temperature. Most likley due to ambient temperature being lower. Continuing...");
+                    using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                    try {
+                        timeoutCts.CancelAfter(duration + TimeSpan.FromMinutes(15));
+                        await RegulateTemperature(20, duration, false, progressRouter, timeoutCts.Token);
+                    } catch (OperationCanceledException) {
+                        if (ct.IsCancellationRequested == true) {
+                            throw;
                         }
+                    } catch (CannotReachTargetTemperatureException) {
+                        Logger.Info("Could not reach warming temperature. Most likley due to ambient temperature being lower. Continuing...");
                     }
                 }
 
@@ -753,40 +752,39 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
                 /* Wait for the camera to report image ready and report progress of exposure in remaining seconds */
                 using (var exposureReadyCts = CancellationTokenSource.CreateLinkedTokenSource(token)) {
-                    using (var progressCountCts = CancellationTokenSource.CreateLinkedTokenSource(exposureReadyCts.Token)) {
-                        if (exposureTime >= 1) {
-                            progress.Report(new ApplicationStatus() {
-                                Status = Loc.Instance["LblExposing"],
-                                Progress = 0,
-                                MaxProgress = (int)exposureTime,
-                                ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
-                            });
-                            /* Report progress of exposure in parallel to waiting for exposure ready event.*/
-                            _ = CoreUtil.Wait(TimeSpan.FromSeconds(exposureTime), progressCountCts.Token, progress, Loc.Instance["LblExposing"]);
-                        } else {
-                            progress.Report(new ApplicationStatus() {
-                                Status = Loc.Instance["LblExposing"]
-                            });
-                        }
+                    using var progressCountCts = CancellationTokenSource.CreateLinkedTokenSource(exposureReadyCts.Token);
+                    if (exposureTime >= 1) {
+                        progress.Report(new ApplicationStatus() {
+                            Status = Loc.Instance["LblExposing"],
+                            Progress = 0,
+                            MaxProgress = (int)exposureTime,
+                            ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
+                        });
+                        /* Report progress of exposure in parallel to waiting for exposure ready event.*/
+                        _ = CoreUtil.Wait(TimeSpan.FromSeconds(exposureTime), progressCountCts.Token, progress, Loc.Instance["LblExposing"]);
+                    } else {
+                        progress.Report(new ApplicationStatus() {
+                            Status = Loc.Instance["LblExposing"]
+                        });
+                    }
 
-                        exposureReadyCts.CancelAfter(TimeSpan.FromSeconds(exposureTime + profileService.ActiveProfile.CameraSettings.Timeout));
-                        try {
-                            await Cam.WaitUntilExposureIsReady(exposureReadyCts.Token);
-                        } catch (OperationCanceledException) {
-                            Console.WriteLine("Parent token cancelled: " + token.IsCancellationRequested);
-                            Console.WriteLine("Child token cancelled: " + exposureReadyCts.Token.IsCancellationRequested);
-                            if (!token.IsCancellationRequested) {
-                                var downloadFailedException = new CameraDownloadFailedException(sequence, $"Camera Timeout - Camera did not set image as ready after exposuretime + {profileService.ActiveProfile.CameraSettings.Timeout} seconds");
-                                Logger.Error(downloadFailedException);
-                                await (DownloadTimeout?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                                throw downloadFailedException;
-                            }
-                        } finally {
-                            try { progressCountCts?.Cancel(); } catch { }
-                            progress.Report(new ApplicationStatus() {
-                                Status = Loc.Instance["LblExposureFinished"]
-                            });
+                    exposureReadyCts.CancelAfter(TimeSpan.FromSeconds(exposureTime + profileService.ActiveProfile.CameraSettings.Timeout));
+                    try {
+                        await Cam.WaitUntilExposureIsReady(exposureReadyCts.Token);
+                    } catch (OperationCanceledException) {
+                        Console.WriteLine("Parent token cancelled: " + token.IsCancellationRequested);
+                        Console.WriteLine("Child token cancelled: " + exposureReadyCts.Token.IsCancellationRequested);
+                        if (!token.IsCancellationRequested) {
+                            var downloadFailedException = new CameraDownloadFailedException(sequence, $"Camera Timeout - Camera did not set image as ready after exposuretime + {profileService.ActiveProfile.CameraSettings.Timeout} seconds");
+                            Logger.Error(downloadFailedException);
+                            await (DownloadTimeout?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                            throw downloadFailedException;
                         }
+                    } finally {
+                        try { progressCountCts?.Cancel(); } catch { }
+                        progress.Report(new ApplicationStatus() {
+                            Status = Loc.Instance["LblExposureFinished"]
+                        });
                     }
                 }
 
