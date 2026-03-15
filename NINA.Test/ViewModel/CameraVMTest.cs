@@ -154,8 +154,44 @@ namespace NINA.Test.ViewModel {
             setPoints.Should().Equal(targetTemperature, currentTemperature);
         }
 
+        [TestCase(false, false, false)]
+        [TestCase(false, true, false)]
+        [TestCase(false, true, true)]
+        [TestCase(true, false, false)]
+        [TestCase(true, true, false)]
+        [TestCase(true, true, true)]
+        public async Task CaptureAndLiveView_ApplyReadoutBeforeGainAndOffsetAndPreserveFilterChoice(bool liveView, bool wheelConnected, bool explicitFilter) {
+            var vm = CreateVm();
+            var camera = CreateCamera(true);
+            var calls = new List<string>();
+            camera.SetupSet(x => x.ReadoutMode = It.IsAny<short>()).Callback<short>(_ => calls.Add("readout"));
+            camera.SetupSet(x => x.Gain = It.IsAny<int>()).Callback<int>(_ => calls.Add("gain"));
+            camera.SetupSet(x => x.Offset = It.IsAny<int>()).Callback<int>(_ => calls.Add("offset"));
+            camera.Setup(x => x.WaitUntilExposureIsReady(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            camera.Setup(x => x.DownloadLiveView(It.IsAny<CancellationToken>())).ThrowsAsync(new OperationCanceledException());
+            deviceChooser.SetupGet(x => x.SelectedDevice).Returns(camera.Object);
+            await vm.Connect();
+            calls.Clear();
+            var wheelFilter = new FilterInfo { Name = "L", Position = 1 };
+            var chosenFilter = new FilterInfo { Name = "Ha", Position = 2 };
+            filterWheelMediator.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo { Connected = wheelConnected, SelectedFilter = wheelFilter });
+            var sequence = new CaptureSequence { ExposureTime = 0.01, Gain = 20, Offset = 5,
+                ImageType = liveView ? CaptureSequence.ImageTypes.SNAPSHOT : CaptureSequence.ImageTypes.LIGHT,
+                FilterType = explicitFilter ? chosenFilter : null };
+            if (liveView) {
+                await foreach (var image in vm.LiveView(sequence, CancellationToken.None)) { }
+            } else {
+                await vm.Capture(sequence, CancellationToken.None, new Progress<ApplicationStatus>());
+            }
+            calls.Take(3).Should().Equal("readout", "gain", "offset");
+            sequence.FilterType.Should().BeSameAs(explicitFilter ? chosenFilter : wheelConnected ? wheelFilter : null);
+            camera.VerifySet(x => x.ReadoutMode = (short)(liveView ? 1 : 0), Times.AtLeastOnce);
+            if (liveView) camera.Verify(x => x.StopLiveView(), Times.Once);
+            await vm.Disconnect();
+        }
+
         private CameraVM CreateVm() {
-            return new CameraVM(profileService.Object, cameraMediator.Object, applicationStatusMediator.Object, deviceChooser.Object);
+            return new CameraVM(profileService.Object, cameraMediator.Object, filterWheelMediator.Object, applicationStatusMediator.Object, deviceChooser.Object);
         }
 
         private static Mock<ICamera> CreateCamera(bool connects) {

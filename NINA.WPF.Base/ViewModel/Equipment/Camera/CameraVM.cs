@@ -48,6 +48,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         public CameraVM(IProfileService profileService,
                         ICameraMediator cameraMediator,
                         IApplicationStatusMediator applicationStatusMediator,
+                        IDeviceChooserVM cameraChooserVM)
+            : this(profileService, cameraMediator, null, applicationStatusMediator, cameraChooserVM) {
+        }
+
+        public CameraVM(IProfileService profileService,
+                        ICameraMediator cameraMediator,
+                        IFilterWheelMediator filterWheelMediator,
+                        IApplicationStatusMediator applicationStatusMediator,
                         IDeviceChooserVM cameraChooserVM) : base(profileService) {
             Title = Loc.Instance["LblCamera"];
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
@@ -56,6 +64,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             DeviceChooserVM = cameraChooserVM;
 
             this.cameraMediator = cameraMediator;
+            this.filterWheelMediator = filterWheelMediator;
             this.cameraMediator.RegisterHandler(this);
             this.applicationStatusMediator = applicationStatusMediator;
 
@@ -115,6 +124,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         private ICameraMediator cameraMediator;
+        private readonly IFilterWheelMediator filterWheelMediator;
 
         public IDeviceChooserVM DeviceChooserVM { get; set; }
 
@@ -658,6 +668,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 if (CameraInfo.Connected) {
                     try {
                         ApplyReadoutModeForSequence(sequence);
+                        ApplyFilterToSequence(sequence);
                         SetGain(sequence.Gain);
                         SetOffset(sequence.Offset);
                         if (sequence.Binning == null) {
@@ -716,6 +727,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             IProgress<ApplicationStatus> progress) {
             if (CameraInfo.Connected == true) {
                 ApplyReadoutModeForSequence(sequence);
+                ApplyFilterToSequence(sequence);
                 SetGain(sequence.Gain);
                 SetOffset(sequence.Offset);
                 if (sequence.Binning == null) {
@@ -796,6 +808,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             if (CameraInfo.Connected && mode >= 0 && mode < CameraInfo.ReadoutModes.Count()) {
                 Cam.ReadoutMode = CameraInfo.ReadoutMode = mode;
                 BroadcastCameraInfo();
+            }
+        }
+
+        private void ApplyFilterToSequence(CaptureSequence sequence) {
+            var filterInfo = filterWheelMediator?.GetInfo();
+            if (sequence.FilterType == null && filterInfo?.Connected == true) {
+                sequence.FilterType = filterInfo.SelectedFilter;
             }
         }
 
