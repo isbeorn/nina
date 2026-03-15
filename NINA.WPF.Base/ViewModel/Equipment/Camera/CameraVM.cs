@@ -578,7 +578,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             CameraInfo.PixelSize = (double)(o ?? 0.0d);
 
             CoolerHistory.AddLast(new CameraCoolingStep(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), CameraInfo.Temperature, CameraInfo.CoolerPower));
-            if(CoolerHistory.Count > 100) {
+            if (CoolerHistory.Count > 100) {
                 CoolerHistory.RemoveFirst();
             }
             CoolerHistoryChangeId++;
@@ -1035,7 +1035,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         public ICommand CancelConnectCommand { get; private set; }
     }
 
-    public class CameraCoolingStep { 
+    public class CameraCoolingStep {
 
         public CameraCoolingStep(double date, double temperature, double power) {
             Date = date;
