@@ -251,7 +251,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var cts = new CancellationTokenSource();
 
             // Act & Assert
-            await sut.Execute(progress, cts.Token);
+            await sut.Invoking(s => s.Execute(progress, cts.Token))
+                .Should().ThrowAsync<SequenceEntityFailedException>();
 
             // Verify the exit code matches the symbol value
             capturedExitCode.Should().Be(7);

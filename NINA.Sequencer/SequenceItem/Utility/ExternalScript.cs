@@ -168,7 +168,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
                 // Set Symbol here
                 _ninaProvider?.AddOrUpdateSymbol("LastExternalScriptExitCode", process.ExitCode);
-                return true;
+                return process.ExitCode == 0;
             } catch (Exception e) {
                 Logger.Error($"Error running command {sequenceCompleteCommand}:", e);
                 // Set Symbol here as well (-1)
