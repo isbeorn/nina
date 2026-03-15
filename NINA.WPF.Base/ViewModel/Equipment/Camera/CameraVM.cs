@@ -47,6 +47,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
         public CameraVM(IProfileService profileService,
                         ICameraMediator cameraMediator,
+                        IFilterWheelMediator filterWheelMediator,
                         IApplicationStatusMediator applicationStatusMediator,
                         IDeviceChooserVM cameraChooserVM) : base(profileService) {
             Title = Loc.Instance["LblCamera"];
@@ -57,6 +58,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterHandler(this);
+
+            this.filterWheelMediator = filterWheelMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
             ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseCamera), (object o) => DeviceChooserVM.SelectedDevice != null);
@@ -88,7 +91,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 "Camera"
             );
 
-            profileService.ProfileChanged += async (object sender, EventArgs e) => {
+            profileService.ProfileChanged += async (sender, e) => {
                 await RescanDevicesCommand.ExecuteAsync(null);
                 RaiseAllPropertiesChanged();  // Reload DefaultGain, and other default camera settings
             };
@@ -114,7 +117,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
         }
 
-        private ICameraMediator cameraMediator;
+        private readonly IFilterWheelMediator filterWheelMediator;
+        private readonly ICameraMediator cameraMediator;
 
         public IDeviceChooserVM DeviceChooserVM { get; set; }
 
@@ -167,17 +171,16 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 });
 
                 if (Cam.Temperature < 20) {
-                    using (var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
-                        try {
-                            timeoutCts.CancelAfter(duration + TimeSpan.FromMinutes(15));
-                            await RegulateTemperature(20, duration, false, progressRouter, timeoutCts.Token);
-                        } catch(OperationCanceledException) { 
-                            if(ct.IsCancellationRequested == true) {
-                                throw;
-                            }
-                        } catch (CannotReachTargetTemperatureException) {
-                            Logger.Info("Could not reach warming temperature. Most likley due to ambient temperature being lower. Continuing...");
+                    using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                    try {
+                        timeoutCts.CancelAfter(duration + TimeSpan.FromMinutes(15));
+                        await RegulateTemperature(20, duration, false, progressRouter, timeoutCts.Token);
+                    } catch (OperationCanceledException) {
+                        if (ct.IsCancellationRequested == true) {
+                            throw;
                         }
+                    } catch (CannotReachTargetTemperatureException) {
+                        Logger.Info("Could not reach warming temperature. Most likley due to ambient temperature being lower. Continuing...");
                     }
                 }
 
@@ -200,9 +203,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 // Only wait if we're outside of the 1C tolerance at the start
                 if (duration > TimeSpan.Zero && totalDeltaTemp > 1.0d) {
                     // Stepped temp change
-                    double[] input = { 0, duration.TotalSeconds };
-                    double[] output = { currentTemp, temperature };
-                    OrdinaryLeastSquares leastSquares = new OrdinaryLeastSquares();
+                    double[] input = [0, duration.TotalSeconds];
+                    double[] output = [currentTemp, temperature];
+                    OrdinaryLeastSquares leastSquares = new();
                     var regression = leastSquares.Learn(input, output);
 
                     Logger.Debug($"Starting stepped temperature change with parameters: Start Temp: {currentTemp}, Target Temp: {temperature}, Duration: {duration.TotalMinutes}m, Slope: {regression.Slope}, Intercept: {regression.Intercept}");
@@ -319,7 +322,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
         }
 
-        private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim ss = new(1, 1);
 
         private async Task<bool> ChooseCamera() {
             await ss.WaitAsync();
@@ -574,7 +577,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             CameraInfo.PixelSize = (double)(o ?? 0.0d);
 
             CoolerHistory.AddLast(new CameraCoolingStep(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), CameraInfo.Temperature, CameraInfo.CoolerPower));
-            if(CoolerHistory.Count > 100) {
+            if (CoolerHistory.Count > 100) {
                 CoolerHistory.RemoveFirst();
             }
             CoolerHistoryChangeId++;
@@ -585,22 +588,23 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         private Dictionary<string, object> GetCameraValues() {
-            Dictionary<string, object> cameraValues = new Dictionary<string, object>();
-            cameraValues.Add(nameof(CameraInfo.Connected), _cam?.Connected ?? false);
-            cameraValues.Add(nameof(CameraInfo.CoolerOn), _cam?.CoolerOn ?? false);
-            cameraValues.Add(nameof(CameraInfo.Temperature), _cam?.Temperature ?? double.NaN);
-            cameraValues.Add(nameof(CameraInfo.CoolerPower), _cam?.CoolerPower ?? double.NaN);
-            cameraValues.Add(nameof(CameraInfo.DewHeaterOn), _cam?.DewHeaterOn ?? false);
-            cameraValues.Add(nameof(CameraInfo.CameraState), _cam?.CameraState ?? CameraStates.NoState);
-            cameraValues.Add(nameof(CameraInfo.TemperatureSetPoint), _cam?.TemperatureSetPoint ?? double.NaN);
-            cameraValues.Add(nameof(CameraInfo.ElectronsPerADU), _cam?.ElectronsPerADU ?? double.NaN);
-            cameraValues.Add(nameof(CameraInfo.SubSampleX), _cam?.SubSampleX ?? -1);
-            cameraValues.Add(nameof(CameraInfo.SubSampleY), _cam?.SubSampleY ?? -1);
-            cameraValues.Add(nameof(CameraInfo.SubSampleWidth), _cam?.SubSampleWidth ?? -1);
-            cameraValues.Add(nameof(CameraInfo.SubSampleHeight), _cam?.SubSampleHeight ?? -1);
-            cameraValues.Add(nameof(CameraInfo.ReadoutMode), _cam?.ReadoutMode ?? 0);
-            cameraValues.Add(nameof(CameraInfo.ExposureMin), _cam?.ExposureMin ?? 0);
-            cameraValues.Add(nameof(CameraInfo.PixelSize), _cam?.PixelSizeX ?? 0);
+            Dictionary<string, object> cameraValues = new() {
+                { nameof(CameraInfo.Connected), _cam?.Connected ?? false },
+                { nameof(CameraInfo.CoolerOn), _cam?.CoolerOn ?? false },
+                { nameof(CameraInfo.Temperature), _cam?.Temperature ?? double.NaN },
+                { nameof(CameraInfo.CoolerPower), _cam?.CoolerPower ?? double.NaN },
+                { nameof(CameraInfo.DewHeaterOn), _cam?.DewHeaterOn ?? false },
+                { nameof(CameraInfo.CameraState), _cam?.CameraState ?? CameraStates.NoState },
+                { nameof(CameraInfo.TemperatureSetPoint), _cam?.TemperatureSetPoint ?? double.NaN },
+                { nameof(CameraInfo.ElectronsPerADU), _cam?.ElectronsPerADU ?? double.NaN },
+                { nameof(CameraInfo.SubSampleX), _cam?.SubSampleX ?? -1 },
+                { nameof(CameraInfo.SubSampleY), _cam?.SubSampleY ?? -1 },
+                { nameof(CameraInfo.SubSampleWidth), _cam?.SubSampleWidth ?? -1 },
+                { nameof(CameraInfo.SubSampleHeight), _cam?.SubSampleHeight ?? -1 },
+                { nameof(CameraInfo.ReadoutMode), _cam?.ReadoutMode ?? 0 },
+                { nameof(CameraInfo.ExposureMin), _cam?.ExposureMin ?? 0 },
+                { nameof(CameraInfo.PixelSize), _cam?.PixelSizeX ?? 0 }
+            };
 
             if (_cam != null && CameraInfo.CanSetGain) {
                 cameraValues.Add(nameof(CameraInfo.Gain), _cam?.Gain ?? -1);
@@ -623,7 +627,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             return cameraValues;
         }
 
-        private DeviceUpdateTimer updateTimer;
+        private readonly DeviceUpdateTimer updateTimer;
 
         private CancellationTokenSource _cancelConnectCameraSource;
 
@@ -712,8 +716,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
         }
 
-        public async Task Capture(CaptureSequence sequence, CancellationToken token,
-            IProgress<ApplicationStatus> progress) {
+        public async Task Capture(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (CameraInfo.Connected == true) {
                 SetGain(sequence.Gain);
                 SetOffset(sequence.Offset);
@@ -721,6 +724,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     SetBinning(1, 1);
                 } else {
                     SetBinning(sequence.Binning.X, sequence.Binning.Y);
+                }
+
+                if (filterWheelMediator?.GetInfo().Connected == true && sequence.FilterType is null) {
+                    sequence.FilterType = filterWheelMediator.GetInfo().SelectedFilter;
                 }
 
                 if (sequence.EnableSubSample) {
@@ -745,40 +752,39 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
                 /* Wait for the camera to report image ready and report progress of exposure in remaining seconds */
                 using (var exposureReadyCts = CancellationTokenSource.CreateLinkedTokenSource(token)) {
-                    using (var progressCountCts = CancellationTokenSource.CreateLinkedTokenSource(exposureReadyCts.Token)) {
-                        if (exposureTime >= 1) {
-                            progress.Report(new ApplicationStatus() {
-                                Status = Loc.Instance["LblExposing"],
-                                Progress = 0,
-                                MaxProgress = (int)exposureTime,
-                                ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
-                            });
-                            /* Report progress of exposure in parallel to waiting for exposure ready event.*/
-                            _ = CoreUtil.Wait(TimeSpan.FromSeconds(exposureTime), progressCountCts.Token, progress, Loc.Instance["LblExposing"]);
-                        } else {
-                            progress.Report(new ApplicationStatus() {
-                                Status = Loc.Instance["LblExposing"]
-                            });
-                        }
+                    using var progressCountCts = CancellationTokenSource.CreateLinkedTokenSource(exposureReadyCts.Token);
+                    if (exposureTime >= 1) {
+                        progress.Report(new ApplicationStatus() {
+                            Status = Loc.Instance["LblExposing"],
+                            Progress = 0,
+                            MaxProgress = (int)exposureTime,
+                            ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
+                        });
+                        /* Report progress of exposure in parallel to waiting for exposure ready event.*/
+                        _ = CoreUtil.Wait(TimeSpan.FromSeconds(exposureTime), progressCountCts.Token, progress, Loc.Instance["LblExposing"]);
+                    } else {
+                        progress.Report(new ApplicationStatus() {
+                            Status = Loc.Instance["LblExposing"]
+                        });
+                    }
 
-                        exposureReadyCts.CancelAfter(TimeSpan.FromSeconds(exposureTime + profileService.ActiveProfile.CameraSettings.Timeout));
-                        try {
-                            await Cam.WaitUntilExposureIsReady(exposureReadyCts.Token);
-                        } catch (OperationCanceledException) {
-                            Console.WriteLine("Parent token cancelled: " + token.IsCancellationRequested);
-                            Console.WriteLine("Child token cancelled: " + exposureReadyCts.Token.IsCancellationRequested);
-                            if (!token.IsCancellationRequested) {
-                                var downloadFailedException = new CameraDownloadFailedException(sequence, $"Camera Timeout - Camera did not set image as ready after exposuretime + {profileService.ActiveProfile.CameraSettings.Timeout} seconds");
-                                Logger.Error(downloadFailedException);
-                                await (DownloadTimeout?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                                throw downloadFailedException;
-                            }
-                        } finally {
-                            try { progressCountCts?.Cancel(); } catch { }
-                            progress.Report(new ApplicationStatus() {
-                                Status = Loc.Instance["LblExposureFinished"]
-                            });
+                    exposureReadyCts.CancelAfter(TimeSpan.FromSeconds(exposureTime + profileService.ActiveProfile.CameraSettings.Timeout));
+                    try {
+                        await Cam.WaitUntilExposureIsReady(exposureReadyCts.Token);
+                    } catch (OperationCanceledException) {
+                        Console.WriteLine("Parent token cancelled: " + token.IsCancellationRequested);
+                        Console.WriteLine("Child token cancelled: " + exposureReadyCts.Token.IsCancellationRequested);
+                        if (!token.IsCancellationRequested) {
+                            var downloadFailedException = new CameraDownloadFailedException(sequence, $"Camera Timeout - Camera did not set image as ready after exposuretime + {profileService.ActiveProfile.CameraSettings.Timeout} seconds");
+                            Logger.Error(downloadFailedException);
+                            await (DownloadTimeout?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                            throw downloadFailedException;
                         }
+                    } finally {
+                        try { progressCountCts?.Cancel(); } catch { }
+                        progress.Report(new ApplicationStatus() {
+                            Status = Loc.Instance["LblExposureFinished"]
+                        });
                     }
                 }
 
@@ -1011,7 +1017,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         public IAsyncCommand CoolCamCommand { get; private set; }
         public IAsyncCommand WarmCamCommand { get; private set; }
 
-        private IApplicationStatusMediator applicationStatusMediator;
+        private readonly IApplicationStatusMediator applicationStatusMediator;
         private double exposureTime;
 
         public event Func<object, EventArgs, Task> Connected;
@@ -1028,7 +1034,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         public ICommand CancelConnectCommand { get; private set; }
     }
 
-    public class CameraCoolingStep { 
+    public class CameraCoolingStep {
 
         public CameraCoolingStep(double date, double temperature, double power) {
             Date = date;
