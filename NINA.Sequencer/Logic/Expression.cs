@@ -9,6 +9,7 @@ using NINA.Sequencer.SequenceItem.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows.Media;
 using static NINA.Sequencer.Logic.UserSymbol;
@@ -376,6 +377,10 @@ namespace NINA.Sequencer.Logic {
                 } else {
                     if ((Value == AutoValue) || (!double.IsNaN(Default) && Value == Default)) {
                         return DefaultString;
+                    } else if (Symbol is Variable v && !v.Executed) {
+                        return Loc.Instance["LblNotEvaluated"];
+                    } else if (double.IsNaN(Value)) {
+                        return "";
                     }
 
                     return Value.ToString(CultureInfo.InvariantCulture);
@@ -739,7 +744,7 @@ namespace NINA.Sequencer.Logic {
 
             return string.Create(
                 CultureInfo.InvariantCulture,
-                $"Expression: {Definition} in {id}, References: {References.Count}, Value: {ValueString}"
+                $"Expression: {Definition} in {id}, {string.Join(", ", Parameters.Select(a => a.Key + " = " + a.Value))}, Value: {ValueString}"
             );
         }
 

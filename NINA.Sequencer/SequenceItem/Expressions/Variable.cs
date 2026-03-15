@@ -31,11 +31,14 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
         }
 
-        public Variable(string id, string def, ISequenceContainer parent) {
-            Variable sv = new Variable();
-            sv.AttachNewParent(parent);
-            sv.Identifier = id;
-            sv.Executed = true;
+        public Variable(string id, string def, ISequenceContainer parent) : base() {
+            Identifier = id;
+            Expr = new Expression(def, parent, this);
+            Expr.Symbol = this;
+            OriginalExpr = new Expression(def, parent, this);
+            AttachNewParent(parent);
+            Executed = true;
+            Expr.Evaluate();
         }
 
         protected void PreClone(Variable clone) {
@@ -99,7 +102,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                     Expr.Error = "Not evaluated";
                 }
             }
-            OriginalExpr = new Expression(OriginalExpr.Definition, Parent, this);
+            OriginalExpr = new Expression(OriginalExpr?.Definition ?? "", Parent, this);
         }
 
 

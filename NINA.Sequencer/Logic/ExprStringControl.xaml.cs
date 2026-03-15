@@ -49,7 +49,10 @@ namespace NINA.Sequencer.Logic {
         }
 
         public string ProcessedText {
-            get => (string)GetValue(ProcessedTextProperty);
+            get {
+                UpdateProcessedText();
+                return (string)GetValue(ProcessedTextProperty);
+            }
             private set => SetValue(ProcessedTextProperty, value);
         }
 
@@ -63,6 +66,10 @@ namespace NINA.Sequencer.Logic {
             control.UpdateProcessedText();
         }
 
+        public void RefreshProcessedText(object sender, ToolTipEventArgs e) {
+            UpdateProcessedText();
+        }
+
         private void UpdateProcessedText() {
             var sequenceItem = DataContext as ISequenceItem;
             if (sequenceItem == null) {
@@ -70,7 +77,7 @@ namespace NINA.Sequencer.Logic {
                 return;
             }
 
-            ProcessedText = ExpressionExpander.Expand(Text, sequenceItem.SymbolBroker, sequenceItem.Parent);
+            ProcessedText = ExpressionExpander.Expand(Text, sequenceItem.SymbolBroker, sequenceItem);
         }
     }
 }
