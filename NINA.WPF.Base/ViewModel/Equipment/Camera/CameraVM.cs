@@ -47,6 +47,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
         public CameraVM(IProfileService profileService,
                         ICameraMediator cameraMediator,
+                        IFilterWheelMediator filterWheelMediator,
                         IApplicationStatusMediator applicationStatusMediator,
                         IDeviceChooserVM cameraChooserVM) : base(profileService) {
             Title = Loc.Instance["LblCamera"];
@@ -57,6 +58,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterHandler(this);
+
+            this.filterWheelMediator = filterWheelMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
             ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseCamera), (object o) => DeviceChooserVM.SelectedDevice != null);
@@ -114,7 +117,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
         }
 
-        private ICameraMediator cameraMediator;
+        private readonly IFilterWheelMediator filterWheelMediator;
+        private readonly ICameraMediator cameraMediator;
 
         public IDeviceChooserVM DeviceChooserVM { get; set; }
 
@@ -712,8 +716,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
         }
 
-        public async Task Capture(CaptureSequence sequence, CancellationToken token,
-            IProgress<ApplicationStatus> progress) {
+        public async Task Capture(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (CameraInfo.Connected == true) {
                 SetGain(sequence.Gain);
                 SetOffset(sequence.Offset);
@@ -721,6 +724,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     SetBinning(1, 1);
                 } else {
                     SetBinning(sequence.Binning.X, sequence.Binning.Y);
+                }
+
+                if (filterWheelMediator?.GetInfo().Connected == true && sequence.FilterType is null) {
+                    sequence.FilterType = filterWheelMediator.GetInfo().SelectedFilter;
                 }
 
                 if (sequence.EnableSubSample) {
