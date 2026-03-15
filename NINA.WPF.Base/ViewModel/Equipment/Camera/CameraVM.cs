@@ -323,7 +323,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
         }
 
-        private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim ss = new(1, 1);
 
         private async Task<bool> ChooseCamera() {
             await ss.WaitAsync();
@@ -627,7 +627,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             return cameraValues;
         }
 
-        private DeviceUpdateTimer updateTimer;
+        private readonly DeviceUpdateTimer updateTimer;
 
         private CancellationTokenSource _cancelConnectCameraSource;
 
@@ -1018,7 +1018,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         public IAsyncCommand CoolCamCommand { get; private set; }
         public IAsyncCommand WarmCamCommand { get; private set; }
 
-        private IApplicationStatusMediator applicationStatusMediator;
+        private readonly IApplicationStatusMediator applicationStatusMediator;
         private double exposureTime;
 
         public event Func<object, EventArgs, Task> Connected;
