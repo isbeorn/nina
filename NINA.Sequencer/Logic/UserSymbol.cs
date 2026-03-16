@@ -42,7 +42,7 @@ namespace NINA.Sequencer.Logic {
 
         protected static bool Debugging = false;
 
-        public static readonly string VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
+        public static readonly string VALID_SYMBOL = "^[a-zA-Z_][a-zA-Z0-9_]*$";
 
         static public SequenceContainer GlobalSymbols { get; } = new SequentialContainer() { Name = "Global Symbols" };
 

@@ -633,10 +633,10 @@ namespace NINA.Test.Sequencer.Logic {
 
         [Test]
         public void UserSymbol_Identifier_ValidPattern_ShouldMatch() {
-            // Valid identifiers according to VALID_SYMBOL pattern: ^[a-zA-Z][a-zA-Z0-9-+_]*$
+            // Valid identifiers according to VALID_SYMBOL pattern: ^[a-zA-Z_][a-zA-Z0-9_]*$
             var validIdentifiers = new[] {
-                "a", "Z", "myVar", "MyVar123", "test_var", "test-var", "test+var",
-                "A1", "variable_123", "TEST_CONSTANT"
+                "a", "Z", "myVar", "MyVar123", "test_var", "_private",
+                "A1", "variable_123", "TEST_CONSTANT", "_"
             };
 
             foreach (var identifier in validIdentifiers) {
@@ -649,8 +649,8 @@ namespace NINA.Test.Sequencer.Logic {
         public void UserSymbol_Identifier_InvalidPattern_ShouldNotMatch() {
             // Invalid identifiers
             var invalidIdentifiers = new[] {
-                "1var", "123", "_var", "-var", "+var", "my var", "my@var", "my.var",
-                "my$var", "", "my#var"
+                "1var", "123", "-var", "+var", "my var", "my@var", "my.var",
+                "my$var", "", "my#var", "test-var", "test+var"
             };
 
             foreach (var identifier in invalidIdentifiers) {

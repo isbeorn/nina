@@ -572,5 +572,100 @@ namespace NINA.Test.Sequencer.Logic {
             // assert
             act.Should().Throw<ArgumentException>();
         }
+
+        [Test]
+        [TestCase("")]
+        [TestCase("123InvalidStart")]
+        [TestCase("Invalid Symbol")]
+        [TestCase("Invalid-Symbol!")]
+        [TestCase("Symbol@Name")]
+        public void RegisterSymbolProvider_WithInvalidName_ShouldThrowArgumentException(string invalidName) {
+            ISymbolBroker broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
+                flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
+                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
+
+            Action act = () => broker.RegisterSymbolProvider(invalidName);
+
+            act.Should().Throw<ArgumentException>()
+                .WithMessage("SymbolProvider name must be an alphanumeric word.");
+        }
+
+        [Test]
+        [TestCase("")]
+        [TestCase("123InvalidStart")]
+        [TestCase("Invalid Symbol")]
+        [TestCase("Invalid-Symbol")]
+        [TestCase("Invalid+Symbol")]
+        [TestCase("Symbol@Name")]
+        public void AddOrUpdateSymbol_WithInvalidToken_ShouldThrowArgumentException(string invalidToken) {
+            ISymbolBroker broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
+                flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
+                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
+            var provider = broker.RegisterSymbolProvider("ValidProvider");
+
+            Action act = () => provider.AddOrUpdateSymbol(invalidToken, 42);
+
+            act.Should().Throw<ArgumentException>()
+                .WithMessage($"Invalid Symbol - {invalidToken}");
+        }
+
+        [Test]
+        [TestCase("")]
+        [TestCase("123InvalidStart")]
+        [TestCase("Invalid Symbol")]
+        [TestCase("Invalid-Symbol")]
+        [TestCase("Invalid+Symbol")]
+        [TestCase("Symbol@Name")]
+        public void AddOrUpdateSymbol_WithConstantsAndInvalidToken_ShouldThrowArgumentException(string invalidToken) {
+            ISymbolBroker broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
+                flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
+                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
+            var provider = broker.RegisterSymbolProvider("ValidProvider");
+            Symbol[] constants = new Symbol[] { new Symbol("Constant1", 1), new Symbol("Constant2", 2) };
+
+            Action act = () => provider.AddOrUpdateSymbol(invalidToken, 1, constants);
+
+            act.Should().Throw<ArgumentException>()
+                .WithMessage($"Invalid Symbol - {invalidToken}");
+        }
+
+        [Test]
+        [TestCase("")]
+        [TestCase("123InvalidStart")]
+        [TestCase("Invalid Symbol")]
+        [TestCase("Invalid-Symbol")]
+        [TestCase("Invalid+Symbol")]
+        [TestCase("Symbol@Name")]
+        public void AddOrUpdateHiddenSymbol_WithInvalidToken_ShouldThrowArgumentException(string invalidToken) {
+            ISymbolBroker broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
+                flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
+                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
+            var provider = broker.RegisterSymbolProvider("ValidProvider");
+            Symbol[] constants = new Symbol[] { new Symbol("Constant1", 1), new Symbol("Constant2", 2) };
+
+            Action act = () => provider.AddOrUpdateHiddenSymbol(invalidToken, 1, constants);
+
+            act.Should().Throw<ArgumentException>()
+                .WithMessage($"Invalid Symbol - {invalidToken}");
+        }
+
+        [Test]
+        [TestCase("ValidSymbol")]
+        [TestCase("Valid123")]
+        [TestCase("Valid_Symbol")]
+        [TestCase("_privateSymbol")]
+        [TestCase("_")]
+        [TestCase("a")]
+        [TestCase("A1B2C3")]
+        public void AddOrUpdateSymbol_WithValidToken_ShouldSucceed(string validToken) {
+            ISymbolBroker broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
+                flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
+                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
+            var provider = broker.RegisterSymbolProvider("ValidProvider");
+
+            Action act = () => provider.AddOrUpdateSymbol(validToken, 42);
+
+            act.Should().NotThrow();
+        }
     }
 }
