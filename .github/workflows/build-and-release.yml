@@ -154,7 +154,7 @@ jobs:
     - name: Set up .NET 10.0 SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 10.0.201
 
     - name: Install MkDocs and plugins
       run: |
