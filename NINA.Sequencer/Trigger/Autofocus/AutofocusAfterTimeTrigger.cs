@@ -22,6 +22,7 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Image.ImageAnalysis;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Generators;
 using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Autofocus;
@@ -48,7 +49,9 @@ namespace NINA.Sequencer.Trigger.Autofocus {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Focuser")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class AutofocusAfterTimeTrigger : SequenceTrigger, IValidatable {
+    [UsesExpressions]
+
+    public partial class AutofocusAfterTimeTrigger : SequenceTrigger, IValidatable {
         private IProfileService profileService;
         private IImageHistoryVM history;
         private ICameraMediator cameraMediator;
@@ -76,11 +79,8 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new AutofocusAfterTimeTrigger(this) {
-                Amount = Amount,
-                TriggerRunner = (SequentialContainer)TriggerRunner.Clone()
-            };
+        partial void AfterClone(AutofocusAfterTimeTrigger original, AutofocusAfterTimeTrigger clone) {
+            clone.TriggerRunner = (SequentialContainer)original.TriggerRunner.Clone();
         }
 
         private IList<string> issues = new List<string>();
@@ -93,16 +93,8 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             }
         }
 
-        private double amount;
-
-        [JsonProperty]
-        public double Amount {
-            get => amount;
-            set {
-                amount = value;
-                RaisePropertyChanged();
-            }
-        }
+        [IsExpression (Default = 30)]
+        public partial double Amount { get; set; }
 
         private double elapsed;
 

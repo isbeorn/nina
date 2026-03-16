@@ -190,7 +190,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding DeltaT}" />
                     <TextBlock VerticalAlignment="Center" Text=" °C / " />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Amount}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AmountExpression.Value}" />
                     <TextBlock VerticalAlignment="Center" Text=" °C" />
                 </StackPanel>
             </mini:MiniTrigger.TriggerProgressContent>
@@ -200,17 +200,7 @@
     <DataTemplate DataType="{x:Type af:AutofocusAfterTemperatureChangeTrigger}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAmount}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Amount}"
-                        TextAlignment="Right"
-                        Unit="°C" />
-                </StackPanel>
+                <logic:ExprControl Exp="{Binding AmountExpression}" Label="{ns:Loc LblAmount}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -220,7 +210,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding DeltaT}" />
                     <TextBlock VerticalAlignment="Center" Text=" °C / " />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Amount}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AmountExpression.Value}" />
                     <TextBlock VerticalAlignment="Center" Text=" °C" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
@@ -237,7 +227,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Elapsed}" />
                     <TextBlock VerticalAlignment="Center" Text=" min / " />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Amount}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AmountExpression.Value}" />
                     <TextBlock VerticalAlignment="Center" Text=" min" />
                 </StackPanel>
             </mini:MiniTrigger.TriggerProgressContent>
@@ -247,17 +237,7 @@
     <DataTemplate DataType="{x:Type af:AutofocusAfterTimeTrigger}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAmount}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="50"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Amount}"
-                        TextAlignment="Right"
-                        Unit="min" />
-                </StackPanel>
+                <logic:ExprControl Exp="{Binding AmountExpression}" Label="{ns:Loc LblAmount}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -267,7 +247,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Elapsed}" />
                     <TextBlock VerticalAlignment="Center" Text=" min / " />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Amount}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AmountExpression.Value}" />
                     <TextBlock VerticalAlignment="Center" Text=" min" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
