@@ -1013,5 +1013,107 @@ namespace NINA.Test.Sequencer.Logic {
             myProviders.Should().NotBeNull();
             myProviders.Should().BeAssignableTo<System.Collections.Generic.IReadOnlyCollection<ISymbolProvider>>();
         }
+
+        [Test]
+        [TestCase("MySwitch", "MySwitch")]
+        [TestCase("My Switch", "My_Switch")]
+        [TestCase("Switch #1", "Switch__1")]
+        [TestCase("123Test", "_123Test")]
+        [TestCase("_private", "_private")]
+        [TestCase("test_var", "test_var")]
+        [TestCase("A1B2C3", "A1B2C3")]
+        [TestCase("switch-1", "switch_1")]
+        [TestCase("switch+1", "switch_1")]
+        [TestCase("my@switch", "my_switch")]
+        [TestCase("my.switch", "my_switch")]
+        [TestCase("my$switch", "my_switch")]
+        public void SymbolBroker_SanitizeIdentifier_ValidIdentifiers(string input, string expected) {
+            // Act
+            var result = SymbolBroker.SanitizeIdentifier(input);
+
+            // Assert
+            result.Should().Be(expected);
+
+            // Verify it matches VALID_SYMBOL regex
+            SymbolProvider.ValidSymbolRegex.IsMatch(result)
+                .Should().BeTrue($"{result} should be a valid NCalc identifier");
+        }
+
+        [Test]
+        public void SymbolBroker_SanitizeIdentifier_NullString_ReturnsDefault() {
+            // Act
+            var result = SymbolBroker.SanitizeIdentifier(null);
+
+            // Assert
+            result.Should().Be("__Null__");
+            SymbolProvider.ValidSymbolRegex.IsMatch(result)
+                .Should().BeTrue();
+        }
+
+        [Test]
+        public void SymbolBroker_SanitizeIdentifier_EmptyString_ReturnsDefault() {
+            // Act
+            var result = SymbolBroker.SanitizeIdentifier("");
+
+            // Assert
+            result.Should().Be("__Empty__");
+            SymbolProvider.ValidSymbolRegex.IsMatch(result)
+                .Should().BeTrue();
+        }
+
+        [Test]
+        [TestCase("!!!")]
+        [TestCase("@@@")]
+        [TestCase("   ")]
+        public void SymbolBroker_SanitizeIdentifier_AllSpecialChars_ReturnsUnderscores(string input) {
+            // Act
+            var result = SymbolBroker.SanitizeIdentifier(input);
+
+            // Assert
+            result.Should().NotBeNullOrEmpty();
+            result.Should().MatchRegex("^_+$", "should be only underscores");
+            SymbolProvider.ValidSymbolRegex.IsMatch(result)
+                .Should().BeTrue($"{result} should be a valid NCalc identifier");
+        }
+
+        [Test]
+        public void SymbolBroker_SanitizeIdentifier_StartsWithDigit_PrependsUnderscore() {
+            // Act
+            var result = SymbolBroker.SanitizeIdentifier("1stSwitch");
+
+            // Assert
+            result.Should().Be("_1stSwitch");
+            result[0].Should().Be('_', "first character should be underscore when original starts with digit");
+            SymbolProvider.ValidSymbolRegex.IsMatch(result)
+                .Should().BeTrue();
+        }
+
+        [Test]
+        public void SymbolBroker_SanitizeIdentifier_PreservesCase() {
+            // Act
+            var result = SymbolBroker.SanitizeIdentifier("MyTestSwitch");
+
+            // Assert
+            result.Should().Be("MyTestSwitch");
+        }
+
+        [Test]
+        public void SymbolBroker_SanitizeIdentifier_RealWorldSwitchNames() {
+            // Test real-world switch names that might come from devices
+            var testCases = new Dictionary<string, string> {
+                { "Power Switch #1", "Power_Switch__1" },
+                { "12V Output", "_12V_Output" },
+                { "Flat-Panel PWM", "Flat_Panel_PWM" },
+                { "Dew Heater (A)", "Dew_Heater__A_" },
+                { "USB Hub 2.0", "USB_Hub_2_0" }
+            };
+
+            foreach (var kvp in testCases) {
+                var result = SymbolBroker.SanitizeIdentifier(kvp.Key);
+                result.Should().Be(kvp.Value, $"for input '{kvp.Key}'");
+                SymbolProvider.ValidSymbolRegex.IsMatch(result)
+                    .Should().BeTrue($"{result} should be a valid NCalc identifier");
+            }
+        }
     }
 }

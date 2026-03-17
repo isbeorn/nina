@@ -122,7 +122,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
             if (Identifier.Length == 0 || OriginalExpr.Definition?.Length == 0) {
                 i.Add("A name and an initial value must be specified");
-            } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
+            } else if (!UserSymbol.ValidSymbolRegex.IsMatch(Identifier)) {
                 i.Add("The name of a Variable must be alphanumeric");
             }
 

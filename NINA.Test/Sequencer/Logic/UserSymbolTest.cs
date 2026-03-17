@@ -640,7 +640,7 @@ namespace NINA.Test.Sequencer.Logic {
             };
 
             foreach (var identifier in validIdentifiers) {
-                System.Text.RegularExpressions.Regex.IsMatch(identifier, UserSymbol.VALID_SYMBOL)
+                UserSymbol.ValidSymbolRegex.IsMatch(identifier)
                     .Should().BeTrue($"{identifier} should be valid");
             }
         }
@@ -654,7 +654,7 @@ namespace NINA.Test.Sequencer.Logic {
             };
 
             foreach (var identifier in invalidIdentifiers) {
-                System.Text.RegularExpressions.Regex.IsMatch(identifier, UserSymbol.VALID_SYMBOL)
+                UserSymbol.ValidSymbolRegex.IsMatch(identifier)
                     .Should().BeFalse($"{identifier} should be invalid");
             }
         }
