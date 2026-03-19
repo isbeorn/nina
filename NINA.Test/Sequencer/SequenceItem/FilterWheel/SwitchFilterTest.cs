@@ -426,5 +426,50 @@ namespace NINA.Test.Sequencer.SequenceItem.FilterWheel {
                 It.IsAny<CancellationToken>(),
                 It.IsAny<IProgress<ApplicationStatus>>()), Times.Once);
         }
+
+        [Test]
+        public async Task Execute_ComboBoxText_IsNullFilterName_UsesSelectedFilter() {
+            var redFilter = new FilterInfo("Red", 0, 1);
+            var greenFilter = new FilterInfo("Green", 0, 2);
+            var blueFilter = new FilterInfo("Blue", 0, 3);
+
+            var filters = new Core.Utility.ObserveAllCollection<FilterInfo> {
+                redFilter,
+                greenFilter,
+                blueFilter
+            };
+
+            var profileMock = new Mock<IProfile>();
+            var filterWheelSettingsMock = new Mock<NINA.Profile.Interfaces.IFilterWheelSettings>();
+            filterWheelSettingsMock.Setup(x => x.FilterWheelFilters).Returns(filters);
+            profileMock.Setup(x => x.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
+
+            var localProfileServiceMock = new Mock<IProfileService>();
+            localProfileServiceMock.Setup(x => x.ActiveProfile).Returns(profileMock.Object);
+
+            var filterWheelInfo = new FilterWheelInfo() { 
+                Connected = true,
+                SelectedFilter = greenFilter
+            };
+
+            fwMediatorMock.Setup(x => x.GetInfo()).Returns(filterWheelInfo);
+            fwMediatorMock.Setup(x => x.ChangeFilter(It.IsAny<FilterInfo>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .ReturnsAsync(greenFilter);
+
+            var sut = new SwitchFilter(localProfileServiceMock.Object, fwMediatorMock.Object);
+
+            sut.ComboBoxText = NullFilter.Instance.Name;
+
+            await sut.Execute(default, default);
+
+            sut.Filter.Should().NotBeNull();
+            sut.Filter.Name.Should().Be("Green");
+            sut.Filter.Position.Should().Be(2);
+
+            fwMediatorMock.Verify(x => x.ChangeFilter(
+                It.Is<FilterInfo>(f => f.Name == "Green" && f.Position == 2),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<IProgress<ApplicationStatus>>()), Times.Once);
+        }
     }
 }
