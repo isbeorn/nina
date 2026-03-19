@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -25,6 +25,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Camera {
 
@@ -34,7 +36,9 @@ namespace NINA.Sequencer.SequenceItem.Camera {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Camera")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class CoolCamera : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class CoolCamera : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public CoolCamera(ICameraMediator cameraMediator) {
@@ -45,28 +49,13 @@ namespace NINA.Sequencer.SequenceItem.Camera {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new CoolCamera(this) {
-                Temperature = Temperature,
-                Duration = Duration
-            };
-        }
-
         private ICameraMediator cameraMediator;
 
-        private double temperature = 0;
+        [IsExpression (Default = 0)]
+        public partial double Temperature { get; set; }
 
-        [JsonProperty]
-        public double Temperature {
-            get => temperature;
-            set {
-                temperature = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        [JsonProperty]
-        public double Duration { get; set; } = 0;
+        [IsExpression (Default = 0)]
+        public partial double Duration { get; set; }
 
         private IList<string> issues = new List<string>();
 
@@ -95,6 +84,7 @@ namespace NINA.Sequencer.SequenceItem.Camera {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Validation_CameraCannotSetTemperature"]);
             }
 
+            Expression.ValidateExpressions(i, DurationExpression, TemperatureExpression);
             Issues = i;
             return i.Count == 0;
         }

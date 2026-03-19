@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -80,8 +80,13 @@ namespace NINA.Core.Utility.Notification {
                 return;
             }
 
+            var owner = workAreaProvider.Owner;            
+            var topMost = workAreaProvider.IsTopMost;
+
             hostWindow = new NotificationHostWindow {
-                DataContext = this
+                DataContext = this,
+                Owner = owner,
+                Topmost = topMost
             };
             hostWindow.Show();
             hostWindow.Hide();

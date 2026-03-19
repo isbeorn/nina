@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -85,7 +85,7 @@ namespace NINA.Sequencer {
                 }
                 foreach (var file in Directory.GetFiles(defaultTemplatePath, "*" + TemplateFileExtension)) {
                     try {
-                        var container = sequenceJsonConverter.Deserialize(File.ReadAllText(file)) as ISequenceContainer;
+                        var container = sequenceJsonConverter.Deserialize(File.ReadAllText(file), file);
                         if (container is ISequenceRootContainer) continue;
                         Templates.Add(new TemplatedSequenceContainer(profileService, DefaultTemplatesGroup, container));
                     } catch (Exception ex) {
@@ -179,7 +179,7 @@ namespace NINA.Sequencer {
 
                     foreach (var file in files) {
                         try {
-                            var container = sequenceJsonConverter.Deserialize(File.ReadAllText(file));
+                            var container = sequenceJsonConverter.Deserialize(File.ReadAllText(file), file);
                             if (container is ISequenceRootContainer) continue;
                             var template = new TemplatedSequenceContainer(profileService, UserTemplatesGroup, container);
                             var fileInfo = new FileInfo(file);

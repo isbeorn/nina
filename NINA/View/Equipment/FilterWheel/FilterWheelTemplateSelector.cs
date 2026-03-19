@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -25,6 +25,7 @@ namespace NINA.View.Equipment {
         public DataTemplate Zwo { get; set; }
         public DataTemplate PlayerOne { get; set; }
         public DataTemplate ToupTekAlike { get; set; }
+        public DataTemplate Oasis { get; set; }
         public DataTemplate FailedToLoadTemplate { get; set; }
 
         public string Postfix { get; set; }
@@ -34,6 +35,8 @@ namespace NINA.View.Equipment {
                 return Zwo;
             } else if (item is PlayerOneFilterWheel) {
                 return PlayerOne;
+            } else if (item is OasisFilterWheel) {
+                return Oasis;
             } else if (item is ToupTekAlikeFilterWheel) {
                 return ToupTekAlike;
             } else {

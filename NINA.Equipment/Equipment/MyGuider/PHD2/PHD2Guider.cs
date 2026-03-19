@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -12,35 +12,36 @@
 
 #endregion "copyright"
 
+using Accord;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NINA.Profile.Interfaces;
+using NINA.Astrometry;
+using NINA.Core.Interfaces;
+using NINA.Core.Locale;
+using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Utility.WindowService;
+using NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents;
+using NINA.Equipment.Interfaces;
+using NINA.Profile.Interfaces;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Threading;
-using NINA.Core.Interfaces;
-using NINA.Core.Locale;
-using NINA.Equipment.Interfaces;
-using NINA.Core.Model;
-using NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents;
-using NINA.Astrometry;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Net;
-using ASCOM.Common.Helpers;
 
 namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
@@ -53,6 +54,13 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
         private readonly IProfileService profileService;
         private readonly IWindowServiceFactory windowServiceFactory;
+        private TcpClient _client;
+        private NetworkStream _stream;
+        private StreamReader _reader;
+        private StreamWriter _writer;
+        private readonly SemaphoreSlim _writeLock = new(1, 1);
+        private readonly ConcurrentDictionary<string, TaskCompletionSource<JObject>> _pending =
+            new(StringComparer.Ordinal);
 
         private PhdEventVersion _version;
 
@@ -177,7 +185,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         public async Task<bool> Connect(CancellationToken token) {
             bool connected = false;
             IPHostEntry hostEntry;
-            _tcs = new TaskCompletionSource<bool>();
+            _tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             var serverHost = profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl;
             var serverPort = profileService.ActiveProfile.GuiderSettings.PHD2ServerPort;
@@ -213,7 +221,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                 }
             }
 
-            _ = Task.Run(RunListener, token);
+            _ = Task.Run(RunListener);
 
             connected = await _tcs.Task;
 
@@ -361,7 +369,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
         public async Task<bool> Pause(bool pause, CancellationToken ct) {
             if (Connected) {
-                var msg = new Phd2Pause() { Parameters = new bool[] { true } };
+                var msg = new Phd2Pause() { Parameters = new bool[] { pause } };
                 await SendMessage(msg);
 
                 if (pause) {
@@ -700,7 +708,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             }
             try {
                 string state = await GetAppState(3000);
-                if (state != PhdAppState.GUIDING && state != PhdAppState.CALIBRATING && state != PhdAppState.LOSTLOCK) {
+                if (state == PhdAppState.STOPPED) {
                     Logger.Info($"Phd2 - Stop Guiding skipped, as the app is already in state {state}");
                     return false;
                 }
@@ -787,47 +795,71 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         }
 
         public async Task<T> SendMessage<T>(Phd2Method msg, int receiveTimeout = 60000) where T : PhdMethodResponse {
-            try {
-                var serializedMessage = JsonConvert.SerializeObject(msg, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
-                Logger.Debug($"Phd2 - Sending message '{serializedMessage}'");
-
-                using var client = new TcpClient() {
-                    ReceiveTimeout = receiveTimeout,
-                    SendTimeout = receiveTimeout,
-                    NoDelay = true,
-                };
-
-                await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
-                var stream = client.GetStream();
-                var data = Encoding.ASCII.GetBytes(serializedMessage + Environment.NewLine);
-
-                await stream.WriteAsync(data);
-
-                using var reader = new StreamReader(stream, Encoding.UTF8);
-                string line;
-
-                while ((line = await reader.ReadLineAsync()) != null) {
-                    var o = JObject.Parse(line);
-                    string phdevent = "";
-                    var t = o.GetValue("id");
-                    if (t != null) {
-                        phdevent = t.ToString();
-                    }
-                    if (phdevent == msg.Id) {
-                        Logger.Debug($"Phd2 - Received message answer '{line}'");
-                        var response = o.ToObject<T>();
-                        CheckPhdError(response);
-                        return response;
-                    }
-                }
-            } catch (Exception ex) {
-                Logger.Error("Phd2 error while sending messge", ex);
+            if (!Connected || _writer == null) {
+                return MakeGenericError<T>(msg, "Not connected to PHD2");
             }
 
-            var genericError = (T)Activator.CreateInstance(typeof(T));
-            genericError.id = msg.Id.ToString();
-            genericError.error = new PhdError() { code = -1, message = "Unable to get response from phd2" };
-            return genericError;
+            var idKey = msg.Id ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(idKey)) {
+                return MakeGenericError<T>(msg, "Invalid message id");
+            }
+
+            if (receiveTimeout <= 0) {
+                receiveTimeout = 60000;
+            }
+
+            var tcs = new TaskCompletionSource<JObject>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            // If a duplicate is pending, fail fast (shouldn't happen in normal use)
+            if (!_pending.TryAdd(idKey, tcs)) {
+                return MakeGenericError<T>(msg, $"A request with id '{idKey}' is already pending");
+            }
+
+            try {
+                var serialized = JsonConvert.SerializeObject(
+                    msg,
+                    new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+                Logger.Debug($"Phd2 - Sending message '{serialized}'");
+
+                // Ensure line-delimited JSON over the single connection
+                await _writeLock.WaitAsync().ConfigureAwait(false);
+                try {
+                    await _writer.WriteLineAsync(serialized).ConfigureAwait(false);
+                    await _writer.FlushAsync().ConfigureAwait(false);
+                } finally {
+                    _writeLock.Release();
+                }
+
+                // Timeout handling
+                using var timeoutCts = new CancellationTokenSource(receiveTimeout);
+                using (timeoutCts.Token.Register(() => tcs.TrySetCanceled(timeoutCts.Token), useSynchronizationContext: false)) {
+                    JObject responseObj;
+                    try {
+                        responseObj = await tcs.Task.ConfigureAwait(false);
+                    } catch (OperationCanceledException) {
+                        return MakeGenericError<T>(msg, "Timed out waiting for response from PHD2");
+                    }
+
+                    Logger.Debug($"Phd2 - Received message answer '{responseObj}'");
+
+                    var response = responseObj.ToObject<T>();
+                    CheckPhdError(response);
+                    return response;
+                }
+            } catch (Exception ex) {
+                Logger.Error("Phd2 error while sending message", ex);
+                return MakeGenericError<T>(msg, "Unable to get response from PHD2");
+            } finally {
+                _pending.TryRemove(idKey, out _);
+            }
+        }
+
+        private static T MakeGenericError<T>(Phd2Method msg, string message) where T : PhdMethodResponse {
+            var err = (T)Activator.CreateInstance(typeof(T));
+            err.id = msg.Id.ToString();
+            err.error = new PhdError { code = -1, message = message };
+            return err;
         }
 
         public async Task<bool> SetShiftRate(SiderealShiftTrackingRate shiftTrackingRate, CancellationToken ct) {
@@ -898,6 +930,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             initialized = false;
             phd2Ip = null;
             try { _clientCTS?.Cancel(); } catch { }
+            try { _client?.Close(); } catch { }
         }
 
         private async Task ProcessEvent(string phdevent, JObject message) {
@@ -989,7 +1022,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                         break;
                     }
                 case "ConfigurationChange": {
-                        if(initialized) { 
+                        if (initialized) {
                             Logger.Debug($"PHD2 - ConfigurationChange!");
                             _ = SetPixelScale();
                         }
@@ -1087,24 +1120,28 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                         FileName = profileService.ActiveProfile.GuiderSettings.PHD2Path,
                         Arguments = $"-i={profileService.ActiveProfile.GuiderSettings.PHD2InstanceNumber}"
                     }
-                    };
+                };
                 process?.Start();
                 process?.WaitForInputIdle();
 
                 await Task.Delay(2000);
 
-                //Try to read the appstate and retry for 5 times. On slow systems the startup of phd can take a couple of seconds.
-                string appState = string.Empty;
-                int retries = 5;
-                do {
-                    try {
-                        retries--;
-                        appState = await GetAppState(2000);
-                    } catch (Exception) {
-                    }
-                } while (string.IsNullOrEmpty(appState) && retries > 0);
+                bool socketReady = false;
+                try {
+                    var settings = profileService.ActiveProfile.GuiderSettings;
+                    var instanceNumber = settings.PHD2InstanceNumber;
+                    var phd2Path = settings.PHD2Path;
+                    var port = settings.PHD2ServerPort;
+                    var host = phd2Ip;
+                    socketReady = await WaitForPhd2SocketAsync(
+                        host: host,
+                        port: port,
+                        timeout: TimeSpan.FromSeconds(10),
+                        pollInterval: TimeSpan.FromMilliseconds(500));
+                } catch (Exception) {
+                }
 
-                return !string.IsNullOrEmpty(appState);
+                return socketReady;
             } catch (FileNotFoundException ex) {
                 Logger.Error(Loc.Instance["LblPhd2PathNotFound"], ex);
                 Notification.ShowError(Loc.Instance["LblPhd2PathNotFound"]);
@@ -1116,62 +1153,135 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             return false;
         }
 
+        private async Task<bool> WaitForPhd2SocketAsync(
+                IPAddress host,
+                int port,
+                TimeSpan timeout,
+                TimeSpan pollInterval,
+                CancellationToken ct = default) {
+            var sw = Stopwatch.StartNew();
+            Exception lastException = null;
+
+            while (sw.Elapsed < timeout) {
+                ct.ThrowIfCancellationRequested();
+
+                try {
+                    using var probe = new TcpClient(AddressFamily.InterNetwork) { NoDelay = true };
+
+                    await probe.ConnectAsync(host, port, ct);
+
+                    if (probe.Connected) { 
+                        return true;
+                    }
+                } catch (OperationCanceledException) {
+                    throw;
+                } catch (Exception ex) {
+                    lastException = ex;
+                }
+
+                await Task.Delay(pollInterval, ct);
+            }
+
+            return false;
+        }
+
         private async Task RunListener() {
-            var jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
+            var jls = new JsonLoadSettings {
+                LineInfoHandling = LineInfoHandling.Ignore,
+                CommentHandling = CommentHandling.Ignore
+            };
+
             _clientCTS?.Dispose();
             _clientCTS = new CancellationTokenSource();
+            var ct = _clientCTS.Token;
 
             try {
-                using var client = new TcpClient(AddressFamily.InterNetwork) {
-                    NoDelay = true,
+                _client = new TcpClient(AddressFamily.InterNetwork) { NoDelay = true };
+
+                await _client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort, ct);
+
+                _stream = _client.GetStream();
+                _reader = new StreamReader(_stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, bufferSize: 4096, leaveOpen: true);
+                _writer = new StreamWriter(_stream, new UTF8Encoding(false), bufferSize: 4096, leaveOpen: true) {
+                    NewLine = "\n",
+                    AutoFlush = false
                 };
 
-                await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
                 Connected = true;
                 _tcs.TrySetResult(true);
 
-                using NetworkStream s = client.GetStream();
-
                 while (true) {
-                    var state = GetState(client);
-                    if (state == TcpState.CloseWait) {
+                    ct.ThrowIfCancellationRequested();
+
+                    var state = GetState(_client);
+                    if (state == TcpState.CloseWait)
                         throw new Exception(Loc.Instance["LblPhd2ServerConnectionLost"]);
+
+                    string line = await _reader.ReadLineAsync(ct);
+                    if (line is null)
+                        throw new Exception(Loc.Instance["LblPhd2ServerConnectionLost"]);
+
+                    if (line.Length == 0 || line[0] != '{')
+                        continue;
+
+                    JObject o;
+                    try {
+                        o = JObject.Parse(line, jls);
+                    } catch {
+                        continue;
                     }
 
-                    var message = string.Empty;
-                    while (s.DataAvailable) {
-                        byte[] response = new byte[1024];
-                        await s.ReadExactlyAsync(response, _clientCTS.Token);
-                        message += Encoding.ASCII.GetString(response);
+                    // Event?
+                    var ev = o["Event"];
+                    if (ev != null) {
+                        var phdevent = ev.ToString();
+                        Logger.Trace($"PHD2 event received - {o}");
+                        await ProcessEvent(phdevent, o);
+                        continue;
                     }
 
-                    var lines = message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                    foreach (string line in lines) {
-                        if (!string.IsNullOrEmpty(line) && line.StartsWith('{')) {
-                            JObject o = JObject.Parse(line, jls);
-                            JToken t = o.GetValue("Event");
-                            string phdevent = "";
-                            if (t != null) {
-                                phdevent = t.ToString();
-                                Logger.Trace($"PHD2 event received - {o}");
-                                await ProcessEvent(phdevent, o);
-                            }
+                    // Response?
+                    var idTok = o["id"];
+                    if (idTok != null) {
+                        var idKey = idTok.ToString();
+                        if (_pending.TryRemove(idKey, out var waiter)) {
+                            waiter.TrySetResult(o);
                         }
+                        continue;
                     }
 
-                    await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
+                    // else ignore
                 }
             } catch (OperationCanceledException) {
+                // normal
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError(String.Format(Loc.Instance["LblPHDErrorMsg"], ex.Message));
+                Notification.ShowError(string.Format(Loc.Instance["LblPHDErrorMsg"], ex.Message));
                 throw;
             } finally {
+                // Fail all pending SendMessage awaiters on connection teardown
+                foreach (var kvp in _pending) {
+                    if (_pending.TryRemove(kvp.Key, out var waiter)) {
+                        waiter.TrySetException(new IOException("PHD2 connection closed"));
+                    }
+                }
+
                 Settling = false;
-                AppState = new PhdEventAppState() { State = "" };
+                AppState = new PhdEventAppState { State = "" };
                 PixelScale = 0.0d;
                 Connected = false;
+
                 _tcs.TrySetResult(false);
+
+                try { _reader?.Dispose(); } catch { }
+                try { _writer?.Dispose(); } catch { }
+                try { _stream?.Dispose(); } catch { }
+
+                _reader = null;
+                _writer = null;
+                _stream = null;
+                _client = null;
+
                 PHD2ConnectionLost?.Invoke(this, EventArgs.Empty);
             }
         }

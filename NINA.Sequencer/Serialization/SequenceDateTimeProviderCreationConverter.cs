@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -25,8 +25,8 @@ namespace NINA.Sequencer.Serialization {
     public class SequenceDateTimeProviderCreationConverter : JsonCreationConverter<IDateTimeProvider> {
         private IList<IDateTimeProvider> dateTimeProviders;
 
-        public SequenceDateTimeProviderCreationConverter(IList<IDateTimeProvider> dateTimeProviders) {
-            this.dateTimeProviders = dateTimeProviders;
+        public SequenceDateTimeProviderCreationConverter(ISequencerFactory factory) : base(factory) {
+            this.dateTimeProviders = factory.DateTimeProviders;
         }
 
         public override IDateTimeProvider Create(Type objectType, JObject jObject) {

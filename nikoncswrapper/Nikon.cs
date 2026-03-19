@@ -101,6 +101,8 @@ namespace Nikon {
 
     public delegate void ProgressDelegate(NikonDevice sender, eNkMAIDDataObjType type, int done, int total);
 
+    public delegate void PixelMappingCompleteDelegate(NikonDevice sender, int result);
+
     #endregion
 
     #region Internal Delegates
@@ -873,6 +875,8 @@ namespace Nikon {
 
         private event VideoRecordingInterruptedDelegate _videoRecordingInterrupted;
 
+        private event PixelMappingCompleteDelegate _pixelMappingComplete;
+
         private event ProgressDelegate _progress;
 
         // Note: Add and remove event handlers on the thread where they are fired
@@ -922,6 +926,11 @@ namespace Nikon {
             remove { Scheduler.AddOrRemoveEvent(() => { _videoRecordingInterrupted -= value; }); }
         }
 
+        public event PixelMappingCompleteDelegate PixelMappingComplete {
+            add { Scheduler.AddOrRemoveEvent(() => { _pixelMappingComplete += value; }); }
+            remove { Scheduler.AddOrRemoveEvent(() => { _pixelMappingComplete -= value; }); }
+        }
+
         public event ProgressDelegate Progress {
             add { Scheduler.AddOrRemoveEvent(() => { _progress += value; }); }
             remove { Scheduler.AddOrRemoveEvent(() => { _progress -= value; }); }
@@ -963,6 +972,10 @@ namespace Nikon {
 
                 case eNkMAIDEvent.kNkMAIDEvent_RecordingInterrupted:
                     Scheduler.Callback(new VideoRecordingInterruptedDelegate(OnVideoRecordingInterrupted), this, (int)data);
+                    break;
+
+                case eNkMAIDEvent.kNkMAIDEvent_PixelMappingComplete:
+                    Scheduler.Callback(new PixelMappingCompleteDelegate(OnPixelMappingComplete), this, (int)data);
                     break;
 
                 default:
@@ -1255,6 +1268,12 @@ namespace Nikon {
         private void OnVideoRecordingInterrupted(NikonDevice sender, int error) {
             if (_videoRecordingInterrupted != null) {
                 _videoRecordingInterrupted(sender, error);
+            }
+        }
+
+        private void OnPixelMappingComplete(NikonDevice sender, int result) {
+            if (_pixelMappingComplete != null) {
+                _pixelMappingComplete(sender, result);
             }
         }
 

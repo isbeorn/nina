@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -74,10 +74,10 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             clonedExposure.Should().NotBeSameAs(originalExposure);
             clonedExposure?.Binning.Should().NotBeNull();
             clonedExposure?.ExposureCount.Should().Be(0);
-            clonedExposure?.ExposureTime.Should().Be(originalExposure?.ExposureCount);
-            clonedExposure?.Gain.Should().Be(originalExposure?.Gain);
-            clonedExposure?.Offset.Should().Be(originalExposure?.Offset);
-            clonedExposure?.ImageType.Should().Be(originalExposure?.ImageType);
+            clonedExposure?.ExposureTime.Should().Be(originalExposure.ExposureTime);
+            clonedExposure?.Gain.Should().Be(originalExposure.Gain);
+            clonedExposure?.Offset.Should().Be(originalExposure.Offset);
+            clonedExposure?.ImageType.Should().Be(originalExposure.ImageType);
         }
 
         [Test]

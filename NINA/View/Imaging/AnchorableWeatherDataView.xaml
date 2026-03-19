@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright (c) 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -140,7 +140,7 @@
                         Visibility="{Binding WeatherDataInfo.SkyBrightness, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblSkyBrightness}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding WeatherDataInfo.SkyBrightness, StringFormat=\{0:0.00\} lx}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding WeatherDataInfo.SkyBrightness, StringFormat=\{0:0.00000\} lx}" />
                         </UniformGrid>
                     </Border>
                     <Border

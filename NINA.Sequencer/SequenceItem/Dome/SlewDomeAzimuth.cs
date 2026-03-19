@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -24,6 +24,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Dome {
 
@@ -33,7 +35,9 @@ namespace NINA.Sequencer.SequenceItem.Dome {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Dome")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SlewDomeAzimuth : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class SlewDomeAzimuth : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public SlewDomeAzimuth(IDomeMediator domeMediator) {
@@ -42,12 +46,6 @@ namespace NINA.Sequencer.SequenceItem.Dome {
 
         private SlewDomeAzimuth(SlewDomeAzimuth cloneMe) : this(cloneMe.domeMediator) {
             CopyMetaData(cloneMe);
-        }
-
-        public override object Clone() {
-            return new SlewDomeAzimuth(this) {
-                AzimuthDegrees = AzimuthDegrees
-            };
         }
 
         private IDomeMediator domeMediator;
@@ -61,18 +59,8 @@ namespace NINA.Sequencer.SequenceItem.Dome {
             }
         }
 
-        private double azimuthDegrees;
-
-        [JsonProperty]
-        public double AzimuthDegrees {
-            get => azimuthDegrees;
-            set {
-                if (azimuthDegrees != value) {
-                    azimuthDegrees = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
+        [IsExpression (Default = 0, Range = [0, 359.99])]
+        public partial double AzimuthDegrees { get; set; }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             return domeMediator.SlewToAzimuth(AzimuthDegrees, token);
@@ -88,6 +76,7 @@ namespace NINA.Sequencer.SequenceItem.Dome {
                     i.Add(Loc.Instance["LblDomeCannotSetAzimuth"]);
                 }
             }
+            Expression.ValidateExpressions(i, AzimuthDegreesExpression);
             Issues = i;
             return i.Count == 0;
         }

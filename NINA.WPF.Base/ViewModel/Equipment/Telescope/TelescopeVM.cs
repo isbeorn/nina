@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright � 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright � 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -255,6 +255,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         try {
                             progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblWaitingForTelescopeToUnpark"] });
                             await Telescope.Unpark(timeoutCts.Token);
+                            try { Telescope.TrackingEnabled = false; } catch { }
 
                             success = true;
                             await updateTimer.WaitForNextUpdate(timeoutCts.Token);
@@ -459,9 +460,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                         Logger.Error(string.Format("Unable to set mount elevation to {0}!", targetElevation));
                                         Notification.ShowError(string.Format(Loc.Instance["LblUnableToSetMountElevation"], Math.Round(targetElevation, 3)));
                                     }
+                                } else if (syncMode == TelescopeLocationSyncDirection.NOSYNC) {
+                                    Logger.Info("Location sync disabled by user choice.");
                                 }
-
-
                             }
 
                             TelescopeInfo.CopyFrom(new TelescopeInfo {

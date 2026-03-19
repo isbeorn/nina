@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -12,14 +12,12 @@
 
 #endregion "copyright"
 
-using System;
+using NINA.Sequencer.Logic;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -36,6 +34,15 @@ namespace NINA.View.Sequencer {
 
         public SequenceSidebar() {
             InitializeComponent();
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e) {
+            if (sender is FrameworkElement fe && fe.DataContext is Symbol item) { 
+                Clipboard.SetText((item.Category?.ToString() ?? string.Empty) + SymbolBroker.DELIMITER + (item.Key?.ToString() ?? string.Empty));
+            }
+            if (sender is FrameworkElement fe1 && fe1.DataContext is SymbolFunction fn) {
+                Clipboard.SetText((fn.Category?.ToString() ?? string.Empty) + SymbolBroker.DELIMITER + (fn.Key?.ToString() ?? string.Empty));
+            }
         }
     }
 }

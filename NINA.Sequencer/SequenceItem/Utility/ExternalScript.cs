@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -13,20 +13,20 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Core.Locale;
 using NINA.Core.Model;
-using NINA.Profile.Interfaces;
-using NINA.Sequencer.Validations;
 using NINA.Core.Utility;
+using NINA.Core.Utility.ExternalCommand;
+using NINA.Sequencer.Logic;
+using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Utility.ExternalCommand;
-using NINA.Core.Locale;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -38,8 +38,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [JsonObject(MemberSerialization.OptIn)]
     public class ExternalScript : SequenceItem, IValidatable {
         public System.Windows.Input.ICommand OpenDialogCommand { get; private set; }
+        private ISymbolBroker _symbolBroker;
+        private ISymbolProvider _ninaProvider;
 
-        public ExternalScript() {
+        [ImportingConstructor]
+        public ExternalScript(ISymbolBroker symbolBroker) {
             OpenDialogCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>((object o) => {
                 Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
                 dialog.Title = Loc.Instance["Lbl_SequenceItem_Utility_ExternalScript_Name"];
@@ -51,9 +54,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                     Script = "\"" + dialog.FileName + "\"";
                 }
             });
+            _symbolBroker = symbolBroker;
+            _ninaProvider = (_symbolBroker as ISymbolBrokerProviderApi)?.GetInternalProvider("NINA");
         }
 
-        private ExternalScript(ExternalScript cloneMe) : this() {
+        private ExternalScript(ExternalScript cloneMe) : this(cloneMe._symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
@@ -77,17 +82,17 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         [JsonProperty]
         public string Script {
-            get => script?.Trim();
+            get => script;
             set {
-                script = value?.Trim();
+                script = value;
                 RaisePropertyChanged();
             }
         }
-
+        
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            string sequenceCompleteCommand = Script;
-            ExternalCommandExecutor externalCommandExecutor = new ExternalCommandExecutor(progress);
-            var success = await externalCommandExecutor.RunSequenceCompleteCommandTask(sequenceCompleteCommand, token);
+            string expandedScript = ExpressionExpander.Expand(Script, _symbolBroker, this);
+            Logger.Info($"External Script: {expandedScript}");
+            var success = await RunCommand(expandedScript, progress, token);
             if (!success) {
                 throw new SequenceEntityFailedException(Loc.Instance["LblExternalCommandFailed"]);
             }
@@ -95,10 +100,14 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public bool Validate() {
             var i = new List<string>();
-            var sequenceCompleteCommand = Script;
-            if (!string.IsNullOrWhiteSpace(sequenceCompleteCommand) && !ExternalCommandExecutor.CommandExists(sequenceCompleteCommand)) {
-                i.Add(string.Format(Loc.Instance["LblExternalCommandNotFound"], ExternalCommandExecutor.GetComandFromString(sequenceCompleteCommand)));
+
+            if (!string.IsNullOrWhiteSpace(Script)) {
+                string expandedScript = ExpressionExpander.Expand(Script, _symbolBroker, this);
+                if (!CommandExists(expandedScript)) {
+                    i.Add(string.Format(Loc.Instance["LblExternalCommandNotFound"], GetCommandFromString(expandedScript)));
+                }
             }
+
             Issues = i;
             return i.Count == 0;
         }
@@ -110,5 +119,106 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(ExternalScript)}, Script: {Script}";
         }
+
+        // Code below is from the obsolete ExternalCommandExecutor class
+        public async Task<bool> RunCommand(string sequenceCompleteCommand, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            if (!CommandExists(sequenceCompleteCommand)) {
+                Logger.Error($"Command not found: {sequenceCompleteCommand}");
+                _ninaProvider?.AddOrUpdateSymbol("LastExternalScriptExitCode", -1);
+                return false;
+            }
+            string src = Loc.Instance["LblExternalCommand"];
+            try {
+                sequenceCompleteCommand = sequenceCompleteCommand.Trim();
+                string executableLocation = GetCommandFromString(sequenceCompleteCommand);
+                string args = GetArgumentsFromString(sequenceCompleteCommand);
+
+                Process process = new Process();
+                process.StartInfo.FileName = executableLocation;
+                process.StartInfo.UseShellExecute = true;
+                process.StartInfo.RedirectStandardOutput = false;
+                process.StartInfo.RedirectStandardError = false;
+                process.EnableRaisingEvents = true;
+
+                DataReceivedEventHandler outputDataReceivedCallback = (object sender, DataReceivedEventArgs e) => {
+                    if (!string.IsNullOrWhiteSpace(e.Data)) {
+                        StatusUpdate(progress, src, e.Data);
+                        Logger.Info($"STDOUT: {e.Data}");
+                    }
+                };
+                process.OutputDataReceived += outputDataReceivedCallback;
+                DataReceivedEventHandler errorDataReceivedCallback = (object sender, DataReceivedEventArgs e) => {
+                    if (!string.IsNullOrWhiteSpace(e.Data)) {
+                        StatusUpdate(progress, src, e.Data);
+                        Logger.Error($"STDERR: {e.Data}");
+                    }
+                };
+                process.ErrorDataReceived += errorDataReceivedCallback;
+
+                if (!string.IsNullOrWhiteSpace(args)) {
+                    process.StartInfo.Arguments = args;
+                }
+
+                Logger.Info($"Running - '{executableLocation}' with args '{args}'");
+                process.Start();
+                await process.WaitForExitAsync(ct);
+
+                process.OutputDataReceived -= outputDataReceivedCallback;
+                process.ErrorDataReceived -= errorDataReceivedCallback;
+
+                // Set Symbol here
+                _ninaProvider?.AddOrUpdateSymbol("LastExternalScriptExitCode", process.ExitCode);
+                return process.ExitCode == 0;
+            } catch (Exception e) {
+                Logger.Error($"Error running command {sequenceCompleteCommand}:", e);
+                // Set Symbol here as well (-1)
+                _ninaProvider?.AddOrUpdateSymbol("LastExternalScriptExitCode", -1);
+            } finally {
+                StatusUpdate(progress, src, "");
+            }
+            return false;
+        }
+
+        private void StatusUpdate(IProgress<ApplicationStatus> progress, string src, string data) {
+            progress?.Report(new ApplicationStatus() {
+                Source = src,
+                Status = data,
+            });
+        }
+
+        public static bool CommandExists(string commandLine) {
+            try {
+                string cmd = GetCommandFromString(commandLine);
+                FileInfo fi = new FileInfo(cmd);
+                return fi.Exists;
+            } catch (Exception e) { Logger.Trace(e.Message); }
+            return false;
+        }
+
+        public static string GetCommandFromString(string commandLine) {
+            //if you enclose the command (with spaces) in quotes, then you must remove them
+            return @"" + ParseArguments(commandLine)[0].Replace("\"", "").Trim();
+        }
+
+        public static string GetArgumentsFromString(string commandLine) {
+            string[] args = ParseArguments(commandLine);
+            if (args.Length > 1) {
+                return string.Join(" ", new List<string>(args).GetRange(1, args.Length - 1).ToArray());
+            }
+            return null;
+        }
+
+        public static string[] ParseArguments(string commandLine) {
+            char[] parmChars = commandLine.ToCharArray();
+            bool inQuote = false;
+            for (int index = 0; index < parmChars.Length; index++) {
+                if (parmChars[index] == '"')
+                    inQuote = !inQuote;
+                if (!inQuote && parmChars[index] == ' ')
+                    parmChars[index] = '\n';
+            }
+            return (new string(parmChars)).Split('\n');
+        }
+
     }
 }

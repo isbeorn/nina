@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,6 +22,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Validations;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -31,25 +34,19 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class LoopCondition : SequenceCondition {
+    [UsesExpressions]
+
+    public partial class LoopCondition : SequenceCondition, IValidatable {
 
         [ImportingConstructor]
         public LoopCondition() {
-            Iterations = 2;
         }
 
         private LoopCondition(LoopCondition cloneMe) : this() {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new LoopCondition(this) {
-                Iterations = Iterations
-            };
-        }
-
         private int completedIterations;
-        private int iterations;
 
         [JsonProperty]
         public int CompletedIterations {
@@ -60,13 +57,13 @@ namespace NINA.Sequencer.Conditions {
             }
         }
 
-        [JsonProperty]
-        public int Iterations {
-            get => iterations;
-            set {
-                iterations = value;
-                RaisePropertyChanged();
-            }
+        public IList<string> Issues { get; private set; }
+
+        [IsExpression(Default = 2, Range = [1, ExpressionRange.NO_MAXIMUM], HasValidator = true)]
+        public partial int Iterations { get; set; }
+
+        partial void IterationsExpressionValidator(Expression expr) {
+            RaisePropertyChanged("Iterations");
         }
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -88,6 +85,13 @@ namespace NINA.Sequencer.Conditions {
 
         public override string ToString() {
             return $"Condition: {nameof(LoopCondition)}, Iterations: {CompletedIterations}/{Iterations}";
+        }
+
+        public bool Validate() {
+            IList<string> issues = new List<string>();
+            Expression.ValidateExpressions(issues, IterationsExpression);
+            Issues = issues;
+            return Issues.Count == 0;
         }
     }
 }

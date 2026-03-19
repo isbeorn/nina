@@ -1,6 +1,6 @@
 #region "copyright"
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -106,7 +106,10 @@ namespace NINA {
     public class TraceLogToVisibilityConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if(value is LogLevelEnum e) {
-                return e == LogLevelEnum.TRACE ? Visibility.Visible : Visibility.Collapsed;
+                return e switch {
+                    LogLevelEnum.TRACE or LogLevelEnum.DEBUG => Visibility.Visible,
+                    _ => Visibility.Collapsed
+                };
             }
             return Visibility.Collapsed;
         }

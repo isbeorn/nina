@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -15,6 +15,7 @@
     xmlns:d="clr-namespace:NINA.Sequencer.Trigger.Dome"
     xmlns:g="clr-namespace:NINA.Sequencer.Trigger.Guider"
     xmlns:local="clr-namespace:NINA.Sequencer.Trigger"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:mf="clr-namespace:NINA.Sequencer.Trigger.MeridianFlip"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
@@ -102,45 +103,23 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSize}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        TextAlignment="Right">
-                        <TextBox.Text>
-                            <Binding Path="SampleSize">
-                                <Binding.ValidationRules>
-                                    <rules:IntRangeRule>
-                                        <rules:IntRangeRule.ValidRange>
-                                            <rules:IntRangeChecker Maximum="99999" Minimum="3" />
-                                        </rules:IntRangeRule.ValidRange>
-                                    </rules:IntRangeRule>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                        <TextBox.ToolTip>
+                    <logic:ExprControl Exp="{Binding SampleSizeExpression}" Label="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSize}" />
+                    <!--<TextBox.ToolTip>
                             <TextBlock
                                 HorizontalAlignment="Left"
                                 Text="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSizeTooltip}"
                                 TextAlignment="Left" />
-                        </TextBox.ToolTip>
-                    </TextBox>
+                        </TextBox.ToolTip>-->
+                    <logic:ExprControl
+                        Exp="{Binding AmountExpression}"
+                        Label="{ns:Loc LblAmount}"
+                        Unit="%" />
                     <TextBlock
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{ns:Loc LblAmount}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Stretch"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Amount}"
-                        TextAlignment="Right"
-                        Unit="%" />
+                        Text=" | " />
                     <TextBlock
-                        Margin="10,0,0,0"
+                        Margin="5,0,0,0"
                         VerticalAlignment="Center"
                         Text="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter}" />
                     <CheckBox
@@ -211,7 +190,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding DeltaT}" />
                     <TextBlock VerticalAlignment="Center" Text=" °C / " />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Amount}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AmountExpression.Value}" />
                     <TextBlock VerticalAlignment="Center" Text=" °C" />
                 </StackPanel>
             </mini:MiniTrigger.TriggerProgressContent>
@@ -221,17 +200,7 @@
     <DataTemplate DataType="{x:Type af:AutofocusAfterTemperatureChangeTrigger}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAmount}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Amount}"
-                        TextAlignment="Right"
-                        Unit="°C" />
-                </StackPanel>
+                <logic:ExprControl Exp="{Binding AmountExpression}" Label="{ns:Loc LblAmount}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -241,7 +210,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding DeltaT}" />
                     <TextBlock VerticalAlignment="Center" Text=" °C / " />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Amount}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AmountExpression.Value}" />
                     <TextBlock VerticalAlignment="Center" Text=" °C" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
@@ -258,7 +227,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Elapsed}" />
                     <TextBlock VerticalAlignment="Center" Text=" min / " />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Amount}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AmountExpression.Value}" />
                     <TextBlock VerticalAlignment="Center" Text=" min" />
                 </StackPanel>
             </mini:MiniTrigger.TriggerProgressContent>
@@ -268,17 +237,7 @@
     <DataTemplate DataType="{x:Type af:AutofocusAfterTimeTrigger}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAmount}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="50"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Amount}"
-                        TextAlignment="Right"
-                        Unit="min" />
-                </StackPanel>
+                <logic:ExprControl Exp="{Binding AmountExpression}" Label="{ns:Loc LblAmount}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -288,7 +247,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Elapsed}" />
                     <TextBlock VerticalAlignment="Center" Text=" min / " />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Amount}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AmountExpression.Value}" />
                     <TextBlock VerticalAlignment="Center" Text=" min" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
@@ -314,15 +273,7 @@
     <DataTemplate DataType="{x:Type af:AutofocusAfterExposures}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAfterExposures}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Text="{Binding AfterExposures}" />
-                </StackPanel>
+                <logic:ExprControl Exp="{Binding AfterExposuresExpression}" Label="{ns:Loc LblAfterExposures}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -332,7 +283,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding ProgressExposures}" />
                     <TextBlock Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposures}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposuresExpression.Value}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
         </view:SequenceBlockView>
@@ -357,15 +308,7 @@
     <DataTemplate DataType="{x:Type g:DitherAfterExposures}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAfterExposures}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Text="{Binding AfterExposures}" />
-                </StackPanel>
+                <logic:ExprControl Exp="{Binding AfterExposuresExpression}" Label="{ns:Loc LblAfterExposures}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -375,7 +318,8 @@
                         VerticalAlignment="Center"
                         Text="{Binding ProgressExposures}" />
                     <TextBlock Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposures}" />
+                    <!--  Because we're not bound to an Expression, changing the Definition won't trigger PropertyChanged on the old AfterExposures property  -->
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposuresExpression.Value}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
         </view:SequenceBlockView>
@@ -442,36 +386,10 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblEvaluteAfterExposures}" />
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="AfterExposures">
-                                    <Binding.ValidationRules>
-                                        <rules:StrictGreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                        <logic:ExprControl Exp="{Binding AfterExposuresExpression}" Label="{ns:Loc LblEvaluteAfterExposures}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMaxArcmin}" />
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="DistanceArcMinutes" StringFormat="{}{0:0.00}">
-                                    <Binding.ValidationRules>
-                                        <rules:StrictGreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                        <logic:ExprControl Exp="{Binding DistanceArcMinutesExpression}" Label="{ns:Loc LblMaxArcmin}" />
                         <TextBlock
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
