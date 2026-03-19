@@ -172,9 +172,13 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             if (filterWheelMediator.GetInfo().Connected) {
-                // ComboBoxText might have been set before a FW was connected, or a Symbol's value might have changed, so we need to re-resolve the filter here
-                XfilterExpression.Evaluate(true);
-                filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == (int)XfilterExpression.Value);
+                if (ComboBoxText == NullFilterName) {
+                    filter = filterWheelMediator.GetInfo().SelectedFilter;
+                } else {
+                    // ComboBoxText might have been set before a FW was connected, or a Symbol's value might have changed, so we need to re-resolve the filter here
+                    XfilterExpression.Evaluate(true);
+                    filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == (int)XfilterExpression.Value);
+                }
             } else {
                 filter = null;
             }
