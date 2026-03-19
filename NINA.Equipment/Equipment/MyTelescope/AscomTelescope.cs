@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -887,23 +887,32 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             var trackingModes = ImmutableList.CreateBuilder<TrackingMode>();
             trackingModes.Add(TrackingMode.Sidereal);
 
-            foreach(DriveRate trackingRate in device.TrackingRates) {
-                switch (trackingRate) {
-                    case DriveRate.King:
-                        trackingModes.Add(TrackingMode.King);
-                        break;
+            try {
+                foreach(DriveRate trackingRate in device.TrackingRates) {
+                    switch (trackingRate) {
+                        case DriveRate.King:
+                            trackingModes.Add(TrackingMode.King);
+                            break;
 
-                    case DriveRate.Lunar:
-                        trackingModes.Add(TrackingMode.Lunar);
-                        break;
+                        case DriveRate.Lunar:
+                            trackingModes.Add(TrackingMode.Lunar);
+                            break;
 
-                    case DriveRate.Solar:
-                        trackingModes.Add(TrackingMode.Solar);
-                        break;
+                        case DriveRate.Solar:
+                            trackingModes.Add(TrackingMode.Solar);
+                            break;
+                    }
                 }
+            } catch (ASCOM.NotImplementedException) {
+                // TrackingRates requires ITelescopeV2+; V1 drivers don't implement it.
+                // Sidereal is already added above as the default.
+                Logger.Info($"{Name} - TrackingRates not implemented, defaulting to Sidereal only");
+            } catch (Exception ex) {
+                // Some drivers (e.g. SiTech) throw the wrong exception type for unimplemented properties.
+                Logger.Warning($"{Name} - TrackingRates failed: {ex.Message}, defaulting to Sidereal only");
             }
 
-            if (device.CanSetRightAscensionRate && device.CanSetDeclinationRate) {
+            if (CanSetRightAscensionRate && CanSetDeclinationRate) {
                 trackingModes.Add(TrackingMode.Custom);
             }
             trackingModes.Add(TrackingMode.Stopped);
@@ -982,6 +991,8 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                         } catch (ASCOM.NotImplementedException pnie) {
                             // TrackingRate Write can throw a PropertyNotImplementedException.
                             Logger.Debug(pnie.Message);
+                        } catch (Exception ex) {
+                            Logger.Warning($"{Name} - TrackingRate write failed: {ex.Message}");
                         }
                         device.Tracking = (value != TrackingMode.Stopped);
 
@@ -1011,6 +1022,8 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                 } catch (ASCOM.NotImplementedException pnie) {
                     // TrackingRate Write can throw a PropertyNotImplementedException.
                     Logger.Debug(pnie.Message);
+                } catch (Exception ex) {
+                    Logger.Warning($"{Name} - TrackingRate write failed: {ex.Message}");
                 }
                 if (this.CanSetTrackingEnabled) {
                     this.device.Tracking = true;
