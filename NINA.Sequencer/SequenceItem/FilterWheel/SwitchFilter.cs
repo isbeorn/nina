@@ -214,7 +214,9 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                     var fwi = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters;
                     if (fwi != null) {
                         foreach (var fw in fwi) {
-                            FilterNames.Add(fw.Name);
+                            // Sanitize filter names to ensure they're valid NCalc identifiers
+                            // This matches the behavior in SymbolBroker.UpdateDeviceInfo()
+                            FilterNames.Add(Logic.SymbolBroker.SanitizeIdentifier(fw.Name));
                         }
                         RaisePropertyChanged("FilterNames");
                     }

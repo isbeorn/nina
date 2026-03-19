@@ -667,5 +667,21 @@ namespace NINA.Test.Sequencer.Logic {
 
             act.Should().NotThrow();
         }
+
+        [Test]
+        public void SymbolProvider_ValidSymbolRegex_IsPrecompiled() {
+            // Assert - verify the regex is precompiled for performance
+            SymbolProvider.ValidSymbolRegex.Should().NotBeNull();
+            SymbolProvider.ValidSymbolRegex.Options.Should().HaveFlag(System.Text.RegularExpressions.RegexOptions.Compiled,
+                "precompiled regex provides better performance for frequently used patterns");
+        }
+
+        [Test]
+        public void UserSymbol_ValidSymbolRegex_IsPrecompiled() {
+            // Assert - verify the regex is precompiled for performance
+            UserSymbol.ValidSymbolRegex.Should().NotBeNull();
+            UserSymbol.ValidSymbolRegex.Options.Should().HaveFlag(System.Text.RegularExpressions.RegexOptions.Compiled,
+                "precompiled regex provides better performance for frequently used patterns");
+        }
     }
 }

@@ -76,7 +76,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
             if (Identifier.Length == 0 || Expr.Definition.Length == 0) {
                 i.Add("A name and a value must be specified");
-            } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
+            } else if (!UserSymbol.ValidSymbolRegex.IsMatch(Identifier)) {
                 i.Add("The name of a Constant must be alphanumeric");
             } else if (IsDuplicate) {
                 i.Add("The Constant is already defined here; this definition will be ignored.");

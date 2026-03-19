@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using NINA.Sequencer.Container;
 using System.Text;
+using System.Text.RegularExpressions;
 using NINA.Core.Utility;
 using System.Diagnostics;
 using System.Windows.Controls;
@@ -43,6 +44,11 @@ namespace NINA.Sequencer.Logic {
         protected static bool Debugging = false;
 
         public static readonly string VALID_SYMBOL = "^[a-zA-Z_][a-zA-Z0-9_]*$";
+
+        /// <summary>
+        /// Precompiled regex for validating symbol identifiers. Use this instead of Regex.IsMatch(str, VALID_SYMBOL) for better performance.
+        /// </summary>
+        public static readonly Regex ValidSymbolRegex = new Regex(VALID_SYMBOL, RegexOptions.Compiled);
 
         static public SequenceContainer GlobalSymbols { get; } = new SequentialContainer() { Name = "Global Symbols" };
 

@@ -15,8 +15,13 @@ namespace NINA.Sequencer.Logic {
 
         public static readonly String VALID_SYMBOL = "^[a-zA-Z_][a-zA-Z0-9_]*$";
 
+        /// <summary>
+        /// Precompiled regex for validating symbol identifiers. Use this instead of Regex.IsMatch(str, VALID_SYMBOL) for better performance.
+        /// </summary>
+        public static readonly Regex ValidSymbolRegex = new Regex(VALID_SYMBOL, RegexOptions.Compiled);
+
         internal SymbolProvider(string name, ISymbolBrokerProviderApi  broker) {
-            if (name.Length == 0 || !Regex.IsMatch(name, VALID_SYMBOL)) {
+            if (name.Length == 0 || !ValidSymbolRegex.IsMatch(name)) {
                 throw new ArgumentException("SymbolProvider name must be an alphanumeric word.");
             }
             this.name = name;
@@ -31,21 +36,21 @@ namespace NINA.Sequencer.Logic {
 
         // Allow constants to be added at some point (like CoverStatus, PierSide)
         public void AddOrUpdateSymbol(string token, object value) {
-            if (!Regex.IsMatch(token, VALID_SYMBOL)) {
+            if (!ValidSymbolRegex.IsMatch(token)) {
                 throw new ArgumentException("Invalid Symbol - " + token);
             }
            broker.AddOrUpdateSymbol(this, token, value);
         }
 
         public void AddOrUpdateSymbol(string token, object value, Symbol[] values) {
-            if (!Regex.IsMatch(token, VALID_SYMBOL)) {
+            if (!ValidSymbolRegex.IsMatch(token)) {
                 throw new ArgumentException("Invalid Symbol - " + token);
             }
             broker.AddOrUpdateSymbol(this, token, value, values);
         }
 
         public void AddOrUpdateHiddenSymbol(string token, object value, Symbol[] values) {
-            if (!Regex.IsMatch(token, VALID_SYMBOL)) {
+            if (!ValidSymbolRegex.IsMatch(token)) {
                 throw new ArgumentException("Invalid Symbol - " + token);
             }
             broker.AddOrUpdateHiddenSymbol(this, token, value, values);
