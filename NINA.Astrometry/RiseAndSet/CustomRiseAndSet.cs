@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -32,7 +32,11 @@ namespace NINA.Astrometry.RiseAndSet {
         public CustomRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation) {
         }
 
-        public override bool Calculate() {
+        public override Task<bool> Calculate() {
+            return Task.FromResult(true);
+        }
+
+        public override bool Compute() {
             return true;
         }
 

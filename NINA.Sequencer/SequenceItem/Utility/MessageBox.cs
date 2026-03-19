@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -20,6 +20,7 @@ using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Sequencer.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.Utility;
 using System;
 using System.Collections.Generic;
@@ -60,9 +61,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public string Text { get; set; }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            // Expand expressions in the text before displaying
+            string expandedText = ExpressionExpander.Expand(Text, SymbolBroker, this);
 
             var service = windowServiceFactory.Create();
-            var msgBoxResult = new MessageBoxResult(Text);
+            var msgBoxResult = new MessageBoxResult(expandedText);
 
             using (token.Register(() => service?.Close())) {
                 await service.ShowDialog(msgBoxResult, Loc.Instance["Lbl_Sequencer_Title"]);

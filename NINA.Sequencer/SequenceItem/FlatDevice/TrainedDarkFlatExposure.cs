@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -38,6 +38,7 @@ using NINA.Profile;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using NINA.Core.Utility;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
@@ -50,6 +51,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [JsonObject(MemberSerialization.OptIn)]
     public class TrainedDarkFlatExposure : SequentialContainer, IImmutableContainer {
 
+        private ISymbolBroker symbolBroker;
+
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
             this.Items.Clear();
@@ -61,7 +64,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         private bool keepPanelClosed;
 
         [ImportingConstructor]
-        public TrainedDarkFlatExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
+        public TrainedDarkFlatExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator,
+            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
             this(
                 null,
                 profileService,
@@ -177,6 +181,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
         public OpenCover GetOpenCoverItem() {
             return (Items[5] as OpenCover);
+        }
+
+        public SequentialContainer ImagingContainer {
+            get => GetImagingContainer();
         }
 
         public override object Clone() {

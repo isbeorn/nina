@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Sequencer.SequenceItem.FilterWheel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -19,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
@@ -27,6 +29,13 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
         public Datatemplates() {
             InitializeComponent();
+        }
+
+        public void FilterSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            ComboBox cb = (ComboBox)sender;
+            if (cb.DataContext is SwitchFilter sw && cb.SelectedIndex >= 0) {
+                sw.SelectedFilter = cb.SelectedIndex;
+            }
         }
     }
 }

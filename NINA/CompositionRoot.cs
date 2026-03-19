@@ -1,6 +1,6 @@
 ﻿#region "copyright"
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -17,6 +17,7 @@ using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Image.ImageAnalysis;
 using NINA.Interfaces;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Logic;
 using NINA.Utility;
 using NINA.ViewModel;
 using NINA.ViewModel.FlatWizard;
@@ -40,6 +41,10 @@ namespace NINA {
                 Stopwatch sw;
 
                 sw = Stopwatch.StartNew();
+                var equipmentVM = serviceProvider.GetService<IEquipmentVM>();
+                Debug.Print($"Time to create IEquipmentVM {sw.Elapsed}");
+
+                sw = Stopwatch.StartNew();
                 var imageSaveController = serviceProvider.GetService<IImageSaveController>();
                 Debug.Print($"Time to create IImageSaveController {sw.Elapsed}");
 
@@ -58,11 +63,6 @@ namespace NINA {
                     Logger.Error(ex);
                 }
                 Debug.Print($"Time to initialize EDSDK {sw.Elapsed}");
-
-
-                sw = Stopwatch.StartNew();
-                var equipmentVM = serviceProvider.GetService<IEquipmentVM>();
-                Debug.Print($"Time to create IEquipmentVM {sw.Elapsed}");
 
                 sw = Stopwatch.StartNew();
                 var skyAtlasVM = serviceProvider.GetService<ISkyAtlasVM>();
@@ -133,6 +133,11 @@ namespace NINA {
                     PluginsVM = pluginsVM,
                     GlobalObjects = globalObjects,
                 };
+
+                sw = Stopwatch.StartNew();
+                var symbolBroker = serviceProvider.GetService<ISymbolBroker>();
+                Debug.Print($"Time to create SymbolBrokerVM {sw.Elapsed}");
+
                 Debug.Print($"Time to create MainWindowVM {sw.Elapsed}");
 
                 return mainWindowVM;

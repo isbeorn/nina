@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -305,6 +305,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                 }
                 var handler = GuideEvent;
                 handler?.Invoke(this, e);
+                BroadcastGuiderInfo();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }

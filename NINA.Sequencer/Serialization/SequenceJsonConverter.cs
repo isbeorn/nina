@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -13,14 +13,9 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
-using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
-using NINA.Sequencer.Trigger;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.Serialization {
 
@@ -37,7 +32,7 @@ namespace NINA.Sequencer.Serialization {
                 new SequenceItemCreationConverter(factory, c),
                 new SequenceConditionCreationConverter(factory),
                 new SequenceTriggerCreationConverter(factory),
-                new SequenceDateTimeProviderCreationConverter(factory.DateTimeProviders)
+                new SequenceDateTimeProviderCreationConverter(factory)
             };
         }
 
@@ -50,11 +45,17 @@ namespace NINA.Sequencer.Serialization {
         }
 
         public ISequenceContainer Deserialize(string sequenceJSON) {
-            var container = JsonConvert.DeserializeObject<ISequenceContainer>(sequenceJSON, new JsonSerializerSettings() {
-                Converters = converters
-            });
-
-            return container;
+            return Deserialize(sequenceJSON, sourcePath: null);
         }
+
+        public ISequenceContainer Deserialize(string sequenceJSON, string sourcePath) {
+            var settings = new JsonSerializerSettings {
+                Converters = converters,
+                Context = new StreamingContext(StreamingContextStates.File, sourcePath)
+            };
+
+            return JsonConvert.DeserializeObject<ISequenceContainer>(sequenceJSON, settings);
+        }
+
     }
 }

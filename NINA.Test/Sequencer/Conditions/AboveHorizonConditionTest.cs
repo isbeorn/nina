@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -169,8 +169,9 @@ namespace NINA.Test.Sequencer.Conditions {
         [Test]
         public void AboveHorizonCondition_ToString() {
             var sut = new AboveHorizonCondition(profileServiceMock.Object);
+            sut.Offset = 30;
 
-            sut.ToString().Should().Be("Condition: AboveHorizonCondition");
+            sut.ToString().Should().Be("Condition: AboveHorizonCondition, Offset = 30");
         }
 
         [Test]

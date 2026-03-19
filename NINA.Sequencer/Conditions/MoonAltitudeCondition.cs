@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,6 +22,10 @@ using NINA.Core.Enum;
 using NINA.Astrometry.RiseAndSet;
 using NINA.Core.Locale;
 using Nito.AsyncEx;
+using NINA.Sequencer.Generators;
+using System.Runtime.Serialization;
+using NINA.Sequencer.Logic;
+using System.Drawing;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -31,7 +35,9 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class MoonAltitudeCondition : LoopForSunMoonAltitudeBase {
+    [UsesExpressions]
+    
+    public partial class MoonAltitudeCondition : LoopForSunMoonAltitudeBase {
 
         [ImportingConstructor]
         public MoonAltitudeCondition(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
@@ -42,10 +48,25 @@ namespace NINA.Sequencer.Conditions {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new MoonAltitudeCondition(this) {
-                Data = Data.Clone()
-            };
+        partial void AfterClone(MoonAltitudeCondition clone) {
+            clone.Data = Data.Clone();
+        }
+
+        [OnDeserialized]
+        public new void OnDeserialized(StreamingContext context) {
+            base.OnDeserialized(context);
+            if (OffsetExpression.Definition.Length == 0 && Data.Offset != OffsetExpression.Default) {
+                OffsetExpression.Definition = Data.Offset.ToString();
+            }
+        }
+
+        [IsExpression(Default = 0, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
+        public partial double Offset { get; set; }
+
+        partial void OffsetExpressionValidator(Expression expr) {
+            if (expr.Error == null) {
+                Data.Offset = expr.Value;
+            }
         }
 
         private DateTimeOffset lastCalculation = DateTimeOffset.MinValue;
@@ -85,7 +106,7 @@ namespace NINA.Sequencer.Conditions {
         private DateTime CalculateExpectedDateTime(DateTime time) {
             // The MoonRiseAndSet already models refraction and moon disk size
             var customRiseAndSet = new MoonCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Observer.Elevation, GetDataOffset());
-            customRiseAndSet.Calculate();
+            customRiseAndSet.Compute();
             return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN || Data.Comparator == ComparisonOperatorEnum.GREATER_THAN_OR_EQUAL ? customRiseAndSet.Rise : customRiseAndSet.Set) ?? DateTime.MaxValue;
         }
     }

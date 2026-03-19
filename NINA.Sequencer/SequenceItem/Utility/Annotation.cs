@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -14,6 +14,8 @@
 
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Sequencer.Logic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -33,9 +35,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     public class Annotation : SequenceItem {
 
         [ImportingConstructor]
-        public Annotation() { }
+        public Annotation() {
+        }
 
-        private Annotation(Annotation cloneMe) : base(cloneMe) {
+        private Annotation(Annotation cloneMe) : this() {
             CopyMetaData(cloneMe);
         }
 
@@ -43,6 +46,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public string Text { get; set; }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            string processedText = ExpressionExpander.Expand(Text, SymbolBroker, this);
+            Logger.Info($"Annotation: {processedText}");
             return Task.CompletedTask;
         }
 

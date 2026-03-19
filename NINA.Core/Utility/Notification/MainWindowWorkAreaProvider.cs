@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -16,6 +16,9 @@ using System.Windows;
 
 namespace NINA.Core.Utility.Notification {
     public sealed class MainWindowWorkAreaProvider : INotificationWorkAreaProvider {
+        public bool IsTopMost => false;
+
+        public Window Owner => Application.Current?.MainWindow;
         public Rect GetWorkArea() {
             var main = Application.Current?.MainWindow;
             if (main == null) {

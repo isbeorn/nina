@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -356,6 +356,34 @@ namespace NINA.Image.ImageAnalysis {
                 var source = ImageUtility.ConvertBitmap(img, pf);
                 source.Freeze();
                 return source;
+            }
+        }
+
+        public static void BitShiftLeftInPlace(ushort[] data, int shift) {
+            if (data is null)
+                throw new ArgumentNullException(nameof(data));
+
+            if (shift <= 0)
+                return;
+
+            // For SIMD we multiply by 2^shift, since Vector<T> has no shift ops
+            ushort factor = (ushort)(1 << shift);
+            var factorVec = new System.Numerics.Vector<ushort>(factor);
+
+            int vectorSize = System.Numerics.Vector<ushort>.Count;
+            int i = 0;
+            int length = data.Length;
+
+            // SIMD loop
+            for (; i <= length - vectorSize; i += vectorSize) {
+                var v = new System.Numerics.Vector<ushort>(data, i);
+                v = System.Numerics.Vector.Multiply(v, factorVec);
+                v.CopyTo(data, i);
+            }
+
+            // Tail
+            for (; i < length; i++) {
+                data[i] = (ushort)(data[i] << shift);
             }
         }
     }

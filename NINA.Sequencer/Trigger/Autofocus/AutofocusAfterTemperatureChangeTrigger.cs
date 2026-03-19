@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -39,6 +39,15 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.Core.Locale;
+using NINA.Sequencer.Utility;
+using NINA.Core.Utility;
+using NINA.Sequencer.Interfaces;
+using NINA.Image.ImageAnalysis;
+using NINA.WPF.Base.Interfaces;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Trigger.Autofocus {
 
@@ -48,7 +57,8 @@ namespace NINA.Sequencer.Trigger.Autofocus {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Focuser")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class AutofocusAfterTemperatureChangeTrigger : SequenceTrigger, IValidatable {
+    [UsesExpressions]
+    public partial class AutofocusAfterTemperatureChangeTrigger : SequenceTrigger, IValidatable {
         private IProfileService profileService;
         private IImageHistoryVM history;
         private ICameraMediator cameraMediator;
@@ -67,7 +77,6 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             this.focuserMediator = focuserMediator;
             this.autoFocusVMFactory = autoFocusVMFactory;
             this.safetyMonitorMediator = safetyMonitorMediator;
-            Amount = 5;
             TriggerRunner.Add(new RunAutofocus(profileService, history, cameraMediator, filterWheelMediator, focuserMediator, autoFocusVMFactory));
         }
 
@@ -75,11 +84,8 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new AutofocusAfterTemperatureChangeTrigger(this) {
-                Amount = Amount,
-                TriggerRunner = (SequentialContainer)TriggerRunner.Clone()
-            };
+        partial void AfterClone(AutofocusAfterTemperatureChangeTrigger clone) {
+            clone.TriggerRunner = (SequentialContainer)TriggerRunner.Clone();
         }
 
         private IList<string> issues = new List<string>();
@@ -92,26 +98,11 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             }
         }
 
-        private double amount;
+        [IsExpression (Default = 5)]
+        public partial double Amount { get; set; }
 
-        [JsonProperty]
-        public double Amount {
-            get => amount;
-            set {
-                amount = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double deltaT;
-
-        public double DeltaT {
-            get => deltaT;
-            set {
-                deltaT = value;
-                RaisePropertyChanged();
-            }
-        }
+        [IsExpression (Default = 0)]
+        public partial double DeltaT { get; set; }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             await TriggerRunner.Run(progress, token);
@@ -149,6 +140,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
                 DeltaT = Math.Round(Math.Abs(lastAF.AutoFocusPoint.Temperature - info.Temperature), 2);
                 shouldTrigger = Math.Abs(lastAF.AutoFocusPoint.Temperature - info.Temperature) >= Amount;
             }
+            RaisePropertyChanged(nameof(DeltaT));
 
             if (shouldTrigger) {
                 if (ItemUtility.IsTooCloseToMeridianFlip(Parent, TriggerRunner.GetItemsSnapshot().First().GetEstimatedDuration() + nextItem?.GetEstimatedDuration() ?? TimeSpan.Zero)) {
@@ -163,6 +155,11 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             return $"Trigger: {nameof(AutofocusAfterTemperatureChangeTrigger)}, Amount: {Amount}°";
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             var i = new List<string>();
             var cameraInfo = cameraMediator.GetInfo();
@@ -175,6 +172,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
                 i.Add(Loc.Instance["LblFocuserNotConnected"]);
             }
 
+            Expression.ValidateExpressions(i, AmountExpression, DeltaTExpression);
             Issues = i;
             return i.Count == 0;
         }

@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -27,6 +27,11 @@ using NINA.Sequencer.Utility;
 using System.Runtime.Serialization;
 using NINA.Equipment.Equipment.MyGuider.SkyGuard.SkyGuardMessages;
 using NINA.Sequencer.SequenceItem.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Validations;
+using System.Collections.Generic;
+using NINA.Sequencer.Logic;
+using System.Collections.ObjectModel;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -36,14 +41,14 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class MoonIlluminationCondition : SequenceCondition {
-        private double userMoonIllumination;
+    [UsesExpressions]
+
+    public partial class MoonIlluminationCondition : SequenceCondition, IValidatable {
         private double currentMoonIllumination;
         private ComparisonOperatorEnum comparator;
 
         [ImportingConstructor]
         public MoonIlluminationCondition() {
-            UserMoonIllumination = 0d;
             Comparator = ComparisonOperatorEnum.GREATER_THAN;
 
             CalculateCurrentMoonState();
@@ -66,11 +71,8 @@ namespace NINA.Sequencer.Conditions {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new MoonIlluminationCondition(this) {
-                UserMoonIllumination = UserMoonIllumination,
-                Comparator = Comparator
-            };
+        partial void AfterClone(MoonIlluminationCondition clone) {
+            clone.Comparator = Comparator;
         }
 
         [OnDeserialized]
@@ -78,15 +80,8 @@ namespace NINA.Sequencer.Conditions {
             RunWatchdogIfInsideSequenceRoot();
         }
 
-        [JsonProperty]
-        public double UserMoonIllumination {
-            get => userMoonIllumination;
-            set {
-                userMoonIllumination = value;
-                RaisePropertyChanged();
-                CalculateCurrentMoonState();
-            }
-        }
+        [IsExpression (Default = 0, Range = [0, 100])]
+        public partial double UserMoonIllumination { get; set; }
 
         [JsonProperty]
         public ComparisonOperatorEnum Comparator {
@@ -111,7 +106,10 @@ namespace NINA.Sequencer.Conditions {
             .Where(p => p != ComparisonOperatorEnum.NOT_EQUAL)
             .ToArray();
 
+        public IList<string> Issues { get; protected set; } = new ObservableCollection<string>();
+
         public override void AfterParentChanged() {
+            Validate();
             RunWatchdogIfInsideSequenceRoot();
         }
 
@@ -152,6 +150,14 @@ namespace NINA.Sequencer.Conditions {
             var now = DateTime.UtcNow;
 
             CurrentMoonIllumination = AstroUtil.GetMoonIllumination(now) * 100;
+        }
+
+        public bool Validate() {
+            IList<string> i = new List<string>();
+            Expression.ValidateExpressions(i, UserMoonIlluminationExpression);
+            Issues = i;
+            RaisePropertyChanged("Issues");
+            return i.Count == 0;
         }
     }
 }

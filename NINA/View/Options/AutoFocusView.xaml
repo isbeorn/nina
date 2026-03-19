@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright (c) 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -79,6 +79,39 @@
                                 HorizontalAlignment="Stretch"
                                 Text="{Binding AutoFocusStepSize}" />
                         </UniformGrid>
+
+                        <StackPanel>
+                            <UniformGrid Margin="0,5,0,0" Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblManualStepSmallMultiplier}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblManualStepSmallMultiplierTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Height="25"
+                                    HorizontalAlignment="Stretch"
+                                    Text="{Binding ManualStepSmallMultiplier}" />
+                            </UniformGrid>
+                            <UniformGrid Margin="0,5,0,0" Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblManualStepLargeMultiplier}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblManualStepLargeMultiplierTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Height="25"
+                                    HorizontalAlignment="Stretch"
+                                    Text="{Binding ManualStepLargeMultiplier}" />
+                            </UniformGrid>
+                        </StackPanel>
 
                         <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock

@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright (c) 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright (c) 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -169,27 +169,23 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         }
 
         private async Task UpdateWorker(CancellationToken ct) {
-            try 
+            while (true) 
             {
-                while (true) 
+                try 
                 {
-                    try 
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(_queryPeriod), ct);
-                        await QueryWeather();
-                    }
-                    catch (Exception e) 
-                    {
-                        Logger.Debug($"OpenMeteo: Exception during update: {e.ToString()}");
-                    }
+                    await Task.Delay(TimeSpan.FromSeconds(_queryPeriod), ct);
+                    await QueryWeather();
+                } 
+                catch (OperationCanceledException) 
+                {
+                    Logger.Debug("OpenMeteo: Update task cancelled");
+                    throw;
+                } 
+                catch (Exception e) 
+                {
+                    Logger.Debug($"OpenMeteo: Exception during update: {e.ToString()}");
                 }
-                
-            } 
-            catch (OperationCanceledException)
-            {
-                Logger.Debug("OpenMeteo: Update task cancelled");
-                throw;
-            } 
+            }
         }
 
         private async Task QueryWeather()

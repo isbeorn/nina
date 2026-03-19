@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -378,7 +378,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetNightTimes(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new AstronomicalTwilightRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate();
+            var t = riseAndSet.Compute();
 
             return riseAndSet;
         }
@@ -390,7 +390,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetNauticalNightTimes(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new NauticalTwilightRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate();
+            var t = riseAndSet.Compute();
 
             return riseAndSet;
         }
@@ -402,7 +402,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetCivilNightTimes(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new CivilTwilightRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate();
+            var t = riseAndSet.Compute();
 
             return riseAndSet;
         }
@@ -415,7 +415,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new MoonRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate();
+            var t = riseAndSet.Compute();
 
             return riseAndSet;
         }
@@ -428,7 +428,7 @@ namespace NINA.Astrometry {
 
         public static RiseAndSetEvent GetSunRiseAndSet(DateTime date, double latitude, double longitude, double elevation) {
             var riseAndSet = new SunRiseAndSet(date, latitude, longitude, elevation);
-            var t = riseAndSet.Calculate();
+            var t = riseAndSet.Compute();
 
             return riseAndSet;
         }

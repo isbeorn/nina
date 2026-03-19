@@ -9,18 +9,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Nikon
-{
+namespace Nikon {
     // Note: This file is auto generated
 
-    public enum eNkMAID3DTrackingCaptuerArea : int
-    {
+    public enum eNkMAID3DTrackingCaptuerArea : int {
         kNkMAID3DTrackingCaptuerArea_Wide = 0,
         kNkMAID3DTrackingCaptuerArea_Normal = 1
     }
 
-    public enum eNkMAIDActive : int
-    {
+    public enum eNkMAIDActive : int {
         kNkMAIDActive_D_Lighting_High = 0,      // High
         kNkMAIDActive_D_Lighting_Normal = 1,    // Normal
         kNkMAIDActive_D_Lighting_Low = 2,       // Low
@@ -31,42 +28,36 @@ namespace Nikon
         kNkMAIDActive_D_Lighting_ExtraHigh2 = 7 // Extra high 2
     }
 
-    public enum eNkMAIDActiveSelectionCapture40frameOver : int
-    {
+    public enum eNkMAIDActiveSelectionCapture40frameOver : int {
         kNkMAIDActiveSelectionCapture40frameOver_60fps = 0, // 2/3 second
         kNkMAIDActiveSelectionCapture40frameOver_30fps = 1, // 4/3 second
         kNkMAIDActiveSelectionCapture40frameOver_20fps = 2  // 2 second
     }
 
-    public enum eNkMAIDActiveSelectionControl : int
-    {
+    public enum eNkMAIDActiveSelectionControl : int {
         kNkMAIDActiveSelectionControl_OFF = 0, // OFF
         kNkMAIDActiveSelectionControl_ON = 1   // ON
     }
 
-    public enum eNkMAIDActiveSelectionFrameSavedDefault : int
-    {
+    public enum eNkMAIDActiveSelectionFrameSavedDefault : int {
         kNkMAIDActiveSelectionFrameSavedDefault_1 = 0, // 1frame
         kNkMAIDActiveSelectionFrameSavedDefault_40 = 1 // 40frame
     }
 
-    public enum eNkMAIDActiveSelectionOnReleaseRecord : int
-    {
+    public enum eNkMAIDActiveSelectionOnReleaseRecord : int {
         kNkMAIDActiveSelectionOnReleaseRecord_PrecedingCap = 0,             // Before the shutter-release button is pressed all the way down
         kNkMAIDActiveSelectionOnReleaseRecord_PrecedingAndFollowingCap = 1, // Before and after the shutter-release button is pressed all the way down
         kNkMAIDActiveSelectionOnReleaseRecord_FollowingCap = 2              // After the shutter-release button is pressed all the way down
     }
 
-    public enum eNkMAIDActiveSlot : int
-    {
+    public enum eNkMAIDActiveSlot : int {
         kNkMAIDActiveSlot_NoCard = 0,
         kNkMAIDActiveSlot_Slot1 = 1,
         kNkMAIDActiveSlot_Slot2 = 2,
         kNkMAIDActiveSlot_Slot1_Slot2 = 3
     }
 
-    public enum eNkMAIDAdaptor : int
-    {
+    public enum eNkMAIDAdaptor : int {
         kNkMAIDAdaptor_None = 0,            // There is no adaptor or holder. (LS4000, LS40 and LS8000)
         kNkMAIDAdaptor_MA = 65536,          // Base value for MA20, FH3 and FHG1.
         kNkMAIDAdaptor_SA = 131072,         // Base value for SA21 and SA30
@@ -92,8 +83,7 @@ namespace Nikon
         kNkMAIDAdaptor_FH8G1 = 134250496    // Medical holder. (LS8000)
     }
 
-    public enum eNkMAIDADLBracketingStep : int
-    {
+    public enum eNkMAIDADLBracketingStep : int {
         kNkMAIDADLBracketingStep_Auto = 0,        // AUTO
         kNkMAIDADLBracketingStep_Low = 1,         // Low
         kNkMAIDADLBracketingStep_Normal = 2,      // Normal
@@ -102,8 +92,7 @@ namespace Nikon
         kNkMAIDADLBracketingStep_ExtraHigh_2 = 5  // Extra high 2
     }
 
-    public enum eNkMAIDADLBracketingType : int
-    {
+    public enum eNkMAIDADLBracketingType : int {
         kNkMAIDADLBracketingType_2 = 0,
         kNkMAIDADLBracketingType_3 = 1,
         kNkMAIDADLBracketingType_4 = 2,
@@ -111,8 +100,7 @@ namespace Nikon
         kNkMAIDADLBracketingType_5_Max_ExHi2 = 4
     }
 
-    public enum eNkMAIDAEBracketingStep : int
-    {
+    public enum eNkMAIDAEBracketingStep : int {
         kNkMAIDAEBracketingStep_1_3EV = 0,
         kNkMAIDAEBracketingStep_1_2EV = 1,
         kNkMAIDAEBracketingStep_2_3EV = 2,
@@ -124,8 +112,7 @@ namespace Nikon
         kNkMAIDAEBracketingStep_3EV = 8
     }
 
-    public enum eNkMAIDAFAreaPoint : int
-    {
+    public enum eNkMAIDAFAreaPoint : int {
         kNkMAIDAFAreaPoint_51 = 0,
         kNkMAIDAFAreaPoint_11 = 1,
         kNkMAIDAFAreaPoint_39 = 2,
@@ -133,14 +120,12 @@ namespace Nikon
         kNkMAIDAFAreaPoint_15 = 4
     }
 
-    public enum eNkMAIDAfGroupAreaPatternType : int
-    {
+    public enum eNkMAIDAfGroupAreaPatternType : int {
         kNkMAIDAfGroupAreaPatternType_Horizontal = 0,
         kNkMAIDAfGroupAreaPatternType_Vertical = 1
     }
 
-    public enum eNkMAIDAFLockOnAcross : int
-    {
+    public enum eNkMAIDAFLockOnAcross : int {
         kNkMAIDAFLockOnAcross_1 = 1, // Quick[Sensitive]
         kNkMAIDAFLockOnAcross_2 = 2,
         kNkMAIDAFLockOnAcross_3 = 3,
@@ -148,8 +133,7 @@ namespace Nikon
         kNkMAIDAFLockOnAcross_5 = 5  // Slow[Insensitive]
     }
 
-    public enum eNkMAIDAFLockOnEx : int
-    {
+    public enum eNkMAIDAFLockOnEx : int {
         kNkMAIDAFLockOnEx_High = 0,
         kNkMAIDAFLockOnEx_Normal = 1,
         kNkMAIDAFLockOnEx_Low = 2,
@@ -158,15 +142,13 @@ namespace Nikon
         kNkMAIDAFLockOnEx_LittleLow = 5
     }
 
-    public enum eNkMAIDAFLockOnMove : int
-    {
+    public enum eNkMAIDAFLockOnMove : int {
         kNkMAIDAFLockOnMove_1 = 1, // Steady[Smooth]
         kNkMAIDAFLockOnMove_2 = 2,
         kNkMAIDAFLockOnMove_3 = 3  // Erratic[Random]
     }
 
-    public enum eNkMAIDAFMode : int
-    {
+    public enum eNkMAIDAFMode : int {
         kNkMAIDAFMode_S = 0,
         kNkMAIDAFMode_C = 1,
         kNkMAIDAFMode_A = 2,
@@ -175,8 +157,7 @@ namespace Nikon
         kNkMAIDAFMode_F = 5
     }
 
-    public enum eNkMAIDAFModeAtLiveView : int
-    {
+    public enum eNkMAIDAFModeAtLiveView : int {
         kNkMAIDAFModeAtLiveView_S = 0,
         kNkMAIDAFModeAtLiveView_C = 1,
         kNkMAIDAFModeAtLiveView_F = 2,
@@ -184,27 +165,23 @@ namespace Nikon
         kNkMAIDAFModeAtLiveView_M_SEL = 4
     }
 
-    public enum eNkMAIDAFModeRestrictions : int
-    {
+    public enum eNkMAIDAFModeRestrictions : int {
         kNkMAIDAFModeRestrictions_OFF = 0, // No restrictions
         kNkMAIDAFModeRestrictions_AFs = 1, // Restrict AF-S
         kNkMAIDAFModeRestrictions_AFc = 2  // Restrict AF-C
     }
 
-    public enum eNkMAIDAllTestFiringDisable : int
-    {
+    public enum eNkMAIDAllTestFiringDisable : int {
         kNkMAIDAllTestFiringDisable_Enable = 0,
         kNkMAIDAllTestFiringDisable_Disable = 1
     }
 
-    public enum eNkMAIDApertureLockSetting : int
-    {
+    public enum eNkMAIDApertureLockSetting : int {
         kNkMAIDApertureLockSetting_Off = 0, // Off
         kNkMAIDApertureLockSetting_On = 1   // On
     }
 
-    public enum eNkMAIDArrayType : int
-    {
+    public enum eNkMAIDArrayType : int {
         kNkMAIDArrayType_Boolean = 0,      // 1 byte per element
         kNkMAIDArrayType_Integer = 1,      // signed value that is 1, 2 or 4 bytes per element
         kNkMAIDArrayType_Unsigned = 2,     // unsigned value that is 1, 2 or 4 bytes per element
@@ -217,65 +194,56 @@ namespace Nikon
         kNkMAIDArrayType_DateTime = 9      // NkMAIDDateTime structures
     }
 
-    public enum eNkMAIDAutoDistortion : int
-    {
+    public enum eNkMAIDAutoDistortion : int {
         kNkMAIDAutoDistortion_Off = 0,
         kNkMAIDAutoDistortion_On = 1
     }
 
-    public enum eNkMAIDAutoOffTimer : int
-    {
+    public enum eNkMAIDAutoOffTimer : int {
         kNkMAIDAutoOffTimer_Short = 0,
         kNkMAIDAutoOffTimer_Normal = 1,
         kNkMAIDAutoOffTimer_Long = 2,
         kNkMAIDAutoOffTimer_Custom = 3
     }
 
-    public enum eNkMAIDBeepEx : int
-    {
+    public enum eNkMAIDBeepEx : int {
         kNkMAIDBeepEx_High = 0,
         kNkMAIDBeepEx_Low = 1,
         kNkMAIDBeepEx_Off = 2,
         kNkMAIDBeepEx_On = 3
     }
 
-    public enum eNkMAIDBeepVolume : int
-    {
+    public enum eNkMAIDBeepVolume : int {
         kNkMAIDBeepVolume_Off = 0,
         kNkMAIDBeepVolume_1 = 1,
         kNkMAIDBeepVolume_2 = 2,
         kNkMAIDBeepVolume_3 = 3
     }
 
-    public enum eNkMAIDBestMomentCaptureMode : int
-    {
+    public enum eNkMAIDBestMomentCaptureMode : int {
         kNkMAIDBestMomentCaptureMode_OFF = 0,            // Except Best Moment Capture
         kNkMAIDBestMomentCaptureMode_ActiveSelection = 1 // Active Selection
     }
 
-    public enum eNkMAIDBlinkingStatus : int
-    {
+    public enum eNkMAIDBlinkingStatus : int {
         kNkMAIDBlinkingStatus_None = 0,
         kNkMAIDBlinkingStatus_Sp_Blink = 1,
         kNkMAIDBlinkingStatus_Ap_Blink = 2,
         kNkMAIDBlinkingStatus_Both = 3
     }
 
-    public enum eNkMAIDBooleanDefault : int
-    {
+    public enum eNkMAIDBooleanDefault : int {
         kNkMAIDBooleanDefault_None = 0,
         kNkMAIDBooleanDefault_True = 1,
         kNkMAIDBooleanDefault_False = 2
     }
 
-    public enum eNkMAIDBracketButton : int
-    {
+    public enum eNkMAIDBracketButton : int {
         kNkMAIDBracketButton_AutoBracketing = 0,
         kNkMAIDBracketButton_MultipleExposur = 1
     }
 
-    public enum eNkMAIDBracketingType : int
-    {
+    public enum eNkMAIDBracketingType : int {
         kNkMAIDBracketingType_Minus_2 = 0,
         kNkMAIDBracketingType_Puls_2 = 1,
         kNkMAIDBracketingType_Minus_3 = 2,
@@ -286,16 +254,14 @@ namespace Nikon
         kNkMAIDBracketingType_Both_9 = 7
     }
 
-    public enum eNkMAIDCameraInclination : int
-    {
+    public enum eNkMAIDCameraInclination : int {
         kNkMAIDCameraInclination_Level = 0,
         kNkMAIDCameraInclination_GripTop = 1,
         kNkMAIDCameraInclination_GripBottom = 2,
         kNkMAIDCameraInclination_LevelUpDown = 3
     }
 
-    public enum eNkMAIDCameraType : int
-    {
+    public enum eNkMAIDCameraType : int {
         kNkMAIDCameraType_D2H_V1 = 0,                 // D2H Ver.1
         kNkMAIDCameraType_D2H_V2 = 1,                 // D2H Ver.2
         kNkMAIDCameraType_D2X = 2,                    // D2X Ver.1
@@ -339,11 +305,37 @@ namespace Nikon
         kNkMAIDCameraType_Nikon1V3 = 63,              // Nikon1V3
         kNkMAIDCameraType_D5 = 64,                    // D5
         kNkMAIDCameraType_Nikon1V3_NotSupported = 65, // Nikon1V3 Unsupported firm
-        kNkMAIDCameraType_D500 = 66
+        kNkMAIDCameraType_D500 = 66,
+        kNkMAIDCameraType_D5_FU1 = 67,       // D5 Firmup 1
+        kNkMAIDCameraType_D5600 = 68,        // D5600
+        kNkMAIDCameraType_D7500 = 69,        // D7500
+        kNkMAIDCameraType_D5_FU2 = 70,       // D5 Firmup 2
+        kNkMAIDCameraType_D850 = 71,         // D850
+        kNkMAIDCameraType_Z_7 = 72,          // Z_7
+        kNkMAIDCameraType_Z_6 = 73,          // Z_6
+        kNkMAIDCameraType_Z_50 = 74,         // Z_50
+        kNkMAIDCameraType_D780 = 75,         // D780
+        kNkMAIDCameraType_Z_7_FU1 = 77, // Z_7 Firmup 1
+        kNkMAIDCameraType_Z_6_FU1 = 78,      // Z_6 Firmup 1
+        kNkMAIDCameraType_D6 = 79,           // D6
+        kNkMAIDCameraType_Z_5 = 80,          // Z_5
+        kNkMAIDCameraType_Z_7_FU2 = 81,      // Z_7 Firmup 2
+        kNkMAIDCameraType_Z_6_FU2 = 82,      // Z_6 Firmup 2
+        kNkMAIDCameraType_Z_6II = 83,        // Z_6II
+        kNkMAIDCameraType_Z_7_FU3 = 84, // Z_7 Firmup 3
+        kNkMAIDCameraType_Z_6_FU3 = 85, // Z_6 Firmup 3
+        kNkMAIDCameraType_Z_7II = 86,        // Z_7II
+        kNkMAIDCameraType_Z_9 = 87,          // Z_9
+        kNkMAIDCameraType_Z_6II_FU1 = 88,     // Z_6II Firmup 1
+        kNkMAIDCameraType_Z_8 = 89,           // Z 8
+        kNkMAIDCameraType_Z_9_FU1 = 90,       // Z_9 Firmup 1
+        kNkMAIDCameraType_Z_9_FU2 = 91,       // Z_9 Firmup 2
+        kNkMAIDCameraType_Z_9_FU3 = 92,       // Z_9 Firmup 3
+        kNkMAIDCameraType_Z_9_FU4 = 93,       // Z_9 Firmup 4
+        kNkMAIDCameraType_Z_8_FU1 = 94,		 // Z_8 Firmup 1
     }
 
-    public enum eNkMAIDCapability : int
-    {
+    public enum eNkMAIDCapability : int {
         kNkMAIDCapability_AsyncRate = 1,                             // milliseconds between idle async calls
         kNkMAIDCapability_ProgressProc = 2,                          // callback during lengthy operation
         kNkMAIDCapability_EventProc = 3,                             // callback when event occurs
@@ -963,19 +955,147 @@ namespace Nikon
         kNkMAIDCapability_MovieActive_D_Lighting = 34034,
         kNkMAIDCapability_FlickerReductionSetting = 34035,
         kNkMAIDCapability_ExposureCompFlashUsed = 34036,
+        // 34037-34070 Added from eNkMAIDCapabilityD1 in the headers
+        kNkMAIDCapability_LimitStillCaptureMode = 34037,           // 0x84f5
+        kNkMAIDCapability_MovieFileType = 34038,                   // 0x84f6
+        kNkMAIDCapability_SaveCameraSetting = 34039,               // 0x84f7
+        kNkMAIDCapability_LiveViewTFTStatus = 34040,               // 0x84f8
+        kNkMAIDCapability_LiveViewButtonMode = 34041,              // 0x84f9
+        kNkMAIDCapability_ExternalRecordingControl = 34042,        // 0x84fa
+        kNkMAIDCapability_DetectionPeaking = 34043,                // 0x84fb
+        kNkMAIDCapability_WBTuneNatural = 34044,                   // 0x84fc
+        kNkMAIDCapability_HighlightBrightness = 34045,             // 0x84fd
+        kNkMAIDCapability_MovieWBTuneNatural = 34046,              // 0x84fe
+        kNkMAIDCapability_MovieAttenuator = 34047,                 // 0x84ff
+        kNkMAIDCapability_GetRecordingInfo = 34048,                // 0x8500
+        kNkMAIDCapability_PictureControlDataEx2 = 34049,           // 0x8501
+        kNkMAIDCapability_MoviePictureControlDataEx2 = 34050,      // 0x8502
+        kNkMAIDCapability_GetVideoImageEx = 34051,                 // 0x8503
+        kNkMAIDCapability_DiffractionCompensation = 34052,         // 0x8504
+        kNkMAIDCapability_VibrationReduction = 34053,              // 0x8505
+        kNkMAIDCapability_MovieAutoDistortion = 34054,             // 0x8506
+        kNkMAIDCapability_MovieAfAreaMode = 34055,                 // 0x8507
+        kNkMAIDCapability_MovieVibrationReduction = 34056,         // 0x8508
+        kNkMAIDCapability_MovieFocusMode = 34057,                  // 0x8509
+        kNkMAIDCapability_MovieVignetteControl = 34058,            // 0x850a
+        kNkMAIDCapability_MovieDiffractionCompensation = 34059,    // 0x850b
+        kNkMAIDCapability_HDRSaveIndividualImages = 34060,         // 0x850c
+        kNkMAIDCapability_UserMode3 = 34061,                       // 0x850d
+        kNkMAIDCapability_RecordTimeCodes = 34062,                 // 0x850e
+        kNkMAIDCapability_CountUpMethod = 34063,                   // 0x850f
+        kNkMAIDCapability_TimeCodeOrigin = 34064,                  // 0x8510
+        kNkMAIDCapability_DropFrame = 34065,                       // 0x8511
+        kNkMAIDCapability_MovieLogOutput = 34066,                  // 0x8512
+        kNkMAIDCapability_MovieLogSetting = 34067,                 // 0x8513
+        kNkMAIDCapability_HDMIOutputDataDepth = 34068,             // 0x8514
+        kNkMAIDCapability_LowLightAF = 34069,                     // 0x8515
+        kNkMAIDCapability_ApplyLiveViewSetting = 34070,            // 0x8516
         kNkMAIDCapability_LiveViewImageStatus = 34071,
+        kNkMAIDCapability_LiveViewZoomArea = 34072,
+        kNkMAIDCapability_TrackingAFArea = 34073,
+        kNkMAIDCapability_MovieAfSpeed = 34074,
+        kNkMAIDCapability_MovieAfSpeedWhenToApply = 34075,
+        kNkMAIDCapability_MovieAfTrackingSensitivity = 34076,
+        kNkMAIDCapability_GetManualSettingLensData = 34077,
+        kNkMAIDCapability_StillCaptureModeSaveFrame = 34078,
+        kNkMAIDCapability_StillFocusAreaMode = 34079,
+        kNkMAIDCapability_ChangeMonitorOffStatus = 34080,
+        kNkMAIDCapability_RemainingExposureTime = 34081,
+        kNkMAIDCapability_ExtendedShutterSpeedsManual = 34082,
+        kNkMAIDCapability_QuietReleaseMode = 34083,
+        kNkMAIDCapability_AutoAreaAFFaceDetection = 34084,
+        kNkMAIDCapability_Slot2JpegImageSize = 34085,
+        kNkMAIDCapability_GroupAreaFaceDetection = 34086,
+        kNkMAIDCapability_SinglePointAFWatchArea = 34087,
+        kNkMAIDCapability_RearControlPanel = 34088,
+        kNkMAIDCapability_FlushBurstPrioritize = 34089,
+        kNkMAIDCapability_BracketingBurstOptions = 34090,
+        kNkMAIDCapability_3DTrackingFaceDetection = 34091,
+        kNkMAIDCapability_AutoAreaAFStartingPoint = 34092,
+        kNkMAIDCapability_CustomGroupingsC1 = 34093,
+        kNkMAIDCapability_LiveViewWBTuneColorTemp = 34094,
+        kNkMAIDCapability_LiveViewWBTuneColorAdjust = 34095,
+        kNkMAIDCapability_LockExposureEx = 34096,
+        kNkMAIDCapability_InitiatePixelMapping = 34097,
+        kNkMAIDCapability_CustomGroupingsC2 = 34098,
+        kNkMAIDCapability_ElectronicFrontCurtainShutterEx = 34099,
+        kNkMAIDCapability_AutoFlashIsoSensitivityControl = 34100,
+        kNkMAIDCapability_PreCaptureAsync = 34101,
+        kNkMAIDCapability_LiveViewImageCompression = 34102,
+        kNkMAIDCapability_CaptureIntervalTimer = 34103,
+        kNkMAIDCapability_CaptureFocusShift = 34104,
+        kNkMAIDCapability_TerminateCaptureIntervalTimer = 34105,
+        kNkMAIDCapability_TerminateCaptureFocusShift = 34106,
+        kNkMAIDCapability_GetIntervalTimerCaptureInfo = 34107,
+        kNkMAIDCapability_GetFocusShiftCaptureInfo = 34108,
+        kNkMAIDCapability_SpecialShootingMode = 34109,
+        kNkMAIDCapability_MovieH265ToneMode = 34110,
+        kNkMAIDCapability_MovieProResToneMode = 34111,
+        kNkMAIDCapability_AFSubjectDetection = 34112,
+        kNkMAIDCapability_MovieAFSubjectDetection = 34113,
+        kNkMAIDCapability_KeepExposureWhenFNumberChanges = 34114,
+        kNkMAIDCapability_StarlightView = 34115,
+        kNkMAIDCapability_ShutterSoundEffect = 34116,
+        kNkMAIDCapability_AFWhenSubjectNotDetected = 34117,
+        kNkMAIDCapability_SilentMode = 34118,
+        kNkMAIDCapability_GetPicCtrlDataList = 34119,
+        kNkMAIDCapability_GetMoviePicCtrlDataList = 34120,
+        kNkMAIDCapability_ISOAutoHighLimitEx = 34121,
+        kNkMAIDCapability_FlashISOAutoHighLimitEx = 34122,
+        kNkMAIDCapability_MovieISOAutoHighLimitEx = 34123,
+        kNkMAIDCapability_ShootingLimitEx = 34124,
+        kNkMAIDCapability_MovieShutterSpeedLockSetting = 34125,
+        kNkMAIDCapability_MovieApertureLockSetting = 34126,
+        kNkMAIDCapability_ViewMode = 34127,
+        kNkMAIDCapability_ViewModeEaseOfViewing = 34128,
+        kNkMAIDCapability_ViewModeWhiteBalance = 34129,
+        kNkMAIDCapability_ViewModeWBTuneColorTemp = 34130,
+        kNkMAIDCapability_ViewModeWBTuneColorAdjust = 34131,
+        kNkMAIDCapability_ToneMode = 34132,
+        kNkMAIDCapability_MovieExtendedIsoStepManual = 34133,
+        kNkMAIDCapability_MovieExtendedShutterSpeedsManual = 34134,
+        kNkMAIDCapability_SkinSoftening = 34135,
+        kNkMAIDCapability_MovieSkinSoftening = 34136,
+        kNkMAIDCapability_PortraitImpressionBalance = 34137,
+        kNkMAIDCapability_MoviePortraitImpressionBalance = 34138,
+        kNkMAIDCapability_PictureControlHLG = 34139,
+        kNkMAIDCapability_PreCapturePreReleaseBurst = 34140,
+        kNkMAIDCapability_PreCapturePostReleaseBurst = 34141,
+        kNkMAIDCapability_ExtendedOverSampling = 34142,
+        kNkMAIDCapability_GetPicCtrlHLGDataList = 34143,
+        kNkMAIDCapability_GetPortraitImpressionBalanceDataList = 34144,
+        kNkMAIDCapability_SetPortraitImpressionBalanceData = 34145,
+        kNkMAIDCapability_GetMoviePortraitImpressionBalanceDataList = 34146,
+        kNkMAIDCapability_SetMoviePortraitImpressionBalanceData = 34147,
+        kNkMAIDCapability_WBTuneColorAdjust2 = 34148,
+        kNkMAIDCapability_MovieWBTuneColorAdjust2 = 34149,
+        kNkMAIDCapability_MovieScreenSizeEx = 34150,
+        kNkMAIDCapability_ViewModeWBTuneColorAdjust2 = 34151,
+        kNkMAIDCapability_MovieNRaw12bitToneMode = 34152,
+        kNkMAIDCapability_MovieProResRawHq12bitToneMode = 34153,
+        kNkMAIDCapability_MovieQualityNRaw = 34154,
+        kNkMAIDCapability_HiResZoom = 34155,
+        kNkMAIDCapability_ViewModeShowEffectsOfSettings = 34156,
+        kNkMAIDCapability_HighFrequencyFlickerReduction = 34157,
+        kNkMAIDCapability_EnableDXImageSize = 34158,
+        kNkMAIDCapability_ImageSizeDX = 34159,
+        kNkMAIDCapability_FlickerReductionShutterSpeed = 34160,
+        kNkMAIDCapability_SetFlickerReductionShutterSpeed = 34161,
+        kNkMAIDCapability_MovieHighFrequencyFlickerReduction = 34162,
+        kNkMAIDCapability_FmmManual2 = 34163,
+        kNkMAIDCapability_F0Manual2 = 34164,
+        kNkMAIDCapability_ManualSettingLensName = 34165,
+        kNkMAIDCapability_GetManualSettingLensData2 = 34166,
     }
 
-    public enum eNkMAIDCapAreaCrop : int
-    {
+    public enum eNkMAIDCapAreaCrop : int {
         kNkMAIDCapAreaCrop_FX = 1,
         kNkMAIDCapAreaCrop_DX = 2,
         kNkMAIDCapAreaCrop_54 = 4,
         kNkMAIDCapAreaCrop_12x = 8
     }
 
-    public enum eNkMAIDCapOperation : int
-    {
+    public enum eNkMAIDCapOperation : int {
         kNkMAIDCapOperation_Start = 1,
         kNkMAIDCapOperation_Get = 2,
         kNkMAIDCapOperation_Set = 4,
@@ -983,8 +1103,7 @@ namespace Nikon
         kNkMAIDCapOperation_GetDefault = 16
     }
 
-    public enum eNkMAIDCapType : int
-    {
+    public enum eNkMAIDCapType : int {
         kNkMAIDCapType_Process = 0,     // a process that can be started
         kNkMAIDCapType_Boolean = 1,     // single byte boolean value
         kNkMAIDCapType_Integer = 2,     // signed 4 byte value
@@ -1003,8 +1122,7 @@ namespace Nikon
         kNkMAIDCapType_BoolDefault = 15 // Reserved
     }
 
-    public enum eNkMAIDCapVisibility : int
-    {
+    public enum eNkMAIDCapVisibility : int {
         kNkMAIDCapVisibility_Hidden = 1,
         kNkMAIDCapVisibility_Advanced = 2,
         kNkMAIDCapVisibility_Vendor = 4,
@@ -1013,8 +1131,7 @@ namespace Nikon
         kNkMAIDCapVisibility_Invalid = 32
     }
 
-    public enum eNkMAIDCCDDataMode : int
-    {
+    public enum eNkMAIDCCDDataMode : int {
         kNkMAIDCCDDataMode_Full = 0,
         kNkMAIDCCDDataMode_HiSpeedCrop = 1,
         kNkMAIDCCDDataMode_AutoDXCrop = 2,
@@ -1025,23 +1142,20 @@ namespace Nikon
         kNkMAIDCCDDataMode_13x = 7
     }
 
-    public enum eNkMAIDCellKind : int
-    {
+    public enum eNkMAIDCellKind : int {
         kNkMAIDCellKind_Alkaline = 0,
         kNkMAIDCellKind_NiMH = 1,
         kNkMAIDCellKind_Lithium = 2,
         kNkMAIDCellKind_NiMn = 3
     }
 
-    public enum eNkMAIDCellKindPriority : int
-    {
+    public enum eNkMAIDCellKindPriority : int {
         kNkMAIDCellKindPriority_MB_D11 = 0,
         kNkMAIDCellKindPriority_MB_D10 = 0,
         kNkMAIDCellKindPriority_Camera = 1
     }
 
-    public enum eNkMAIDCFStatus : int
-    {
+    public enum eNkMAIDCFStatus : int {
         kNkMAIDCFStatus_Good = 0,
         kNkMAIDCFStatus_Full = 1,
         kNkMAIDCFStatus_NotFormated = 2,
@@ -1049,8 +1163,7 @@ namespace Nikon
         kNkMAIDCFStatus_NotAvailable = 4
     }
 
-    public enum eNkMAIDColorAdjustment : int
-    {
+    public enum eNkMAIDColorAdjustment : int {
         kNkMAIDColorAdjustment_Minus9 = 0,
         kNkMAIDColorAdjustment_Minus6 = 1,
         kNkMAIDColorAdjustment_Minus3 = 2,
@@ -1060,8 +1173,7 @@ namespace Nikon
         kNkMAIDColorAdjustment_Plus9 = 6
     }
 
-    public enum eNkMAIDColorSpace : int
-    {
+    public enum eNkMAIDColorSpace : int {
         kNkMAIDColorSpace_LineArt = 0,
         kNkMAIDColorSpace_Grey = 1,
         kNkMAIDColorSpace_RGB = 2,
@@ -1081,8 +1193,7 @@ namespace Nikon
         kNkMAIDColorSpace_RGBD = 32769
     }
 
-    public enum eNkMAIDCommand : int
-    {
+    public enum eNkMAIDCommand : int {
         kNkMAIDCommand_Async = 0,          // process asynchronous operations
         kNkMAIDCommand_Open = 1,           // opens a child object
         kNkMAIDCommand_Close = 2,          // closes a previously opened object
@@ -1101,21 +1212,20 @@ namespace Nikon
         kNkMAIDCommand_ResetToDefault = 15 // resets all capabilities to their default value
     }
 
-    public enum eNkMAIDCompressRAWBitMode : int
-    {
+    public enum eNkMAIDCompressRAWBitMode : int {
         kNkMAIDCompressRAWBitMode_12bit = 0, // 12-bit depth recording
         kNkMAIDCompressRAWBitMode_14bit = 1  // 14-bit depth recording
     }
 
-    public enum eNkMAIDCompressRAWEx : int
-    {
+    public enum eNkMAIDCompressRAWEx : int {
         kNkMAIDCompressRAWEx_Uncompressed = 0,      // Uncompressed
         kNkMAIDCompressRAWEx_Compressed = 1,        // Compressed
-        kNkMAIDCompressRAWEx_LosslessCompressed = 2 // Lossless compressed
+        kNkMAIDCompressRAWEx_LosslessCompressed = 2, // Lossless compressed
+        kNkMAIDCompressRAWEx_HighEfficiency_Quality = 3, // HighEfficiency_Quality
+        kNkMAIDCompressRAWEx_HighEfficiency = 4,    // HighEfficiency
     }
 
-    public enum eNkMAIDContrastAF : int
-    {
+    public enum eNkMAIDContrastAF : int {
         kNkMAIDContrastAF_Start = 0,       // Start the AF driving
         kNkMAIDContrastAF_Stop = 1,        // Stop the AF driving
         kNkMAIDContrastAF_OK = 16,         // Completed in the focused status
@@ -1123,23 +1233,20 @@ namespace Nikon
         kNkMAIDContrastAF_Busy = 18        // AF driving
     }
 
-    public enum eNkMAIDConverter : int
-    {
+    public enum eNkMAIDConverter : int {
         kNkMAIDConverter_None = 0,
         kNkMAIDConverter_Wide = 1,
         kNkMAIDConverter_FishEye = 2
     }
 
-    public enum eNkMAIDCPXCameraType : int
-    {
+    public enum eNkMAIDCPXCameraType : int {
         kNkMAIDCPXCameraType_E8400 = 0,
         kNkMAIDCPXCameraType_E8800 = 1,
         kNkMAIDCPXCameraType_S4 = 2,
         kNkMAIDCPXCameraType_L1 = 3
     }
 
-    public enum eNkMAIDDataObjType : int
-    {
+    public enum eNkMAIDDataObjType : int {
         kNkMAIDDataObjType_Image = 1,
         kNkMAIDDataObjType_Sound = 2,
         kNkMAIDDataObjType_Video = 4,
@@ -1147,8 +1254,7 @@ namespace Nikon
         kNkMAIDDataObjType_File = 16
     }
 
-    public enum eNkMAIDDataType : int
-    {
+    public enum eNkMAIDDataType : int {
         kNkMAIDDataType_Null = 0,
         kNkMAIDDataType_Boolean = 1,      // passed by value, set only
         kNkMAIDDataType_Integer = 2,      // signed 32 bit int, passed by value, set only
@@ -1171,53 +1277,46 @@ namespace Nikon
         kNkMAIDDataType_GenericPtr = 19   // pointer to generic data
     }
 
-    public enum eNkMAIDDateCounterDispSetting : int
-    {
+    public enum eNkMAIDDateCounterDispSetting : int {
         kNkMAIDDateCounterDispSetting_NumberOfDays = 0,     // Number of days
         kNkMAIDDateCounterDispSetting_Years_Days = 1,       // Years and days
         kNkMAIDDateCounterDispSetting_Years_Months_Days = 2 // Years, months, and days
     }
 
-    public enum eNkMAIDDateCounterSelect : int
-    {
+    public enum eNkMAIDDateCounterSelect : int {
         kNkMAIDDateCounterSelect_1 = 0, // First
         kNkMAIDDateCounterSelect_2 = 1, // Second
         kNkMAIDDateCounterSelect_3 = 2  // Third
     }
 
-    public enum eNkMAIDDateFormat : int
-    {
+    public enum eNkMAIDDateFormat : int {
         kNkMAIDDateFormat_Off = 0,
         kNkMAIDDateFormat_YMD = 1,
         kNkMAIDDateFormat_MDY = 2,
         kNkMAIDDateFormat_DMY = 3
     }
 
-    public enum eNkMAIDDateImprintSetting : int
-    {
+    public enum eNkMAIDDateImprintSetting : int {
         kNkMAIDDateImprintSetting_Off = 0,        // OFF
         kNkMAIDDateImprintSetting_Date = 1,       // Year/month/date
         kNkMAIDDateImprintSetting_Date_Time = 2,  // Year/month/date/time
         kNkMAIDDateImprintSetting_DateCounter = 3 // Birthday counter
     }
 
-    public enum eNkMAIDDynamicAFArea : int
-    {
+    public enum eNkMAIDDynamicAFArea : int {
         kNkMAIDDynamicAFArea_9 = 0,             // Dynamic AF mode (9 points)
         kNkMAIDDynamicAFArea_21 = 1,            // Dynamic AF mode (21 points)
         kNkMAIDDynamicAFArea_51 = 2,            // Dynamic AF mode (51 points)
         kNkMAIDDynamicAFArea_51_3DTtracking = 3 // 3D-tracking
     }
 
-    public enum eNkMAIDEasyExposureCompMode : int
-    {
+    public enum eNkMAIDEasyExposureCompMode : int {
         kNkMAIDEasyExposureCompMode_Off = 0,
         kNkMAIDEasyExposureCompMode_On = 1,
         kNkMAIDEasyExposureCompMode_AutoReset = 2
     }
 
-    public enum eNkMAIDEffectMode : int
-    {
+    public enum eNkMAIDEffectMode : int {
         kNkMAIDEffectMode_NightVision = 0,       // 0: Night vision
         kNkMAIDEffectMode_ColorSketch = 1,       // 1: Color sketch
         kNkMAIDEffectMode_Miniature = 2,         // 2: Miniature effect
@@ -1232,20 +1331,17 @@ namespace Nikon
         kNkMAIDEffectMode_PhotoIllustration = 11 // 11: Photo Illustration
     }
 
-    public enum eNkMAIDElectronicFrontCurtainShutter : int
-    {
+    public enum eNkMAIDElectronicFrontCurtainShutter : int {
         kNkMAIDElectronicFrontCurtainShutter_Off = 0,
         kNkMAIDElectronicFrontCurtainShutter_On = 1
     }
 
-    public enum eNkMAIDElectronicVR : int
-    {
+    public enum eNkMAIDElectronicVR : int {
         kNkMAIDElectronicVR_OFF = 0,
         kNkMAIDElectronicVR_ON = 1
     }
 
-    public enum eNkMAIDElectronicZoom : int
-    {
+    public enum eNkMAIDElectronicZoom : int {
         kNkMAIDElectronicZoom_100 = 0,
         kNkMAIDElectronicZoom_120 = 1,
         kNkMAIDElectronicZoom_140 = 2,
@@ -1264,15 +1360,13 @@ namespace Nikon
         kNkMAIDElectronicZoom_400 = 15
     }
 
-    public enum eNkMAIDEnableCommandDialOnPlaybackEx : int
-    {
+    public enum eNkMAIDEnableCommandDialOnPlaybackEx : int {
         kNkMAIDEnableCommandDialOnPlaybackEx_Off = 0,                // OFF
         kNkMAIDEnableCommandDialOnPlaybackEx_On = 1,                 // ON
         kNkMAIDEnableCommandDialOnPlaybackEx_On_WithoutImageConf = 2 // ON (except during image review)
     }
 
-    public enum eNkMAIDEvent : int
-    {
+    public enum eNkMAIDEvent : int {
         kNkMAIDEvent_AddChild = 0,
         kNkMAIDEvent_RemoveChild = 1,
         kNkMAIDEvent_WarmingUp = 2,
@@ -1280,45 +1374,51 @@ namespace Nikon
         kNkMAIDEvent_CapChange = 4,
         kNkMAIDEvent_OrphanedChildren = 5,
         kNkMAIDEvent_CapChangeValueOnly = 6,
-        kNkMAIDEvent_AddPreviewImage = 263,            // 0x107
-        kNkMAIDEvent_CaptureComplete = 264,            // 0x108
-        kNkMAIDEvent_AddChildInCard = 265,             // 0x109
-        kNkMAIDEvent_RecordingInterrupted = 266,       // 0x10A
-        kNkMAIDEvent_CapChangeOperationOnly = 267,     // 0x10B
-        kNkMAIDEvent_1stCaptureComplete = 268,         // 0x10C
-        kNkMAIDEvent_MirrorUpCancelComplete = 269,     // 0x10D
-        kNkMAIDEvent_SBAdded = 270,                    // 0x10E
-        kNkMAIDEvent_SBRemoved = 271,                  // 0x10F
-        kNkMAIDEvent_SBAttrChanged = 272,              // 0x110
-        kNkMAIDEvent_SBGroupAttrChanged = 273,         // 0x111// kNkMAIDEvent_DX2Origin + 11(0x112) is  reserved.
-        kNkMAIDEvent_ActiveSelectionInterrupted = 275, // 0x113
-        kNkMAIDEvent_StoreRemoved = 276,               // 0x114
-        kNkMAIDEvent_MovieRecordComplete = 277         // 0x115
+        kNkMAIDEvent_AddPreviewImage = 263,                         // 0x107
+        kNkMAIDEvent_CaptureComplete = 264,                         // 0x108
+        kNkMAIDEvent_AddChildInCard = 265,                          // 0x109
+        kNkMAIDEvent_RecordingInterrupted = 266,                    // 0x10A
+        kNkMAIDEvent_CapChangeOperationOnly = 267,                  // 0x10B
+        kNkMAIDEvent_1stCaptureComplete = 268,                      // 0x10C
+        kNkMAIDEvent_MirrorUpCancelComplete = 269,                  // 0x10D
+        kNkMAIDEvent_SBAdded = 270,                                 // 0x10E
+        kNkMAIDEvent_SBRemoved = 271,                               // 0x10F
+        kNkMAIDEvent_SBAttrChanged = 272,                           // 0x110
+        kNkMAIDEvent_SBGroupAttrChanged = 273,                      // 0x111// kNkMAIDEvent_DX2Origin + 11(0x112) is  reserved.
+        kNkMAIDEvent_ActiveSelectionInterrupted = 275,              // 0x113
+        kNkMAIDEvent_StoreRemoved = 276,                            // 0x114
+        kNkMAIDEvent_MovieRecordComplete = 277,                     // 0x115
+        kNkMAIDEvent_RequestLiveViewStart = 278,                    //0x116
+        kNkMAIDEvent_StartMovieRecord = 279,                        //0x117
+        kNkMAIDEvent_LiveViewStateChanged = 280,                  //0x118  not supported.
+        kNkMAIDEvent_PictureControlAdjustChanged = 281,             //0x119
+        kNkMAIDEvent_ManualSettingLensDataChanged = 282,            //0x11A
+        kNkMAIDEvent_PixelMappingComplete = 283,                    //0x11B
+        kNkMAIDEvent_CaptureSkip = 284,                             //0x11C
+        kNkMAIDEvent_OpenCaptureComplete = 285,                     //0x11D 
+        kNkMAIDEvent_PortraitImpressionBalanceAdjustChanged = 286,  //0x11E
+        kNkMAIDEvent_PictureControlHLGAdjustChanged = 287,          //0x11F
     }
 
-    public enum eNkMAIDExchangeDialsEx : int
-    {
+    public enum eNkMAIDExchangeDialsEx : int {
         kNkMAIDExchangeDialsEx_Off = 0,
         kNkMAIDExchangeDialsEx_On = 1,
         kNkMAIDExchangeDialsEx_On_Amode = 2
     }
 
-    public enum eNkMAIDExposureCompFlashUsed : int
-    {
+    public enum eNkMAIDExposureCompFlashUsed : int {
         kNkMAIDExposureCompFlashUsed_Entireframe = 0,
         kNkMAIDExposureCompFlashUsed_Backgroundonly = 1
     }
 
-    public enum eNkMAIDExposureDelayEx : int
-    {
+    public enum eNkMAIDExposureDelayEx : int {
         kNkMAIDExposureDelayEx_3sec = 0,
         kNkMAIDExposureDelayEx_2sec = 1,
         kNkMAIDExposureDelayEx_1sec = 2,
         kNkMAIDExposureDelayEx_Off = 3
     }
 
-    public enum eNkMAIDExposureDisplayStatus : int
-    {
+    public enum eNkMAIDExposureDisplayStatus : int {
         kNkMAIDExposureDisplayStatus_None = 0,
         kNkMAIDExposureDisplayStatus_ShutterSpeedLo = 1,
         kNkMAIDExposureDisplayStatus_ShutterSpeedHi = 2,
@@ -1330,14 +1430,12 @@ namespace Nikon
         kNkMAIDExposureDisplayStatus_SpHi_ApHi = 8
     }
 
-    public enum eNkMAIDExposureMeterLinkage : int
-    {
+    public enum eNkMAIDExposureMeterLinkage : int {
         kNkMAIDExposureMeterLinkage_AI = 0,
         kNkMAIDExposureMeterLinkage_NON_AI = 1
     }
 
-    public enum eNkMAIDExposureMode : int
-    {
+    public enum eNkMAIDExposureMode : int {
         kNkMAIDExposureMode_Program = 0,
         kNkMAIDExposureMode_AperturePriority = 1,
         kNkMAIDExposureMode_SpeedPriority = 2,
@@ -1358,8 +1456,7 @@ namespace Nikon
         kNkMAIDExposureMode_Effects = 17
     }
 
-    public enum eNkMAIDExternalFlashSort : int
-    {
+    public enum eNkMAIDExternalFlashSort : int {
         kNkMAIDExternalFlashSort_NoCommunicate = 0,
         kNkMAIDExternalFlashSort_OldType = 1,
         kNkMAIDExternalFlashSort_NewType = 2,
@@ -1367,15 +1464,13 @@ namespace Nikon
         kNkMAIDExternalFlashSort_NewTypeControl = 4
     }
 
-    public enum eNkMAIDExternalFlashStatus : int
-    {
+    public enum eNkMAIDExternalFlashStatus : int {
         kNkMAIDExternalFlashStatus_Ready = 0,
         kNkMAIDExternalFlashStatus_NotReady = 1,
         kNkMAIDExternalFlashStatus_NotExist = 2
     }
 
-    public enum eNkMAIDExternalNewTypeFlashMode : int
-    {
+    public enum eNkMAIDExternalNewTypeFlashMode : int {
         kNkMAIDExternalNewTypeFlashMode_OFF = 0,
         kNkMAIDExternalNewTypeFlashMode_CompTTL = 1,
         kNkMAIDExternalNewTypeFlashMode_NoCompTTL = 2,
@@ -1387,8 +1482,7 @@ namespace Nikon
         kNkMAIDExternalNewTypeFlashMode_NotExist = 8
     }
 
-    public enum eNkMAIDExternalOldTypeFlashMode : int
-    {
+    public enum eNkMAIDExternalOldTypeFlashMode : int {
         kNkMAIDExternalOldTypeFlashMode_TTL = 0,
         kNkMAIDExternalOldTypeFlashMode_DTTL = 1,
         kNkMAIDExternalOldTypeFlashMode_AA = 2,
@@ -1399,8 +1493,7 @@ namespace Nikon
         kNkMAIDExternalOldTypeFlashMode_NonTTL = 7
     }
 
-    public enum eNkMAIDExternalSplValue : int
-    {
+    public enum eNkMAIDExternalSplValue : int {
         kNkMAIDExternalSplValue_Full = 0, // Full
         kNkMAIDExternalSplValue_2 = 1,    // 1/2
         kNkMAIDExternalSplValue_4 = 2,    // 1/4
@@ -1412,20 +1505,17 @@ namespace Nikon
         kNkMAIDExternalSplValue_256 = 8   // 1/256
     }
 
-    public enum eNkMAIDFaceDetection : int
-    {
+    public enum eNkMAIDFaceDetection : int {
         kNkMAIDFaceDetection_Off = 0,
         kNkMAIDFaceDetection_On = 1
     }
 
-    public enum eNkMAIDFacePriority : int
-    {
+    public enum eNkMAIDFacePriority : int {
         kNkMAIDFacePriority_Off = 0,
         kNkMAIDFacePriority_On = 1
     }
 
-    public enum eNkMAIDFileDataType : int
-    {
+    public enum eNkMAIDFileDataType : int {
         kNkMAIDFileDataType_NotSpecified = 0,
         kNkMAIDFileDataType_JPEG = 1,
         kNkMAIDFileDataType_TIFF = 2,
@@ -1436,11 +1526,14 @@ namespace Nikon
         kNkMAIDFileDataType_UserType = 256,
         kNkMAIDFileDataType_NDF = 257,
         kNkMAIDFileDataType_AVI = 258,
-        kNkMAIDFileDataType_MOV = 259
+        kNkMAIDFileDataType_MOV = 259,
+        kNkMAIDFileDataType_MP4 = 260,
+        kNkMAIDFileDataType_HEIF = 261,
+        kNkMAIDFileDataType_NEV = 262,
+
     }
 
-    public enum eNkMAIDFilter : int
-    {
+    public enum eNkMAIDFilter : int {
         kNkMAIDFilter_White = 0,
         kNkMAIDFilter_Infrared = 1,
         kNkMAIDFilter_Red = 2,
@@ -1449,15 +1542,13 @@ namespace Nikon
         kNkMAIDFilter_Ultraviolet = 5
     }
 
-    public enum eNkMAIDFinderISODisplay : int
-    {
+    public enum eNkMAIDFinderISODisplay : int {
         kNkMAIDFinderISODisplay_ISO = 0,       // Sensitivity display ON
         kNkMAIDFinderISODisplay_EasyISO = 1,   // Sensitivity display/easy setting ON
         kNkMAIDFinderISODisplay_FrameCount = 2 // Off
     }
 
-    public enum eNkMAIDFlashISOAutoHighLimit : int
-    {
+    public enum eNkMAIDFlashISOAutoHighLimit : int {
         kNkMAIDFlashISOAutoHighLimit_ISO200 = 0,
         kNkMAIDFlashISOAutoHighLimit_ISO250 = 1,
         kNkMAIDFlashISOAutoHighLimit_ISO280 = 2,
@@ -1506,8 +1597,7 @@ namespace Nikon
         kNkMAIDFlashISOAutoHighLimit_NoneFlash = 45
     }
 
-    public enum eNkMAIDFlashMode : int
-    {
+    public enum eNkMAIDFlashMode : int {
         kNkMAIDFlashMode_FrontCurtain = 0,
         kNkMAIDFlashMode_RearCurtain = 1,
         kNkMAIDFlashMode_SlowSync = 2,
@@ -1520,28 +1610,24 @@ namespace Nikon
         kNkMAIDFlashMode_On = 264
     }
 
-    public enum eNkMAIDFlashRangeDisplay : int
-    {
+    public enum eNkMAIDFlashRangeDisplay : int {
         kNkMAIDFlashRangeDisplay_m = 0,
         kNkMAIDFlashRangeDisplay_ft = 1
     }
 
-    public enum eNkMAIDFlashStatus : int
-    {
+    public enum eNkMAIDFlashStatus : int {
         kNkMAIDFlashStatus_Ready = 0,
         kNkMAIDFlashStatus_NotReady = 1,
         kNkMAIDFlashStatus_NotExist = 2,
         kNkMAIDFlashStatus_NormalTTL = 3
     }
 
-    public enum eNkMAIDFlickerReductionSetting : int
-    {
+    public enum eNkMAIDFlickerReductionSetting : int {
         kNkMAIDFlickerReductionSetting_Off = 0, // Off
         kNkMAIDFlickerReductionSetting_On = 1   // On
     }
 
-    public enum eNkMAIDFmmManual : int
-    {
+    public enum eNkMAIDFmmManual : int {
         kNkMAIDFmmManual_0 = 0,
         kNkMAIDFmmManual_6 = 6,
         kNkMAIDFmmManual_8 = 8,
@@ -1585,14 +1671,12 @@ namespace Nikon
         kNkMAIDFmmManual_4000 = 4000
     }
 
-    public enum eNkMAIDFocusAreaFrame : int
-    {
+    public enum eNkMAIDFocusAreaFrame : int {
         kNkMAIDFocusAreaFrame_Normal = 0,
         kNkMAIDFocusAreaFrame_Wide = 1
     }
 
-    public enum eNkMAIDFocusGroupPreferred : int
-    {
+    public enum eNkMAIDFocusGroupPreferred : int {
         kNkMAIDFocusGroupPreferred_Center = 0,
         kNkMAIDFocusGroupPreferred_Upper = 1,
         kNkMAIDFocusGroupPreferred_Bottom = 2,
@@ -1600,8 +1684,7 @@ namespace Nikon
         kNkMAIDFocusGroupPreferred_Right = 4
     }
 
-    public enum eNkMAIDFocusMode : int
-    {
+    public enum eNkMAIDFocusMode : int {
         kNkMAIDFocusMode_MF = 0,
         kNkMAIDFocusMode_AFs = 1,
         kNkMAIDFocusMode_AFc = 2,
@@ -1612,16 +1695,14 @@ namespace Nikon
         kNkMAIDFocusMode_Infinity = 18
     }
 
-    public enum eNkMAIDFocusPointBrightness : int
-    {
+    public enum eNkMAIDFocusPointBrightness : int {
         kNkMAIDFocusPointBrightness_Low = 0,      // Dark
         kNkMAIDFocusPointBrightness_Normal = 1,   // Normal
         kNkMAIDFocusPointBrightness_High = 2,     // Bright
         kNkMAIDFocusPointBrightness_ExtraHigh = 3 // Extra bright
     }
 
-    public enum eNkMAIDFocusPreferred : int
-    {
+    public enum eNkMAIDFocusPreferred : int {
         kNkMAIDFocusPreferred_Center = 0,
         kNkMAIDFocusPreferred_Upper = 1,
         kNkMAIDFocusPreferred_Bottom = 2,
@@ -1635,8 +1716,7 @@ namespace Nikon
         kNkMAIDFocusPreferred_RightEnd = 10
     }
 
-    public enum eNkMAIDFocusPreferred2 : int
-    {
+    public enum eNkMAIDFocusPreferred2 : int {
         kNkMAIDFocusPreferred2_Unknown = 0,
         kNkMAIDFocusPreferred2_C = 1,
         kNkMAIDFocusPreferred2_CT = 2,
@@ -1691,8 +1771,7 @@ namespace Nikon
         kNkMAIDFocusPreferred2_LDB = 51
     }
 
-    public enum eNkMAIDFocusPreferred3 : int
-    {
+    public enum eNkMAIDFocusPreferred3 : int {
         kNkMAIDFocusPreferred3_Unknown = 0,
         kNkMAIDFocusPreferred3_Center = 1,
         kNkMAIDFocusPreferred3_Upper = 2,
@@ -1707,8 +1786,7 @@ namespace Nikon
         kNkMAIDFocusPreferred3_RightEnd = 11
     }
 
-    public enum eNkMAIDFocusPreferred4 : int
-    {
+    public enum eNkMAIDFocusPreferred4 : int {
         kNkMAIDFocusPreferred4_Unknown = 0,
         kNkMAIDFocusPreferred4_C = 1,
         kNkMAIDFocusPreferred4_CT = 2,
@@ -1751,8 +1829,7 @@ namespace Nikon
         kNkMAIDFocusPreferred4_LDB = 39
     }
 
-    public enum eNkMAIDFocusPreferred5 : int
-    {
+    public enum eNkMAIDFocusPreferred5 : int {
         kNkMAIDFocusPreferred5_Unknown = 0,
         kNkMAIDFocusPreferred5_C = 1,
         kNkMAIDFocusPreferred5_CT1 = 2,
@@ -1909,29 +1986,25 @@ namespace Nikon
         kNkMAIDFocusPreferred5_LS3B4 = 153
     }
 
-    public enum eNkMAIDGetIPTCInfo : int
-    {
+    public enum eNkMAIDGetIPTCInfo : int {
         kNkMAIDGetIPTCInfo_None = 0,
         kNkMAIDGetIPTCInfo_Attached = 1
     }
 
-    public enum eNkMAIDHDRExposure : int
-    {
+    public enum eNkMAIDHDRExposure : int {
         kNkMAIDHDRExposure_Auto = 0,
         kNkMAIDHDRExposure_1EV = 1,
         kNkMAIDHDRExposure_2EV = 2,
         kNkMAIDHDRExposure_3EV = 3
     }
 
-    public enum eNkMAIDHDRMode : int
-    {
+    public enum eNkMAIDHDRMode : int {
         kNkMAIDHDRMode_Off = 0,       // Off
         kNkMAIDHDRMode_On = 1,        // On (single photo)
         kNkMAIDHDRMode_Continuous = 2 // On (series)
     }
 
-    public enum eNkMAIDHDRMode2 : int
-    {
+    public enum eNkMAIDHDRMode2 : int {
         kNkMAIDHDRMode2_Off = 0,       // Off
         kNkMAIDHDRMode2_Low = 1,       // Low
         kNkMAIDHDRMode2_Normal = 2,    // Normal
@@ -1940,8 +2013,7 @@ namespace Nikon
         kNkMAIDHDRMode2_Auto = 5       // Auto
     }
 
-    public enum eNkMAIDHDRSmoothing : int
-    {
+    public enum eNkMAIDHDRSmoothing : int {
         kNkMAIDHDRSmoothing_High = 0,     // High
         kNkMAIDHDRSmoothing_Normal = 1,   // Normal
         kNkMAIDHDRSmoothing_Low = 2,      // Low
@@ -1949,8 +2021,7 @@ namespace Nikon
         kNkMAIDHDRSmoothing_ExtraHigh = 4 // Extra high
     }
 
-    public enum eNkMAIDHighSpeedStillCaptureRate : int
-    {
+    public enum eNkMAIDHighSpeedStillCaptureRate : int {
         kNkMAIDHighSpeedStillCaptureRate_CL = 0,    // Continuous shot
         kNkMAIDHighSpeedStillCaptureRate_10fps = 1, // Continuous high-speed shot 10 frames/second
         kNkMAIDHighSpeedStillCaptureRate_20fps = 2, // Continuous high-speed shot 20 frames/second
@@ -1958,20 +2029,17 @@ namespace Nikon
         kNkMAIDHighSpeedStillCaptureRate_60fps = 4  // Continuous high-speed shot 60 frames/second
     }
 
-    public enum eNkMAIDIlluminationSetting : int
-    {
+    public enum eNkMAIDIlluminationSetting : int {
         kNkMAIDIlluminationSetting_LCDBacklight = 0, // Illuminator ON/OFF
         kNkMAIDIlluminationSetting_Both = 1          // ON/OFF of the illuminator and Info screen
     }
 
-    public enum eNkMAIDImageColorSpace : int
-    {
+    public enum eNkMAIDImageColorSpace : int {
         kNkMAIDImageColorSpace_sRGB = 0,
         kNkMAIDImageColorSpace_AdobeRGB = 1
     }
 
-    public enum eNkMAIDImageMode : int
-    {
+    public enum eNkMAIDImageMode : int {
         kNkMAIDImageMode_6M_High = 0,   // 6M(2816*2112)
         kNkMAIDImageMode_6M_Normal = 1, // 6M(2816*2112)
         kNkMAIDImageMode_3M = 2,        // 3M(2048*1536)
@@ -1979,8 +2047,7 @@ namespace Nikon
         kNkMAIDImageMode_TV = 4         // TV(640*480)
     }
 
-    public enum eNkMAIDImageSetting : int
-    {
+    public enum eNkMAIDImageSetting : int {
         kNkMAIDImageSetting_Normal = 0,
         kNkMAIDImageSetting_Clear = 1,
         kNkMAIDImageSetting_Sharp = 2,
@@ -1993,29 +2060,25 @@ namespace Nikon
         kNkMAIDImageSetting_MoreClear = 9
     }
 
-    public enum eNkMAIDIndicatorDisplay : int
-    {
+    public enum eNkMAIDIndicatorDisplay : int {
         kNkMAIDIndicatorDisplay_Plus = 0, // +
         kNkMAIDIndicatorDisplay_Minus = 1 // -
     }
 
-    public enum eNkMAIDInfoDispSetting : int
-    {
+    public enum eNkMAIDInfoDispSetting : int {
         kNkMAIDInfoDispSetting_Auto = 0,          // Auto
         kNkMAIDInfoDispSetting_M_DarkOnLight = 1, // Manual (black letters)
         kNkMAIDInfoDispSetting_M_LightOnDark = 2  // Manual (black letters)
     }
 
-    public enum eNkMAIDInternalFlashStatus : int
-    {
+    public enum eNkMAIDInternalFlashStatus : int {
         kNkMAIDInternalFlashStatus_Ready = 0,
         kNkMAIDInternalFlashStatus_NotReady = 1,
         kNkMAIDInternalFlashStatus_Close = 2,
         kNkMAIDInternalFlashStatus_TTL = 3
     }
 
-    public enum eNkMAIDInternalSplCmdGroupComp : int
-    {
+    public enum eNkMAIDInternalSplCmdGroupComp : int {
         kNkMAIDInternalSplCmdGroupComp_M30 = 0,  // -3.0
         kNkMAIDInternalSplCmdGroupComp_M27 = 1,  // -2.7
         kNkMAIDInternalSplCmdGroupComp_M23 = 2,  // -2.3
@@ -2037,16 +2100,14 @@ namespace Nikon
         kNkMAIDInternalSplCmdGroupComp_P30 = 18  // +3.0
     }
 
-    public enum eNkMAIDInternalSplCmdGroupMode : int
-    {
+    public enum eNkMAIDInternalSplCmdGroupMode : int {
         kNkMAIDInternalSplCmdGroupMode_TTL = 0,
         kNkMAIDInternalSplCmdGroupMode_AA = 1,
         kNkMAIDInternalSplCmdGroupMode_Manual = 2,
         kNkMAIDInternalSplCmdGroupMode_Off = 3
     }
 
-    public enum eNkMAIDInternalSplCmdGroupValue : int
-    {
+    public enum eNkMAIDInternalSplCmdGroupValue : int {
         kNkMAIDInternalSplCmdGroupValue_1 = 0,    // 1/1
         kNkMAIDInternalSplCmdGroupValue_2 = 1,    // 1/2
         kNkMAIDInternalSplCmdGroupValue_4 = 2,    // 1/4
@@ -2071,8 +2132,7 @@ namespace Nikon
         kNkMAIDInternalSplCmdGroupValue_100 = 21  // 1/100
     }
 
-    public enum eNkMAIDInternalSplCmdSelfComp : int
-    {
+    public enum eNkMAIDInternalSplCmdSelfComp : int {
         kNkMAIDInternalSplCmdSelfComp_M30 = 0,
         kNkMAIDInternalSplCmdSelfComp_M27 = 1,
         kNkMAIDInternalSplCmdSelfComp_M23 = 2,
@@ -2094,15 +2154,13 @@ namespace Nikon
         kNkMAIDInternalSplCmdSelfComp_P30 = 18
     }
 
-    public enum eNkMAIDInternalSplCmdSelfMode : int
-    {
+    public enum eNkMAIDInternalSplCmdSelfMode : int {
         kNkMAIDInternalSplCmdSelfMode_TTL = 0,
         kNkMAIDInternalSplCmdSelfMode_Manual = 1,
         kNkMAIDInternalSplCmdSelfMode_Off = 2
     }
 
-    public enum eNkMAIDInternalSplCmdSelfValue : int
-    {
+    public enum eNkMAIDInternalSplCmdSelfValue : int {
         kNkMAIDInternalSplCmdSelfValue_1 = 0,    // 1/1
         kNkMAIDInternalSplCmdSelfValue_2 = 1,    // 1/2
         kNkMAIDInternalSplCmdSelfValue_4 = 2,    // 1/4
@@ -2127,24 +2185,21 @@ namespace Nikon
         kNkMAIDInternalSplCmdSelfValue_100 = 21  // 1/100
     }
 
-    public enum eNkMAIDInternalSplCommand : int
-    {
+    public enum eNkMAIDInternalSplCommand : int {
         kNkMAIDInternalSplCommand_TTL = 0,
         kNkMAIDInternalSplCommand_AA = 1,
         kNkMAIDInternalSplCommand_Manual = 2,
         kNkMAIDInternalSplCommand_Off = 3
     }
 
-    public enum eNkMAIDInternalSplCommandChannel : int
-    {
+    public enum eNkMAIDInternalSplCommandChannel : int {
         kNkMAIDInternalSplCommandChannel_1 = 0,
         kNkMAIDInternalSplCommandChannel_2 = 1,
         kNkMAIDInternalSplCommandChannel_3 = 2,
         kNkMAIDInternalSplCommandChannel_4 = 3
     }
 
-    public enum eNkMAIDInternalSplCommandValue : int
-    {
+    public enum eNkMAIDInternalSplCommandValue : int {
         kNkMAIDInternalSplCommandValue_Full = 0,
         kNkMAIDInternalSplCommandValue_2 = 1,
         kNkMAIDInternalSplCommandValue_4 = 2,
@@ -2155,8 +2210,7 @@ namespace Nikon
         kNkMAIDInternalSplCommandValue_128 = 7
     }
 
-    public enum eNkMAIDInternalSplMRPTCount : int
-    {
+    public enum eNkMAIDInternalSplMRPTCount : int {
         kNkMAIDInternalSplMRPTCount_2 = 0,
         kNkMAIDInternalSplMRPTCount_3 = 1,
         kNkMAIDInternalSplMRPTCount_4 = 2,
@@ -2173,8 +2227,7 @@ namespace Nikon
         kNkMAIDInternalSplMRPTCount_35 = 13
     }
 
-    public enum eNkMAIDInternalSplMRPTInterval : int
-    {
+    public enum eNkMAIDInternalSplMRPTInterval : int {
         kNkMAIDInternalSplMRPTInterval_1 = 0,
         kNkMAIDInternalSplMRPTInterval_2 = 1,
         kNkMAIDInternalSplMRPTInterval_3 = 2,
@@ -2191,8 +2244,7 @@ namespace Nikon
         kNkMAIDInternalSplMRPTInterval_50 = 13
     }
 
-    public enum eNkMAIDInternalSplMRPTValue : int
-    {
+    public enum eNkMAIDInternalSplMRPTValue : int {
         kNkMAIDInternalSplMRPTValue_4 = 0,
         kNkMAIDInternalSplMRPTValue_8 = 1,
         kNkMAIDInternalSplMRPTValue_16 = 2,
@@ -2202,8 +2254,7 @@ namespace Nikon
         kNkMAIDInternalSplMRPTValue_Full = 6
     }
 
-    public enum eNkMAIDInternalSplValue : int
-    {
+    public enum eNkMAIDInternalSplValue : int {
         kNkMAIDInternalSplValue_Full = 0, // Full
         kNkMAIDInternalSplValue_2 = 1,    // 1/2
         kNkMAIDInternalSplValue_4 = 2,    // 1/4
@@ -2229,23 +2280,24 @@ namespace Nikon
         kNkMAIDInternalSplValue_256 = 22  // 1/256
     }
 
-    public enum eNkMAIDIPTCPresetInfo : int
-    {
+    public enum eNkMAIDIPTCPresetInfo : int {
         kNkMAIDIPTCPresetInfo_ALL = 0, // All Preset.
-        kNkMAIDIPTCPresetInfo_1 = 1,   // Preset No.1.
-        kNkMAIDIPTCPresetInfo_2 = 2,   // Preset No.2.
-        kNkMAIDIPTCPresetInfo_3 = 3,   // Preset No.3.
+        kNkMAIDIPTCPresetInfo_1 = 1,   // Preset No.1. NMS-IPTC Preset No.1.
+        kNkMAIDIPTCPresetInfo_2 = 2,   // Preset No.2. NMS-IPTC Preset No.2.
+        kNkMAIDIPTCPresetInfo_3 = 3,   // Preset No.3. ...
         kNkMAIDIPTCPresetInfo_4 = 4,   // Preset No.4.
         kNkMAIDIPTCPresetInfo_5 = 5,   // Preset No.5.
         kNkMAIDIPTCPresetInfo_6 = 6,   // Preset No.6.
         kNkMAIDIPTCPresetInfo_7 = 7,   // Preset No.7.
         kNkMAIDIPTCPresetInfo_8 = 8,   // Preset No.8.
         kNkMAIDIPTCPresetInfo_9 = 9,   // Preset No.9.
-        kNkMAIDIPTCPresetInfo_10 = 10  // Preset No.10.
+        kNkMAIDIPTCPresetInfo_10 = 10,  // Preset No.10. NMS-IPTC Preset No.10.
+        kNkMAIDIPTCPresetInfo_11 = 11,  // Preset No.11. XMP-IPTC Preset No.1.
+        kNkMAIDIPTCPresetInfo_12 = 12,  // Preset No.12. XMP-IPTC Preset No.2.
+        kNkMAIDIPTCPresetInfo_13 = 13,  // Preset No.13. XMP-IPTC Preset No.3.
     }
 
-    public enum eNkMAIDIPTCPresetSelect : int
-    {
+    public enum eNkMAIDIPTCPresetSelect : int {
         kNkMAIDIPTCPresetSelect_OFF = 0,
         kNkMAIDIPTCPresetSelect_1 = 1,
         kNkMAIDIPTCPresetSelect_2 = 2,
@@ -2256,11 +2308,13 @@ namespace Nikon
         kNkMAIDIPTCPresetSelect_7 = 7,
         kNkMAIDIPTCPresetSelect_8 = 8,
         kNkMAIDIPTCPresetSelect_9 = 9,
-        kNkMAIDIPTCPresetSelect_10 = 10
+        kNkMAIDIPTCPresetSelect_10 = 10,
+        kNkMAIDIPTCPresetSelect_11 = 11,
+        kNkMAIDIPTCPresetSelect_12 = 12,
+        kNkMAIDIPTCPresetSelect_13 = 13,
     }
 
-    public enum eNkMAIDISOAutoHiLimit : int
-    {
+    public enum eNkMAIDISOAutoHiLimit : int {
         kNkMAIDISOAutoHiLimit_ISO200 = 0,
         kNkMAIDISOAutoHiLimit_ISO400 = 1,
         kNkMAIDISOAutoHiLimit_ISO800 = 2,
@@ -2273,8 +2327,7 @@ namespace Nikon
         kNkMAIDISOAutoHiLimit_ISO25600 = 9
     }
 
-    public enum eNkMAIDISOAutoHiLimit2 : int
-    {
+    public enum eNkMAIDISOAutoHiLimit2 : int {
         kNkMAIDISOAutoHiLimit2_ISO400 = 0,
         kNkMAIDISOAutoHiLimit2_ISO500 = 1,
         kNkMAIDISOAutoHiLimit2_ISO560 = 2,
@@ -2304,8 +2357,7 @@ namespace Nikon
         kNkMAIDISOAutoHiLimit2_ISOHi30 = 26
     }
 
-    public enum eNkMAIDISOAutoHiLimit3 : int
-    {
+    public enum eNkMAIDISOAutoHiLimit3 : int {
         kNkMAIDISOAutoHiLimit3_ISO200 = 0,
         kNkMAIDISOAutoHiLimit3_ISO250 = 1,
         kNkMAIDISOAutoHiLimit3_ISO280 = 2,
@@ -2353,8 +2405,7 @@ namespace Nikon
         kNkMAIDISOAutoHiLimit3_ISOHi50 = 44
     }
 
-    public enum eNkMAIDISOAutoHiLimit4 : int
-    {
+    public enum eNkMAIDISOAutoHiLimit4 : int {
         kNkMAIDISOAutoHiLimit4_ISO72 = 0,
         kNkMAIDISOAutoHiLimit4_ISO80 = 1,
         kNkMAIDISOAutoHiLimit4_ISO100 = 2,
@@ -2393,8 +2444,7 @@ namespace Nikon
         kNkMAIDISOAutoHiLimit4_ISOHi20 = 35
     }
 
-    public enum eNkMAIDISOAutoShutterTime : int
-    {
+    public enum eNkMAIDISOAutoShutterTime : int {
         kNkMAIDISOAutoShutterTime_0 = 0,   // 1/125
         kNkMAIDISOAutoShutterTime_1 = 1,   // 1/60
         kNkMAIDISOAutoShutterTime_2 = 2,   // 1/30
@@ -2430,8 +2480,7 @@ namespace Nikon
         kNkMAIDISOAutoShutterTime_32 = 32  // auto
     }
 
-    public enum eNkMAIDISOAutoShutterTimeAutoValue : int
-    {
+    public enum eNkMAIDISOAutoShutterTimeAutoValue : int {
         kNkMAIDISOAutoShutterTimeAutoValue_Minus2 = 0,
         kNkMAIDISOAutoShutterTimeAutoValue_Minus1 = 1,
         kNkMAIDISOAutoShutterTimeAutoValue_0 = 2,
@@ -2439,8 +2488,7 @@ namespace Nikon
         kNkMAIDISOAutoShutterTimeAutoValue_Plus2 = 4
     }
 
-    public enum eNkMAIDISOControlSensitivity : int
-    {
+    public enum eNkMAIDISOControlSensitivity : int {
         kNkMAIDISOControlSensitivity_Lo10 = 50,
         kNkMAIDISOControlSensitivity_Lo08 = 56,
         kNkMAIDISOControlSensitivity_Lo12 = 56,
@@ -2521,8 +2569,7 @@ namespace Nikon
         kNkMAIDISOControlSensitivity_Hi40 = 204800
     }
 
-    public enum eNkMAIDISOControlSensitivity2 : int
-    {
+    public enum eNkMAIDISOControlSensitivity2 : int {
         kNkMAIDISOControlSensitivity2_Lo10 = 50,
         kNkMAIDISOControlSensitivity2_Lo08 = 56,
         kNkMAIDISOControlSensitivity2_Lo07 = 64,
@@ -2604,8 +2651,7 @@ namespace Nikon
         kNkMAIDISOControlSensitivity2_Hi40 = 409600
     }
 
-    public enum eNkMAIDISOControlSensitivity3 : int
-    {
+    public enum eNkMAIDISOControlSensitivity3 : int {
         kNkMAIDISOControlSensitivity3_Lo10 = 32,
         kNkMAIDISOControlSensitivity3_Lo07 = 40,
         kNkMAIDISOControlSensitivity3_Lo05 = 45,
@@ -2670,8 +2716,7 @@ namespace Nikon
         kNkMAIDISOControlSensitivity3_Hi20 = 51200
     }
 
-    public enum eNkMAIDISOControlSensitivity4 : int
-    {
+    public enum eNkMAIDISOControlSensitivity4 : int {
         kNkMAIDISOControlSensitivity4_Lo10 = 100,
         kNkMAIDISOControlSensitivity4_Lo08 = 110,
         kNkMAIDISOControlSensitivity4_Lo07 = 125,
@@ -2729,8 +2774,7 @@ namespace Nikon
         kNkMAIDISOControlSensitivity4_Hi20 = 51200
     }
 
-    public enum eNkMAIDISOControlSensitivity5 : int
-    {
+    public enum eNkMAIDISOControlSensitivity5 : int {
         kNkMAIDISOControlSensitivity5_Lo10 = 50,
         kNkMAIDISOControlSensitivity5_Lo08 = 56,
         kNkMAIDISOControlSensitivity5_Lo07 = 64,
@@ -2830,8 +2874,7 @@ namespace Nikon
         kNkMAIDISOControlSensitivity5_Hi50 = 3280000
     }
 
-    public enum eNkMAIDISOControlSensitivity6 : int
-    {
+    public enum eNkMAIDISOControlSensitivity6 : int {
         kNkMAIDISOControlSensitivity6_Lo10 = 50,
         kNkMAIDISOControlSensitivity6_Lo08 = 56,
         kNkMAIDISOControlSensitivity6_Lo07 = 64,
@@ -2924,35 +2967,32 @@ namespace Nikon
         kNkMAIDISOControlSensitivity6_Hi50 = 1640000
     }
 
-    public enum eNkMAIDJpegCompressionPolicy : int
-    {
+    public enum eNkMAIDJpegCompressionPolicy : int {
         kNkMAIDJpegCompressionPolicy_Size = 0,
         kNkMAIDJpegCompressionPolicy_Quality = 1
     }
 
-    public enum eNkMAIDLensType : int
-    {
+    public enum eNkMAIDLensType : int {
         kNkMAIDLensType_D = 1,         // D type
         kNkMAIDLensType_G = 16,        // G type
         kNkMAIDLensType_E = 32,        // E type
         kNkMAIDLensType_STM = 64,      // STM
+        kNkMAIDLensType_CD = 128,    //constantly distortion
         kNkMAIDLensType_VR = 256,      // VR
         kNkMAIDLensType_DX = 4096,     // DX
         kNkMAIDLensType_AFS = 65536,   // AF-S lens
         kNkMAIDLensType_AD = 1048576,  // Auto Distortion
-        kNkMAIDLensType_RET = 16777216 // Retractable lens
+        kNkMAIDLensType_RET = 16777216, // Retractable lens
     }
 
-    public enum eNkMAIDLensTypeNikon1 : int
-    {
+    public enum eNkMAIDLensTypeNikon1 : int {
         kNkMAIDLensTypeNikon1_MountAdapter = 1, // (bit:0) Mount adapter
         kNkMAIDLensTypeNikon1_ShrinkLens = 256, // (bit:8) Power retractable lens
         kNkMAIDLensTypeNikon1_PowerZoom = 512,  // (bit:9) Power zoom lens
         kNkMAIDLensTypeNikon1_VR = 536870912    // (bit:29)Anti-vibration mechanism
     }
 
-    public enum eNkMAIDLimitAFAreaMode : int
-    {
+    public enum eNkMAIDLimitAFAreaMode : int {
         kNkMAIDLimitAFAreaMode_Dynamic9 = 2,     // Bit1:Dynamic AF mode (9 points)
         kNkMAIDLimitAFAreaMode_Dynamic21 = 4,    // Bit2:Dynamic AF mode (21 points)
         kNkMAIDLimitAFAreaMode_Dynamic51 = 16,   // Bit4:Dynamic AF mode (51 points)
@@ -2961,46 +3001,44 @@ namespace Nikon
         kNkMAIDLimitAFAreaMode_Auto = 128        // Bit7:Auto-area AF mode
     }
 
-    public enum eNkMAIDLimitAFAreaMode2 : int
-    {
+    public enum eNkMAIDLimitAFAreaMode2 : int {
+        kNkMAIDLimitAFAreaMode2_Dynamic9 = 1,     // Bit0:Dynamic AF mode (9 points)
         kNkMAIDLimitAFAreaMode2_Dynamic25 = 2,    // Bit1:Dynamic AF mode (25 points)
         kNkMAIDLimitAFAreaMode2_Dynamic72 = 4,    // Bit2:Dynamic AF mode (72 points)
         kNkMAIDLimitAFAreaMode2_Dynamic153 = 16,  // Bit4:Dynamic AF mode (153 points)
         kNkMAIDLimitAFAreaMode2_3DTtracking = 32, // Bit5:3D-tracking
         kNkMAIDLimitAFAreaMode2_Group = 64,       // Bit6:Group-area AF mode
-        kNkMAIDLimitAFAreaMode2_Auto = 128        // Bit7:Auto-area AF mode
+        kNkMAIDLimitAFAreaMode2_Auto = 128,       // Bit7:Auto-area AF mode
+        kNkMAIDLimitAFAreaMode2_Group_HL = 256,   // Bit8:Group-area AF mode (Horizontal) mode
+        kNkMAIDLimitAFAreaMode2_Group_VL = 512,   // Bit9:Group-area AF mode (Vertical) mode
     }
 
-    public enum eNkMAIDLiveViewAF : int
-    {
-        kNkMAIDLiveViewAF_Face = 0,           // Face detection system AF
-        kNkMAIDLiveViewAF_Wide = 1,           // Wide area AF
-        kNkMAIDLiveViewAF_Normal = 2,         // Normal area AF
-        kNkMAIDLiveViewAF_SubjectTracking = 3 // Target tracking AF
+    public enum eNkMAIDLiveViewAF : int {
+        kNkMAIDLiveViewAF_Face = 0,            // Face detection system AF
+        kNkMAIDLiveViewAF_Wide = 1,            // Wide area AF
+        kNkMAIDLiveViewAF_Normal = 2,          // Normal area AF
+        kNkMAIDLiveViewAF_SubjectTracking = 3, // Target tracking AF
+        kNkMAIDLiveViewAF_Spot = 5,            // Spot area AF
     }
 
-    public enum eNkMAIDLiveViewDriveMode : int
-    {
+    public enum eNkMAIDLiveViewDriveMode : int {
         kNkMAIDLiveViewDriveMode_Single = 0,        // Single
         kNkMAIDLiveViewDriveMode_ContinuousLow = 1, // Continuous low
         kNkMAIDLiveViewDriveMode_ContinuousHigh = 2 // Continuous high
     }
 
-    public enum eNkMAIDLiveViewExposurePreview : int
-    {
+    public enum eNkMAIDLiveViewExposurePreview : int {
         kNkMAIDLiveViewExposurePreview_Off = 0,
         kNkMAIDLiveViewExposurePreview_On = 1
     }
 
-    public enum eNkMAIDLiveViewImageSize : int
-    {
+    public enum eNkMAIDLiveViewImageSize : int {
         kNkMAIDLiveViewImageSize_QVGA = 1,
         kNkMAIDLiveViewImageSize_VGA = 2,
         kNkMAIDLiveViewImageSize_XGA = 3
     }
 
-    public enum eNkMAIDLiveViewImageZoomRate : int
-    {
+    public enum eNkMAIDLiveViewImageZoomRate : int {
         kNkMAIDLiveViewImageZoomRate_All = 0, // Entire display
         kNkMAIDLiveViewImageZoomRate_25 = 1,  // 25��
         kNkMAIDLiveViewImageZoomRate_33 = 2,  // 33��
@@ -3012,49 +3050,47 @@ namespace Nikon
         kNkMAIDLiveViewImageZoomRate_17 = 8   // 17%
     }
 
-    public enum eNkMAIDLiveViewMode : int
-    {
+    public enum eNkMAIDLiveViewMode : int {
         kNkMAIDLiveViewMode_Handheld = 0, // Handheld
         kNkMAIDLiveViewMode_Tripod = 1    // Tripod
     }
 
-    public enum eNkMAIDLiveViewPhotoShootingMode : int
-    {
+    public enum eNkMAIDLiveViewPhotoShootingMode : int {
         kNkMAIDLiveViewPhotoShootingMode_Quiet = 0, // Quiet shooting(Off)
         kNkMAIDLiveViewPhotoShootingMode_Silent = 1 // Silent shooting(On)
     }
 
-    public enum eNkMAIDLiveViewProhibit : int
-    {
-        kNkMAIDLiveViewProhibit_ExpModeScene = -2147483648, // Bit31:ExposureMode is SCENE.
-        kNkMAIDLiveViewProhibit_CF = 1,                     // Bit0:The recording destination is the CF.
-        kNkMAIDLiveViewProhibit_Sequence = 4,               // Bit2:Sequence error
-        kNkMAIDLiveViewProhibit_Button = 16,                // Bit4:Fully pressed button error
-        kNkMAIDLiveViewProhibit_FEE = 32,                   // Bit5:The aperture value is being set by the lens aperture ring.
-        kNkMAIDLiveViewProhibit_Bulb = 64,                  // Bit6:Bulb error(0: Invalid, 1: Valid)
-        kNkMAIDLiveViewProhibit_Mirrorup = 128,             // Bit7:During cleaning mirror-up operation
-        kNkMAIDLiveViewProhibit_Battery = 256,              // Bit8:During insufficiency of battery(0: Invalid, 1: Valid)
-        kNkMAIDLiveViewProhibit_TTL = 512,                  // Bit9:TTL error(0: Invalid, 1: Valid)
-        kNkMAIDLiveViewProhibit_ApertureRing = 1024,        // Bit10:While the aperture value operation by the lens aperture ring is valid
-        kNkMAIDLiveViewProhibit_NonCPU = 2048,              // Bit11:The CPU lens is not mounted and the exposure mode is not M.
-        kNkMAIDLiveViewProhibit_SdramImg = 4096,            // Bit12:There is an image whose recording destination is SDRAM.
-        kNkMAIDLiveViewProhibit_MirrorMode = 8192,          // Bit13:The release mode is [Mirror-up].
-        kNkMAIDLiveViewProhibit_NoCardLock = 16384,         // Bit14:The recording destination is the card or the card & SDRAM,//      and the card is not inserted with the release disabled without a card.
-        kNkMAIDLiveViewProhibit_Capture = 32768,            // Bit15:During processing by the shooting command(*Until the shooting operation ends.)
-        kNkMAIDLiveViewProhibit_EffectMode = 65536,         // Bit16:ExposureMode is EFFECTS.
-        kNkMAIDLiveViewProhibit_TempRise = 131072,          // Bit17:The live view cannot be started when the temperature rises.
-        kNkMAIDLiveViewProhibit_CardProtect = 262144,       // Bit18:Card protected
-        kNkMAIDLiveViewProhibit_CardError = 524288,         // Bit19:Card error
-        kNkMAIDLiveViewProhibit_CardUnformat = 1048576,     // Bit20:Card unformatted
-        kNkMAIDLiveViewProhibit_BulbWarning = 2097152,      // Bit21:During bulb warning.
-        kNkMAIDLiveViewProhibit_DuringMirrorup = 4194304,   // Bit22:Release mode is mirror up and during cleaning mirror-up operation.
+    public enum eNkMAIDLiveViewProhibit : int {
+        kNkMAIDLiveViewProhibit_ExpModeScene = -2147483648,    // Bit31:ExposureMode is SCENE.
+        kNkMAIDLiveViewProhibit_CF = 1,                        // Bit0:The recording destination is the CF.
+        kNkMAIDLiveViewProhibit_Sequence = 4,                  // Bit2:Sequence error
+        kNkMAIDLiveViewProhibit_ImageSensor = 8,               // Bit3:Image sensor factor
+        kNkMAIDLiveViewProhibit_Button = 16,                   // Bit4:Fully pressed button error
+        kNkMAIDLiveViewProhibit_FEE = 32,                      // Bit5:The aperture value is being set by the lens aperture ring.
+        kNkMAIDLiveViewProhibit_Bulb = 64,                     // Bit6:Bulb error(0: Invalid, 1: Valid)
+        kNkMAIDLiveViewProhibit_Mirrorup = 128,                // Bit7:During cleaning mirror-up operation
+        kNkMAIDLiveViewProhibit_Battery = 256,                 // Bit8:During insufficiency of battery(0: Invalid, 1: Valid)
+        kNkMAIDLiveViewProhibit_TTL = 512,                     // Bit9:TTL error(0: Invalid, 1: Valid)
+        kNkMAIDLiveViewProhibit_ApertureRing = 1024,           // Bit10:While the aperture value operation by the lens aperture ring is valid
+        kNkMAIDLiveViewProhibit_NonCPU = 2048,                 // Bit11:The CPU lens is not mounted and the exposure mode is not M.
+        kNkMAIDLiveViewProhibit_SdramImg = 4096,               // Bit12:There is an image whose recording destination is SDRAM.
+        kNkMAIDLiveViewProhibit_MirrorMode = 8192,             // Bit13:The release mode is [Mirror-up].
+        kNkMAIDLiveViewProhibit_NoCardLock = 16384,            // Bit14:The recording destination is the card or the card & SDRAM,//      and the card is not inserted with the release disabled without a card.
+        kNkMAIDLiveViewProhibit_Capture = 32768,               // Bit15:During processing by the shooting command(*Until the shooting operation ends.)
+        kNkMAIDLiveViewProhibit_EffectMode = 65536,            // Bit16:ExposureMode is EFFECTS.
+        kNkMAIDLiveViewProhibit_TempRise = 131072,             // Bit17:The live view cannot be started when the temperature rises.
+        kNkMAIDLiveViewProhibit_CardProtect = 262144,          // Bit18:Card protected
+        kNkMAIDLiveViewProhibit_CardError = 524288,            // Bit19:Card error
+        kNkMAIDLiveViewProhibit_CardUnformat = 1048576,        // Bit20:Card unformatted
+        kNkMAIDLiveViewProhibit_BulbWarning = 2097152,         // Bit21:During bulb warning.
+        kNkMAIDLiveViewProhibit_DuringMirrorup = 4194304,      // Bit22:Release mode is mirror up and during cleaning mirror-up operation.
         kNkMAIDLiveViewProhibit_DuringLiveView = 8388608,
-        kNkMAIDLiveViewProhibit_Retractable = 16777216,     // Bit24:The lens is retracting.
-        kNkMAIDLiveViewProhibit_RecordingImage = 67108864   // Bit26:During image recording.
+        kNkMAIDLiveViewProhibit_Retractable = 16777216,        // Bit24:The lens is retracting.
+        kNkMAIDLiveViewProhibit_RecordingImage = 67108864,     // Bit26:During image recording.
+        kNkMAIDLiveViewProhibit_MountAdapterFWVer = 268435456, // Bit28:Version upgrade notification warning when mount adapter is attached.
     }
 
-    public enum eNkMAIDLiveViewScreenDispSetting : int
-    {
+    public enum eNkMAIDLiveViewScreenDispSetting : int {
         kNkMAIDLiveViewScreenDispSetting_ShowIndicators = 1,
         kNkMAIDLiveViewScreenDispSetting_HideIndicators = 2,
         kNkMAIDLiveViewScreenDispSetting_FramingGrid = 4,
@@ -3062,14 +3098,12 @@ namespace Nikon
         kNkMAIDLiveViewScreenDispSetting_ALL = 15
     }
 
-    public enum eNkMAIDLiveViewSelector : int
-    {
+    public enum eNkMAIDLiveViewSelector : int {
         kNkMAIDLiveViewSelector_Photo = 0,
         kNkMAIDLiveViewSelector_Movie = 1
     }
 
-    public enum eNkMAIDLiveViewStatus : int
-    {
+    public enum eNkMAIDLiveViewStatus : int {
         kNkMAIDLiveViewStatus_OFF = 0,
         kNkMAIDLiveViewStatus_ON = 1,
         kNkMAIDLiveViewStatus_ON_Menu = 2,
@@ -3077,20 +3111,17 @@ namespace Nikon
         kNkMAIDLiveViewStatus_ON_CameraLV = 4
     }
 
-    public enum eNkMAIDMatrixMetering : int
-    {
+    public enum eNkMAIDMatrixMetering : int {
         kNkMAIDMatrixMetering_Off = 0,
         kNkMAIDMatrixMetering_On = 1
     }
 
-    public enum eNkMAIDMediaType : int
-    {
+    public enum eNkMAIDMediaType : int {
         kNkMAIDMediaType_CFCard = 0,
         kNkMAIDMediaType_1394 = 1
     }
 
-    public enum eNkMAIDMeteringMode : int
-    {
+    public enum eNkMAIDMeteringMode : int {
         kNkMAIDMeteringMode_Matrix = 0,
         kNkMAIDMeteringMode_CenterWeighted = 1,
         kNkMAIDMeteringMode_Spot = 2,
@@ -3098,39 +3129,33 @@ namespace Nikon
         kNkMAIDMeteringMode_HighLight = 4
     }
 
-    public enum eNkMAIDMFDrive : int
-    {
+    public enum eNkMAIDMFDrive : int {
         kNkMAIDMFDrive_InfinityToClosest = 0, // No limit -> Closest
         kNkMAIDMFDrive_ClosestToInfinity = 1  // Closest -> No limit
     }
 
-    public enum eNkMAIDMirrorUpReleaseShootingCount : int
-    {
+    public enum eNkMAIDMirrorUpReleaseShootingCount : int {
         kNkMAIDMirrorUpReleaseShootingCount_0 = 0,
         kNkMAIDMirrorUpReleaseShootingCount_1 = 1,
         kNkMAIDMirrorUpReleaseShootingCount_2 = 2
     }
 
-    public enum eNkMAIDMirrorUpStatus : int
-    {
+    public enum eNkMAIDMirrorUpStatus : int {
         kNkMAIDMirrorUpStatus_Down = 0,
         kNkMAIDMirrorUpStatus_Up = 1
     }
 
-    public enum eNkMAIDModuleMode : int
-    {
+    public enum eNkMAIDModuleMode : int {
         kNkMAIDModuleMode_Browser = 0,
         kNkMAIDModuleMode_Controller = 1
     }
 
-    public enum eNkMAIDModuleType : int
-    {
+    public enum eNkMAIDModuleType : int {
         kNkMAIDModuleType_Scanner = 1,
         kNkMAIDModuleType_Camera = 2
     }
 
-    public enum eNkMAIDMonochromeFilterEffect : int
-    {
+    public enum eNkMAIDMonochromeFilterEffect : int {
         kNkMAIDMonochromeFilterEffect_NoBorder = 0,
         kNkMAIDMonochromeFilterEffect_Yellow = 1,
         kNkMAIDMonochromeFilterEffect_Orange = 2,
@@ -3138,14 +3163,12 @@ namespace Nikon
         kNkMAIDMonochromeFilterEffect_Green = 4
     }
 
-    public enum eNkMAIDMonochromeSettingType : int
-    {
+    public enum eNkMAIDMonochromeSettingType : int {
         kNkMAIDMonochromeSettingType_Standard = 0,
         kNkMAIDMonochromeSettingType_Custom = 1
     }
 
-    public enum eNkMAIDMovieActive : int
-    {
+    public enum eNkMAIDMovieActive : int {
         kNkMAIDMovieActive_D_Lighting_Off = 0,       // Off
         kNkMAIDMovieActive_D_Lighting_Low = 1,       // Low
         kNkMAIDMovieActive_D_Lighting_Normal = 2,    // Normal
@@ -3154,27 +3177,23 @@ namespace Nikon
         kNkMAIDMovieActive_D_Lighting_SamePhoto = 5  // Same as photo
     }
 
-    public enum eNkMAIDMovieCaptureMode : int
-    {
+    public enum eNkMAIDMovieCaptureMode : int {
         kNkMAIDMovieCaptureMode_HD = 0,        // Normal Movie
         kNkMAIDMovieCaptureMode_SlowMotion = 1 // Slow Motion Movie
     }
 
-    public enum eNkMAIDMovieCCDDataMode : int
-    {
+    public enum eNkMAIDMovieCCDDataMode : int {
         kNkMAIDMovieCCDDataMode_FXFormat = 0,
         kNkMAIDMovieCCDDataMode_DXFormat = 1,
         kNkMAIDMovieCCDDataMode_13x = 2
     }
 
-    public enum eNkMAIDMovieImageQuality : int
-    {
+    public enum eNkMAIDMovieImageQuality : int {
         kNkMAIDMovieImageQuality_Normal = 0,
         kNkMAIDMovieImageQuality_Fine = 1
     }
 
-    public enum eNkMAIDMovieISOAutoHiLimit : int
-    {
+    public enum eNkMAIDMovieISOAutoHiLimit : int {
         kNkMAIDMovieISOAutoHiLimit_ISO400 = 0,
         kNkMAIDMovieISOAutoHiLimit_ISO500 = 1,
         kNkMAIDMovieISOAutoHiLimit_ISO560 = 2,
@@ -3209,8 +3228,7 @@ namespace Nikon
         kNkMAIDMovieISOAutoHiLimit_ISOHi40 = 31
     }
 
-    public enum eNkMAIDMovieISOAutoHiLimit2 : int
-    {
+    public enum eNkMAIDMovieISOAutoHiLimit2 : int {
         kNkMAIDMovieISOAutoHiLimit2_ISO72 = 0,
         kNkMAIDMovieISOAutoHiLimit2_ISO80 = 1,
         kNkMAIDMovieISOAutoHiLimit2_ISO100 = 2,
@@ -3249,8 +3267,7 @@ namespace Nikon
         kNkMAIDMovieISOAutoHiLimit2_ISOHi20 = 35
     }
 
-    public enum eNkMAIDMovieISOAutoHiLimit3 : int
-    {
+    public enum eNkMAIDMovieISOAutoHiLimit3 : int {
         kNkMAIDMovieISOAutoHiLimit3_ISO200 = 0,
         kNkMAIDMovieISOAutoHiLimit3_ISO250 = 1,
         kNkMAIDMovieISOAutoHiLimit3_ISO280 = 2,
@@ -3298,8 +3315,7 @@ namespace Nikon
         kNkMAIDMovieISOAutoHiLimit3_ISOHi50 = 44
     }
 
-    public enum eNkMAIDMovieISOAutoHiLimit4 : int
-    {
+    public enum eNkMAIDMovieISOAutoHiLimit4 : int {
         kNkMAIDMovieISOAutoHiLimit4_ISO400 = 0,
         kNkMAIDMovieISOAutoHiLimit4_ISO500 = 1,
         kNkMAIDMovieISOAutoHiLimit4_ISO560 = 2,
@@ -3328,29 +3344,25 @@ namespace Nikon
         kNkMAIDMovieISOAutoHiLimit4_ISOHi20 = 25
     }
 
-    public enum eNkMAIDMovieISORange : int
-    {
+    public enum eNkMAIDMovieISORange : int {
         kNkMAIDMovieISORange_200to12800 = 0,
         kNkMAIDMovieISORange_200toHi40 = 1
     }
 
-    public enum eNkMAIDMovieMeteringMode : int
-    {
+    public enum eNkMAIDMovieMeteringMode : int {
         kNkMAIDMovieMeteringMode_Matrix = 0,
         kNkMAIDMovieMeteringMode_CenterWeighted = 1,
         kNkMAIDMovieMeteringMode_HighLight = 2
     }
 
-    public enum eNkMAIDMovieNoiseReductionHighISO : int
-    {
+    public enum eNkMAIDMovieNoiseReductionHighISO : int {
         kNkMAIDMovieNoiseReductionHighISO_Off = 0,
         kNkMAIDMovieNoiseReductionHighISO_Normal = 1,
         kNkMAIDMovieNoiseReductionHighISO_High = 2,
         kNkMAIDMovieNoiseReductionHighISO_Low = 3
     }
 
-    public enum eNkMAIDMoviePictureControl : int
-    {
+    public enum eNkMAIDMoviePictureControl : int {
         kNkMAIDMoviePictureControl_Undefined = 0,   // Undefined
         kNkMAIDMoviePictureControl_Standard = 1,    // Standard
         kNkMAIDMoviePictureControl_Neutral = 2,     // Neutral
@@ -3359,11 +3371,35 @@ namespace Nikon
         kNkMAIDMoviePictureControl_Portrait = 5,    // Portrait
         kNkMAIDMoviePictureControl_Landscape = 6,   // Landscape
         kNkMAIDMoviePictureControl_Flat = 7,        // Flat
+        kNkMAIDMoviePictureControl_Auto = 8,      //Auto
+        kNkMAIDMoviePictureControl_FlatMonochrome = 9,  //Flat Monochrome
+        kNkMAIDMoviePictureControl_DeepToneMonochrome = 10, //Deep Tone Monochrome
+        kNkMAIDMoviePictureControl_RichTonePortrait = 11,	//Rich Tone Portrait
         kNkMAIDMoviePictureControl_SamePhoto = 100, // Same as photo
         kNkMAIDMoviePictureControl_Option1 = 101,   // Option picture control1
         kNkMAIDMoviePictureControl_Option2 = 102,   // Option picture control2
         kNkMAIDMoviePictureControl_Option3 = 103,   // Option picture control3
         kNkMAIDMoviePictureControl_Option4 = 104,   // Option picture control4
+        kNkMAIDMoviePictureControl_Dream = 101,
+        kNkMAIDMoviePictureControl_Morning = 102,
+        kNkMAIDMoviePictureControl_Pop = 103,
+        kNkMAIDMoviePictureControl_Sunday = 104,
+        kNkMAIDMoviePictureControl_Somber = 105,
+        kNkMAIDMoviePictureControl_Dramatic = 106,
+        kNkMAIDMoviePictureControl_Silence = 107,
+        kNkMAIDMoviePictureControl_Breached = 108,
+        kNkMAIDMoviePictureControl_Melancholic = 109,
+        kNkMAIDMoviePictureControl_Pure = 110,
+        kNkMAIDMoviePictureControl_Denim = 111,
+        kNkMAIDMoviePictureControl_Toy = 112,
+        kNkMAIDMoviePictureControl_Sepia = 113,
+        kNkMAIDMoviePictureControl_Blue = 114,
+        kNkMAIDMoviePictureControl_Red = 115,
+        kNkMAIDMoviePictureControl_Pink = 116,
+        kNkMAIDMoviePictureControl_Charcoal = 117,
+        kNkMAIDMoviePictureControl_Graphite = 118,
+        kNkMAIDMoviePictureControl_Binary = 119,
+        kNkMAIDMoviePictureControl_Carbon = 120,
         kNkMAIDMoviePictureControl_Custom1 = 201,   // Custom picture control1
         kNkMAIDMoviePictureControl_Custom2 = 202,   // Custom picture control2
         kNkMAIDMoviePictureControl_Custom3 = 203,   // Custom picture control3
@@ -3375,8 +3411,7 @@ namespace Nikon
         kNkMAIDMoviePictureControl_Custom9 = 209    // Custom picture control9
     }
 
-    public enum eNkMAIDMovieRecMicrophoneValue : int
-    {
+    public enum eNkMAIDMovieRecMicrophoneValue : int {
         kNkMAIDMovieRecMicrophoneValue_Off = 0,
         kNkMAIDMovieRecMicrophoneValue_1 = 1,
         kNkMAIDMovieRecMicrophoneValue_2 = 2,
@@ -3400,21 +3435,18 @@ namespace Nikon
         kNkMAIDMovieRecMicrophoneValue_20 = 20
     }
 
-    public enum eNkMAIDMovieRecordingZone : int
-    {
+    public enum eNkMAIDMovieRecordingZone : int {
         kNkMAIDMovieRecordingZone_WideRange = 0,
         kNkMAIDMovieRecordingZone_VocalRange = 1
     }
 
-    public enum eNkMAIDMovieReleaseButton : int
-    {
+    public enum eNkMAIDMovieReleaseButton : int {
         kNkMAIDMovieReleaseButton_Photo = 0,    // Take photos
         kNkMAIDMovieReleaseButton_Movie = 1,    // Record movies
         kNkMAIDMovieReleaseButton_SaveFrame = 2 // Live frame grab
     }
 
-    public enum eNkMAIDMovieScreenSize : int
-    {
+    public enum eNkMAIDMovieScreenSize : int {
         kNkMAIDMovieScreenSize_QVGA = 0,                   // QVGA (320x216)
         kNkMAIDMovieScreenSize_VGA = 1,                    // VGA  (640x424)
         kNkMAIDMovieScreenSize_720p = 2,                   // 720p (1280x720)
@@ -3432,8 +3464,7 @@ namespace Nikon
         kNkMAIDMovieScreenSize_FullHD_Fine_Highfps = 12    // FullHD (1920x1080):High image quality, 30fps(NTSC)/25fps(PAL)
     }
 
-    public enum eNkMAIDMovieScreenSize2 : int
-    {
+    public enum eNkMAIDMovieScreenSize2 : int {
         kNkMAIDMovieScreenSize2_FullHD_30fps = 0,       // FullHD (1920x1080):30fps
         kNkMAIDMovieScreenSize2_FullHD_2 = 1,           // FullHD (1920�~1080):30p/25p
         kNkMAIDMovieScreenSize2_FullHD_25fps = 1,       // FullHD (1920x1080):25fps
@@ -3447,16 +3478,14 @@ namespace Nikon
         kNkMAIDMovieScreenSize2_FullHD_24fps_Crop = 11  // FullHD (1920x1080):24fps Crop
     }
 
-    public enum eNkMAIDMovieScreenSize3 : int
-    {
+    public enum eNkMAIDMovieScreenSize3 : int {
         kNkMAIDMovieScreenSize3_FullHD_1 = 0, // FullHD (1920�~1080):60i/50i
         kNkMAIDMovieScreenSize3_FullHD_3 = 2, // FullHD (1920�~1080):24p/24p
         kNkMAIDMovieScreenSize3_720p = 3,     // 720p (1280�~720):60p/50p
         kNkMAIDMovieScreenSize3_VGA = 4       // VGA  (640�~424) :30p/25p
     }
 
-    public enum eNkMAIDMovieScreenSize4 : int
-    {
+    public enum eNkMAIDMovieScreenSize4 : int {
         kNkMAIDMovieScreenSize4_FullHD_60i = 0, // FullHD (1920�~1080):60i
         kNkMAIDMovieScreenSize4_FullHD_50i = 1, // FullHD (1920�~1080):50i
         kNkMAIDMovieScreenSize4_FullHD_30p = 2, // FullHD (1920�~1080):30p
@@ -3466,8 +3495,7 @@ namespace Nikon
         kNkMAIDMovieScreenSize4_720p_50p = 6    // 720p (1280�~720):50p
     }
 
-    public enum eNkMAIDMovieScreenSize5 : int
-    {
+    public enum eNkMAIDMovieScreenSize5 : int {
         kNkMAIDMovieScreenSize5_FullHD_1 = 0, // FullHD (1920�~1080):60p/50p
         kNkMAIDMovieScreenSize5_FullHD_2 = 1, // FullHD (1920�~1080):60i/50i
         kNkMAIDMovieScreenSize5_FullHD_3 = 2, // FullHD (1920�~1080):30p/25p
@@ -3476,8 +3504,7 @@ namespace Nikon
         kNkMAIDMovieScreenSize5_VGA = 5       // VGA  (640�~424) :30p/25p
     }
 
-    public enum eNkMAIDMovieScreenSize6 : int
-    {
+    public enum eNkMAIDMovieScreenSize6 : int {
         kNkMAIDMovieScreenSize6_FullHD_60p = 0,       // FullHD (1920�~1080):60p
         kNkMAIDMovieScreenSize6_FullHD_50p = 1,       // FullHD (1920�~1080):50p
         kNkMAIDMovieScreenSize6_FullHD_30p = 2,       // FullHD (1920�~1080):30p
@@ -3492,16 +3519,14 @@ namespace Nikon
         kNkMAIDMovieScreenSize6_FullHD_24p_Crop = 11  // FullHD (1920�~1080):24p Crop
     }
 
-    public enum eNkMAIDMovieScreenSize7 : int
-    {
+    public enum eNkMAIDMovieScreenSize7 : int {
         kNkMAIDMovieScreenSize7_FullHD_60p = 0,
         kNkMAIDMovieScreenSize7_FullHD_30p = 1,
         kNkMAIDMovieScreenSize7_720p_60p = 2,
         kNkMAIDMovieScreenSize7_720p_30p = 3
     }
 
-    public enum eNkMAIDMovieScreenSize8 : int
-    {
+    public enum eNkMAIDMovieScreenSize8 : int {
         kNkMAIDMovieScreenSize8_QFHD_30p = 0,
         kNkMAIDMovieScreenSize8_QFHD_25p = 1,
         kNkMAIDMovieScreenSize8_QFHD_24p = 2,
@@ -3516,84 +3541,102 @@ namespace Nikon
         kNkMAIDMovieScreenSize8_FullHD_50p_Crop = 11,
         kNkMAIDMovieScreenSize8_FullHD_30p_Crop = 12,
         kNkMAIDMovieScreenSize8_FullHD_25p_Crop = 13,
-        kNkMAIDMovieScreenSize8_FullHD_24p_Crop = 14
+        kNkMAIDMovieScreenSize8_FullHD_24p_Crop = 14,
+        kNkMAIDMovieScreenSize8_FullHD_30p_x4_Slow = 15,
+        kNkMAIDMovieScreenSize8_FullHD_25p_x4_Slow = 16,
+        kNkMAIDMovieScreenSize8_FullHD_24p_x5_Slow = 17,
+        kNkMAIDMovieScreenSize8_FullHD_120p = 18,
+        kNkMAIDMovieScreenSize8_FullHD_100p = 19,
+        kNkMAIDMovieScreenSize8_720p_60p = 20,
+        kNkMAIDMovieScreenSize8_720p_50p = 21,
+        kNkMAIDMovieScreenSize8_QFHD_60p = 22,
+        kNkMAIDMovieScreenSize8_QFHD_50p = 23,
+        kNkMAIDMovieScreenSize8_QFHD_120p = 24,
+        kNkMAIDMovieScreenSize8_QFHD_100p = 25,
+        kNkMAIDMovieScreenSize8_8KHD_30p = 26,
+        kNkMAIDMovieScreenSize8_8KHD_25p = 27,
+        kNkMAIDMovieScreenSize8_8KHD_24p = 28,
+        kNkMAIDMovieScreenSize8_8256RAW_60p = 29,
+        kNkMAIDMovieScreenSize8_8256RAW_50p = 30,
+        kNkMAIDMovieScreenSize8_8256RAW_30p = 31,
+        kNkMAIDMovieScreenSize8_8256RAW_25p = 32,
+        kNkMAIDMovieScreenSize8_8256RAW_24p = 33,
+        kNkMAIDMovieScreenSize8_4128RAW_120p = 34,
+        kNkMAIDMovieScreenSize8_4128RAW_100p = 35,
+        kNkMAIDMovieScreenSize8_4128RAW_60p = 36,
+        kNkMAIDMovieScreenSize8_4128RAW_50p = 37,
+        kNkMAIDMovieScreenSize8_4128RAW_30p = 38,
+        kNkMAIDMovieScreenSize8_4128RAW_25p = 39,
+        kNkMAIDMovieScreenSize8_4128RAW_24p = 40,
+        kNkMAIDMovieScreenSize8_5392RAW_60p = 41,
+        kNkMAIDMovieScreenSize8_5392RAW_50p = 42,
+        kNkMAIDMovieScreenSize8_5392RAW_30p = 43,
+        kNkMAIDMovieScreenSize8_5392RAW_25p = 44,
+        kNkMAIDMovieScreenSize8_5392RAW_24p = 45,
     }
 
-    public enum eNkMAIDMovieVoice : int
-    {
+    public enum eNkMAIDMovieVoice : int {
         kNkMAIDMovieVoice_Off = 0, // Off
         kNkMAIDMovieVoice_On = 1   // On
     }
 
-    public enum eNkMAIDMovieWBPresetProtect1 : int
-    {
+    public enum eNkMAIDMovieWBPresetProtect1 : int {
         kNkMAIDMovieWBPresetProtect1_Off = 0,
         kNkMAIDMovieWBPresetProtect1_On = 1
     }
 
-    public enum eNkMAIDMovieWBPresetProtect2 : int
-    {
+    public enum eNkMAIDMovieWBPresetProtect2 : int {
         kNkMAIDMovieWBPresetProtect2_Off = 0,
         kNkMAIDMovieWBPresetProtect2_On = 1
     }
 
-    public enum eNkMAIDMovieWBPresetProtect3 : int
-    {
+    public enum eNkMAIDMovieWBPresetProtect3 : int {
         kNkMAIDMovieWBPresetProtect3_Off = 0,
         kNkMAIDMovieWBPresetProtect3_On = 1
     }
 
-    public enum eNkMAIDMovieWBPresetProtect4 : int
-    {
+    public enum eNkMAIDMovieWBPresetProtect4 : int {
         kNkMAIDMovieWBPresetProtect4_Off = 0,
         kNkMAIDMovieWBPresetProtect4_On = 1
     }
 
-    public enum eNkMAIDMovieWBPresetProtect5 : int
-    {
+    public enum eNkMAIDMovieWBPresetProtect5 : int {
         kNkMAIDMovieWBPresetProtect5_Off = 0,
         kNkMAIDMovieWBPresetProtect5_On = 1
     }
 
-    public enum eNkMAIDMovieWBPresetProtect6 : int
-    {
+    public enum eNkMAIDMovieWBPresetProtect6 : int {
         kNkMAIDMovieWBPresetProtect6_Off = 0,
         kNkMAIDMovieWBPresetProtect6_On = 1
     }
 
-    public enum eNkMAIDMovieWindNoiseReduction : int
-    {
+    public enum eNkMAIDMovieWindNoiseReduction : int {
         kNkMAIDMovieWindNoiseReduction_OFF = 0,
         kNkMAIDMovieWindNoiseReduction_ON = 1
     }
 
-    public enum eNkMAIDMovManualSetting : int
-    {
+    public enum eNkMAIDMovManualSetting : int {
         kNkMAIDMovManualSetting_OFF = 0,
         kNkMAIDMovManualSetting_ON = 1
     }
 
-    public enum eNkMAIDMovRecDestination : int
-    {
+    public enum eNkMAIDMovRecDestination : int {
         kNkMAIDMovRecDestination_CF = 0,
         kNkMAIDMovRecDestination_SD = 1,
         kNkMAIDMovRecDestination_XQD = 2
     }
 
-    public enum eNkMAIDMovRecDestination2 : int
-    {
+    public enum eNkMAIDMovRecDestination2 : int {
         kNkMAIDMovRecDestination2_Slot1 = 0,
         kNkMAIDMovRecDestination2_Slot2 = 1
     }
 
-    public enum eNkMAIDMovRecHiISO : int
-    {
+    public enum eNkMAIDMovRecHiISO : int {
         kNkMAIDMovRecHiISO_Off = 0,
         kNkMAIDMovRecHiISO_On = 1
     }
 
-    public enum eNkMAIDMovRecInCardProhibit : int
-    {
+    public enum eNkMAIDMovRecInCardProhibit : int {
         kNkMAIDMovRecInCardProhibit_NoCard = 1,         // Bit:0
         kNkMAIDMovRecInCardProhibit_CardErr = 2,        // Bit:1
         kNkMAIDMovRecInCardProhibit_NoFormat = 4,       // Bit:2
@@ -3607,14 +3650,12 @@ namespace Nikon
         kNkMAIDMovRecInCardProhibit_LVPhoto = 8192      // Bit:13
     }
 
-    public enum eNkMAIDMovRecInCardStatus : int
-    {
+    public enum eNkMAIDMovRecInCardStatus : int {
         kNkMAIDMovRecInCardStatus_Off = 0,
         kNkMAIDMovRecInCardStatus_On = 1
     }
 
-    public enum eNkMAIDMovRecMicrophone : int
-    {
+    public enum eNkMAIDMovRecMicrophone : int {
         kNkMAIDMovRecMicrophone_Auto = 0,
         kNkMAIDMovRecMicrophone_High = 1,
         kNkMAIDMovRecMicrophone_Medium = 2,
@@ -3623,45 +3664,39 @@ namespace Nikon
         kNkMAIDMovRecMicrophone_Manual = 5
     }
 
-    public enum eNkMAIDNegativeScanMode : int
-    {
+    public enum eNkMAIDNegativeScanMode : int {
         kNkMAIDNegativeScanMode_Original = 0, // The original method of Nikon is used.
         kNkMAIDNegativeScanMode_NoProcess = 1
     }
 
-    public enum eNkMAIDNoiseReductionHighISO : int
-    {
+    public enum eNkMAIDNoiseReductionHighISO : int {
         kNkMAIDNoiseReductionHighISO_Off = 0,
         kNkMAIDNoiseReductionHighISO_Normal = 1,
         kNkMAIDNoiseReductionHighISO_High = 2,
         kNkMAIDNoiseReductionHighISO_Low = 3
     }
 
-    public enum eNkMAIDObjectType : int
-    {
+    public enum eNkMAIDObjectType : int {
         kNkMAIDObjectType_Module = 1,
         kNkMAIDObjectType_Source = 2,
         kNkMAIDObjectType_Item = 3,
         kNkMAIDObjectType_DataObj = 4
     }
 
-    public enum eNkMAIDOpticalMultipleFlashChannel : int
-    {
+    public enum eNkMAIDOpticalMultipleFlashChannel : int {
         kNkMAIDOpticalMultipleFlashChannel_1ch = 1,
         kNkMAIDOpticalMultipleFlashChannel_2ch = 2,
         kNkMAIDOpticalMultipleFlashChannel_3ch = 3,
         kNkMAIDOpticalMultipleFlashChannel_4ch = 4
     }
 
-    public enum eNkMAIDOpticalVR : int
-    {
+    public enum eNkMAIDOpticalVR : int {
         kNkMAIDOpticalVR_NORMAL = 0,
         kNkMAIDOpticalVR_ACTIVE = 1,
         kNkMAIDOpticalVR_OFF = 2
     }
 
-    public enum eNkMAIDPictureControl : int
-    {
+    public enum eNkMAIDPictureControl : int {
         kNkMAIDPictureControl_Undefined = 0,  // Undefined
         kNkMAIDPictureControl_Standard = 1,   // Standard
         kNkMAIDPictureControl_Neutral = 2,    // Neutral
@@ -3670,10 +3705,34 @@ namespace Nikon
         kNkMAIDPictureControl_Portrait = 5,   // Portrait
         kNkMAIDPictureControl_Landscape = 6,  // Landscape
         kNkMAIDPictureControl_Flat = 7,       // Flat
+        kNkMAIDPictureControl_Auto = 8,       //Auto
+        kNkMAIDPictureControl_FlatMonochrome = 9,   //Flat Monochrome
+        kNkMAIDPictureControl_DeepToneMonochrome = 10,  //Deep Tone Monochrome
+        kNkMAIDPictureControl_RichTonePortrait = 11,	//Rich Tone Portrait
         kNkMAIDPictureControl_Option1 = 101,  // Option picture control1
         kNkMAIDPictureControl_Option2 = 102,  // Option picture control2
         kNkMAIDPictureControl_Option3 = 103,  // Option picture control3
         kNkMAIDPictureControl_Option4 = 104,  // Option picture control4
+        kNkMAIDPictureControl_Dream = 101,      //Dream
+        kNkMAIDPictureControl_Morning = 102,        //Morning
+        kNkMAIDPictureControl_Pop = 103,        //Popt
+        kNkMAIDPictureControl_Sunday = 104,     //Sunday
+        kNkMAIDPictureControl_Somber = 105,     //Somber
+        kNkMAIDPictureControl_Dramatic = 106,       //Dramatic
+        kNkMAIDPictureControl_Silence = 107,        //Silence
+        kNkMAIDPictureControl_Breached = 108,       //Breached
+        kNkMAIDPictureControl_Melancholic = 109,    //Melancholic
+        kNkMAIDPictureControl_Pure = 110,       //Pure
+        kNkMAIDPictureControl_Denim = 111,      //Denim
+        kNkMAIDPictureControl_Toy = 112,        //Toy
+        kNkMAIDPictureControl_Sepia = 113,      //Sepia
+        kNkMAIDPictureControl_Blue = 114,       //Blue
+        kNkMAIDPictureControl_Red = 115,        //Read
+        kNkMAIDPictureControl_Pink = 116,       //Pink
+        kNkMAIDPictureControl_Charcoal = 117,       //Charcorl
+        kNkMAIDPictureControl_Graphite = 118,       //Graphite
+        kNkMAIDPictureControl_Binary = 119,     //Binary
+        kNkMAIDPictureControl_Carbon = 120,		//Carbon
         kNkMAIDPictureControl_Custom1 = 201,  // Custom picture control1
         kNkMAIDPictureControl_Custom2 = 202,  // Custom picture control2
         kNkMAIDPictureControl_Custom3 = 203,  // Custom picture control3
@@ -3685,35 +3744,30 @@ namespace Nikon
         kNkMAIDPictureControl_Custom9 = 209   // Custom picture control9
     }
 
-    public enum eNkMAIDPrimarySlot : int
-    {
+    public enum eNkMAIDPrimarySlot : int {
         kNkMAIDPrimarySlot_CF = 0,
         kNkMAIDPrimarySlot_SD = 1,
         kNkMAIDPrimarySlot_XQD = 2
     }
 
-    public enum eNkMAIDPrimarySlot2 : int
-    {
+    public enum eNkMAIDPrimarySlot2 : int {
         kNkMAIDPrimarySlot2_Slot1 = 0,
         kNkMAIDPrimarySlot2_Slot2 = 1
     }
 
-    public enum eNkMAIDRadioMultipleFlashChannel : int
-    {
+    public enum eNkMAIDRadioMultipleFlashChannel : int {
         kNkMAIDRadioMultipleFlashChannel_Unknown = 0,
         kNkMAIDRadioMultipleFlashChannel_5ch = 5,
         kNkMAIDRadioMultipleFlashChannel_10ch = 10,
         kNkMAIDRadioMultipleFlashChannel_15ch = 15
     }
 
-    public enum eNkMAIDRangeFinderSetting : int
-    {
+    public enum eNkMAIDRangeFinderSetting : int {
         kNkMAIDRangeFinderSetting_Off = 0, // OFF
         kNkMAIDRangeFinderSetting_On = 1   // ON
     }
 
-    public enum eNkMAIDRangeFinderStatus : int
-    {
+    public enum eNkMAIDRangeFinderStatus : int {
         kNkMAIDRangeFinderStatus_OutOfFocus = 0,  // out of focus
         kNkMAIDRangeFinderStatus_FrontFocusL = 1, // in front of the subject(large distance)
         kNkMAIDRangeFinderStatus_FrontFocusS = 2, // in front of the subject (small distance)
@@ -3722,30 +3776,26 @@ namespace Nikon
         kNkMAIDRangeFinderStatus_RearFocusL = 5   // behind the subject (large distance)
     }
 
-    public enum eNkMAIDRawJpegImageStatus : int
-    {
+    public enum eNkMAIDRawJpegImageStatus : int {
         kNkMAIDRawJpegImageStatus_Single = 0,
         kNkMAIDRawJpegImageStatus_RawJpeg = 1
     }
 
-    public enum eNkMAIDRemoteControlMode : int
-    {
+    public enum eNkMAIDRemoteControlMode : int {
         kNkMAIDRemoteControlMode_Delayed = 0,
         kNkMAIDRemoteControlMode_QuickResponse = 1,
         kNkMAIDRemoteControlMode_MirrorUp = 2,
         kNkMAIDRemoteControlMode_Off = 3
     }
 
-    public enum eNkMAIDRemoteTimer : int
-    {
+    public enum eNkMAIDRemoteTimer : int {
         kNkMAIDRemoteTimer_1min = 0,
         kNkMAIDRemoteTimer_5min = 1,
         kNkMAIDRemoteTimer_10min = 2,
         kNkMAIDRemoteTimer_15min = 3
     }
 
-    public enum eNkMAIDResult : int
-    {
+    public enum eNkMAIDResult : int {
         kNkMAIDResult_NotSupported = -127,
         kNkMAIDResult_UnexpectedDataType = -126,
         kNkMAIDResult_ValueOutOfBounds = -125,
@@ -3808,36 +3858,42 @@ namespace Nikon
         kNkMAIDResult_High_Temperature = 170,
         kNkMAIDResult_InvalidSBAttributeValue = 171,
         kNkMAIDResult_CameraModeNotAdjustFnumber = 172,
+        kNkMAIDResult_RecInCard = 173,
+        kNkMAIDResult_RecInExternalDevice = 174,
+        kNkMAIDResult_RecInCardAndExternalDevice = 175,
+        kNkMAIDResult_SBSettingError = 176,
+        kNkMAIDResult_InvalidData = 177,
+        kNkMAIDResult_MountAdapterFWVer = 178,
+        kNkMAIDResult_AlreadyTerminated = 179,
+        kNkMAIDResult_UnSupportedLens = 180,
+        kNkMAIDResult_FirmUpErrorLens = 181,
+        kNkMAIDResult_HDRNoShootingWarning = 182,
         kNkMAIDResult_AutoFocusFailed = 385,               // From Nikon Scan 3.1
         kNkMAIDResult_NoFilm = 386,                        // From Nikon Scan 3.1
         kNkMAIDResult_NoAction = 639                       // From Nikon Scan 3.1
     }
 
-    public enum eNkMAIDReverseState : int
-    {
+    public enum eNkMAIDReverseState : int {
         kNkMAIDReverseState_None = 0,       // It is not reversed.
         kNkMAIDReverseState_Horizontal = 1, // It is horizontally reversed.
         kNkMAIDReverseState_Vertical = 2,   // It is vertically reversed.
         kNkMAIDReverseState_Both = 3        // It is horizontally and vertically reversed.
     }
 
-    public enum eNkMAIDSaturationSetting : int
-    {
+    public enum eNkMAIDSaturationSetting : int {
         kNkMAIDSaturationSetting_Normal = 0,
         kNkMAIDSaturationSetting_Low = 1,
         kNkMAIDSaturationSetting_High = 2,
         kNkMAIDSaturationSetting_Auto = 3
     }
 
-    public enum eNkMAIDSaveMedia : int
-    {
+    public enum eNkMAIDSaveMedia : int {
         kNkMAIDSaveMedia_Card = 0,
         kNkMAIDSaveMedia_SDRAM = 1,
         kNkMAIDSaveMedia_Card_SDRAM = 2
     }
 
-    public enum eNkMAIDSBAttribute : int
-    {
+    public enum eNkMAIDSBAttribute : int {
         kNkMAIDSBAttribute_ALL = 0,
         kNkMAIDSBAttribute_MaxNum = 4,
         kNkMAIDSBAttribute_Name = 4097,
@@ -3846,8 +3902,7 @@ namespace Nikon
         kNkMAIDSBAttribute_TestFlashDisable = 4101
     }
 
-    public enum eNkMAIDSBGroupAttribute : int
-    {
+    public enum eNkMAIDSBGroupAttribute : int {
         kNkMAIDSBGroupAttribute_ALL = 0,
         kNkMAIDSBGroupAttribute_MaxNum = 9,
         kNkMAIDSBGroupAttribute_FlashMode = 16385,
@@ -3861,8 +3916,7 @@ namespace Nikon
         kNkMAIDSBGroupAttribute_Invalid = 16393
     }
 
-    public enum eNkMAIDSBGroupID : int
-    {
+    public enum eNkMAIDSBGroupID : int {
         kNkMAIDSBGroupID_ALL = 0,
         kNkMAIDSBGroupID_Master = 1,
         kNkMAIDSBGroupID_A = 2,
@@ -3873,45 +3927,38 @@ namespace Nikon
         kNkMAIDSBGroupID_F = 64
     }
 
-    public enum eNkMAIDSBHandle : int
-    {
+    public enum eNkMAIDSBHandle : int {
         kNkMAIDSBHandle_ALL = 0 // All Handle
     }
 
-    public enum eNkMAIDSBIntegrationFlashReady : int
-    {
+    public enum eNkMAIDSBIntegrationFlashReady : int {
         kNkMAIDSBIntegrationFlashReady_NotReady = 0,
         kNkMAIDSBIntegrationFlashReady_Ready = 1
     }
 
-    public enum eNkMAIDSBSettingMemberLock : int
-    {
+    public enum eNkMAIDSBSettingMemberLock : int {
         kNkMAIDSBSettingMemberLock_Off = 0,
         kNkMAIDSBSettingMemberLock_On = 1
     }
 
-    public enum eNkMAIDSBUsableGroup : int
-    {
+    public enum eNkMAIDSBUsableGroup : int {
         kNkMAIDSBUsableGroup_Disable = 0
     }
 
-    public enum eNkMAIDSBWirelessMode : int
-    {
+    public enum eNkMAIDSBWirelessMode : int {
         kNkMAIDSBWirelessMode_Off = 0,
         kNkMAIDSBWirelessMode_Radio = 1,
         kNkMAIDSBWirelessMode_Optical = 2,
         kNkMAIDSBWirelessMode_OpticalandRadio = 3
     }
 
-    public enum eNkMAIDSBWirelessMultipleFlashMode : int
-    {
+    public enum eNkMAIDSBWirelessMultipleFlashMode : int {
         kNkMAIDSBWirelessMultipleFlashMode_Group = 0,
         kNkMAIDSBWirelessMultipleFlashMode_QuickWireless = 1,
         kNkMAIDSBWirelessMultipleFlashMode_Repeat = 2
     }
 
-    public enum eNkMAIDSceneMode : int
-    {
+    public enum eNkMAIDSceneMode : int {
         kNkMAIDSceneMode_NightLandscape = 0, // 0: Night landscape
         kNkMAIDSceneMode_PartyIndoor = 1,    // 1: Party/indoor
         kNkMAIDSceneMode_BeachSnow = 2,      // 2: Beach/snow
@@ -3933,14 +3980,12 @@ namespace Nikon
         kNkMAIDSceneMode_NightPortrait = 18  // 18: Night portrait
     }
 
-    public enum eNkMAIDScreenTips : int
-    {
+    public enum eNkMAIDScreenTips : int {
         kNkMAIDScreenTips_On = 0, // Guide display ON
         kNkMAIDScreenTips_Off = 1 // Guide display OFF
     }
 
-    public enum eNkMAIDSelfTimerShootNum : int
-    {
+    public enum eNkMAIDSelfTimerShootNum : int {
         kNkMAIDSelfTimerShootNum_1 = 0,
         kNkMAIDSelfTimerShootNum_2 = 1,
         kNkMAIDSelfTimerShootNum_3 = 2,
@@ -3952,8 +3997,7 @@ namespace Nikon
         kNkMAIDSelfTimerShootNum_9 = 8
     }
 
-    public enum eNkMAIDShootingMode : int
-    {
+    public enum eNkMAIDShootingMode : int {
         kNkMAIDShootingMode_S = 0,
         kNkMAIDShootingMode_C = 1,
         kNkMAIDShootingMode_CH = 2,
@@ -3968,59 +4012,57 @@ namespace Nikon
         kNkMAIDShootingMode_Unknown = 255
     }
 
-    public enum eNkMAIDShutterSpeedLockSetting : int
-    {
+    public enum eNkMAIDShutterSpeedLockSetting : int {
         kNkMAIDShutterSpeedLockSetting_Off = 0, // Off
         kNkMAIDShutterSpeedLockSetting_On = 1   // On
     }
 
-    public enum eNkMAIDSilentPhotography : int
-    {
+    public enum eNkMAIDSilentPhotography : int {
         kNkMAIDSilentPhotography_Off = 0,
         kNkMAIDSilentPhotography_On = 1
     }
 
-    public enum eNkMAIDSlot2ImageSaveMode : int
-    {
+    public enum eNkMAIDSlot2ImageSaveMode : int {
         kNkMAIDSlot2ImageSaveMode_Overflow = 0, // Overflow
         kNkMAIDSlot2ImageSaveMode_Backup = 1,   // Backup
         kNkMAIDSlot2ImageSaveMode_Jpeg = 2      // RAW primary - JPEG secondary
     }
 
-    public enum eNkMAIDSlowMotionMovieRecordScreenSize : int
-    {
+    public enum eNkMAIDSlowMotionMovieRecordScreenSize : int {
         kNkMAIDSlowMotionMovieRecordScreenSize_1280x720_120fps = 0, // 1280x720 Recording120fps Playback 30fps
         kNkMAIDSlowMotionMovieRecordScreenSize_768x288_400fps = 1,  // 768x288 Recording 400fps Playback 30fps
         kNkMAIDSlowMotionMovieRecordScreenSize_416x144_1200fps = 2  // 416x144 Recording 1200fps Playback 30fps
     }
 
-    public enum eNkMAIDSlowMotionMovieScreenSize : int
-    {
+    public enum eNkMAIDSlowMotionMovieScreenSize : int {
         kNkMAIDSlowMotionMovieScreenSize_1280x720_120fps = 0,
         kNkMAIDSlowMotionMovieScreenSize_768x288_400fps = 1,
         kNkMAIDSlowMotionMovieScreenSize_416x144_1200fps = 2
     }
 
-    public enum eNkMAIDSpotWBMode : int
-    {
+    // Copied directly from the SDK headers
+    public enum eNkMAIDSpecialShootingMode : int {
+        kNkMAIDSpecialShootingMode_Off = 0,
+        kNkMAIDSpecialShootingMode_On_IntervalTimer = 1,
+        kNkMAIDSpecialShootingMode_On_FocusShift = 2,
+    };
+
+    public enum eNkMAIDSpotWBMode : int {
         kNkMAIDSpotWBMode_OFF = 0,
         kNkMAIDSpotWBMode_ON = 1
     }
 
-    public enum eNkMAIDTestFlash : int
-    {
+    public enum eNkMAIDTestFlash : int {
         kNkMAIDTestFlash_Test = 0
     }
 
-    public enum eNkMAIDThumbnailRotate : int
-    {
+    public enum eNkMAIDThumbnailRotate : int {
         kNkMAIDThumbnailRotate_0 = 0,
         kNkMAIDThumbnailRotate_90 = 1,
         kNkMAIDThumbnailRotate_270 = 2
     }
 
-    public enum eNkMAIDTypicalFlashMode : int
-    {
+    public enum eNkMAIDTypicalFlashMode : int {
         kNkMAIDTypicalFlashMode_Auto = 0,
         kNkMAIDTypicalFlashMode_ForcedOn = 1,
         kNkMAIDTypicalFlashMode_Off = 2,
@@ -4028,8 +4070,7 @@ namespace Nikon
         kNkMAIDTypicalFlashMode_SlowSync = 4
     }
 
-    public enum eNkMAIDUIRequestResult : int
-    {
+    public enum eNkMAIDUIRequestResult : int {
         kNkMAIDUIRequestResult_None = 0,
         kNkMAIDUIRequestResult_Ok = 1,
         kNkMAIDUIRequestResult_Cancel = 2,
@@ -4037,23 +4078,20 @@ namespace Nikon
         kNkMAIDUIRequestResult_No = 4
     }
 
-    public enum eNkMAIDUIRequestType : int
-    {
+    public enum eNkMAIDUIRequestType : int {
         kNkMAIDUIRequestType_Ok = 0,
         kNkMAIDUIRequestType_OkCancel = 1,
         kNkMAIDUIRequestType_YesNo = 2,
         kNkMAIDUIRequestType_YesNoCancel = 3
     }
 
-    public enum eNkMAIDUSBSpeed : int
-    {
+    public enum eNkMAIDUSBSpeed : int {
         kNkMAIDUSBSpeed_FullSpeed = 0,
         kNkMAIDUSBSpeed_HighSpeed = 1,
         kNkMAIDUSBSpeed_SuperSpeed = 2
     }
 
-    public enum eNkMAIDUserMode : int
-    {
+    public enum eNkMAIDUserMode : int {
         kNkMAIDUserMode_NightLandscape = 0,    // 0: Night landscape
         kNkMAIDUserMode_PartyIndoor = 1,       // 1: Party/indoor
         kNkMAIDUserMode_BeachSnow = 2,         // 2: Beach/snow
@@ -4085,71 +4123,60 @@ namespace Nikon
         kNkMAIDUserMode_SelectColor = 28       // 28: Selective color
     }
 
-    public enum eNkMAIDVideoMode : int
-    {
+    public enum eNkMAIDVideoMode : int {
         kNkMAIDVideoMode_NTSC = 0,
         kNkMAIDVideoMode_PAL = 1
     }
 
-    public enum eNkMAIDVignetteControl : int
-    {
+    public enum eNkMAIDVignetteControl : int {
         kNkMAIDVignetteControl_High = 0,   // High
         kNkMAIDVignetteControl_Normal = 1, // Normal
         kNkMAIDVignetteControl_Low = 2,    // Low
         kNkMAIDVignetteControl_Off = 3     // Off
     }
 
-    public enum eNkMAIDWarningDisp : int
-    {
+    public enum eNkMAIDWarningDisp : int {
         kNkMAIDWarningDisp_On = 0,
         kNkMAIDWarningDisp_Off = 1
     }
 
-    public enum eNkMAIDWBBracketingStep : int
-    {
+    public enum eNkMAIDWBBracketingStep : int {
         kNkMAIDWBBracketingStep_1STEP = 0,
         kNkMAIDWBBracketingStep_2STEP = 1,
         kNkMAIDWBBracketingStep_3STEP = 2
     }
 
-    public enum eNkMAIDWBPresetProtect1 : int
-    {
+    public enum eNkMAIDWBPresetProtect1 : int {
         kNkMAIDWBPresetProtect1_Off = 0,
         kNkMAIDWBPresetProtect1_On = 1
     }
 
-    public enum eNkMAIDWBPresetProtect2 : int
-    {
+    public enum eNkMAIDWBPresetProtect2 : int {
         kNkMAIDWBPresetProtect2_Off = 0,
         kNkMAIDWBPresetProtect2_On = 1
     }
 
-    public enum eNkMAIDWBPresetProtect3 : int
-    {
+    public enum eNkMAIDWBPresetProtect3 : int {
         kNkMAIDWBPresetProtect3_Off = 0,
         kNkMAIDWBPresetProtect3_On = 1
     }
 
-    public enum eNkMAIDWBPresetProtect4 : int
-    {
+    public enum eNkMAIDWBPresetProtect4 : int {
         kNkMAIDWBPresetProtect4_Off = 0,
         kNkMAIDWBPresetProtect4_On = 1
     }
 
-    public enum eNkMAIDWBPresetProtect5 : int
-    {
+    public enum eNkMAIDWBPresetProtect5 : int {
         kNkMAIDWBPresetProtect5_Off = 0,
         kNkMAIDWBPresetProtect5_On = 1
     }
 
-    public enum eNkMAIDWBPresetProtect6 : int
-    {
+    public enum eNkMAIDWBPresetProtect6 : int {
         kNkMAIDWBPresetProtect6_Off = 0,
         kNkMAIDWBPresetProtect6_On = 1
     }
 
-    public enum eNkMAIDWBTuneColorTemp : int
-    {
+    public enum eNkMAIDWBTuneColorTemp : int {
         kNkMAIDWBTuneColorTemp_Unknown = 0,
         kNkMAIDWBTuneColorTemp_2500 = 2500,
         kNkMAIDWBTuneColorTemp_2550 = 2550,
@@ -4210,21 +4237,18 @@ namespace Nikon
         kNkMAIDWBTuneColorTemp_10000 = 10000
     }
 
-    public enum eNkMAIDWirelessCLSEntryMode : int
-    {
+    public enum eNkMAIDWirelessCLSEntryMode : int {
         kNkMAIDWirelessCLSEntryMode_Peering = 0,
         kNkMAIDWirelessCLSEntryMode_PINCode = 1
     }
 
-    public enum eNkMovieWBAutoType : int
-    {
+    public enum eNkMovieWBAutoType : int {
         kNkMovieWBAutoType_Normal = 0,
         kNkMovieWBAutoType_WarmWhite = 1,
         kNkMovieWBAutoType_KeepWhite = 2
     }
 
-    public enum eNkMovieWBFluorescentType : int
-    {
+    public enum eNkMovieWBFluorescentType : int {
         kNkMovieWBFluorescentType_SodiumVapor = 0,
         kNkMovieWBFluorescentType_WarmWhite = 1,
         kNkMovieWBFluorescentType_White = 2,
@@ -4234,15 +4258,13 @@ namespace Nikon
         kNkMovieWBFluorescentType_HiTempMercuryVapor = 6
     }
 
-    public enum eNkWBAutoType : int
-    {
+    public enum eNkWBAutoType : int {
         kNkWBAutoType_Normal = 0,
         kNkWBAutoType_WarmWhite = 1,
         kNkWBAutoType_KeepWhite = 2
     }
 
-    public enum eNkWBFluorescentType : int
-    {
+    public enum eNkWBFluorescentType : int {
         kNkWBFluorescentType_SodiumVapor = 0,
         kNkWBFluorescentType_WarmWhite = 1,
         kNkWBFluorescentType_White = 2,
@@ -4252,10 +4274,804 @@ namespace Nikon
         kNkWBFluorescentType_HiTempMercuryVapor = 6
     }
 
-    public enum eNkMAIDLiveViewImageStatus : int
-    {
+    public enum eNkMAIDLiveViewImageStatus : int {
         kNkMAIDLiveViewImageStatus_CannotAcquire = 0,
         kNkMAIDLiveViewImageStatus_CanAcquire = 1
     }
-}
 
+    // kNkMAIDCapability_LimitStillCaptureMode (0x84f5) -- bitmask enum
+    public enum eNkMAIDLimitStillCaptureMode : int {
+        kNkMAIDLimitStillCaptureMode_MirrorUp = 0x0040,   // Bit6: MirrorUp
+        kNkMAIDLimitStillCaptureMode_SelfTimer = 0x0020,   // Bit5: SelfTimer
+        kNkMAIDLimitStillCaptureMode_Quiet = 0x0008,       // Bit3: Quiet
+        kNkMAIDLimitStillCaptureMode_CH = 0x0004,          // Bit2: CH
+        kNkMAIDLimitStillCaptureMode_C = 0x0002,            // Bit1: C
+    }
+
+    // kNkMAIDCapability_MovieFileType (0x84f6)
+    public enum eNkMAIDMovieFileType : int {
+        kNkMAIDMovieFileType_MOV = 0,
+        kNkMAIDMovieFileType_MP4 = 1,
+        kNkMAIDMovieFileType_H264_8bit_MP4 = 2,
+        kNkMAIDMovieFileType_H265_8bit_MOV = 3,
+        kNkMAIDMovieFileType_H265_10bit_MOV = 4,
+        kNkMAIDMovieFileType_ProRes422HQ_10bit_MOV = 5,
+        kNkMAIDMovieFileType_NRAW_12bit_NEV = 6,
+        kNkMAIDMovieFileType_ProResRAWHQ_12bit_MOV = 7,
+    }
+
+    // kNkMAIDCapability_LiveViewTFTStatus (0x84f8)
+    public enum eNkMAIDLiveViewTFTStatus : int {
+        kNkMAIDLiveViewTFTStatus_Off = 0,
+        kNkMAIDLiveViewTFTStatus_On = 1
+    }
+
+    // kNkMAIDCapability_LiveViewButtonMode (0x84f9)
+    public enum eNkMAIDLiveViewButtonMode : int {
+        kNkMAIDLiveViewButtonMode_TFTOnOff = 0,
+        kNkMAIDLiveViewButtonMode_LiveView = 1
+    }
+
+    // kNkMAIDCapability_ExternalRecordingControl (0x84fa)
+    public enum eNkMAIDExternalRecordingControl : int {
+        kNkMAIDExternalRecordingControl_Off = 0,
+        kNkMAIDExternalRecordingControl_On = 1
+    }
+
+    // kNkMAIDCapability_DetectionPeaking (0x84fb)
+    public enum eNkMAIDDetectionPeaking : int {
+        kNkMAIDDetectionPeaking_Off = 0,
+        kNkMAIDDetectionPeaking_Low = 1,
+        kNkMAIDDetectionPeaking_Normal = 2,
+        kNkMAIDDetectionPeaking_High = 3,
+    }
+
+    // kNkMAIDCapability_HighlightBrightness (0x84fd)
+    public enum eNkMAIDHighlightBrightness : int {
+        kNkMAIDHighlightBrightness_180 = 0,
+        kNkMAIDHighlightBrightness_191 = 1,
+        kNkMAIDHighlightBrightness_202 = 2,
+        kNkMAIDHighlightBrightness_213 = 3,
+        kNkMAIDHighlightBrightness_224 = 4,
+        kNkMAIDHighlightBrightness_235 = 5,
+        kNkMAIDHighlightBrightness_248 = 6,
+        kNkMAIDHighlightBrightness_255 = 7,
+    }
+
+    // kNkMAIDCapability_HighlightBrightness extended (0x84fd)
+    public enum eNkMAIDHighlightBrightness2 : int {
+        kNkMAIDHighlightBrightness2_120 = 120,
+        kNkMAIDHighlightBrightness2_125 = 125,
+        kNkMAIDHighlightBrightness2_130 = 130,
+        kNkMAIDHighlightBrightness2_135 = 135,
+        kNkMAIDHighlightBrightness2_140 = 140,
+        kNkMAIDHighlightBrightness2_145 = 145,
+        kNkMAIDHighlightBrightness2_150 = 150,
+        kNkMAIDHighlightBrightness2_155 = 155,
+        kNkMAIDHighlightBrightness2_160 = 160,
+        kNkMAIDHighlightBrightness2_165 = 165,
+        kNkMAIDHighlightBrightness2_170 = 170,
+        kNkMAIDHighlightBrightness2_175 = 175,
+        kNkMAIDHighlightBrightness2_180 = 180,
+        kNkMAIDHighlightBrightness2_185 = 185,
+        kNkMAIDHighlightBrightness2_190 = 190,
+        kNkMAIDHighlightBrightness2_195 = 195,
+        kNkMAIDHighlightBrightness2_200 = 200,
+        kNkMAIDHighlightBrightness2_205 = 205,
+        kNkMAIDHighlightBrightness2_210 = 210,
+        kNkMAIDHighlightBrightness2_215 = 215,
+        kNkMAIDHighlightBrightness2_220 = 220,
+        kNkMAIDHighlightBrightness2_225 = 225,
+        kNkMAIDHighlightBrightness2_230 = 230,
+        kNkMAIDHighlightBrightness2_235 = 235,
+        kNkMAIDHighlightBrightness2_240 = 240,
+        kNkMAIDHighlightBrightness2_245 = 245,
+        kNkMAIDHighlightBrightness2_250 = 250,
+        kNkMAIDHighlightBrightness2_255 = 255
+    }
+
+    // kNkMAIDCapability_MovieAttenuator (0x84ff)
+    public enum eNkMAIDMovieAttenuator : int {
+        kNkMAIDMovieAttenuator_disable = 0,
+        kNkMAIDMovieAttenuator_enable = 1
+    }
+
+    // kNkMAIDCapability_DiffractionCompensation (0x8504)
+    public enum eNkMAIDDiffractionCompensation : int {
+        kNkMAIDDiffractionCompensation_Off = 0,
+        kNkMAIDDiffractionCompensation_On = 1
+    }
+
+    // kNkMAIDCapability_VibrationReduction (0x8505)
+    public enum eNkMAIDVibrationReduction : int {
+        kNkMAIDVibrationReduction_Off = 0,
+        kNkMAIDVibrationReduction_On = 1,
+        kNkMAIDVibrationReduction_Normal = 1,
+        kNkMAIDVibrationReduction_Sport = 2
+    }
+
+    // kNkMAIDCapability_MovieAutoDistortion (0x8506)
+    public enum eNkMAIDMovieAutoDistortion : int {
+        kNkMAIDMovieAutoDistortion_Off = 0,
+        kNkMAIDMovieAutoDistortion_On = 1
+    }
+
+    // kNkMAIDCapability_MovieVibrationReduction (0x8508)
+    public enum eNkMAIDMovieVibrationReduction : int {
+        kNkMAIDMovieVibrationReduction_Off = 0,
+        kNkMAIDMovieVibrationReduction_Normal = 1,
+        kNkMAIDMovieVibrationReduction_Sport = 2,
+        kNkMAIDMovieVibrationReduction_SamePhoto = 100
+    }
+
+    // kNkMAIDCapability_MovieFocusMode (0x8509)
+    public enum eNkMAIDMovieFocusMode : int {
+        kNkMAIDMovieFocusMode_AFs = 0,
+        kNkMAIDMovieFocusMode_AFc = 1,
+        kNkMAIDMovieFocusMode_AFf = 2,
+        kNkMAIDMovieFocusMode_MF_FIX = 3,
+        kNkMAIDMovieFocusMode_MF_SEL = 4
+    }
+
+    // kNkMAIDCapability_MovieVignetteControl (0x850a)
+    public enum eNkMAIDMovieVignetteControl : int {
+        kNkMAIDMovieVignetteControl_Off = 0,
+        kNkMAIDMovieVignetteControl_Low = 1,
+        kNkMAIDMovieVignetteControl_Normal = 2,
+        kNkMAIDMovieVignetteControl_High = 3,
+        kNkMAIDMovieVignetteControl_SamePhoto = 100
+    }
+
+    // kNkMAIDCapability_MovieDiffractionCompensation (0x850b)
+    public enum eNkMAIDMovieDiffractionCompensation : int {
+        kNkMAIDMovieDiffractionCompensation_Off = 0,
+        kNkMAIDMovieDiffractionCompensation_On = 1
+    }
+
+    // kNkMAIDCapability_HDRSaveIndividualImages (0x850c)
+    public enum eNkMAIDHDRSaveIndividualImages : int {
+        kNkMAIDHDRSaveIndividualImages_Off = 0,
+        kNkMAIDHDRSaveIndividualImages_On = 1
+    }
+
+    // kNkMAIDCapability_RecordTimeCodes (0x850e)
+    public enum eNkMAIDRecordTimeCodes : int {
+        kNkMAIDRecordTimeCodes_Off = 0,
+        kNkMAIDRecordTimeCodes_On = 1,
+        kNkMAIDRecordTimeCodes_OnWithHDMIOutput = 2
+    }
+
+    // kNkMAIDCapability_CountUpMethod (0x850f)
+    public enum eNkMAIDCountUpMethod : int {
+        kNkMAIDCountUpMethod_RecordRun = 0,
+        kNkMAIDCountUpMethod_FreeRun = 1
+    }
+
+    // kNkMAIDCapability_DropFrame (0x8511)
+    public enum eNkMAIDDropFrame : int {
+        kNkMAIDDropFrame_Off = 0,
+        kNkMAIDDropFrame_On = 1
+    }
+
+    // kNkMAIDCapability_MovieLogOutput (0x8512)
+    public enum eNkMAIDMovieLogOutput : int {
+        kNkMAIDMovieLogOutput_NotOutputting = 0,
+        kNkMAIDMovieLogOutput_Outputting = 1
+    }
+
+    // kNkMAIDCapability_MovieLogSetting (0x8513)
+    public enum eNkMAIDMovieLogSetting : int {
+        kNkMAIDMovieLogSetting_Off = 0,
+        kNkMAIDMovieLogSetting_OnCannotRecToCard = 1,
+        kNkMAIDMovieLogSetting_NLog = 2,
+        kNkMAIDMovieLogSetting_HDR = 3,
+    }
+
+    // kNkMAIDCapability_HDMIOutputDataDepth (0x8514)
+    public enum eNkMAIDHDMIOutputDataDepth : int {
+        kNkMAIDHDMIOutputDataDepth_8bit = 0,
+        kNkMAIDHDMIOutputDataDepth_10bit = 1,
+    }
+
+    // kNkMAIDCapability_LowLightAF (0x8515)
+    public enum eNkMAIDLowLightAF : int {
+        kNkMAIDLowLightAF_Off = 0,
+        kNkMAIDLowLightAF_On = 1
+    }
+
+    // kNkMAIDCapability_ApplyLiveViewSetting (0x8516)
+    public enum eNkMAIDApplyLiveViewSetting : int {
+        kNkMAIDApplyLiveViewSetting_Off = 0,
+        kNkMAIDApplyLiveViewSetting_On = 1
+    }
+
+    // kNkMAIDCapability_LiveViewZoomArea (0x8518)
+    public enum eNkMAIDLiveViewZoomArea : int {
+        kNkMAIDLiveViewZoomArea_0 = 0,
+        kNkMAIDLiveViewZoomArea_256 = 256,
+        kNkMAIDLiveViewZoomArea_320 = 320,
+        kNkMAIDLiveViewZoomArea_360 = 360,
+        kNkMAIDLiveViewZoomArea_512 = 512,
+        kNkMAIDLiveViewZoomArea_640 = 640,
+        kNkMAIDLiveViewZoomArea_720 = 720,
+        kNkMAIDLiveViewZoomArea_1024 = 1024,
+        kNkMAIDLiveViewZoomArea_1280 = 1280,
+        kNkMAIDLiveViewZoomArea_1440 = 1440,
+        kNkMAIDLiveViewZoomArea_1448 = 1448,
+        kNkMAIDLiveViewZoomArea_2048 = 2048,
+        kNkMAIDLiveViewZoomArea_2560 = 2560,
+        kNkMAIDLiveViewZoomArea_2896 = 2896
+    }
+
+    // kNkMAIDCapability_MovieAfSpeedWhenToApply (0x851B)
+    public enum eNkMAIDMovieAfSpeedWhenToApply : int {
+        kNkMAIDMovieAfSpeedWhenToApply_Always = 0,
+        kNkMAIDMovieAfSpeedWhenToApply_RecOnly = 1
+    }
+
+    // kNkMAIDCapability_GetManualSettingLensData (0x851D)
+    public enum eNkMAIDManualSettingLensData : int {
+        eNkMAIDManualSettingLensData_ALL = unchecked((int)0xFFFFFFFF),
+        eNkMAIDManualSettingLensData_1 = 0,
+        eNkMAIDManualSettingLensData_2 = 1,
+        eNkMAIDManualSettingLensData_3 = 2,
+        eNkMAIDManualSettingLensData_4 = 3,
+        eNkMAIDManualSettingLensData_5 = 4,
+        eNkMAIDManualSettingLensData_6 = 5,
+        eNkMAIDManualSettingLensData_7 = 6,
+        eNkMAIDManualSettingLensData_8 = 7,
+        eNkMAIDManualSettingLensData_9 = 8,
+        eNkMAIDManualSettingLensData_10 = 9,
+        eNkMAIDManualSettingLensData_11 = 10,
+        eNkMAIDManualSettingLensData_12 = 11,
+        eNkMAIDManualSettingLensData_13 = 12,
+        eNkMAIDManualSettingLensData_14 = 13,
+        eNkMAIDManualSettingLensData_15 = 14,
+        eNkMAIDManualSettingLensData_16 = 15,
+        eNkMAIDManualSettingLensData_17 = 16,
+        eNkMAIDManualSettingLensData_18 = 17,
+        eNkMAIDManualSettingLensData_19 = 18,
+        eNkMAIDManualSettingLensData_20 = 19
+    }
+
+    // StillCaptureModeSaveFrame
+    public enum eNkMAIDStillCaptureModeSaveFrame : int {
+        eNkMAIDStillCaptureModeSaveFrame_S = 1,
+        eNkMAIDStillCaptureModeSaveFrame_CH = 2
+    }
+
+    // kNkMAIDCapability_ChangeMonitorOffStatus (0x8520)
+    public enum eNkMAIDChangeMonitorOffStatus : int {
+        kNkMAIDChangeMonitorOffStatus_CancelForcedTurnOff = 0,
+        kNkMAIDChangeMonitorOffStatus_ForcedTurnOff = 1
+    }
+
+    // kNkMAIDCapability_ExtendedShutterSpeedsManual (0x8522)
+    public enum eNkMAIDExtendedShutterSpeedsManual : int {
+        kNkMAIDExtendedShutterSpeedsManual_Off = 0,
+        kNkMAIDExtendedShutterSpeedsManual_On = 1
+    }
+
+    // kNkMAIDCapability_QuietReleaseMode (0x8523)
+    public enum eNkMAIDQuietReleaseMode : int {
+        kNkMAIDQuietReleaseMode_Singleframe = 0,
+        kNkMAIDQuietReleaseMode_1fps = 1,
+        kNkMAIDQuietReleaseMode_2fps = 2,
+        kNkMAIDQuietReleaseMode_3fps = 3,
+        kNkMAIDQuietReleaseMode_4fps = 4,
+        kNkMAIDQuietReleaseMode_5fps = 5
+    }
+
+    // kNkMAIDCapability_AutoAreaAFFaceDetection (0x8524)
+    public enum eNkMAIDAutoAreaAFFaceDetection : int {
+        kNkMAIDAutoAreaAFFaceDetection_Off = 0,
+        kNkMAIDAutoAreaAFFaceDetection_On = 1
+    }
+
+    // kNkMAIDCapability_GroupAreaFaceDetection (0x8526)
+    public enum eNkMAIDGroupAreaFaceDetection : int {
+        kNkMAIDGroupAreaFaceDetection_Off = 0,
+        kNkMAIDGroupAreaFaceDetection_On = 1
+    }
+
+    // kNkMAIDCapability_SinglePointAFWatchArea (0x8527)
+    public enum eNkMAIDSinglePointAFWatchArea : int {
+        kNkMAIDSinglePointAFWatchArea_Normal = 0,
+        kNkMAIDSinglePointAFWatchArea_Wide = 1
+    }
+
+    // kNkMAIDCapability_RearControlPanel (0x8528)
+    public enum eNkMAIDRearControlPanel : int {
+        kNkMAIDRearControlPanel_ReleaseMode = 0,
+        kNkMAIDRearControlPanel_FrameCount = 1
+    }
+
+    // kNkMAIDCapability_FlushBurstPrioritize (0x8529)
+    public enum eNkMAIDFlushBurstPrioritize : int {
+        kNkMAIDFlushBurstPrioritize_FrameAdvanceRate = 0,
+        kNkMAIDFlushBurstPrioritize_PreciseFlashControl = 1
+    }
+
+    // kNkMAIDCapability_BracketingBurstOptions (0x852a)
+    public enum eNkMAIDBracketingBurstOptions : int {
+        kNkMAIDBracketingBurstOptions_Disable = 0,
+        kNkMAIDBracketingBurstOptions_Enable = 1
+    }
+
+    // kNkMAIDCapability_3DTrackingFaceDetection (0x852b)
+    public enum eNkMAID3DTrackingFaceDetection : int {
+        kNkMAID3DTrackingFaceDetection_Off = 0,
+        kNkMAID3DTrackingFaceDetection_On = 1
+    }
+
+    // kNkMAIDCapability_AutoAreaAFStartingPoint (0x852c)
+    public enum eNkMAIDAutoAreaAFStartingPoint : int {
+        kNkMAIDAutoAreaAFStartingPoint_Off = 0,
+        kNkMAIDAutoAreaAFStartingPoint_On = 1
+    }
+
+    // kNkMAIDCapability_CustomGroupingsC1/C2 (0x852d/0x8532)
+    public enum eNkMAIDCustomGroupings : int {
+        kNkMAIDCustomGroupings_1x5 = 0x0105,
+        kNkMAIDCustomGroupings_1x7 = 0x0107,
+        kNkMAIDCustomGroupings_3x3 = 0x0303,
+        kNkMAIDCustomGroupings_3x5 = 0x0305,
+        kNkMAIDCustomGroupings_3x7 = 0x0307,
+        kNkMAIDCustomGroupings_5x1 = 0x0501,
+        kNkMAIDCustomGroupings_5x3 = 0x0503,
+        kNkMAIDCustomGroupings_5x5 = 0x0505,
+        kNkMAIDCustomGroupings_5x7 = 0x0507,
+        kNkMAIDCustomGroupings_7x1 = 0x0701,
+        kNkMAIDCustomGroupings_7x3 = 0x0703,
+        kNkMAIDCustomGroupings_7x5 = 0x0705,
+        kNkMAIDCustomGroupings_7x7 = 0x0707,
+        kNkMAIDCustomGroupings_11x1 = 0x0B01,
+        kNkMAIDCustomGroupings_11x3 = 0x0B03,
+        kNkMAIDCustomGroupings_15x1 = 0x0F01,
+        kNkMAIDCustomGroupings_15x3 = 0x0F03
+    }
+
+    // kNkMAIDCapability_LockExposureEx (0x8530)
+    public enum eNkMAIDLockExposureEx : int {
+        kNkMAIDLockExposureEx_Unlock = 0,
+        kNkMAIDLockExposureEx_AELock = 1,
+        kNkMAIDLockExposureEx_AELock_AWBLock = 2,
+        kNkMAIDLockExposureEx_AWBLock = 3
+    }
+
+    // kNkMAIDCapability_AutoFlashIsoSensitivityControl (0x8534)
+    public enum eNkMAIDAutoFlashIsoSensitivityControl : int {
+        kNkMAIDAutoFlashIsoSensitivityControl_SubjectAndBackground = 0,
+        kNkMAIDAutoFlashIsoSensitivityControl_Subject = 1
+    }
+
+    // kNkMAIDCapability_LiveViewImageCompression (0x8536)
+    public enum eNkMAIDLiveViewImageCompression : int {
+        kNkMAIDLiveViewImageCompression_Basic_Size = 0,
+        kNkMAIDLiveViewImageCompression_Basic_Quality = 1,
+        kNkMAIDLiveViewImageCompression_Normal_Size = 2,
+        kNkMAIDLiveViewImageCompression_Normal_Quality = 3,
+        kNkMAIDLiveViewImageCompression_Fine_Size = 4,
+        kNkMAIDLiveViewImageCompression_Fine_Quality = 5
+    }
+
+    // kNkMAIDCapability_MovieH265ToneMode (0x853e)
+    public enum eNkMAIDMovieH265ToneMode : int {
+        kNkMAIDMovieH265ToneMode_SDR = 0,
+        kNkMAIDMovieH265ToneMode_NLog = 1,
+        kNkMAIDMovieH265ToneMode_HLG = 2
+    }
+
+    // kNkMAIDCapability_MovieProResToneMode (0x853f)
+    public enum eNkMAIDMovieProResToneMode : int {
+        kNkMAIDMovieProResToneMode_SDR = 0,
+        kNkMAIDMovieProResToneMode_NLog = 1
+    }
+
+    // kNkMAIDCapability_AFSubjectDetection (0x8540)
+    public enum eNkMAIDAFSubjectDetection : int {
+        kNkMAIDAFSubjectDetection_Off = 0,
+        kNkMAIDAFSubjectDetection_Auto = 1,
+        kNkMAIDAFSubjectDetection_People = 2,
+        kNkMAIDAFSubjectDetection_Animal = 3,
+        kNkMAIDAFSubjectDetection_Vehicle = 4,
+        kNkMAIDAFSubjectDetection_Bird = 5,
+        kNkMAIDAFSubjectDetection_AirPlane = 6
+    }
+
+    // kNkMAIDCapability_MovieAFSubjectDetection (0x8541)
+    public enum eNkMAIDMovieAFSubjectDetection : int {
+        kNkMAIDMovieAFSubjectDetection_Off = 0,
+        kNkMAIDMovieAFSubjectDetection_Auto = 1,
+        kNkMAIDMovieAFSubjectDetection_People = 2,
+        kNkMAIDMovieAFSubjectDetection_Animal = 3,
+        kNkMAIDMovieAFSubjectDetection_Vehicle = 4,
+        kNkMAIDMovieAFSubjectDetection_Bird = 5,
+        kNkMAIDMovieAFSubjectDetection_AirPlane = 6
+    }
+
+    // kNkMAIDCapability_KeepExposureWhenFNumberChanges (0x8542)
+    public enum eNkMAIDKeepExposureWhenFNumberChanges : int {
+        kNkMAIDKeepExposureWhenFNumberChanges_Off = 0,
+        kNkMAIDKeepExposureWhenFNumberChanges_ShutterSpeed = 1,
+        kNkMAIDKeepExposureWhenFNumberChanges_Sensitivity = 2
+    }
+
+    // kNkMAIDCapability_StarlightView (0x8543)
+    public enum eNkMAIDStarlightView : int {
+        kNkMAIDStarlightView_Off = 0,
+        kNkMAIDStarlightView_On = 1
+    }
+
+    // kNkMAIDCapability_ShutterSoundEffect (0x8544)
+    public enum eNkMAIDShutterSoundEffect : int {
+        kNkMAIDShutterSoundEffect_Disable = 0,
+        kNkMAIDShutterSoundEffect_Enable = 1
+    }
+
+    // kNkMAIDCapability_AFWhenSubjectNotDetected (0x8545)
+    public enum eNkMAIDAFWhenSubjectNotDetected : int {
+        kNkMAIDAFWhenSubjectNotDetected_Off = 0,
+        kNkMAIDAFWhenSubjectNotDetected_On = 1
+    }
+
+    // kNkMAIDCapability_SilentMode (0x8546)
+    public enum eNkMAIDSilentMode : int {
+        kNkMAIDSilentMode_Disable = 0,
+        kNkMAIDSilentMode_Enable = 1
+    }
+
+    // kNkMAIDCapability_ISOAutoHighLimitEx (0x8549)
+    public enum eNkMAIDISOAutoHighLimitEx : int {
+        kNkMAIDISOAutoHighLimitEx_ISO100 = 100,
+        kNkMAIDISOAutoHighLimitEx_ISO125 = 125,
+        kNkMAIDISOAutoHighLimitEx_ISO160 = 160,
+        kNkMAIDISOAutoHighLimitEx_ISO200 = 200,
+        kNkMAIDISOAutoHighLimitEx_ISO250 = 250,
+        kNkMAIDISOAutoHighLimitEx_ISO320 = 320,
+        kNkMAIDISOAutoHighLimitEx_ISO400 = 400,
+        kNkMAIDISOAutoHighLimitEx_ISO500 = 500,
+        kNkMAIDISOAutoHighLimitEx_ISO640 = 640,
+        kNkMAIDISOAutoHighLimitEx_ISO800 = 800,
+        kNkMAIDISOAutoHighLimitEx_ISO1000 = 1000,
+        kNkMAIDISOAutoHighLimitEx_ISO1250 = 1250,
+        kNkMAIDISOAutoHighLimitEx_ISO1600 = 1600,
+        kNkMAIDISOAutoHighLimitEx_ISO2000 = 2000,
+        kNkMAIDISOAutoHighLimitEx_ISO2500 = 2500,
+        kNkMAIDISOAutoHighLimitEx_ISO3200 = 3200,
+        kNkMAIDISOAutoHighLimitEx_ISO4000 = 4000,
+        kNkMAIDISOAutoHighLimitEx_ISO5000 = 5000,
+        kNkMAIDISOAutoHighLimitEx_ISO6400 = 6400,
+        kNkMAIDISOAutoHighLimitEx_ISO8000 = 8000,
+        kNkMAIDISOAutoHighLimitEx_ISO10000 = 10000,
+        kNkMAIDISOAutoHighLimitEx_ISO12800 = 12800,
+        kNkMAIDISOAutoHighLimitEx_ISO16000 = 16000,
+        kNkMAIDISOAutoHighLimitEx_ISO20000 = 20000,
+        kNkMAIDISOAutoHighLimitEx_ISO25600 = 25600,
+        kNkMAIDISOAutoHighLimitEx_Hi03 = unchecked((int)0xF0000003),
+        kNkMAIDISOAutoHighLimitEx_Hi07 = unchecked((int)0xF0000007),
+        kNkMAIDISOAutoHighLimitEx_Hi10 = unchecked((int)0xF000000A),
+        kNkMAIDISOAutoHighLimitEx_Hi20 = unchecked((int)0xF0000014)
+    }
+
+    // kNkMAIDCapability_FlashISOAutoHighLimitEx (0x854a)
+    public enum eNkMAIDFlashISOAutoHighLimitEx : int {
+        kNkMAIDFlashISOAutoHighLimitEx_ISO100 = 100,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO125 = 125,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO160 = 160,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO200 = 200,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO250 = 250,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO320 = 320,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO400 = 400,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO500 = 500,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO640 = 640,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO800 = 800,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO1000 = 1000,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO1250 = 1250,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO1600 = 1600,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO2000 = 2000,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO2500 = 2500,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO3200 = 3200,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO4000 = 4000,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO5000 = 5000,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO6400 = 6400,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO8000 = 8000,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO10000 = 10000,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO12800 = 12800,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO16000 = 16000,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO20000 = 20000,
+        kNkMAIDFlashISOAutoHighLimitEx_ISO25600 = 25600,
+        kNkMAIDFlashISOAutoHighLimitEx_Hi03 = unchecked((int)0xF0000003),
+        kNkMAIDFlashISOAutoHighLimitEx_Hi07 = unchecked((int)0xF0000007),
+        kNkMAIDFlashISOAutoHighLimitEx_Hi10 = unchecked((int)0xF000000A),
+        kNkMAIDFlashISOAutoHighLimitEx_Hi20 = unchecked((int)0xF0000014),
+        kNkMAIDFlashISOAutoHighLimitEx_NoneFlash = unchecked((int)0xFFFFFFFF)
+    }
+
+    // kNkMAIDCapability_MovieISOAutoHighLimitEx (0x854b)
+    public enum eNkMAIDMovieISOAutoHighLimitEx : int {
+        kNkMAIDMovieISOAutoHighLimitEx_ISO200 = 200,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO250 = 250,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO320 = 320,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO400 = 400,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO500 = 500,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO640 = 640,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO800 = 800,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO1000 = 1000,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO1250 = 1250,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO1600 = 1600,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO2000 = 2000,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO2500 = 2500,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO3200 = 3200,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO4000 = 4000,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO5000 = 5000,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO6400 = 6400,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO8000 = 8000,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO10000 = 10000,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO12800 = 12800,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO16000 = 16000,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO20000 = 20000,
+        kNkMAIDMovieISOAutoHighLimitEx_ISO25600 = 25600,
+        kNkMAIDMovieISOAutoHighLimitEx_Hi03 = unchecked((int)0xF0000003),
+        kNkMAIDMovieISOAutoHighLimitEx_Hi07 = unchecked((int)0xF0000007),
+        kNkMAIDMovieISOAutoHighLimitEx_Hi10 = unchecked((int)0xF000000A),
+        kNkMAIDMovieISOAutoHighLimitEx_Hi20 = unchecked((int)0xF0000014)
+    }
+
+    // kNkMAIDCapability_MovieShutterSpeedLockSetting (0x854d)
+    public enum eNkMAIDMovieShutterSpeedLockSetting : int {
+        kNkMAIDMovieShutterSpeedLockSetting_Off = 0,
+        kNkMAIDMovieShutterSpeedLockSetting_On = 1
+    }
+
+    // kNkMAIDCapability_MovieApertureLockSetting (0x854e)
+    public enum eNkMAIDMovieApertureLockSetting : int {
+        kNkMAIDMovieApertureLockSetting_Off = 0,
+        kNkMAIDMovieApertureLockSetting_On = 1
+    }
+
+    // kNkMAIDCapability_ViewMode
+    public enum eNkMAIDViewMode : int {
+        kNkMAIDViewMode_PrioritySetting = 0,
+        kNkMAIDViewMode_PriorityEaseOfViewing = 1
+    }
+
+    // kNkMAIDCapability_ViewModeEaseOfViewing
+    public enum eNkMAIDViewModeEaseOfViewing : int {
+        kNkMAIDViewModeEaseOfViewing_Auto = 0,
+        kNkMAIDViewModeEaseOfViewing_Custom = 1
+    }
+
+    // kNkMAIDCapability_ViewModeWhiteBalance
+    public enum eNkMAIDViewModeWhiteBalance : int {
+        kNkMAIDViewModeWhiteBalance_CurrentSetting = 0,
+        kNkMAIDViewModeWhiteBalance_Auto = 1,
+        kNkMAIDViewModeWhiteBalance_ColorTemperature = 2
+    }
+
+    // kNkMAIDCapability_ToneMode
+    public enum eNkMAIDToneMode : int {
+        kNkMAIDToneMode_SDR = 0,
+        kNkMAIDToneMode_Dummy = 1,
+        kNkMAIDToneMode_HLG = 2
+    }
+
+    // kNkMAIDCapability_MovieExtendedShutterSpeedsManual
+    public enum eNkMAIDMovieExtendedShutterSpeedsManual : int {
+        kNkMAIDMovieExtendedShutterSpeedsManual_Off = 0,
+        kNkMAIDMovieExtendedShutterSpeedsManual_On = 1
+    }
+
+    // kNkMAIDCapability_MovieExtendedIsoStepManual
+    public enum eNkMAIDMovieExtendedIsoStepManual : int {
+        kNkMAIDMovieExtendedIsoStepManual_Off = 0,
+        kNkMAIDMovieExtendedIsoStepManual_On_1_6 = 1
+    }
+
+    // kNkMAIDCapability_SkinSoftening
+    public enum eNkMAIDSkinSoftening : int {
+        kNkMAIDSkinSoftening_Off = 0,
+        kNkMAIDSkinSoftening_Reserved = 1,
+        kNkMAIDSkinSoftening_Low = 2,
+        kNkMAIDSkinSoftening_Normal = 3,
+        kNkMAIDSkinSoftening_High = 4
+    }
+
+    // kNkMAIDCapability_MovieSkinSoftening
+    public enum eNkMAIDMovieSkinSoftening : int {
+        kNkMAIDMovieSkinSoftening_Off = 0,
+        kNkMAIDMovieSkinSoftening_Reserved = 1,
+        kNkMAIDMovieSkinSoftening_Low = 2,
+        kNkMAIDMovieSkinSoftening_Normal = 3,
+        kNkMAIDMovieSkinSoftening_High = 4,
+        kNkMAIDMovieSkinSoftening_SamePhoto = 100
+    }
+
+    // kNkMAIDCapability_PortraitImpressionBalance
+    public enum eNkMAIDPortraitImpressionBalance : int {
+        kNkMAIDPortraitImpressionBalance_Off = 0,
+        kNkMAIDPortraitImpressionBalance_Mode1 = 1,
+        kNkMAIDPortraitImpressionBalance_Mode2 = 2,
+        kNkMAIDPortraitImpressionBalance_Mode3 = 3
+    }
+
+    // kNkMAIDCapability_MoviePortraitImpressionBalance
+    public enum eNkMAIDMoviePortraitImpressionBalance : int {
+        kNkMAIDMoviePortraitImpressionBalance_Off = 0,
+        kNkMAIDMoviePortraitImpressionBalance_Mode1 = 1,
+        kNkMAIDMoviePortraitImpressionBalance_Mode2 = 2,
+        kNkMAIDMoviePortraitImpressionBalance_Mode3 = 3
+    }
+
+    // kNkMAIDCapability_PictureControlHLG
+    public enum eNkMAIDPictureControlHLG : int {
+        kNkMAIDPictureControlHLG_Standard = 1,
+        kNkMAIDPictureControlHLG_Reserved2 = 2,
+        kNkMAIDPictureControlHLG_Reserved3 = 3,
+        kNkMAIDPictureControlHLG_Monochrome = 4,
+        kNkMAIDPictureControlHLG_Reserved5 = 5,
+        kNkMAIDPictureControlHLG_Reserved6 = 6,
+        kNkMAIDPictureControlHLG_Flat = 7
+    }
+
+    // kNkMAIDCapability_PreCapturePreReleaseBurst
+    public enum eNkMAIDPreCapturePreReleaseBurst : int {
+        kNkMAIDPreCapturePreReleaseBurst_Off = 0,
+        kNkMAIDPreCapturePreReleaseBurst_03 = 3,
+        kNkMAIDPreCapturePreReleaseBurst_05 = 5,
+        kNkMAIDPreCapturePreReleaseBurst_10 = 10
+    }
+
+    // kNkMAIDCapability_PreCapturePostReleaseBurst
+    public enum eNkMAIDPreCapturePostReleaseBurst : int {
+        kNkMAIDPreCapturePostReleaseBurst_10 = 10,
+        kNkMAIDPreCapturePostReleaseBurst_20 = 20,
+        kNkMAIDPreCapturePostReleaseBurst_30 = 30,
+        kNkMAIDPreCapturePostReleaseBurst_Max = unchecked((int)0xFFFFFFFF)
+    }
+
+    // kNkMAIDCapability_ExtendedOverSampling
+    public enum eNkMAIDExtendedOverSampling : int {
+        kNkMAIDExtendedOverSampling_Disable = 0,
+        kNkMAIDExtendedOverSampling_Enable = 1
+    }
+
+    // kNkMAIDCapability_MovieNRaw12bitToneMode
+    public enum eNkMAIDMovieNRaw12bitToneMode : int {
+        kNkMAIDMovieNRaw12bitToneMode_SDR = 0,
+        kNkMAIDMovieNRaw12bitToneMode_NLog = 1
+    }
+
+    // kNkMAIDCapability_MovieProResRawHq12bitToneMode
+    public enum eNkMAIDMovieProResRawHq12bitToneMode : int {
+        kNkMAIDMovieProResRawHq12bitToneMode_SDR = 0,
+        kNkMAIDMovieProResRawHq12bitToneMode_NLog = 1
+    }
+
+    // kNkMAIDCapability_MovieQualityNRaw
+    public enum eNkMAIDMovieQualityNRaw : int {
+        kNkMAIDMovieQualityNRaw_Normal = 0,
+        kNkMAIDMovieQualityNRaw_High = 1
+    }
+
+    // kNkMAIDCapability_HiResZoom
+    public enum eNkMAIDHiResZoom : int {
+        kNkMAIDHiResZoom_Off = 0,
+        kNkMAIDHiResZoom_On = 1
+    }
+
+    // kNkMAIDCapability_ViewModeShowEffectsOfSettings
+    public enum eNkMAIDViewModeShowEffectsOfSettings : int {
+        kNkMAIDViewModeShowEffectsOfSettings_Off = 0,
+        kNkMAIDViewModeShowEffectsOfSettings_On = 1
+    }
+
+    // kNkMAIDCapability_HighFrequencyFlickerReduction
+    public enum eNkMAIDHighFrequencyFlickerReduction : int {
+        kNkMAIDHighFrequencyFlickerReduction_Off = 0,
+        kNkMAIDHighFrequencyFlickerReduction_On = 1
+    }
+
+    // kNkMAIDCapability_MovieHighFrequencyFlickerReduction
+    public enum eNkMAIDMovieHighFrequencyFlickerReduction : int {
+        kNkMAIDMovieHighFrequencyFlickerReduction_Off = 0,
+        kNkMAIDMovieHighFrequencyFlickerReduction_On = 1
+    }
+
+    // kNkMAIDCapability_EnableDXImageSize
+    public enum eNkMAIDEnableDXImageSize : int {
+        kNkMAIDEnableDXImageSize_Off = 0,
+        kNkMAIDEnableDXImageSize_On = 1
+    }
+
+    // kNkMAIDCapability_ShootingLimitEx -- Extended shooting limit
+    public enum eNkMAIDShootingLimitEx : int {
+        kNkMAIDCapShootingLimitEx_NoLimit = 0,
+        kNkMAIDCapShootingLimitEx_1 = 1,
+        kNkMAIDCapShootingLimitEx_2 = 2,
+        kNkMAIDCapShootingLimitEx_3 = 3,
+        kNkMAIDCapShootingLimitEx_4 = 4,
+        kNkMAIDCapShootingLimitEx_5 = 5,
+        kNkMAIDCapShootingLimitEx_6 = 6,
+        kNkMAIDCapShootingLimitEx_7 = 7,
+        kNkMAIDCapShootingLimitEx_8 = 8,
+        kNkMAIDCapShootingLimitEx_9 = 9,
+        kNkMAIDCapShootingLimitEx_10 = 10,
+        kNkMAIDCapShootingLimitEx_11 = 11,
+        kNkMAIDCapShootingLimitEx_12 = 12,
+        kNkMAIDCapShootingLimitEx_13 = 13,
+        kNkMAIDCapShootingLimitEx_14 = 14,
+        kNkMAIDCapShootingLimitEx_15 = 15,
+        kNkMAIDCapShootingLimitEx_16 = 16,
+        kNkMAIDCapShootingLimitEx_17 = 17,
+        kNkMAIDCapShootingLimitEx_18 = 18,
+        kNkMAIDCapShootingLimitEx_19 = 19,
+        kNkMAIDCapShootingLimitEx_20 = 20,
+        kNkMAIDCapShootingLimitEx_21 = 21,
+        kNkMAIDCapShootingLimitEx_22 = 22,
+        kNkMAIDCapShootingLimitEx_23 = 23,
+        kNkMAIDCapShootingLimitEx_24 = 24,
+        kNkMAIDCapShootingLimitEx_25 = 25,
+        kNkMAIDCapShootingLimitEx_26 = 26,
+        kNkMAIDCapShootingLimitEx_27 = 27,
+        kNkMAIDCapShootingLimitEx_28 = 28,
+        kNkMAIDCapShootingLimitEx_29 = 29,
+        kNkMAIDCapShootingLimitEx_30 = 30,
+        kNkMAIDCapShootingLimitEx_31 = 31,
+        kNkMAIDCapShootingLimitEx_32 = 32,
+        kNkMAIDCapShootingLimitEx_33 = 33,
+        kNkMAIDCapShootingLimitEx_34 = 34,
+        kNkMAIDCapShootingLimitEx_35 = 35,
+        kNkMAIDCapShootingLimitEx_36 = 36,
+        kNkMAIDCapShootingLimitEx_37 = 37,
+        kNkMAIDCapShootingLimitEx_38 = 38,
+        kNkMAIDCapShootingLimitEx_39 = 39,
+        kNkMAIDCapShootingLimitEx_40 = 40,
+        kNkMAIDCapShootingLimitEx_41 = 41,
+        kNkMAIDCapShootingLimitEx_42 = 42,
+        kNkMAIDCapShootingLimitEx_43 = 43,
+        kNkMAIDCapShootingLimitEx_44 = 44,
+        kNkMAIDCapShootingLimitEx_45 = 45,
+        kNkMAIDCapShootingLimitEx_46 = 46,
+        kNkMAIDCapShootingLimitEx_47 = 47,
+        kNkMAIDCapShootingLimitEx_48 = 48,
+        kNkMAIDCapShootingLimitEx_49 = 49,
+        kNkMAIDCapShootingLimitEx_50 = 50,
+        kNkMAIDCapShootingLimitEx_60 = 60,
+        kNkMAIDCapShootingLimitEx_70 = 70,
+        kNkMAIDCapShootingLimitEx_80 = 80,
+        kNkMAIDCapShootingLimitEx_90 = 90,
+        kNkMAIDCapShootingLimitEx_100 = 100,
+        kNkMAIDCapShootingLimitEx_120 = 120,
+        kNkMAIDCapShootingLimitEx_140 = 140,
+        kNkMAIDCapShootingLimitEx_160 = 160,
+        kNkMAIDCapShootingLimitEx_180 = 180,
+        kNkMAIDCapShootingLimitEx_200 = 200,
+    }
+
+    // Movie Active D-Lighting
+    public enum eNkMAIDMovieActive_D_Lighting : int {
+        kNkMAIDMovieActive_D_Lighting_Off = 0,
+        kNkMAIDMovieActive_D_Lighting_Low = 1,
+        kNkMAIDMovieActive_D_Lighting_Normal = 2,
+        kNkMAIDMovieActive_D_Lighting_High = 3,
+        kNkMAIDMovieActive_D_Lighting_ExtraHigh = 4,
+        kNkMAIDMovieActive_D_Lighting_SamePhoto = 5,
+        kNkMAIDMovieActive_D_Lighting_ExtraHigh1 = 6,
+        kNkMAIDMovieActive_D_Lighting_ExtraHigh2 = 7,
+    }
+
+    // Live View Photo Shooting Mode 2
+    public enum eNkMAIDLiveViewPhotoShootingMode2 : int {
+        kNkMAIDLiveViewPhotoShootingMode2_OFF = 0,    // OFF
+        kNkMAIDLiveViewPhotoShootingMode2_Mode1 = 1,  // Mode1
+        kNkMAIDLiveViewPhotoShootingMode2_Mode2 = 2   // Mode2
+    }
+
+    // DSB Setting Member Lock
+    public enum eNkMAIDDSBSettingMemberLock : int {
+        kNkMAIDDSBSettingMemberLock_Off = 0,
+        kNkMAIDDSBSettingMemberLock_On = 1
+    }
+
+}

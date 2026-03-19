@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -17,23 +17,21 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem.FilterWheel;
-using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Trigger.Guider;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using System.Windows;
 using System.ComponentModel;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
+using NINA.Sequencer.Validations;
 using NINA.Core.Model;
 using System.Threading;
 
@@ -46,7 +44,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SmartExposure : SequentialContainer, IImmutableContainer {
+    [UsesExpressions]
+
+    public partial class SmartExposure : SequentialContainer, IImmutableContainer, IValidatable {
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -96,12 +96,31 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 CopyMetaData(cloneMe);
             }
         }
+        private SmartExposure(SmartExposure cloneMe) {
+
+            IsExpanded = false;
+
+            if (cloneMe != null) {
+                CopyMetaData(cloneMe);
+            }
+        }
+
+        partial void AfterClone(SmartExposure clone) {
+            // The order of these matters!
+            clone.Add((SwitchFilter)GetSwitchFilter().Clone());
+            clone.Add((TakeExposure)GetTakeExposure().Clone());
+            clone.Add((LoopCondition)GetLoopCondition().Clone());
+            clone.Add((DitherAfterExposures)GetDitherAfterExposures().Clone());
+            // Weak thing...
+        }
+
+
         private void SwitchFilter_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if(e.PropertyName == nameof(SwitchFilter.Filter)) {
-                if(this.Status == Core.Enum.SequenceEntityStatus.CREATED || this.Status == Core.Enum.SequenceEntityStatus.RUNNING) { 
+            if (e.PropertyName == nameof(SwitchFilter.Filter)) {
+                if (this.Status == Core.Enum.SequenceEntityStatus.CREATED || this.Status == Core.Enum.SequenceEntityStatus.RUNNING) {
                     try {
                         GetSwitchFilter().ResetProgress();
-                    } catch(Exception) { }                    
+                    } catch (Exception) { }
                 }
             }
         }
@@ -136,6 +155,15 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
+        [IsExpression(Default = 1, HasValidator = true)]
+        public partial int Iterations { get; set; }
+        partial void IterationsExpressionValidator(Logic.Expression expr) {
+            if (Conditions.Count > 0) {
+                GetLoopCondition().Iterations = (int)expr.Value;
+                RaisePropertyChanged("Iterations");
+            }
+        }
+
         public SwitchFilter GetSwitchFilter() {
             return Items[0] as SwitchFilter;
         }
@@ -145,11 +173,16 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         public DitherAfterExposures GetDitherAfterExposures() {
-            return Triggers[0] as DitherAfterExposures;
+            return Triggers.Count > 0 ? Triggers[0] as DitherAfterExposures : null;
         }
 
         public LoopCondition GetLoopCondition() {
-            return Conditions[0] as LoopCondition;
+            return Conditions.Count > 0 ? Conditions[0] as LoopCondition : null;
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
         }
 
         public override bool Validate() {
@@ -157,37 +190,27 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             var sw = GetSwitchFilter();
             var te = GetTakeExposure();
             var dither = GetDitherAfterExposures();
+            var lc = GetLoopCondition();
 
-            bool valid = false;
+            lc.Validate();
+            issues.AddRange(lc.Issues);
 
-            valid = te.Validate() && valid;
+            te.Validate();
             issues.AddRange(te.Issues);
 
-            if (sw.Filter != null) {
-                valid = sw.Validate() && valid;
-                issues.AddRange(sw.Issues);
-            }
+            sw.Validate();
+            issues.AddRange(sw.Issues);
 
-            if (dither.AfterExposures > 0) {
-                valid = dither.Validate() && valid;
-                issues.AddRange(dither.Issues);
-            }
+            dither.Validate();
+            issues.AddRange(dither.Issues);
 
             Issues = issues;
+
+            Logic.Expression.ValidateExpressions(Issues, IterationsExpression);
+
             RaisePropertyChanged(nameof(Issues));
 
-            return valid;
-        }
-
-        public override object Clone() {
-            var clone = new SmartExposure(
-                    this,
-                    (SwitchFilter)this.GetSwitchFilter().Clone(),
-                    (TakeExposure)this.GetTakeExposure().Clone(),
-                    (LoopCondition)this.GetLoopCondition().Clone(),
-                    (DitherAfterExposures)this.GetDitherAfterExposures().Clone()
-                );
-            return clone;
+            return Issues.Count == 0;
         }
 
         public override TimeSpan GetEstimatedDuration() {

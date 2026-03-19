@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -26,6 +26,9 @@ using NINA.Core.Locale;
 using NINA.Sequencer.Validations;
 using NINA.Astrometry.RiseAndSet;
 using Nito.AsyncEx;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -35,22 +38,27 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class WaitForMoonAltitude : WaitForAltitudeBase, IValidatable {
+    [UsesExpressions]
+    public partial class WaitForMoonAltitude : WaitForAltitudeBase, IValidatable {
 
         [ImportingConstructor]
         public WaitForMoonAltitude(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
-            Data.Offset = 0d;
             Name = Name;
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            if (OffsetExpression.Definition.Length == 0) {
+                OffsetExpression.Definition = Data.Offset.ToString();
+            }
         }
 
         private WaitForMoonAltitude(WaitForMoonAltitude cloneMe) : this(cloneMe.ProfileService) {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new WaitForMoonAltitude(this) {
-                Data = Data.Clone()
-            };
+        partial void AfterClone(WaitForMoonAltitude clone) {
+            clone.Data = Data.Clone();
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
@@ -78,6 +86,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                     return Data.CurrentAltitude > GetDataOffset();
                 default:
                     return Data.CurrentAltitude <= GetDataOffset();
+            }
+        }
+
+        [IsExpression(Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
+        public partial double Offset { get; set; }
+
+        partial void OffsetExpressionValidator(Expression expr) {
+            if (expr.Error == null) {
+                Data.Offset = expr.Value;
             }
         }
 
@@ -113,7 +130,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         private DateTime CalculateExpectedDateTime(DateTime time) {
             var customRiseAndSet = new MoonCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Observer.Elevation, GetDataOffset());
-            customRiseAndSet.Calculate();
+            customRiseAndSet.Compute();
             return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN ? customRiseAndSet.Set : customRiseAndSet?.Rise) ?? DateTime.MaxValue;
         }
 
@@ -121,9 +138,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             return $"Category: {Category}, Item: {nameof(WaitForMoonAltitude)}, TargetAltitude: {Data.TargetAltitude}, Comparator: {Data.Comparator}, CurrentAltitude: {Data.CurrentAltitude}";
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             CalculateExpectedTime();
-            return true;
+            Expression.ValidateExpressions(Issues, OffsetExpression);
+            return Issues.Count == 0;
         }
 
         private double GetDataOffset() {

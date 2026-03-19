@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -54,6 +54,7 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Expander.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Button.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/SequenceContainerStyles.xaml" />
                 <wpfutil:SharedResourceDictionary>
                     <converter:DroppableToDropIntoParametersConverter x:Key="DroppableToDropIntoParametersConverter" />
                     <converter:IsIDeepSkyObjectContainerConverter x:Key="DeepSkyObjectContainerToVisibilityConverter" />
@@ -136,152 +137,6 @@
                                     </Style>
                                 </MenuItem.ItemContainerStyle>
                             </MenuItem>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="SequenceContainerHeaderExpanderStyle" TargetType="ToggleButton">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ToggleButton}">
-                            <StackPanel>
-                                <Border
-                                    x:Name="topBorder"
-                                    BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                                    BorderThickness="1,1,0,0">
-                                    <Grid
-                                        x:Name="Head"
-                                        Background="{StaticResource SecondaryBackgroundBrush}"
-                                        UseLayoutRounding="True">
-                                        <Grid.Resources>
-                                            <Path
-                                                x:Key="TelescopeIcon"
-                                                Width="20"
-                                                Height="20"
-                                                Margin="5,0,0,0"
-                                                Data="{StaticResource TelescopeSVG}"
-                                                Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform"
-                                                UseLayoutRounding="True" />
-                                        </Grid.Resources>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30" />
-                                            <ColumnDefinition Width="30" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Path
-                                            x:Name="iconarrow"
-                                            Grid.Column="0"
-                                            Width="10"
-                                            Height="10"
-                                            Margin="10,0,10,0"
-                                            Data="{StaticResource ArrowRightSVG}"
-                                            Fill="{StaticResource ButtonForegroundBrush}"
-                                            Stretch="Uniform"
-                                            UseLayoutRounding="True" />
-                                        <Path
-                                            x:Name="icon"
-                                            Grid.Column="1"
-                                            Margin="5,0,3,0"
-                                            Data="{StaticResource BoxClosedSVG}"
-                                            Fill="{StaticResource ButtonForegroundBrush}"
-                                            Stretch="Uniform"
-                                            UseLayoutRounding="True" />
-                                        <Path
-                                            Grid.Column="2"
-                                            Width="20"
-                                            Height="20"
-                                            Margin="5,0,3,0"
-                                            Data="{Binding Icon}"
-                                            Fill="{StaticResource ButtonForegroundBrush}"
-                                            Stretch="Uniform"
-                                            UseLayoutRounding="True" />
-                                        <ContentPresenter
-                                            Grid.Column="3"
-                                            Margin="4,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            RecognizesAccessKey="True"
-                                            UseLayoutRounding="True">
-                                            <i:Interaction.Behaviors>
-                                                <!--  This gives the ability to drag and drop a sequence container by its header  -->
-                                                <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource AncestorType={x:Type local:SequenceView}}}" />
-                                            </i:Interaction.Behaviors>
-                                        </ContentPresenter>
-                                    </Grid>
-                                </Border>
-                            </StackPanel>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsChecked" Value="true">
-                                    <Setter TargetName="icon" Property="Data" Value="{StaticResource BoxSVG}" />
-                                    <Setter TargetName="iconarrow" Property="Data" Value="{StaticResource ArrowDownSVG}" />
-                                    <Setter TargetName="iconarrow" Property="Margin" Value="5,0,10,0" />
-                                </Trigger>
-
-                                <Trigger Property="IsChecked" Value="false">
-                                    <Setter TargetName="topBorder" Property="BorderThickness" Value="1,1,1,1" />
-                                </Trigger>
-
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Head" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="SequenceContainerExpander" TargetType="{x:Type ninactrl:DetachingExpander}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ninactrl:DetachingExpander}">
-                            <Border
-                                Margin="0,5,0,5"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                Focusable="False"
-                                UseLayoutRounding="True">
-                                <DockPanel>
-                                    <ToggleButton
-                                        x:Name="HeaderSite"
-                                        MinWidth="0"
-                                        MinHeight="0"
-                                        Padding="{TemplateBinding Padding}"
-                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                        Content="{TemplateBinding Header}"
-                                        ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                        ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
-                                        DockPanel.Dock="Top"
-                                        FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}"
-                                        FontFamily="{TemplateBinding FontFamily}"
-                                        FontSize="{TemplateBinding FontSize}"
-                                        FontStretch="{TemplateBinding FontStretch}"
-                                        FontStyle="{TemplateBinding FontStyle}"
-                                        FontWeight="{TemplateBinding FontWeight}"
-                                        Foreground="{TemplateBinding Foreground}"
-                                        IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                        Style="{StaticResource SequenceContainerHeaderExpanderStyle}" />
-                                    <ContentPresenter
-                                        x:Name="ExpandSite"
-                                        Margin="{TemplateBinding Padding}"
-                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                        Focusable="false" />
-                                </DockPanel>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsExpanded" Value="true">
-                                    <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
-                                </Trigger>
-                                <Trigger Property="IsExpanded" Value="False">
-                                    <Setter TargetName="ExpandSite" Property="Visibility" Value="Collapsed" />
-                                </Trigger>
-                                <Trigger Property="IsEnabled" Value="false">
-                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
