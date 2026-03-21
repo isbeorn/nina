@@ -60,19 +60,35 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         [IsExpression]
         public partial int Brightness { get; set; }
 
+        public int MinBrightness {
+            get => field;
+            set {
+                field = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int MaxBrightness {
+            get => field;
+            set {
+                field = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             await flatDeviceMediator.SetBrightness(Brightness, progress, token);
 
             var brightnessState = flatDeviceMediator.GetInfo().Brightness;
-            var minBrightness = flatDeviceMediator.GetInfo().MinBrightness;
-            var maxBrightness = flatDeviceMediator.GetInfo().MaxBrightness;
+            MinBrightness = flatDeviceMediator.GetInfo().MinBrightness;
+            MaxBrightness = flatDeviceMediator.GetInfo().MaxBrightness;
 
             // we shouldn't consider the flatdevice bringing the brightness up to to min or down to the max a failure
-            if (Brightness < minBrightness && brightnessState == minBrightness) {
+            if (Brightness < MinBrightness && brightnessState == MinBrightness) {
                 return;
             }
 
-            if (Brightness > maxBrightness && brightnessState == maxBrightness) {
+            if (Brightness > MaxBrightness && brightnessState == MaxBrightness) {
                 return;
             }
 
@@ -91,6 +107,9 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                     i.Add(Loc.Instance["LblFlatDeviceCannotControlBrightness"]);
                 }
             }
+
+            MinBrightness = flatDeviceMediator.GetInfo().MinBrightness;
+            MaxBrightness = flatDeviceMediator.GetInfo().MaxBrightness;
 
             Expression.ValidateExpressions(i, BrightnessExpression);
             

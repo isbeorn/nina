@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Core.Utility.Converters;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyFlatDevice;
 using NINA.Equipment.Interfaces.Mediator;
@@ -20,6 +21,7 @@ using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
+using Parlot.Fluent;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
@@ -490,17 +492,22 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
             var issues = new ObservableCollection<string>();
 
+            FlatDeviceInfo flatDeviceInfo = flatDeviceMediator.GetInfo();
+
             if (MinBrightness > MaxBrightness) {
                 issues.Add(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid"]);
             }
 
-            FlatDeviceInfo flatDeviceInfo = flatDeviceMediator.GetInfo();
             MinBrightnessExpression.Range = new double[] { flatDeviceInfo.MinBrightness, flatDeviceInfo.MaxBrightness, 0 };
             MinBrightnessExpression.Default = flatDeviceInfo.MinBrightness;
-            MinBrightnessExpression.DefaultString = "{" + flatDeviceInfo.MinBrightness + "}";
             MaxBrightnessExpression.Range = new double[] { flatDeviceInfo.MinBrightness, flatDeviceInfo.MaxBrightness, 0 };
             MaxBrightnessExpression.Default = flatDeviceInfo.MaxBrightness;
-            MaxBrightnessExpression.DefaultString = "{" + flatDeviceInfo.MaxBrightness + "}";
+            if (flatDeviceInfo.Connected) {
+                MinBrightnessExpression.DefaultString = "{" + flatDeviceInfo.MinBrightness + "}";
+                MaxBrightnessExpression.DefaultString = "{" + flatDeviceInfo.MaxBrightness + "}";
+            } else {
+                MinBrightnessExpression.DefaultString = MaxBrightnessExpression.DefaultString = Loc.Instance["LblFlatDevice"];
+            }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Concat(setBrightness.Issues).Distinct().ToList();
             NINA.Sequencer.Logic.Expression.ValidateExpressions(Issues, MinBrightnessExpression, MaxBrightnessExpression);
