@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using Accord.IO;
 using Accord.Statistics.Models.Regression.Fitting;
 using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
@@ -92,10 +93,15 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                     return;
                 }
 
+                filterString = Logic.SymbolBroker.SanitizeIdentifier(filterString);
+
                 // Setting the definition will lead to Evaluation
                 XfilterExpression.Definition = filterString;
                 // Simplest case is that the string is the name of a filter in the wheel
-                filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == filterString);
+                var matchingFilter = FiltersCopy?.FirstOrDefault(x => x.Name == filterString);
+                filter = matchingFilter.HasValue && matchingFilter.Value.Name != null 
+                    ? profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == matchingFilter.Value.Position) 
+                    : null;
                 // If not, assume it's an Expression and find its value
                 if (Filter == null) {
                     filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == (int)XfilterExpression.Value);
@@ -108,10 +114,16 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                 Logger.Error(ex);
             }
         }
-
+        
         private void ProfileService_ProfileChanged(object sender, EventArgs e) {
             // We might have very different filter names
             FilterNames.Clear();
+
+            // Create a copy with just Name and Position
+            FiltersCopy = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?
+                .Select(f => (Logic.SymbolBroker.SanitizeIdentifier(f.Name), (int)f.Position))
+                .ToList();
+
             // Force setup of current names
             Validate();
             // Find/setup the filter
@@ -151,7 +163,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             set {
                 // This is the case in which user selected from the ComboBox
                 field = value;
-                SetupFilter(value == 0 ? NullFilterName : profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters[value - 1].Name);
+                SetupFilter(value == 0 || FiltersCopy == null || value > FiltersCopy.Count ? NullFilterName : FiltersCopy[value - 1].Name);
             }
         }
 
@@ -207,6 +219,24 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             }
         }
 
+        private List<(string Name, int Position)> filtersCopy;
+
+        public List<(string Name, int Position)> FiltersCopy {
+            get {
+                if (filtersCopy == null) {
+                    // Lazy initialization if not already populated by ProfileService_ProfileChanged
+                    filtersCopy = profileService?.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?
+                        .Select(f => (Logic.SymbolBroker.SanitizeIdentifier(f.Name), (int)f.Position))
+                        .ToList();
+                }
+                return filtersCopy;
+            }
+            set {
+                filtersCopy = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public bool Validate() {
             var i = new List<string>();
 
@@ -215,12 +245,10 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             } else {
                 if (FilterNames.Count == 0) {
                     // Lazy instantiation of FilterNames
-                    var fwi = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters;
-                    if (fwi != null) {
-                        foreach (var fw in fwi) {
-                            // Sanitize filter names to ensure they're valid NCalc identifiers
-                            // This matches the behavior in SymbolBroker.UpdateDeviceInfo()
-                            FilterNames.Add(Logic.SymbolBroker.SanitizeIdentifier(fw.Name));
+                    if (FiltersCopy != null) {
+                        foreach (var fw in FiltersCopy) {
+                            // Names are already sanitized in FiltersCopy
+                            FilterNames.Add(fw.Name);
                         }
                         RaisePropertyChanged("FilterNames");
                     }
