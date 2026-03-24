@@ -40,6 +40,14 @@ namespace NINA.Test.Sequencer.SequenceItem.FilterWheel {
         public void Setup() {
             fwMediatorMock = new Mock<IFilterWheelMediator>();
             profileServiceMock = new Mock<IProfileService>();
+
+            // Always set up a basic profile with empty filter list
+            var filters = new Core.Utility.ObserveAllCollection<FilterInfo>();
+            var profileMock = new Mock<IProfile>();
+            var filterWheelSettingsMock = new Mock<NINA.Profile.Interfaces.IFilterWheelSettings>();
+            filterWheelSettingsMock.Setup(x => x.FilterWheelFilters).Returns(filters);
+            profileMock.Setup(x => x.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
+            profileServiceMock.Setup(x => x.ActiveProfile).Returns(profileMock.Object);
         }
 
         private delegate void TryGetValueCallback(string key, out object value);
@@ -468,6 +476,58 @@ namespace NINA.Test.Sequencer.SequenceItem.FilterWheel {
 
             fwMediatorMock.Verify(x => x.ChangeFilter(
                 It.Is<FilterInfo>(f => f.Name == "Green" && f.Position == 2),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<IProgress<ApplicationStatus>>()), Times.Once);
+        }
+
+        [Test]
+        public async Task SetupFilter_WithSpecialCharacters_SanitizesFilterName() {
+            var filterWithSpaces = new FilterInfo("Ha 6nm", 0, 1);
+            var filterWithDash = new FilterInfo("OIII-5nm", 0, 2);
+            var filterNormal = new FilterInfo("Luminance", 0, 3);
+
+            var filters = new Core.Utility.ObserveAllCollection<FilterInfo> {
+                filterWithSpaces,
+                filterWithDash,
+                filterNormal
+            };
+
+            var profileMock = new Mock<IProfile>();
+            var filterWheelSettingsMock = new Mock<NINA.Profile.Interfaces.IFilterWheelSettings>();
+            filterWheelSettingsMock.Setup(x => x.FilterWheelFilters).Returns(filters);
+            profileMock.Setup(x => x.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
+
+            var localProfileServiceMock = new Mock<IProfileService>();
+            localProfileServiceMock.Setup(x => x.ActiveProfile).Returns(profileMock.Object);
+
+            var symbolBrokerMock = new Mock<NINA.Sequencer.Logic.ISymbolBroker>();
+            symbolBrokerMock.Setup(x => x.TryGetValue("Ha_6nm", out It.Ref<object>.IsAny))
+                .Callback(new TryGetValueCallback((string key, out object value) => { value = 1.0; }))
+                .Returns(true);
+            symbolBrokerMock.Setup(x => x.TryGetValue("OIII_5nm", out It.Ref<object>.IsAny))
+                .Callback(new TryGetValueCallback((string key, out object value) => { value = 2.0; }))
+                .Returns(true);
+
+            fwMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true });
+            fwMediatorMock.Setup(x => x.ChangeFilter(It.IsAny<FilterInfo>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .ReturnsAsync(filterWithSpaces);
+
+            var sut = new SwitchFilter(localProfileServiceMock.Object, fwMediatorMock.Object);
+            sut.SymbolBroker = symbolBrokerMock.Object;
+
+            var expr = sut.XfilterExpression;
+            expr.SymbolBroker = symbolBrokerMock.Object;
+
+            sut.ComboBoxText = "Ha 6nm";
+
+            sut.Filter.Should().NotBeNull();
+            sut.Filter.Name.Should().Be("Ha 6nm");
+            sut.Filter.Position.Should().Be(1);
+
+            await sut.Execute(default, default);
+
+            fwMediatorMock.Verify(x => x.ChangeFilter(
+                It.Is<FilterInfo>(f => f.Name == "Ha 6nm" && f.Position == 1),
                 It.IsAny<CancellationToken>(),
                 It.IsAny<IProgress<ApplicationStatus>>()), Times.Once);
         }
