@@ -150,6 +150,7 @@ namespace NINA.Sequencer.Logic {
             _rotatorMediator.RegisterConsumer(this);
             _guiderMediator.RegisterConsumer(this);
 
+            AddOrUpdateSymbol("NINA", "LastExternalScriptExitCode", 0);
             UpdateNINASymbols();
             _conditionWatchdog = new ConditionWatchdog(UpdateNINASymbols, TimeSpan.FromSeconds(3));
             _conditionWatchdog.Start();
