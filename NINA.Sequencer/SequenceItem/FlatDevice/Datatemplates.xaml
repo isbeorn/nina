@@ -31,14 +31,15 @@
     <DataTemplate DataType="{x:Type local:SetBrightness}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceBrightness}" />
-                    <ninactrl:StepperControl
-                        Margin="5,0,0,0"
-                        MinValue="0"
-                        StepSize="1"
-                        Value="{Binding Brightness, Mode=TwoWay}" />
-                </StackPanel>
+                <logic:ExprStepperControl
+                    MinWidth="100"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Exp="{Binding BrightnessExpression}"
+                    Label="{ns:Loc LblFlatDeviceBrightness}"
+                    Max="{Binding MaxBrightness}"
+                    Min="{Binding MinBrightness}"
+                    Step="1" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>

@@ -82,65 +82,17 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         [JsonProperty]
         public string Script {
-            get => script?.Trim();
+            get => script;
             set {
-                script = value?.Trim();
+                script = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(ProcessedScript));
-                RaisePropertyChanged(nameof(ProcessedScriptAnnotated));
             }
         }
-
-        public string ProcessedScriptAnnotated {
-            get { return "As processed: " + iProcessedScript; }
-            set { }
-        }
-
-
-        private string iProcessedScript;
-        private static readonly Regex ExpressionPattern = new Regex(@"\{([^\}]+)\}", RegexOptions.Compiled);
-
-        public string ProcessedScript {
-            get {
-                string value = Script;
-                if (string.IsNullOrEmpty(value)) {
-                    return value;
-                }
-
-                ProcessedScriptError = null;
-
-                try {
-                    value = ExpressionPattern.Replace(value, match => {
-                        string toReplace = match.Groups[1].Value;
-                        Expression ex = new Expression(toReplace, Parent);
-                        ex.SymbolBroker = _symbolBroker;    
-                        ex.Evaluate(true);
-                        if (ex.Error != null) {
-                            ProcessedScriptError = ex.Error;
-                            return "Error";
-                        } else if (ex.StringValue != null) {
-                            return ex.StringValue;
-                        } else {
-                            return ex.ValueString;
-                        }
-                    });
-                } catch (InvalidOperationException) {
-                    value = "Error";
-                }
-
-                iProcessedScript = value;
-                RaisePropertyChanged(nameof(ProcessedScriptAnnotated));
-                return value;
-            }
-            set { }
-        }
-        
-        public string ProcessedScriptError { get; set; } = null;
         
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            Logger.Info("External Script, script = " + Script + ", processed script = " + ProcessedScript);
-            string sequenceCompleteCommand = ProcessedScript;
-            var success = await RunCommand(sequenceCompleteCommand, progress, token);
+            string expandedScript = ExpressionExpander.Expand(Script, _symbolBroker, this);
+            Logger.Info($"External Script: {expandedScript}");
+            var success = await RunCommand(expandedScript, progress, token);
             if (!success) {
                 throw new SequenceEntityFailedException(Loc.Instance["LblExternalCommandFailed"]);
             }
@@ -148,12 +100,14 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public bool Validate() {
             var i = new List<string>();
-            var sequenceCompleteCommand = ProcessedScript;
-            if (ProcessedScriptError != null) {
-                i.Add(ProcessedScriptError);
-            } else if (!string.IsNullOrWhiteSpace(sequenceCompleteCommand) && !CommandExists(sequenceCompleteCommand)) {
-                i.Add(string.Format(Loc.Instance["LblExternalCommandNotFound"], GetCommandFromString(sequenceCompleteCommand)));
+
+            if (!string.IsNullOrWhiteSpace(Script)) {
+                string expandedScript = ExpressionExpander.Expand(Script, _symbolBroker, this);
+                if (!CommandExists(expandedScript)) {
+                    i.Add(string.Format(Loc.Instance["LblExternalCommandNotFound"], GetCommandFromString(expandedScript)));
+                }
             }
+
             Issues = i;
             return i.Count == 0;
         }

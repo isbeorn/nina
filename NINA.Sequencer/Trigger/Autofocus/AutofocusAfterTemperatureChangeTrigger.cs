@@ -101,7 +101,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         [IsExpression (Default = 5)]
         public partial double Amount { get; set; }
 
-        [IsExpression]
+        [IsExpression (Default = 0)]
         public partial double DeltaT { get; set; }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
@@ -140,6 +140,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
                 DeltaT = Math.Round(Math.Abs(lastAF.AutoFocusPoint.Temperature - info.Temperature), 2);
                 shouldTrigger = Math.Abs(lastAF.AutoFocusPoint.Temperature - info.Temperature) >= Amount;
             }
+            RaisePropertyChanged(nameof(DeltaT));
 
             if (shouldTrigger) {
                 if (ItemUtility.IsTooCloseToMeridianFlip(Parent, TriggerRunner.GetItemsSnapshot().First().GetEstimatedDuration() + nextItem?.GetEstimatedDuration() ?? TimeSpan.Zero)) {

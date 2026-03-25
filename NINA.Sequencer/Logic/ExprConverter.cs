@@ -97,7 +97,7 @@ namespace NINA.Sequencer.Logic {
                                     IList<string> combo = (IList<string>)values[VALUE_COMBO];
                                     int i = (int)expr.Value;
                                     if (i >= 0 && i < combo.Count) {
-                                        txt = Loc.Instance["LblFilter"] + ": " + combo[i];
+                                        txt = Loc.Instance["LblFilter"] + "_" + combo[i];
                                     }
                                 }
                             }

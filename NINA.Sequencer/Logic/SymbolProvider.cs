@@ -13,10 +13,15 @@ namespace NINA.Sequencer.Logic {
         private string name;
         ISymbolBrokerProviderApi  broker;
 
-        public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
+        public static readonly String VALID_SYMBOL = "^[a-zA-Z_][a-zA-Z0-9_]*$";
+
+        /// <summary>
+        /// Precompiled regex for validating symbol identifiers. Use this instead of Regex.IsMatch(str, VALID_SYMBOL) for better performance.
+        /// </summary>
+        public static readonly Regex ValidSymbolRegex = new Regex(VALID_SYMBOL, RegexOptions.Compiled);
 
         internal SymbolProvider(string name, ISymbolBrokerProviderApi  broker) {
-            if (name.Length == 0 || !Regex.IsMatch(name, UserSymbol.VALID_SYMBOL)) {
+            if (name.Length == 0 || !ValidSymbolRegex.IsMatch(name)) {
                 throw new ArgumentException("SymbolProvider name must be an alphanumeric word.");
             }
             this.name = name;
@@ -31,14 +36,23 @@ namespace NINA.Sequencer.Logic {
 
         // Allow constants to be added at some point (like CoverStatus, PierSide)
         public void AddOrUpdateSymbol(string token, object value) {
-            broker.AddOrUpdateSymbol(this, token, value);
+            if (!ValidSymbolRegex.IsMatch(token)) {
+                throw new ArgumentException("Invalid Symbol - " + token);
+            }
+           broker.AddOrUpdateSymbol(this, token, value);
         }
 
         public void AddOrUpdateSymbol(string token, object value, Symbol[] values) {
+            if (!ValidSymbolRegex.IsMatch(token)) {
+                throw new ArgumentException("Invalid Symbol - " + token);
+            }
             broker.AddOrUpdateSymbol(this, token, value, values);
         }
 
         public void AddOrUpdateHiddenSymbol(string token, object value, Symbol[] values) {
+            if (!ValidSymbolRegex.IsMatch(token)) {
+                throw new ArgumentException("Invalid Symbol - " + token);
+            }
             broker.AddOrUpdateHiddenSymbol(this, token, value, values);
         }
 

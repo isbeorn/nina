@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Core.Utility.Converters;
+using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Equipment.MyFlatDevice;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
 using NINA.Image.ImageAnalysis;
@@ -18,9 +21,11 @@ using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
+using Parlot.Fluent;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Data.Entity.Core.Common.CommandTrees;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
@@ -41,6 +46,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     public partial class AutoBrightnessFlat : SequentialContainer, IImmutableContainer, IValidatable {
         private IProfileService profileService;
         private IImagingMediator imagingMediator;
+        private IFlatDeviceMediator flatDeviceMediator;
         private ISymbolBroker symbolBroker;
 
         [OnDeserializing]
@@ -58,6 +64,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 profileService,
                 imagingMediator,
                 imageSaveMediator,
+                flatDeviceMediator,
                 new CloseCover(flatDeviceMediator),
                 new ToggleLight(flatDeviceMediator) { OnOff = true },
                 new SwitchFilter(profileService, filterWheelMediator),
@@ -79,6 +86,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             IProfileService profileService,
             IImagingMediator imagingMediator,
             IImageSaveMediator imageSaveMediator,
+            IFlatDeviceMediator flatDeviceMediator,
             CloseCover closeCover,
             ToggleLight toggleLightOn,
             SwitchFilter switchFilter,
@@ -91,6 +99,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             this.profileService = profileService;
             this.imagingMediator = imagingMediator;
             this.imageSaveMediator = imageSaveMediator;
+            this.flatDeviceMediator = flatDeviceMediator;
 
             this.Add(closeCover);
             this.Add(toggleLightOn);
@@ -116,6 +125,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             clone.profileService = profileService;
             clone.imagingMediator = imagingMediator;
             clone.imageSaveMediator = imageSaveMediator;
+            clone.flatDeviceMediator = flatDeviceMediator;
 
             clone.Add((CloseCover)GetCloseCoverItem().Clone());
             clone.Add((ToggleLight)GetToggleLightItem().Clone());
@@ -427,10 +437,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
-        [IsExpression (Default = 20, Range = [1, 100])]
+        [IsExpression]
         public partial int MinBrightness { get; set; }
 
-        [IsExpression (Default = 100, Range = [1, 100])]
+        [IsExpression]
         public partial int MaxBrightness { get; set; }
 
         private double histogramTargetPercentage;
@@ -473,7 +483,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             Validate();
         }
 
-
         public override bool Validate() {
             var switchFilter = GetSwitchFilterItem();
             var takeExposure = GetExposureItem();
@@ -483,8 +492,21 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
             var issues = new ObservableCollection<string>();
 
+            FlatDeviceInfo flatDeviceInfo = flatDeviceMediator.GetInfo();
+
             if (MinBrightness > MaxBrightness) {
                 issues.Add(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid"]);
+            }
+
+            MinBrightnessExpression.Range = new double[] { flatDeviceInfo.MinBrightness, flatDeviceInfo.MaxBrightness, 0 };
+            MinBrightnessExpression.Default = flatDeviceInfo.MinBrightness;
+            MaxBrightnessExpression.Range = new double[] { flatDeviceInfo.MinBrightness, flatDeviceInfo.MaxBrightness, 0 };
+            MaxBrightnessExpression.Default = flatDeviceInfo.MaxBrightness;
+            if (flatDeviceInfo.Connected) {
+                MinBrightnessExpression.DefaultString = "{" + flatDeviceInfo.MinBrightness + "}";
+                MaxBrightnessExpression.DefaultString = "{" + flatDeviceInfo.MaxBrightness + "}";
+            } else {
+                MinBrightnessExpression.DefaultString = MaxBrightnessExpression.DefaultString = Loc.Instance["LblFlatDevice"];
             }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Concat(setBrightness.Issues).Distinct().ToList();

@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -826,9 +826,15 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         protected override async Task PostConnect() {
-            if(device.SensorType == ASCOM.Common.DeviceInterfaces.SensorType.Color) {
-                Disconnect();
-                throw new Exception(Loc.Instance["LblASCOMColorSensorTypeNotSupported"]);
+            try {
+                if(device.SensorType == ASCOM.Common.DeviceInterfaces.SensorType.Color) {
+                    Disconnect();
+                    throw new Exception(Loc.Instance["LblASCOMColorSensorTypeNotSupported"]);
+                }
+            } catch (ASCOM.NotImplementedException) {
+                // SensorType requires ICameraV2+; V1 drivers don't implement it.
+                // Safe to assume monochrome, which is the default for the SensorType property getter.
+                Logger.Info($"{Name} - SensorType not implemented, assuming Monochrome");
             }
             Initialize();
         }

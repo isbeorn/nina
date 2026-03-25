@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using NINA.Sequencer.Container;
 using System.Text;
+using System.Text.RegularExpressions;
 using NINA.Core.Utility;
 using System.Diagnostics;
 using System.Windows.Controls;
@@ -42,7 +43,12 @@ namespace NINA.Sequencer.Logic {
 
         protected static bool Debugging = false;
 
-        public static readonly string VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
+        public static readonly string VALID_SYMBOL = "^[a-zA-Z_][a-zA-Z0-9_]*$";
+
+        /// <summary>
+        /// Precompiled regex for validating symbol identifiers. Use this instead of Regex.IsMatch(str, VALID_SYMBOL) for better performance.
+        /// </summary>
+        public static readonly Regex ValidSymbolRegex = new Regex(VALID_SYMBOL, RegexOptions.Compiled);
 
         static public SequenceContainer GlobalSymbols { get; } = new SequentialContainer() { Name = "Global Symbols" };
 
@@ -100,7 +106,9 @@ namespace NINA.Sequencer.Logic {
                         if (Debugging) {
                             Logger.Info("Removing " + value + " from " + sParent.Name);
                         }
-                        cached.TryRemove(value, out _);
+                        if (!cached.TryRemove(_identifier, out _)) {
+                            Logger.Warning("Could not remove " + value + " from " + sParent.Name);
+                        }
                         SymbolDirty(this);
                     }
                 }
@@ -159,7 +167,7 @@ namespace NINA.Sequencer.Logic {
                 dict[id] = this;
                 return id;
             }
-            Notification.ShowWarning(Loc.Instance["LblConstantVariable"] + " " + id + " " + Loc.Instance["LblAlreadyDefined"]);
+            Notification.ShowWarning(Loc.Instance["LblConstantVariable"] + " " + id + " " + Loc.Instance["LblAlreadyDefined"], TimeSpan.FromSeconds(5));
             return "";
         }
 

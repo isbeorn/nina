@@ -18,7 +18,7 @@
                 Stretch="Uniform"
                 UseLayoutRounding="True" />
         </Button>
-        <local:ExprControl Exp="{Binding ValueExpression}" />
+        <local:ExprControl Exp="{Binding Exp, RelativeSource={RelativeSource AncestorType={x:Type local:ExprStepperControl}}}" />
         <Button
             Height="25"
             Click="AddClick"

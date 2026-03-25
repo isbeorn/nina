@@ -37,7 +37,7 @@
                         SelectionChanged="FilterSelectionChanged"
                         Text="{Binding ComboBoxText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
                         <ComboBox.Resources>
-                            <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                            <CollectionViewSource x:Key="Filters" Source="{Binding FilterNames}" />
                         </ComboBox.Resources>
                         <ComboBox.ItemsSource>
                             <CompositeCollection>

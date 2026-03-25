@@ -62,7 +62,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             // Expand expressions in the text before displaying
-            string expandedText = ExpressionExpander.Expand(Text, SymbolBroker, Parent);
+            string expandedText = ExpressionExpander.Expand(Text, SymbolBroker, this);
 
             var service = windowServiceFactory.Create();
             var msgBoxResult = new MessageBoxResult(expandedText);

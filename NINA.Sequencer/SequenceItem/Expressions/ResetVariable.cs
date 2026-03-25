@@ -137,7 +137,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             var i = new List<string>();
             if (Expr.Definition.Length == 0 || Variable == null || Variable.Length == 0) {
                 i.Add("The variable and new value expression must both be specified");
-            } else if (Variable.Length > 0 && !Regex.IsMatch(Variable, UserSymbol.VALID_SYMBOL)) {
+            } else if (Variable.Length > 0 && !UserSymbol.ValidSymbolRegex.IsMatch(Variable)) {
                 i.Add("'" + Variable + "' is not a legal Variable name");
             } else {
                 UserSymbol sym = UserSymbol.FindSymbol(Variable, Parent);

@@ -21,6 +21,7 @@ namespace NINA.Core.Enum {
         FLATWIZARD,
         SEQUENCE,
         IMAGING,
-        OPTIONS
+        OPTIONS,
+        PLUGINS
     }
 }

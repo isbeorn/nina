@@ -9,6 +9,7 @@ using NINA.Sequencer.SequenceItem.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows.Media;
 using static NINA.Sequencer.Logic.UserSymbol;
@@ -37,7 +38,7 @@ namespace NINA.Sequencer.Logic {
 
         public Expression (Expression cloneMe, ISequenceEntity context, Action<Expression> validator = null) {
             Definition = cloneMe.Definition;
-            SymbolBroker = cloneMe.SymbolBroker;
+            SymbolBroker = Logic.SymbolBroker.Instance;
             Symbol = cloneMe.Symbol;
             Type = cloneMe.Type;
             Range = cloneMe.Range;
@@ -51,6 +52,7 @@ namespace NINA.Sequencer.Logic {
         public Expression(string definition, ISequenceEntity context) {
             Definition = definition;
             Context = context;
+            SymbolBroker = Logic.SymbolBroker.Instance;
         }
 
         public Expression(string definition, ISequenceEntity context, UserSymbol symbol) {
@@ -61,6 +63,7 @@ namespace NINA.Sequencer.Logic {
             Definition = definition;
             Context = context;
             Symbol = symbol;
+            SymbolBroker = Logic.SymbolBroker.Instance;
         }
 
         public ISequenceEntity Context { get; set; }
@@ -374,6 +377,10 @@ namespace NINA.Sequencer.Logic {
                 } else {
                     if ((Value == AutoValue) || (!double.IsNaN(Default) && Value == Default)) {
                         return DefaultString;
+                    } else if (Symbol is Variable v && !v.Executed) {
+                        return Loc.Instance["LblNotEvaluated"];
+                    } else if (double.IsNaN(Value)) {
+                        return "";
                     }
 
                     return Value.ToString(CultureInfo.InvariantCulture);
@@ -737,7 +744,7 @@ namespace NINA.Sequencer.Logic {
 
             return string.Create(
                 CultureInfo.InvariantCulture,
-                $"Expression: {Definition} in {id}, References: {References.Count}, Value: {ValueString}"
+                $"Expression: {Definition} in {id}, {string.Join(", ", Parameters.Select(a => a.Key + " = " + a.Value))}, Value: {ValueString}"
             );
         }
 
