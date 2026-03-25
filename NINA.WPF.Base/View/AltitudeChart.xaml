@@ -152,8 +152,8 @@
                     Shape="Circle"
                     Size="0"
                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    TextVerticalAlignment="Top"
-                    Y="{Binding MaxAltitude.Y}">
+                    TextVerticalAlignment="Bottom"
+                    Y="{Binding MaxAltitude.Y, Converter={StaticResource ClampDoubleConverter}, ConverterParameter='10|90'}">
                     <oxy:PointAnnotation.TextHorizontalAlignment>
                         <MultiBinding Converter="{StaticResource MeridianTextAlignmentConverter}">
                             <Binding Source="{StaticResource proxy}" Path="Data.Ticker.OxyNow" />

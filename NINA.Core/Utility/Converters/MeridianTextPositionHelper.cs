@@ -20,6 +20,7 @@ namespace NINA.Core.Utility.Converters {
         private const double OneAndHalfHours = 0.0625; // ~1.5 hours in OxyPlot datetime units (1 day = 1.0)
         private const double MarginWhenNowIsRight = 0.05; // Margin (~1.2 hours) to provide clearance before Now line including text width
         private const double MarginWhenNowIsLeft = 0.06; // Large margin (~1.5 hours) to clear vertical "Now" label
+        private const double TextWidthMargin = 0.08; // Approximate text width (~2 hours) to prevent overflow at edges
 
         public enum PositioningStrategy {
             CenterOnMeridian,
@@ -52,12 +53,26 @@ namespace NINA.Core.Utility.Converters {
         }
 
         public static double GetXPosition(double nowTime, double meridianTime, PositioningStrategy strategy) {
-            return strategy switch {
+            double position = strategy switch {
                 PositioningStrategy.CenterOnMeridian => meridianTime,
                 PositioningStrategy.OffsetRight => nowTime - MarginWhenNowIsRight,
                 PositioningStrategy.OffsetLeft => nowTime + MarginWhenNowIsLeft,
                 _ => meridianTime
             };
+
+            // Clamp X position to prevent text from going offscreen
+            // When using Left alignment (OffsetLeft), text extends rightward, so leave margin on right
+            // When using Right alignment (OffsetRight), text extends leftward, so leave margin on left
+            // Assume chart spans approximately 1.0 unit (24 hours)
+            if (strategy == PositioningStrategy.OffsetLeft) {
+                // Text extends to the right, ensure position + text width stays within bounds
+                position = Math.Min(position, 1.0 - TextWidthMargin);
+            } else if (strategy == PositioningStrategy.OffsetRight) {
+                // Text extends to the left, ensure position - text width stays within bounds
+                position = Math.Max(position, TextWidthMargin);
+            }
+
+            return position;
         }
     }
 }

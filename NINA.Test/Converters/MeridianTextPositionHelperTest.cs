@@ -155,5 +155,37 @@ namespace NINA.Test.Converters {
             // Assert
             result.Should().BeApproximately(expectedPosition, 0.001);
         }
+
+        [Test]
+        public void GetXPosition_OffsetLeftNearRightEdge_ClampsToPreventOverflow() {
+            // Arrange - Now is at 0.95 (22:48), meridian at 0.96
+            double nowTime = 0.95;
+            double meridianTime = 0.96;
+            var strategy = MeridianTextPositionHelper.GetPositioningStrategy(nowTime, meridianTime);
+
+            // Act
+            var result = MeridianTextPositionHelper.GetXPosition(nowTime, meridianTime, strategy);
+
+            // Assert
+            strategy.Should().Be(MeridianTextPositionHelper.PositioningStrategy.OffsetLeft);
+            // Would normally be 0.95 + 0.06 = 1.01, but should be clamped to 1.0 - 0.08 = 0.92
+            result.Should().BeLessThan(0.93);
+        }
+
+        [Test]
+        public void GetXPosition_OffsetRightNearLeftEdge_ClampsToPreventOverflow() {
+            // Arrange - Now is at 0.05 (01:12), meridian at 0.04
+            double nowTime = 0.05;
+            double meridianTime = 0.04;
+            var strategy = MeridianTextPositionHelper.GetPositioningStrategy(nowTime, meridianTime);
+
+            // Act
+            var result = MeridianTextPositionHelper.GetXPosition(nowTime, meridianTime, strategy);
+
+            // Assert
+            strategy.Should().Be(MeridianTextPositionHelper.PositioningStrategy.OffsetRight);
+            // Would normally be 0.05 - 0.05 = 0.0, but should be clamped to >= 0.08
+            result.Should().BeGreaterThan(0.07);
+        }
     }
 }
