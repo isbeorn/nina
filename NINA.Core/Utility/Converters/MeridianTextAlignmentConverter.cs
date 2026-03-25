@@ -27,31 +27,13 @@ namespace NINA.Core.Utility.Converters {
             }
 
             if (values[0] is double nowTime && values[1] is double meridianTime) {
-                if (double.IsNaN(nowTime) || double.IsNaN(meridianTime)) {
-                    return OxyPlot.HorizontalAlignment.Center;
-                }
+                var strategy = MeridianTextPositionHelper.GetPositioningStrategy(nowTime, meridianTime);
 
-                // Calculate distance between Now and meridian
-                double distance = Math.Abs(nowTime - meridianTime);
-                double oneAndHalfHours = 0.0625; // ~1.5 hours
-
-                // If they're far apart (> 1.5 hours), center text on meridian
-                if (distance > oneAndHalfHours) {
-                    return OxyPlot.HorizontalAlignment.Center;
-                }
-
-                // They're close (< 1.5 hours), position to avoid Now line
-                double signedDistance = nowTime - meridianTime;
-
-                if (signedDistance > 0) {
-                    // Now is to the RIGHT of meridian
-                    // Use Right alignment so text ends at the Now line
-                    return OxyPlot.HorizontalAlignment.Right;
-                } else {
-                    // Now is to the LEFT of meridian
-                    // Use Left alignment so text starts after the Now line
-                    return OxyPlot.HorizontalAlignment.Left;
-                }
+                return strategy switch {
+                    MeridianTextPositionHelper.PositioningStrategy.OffsetRight => OxyPlot.HorizontalAlignment.Right,
+                    MeridianTextPositionHelper.PositioningStrategy.OffsetLeft => OxyPlot.HorizontalAlignment.Left,
+                    _ => OxyPlot.HorizontalAlignment.Center
+                };
             }
 
             return OxyPlot.HorizontalAlignment.Center;
