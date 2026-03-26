@@ -27,6 +27,7 @@ This allows you to safely return to a stable release if needed.
 - When updating the application, the color schema upgrades now properly apply updated or added colors
 - The native driver for SBIG cameras now provides the proper electrons/ADU value for the `EGAIN` keyword in image metadata
 - Fixed excessive debug logging after disconnecting the OpenMeteo weather client
+- Fixed "Slew To Alt/Az" sequence instruction incorrectly using SlewToCoordinatesAsync instead of SlewToAltAzAsync
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
