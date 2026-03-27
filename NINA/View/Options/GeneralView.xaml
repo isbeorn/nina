@@ -515,6 +515,18 @@
                             ItemsSource="{Binding ColorSchemas.Items}"
                             SelectedItem="{Binding ColorSchema}" />
 
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblColoredContainerBorders}" />
+                            <CheckBox
+                                Margin="0,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                IsChecked="{Binding Source={StaticResource OptionsProxy}, Path=Data.ActiveProfile.ApplicationSettings.ColoredContainerBorders, Mode=TwoWay}" />
+                        </StackPanel>
+
                         <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                             <TextBlock
                                 Width="170"
@@ -739,6 +751,17 @@
                             DisplayMemberPath="Name"
                             ItemsSource="{Binding ColorSchemas.Items}"
                             SelectedItem="{Binding AltColorSchema}" />
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblColoredContainerBorders}" />
+                            <CheckBox
+                                Margin="0,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                IsChecked="{Binding Source={StaticResource OptionsProxy}, Path=Data.ActiveProfile.ApplicationSettings.ColoredContainerBorders, Mode=TwoWay}" />
+                        </StackPanel>
                         <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                             <TextBlock
                                 Width="170"

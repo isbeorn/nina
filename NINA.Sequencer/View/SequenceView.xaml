@@ -863,6 +863,11 @@
                                         <Setter TargetName="ContainerSideBorder" Property="Visibility" Value="Collapsed" />
                                         <Setter TargetName="ContainerBottomBorder" Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ApplicationSettings.ColoredContainerBorders}" Value="False">
+                                        <Setter TargetName="Bd" Property="BorderThickness" Value="0,0,0,0" />
+                                        <Setter TargetName="ContainerSideBorder" Property="BorderThickness" Value="0,0,0,0" />
+                                        <Setter TargetName="ContainerBottomBorder" Property="BorderThickness" Value="0,0,0,15" />
+                                    </DataTrigger>
                                     <Trigger Property="IsSelected" Value="true">
                                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
                                     </Trigger>
