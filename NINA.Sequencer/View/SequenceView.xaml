@@ -24,6 +24,7 @@
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:wpfbehaviors="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
     xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    xmlns:converter="clr-namespace:NINA.View.Sequencer.Converter"
     x:Name="UC"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -37,6 +38,7 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converter:TreeViewDepthToColorConverter x:Key="TreeViewDepthToColorConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -808,8 +810,8 @@
                                         Margin="0,0,0,0"
                                         Padding="{TemplateBinding Padding}"
                                         Background="{TemplateBinding Background}"
-                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                                        BorderThickness="0,0,0,0"
+                                        BorderBrush="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Converter={StaticResource TreeViewDepthToColorConverter}}"
+                                        BorderThickness="10,0,0,0"
                                         SnapsToDevicePixels="true">
                                         <ContentPresenter
                                             x:Name="PART_Header"
@@ -824,7 +826,7 @@
                                         Grid.Column="1"
                                         Grid.ColumnSpan="2"
                                         Margin="0,0,0,0"
-                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                        BorderBrush="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Converter={StaticResource TreeViewDepthToColorConverter}}"
                                         BorderThickness="10,0,0,0">
                                         <ItemsPresenter
                                             x:Name="ItemsHost"
@@ -842,7 +844,7 @@
                                         Grid.Column="1"
                                         Grid.ColumnSpan="2"
                                         Margin="0,0,0,5"
-                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                        BorderBrush="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Converter={StaticResource TreeViewDepthToColorConverter}}"
                                         BorderThickness="10,0,0,15">
                                         <i:Interaction.Behaviors>
                                             <!--  Drop area above and below the Sequence Container  -->
