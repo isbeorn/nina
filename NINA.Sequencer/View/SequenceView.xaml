@@ -856,17 +856,29 @@
                                                 Enabled="{Binding IsExpanded}" />
                                         </i:Interaction.Behaviors>
                                     </Border>
+                                    <Rectangle
+                                        x:Name="ContainerBottomCapLine"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Width="40"
+                                        Height="2"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        IsHitTestVisible="False"
+                                        Fill="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Converter={StaticResource TreeViewDepthToColorConverter}}" />
                                 </Grid>
                                 <ControlTemplate.Triggers>
 
                                     <DataTrigger Binding="{Binding IsExpanded}" Value="false">
                                         <Setter TargetName="ContainerSideBorder" Property="Visibility" Value="Collapsed" />
                                         <Setter TargetName="ContainerBottomBorder" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="ContainerBottomCapLine" Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ApplicationSettings.ColoredContainerBorders}" Value="False">
                                         <Setter TargetName="Bd" Property="BorderThickness" Value="0,0,0,0" />
                                         <Setter TargetName="ContainerSideBorder" Property="BorderThickness" Value="0,0,0,0" />
                                         <Setter TargetName="ContainerBottomBorder" Property="BorderThickness" Value="0,0,0,15" />
+                                        <Setter TargetName="ContainerBottomCapLine" Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                     <Trigger Property="IsSelected" Value="true">
                                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
