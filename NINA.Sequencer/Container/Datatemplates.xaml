@@ -826,7 +826,7 @@
         <StackPanel Margin="-19,0,0,0" Orientation="Vertical">
             <Grid Height="28" IsHitTestVisible="False">
                 <Rectangle
-                    Height="2"
+                    Height="4"
                     VerticalAlignment="Center"
                     Fill="{StaticResource ButtonBackgroundBrush}" />
                 <Rectangle
@@ -904,7 +904,7 @@
         <StackPanel Margin="-19,0,0,0" Orientation="Vertical">
             <Grid Height="28" IsHitTestVisible="False">
                 <Rectangle
-                    Height="2"
+                    Height="4"
                     VerticalAlignment="Center"
                     Fill="{StaticResource ButtonBackgroundBrush}" />
                 <Rectangle
