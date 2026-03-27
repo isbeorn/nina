@@ -22,14 +22,14 @@ namespace NINA.View.Sequencer.Converter {
 
     public class TreeViewDepthToColorConverter : IValueConverter {
         private static readonly Brush[] _colorPalette = new Brush[] {
-            new SolidColorBrush(Color.FromRgb(52, 152, 219)),   // Blue
-            new SolidColorBrush(Color.FromRgb(46, 204, 113)),   // Green
-            new SolidColorBrush(Color.FromRgb(155, 89, 182)),   // Purple
-            new SolidColorBrush(Color.FromRgb(241, 196, 15)),   // Yellow
-            new SolidColorBrush(Color.FromRgb(230, 126, 34)),   // Orange
-            new SolidColorBrush(Color.FromRgb(231, 76, 60)),    // Red
-            new SolidColorBrush(Color.FromRgb(26, 188, 156)),   // Turquoise
-            new SolidColorBrush(Color.FromRgb(149, 165, 166))   // Gray
+            new SolidColorBrush(Color.FromRgb(91, 143, 191)),   // Blue
+            new SolidColorBrush(Color.FromRgb(88, 168, 120)),   // Green
+            new SolidColorBrush(Color.FromRgb(142, 110, 175)),  // Purple
+            new SolidColorBrush(Color.FromRgb(184, 156, 62)),   // Yellow
+            new SolidColorBrush(Color.FromRgb(188, 122, 68)),   // Orange
+            new SolidColorBrush(Color.FromRgb(180, 90, 82)),    // Red
+            new SolidColorBrush(Color.FromRgb(64, 152, 138)),   // Teal
+            new SolidColorBrush(Color.FromRgb(120, 138, 140))   // Gray
         };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {

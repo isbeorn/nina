@@ -811,7 +811,7 @@
                                         Padding="{TemplateBinding Padding}"
                                         Background="{TemplateBinding Background}"
                                         BorderBrush="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Converter={StaticResource TreeViewDepthToColorConverter}}"
-                                        BorderThickness="10,0,0,0"
+                                        BorderThickness="4,0,0,0"
                                         SnapsToDevicePixels="true">
                                         <ContentPresenter
                                             x:Name="PART_Header"
@@ -827,7 +827,7 @@
                                         Grid.ColumnSpan="2"
                                         Margin="0,0,0,0"
                                         BorderBrush="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Converter={StaticResource TreeViewDepthToColorConverter}}"
-                                        BorderThickness="10,0,0,0">
+                                        BorderThickness="4,0,0,0">
                                         <ItemsPresenter
                                             x:Name="ItemsHost"
                                             Margin="0,0,0,15"
@@ -845,7 +845,7 @@
                                         Grid.ColumnSpan="2"
                                         Margin="0,0,0,5"
                                         BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                                        BorderThickness="10,0,0,15">
+                                        BorderThickness="4,0,0,15">
                                         <i:Interaction.Behaviors>
                                             <!--  Drop area above and below the Sequence Container  -->
                                             <behaviors:DragOverBehavior
