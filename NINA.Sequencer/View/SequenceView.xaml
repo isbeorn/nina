@@ -844,7 +844,7 @@
                                         Grid.Column="1"
                                         Grid.ColumnSpan="2"
                                         Margin="0,0,0,5"
-                                        BorderBrush="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Converter={StaticResource TreeViewDepthToColorConverter}}"
+                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
                                         BorderThickness="10,0,0,15">
                                         <i:Interaction.Behaviors>
                                             <!--  Drop area above and below the Sequence Container  -->
