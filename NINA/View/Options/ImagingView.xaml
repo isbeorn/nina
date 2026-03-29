@@ -1184,6 +1184,17 @@
                                 MinWidth="480"
                                 MinHeight="20"
                                 VerticalAlignment="Center"
+                                Text="{ns:Loc LblColoredContainerBorders}" />
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding Source={StaticResource OptionsProxy}, Path=Data.ActiveProfile.ApplicationSettings.ColoredContainerBorders, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="480"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
                                 Text="{ns:Loc LblSupressSaveExposureCountMsg}">
                                 <TextBlock.ToolTip>
                                     <TextBlock Text="{ns:Loc LblSupressSaveExposureCountTooltip}" />

@@ -34,5 +34,6 @@ namespace NINA.Profile.Interfaces {
         int PageSize { get; set; }
         NotificationWorkArea NotificationWorkArea { get; set; }
         NotificationCorner NotificationCorner { get; set; }
+        bool ColoredContainerBorders { get; set; }
     }
 }
