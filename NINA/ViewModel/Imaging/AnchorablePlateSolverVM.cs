@@ -115,62 +115,7 @@ namespace NINA.ViewModel.Imaging {
                 SnapBin = new BinningMode(profileService.ActiveProfile.PlateSolveSettings.Binning, profileService.ActiveProfile.PlateSolveSettings.Binning);
                 SnapGain = profileService.ActiveProfile.PlateSolveSettings.Gain;
             };
-
-#if DEBUG
-            LoadDebugPlateSolveResults();
-#endif
         }
-
-#if DEBUG
-        private void LoadDebugPlateSolveResults() {
-            var now = DateTime.Now;
-
-            var sampleResults = new[] {
-                new PlateSolveResult(now) {
-                    Coordinates = new NINA.Astrometry.Coordinates(10.0, 20.0, NINA.Astrometry.Epoch.J2000, NINA.Astrometry.Coordinates.RAType.Hours),
-                    Success = true,
-                    Pixscale = 2.0,
-                    Radius = 1.234,
-                    Separation = new NINA.Astrometry.Separation {
-                        RA = NINA.Astrometry.Angle.ByDegree(0.5),
-                        Dec = NINA.Astrometry.Angle.ByDegree(0.1),
-                        Distance = NINA.Astrometry.Angle.ByDegree(0.4)
-                    },
-                    PositionAngle = 45.123
-                },
-                new PlateSolveResult(now.AddMinutes(-5)) {
-                    Coordinates = new NINA.Astrometry.Coordinates(11.0, 21.0, NINA.Astrometry.Epoch.J2000, NINA.Astrometry.Coordinates.RAType.Hours),
-                    Success = false,
-                    Pixscale = 1.5,
-                    Radius = 0.987,
-                    Separation = new NINA.Astrometry.Separation {
-                        RA = NINA.Astrometry.Angle.ByDegree(-0.6),
-                        Dec = NINA.Astrometry.Angle.ByDegree(-0.2),
-                        Distance = NINA.Astrometry.Angle.ByDegree(0.4)
-                    },
-                    PositionAngle = 88.0
-                },
-                new PlateSolveResult(now.AddMinutes(-10)) {
-                    Coordinates = new NINA.Astrometry.Coordinates(12.0, 22.0, NINA.Astrometry.Epoch.J2000, NINA.Astrometry.Coordinates.RAType.Hours),
-                    Success = true,
-                    Pixscale = 2.5,
-                    Radius = 1.678,
-                    Separation = new NINA.Astrometry.Separation {
-                        RA = NINA.Astrometry.Angle.ByDegree(0.1),
-                        Dec = NINA.Astrometry.Angle.ByDegree(0.05),
-                        Distance = NINA.Astrometry.Angle.ByDegree(0.05)
-                    },
-                    PositionAngle = 100.99
-                }
-            };
-
-            foreach (var sampleResult in sampleResults) {
-                PlateSolveResultList.Add(sampleResult);
-            }
-
-            PlateSolveResult = sampleResults.First();
-        }
-#endif
 
         public CameraInfo CameraInfo {
             get => cameraInfo ?? DeviceInfo.CreateDefaultInstance<CameraInfo>();
