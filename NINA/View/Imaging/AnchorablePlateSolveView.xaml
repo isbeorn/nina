@@ -40,6 +40,27 @@
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
+        <Style
+            x:Key="PersistentPlateSolveSelectionCell"
+            BasedOn="{StaticResource CenteredDataGridCell}"
+            TargetType="{x:Type DataGridCell}">
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
         <CollectionViewSource x:Key="GridItems" Source="{Binding PlateSolveResultList}">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription Direction="Descending" PropertyName="SolveTime" />
@@ -228,14 +249,14 @@
                         <DataGridTextColumn
                             Width="58"
                             Binding="{Binding SolveTime, StringFormat=\{0:HH:mm:ss\}}"
-                            CellStyle="{StaticResource CenteredDataGridCell}"
+                            CellStyle="{StaticResource PersistentPlateSolveSelectionCell}"
                             ElementStyle="{StaticResource CompactPlateSolveText}"
                             Header="{ns:Loc LblTime}"
                             IsReadOnly="True"
                             SortDirection="Ascending" />
                         <DataGridTemplateColumn
                             Width="18"
-                            CellStyle="{StaticResource CenteredDataGridCell}"
+                            CellStyle="{StaticResource PersistentPlateSolveSelectionCell}"
                             IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -253,27 +274,27 @@
                         <DataGridTextColumn
                             Width="70"
                             Binding="{Binding Coordinates.RAString, FallbackValue=--}"
-                            CellStyle="{StaticResource CenteredDataGridCell}"
+                            CellStyle="{StaticResource PersistentPlateSolveSelectionCell}"
                             ElementStyle="{StaticResource CompactPlateSolveText}"
                             Header="{ns:Loc LblRA}"
                             IsReadOnly="True" />
                         <DataGridTextColumn
                             Width="78"
                             Binding="{Binding Coordinates.DecString, FallbackValue=--}"
-                            CellStyle="{StaticResource CenteredDataGridCell}"
+                            CellStyle="{StaticResource PersistentPlateSolveSelectionCell}"
                             ElementStyle="{StaticResource CompactPlateSolveText}"
                             Header="{ns:Loc LblDec}"
                             IsReadOnly="True" />
                         <DataGridTextColumn
                             Width="82"
                             Binding="{Binding Separation.Distance, FallbackValue=--}"
-                            CellStyle="{StaticResource CenteredDataGridCell}"
+                            CellStyle="{StaticResource PersistentPlateSolveSelectionCell}"
                             ElementStyle="{StaticResource CompactPlateSolveText}"
                             Header="{ns:Loc LblErrorDistance}"
                             IsReadOnly="True" />
                         <DataGridTextColumn
                             Width="98"
-                            CellStyle="{StaticResource CenteredDataGridCell}"
+                            CellStyle="{StaticResource PersistentPlateSolveSelectionCell}"
                             ElementStyle="{StaticResource CompactPlateSolveText}"
                             Header="{ns:Loc LblRAPixError}"
                             IsReadOnly="True">
@@ -286,7 +307,7 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn
                             Width="102"
-                            CellStyle="{StaticResource CenteredDataGridCell}"
+                            CellStyle="{StaticResource PersistentPlateSolveSelectionCell}"
                             ElementStyle="{StaticResource CompactPlateSolveText}"
                             Header="{ns:Loc LblDecPixError}"
                             IsReadOnly="True">
@@ -300,7 +321,7 @@
                         <DataGridTextColumn
                             Width="64"
                             Binding="{Binding PositionAngle, StringFormat=\{0:0.00\}}"
-                            CellStyle="{StaticResource CenteredDataGridCell}"
+                            CellStyle="{StaticResource PersistentPlateSolveSelectionCell}"
                             ElementStyle="{StaticResource CompactPlateSolveText}"
                             Header="{ns:Loc LblRotation}"
                             IsReadOnly="True" />
