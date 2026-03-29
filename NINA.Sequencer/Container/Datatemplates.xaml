@@ -824,22 +824,22 @@
 
     <HierarchicalDataTemplate DataType="{x:Type local:TargetAreaContainer}" ItemsSource="{Binding Items}">
         <StackPanel Margin="-19,0,0,0" Orientation="Vertical">
-            <Grid Height="35" IsHitTestVisible="False">
+            <Grid Height="28" IsHitTestVisible="False">
                 <Rectangle
-                    Width="25"
-                    Height="25"
+                    Height="4"
+                    VerticalAlignment="Center"
+                    Fill="{StaticResource ButtonBackgroundBrush}" />
+                <Rectangle
+                    Width="18"
+                    Height="18"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Fill="{StaticResource TertiaryBackgroundBrush}"
+                    Fill="{StaticResource ButtonBackgroundBrush}"
                     RenderTransformOrigin="0.5 0.5">
                     <Rectangle.RenderTransform>
                         <RotateTransform Angle="45" />
                     </Rectangle.RenderTransform>
                 </Rectangle>
-                <Border
-                    VerticalAlignment="Center"
-                    BorderBrush="{StaticResource TertiaryBackgroundBrush}"
-                    BorderThickness="0,5,0,0" />
             </Grid>
             <Grid Background="{StaticResource BackgroundBrush}" Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}">
                 <StackPanel
@@ -902,22 +902,22 @@
     </HierarchicalDataTemplate>
     <HierarchicalDataTemplate DataType="{x:Type local:EndAreaContainer}" ItemsSource="{Binding Items}">
         <StackPanel Margin="-19,0,0,0" Orientation="Vertical">
-            <Grid Height="35" IsHitTestVisible="False">
+            <Grid Height="28" IsHitTestVisible="False">
                 <Rectangle
-                    Width="25"
-                    Height="25"
+                    Height="4"
+                    VerticalAlignment="Center"
+                    Fill="{StaticResource ButtonBackgroundBrush}" />
+                <Rectangle
+                    Width="18"
+                    Height="18"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Fill="{StaticResource TertiaryBackgroundBrush}"
+                    Fill="{StaticResource ButtonBackgroundBrush}"
                     RenderTransformOrigin="0.5 0.5">
                     <Rectangle.RenderTransform>
                         <RotateTransform Angle="45" />
                     </Rectangle.RenderTransform>
                 </Rectangle>
-                <Border
-                    VerticalAlignment="Center"
-                    BorderBrush="{StaticResource TertiaryBackgroundBrush}"
-                    BorderThickness="0,5,0,0" />
             </Grid>
             <Grid
                 MinHeight="100"

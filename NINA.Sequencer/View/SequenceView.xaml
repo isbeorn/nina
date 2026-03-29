@@ -13,6 +13,7 @@
     xmlns:alt="clr-namespace:NINA.WPF.Base.View;assembly=NINA.WPF.Base"
     xmlns:behaviors="clr-namespace:NINA.Sequencer.Behaviors"
     xmlns:cont="clr-namespace:NINA.Sequencer.Container"
+    xmlns:converter="clr-namespace:NINA.View.Sequencer.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA.View.Sequencer"
@@ -37,6 +38,7 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converter:TreeViewDepthToColorConverter x:Key="TreeViewDepthToColorConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -808,9 +810,14 @@
                                         Margin="0,0,0,0"
                                         Padding="{TemplateBinding Padding}"
                                         Background="{TemplateBinding Background}"
-                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                                        BorderThickness="0,0,0,0"
+                                        BorderThickness="4,0,0,0"
                                         SnapsToDevicePixels="true">
+                                        <Border.BorderBrush>
+                                            <MultiBinding Converter="{StaticResource TreeViewDepthToColorConverter}">
+                                                <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
+                                                <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                            </MultiBinding>
+                                        </Border.BorderBrush>
                                         <ContentPresenter
                                             x:Name="PART_Header"
                                             Margin="-1,-5,0,-5"
@@ -819,22 +826,36 @@
                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                     </Border>
                                     <Border
-                                        x:Name="ContainerSideBorder"
+                                        x:Name="ContainerColorSideBorder"
                                         Grid.Row="1"
                                         Grid.Column="1"
                                         Grid.ColumnSpan="2"
                                         Margin="0,0,0,0"
-                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                                        BorderThickness="10,0,0,0">
-                                        <ItemsPresenter
-                                            x:Name="ItemsHost"
-                                            Margin="0,0,0,15"
-                                            HorizontalAlignment="Stretch">
-                                            <!--  This will allow drops into the start, target and end areas when items are inside with containers - without it some drops are lost into the void  -->
-                                            <i:Interaction.Behaviors>
-                                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
-                                            </i:Interaction.Behaviors>
-                                        </ItemsPresenter>
+                                        BorderThickness="4,0,0,0">
+                                        <Border.BorderBrush>
+                                            <MultiBinding Converter="{StaticResource TreeViewDepthToColorConverter}">
+                                                <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
+                                                <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                            </MultiBinding>
+                                        </Border.BorderBrush>
+                                        <Border
+                                            x:Name="ContainerSideBorder"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Grid.ColumnSpan="2"
+                                            Margin="0,0,0,0"
+                                            BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                            BorderThickness="10,0,0,0">
+                                            <ItemsPresenter
+                                                x:Name="ItemsHost"
+                                                Margin="0,0,0,15"
+                                                HorizontalAlignment="Stretch">
+                                                <!--  This will allow drops into the start, target and end areas when items are inside with containers - without it some drops are lost into the void  -->
+                                                <i:Interaction.Behaviors>
+                                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                                </i:Interaction.Behaviors>
+                                            </ItemsPresenter>
+                                        </Border>
                                     </Border>
                                     <Border
                                         x:Name="ContainerBottomBorder"
@@ -843,7 +864,7 @@
                                         Grid.ColumnSpan="2"
                                         Margin="0,0,0,5"
                                         BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                                        BorderThickness="10,0,0,15">
+                                        BorderThickness="4,0,0,15">
                                         <i:Interaction.Behaviors>
                                             <!--  Drop area above and below the Sequence Container  -->
                                             <behaviors:DragOverBehavior
@@ -854,12 +875,37 @@
                                                 Enabled="{Binding IsExpanded}" />
                                         </i:Interaction.Behaviors>
                                     </Border>
+                                    <Rectangle
+                                        x:Name="ContainerBottomCapLine"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Width="40"
+                                        Height="2"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        IsHitTestVisible="False">
+                                        <Rectangle.Fill>
+                                            <MultiBinding Converter="{StaticResource TreeViewDepthToColorConverter}">
+                                                <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
+                                                <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                            </MultiBinding>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
                                 </Grid>
                                 <ControlTemplate.Triggers>
 
                                     <DataTrigger Binding="{Binding IsExpanded}" Value="false">
                                         <Setter TargetName="ContainerSideBorder" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="ContainerColorSideBorder" Property="Visibility" Value="Collapsed" />
                                         <Setter TargetName="ContainerBottomBorder" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="ContainerBottomCapLine" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ApplicationSettings.ColoredContainerBorders}" Value="False">
+                                        <Setter TargetName="Bd" Property="BorderThickness" Value="0,0,0,0" />
+                                        <Setter TargetName="ContainerColorSideBorder" Property="BorderThickness" Value="0,0,0,0" />
+                                        <Setter TargetName="ContainerSideBorder" Property="BorderThickness" Value="10,0,0,0" />
+                                        <Setter TargetName="ContainerBottomBorder" Property="BorderThickness" Value="0,0,0,15" />
+                                        <Setter TargetName="ContainerBottomCapLine" Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                     <Trigger Property="IsSelected" Value="true">
                                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
