@@ -93,6 +93,8 @@ This allows you to safely return to a stable release if needed.
   - Added native drivers for Moravian Instruments cameras and integrated filter wheels
 
 ### **User Interface & Usability**
+- **Sequencer**
+    - Each intstruction container now has a colored border on the left side to better differentiate between them. This can be disabled in Options > Imaging > Sequence > Colored Container Borders
 - **Sky Atlas Improvements**  
   - Deep sky objects can now be filtered and sorted by their upper transit time
 - **Framing Assistant Improvements** 
