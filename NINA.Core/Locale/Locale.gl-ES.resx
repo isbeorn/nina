@@ -3337,6 +3337,12 @@ Move o rectangulo sobre a parte do Encadre no que queres facer subsampling. A c�
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Tránsito Sur</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Transit time</value>
   </data>
@@ -6520,6 +6526,9 @@ Isto avalíase DESPOIS da configuración "Aparcar a montura antes de mover a per
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>Forza do quentador de orballo obxectivo</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Aceleración de Hardware</value>
