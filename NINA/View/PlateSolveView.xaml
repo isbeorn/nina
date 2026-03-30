@@ -53,7 +53,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Visibility="{Binding PlateSolveResult, Converter={StaticResource InverseNullToVisibilityConverter}}" />
-        <StackPanel Orientation="Vertical" Margin="10,5,10,10">
+        <StackPanel Margin="10,5,10,10" Orientation="Vertical">
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblCenterRA}" />
@@ -223,37 +223,37 @@
                     Header="{ns:Loc LblDec}"
                     IsReadOnly="True" />
                 <DataGridTextColumn
-                    Width="70"
+                    Width="90"
                     Binding="{Binding Separation.Distance, FallbackValue=--}"
                     CellStyle="{StaticResource CenteredDataGridCell}"
                     Header="{ns:Loc LblErrorDistance}"
                     IsReadOnly="True" />
                 <DataGridTextColumn
-                    Width="90"
+                    Width="120"
                     CellStyle="{StaticResource CenteredDataGridCell}"
                     Header="{ns:Loc LblRAPixError}"
                     IsReadOnly="True">
                     <DataGridTextColumn.Binding>
                         <MultiBinding StringFormat="{}{0} ({1})">
-                            <Binding Path="RaErrorString" FallbackValue="--" />
-                            <Binding Path="RaPixError" Converter="{StaticResource NaNToDoubleDashConverter}" />
+                            <Binding FallbackValue="--" Path="RaErrorString" />
+                            <Binding Converter="{StaticResource NaNToDoubleDashConverter}" Path="RaPixError" />
                         </MultiBinding>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
                 <DataGridTextColumn
-                    Width="90"
+                    Width="120"
                     CellStyle="{StaticResource CenteredDataGridCell}"
                     Header="{ns:Loc LblDecPixError}"
                     IsReadOnly="True">
                     <DataGridTextColumn.Binding>
                         <MultiBinding StringFormat="{}{0} ({1})">
-                            <Binding Path="DecErrorString" FallbackValue="--" />
-                            <Binding Path="DecPixError" Converter="{StaticResource NaNToDoubleDashConverter}" />
+                            <Binding FallbackValue="--" Path="DecErrorString" />
+                            <Binding Converter="{StaticResource NaNToDoubleDashConverter}" Path="DecPixError" />
                         </MultiBinding>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
                 <DataGridTextColumn
-                    Width="*"
+                    Width="70"
                     Binding="{Binding PositionAngle, StringFormat=\{0:0.00\}}"
                     CellStyle="{StaticResource CenteredDataGridCell}"
                     Header="{ns:Loc LblRotation}"
