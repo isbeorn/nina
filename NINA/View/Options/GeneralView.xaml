@@ -514,7 +514,6 @@
                             DisplayMemberPath="Name"
                             ItemsSource="{Binding ColorSchemas.Items}"
                             SelectedItem="{Binding ColorSchema}" />
-
                         <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                             <TextBlock
                                 Width="170"
