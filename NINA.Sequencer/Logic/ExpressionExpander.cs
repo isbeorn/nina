@@ -14,6 +14,7 @@
 
 using NINA.Sequencer.SequenceItem;
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace NINA.Sequencer.Logic {
@@ -38,7 +39,7 @@ namespace NINA.Sequencer.Logic {
                         return ex.StringValue;
                     } else if (ex.Value is double doubleValue) {
                         double truncated = Math.Truncate(doubleValue * 100000) / 100000;
-                        return truncated.ToString("G10");
+                        return truncated.ToString("G10", CultureInfo.InvariantCulture);
                     } else {
                         return ex.ValueString;
                     }

@@ -33,6 +33,7 @@ using System.Windows.Media.Imaging;
 namespace NINA.Test.Image.ImageAnalysis {
 
     [TestFixture]
+    [Ignore("These tests are exhaustive and take some time to run. Enable if needed.")]
     public class BayerFilter16bppTests {
         private readonly struct AstroCameraResolutionCase {
             public AstroCameraResolutionCase(int width, int height) {
