@@ -53,7 +53,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Visibility="{Binding PlateSolveResult, Converter={StaticResource InverseNullToVisibilityConverter}}" />
-        <StackPanel Orientation="Vertical" Margin="10,5,10,10">
+        <StackPanel Margin="10,5,10,10" Orientation="Vertical">
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblCenterRA}" />
@@ -194,9 +194,8 @@
                     IsReadOnly="True"
                     SortDirection="Ascending" />
                 <DataGridTemplateColumn
-                    Width="25"
+                    Width="22"
                     CellStyle="{StaticResource CenteredDataGridCell}"
-                    Header="{ns:Loc LblSuccess}"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -224,37 +223,37 @@
                     Header="{ns:Loc LblDec}"
                     IsReadOnly="True" />
                 <DataGridTextColumn
-                    Width="70"
+                    Width="90"
                     Binding="{Binding Separation.Distance, FallbackValue=--}"
                     CellStyle="{StaticResource CenteredDataGridCell}"
                     Header="{ns:Loc LblErrorDistance}"
                     IsReadOnly="True" />
                 <DataGridTextColumn
-                    Width="70"
-                    Binding="{Binding RaErrorString}"
-                    CellStyle="{StaticResource CenteredDataGridCell}"
-                    Header="{ns:Loc LblRAError}"
-                    IsReadOnly="True" />
-                <DataGridTextColumn
-                    Width="70"
-                    Binding="{Binding DecErrorString}"
-                    CellStyle="{StaticResource CenteredDataGridCell}"
-                    Header="{ns:Loc LblDecError}"
-                    IsReadOnly="True" />
-                <DataGridTextColumn
-                    Width="40"
-                    Binding="{Binding RaPixError, Converter={StaticResource NaNToDoubleDashConverter}}"
+                    Width="120"
                     CellStyle="{StaticResource CenteredDataGridCell}"
                     Header="{ns:Loc LblRAPixError}"
-                    IsReadOnly="True" />
+                    IsReadOnly="True">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding StringFormat="{}{0} ({1})">
+                            <Binding FallbackValue="--" Path="RaErrorString" />
+                            <Binding Converter="{StaticResource NaNToDoubleDashConverter}" Path="RaPixError" />
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
                 <DataGridTextColumn
-                    Width="40"
-                    Binding="{Binding DecPixError, Converter={StaticResource NaNToDoubleDashConverter}}"
+                    Width="120"
                     CellStyle="{StaticResource CenteredDataGridCell}"
                     Header="{ns:Loc LblDecPixError}"
-                    IsReadOnly="True" />
+                    IsReadOnly="True">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding StringFormat="{}{0} ({1})">
+                            <Binding FallbackValue="--" Path="DecErrorString" />
+                            <Binding Converter="{StaticResource NaNToDoubleDashConverter}" Path="DecPixError" />
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
                 <DataGridTextColumn
-                    Width="40"
+                    Width="70"
                     Binding="{Binding PositionAngle, StringFormat=\{0:0.00\}}"
                     CellStyle="{StaticResource CenteredDataGridCell}"
                     Header="{ns:Loc LblRotation}"
