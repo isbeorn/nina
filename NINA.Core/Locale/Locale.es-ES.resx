@@ -3327,6 +3327,12 @@ Mueve el rectángulo sobre la parte del Encuadre que quieras hacer subsampling. 
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Tránsito Sur</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Tiempo de tránsito</value>
   </data>
@@ -6506,6 +6512,9 @@ Esto se evalúa DESPUÉS del ajuste "Aparcar montura antes de mover la ventana".
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>Potencia a alcanzar por el antirrocío</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Aceleración por hardware</value>
