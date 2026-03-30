@@ -7354,4 +7354,10 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque√
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
     <value>No se ha podido guardar la imagen. Es posible que el destino no tenga espacio libre en disco.</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>Norte</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>Sur</value>
+  </data>
 </root>

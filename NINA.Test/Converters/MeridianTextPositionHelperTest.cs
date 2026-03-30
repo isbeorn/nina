@@ -1,0 +1,169 @@
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using FluentAssertions;
+using NINA.Core.Utility.Converters;
+using NUnit.Framework;
+
+namespace NINA.Test.Converters {
+
+    [TestFixture]
+    public class MeridianTextPositionHelperTest {
+
+        [Test]
+        public void GetPositioningStrategy_WhenNowIsNaN_ReturnsCenterOnMeridian() {
+            // Arrange
+            double nowTime = double.NaN;
+            double meridianTime = 0.5;
+
+            // Act
+            var result = MeridianTextPositionHelper.GetPositioningStrategy(nowTime, meridianTime);
+
+            // Assert
+            result.Should().Be(MeridianTextPositionHelper.PositioningStrategy.CenterOnMeridian);
+        }
+
+        [Test]
+        public void GetPositioningStrategy_WhenMeridianIsNaN_ReturnsCenterOnMeridian() {
+            // Arrange
+            double nowTime = 0.5;
+            double meridianTime = double.NaN;
+
+            // Act
+            var result = MeridianTextPositionHelper.GetPositioningStrategy(nowTime, meridianTime);
+
+            // Assert
+            result.Should().Be(MeridianTextPositionHelper.PositioningStrategy.CenterOnMeridian);
+        }
+
+        [Test]
+        public void GetPositioningStrategy_WhenDistanceIsGreaterThan1Point5Hours_ReturnsCenterOnMeridian() {
+            // Arrange
+            double nowTime = 0.5;
+            double meridianTime = 0.6; // 0.1 difference = ~2.4 hours
+
+            // Act
+            var result = MeridianTextPositionHelper.GetPositioningStrategy(nowTime, meridianTime);
+
+            // Assert
+            result.Should().Be(MeridianTextPositionHelper.PositioningStrategy.CenterOnMeridian);
+        }
+
+        [Test]
+        public void GetPositioningStrategy_WhenNowIsToTheRightOfMeridian_ReturnsOffsetRight() {
+            // Arrange
+            double meridianTime = 0.5;
+            double nowTime = 0.55; // Now is 0.05 ahead (to the right)
+
+            // Act
+            var result = MeridianTextPositionHelper.GetPositioningStrategy(nowTime, meridianTime);
+
+            // Assert
+            result.Should().Be(MeridianTextPositionHelper.PositioningStrategy.OffsetRight);
+        }
+
+        [Test]
+        public void GetPositioningStrategy_WhenNowIsToTheLeftOfMeridian_ReturnsOffsetLeft() {
+            // Arrange
+            double meridianTime = 0.5;
+            double nowTime = 0.45; // Now is 0.05 behind (to the left)
+
+            // Act
+            var result = MeridianTextPositionHelper.GetPositioningStrategy(nowTime, meridianTime);
+
+            // Assert
+            result.Should().Be(MeridianTextPositionHelper.PositioningStrategy.OffsetLeft);
+        }
+
+        [Test]
+        public void GetPositioningStrategy_WhenDistanceIsExactly1Point5Hours_ReturnsOffsetRight() {
+            // Arrange
+            double meridianTime = 0.5;
+            double nowTime = 0.5625; // Exactly 0.0625 ahead (1.5 hours)
+
+            // Act
+            var result = MeridianTextPositionHelper.GetPositioningStrategy(nowTime, meridianTime);
+
+            // Assert
+            result.Should().Be(MeridianTextPositionHelper.PositioningStrategy.OffsetRight);
+        }
+
+        [Test]
+        public void GetXPosition_WhenStrategyCenterOnMeridian_ReturnsMeridianTime() {
+            // Arrange
+            double nowTime = 0.5;
+            double meridianTime = 0.6;
+            var strategy = MeridianTextPositionHelper.PositioningStrategy.CenterOnMeridian;
+
+            // Act
+            var result = MeridianTextPositionHelper.GetXPosition(nowTime, meridianTime, strategy);
+
+            // Assert
+            result.Should().Be(meridianTime);
+        }
+
+        [Test]
+        public void GetXPosition_WhenStrategyOffsetRight_ReturnsNowMinusMargin() {
+            // Arrange
+            double nowTime = 0.5;
+            double meridianTime = 0.45;
+            var strategy = MeridianTextPositionHelper.PositioningStrategy.OffsetRight;
+
+            // Act
+            var result = MeridianTextPositionHelper.GetXPosition(nowTime, meridianTime, strategy);
+
+            // Assert
+            result.Should().BeApproximately(0.45, 0.001); // nowTime - 0.05
+        }
+
+        [Test]
+        public void GetXPosition_WhenStrategyOffsetLeft_ReturnsNowPlusMargin() {
+            // Arrange
+            double nowTime = 0.5;
+            double meridianTime = 0.55;
+            var strategy = MeridianTextPositionHelper.PositioningStrategy.OffsetLeft;
+
+            // Act
+            var result = MeridianTextPositionHelper.GetXPosition(nowTime, meridianTime, strategy);
+
+            // Assert
+            result.Should().BeApproximately(0.56, 0.001); // nowTime + 0.06
+        }
+
+        [Test]
+        [TestCase(0.5, 0.6, 0.6)] // Far apart -> center on meridian
+        [TestCase(0.5, 0.45, 0.45)] // Close, now right -> offset right (nowTime - 0.05)
+        [TestCase(0.5, 0.55, 0.56)] // Close, now left -> offset left (nowTime + 0.06)
+        public void GetXPosition_IntegrationTest_ReturnsExpectedPosition(double nowTime, double meridianTime, double expectedPosition) {
+            // Arrange
+            var strategy = MeridianTextPositionHelper.GetPositioningStrategy(nowTime, meridianTime);
+
+            // Act
+            var result = MeridianTextPositionHelper.GetXPosition(nowTime, meridianTime, strategy);
+
+            // Assert
+            result.Should().BeApproximately(expectedPosition, 0.001);
+        }
+
+        [TestCase(1)]
+        [TestCase(-1)]
+        public void GetXPosition_UsesAbsolutePlotDatesAcrossMidnight(int direction) {
+            var now = OxyPlot.Axes.DateTimeAxis.ToDouble(new DateTime(2026, 9, 10, direction > 0 ? 23 : 0, 30, 0));
+            var meridian = now + direction * 0.01;
+            var strategy = MeridianTextPositionHelper.GetPositioningStrategy(now, meridian);
+            var position = MeridianTextPositionHelper.GetXPosition(now, meridian, strategy);
+            position.Should().BeApproximately(now + (direction > 0 ? 0.06 : -0.05), 1e-9);
+        }
+    }
+}

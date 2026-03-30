@@ -7357,4 +7357,10 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
     <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
 </root>
