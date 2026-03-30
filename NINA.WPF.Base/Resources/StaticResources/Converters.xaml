@@ -92,4 +92,8 @@
     <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
     <converters:ZeroToBooleanTrueConverter x:Key="ZeroToBooleanTrueConverter" />
     <astroConverters:ReverseAngleConverter x:Key="ReverseAngleConverter" />
+    <converters:OxyPlotDateTimeConverter x:Key="OxyPlotDateTimeConverter" />
+    <converters:MeridianXPositionConverter x:Key="MeridianXPositionConverter" />
+    <converters:MeridianTextAlignmentConverter x:Key="MeridianTextAlignmentConverter" />
+    <converters:ClampDoubleConverter x:Key="ClampDoubleConverter" />
 </ResourceDictionary>
