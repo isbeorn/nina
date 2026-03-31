@@ -3319,7 +3319,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>子午線南通過</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
-    <value>North</value>
+    <value>北</value>
   </data>
   <data name="LblSouth" xml:space="preserve">
     <value>South</value>
@@ -6491,7 +6491,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>結露防止ヒーターの電力設定</value>
   </data>
   <data name="LblColoredContainerBorders" xml:space="preserve">
-    <value>Colored Container Borders</value>
+    <value>色付きのコンテナの境界線</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>ハードウェア加速</value>
