@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 using System.Text;
@@ -48,7 +49,7 @@ public static class Program {
 
 internal static class BenchmarkResultsWriter {
     private const string ComparisonResultsFileName = "benchmark-results.txt";
-    private static readonly string[] Headers = ["Method", "Mean", "Error", "StdDev", "Median", "Ratio", "RatioSD", "Allocated", "Alloc Ratio"];
+    private static readonly string[] Headers = ["Thread Count", "Method", "Mean", "Error", "StdDev", "Median", "Ratio", "RatioSD", "Allocated", "Alloc Ratio"];
 
     public static string WriteComparisonSummary(IEnumerable<Summary> summaries, string resultsDirectoryPath, IEnumerable<string> args) {
         Directory.CreateDirectory(resultsDirectoryPath);
@@ -62,20 +63,22 @@ internal static class BenchmarkResultsWriter {
         writer.WriteLine($"Command: {(string.IsNullOrWhiteSpace(commandLine) ? "<none>" : commandLine)}");
         writer.WriteLine();
 
-        bool wroteAnySummary = false;
-        foreach (Summary summary in summaries) {
-            var groups = CreateGroups(summary).ToList();
-            if (groups.Count == 0) {
-                continue;
-            }
+        var groupsByTitle = CreateGroups(summaries)
+            .GroupBy(group => group.Title)
+            .OrderBy(group => group.Key, StringComparer.Ordinal)
+            .ToList();
 
-            wroteAnySummary = true;
-            string title = summary.BenchmarksCases.Length > 0 ? summary.BenchmarksCases[0].Descriptor.Type.Name : summary.Title;
-            writer.WriteLine(title);
-            writer.WriteLine(new string('=', title.Length));
+        if (groupsByTitle.Count == 0) {
+            writer.WriteLine("No benchmarks were executed.");
+            return resultsPath;
+        }
+
+        foreach (var titleGroup in groupsByTitle) {
+            writer.WriteLine(titleGroup.Key);
+            writer.WriteLine(new string('=', titleGroup.Key.Length));
             writer.WriteLine();
 
-            foreach (ComparisonGroup group in groups) {
+            foreach (ComparisonGroup group in titleGroup.OrderBy(group => group.Label, StringComparer.Ordinal)) {
                 writer.WriteLine(group.Label);
                 writer.WriteLine();
                 WriteTable(writer, group.Rows);
@@ -83,37 +86,43 @@ internal static class BenchmarkResultsWriter {
             }
         }
 
-        if (!wroteAnySummary) {
-            writer.WriteLine("No benchmarks were executed.");
-        }
-
         return resultsPath;
     }
 
-    private static IEnumerable<ComparisonGroup> CreateGroups(Summary summary) {
-        return summary.Reports
+    private static IEnumerable<ComparisonGroup> CreateGroups(IEnumerable<Summary> summaries) {
+        return summaries
+            .SelectMany(summary => summary.Reports)
             .Where(report => report.Success && report.ResultStatistics != null)
-            .GroupBy(report => GetGroupKey(report.BenchmarkCase))
-            .Select(group => CreateGroup(group.Key, group.ToList()))
-            .OrderBy(group => group.Label, StringComparer.Ordinal);
+            .GroupBy(report => new {
+                Title = report.BenchmarkCase.Descriptor.Type.Name,
+                Label = GetGroupKey(report.BenchmarkCase)
+            })
+            .Select(group => CreateGroup(group.Key.Title, group.Key.Label, group.ToList()));
     }
 
-    private static ComparisonGroup CreateGroup(string key, List<BenchmarkReport> reports) {
-        reports = reports
-            .OrderByDescending(report => report.BenchmarkCase.Descriptor.Baseline)
-            .ThenBy(report => GetDisplayMethodName(report.BenchmarkCase), StringComparer.Ordinal)
-            .ToList();
+    private static ComparisonGroup CreateGroup(string title, string label, List<BenchmarkReport> reports) {
+        var rows = new List<string[]>();
 
-        BenchmarkReport baseline = reports.FirstOrDefault(report => report.BenchmarkCase.Descriptor.Baseline) ?? reports[0];
-        double baselineMean = baseline.ResultStatistics!.Mean;
-        double baselineStdDev = baseline.ResultStatistics.StandardDeviation;
-        long? baselineAllocated = baseline.GcStats.GetBytesAllocatedPerOperation(baseline.BenchmarkCase);
+        foreach (var threadGroup in reports
+            .GroupBy(report => GetThreadCountLabel(report.BenchmarkCase.Job))
+            .OrderBy(group => GetThreadCountSortKey(group.Key))) {
+            List<BenchmarkReport> orderedReports = threadGroup
+                .OrderByDescending(report => report.BenchmarkCase.Descriptor.Baseline)
+                .ThenBy(report => report.BenchmarkCase.Descriptor.WorkloadMethod.Name, StringComparer.Ordinal)
+                .ToList();
 
-        var rows = reports.Select(report => CreateRow(report, baseline, baselineMean, baselineStdDev, baselineAllocated)).ToList();
-        return new ComparisonGroup(key, rows);
+            BenchmarkReport baseline = orderedReports.FirstOrDefault(report => report.BenchmarkCase.Descriptor.Baseline) ?? orderedReports[0];
+            double baselineMean = baseline.ResultStatistics!.Mean;
+            double baselineStdDev = baseline.ResultStatistics.StandardDeviation;
+            long? baselineAllocated = baseline.GcStats.GetBytesAllocatedPerOperation(baseline.BenchmarkCase);
+
+            rows.AddRange(orderedReports.Select(report => CreateRow(report, threadGroup.Key, baseline, baselineMean, baselineStdDev, baselineAllocated)));
+        }
+
+        return new ComparisonGroup(title, label, rows);
     }
 
-    private static string[] CreateRow(BenchmarkReport report, BenchmarkReport baseline, double baselineMean, double baselineStdDev, long? baselineAllocated) {
+    private static string[] CreateRow(BenchmarkReport report, string threadCountLabel, BenchmarkReport baseline, double baselineMean, double baselineStdDev, long? baselineAllocated) {
         var stats = report.ResultStatistics!;
         bool isBaseline = ReferenceEquals(report, baseline);
         long? allocated = report.GcStats.GetBytesAllocatedPerOperation(report.BenchmarkCase);
@@ -125,7 +134,8 @@ internal static class BenchmarkResultsWriter {
             : allocated.Value / (double)baselineAllocated.Value;
 
         return [
-            GetDisplayMethodName(report.BenchmarkCase),
+            threadCountLabel,
+            report.BenchmarkCase.Descriptor.WorkloadMethod.Name,
             FormatDuration(stats.Mean),
             FormatDuration(stats.ConfidenceInterval.Margin),
             FormatDuration(stats.StandardDeviation),
@@ -156,14 +166,20 @@ internal static class BenchmarkResultsWriter {
         return string.Join(", ", groupItems.Select(item => $"{item.Name}: {item.Value}"));
     }
 
-    private static string GetDisplayMethodName(BenchmarkCase benchmarkCase) {
-        string methodName = benchmarkCase.Descriptor.WorkloadMethod.Name;
-        var threadItem = benchmarkCase.Parameters.Items.FirstOrDefault(item => IsThreadParameter(item.Name));
-        if (threadItem == null) {
-            return methodName;
+    private static string GetThreadCountLabel(Job job) {
+        if (!string.IsNullOrWhiteSpace(job.ResolvedId)) {
+            return job.ResolvedId;
         }
 
-        return $"{methodName} (Threads={threadItem.Value})";
+        if (!string.IsNullOrWhiteSpace(job.Id)) {
+            return job.Id;
+        }
+
+        return job.DisplayInfo;
+    }
+
+    private static int GetThreadCountSortKey(string threadCountLabel) {
+        return threadCountLabel == "1" ? 0 : 1;
     }
 
     private static bool IsThreadParameter(string name) {
@@ -257,5 +273,5 @@ internal static class BenchmarkResultsWriter {
         writer.WriteLine(" |");
     }
 
-    private sealed record ComparisonGroup(string Label, List<string[]> Rows);
+    private sealed record ComparisonGroup(string Title, string Label, List<string[]> Rows);
 }

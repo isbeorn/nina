@@ -14,6 +14,7 @@
 
 using Accord.Imaging;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
 using NINA.Image.ImageAnalysis;
@@ -24,9 +25,31 @@ using System.Runtime.InteropServices;
 
 namespace NINA.Benchmarks;
 
+internal sealed class ComparisonBenchmarkConfig : ManualConfig {
+    private static readonly string MultithreadWorkerCount = Math.Max(1, Environment.ProcessorCount - 1).ToString();
+
+    public ComparisonBenchmarkConfig() {
+        AddJob(Job.Default
+            .WithId(MultithreadWorkerCount)
+            .WithLaunchCount(1)
+            .WithWarmupCount(1)
+            .WithIterationCount(3));
+
+        AddJob(Job.Default
+            .WithId("1")
+            .WithLaunchCount(1)
+            .WithWarmupCount(1)
+            .WithIterationCount(3)
+            // Production code uses Max(1, Environment.ProcessorCount - 1). Expose two logical processors
+            // to the benchmark host so the improved implementation resolves to exactly one worker thread.
+            .WithEnvironmentVariable("DOTNET_PROCESSOR_COUNT", "2")
+            .WithEnvironmentVariable("COMPlus_ProcessorCount", "2"));
+    }
+}
+
 [MemoryDiagnoser]
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
-[SimpleJob(launchCount: 1, warmupCount: 1, iterationCount: 3)]
+[Config(typeof(ComparisonBenchmarkConfig))]
 public class DebayerBenchmarks : DebayerBenchmarkBase {
     [Benchmark(Baseline = true)]
     public int OriginalBayerFilter16bpp() {
@@ -34,6 +57,7 @@ public class DebayerBenchmarks : DebayerBenchmarkBase {
         using var processed = filter.Apply(SourceImage!);
         return processed.Width;
     }
+
     [Benchmark]
     public int ImprovedBayerFilter16bpp() {
         var filter = ImagingBenchmarkData.CreateOptimizedBayerFilter(BenchmarkCase);
@@ -44,7 +68,7 @@ public class DebayerBenchmarks : DebayerBenchmarkBase {
 
 [MemoryDiagnoser]
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
-[SimpleJob(launchCount: 1, warmupCount: 1, iterationCount: 3)]
+[Config(typeof(ComparisonBenchmarkConfig))]
 public class CannyBlurredBenchmarks : Gray8BenchmarkBase {
     [Benchmark(Baseline = true)]
     public int OriginalBlurredCannyEdgeDetector() {
@@ -56,6 +80,7 @@ public class CannyBlurredBenchmarks : Gray8BenchmarkBase {
         detector.ApplyInPlace(bitmap);
         return bitmap.Width;
     }
+
     [Benchmark]
     public int ImprovedBlurredCannyEdgeDetector() {
         using var bitmap = ImagingBenchmarkData.CreateGray8Bitmap(BenchmarkCase.Width, BenchmarkCase.Height, SourcePixels!);
@@ -70,7 +95,7 @@ public class CannyBlurredBenchmarks : Gray8BenchmarkBase {
 
 [MemoryDiagnoser]
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
-[SimpleJob(launchCount: 1, warmupCount: 1, iterationCount: 3)]
+[Config(typeof(ComparisonBenchmarkConfig))]
 public class CannyNoBlurBenchmarks : Gray8BenchmarkBase {
     [Benchmark(Baseline = true)]
     public int OriginalNoBlurCannyEdgeDetector() {
@@ -79,6 +104,7 @@ public class CannyNoBlurBenchmarks : Gray8BenchmarkBase {
         detector.ApplyInPlace(bitmap);
         return bitmap.Width;
     }
+
     [Benchmark]
     public int ImprovedNoBlurCannyEdgeDetector() {
         using var bitmap = ImagingBenchmarkData.CreateGray8Bitmap(BenchmarkCase.Width, BenchmarkCase.Height, SourcePixels!);
