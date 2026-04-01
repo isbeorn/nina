@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NINA.Image\NINA.Image.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\NINA.Test\Image\ImageAnalysis\Reference\BayerFilter16bpp.cs" Link="Reference\BayerFilter16bpp.cs" />
+    <Compile Include="..\NINA.Test\Image\ImageAnalysis\Reference\NoBlurCannyEdgeDetector.cs" Link="Reference\NoBlurCannyEdgeDetector.cs" />
+  </ItemGroup>
+
+</Project>

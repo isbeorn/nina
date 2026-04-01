@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -96,6 +96,8 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         private static IEnumerable<TestCaseData> RealWorldFileFormatCases() {
+            // Each supported extension is covered once here. The large real-resolution matrix below uses
+            // XISF only so the integration path is exercised without exploding total test runtime.
             yield return new TestCaseData(".xisf").SetName("RealWorldFormat_XISF");
             yield return new TestCaseData(".fits").SetName("RealWorldFormat_FITS");
             yield return new TestCaseData(".fit").SetName("RealWorldFormat_FIT");
@@ -923,158 +925,102 @@ namespace NINA.Test.Image.ImageAnalysis {
             return IntPtr.Add(data.Scan0, rowOffset);
         }
 
-        private static ReferenceChannels ComputeReference(
-            Bitmap sourceImage,
-            int[,] bayerPattern,
-            bool performDemosaic,
-            bool computeLum) {
-            // Read the source pixels from the GDI+ bitmap in memory order so parity matches the filter.
-            // The reference algorithm then operates on a tightly packed pixel array.
-            ushort[] sourcePixels = ReadGray16Pixels(sourceImage);
-
-            if (performDemosaic) {
-                return ComputeDemosaicReference(sourcePixels, sourceImage.Width, sourceImage.Height, bayerPattern, computeLum);
-            }
-
-            var direct = ComputeDirectReference(sourcePixels, sourceImage.Width, sourceImage.Height, bayerPattern);
-            return new ReferenceChannels(direct.Blue, direct.Green, direct.Red, Array.Empty<ushort>());
-        }
-
-        private static ReferenceChannels ComputeDemosaicReference(
-            ushort[] source,
-            int width,
-            int height,
-            int[,] bayerPattern,
-            bool computeLum) {
-            // Mirror the reference algorithm embedded in BayerFilter16bpp.VerifyReference.
-            // This uses a 3x3 neighborhood and integer division for bit-precise output.
-            int widthM1 = width - 1;
-            int heightM1 = height - 1;
+        private static (ushort[] Blue, ushort[] Green, ushort[] Red) Read48bppChannels(UnmanagedImage image) {
+            // The preserved reference writes into tightly packed unmanaged rows, so read back directly
+            // from the raw stride rather than going through any GDI+ conversion layer.
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
             int pixelCount = width * height;
+            byte[] buffer = new byte[stride * height];
+            Marshal.Copy(image.ImageData, buffer, 0, buffer.Length);
 
-            ushort[] blue = new ushort[pixelCount];
-            ushort[] green = new ushort[pixelCount];
-            ushort[] red = new ushort[pixelCount];
-            ushort[] lum = computeLum ? new ushort[pixelCount] : Array.Empty<ushort>();
-
-            int[] rgbValues = new int[3];
-            int[] rgbCounters = new int[3];
-
-            for (int y = 0; y < height; y++) {
-                int rowOffset = y * width;
-
-                for (int x = 0; x < width; x++) {
-                    rgbValues[0] = rgbValues[1] = rgbValues[2] = 0;
-                    rgbCounters[0] = rgbCounters[1] = rgbCounters[2] = 0;
-
-                    int index = rowOffset + x;
-                    int bayerIndex = bayerPattern[y & 1, x & 1];
-
-                    rgbValues[bayerIndex] += source[index];
-                    rgbCounters[bayerIndex]++;
-
-                    if (x != 0) {
-                        bayerIndex = bayerPattern[y & 1, (x - 1) & 1];
-                        rgbValues[bayerIndex] += source[index - 1];
-                        rgbCounters[bayerIndex]++;
-                    }
-
-                    if (x != widthM1) {
-                        bayerIndex = bayerPattern[y & 1, (x + 1) & 1];
-                        rgbValues[bayerIndex] += source[index + 1];
-                        rgbCounters[bayerIndex]++;
-                    }
-
-                    if (y != 0) {
-                        bayerIndex = bayerPattern[(y - 1) & 1, x & 1];
-                        rgbValues[bayerIndex] += source[index - width];
-                        rgbCounters[bayerIndex]++;
-
-                        if (x != 0) {
-                            bayerIndex = bayerPattern[(y - 1) & 1, (x - 1) & 1];
-                            rgbValues[bayerIndex] += source[index - width - 1];
-                            rgbCounters[bayerIndex]++;
-                        }
-
-                        if (x != widthM1) {
-                            bayerIndex = bayerPattern[(y - 1) & 1, (x + 1) & 1];
-                            rgbValues[bayerIndex] += source[index - width + 1];
-                            rgbCounters[bayerIndex]++;
-                        }
-                    }
-
-                    if (y != heightM1) {
-                        bayerIndex = bayerPattern[(y + 1) & 1, x & 1];
-                        rgbValues[bayerIndex] += source[index + width];
-                        rgbCounters[bayerIndex]++;
-
-                        if (x != 0) {
-                            bayerIndex = bayerPattern[(y + 1) & 1, (x - 1) & 1];
-                            rgbValues[bayerIndex] += source[index + width - 1];
-                            rgbCounters[bayerIndex]++;
-                        }
-
-                        if (x != widthM1) {
-                            bayerIndex = bayerPattern[(y + 1) & 1, (x + 1) & 1];
-                            rgbValues[bayerIndex] += source[index + width + 1];
-                            rgbCounters[bayerIndex]++;
-                        }
-                    }
-
-                    ushort expR = (ushort)(rgbValues[RGB.R] / rgbCounters[RGB.R]);
-                    ushort expG = (ushort)(rgbValues[RGB.G] / rgbCounters[RGB.G]);
-                    ushort expB = (ushort)(rgbValues[RGB.B] / rgbCounters[RGB.B]);
-
-                    red[index] = expR;
-                    green[index] = expG;
-                    blue[index] = expB;
-
-                    if (computeLum) {
-                        lum[index] = (ushort)((expR + expG + expB) / 3.0);
-                    }
-                }
-            }
-
-            return new ReferenceChannels(blue, green, red, lum);
-        }
-
-        private static (ushort[] Blue, ushort[] Green, ushort[] Red) ComputeDirectReference(
-            ushort[] source,
-            int width,
-            int height,
-            int[,] bayerPattern) {
-            // Mirror the direct Bayer-to-channel mapping used when demosaicing is disabled.
-            // Each source pixel is copied into exactly one channel based on the pattern.
-            int pixelCount = width * height;
             ushort[] blue = new ushort[pixelCount];
             ushort[] green = new ushort[pixelCount];
             ushort[] red = new ushort[pixelCount];
 
             for (int y = 0; y < height; y++) {
                 int rowOffset = y * width;
+                int rowStart = y * stride;
 
                 for (int x = 0; x < width; x++) {
+                    int offset = rowStart + x * 6;
                     int index = rowOffset + x;
-                    int color = bayerPattern[y & 1, x & 1];
-                    ushort value = source[index];
-
-                    switch (color) {
-                        case RGB.R:
-                            red[index] = value;
-                            break;
-                        case RGB.G:
-                            green[index] = value;
-                            break;
-                        case RGB.B:
-                            blue[index] = value;
-                            break;
-                    }
+                    blue[index] = (ushort)(buffer[offset] | (buffer[offset + 1] << 8));
+                    green[index] = (ushort)(buffer[offset + 2] | (buffer[offset + 3] << 8));
+                    red[index] = (ushort)(buffer[offset + 4] | (buffer[offset + 5] << 8));
                 }
             }
 
             return (blue, green, red);
         }
 
+        private static void WriteGray16Pixels(UnmanagedImage image, ushort[] sourcePixels) {
+            // Write a tightly packed raw buffer because the preserved reference filter predates the
+            // stride-fix work and assumes there is no padding between grayscale rows.
+            byte[] buffer = new byte[sourcePixels.Length * sizeof(ushort)];
+            Buffer.BlockCopy(sourcePixels, 0, buffer, 0, buffer.Length);
+            Marshal.Copy(buffer, 0, image.ImageData, buffer.Length);
+        }
 
+        // Read the logical pixels out of the padded GDI+ bitmap first, then run the preserved
+        // reference algorithm on those samples so the original filter code stays untouched.
+        private static ReferenceChannels ComputeReference(
+            Bitmap sourceImage,
+            int[,] bayerPattern,
+            bool performDemosaic,
+            bool computeLum) {
+            ushort[] sourcePixels = ReadGray16Pixels(sourceImage);
+            return ComputeReferenceFromPixels(sourcePixels, sourceImage.Width, sourceImage.Height, bayerPattern, performDemosaic, computeLum);
+        }
+
+        // Convenience wrapper for the dominant demosaic scenario used by the file-backed tests.
+        private static ReferenceChannels ComputeDemosaicReference(
+            ushort[] source,
+            int width,
+            int height,
+            int[,] bayerPattern,
+            bool computeLum) {
+            return ComputeReferenceFromPixels(source, width, height, bayerPattern, performDemosaic: true, computeLum: computeLum);
+        }
+
+        // Raw-map tests only care about direct channel placement, so unwrap just the preserved B/G/R planes.
+        private static (ushort[] Blue, ushort[] Green, ushort[] Red) ComputeDirectReference(
+            ushort[] source,
+            int width,
+            int height,
+            int[,] bayerPattern) {
+            ReferenceChannels reference = ComputeReferenceFromPixels(source, width, height, bayerPattern, performDemosaic: false, computeLum: false);
+            return (reference.Blue, reference.Green, reference.Red);
+        }
+
+        private static ReferenceChannels ComputeReferenceFromPixels(
+            ushort[] sourcePixels,
+            int width,
+            int height,
+            int[,] bayerPattern,
+            bool performDemosaic,
+            bool computeLum) {
+            // Execute the preserved reference code the way it originally ran: on tightly packed
+            // unmanaged rows with no GDI+ padding. The optimized implementation is compared against
+            // that logical result while other assertions cover padded-bitmap behavior separately.
+            using UnmanagedImage source = UnmanagedImage.Create(width, height, width * 2, PixelFormat.Format16bppGrayScale);
+            using UnmanagedImage destination = UnmanagedImage.Create(width, height, width * 6, PixelFormat.Format48bppRgb);
+
+            WriteGray16Pixels(source, sourcePixels);
+
+            var filter = new global::NINA.Tests.BayerFilter16bpp {
+                BayerPattern = bayerPattern,
+                PerformDemosaicing = performDemosaic,
+                SaveColorChannels = false,
+                SaveLumChannel = computeLum
+            };
+
+            filter.Apply(source, destination);
+
+            var channels = Read48bppChannels(destination);
+            ushort[] lum = computeLum ? (ushort[])filter.LRGBArrays.Lum.Clone() : Array.Empty<ushort>();
+            return new ReferenceChannels(channels.Blue, channels.Green, channels.Red, lum);
+        }
     }
 }
