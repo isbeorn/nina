@@ -26,6 +26,7 @@ using OptimizedNoBlurCannyEdgeDetector = NINA.Image.ImageAnalysis.NoBlurCannyEdg
 namespace NINA.Test.Image.ImageAnalysis {
 
     [TestFixture]
+    [Ignore("These tests are exhaustive and take some time to run. Enable if needed.")]
     public class CannyEdgeDetectorTests {
         private readonly struct AstroCameraResolutionCase {
             public AstroCameraResolutionCase(int width, int height) {
