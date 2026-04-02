@@ -25,9 +25,14 @@ using OptimizedNoBlurCannyEdgeDetector = NINA.Image.ImageAnalysis.NoBlurCannyEdg
 
 namespace NINA.Test.Image.ImageAnalysis {
 
+    /// <summary>
+    /// Regression coverage for both Canny variants used by NINA. The blurred path is compared against
+    /// Accord, while the NINA-owned no-blur path is compared against the preserved reference source.
+    /// Keeping them together makes it clear that they share the same image fixtures and full-frame cases.
+    /// </summary>
     [TestFixture]
     [Ignore("These tests are exhaustive and take some time to run. Enable if needed.")]
-    public class CannyEdgeDetectorTests {
+    public class CannyEdgeDetectorVariantTests {
         private readonly struct AstroCameraResolutionCase {
             public AstroCameraResolutionCase(int width, int height) {
                 Width = width;
