@@ -103,7 +103,7 @@ namespace NINA.Astrometry {
             var ra = Angle.ByRadians(raRad);
             var dec = Angle.ByRadians(decRad);
 
-            var coordinates = new Coordinates(ra, dec, Epoch.J2000, DateTime);
+            var coordinates = new Coordinates(ra, dec, Epoch.J2000, now, DateTime);
             return coordinates.Transform(epoch);
         }
 

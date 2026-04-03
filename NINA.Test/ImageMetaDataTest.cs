@@ -303,8 +303,8 @@ namespace NINA.Test {
             Assert.That(sut.Telescope.FocalRatio, Is.EqualTo(double.NaN));
 
             Assert.That(sut.Telescope.Coordinates.Epoch, Is.EqualTo(Epoch.J2000));
-            Assert.That(sut.Telescope.Coordinates.RADegrees, Is.EqualTo(59.694545025696307d));
-            Assert.That(sut.Telescope.Coordinates.Dec, Is.EqualTo(28.945185789035015d));
+            Assert.That(sut.Telescope.Coordinates.RADegrees, Is.EqualTo(59.694545007067305d));
+            Assert.That(sut.Telescope.Coordinates.Dec, Is.EqualTo(28.945185789004316d));
             Assert.That(sut.Telescope.SideOfPier, Is.EqualTo(PierSide.pierWest));
         }
 
@@ -334,8 +334,8 @@ namespace NINA.Test {
             };
 
             Assert.That(sut.Target.Coordinates.Epoch, Is.EqualTo(Epoch.J2000));
-            Assert.That(sut.Target.Coordinates.RADegrees, Is.EqualTo(59.694545025696307d));
-            Assert.That(sut.Target.Coordinates.Dec, Is.EqualTo(28.945185789035015d));
+            Assert.That(sut.Target.Coordinates.RADegrees, Is.EqualTo(59.694545007067305d));
+            Assert.That(sut.Target.Coordinates.Dec, Is.EqualTo(28.945185789004316d));
         }
 
         [Test]
