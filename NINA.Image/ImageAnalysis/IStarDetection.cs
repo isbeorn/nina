@@ -46,6 +46,8 @@ namespace NINA.Image.ImageAnalysis {
 
     public class DetectedStar {
         public double HFR { get; set; }
+        public double FWHM { get; set; }
+        public double Eccentricity { get; set; }
         public Accord.Point Position { get; set; }
         public double AverageBrightness { get; set; }
         public double MaxBrightness { get; set; }
@@ -54,9 +56,11 @@ namespace NINA.Image.ImageAnalysis {
     }
 
     public class StarDetectionResult {
-        public double AverageHFR { get; set; }
+        public double AverageHFR { get; set; } = double.NaN;
+        public double AverageFWHM { get; set; } = double.NaN;
+        public double AverageEccentricity { get; set; } = double.NaN;
         public int DetectedStars { get; set; }
-        public double HFRStdDev { get; set; }
+        public double HFRStdDev { get; set; } = double.NaN;
         public List<DetectedStar> StarList { get; set; }
         public List<Accord.Point> BrightestStarPositions { get; set; }
         public StarDetectionParams Params { get; set; }
