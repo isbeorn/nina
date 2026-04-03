@@ -279,8 +279,8 @@ namespace NINA.Test.Autofocus {
 
             var report = await sut.StartAutoFocus(imagingFilter, ct, new Progress<ApplicationStatus>());
 
-            position.Should().Be(5006);
-            report.CalculatedFocusPoint.Position.Should().Be(5006);
+            position.Should().Be(4998);
+            report.CalculatedFocusPoint.Position.Should().Be(4998);
             report.MeasurePoints.Should().HaveCount(6);
             imagingMediatorMock.Verify(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()), Times.Exactly(8));
         }

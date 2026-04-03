@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -20,6 +20,8 @@ namespace NINA.Image.Interfaces {
 
     public interface IStarDetectionAnalysis : INotifyPropertyChanged {
         double HFR { get; set; }
+        double FWHM { get; set; }
+        double Eccentricity { get; set; }
         double HFRStDev { get; set; }
         int DetectedStars { get; set; }
         List<DetectedStar> StarList { get; set; }

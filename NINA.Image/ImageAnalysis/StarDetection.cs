@@ -122,6 +122,18 @@ namespace NINA.Image.ImageAnalysis {
         }
 
         public class Star {
+            // Measure shape/flux out to 1.5x the detected star radius so the aperture includes
+            // most of the stellar profile wings without expanding too far into local background
+            // or neighboring sources.
+            private const double MeasurementRadiusScale = 1.5d;
+
+            // Use 0.5 px radial bins for the azimuthally averaged profile to keep enough
+            // sub-pixel resolution for the FWHM half-maximum crossing while still smoothing
+            // pixel-grid noise.
+            private const double RadialProfileBinWidth = 0.5d;
+            private const int CentroidMaxIterations = 3;
+            private const double CentroidConvergencePixels = 0.01d;
+
             public double Radius { get; init; }
             public Rectangle Rectangle { get; init; }
             public double MeanBrightness { get; set; }
@@ -129,56 +141,282 @@ namespace NINA.Image.ImageAnalysis {
             public double MaxPixelValue { get; set; }
             public Point Position { get;set; }
             public double HFR { get; private set; }
-            public double Average { get; private set; } 
+            public double FWHM { get; private set; }
+            public double Eccentricity { get; private set; }
+            public double Average { get; private set; }
 
             public void Calculate(List<PixelData> pixelData) {
-                double hfr = 0.0d;
-                if (pixelData.Count > 0) {
-                    double outerRadius = this.Radius * 1.2;
-                    double sum = 0, sumDist = 0, allSum = 0, sumValX = 0, sumValY = 0;
+                this.HFR = double.NaN;
+                this.FWHM = double.NaN;
+                this.Eccentricity = double.NaN;
+                this.Average = double.NaN;
 
-                    double centerX = this.Position.X;
-                    double centerY = this.Position.Y;
-
-                    foreach (PixelData data in pixelData) {
-                        double value = Math.Round(data.Value - SurroundingMean);
-                        if (value < 0) {
-                            value = 0;
-                        }
-
-                        allSum += value;
-                        if (InsideCircle(data.PosX, data.PosY, this.Position.X, this.Position.Y, outerRadius)) {
-                            sum += value;
-                            sumDist += value * Math.Sqrt(Math.Pow(data.PosX - centerX, 2.0d) + Math.Pow(data.PosY - centerY, 2.0d));
-                            sumValX += (data.PosX - Rectangle.X) * value;
-                            sumValY += (data.PosY - Rectangle.Y) * value;
-                        }
-                    }
-
-                    if (sum > 0) {
-                        hfr = sumDist / sum;
-                    } else {
-                        hfr = Math.Sqrt(2) * outerRadius;
-                    }
-                    this.Average = allSum / pixelData.Count;
-
-                    if (sum != 0) {
-                        // Update the centroid
-                        double centroidX = sumValX / sum;
-                        double centroidY = sumValY / sum;
-                        this.Position = new Point((float)centroidX + Rectangle.X, (float)centroidY + Rectangle.Y);
-                    }
+                if (pixelData.Count == 0) {
+                    return;
                 }
-                this.HFR = hfr;
+
+                var centroidRadius = GetMeasurementRadius(this.Position, pixelData);
+                var centroid = CalculateCentroid(pixelData, this.Position, centroidRadius, iterate: true);
+                if (centroid.TotalFlux <= 0) {
+                    return;
+                }
+
+                this.Position = centroid.Center;
+
+                var measurementRadius = GetMeasurementRadius(this.Position, pixelData);
+                var radialSamples = CollectRadialSamples(pixelData, this.Position, measurementRadius);
+                if (radialSamples.Count == 0) {
+                    return;
+                }
+
+                var totalFlux = radialSamples.Sum(sample => sample.PositiveFlux);
+                if (totalFlux <= 0) {
+                    return;
+                }
+
+                var positiveSampleCount = radialSamples.Count(sample => sample.PositiveFlux > 0);
+                this.Average = positiveSampleCount > 0 ? totalFlux / positiveSampleCount : double.NaN;
+                this.HFR = CalculateHalfFluxRadius(radialSamples, totalFlux);
+                this.FWHM = CalculateFwhm(radialSamples);
+                this.Eccentricity = CalculateEccentricity(radialSamples, this.Position);
             }
 
             internal bool InsideCircle(double x, double y, double centerX, double centerY, double radius) {
                 return (Math.Pow(x - centerX, 2) + Math.Pow(y - centerY, 2) <= Math.Pow(radius, 2));
             }
 
+            private double GetMeasurementRadius(Point center, List<PixelData> pixelData) {
+                var minX = pixelData.Min(p => p.PosX);
+                var maxX = pixelData.Max(p => p.PosX);
+                var minY = pixelData.Min(p => p.PosY);
+                var maxY = pixelData.Max(p => p.PosY);
+                var availableRadius = Math.Min(
+                    Math.Min(center.X - minX, maxX - center.X),
+                    Math.Min(center.Y - minY, maxY - center.Y)) - 0.5d;
+
+                var requestedRadius = Math.Max(this.Radius * MeasurementRadiusScale, 2d);
+                return Math.Max(1d, Math.Min(requestedRadius, availableRadius));
+            }
+
+            private (Point Center, double TotalFlux) CalculateCentroid(List<PixelData> pixelData, Point center, double radius, bool iterate) {
+                // Windowed centroiding with a circular Gaussian weight follows the standard
+                // weighted-moment source-extraction approach used in SExtractor. See
+                // Bertin & Arnouts (1996), https://doi.org/10.1051/aas:1996164 and
+                // https://sextractor.readthedocs.io/en/latest/PositionWin.html
+                var sigma = GetWindowSigma(radius);
+                var currentCenter = center;
+                var maxIterations = iterate ? CentroidMaxIterations : 1;
+                var lastTotalFlux = 0d;
+
+                for (var iteration = 0; iteration < maxIterations; iteration++) {
+                    double sumWeightedFlux = 0;
+                    double sumX = 0;
+                    double sumY = 0;
+                    double sumFlux = 0;
+
+                    foreach (var data in pixelData) {
+                        var dx = data.PosX - currentCenter.X;
+                        var dy = data.PosY - currentCenter.Y;
+                        var distanceSquared = dx * dx + dy * dy;
+                        if (distanceSquared > radius * radius) {
+                            continue;
+                        }
+
+                        var flux = data.Value - SurroundingMean;
+                        if (flux <= 0) {
+                            continue;
+                        }
+
+                        var window = Math.Exp(-0.5d * distanceSquared / (sigma * sigma));
+                        var weightedFlux = flux * window;
+                        sumWeightedFlux += weightedFlux;
+                        sumX += data.PosX * weightedFlux;
+                        sumY += data.PosY * weightedFlux;
+                        sumFlux += flux;
+                    }
+
+                    if (sumWeightedFlux <= 0) {
+                        return (currentCenter, 0);
+                    }
+
+                    var refinedCenter = new Point((float)(sumX / sumWeightedFlux), (float)(sumY / sumWeightedFlux));
+                    lastTotalFlux = sumFlux;
+                    if (!iterate || refinedCenter.DistanceTo(currentCenter) <= CentroidConvergencePixels) {
+                        return (refinedCenter, lastTotalFlux);
+                    }
+
+                    currentCenter = refinedCenter;
+                }
+
+                return (currentCenter, lastTotalFlux);
+            }
+
+            private double GetWindowSigma(double radius) {
+                return Math.Max(radius / 2d, 1d);
+            }
+
+            private List<RadialSample> CollectRadialSamples(List<PixelData> pixelData, Point center, double radius) {
+                var samples = new List<RadialSample>();
+
+                foreach (var data in pixelData) {
+                    var distance = Math.Sqrt(Math.Pow(data.PosX - center.X, 2.0d) + Math.Pow(data.PosY - center.Y, 2.0d));
+                    if (distance > radius) {
+                        continue;
+                    }
+
+                    var flux = data.Value - SurroundingMean;
+                    samples.Add(new RadialSample(distance, flux, Math.Max(flux, 0), data.PosX, data.PosY));
+                }
+
+                return samples;
+            }
+
+            private double CalculateHalfFluxRadius(List<RadialSample> samples, double totalFlux) {
+                // Curve-of-growth HFR: sort background-subtracted flux by radius and interpolate
+                // the radius at which the enclosed flux reaches 50% of the total enclosed flux.
+                // This follows the standard half-light / half-flux radius definition rather than
+                // the older first-moment HFD approximation. For autofocus/HFD context, see:
+                // Larry Weber & Steve Brady, "Fast Auto-Focus Method and Software for CCD-based
+                // Telescopes" (CCDWare), http://www.ccdware.com/Files/ITS%20Paper.pdf
+                var targetFlux = totalFlux / 2d;
+                var cumulativeFlux = 0d;
+                var previousFlux = 0d;
+                var previousRadius = 0d;
+
+                foreach (var sample in samples.OrderBy(s => s.Distance)) {
+                    if (sample.PositiveFlux <= 0) {
+                        continue;
+                    }
+
+                    cumulativeFlux += sample.PositiveFlux;
+                    if (cumulativeFlux < targetFlux) {
+                        previousFlux = cumulativeFlux;
+                        previousRadius = sample.Distance;
+                        continue;
+                    }
+
+                    if (cumulativeFlux == previousFlux || sample.Distance <= previousRadius) {
+                        return sample.Distance;
+                    }
+
+                    var fraction = (targetFlux - previousFlux) / (cumulativeFlux - previousFlux);
+                    return previousRadius + fraction * (sample.Distance - previousRadius);
+                }
+
+                return samples.Max(sample => sample.Distance);
+            }
+
+            private double CalculateFwhm(List<RadialSample> samples) {
+                // FWHM is measured from the azimuthally averaged, background-subtracted radial
+                // profile and linearly interpolated at the half-maximum crossing. This is a
+                // standard stellar profile width measure; compare the open Photutils radial
+                // profile documentation, which treats background-subtracted radial profiles and
+                // FWHM estimation from them:
+                // https://photutils.readthedocs.io/en/stable/user_guide/profiles.html
+                // https://photutils.readthedocs.io/en/stable/api/photutils.profiles.RadialProfile.html
+                var peakFlux = MaxPixelValue - SurroundingMean;
+                if (peakFlux <= 0) {
+                    return double.NaN;
+                }
+
+                var halfMaximum = peakFlux / 2d;
+                var maxDistance = samples.Max(sample => sample.Distance);
+                var binCount = (int)Math.Ceiling(maxDistance / RadialProfileBinWidth) + 1;
+                var sums = new double[binCount];
+                var distanceSums = new double[binCount];
+                var counts = new int[binCount];
+
+                foreach (var sample in samples) {
+                    var index = Math.Min((int)Math.Floor(sample.Distance / RadialProfileBinWidth), binCount - 1);
+                    sums[index] += sample.RawFlux;
+                    distanceSums[index] += sample.Distance;
+                    counts[index]++;
+                }
+
+                var previousRadius = 0d;
+                var previousValue = peakFlux;
+
+                for (var i = 0; i < binCount; i++) {
+                    if (counts[i] == 0) {
+                        continue;
+                    }
+
+                    var radius = distanceSums[i] / counts[i];
+                    var value = sums[i] / counts[i];
+                    if (i > 0 && value > previousValue) {
+                        value = previousValue;
+                    }
+
+                    if (value <= halfMaximum) {
+                        if (Math.Abs(value - previousValue) < double.Epsilon || radius <= previousRadius) {
+                            return 2d * radius;
+                        }
+
+                        var fraction = (halfMaximum - previousValue) / (value - previousValue);
+                        var halfMaxRadius = previousRadius + fraction * (radius - previousRadius);
+                        return 2d * halfMaxRadius;
+                    }
+
+                    previousRadius = radius;
+                    previousValue = value;
+                }
+
+                return double.NaN;
+            }
+
+            private double CalculateEccentricity(List<RadialSample> samples, Point center) {
+                // Eccentricity from background-subtracted, flux-weighted second central moments
+                // within the local measurement aperture:
+                // e = sqrt(1 - lambda_minor / lambda_major), where the lambdas are the
+                // covariance-matrix eigenvalues of the source profile. This is the standard
+                // moment-based shape formalism used in source extraction; see
+                // Bertin & Arnouts (1996), SExtractor, A&AS 117, 393,
+                // https://doi.org/10.1051/aas:1996164
+                double momentXX = 0;
+                double momentYY = 0;
+                double momentXY = 0;
+                double totalFlux = 0;
+
+                foreach (var sample in samples) {
+                    if (sample.PositiveFlux <= 0) {
+                        continue;
+                    }
+
+                    var dx = sample.PosX - center.X;
+                    var dy = sample.PosY - center.Y;
+                    totalFlux += sample.PositiveFlux;
+                    momentXX += sample.PositiveFlux * dx * dx;
+                    momentYY += sample.PositiveFlux * dy * dy;
+                    momentXY += sample.PositiveFlux * dx * dy;
+                }
+
+                if (totalFlux <= 0) {
+                    return double.NaN;
+                }
+
+                momentXX /= totalFlux;
+                momentYY /= totalFlux;
+                momentXY /= totalFlux;
+
+                var trace = momentXX + momentYY;
+                var determinantTerm = (momentXX - momentYY) * (momentXX - momentYY) + 4d * momentXY * momentXY;
+                var root = Math.Sqrt(Math.Max(0d, determinantTerm));
+                var major = (trace + root) / 2d;
+                var minor = (trace - root) / 2d;
+
+                if (major <= 0) {
+                    return double.NaN;
+                }
+
+                minor = Math.Max(0d, minor);
+                return Math.Sqrt(Math.Max(0d, 1d - (minor / major)));
+            }
+
             public DetectedStar ToDetectedStar() {
                 return new DetectedStar() {
                     HFR = HFR,
+                    FWHM = FWHM,
+                    Eccentricity = Eccentricity,
                     Position = Position,
                     AverageBrightness = Average,
                     MaxBrightness = MaxPixelValue,
@@ -189,6 +427,7 @@ namespace NINA.Image.ImageAnalysis {
         }
 
         public record PixelData (int PosX, int PosY, double Value);
+        private record RadialSample(double Distance, double RawFlux, double PositiveFlux, int PosX, int PosY);
 
         public async Task<StarDetectionResult> Detect(IRenderedImage image, PixelFormat pf, StarDetectionParams p, IProgress<ApplicationStatus> progress, CancellationToken token) {
             var result = new StarDetectionResult();
@@ -225,17 +464,28 @@ namespace NINA.Image.ImageAnalysis {
                     token.ThrowIfCancellationRequested();
 
                     if (result.StarList.Count > 0) {
-                        var mean = (from star in result.StarList select star.HFR).Average();
-                        var stdDev = 0d;
-                        if (result.StarList.Count > 1) {
-                            stdDev = Math.Sqrt((from star in result.StarList select (star.HFR - mean) * (star.HFR - mean)).Sum() / (result.StarList.Count - 1));
-                        }
-
-                        Logger.Info($"Average HFR: {mean}, HFR σ: {stdDev}, Detected Stars {detectedStars}, Sensitivity {p.Sensitivity}, ResizeFactor: {Math.Round(state._resizefactor, 2)}");
-
-                        result.AverageHFR = mean;
-                        result.HFRStdDev = stdDev;
+                        var validHfrValues = result.StarList.Select(star => star.HFR).Where(hfr => !double.IsNaN(hfr)).ToList();
                         result.DetectedStars = detectedStars;
+
+                        if (validHfrValues.Count > 0) {
+                            var mean = validHfrValues.Average();
+                            var stdDev = 0d;
+                            if (validHfrValues.Count > 1) {
+                                stdDev = Math.Sqrt(validHfrValues.Sum(hfr => (hfr - mean) * (hfr - mean)) / (validHfrValues.Count - 1));
+                            }
+
+                            var validFwhmValues = result.StarList.Select(star => star.FWHM).Where(fwhm => !double.IsNaN(fwhm)).ToList();
+                            var averageFwhm = validFwhmValues.Count > 0 ? validFwhmValues.Average() : double.NaN;
+                            var validEccentricities = result.StarList.Select(star => star.Eccentricity).Where(ecc => !double.IsNaN(ecc)).ToList();
+                            var averageEccentricity = validEccentricities.Count > 0 ? validEccentricities.Average() : double.NaN;
+
+                            Logger.Info($"Average HFR: {mean}, Average FWHM: {averageFwhm}, Average Eccentricity: {averageEccentricity}, HFR σ: {stdDev}, Detected Stars {detectedStars}, Sensitivity {p.Sensitivity}, ResizeFactor: {Math.Round(state._resizefactor, 2)}");
+
+                            result.AverageHFR = mean;
+                            result.AverageFWHM = averageFwhm;
+                            result.AverageEccentricity = averageEccentricity;
+                            result.HFRStdDev = stdDev;
+                        }
                     }
                 }
             } catch (OperationCanceledException) {
@@ -305,8 +555,7 @@ namespace NINA.Image.ImageAnalysis {
                     /* get pixeldata */
                     double starPixelSum = 0;
                     int starPixelCount = 0;
-                    double largeRectPixelSum = 0;
-                    double largeRectPixelSumSquares = 0;
+                    var backgroundPixelValues = new List<double>();
                     List<ushort> innerStarPixelValues = new List<ushort>();
 
                     var pixelDataList = new List<PixelData>();
@@ -320,27 +569,35 @@ namespace NINA.Image.ImageAnalysis {
                                     innerStarPixelValues.Add(pixelValue);
                                     s.MaxPixelValue = Math.Max(s.MaxPixelValue, pixelValue);
                                 }
-                                ushort value = pixelValue;
-                                var pd = new PixelData(PosX: x, PosY: y, Value: value);
-                                pixelDataList.Add(pd);
                             } else { //We're in the larger surrounding holed rectangle, providing local background
-                                largeRectPixelSum += pixelValue;
-                                largeRectPixelSumSquares += pixelValue * pixelValue;
+                                backgroundPixelValues.Add(pixelValue);
                             }
+
+                            ushort value = pixelValue;
+                            var pd = new PixelData(PosX: x, PosY: y, Value: value);
+                            pixelDataList.Add(pd);
                         }
                     }
 
+                    if (starPixelCount == 0) {
+                        continue;
+                    }
+
                     s.MeanBrightness = starPixelSum / (double)starPixelCount;
-                    double largeRectPixelCount = largeRect.Height * largeRect.Width - rect.Height * rect.Width;
-                    double largeRectMean = largeRectPixelSum / largeRectPixelCount;
+                    if (backgroundPixelValues.Count == 0) {
+                        continue;
+                    }
+
+                    var backgroundStats = EstimateBackground(backgroundPixelValues);
+                    double largeRectMean = backgroundStats.Background;
                     s.SurroundingMean = largeRectMean;
-                    double largeRectStdev = Math.Sqrt((largeRectPixelSumSquares - largeRectPixelCount * largeRectMean * largeRectMean) / largeRectPixelCount);
+                    double largeRectStdev = backgroundStats.Sigma;
                     int minimumNumberOfPixels = (int)Math.Ceiling(Math.Max(state._originalBitmapSource.PixelWidth, state._originalBitmapSource.PixelHeight) / 1000d);
 
                     if (s.MeanBrightness >= largeRectMean + Math.Min(0.1 * largeRectMean, largeRectStdev) && innerStarPixelValues.Count(pv => pv > largeRectMean + 1.5 * largeRectStdev) > minimumNumberOfPixels) {
                         s.Calculate(pixelDataList);
                         //It's a local maximum, and has enough bright pixels, so likely to be a star.                        
-                        if (s.Position.X > (s.Rectangle.X + 1) && s.Position.Y > (s.Rectangle.Y + 1) && s.Position.X < (s.Position.X + s.Rectangle.Width - 2) && s.Position.Y < (s.Position.Y + s.Rectangle.Height - 2)) {
+                        if (s.Position.X > (s.Rectangle.X + 1) && s.Position.Y > (s.Rectangle.Y + 1) && s.Position.X < (s.Rectangle.X + s.Rectangle.Width - 2) && s.Position.Y < (s.Rectangle.Y + s.Rectangle.Height - 2)) {
                             // Only add star when centroid is not touching the rectangle edges
                             sumRadius += s.Radius;
                             sumSquares += s.Radius * s.Radius;
@@ -395,6 +652,79 @@ namespace NINA.Image.ImageAnalysis {
             var y = Math.Min(width, height);
             double focus = Math.Sqrt(Math.Pow(x, 2) - Math.Pow(y, 2));
             return focus / x;
+        }
+
+        private (double Background, double Sigma) EstimateBackground(List<double> pixelValues) {
+            // Robust local sky estimate from a sigma-clipped median. Sigma clipping is standard
+            // practice for astronomical background estimation in the presence of source pixels
+            // and outliers; see the Astropy CCD Reduction Guide:
+            // https://www.astropy.org/ccd-reduction-and-photometry-guide/
+            const int maxIterations = 3;
+            const double sigmaThreshold = 3d;
+
+            var values = pixelValues.ToList();
+            if (values.Count == 0) {
+                return (0d, 0d);
+            }
+
+            for (var iteration = 0; iteration < maxIterations && values.Count > 1; iteration++) {
+                values.Sort();
+                var median = MedianFromSorted(values);
+                var deviations = new List<double>(values.Count);
+                for (var index = 0; index < values.Count; index++) {
+                    deviations.Add(Math.Abs(values[index] - median));
+                }
+                deviations.Sort();
+                var mad = MedianFromSorted(deviations);
+                var sigma = mad > 0 ? 1.4826d * mad : StandardDeviation(values, median);
+                if (sigma <= 0) {
+                    return (median, 0d);
+                }
+
+                var clipped = new List<double>(values.Count);
+                for (var index = 0; index < values.Count; index++) {
+                    var value = values[index];
+                    if (Math.Abs(value - median) <= sigmaThreshold * sigma) {
+                        clipped.Add(value);
+                    }
+                }
+                if (clipped.Count == values.Count || clipped.Count == 0) {
+                    return (median, sigma);
+                }
+
+                values = clipped;
+            }
+
+            values.Sort();
+            var finalMedian = MedianFromSorted(values);
+            return (finalMedian, StandardDeviation(values, finalMedian));
+        }
+
+        private double MedianFromSorted(List<double> values) {
+            if (values.Count == 0) {
+                return 0d;
+            }
+
+            var middle = values.Count / 2;
+            if (values.Count % 2 == 0) {
+                return (values[middle - 1] + values[middle]) / 2d;
+            }
+
+            return values[middle];
+        }
+
+        private double StandardDeviation(List<double> values, double mean) {
+            if (values.Count == 0) {
+                return 0d;
+            }
+
+            double sumSquares = 0d;
+            for (var index = 0; index < values.Count; index++) {
+                var delta = values[index] - mean;
+                sumSquares += delta * delta;
+            }
+
+            return Math.Sqrt(sumSquares / values.Count);
         }
 
         private BlobCounter DetectStructures(Bitmap bmp, CancellationToken token) {
@@ -468,6 +798,8 @@ namespace NINA.Image.ImageAnalysis {
 
         public void UpdateAnalysis(IStarDetectionAnalysis analysis, StarDetectionParams p, StarDetectionResult result) {
             analysis.HFR = result.AverageHFR;
+            analysis.FWHM = result.AverageFWHM;
+            analysis.Eccentricity = result.AverageEccentricity;
             analysis.HFRStDev = result.HFRStdDev;
             analysis.DetectedStars = result.DetectedStars;
             analysis.StarList = result.StarList;
