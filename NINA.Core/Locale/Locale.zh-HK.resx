@@ -3336,6 +3336,12 @@ Should the settings be synchronized?</value>
   <data name="LblTransitSouth" xml:space="preserve">
     <value>轉向南日</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Transit time</value>
   </data>
@@ -6518,6 +6524,9 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>Target Dew Heater Strength</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Hardware Acceleration</value>
