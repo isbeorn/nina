@@ -60,13 +60,49 @@ namespace NINA.Test.Image.ImageAnalysis {
 
         private const string FormatCoverageResolutionKey = "Planetary_1936x1096";
         private const SensorType FileBackedBayerPattern = SensorType.RGGB;
+        private const int HardeningPaddedWidth = 257;
+        private const int HardeningPaddedHeight = 129;
+        private const int HardeningRealWidth = 1936;
+        private const int HardeningRealHeight = 1096;
+        private const int RepresentativeDemosaicWidth = 6;
+        private const int RepresentativeDemosaicHeight = 4;
+        private const int RepresentativePatternWidth = 6;
+        private const int RepresentativePatternHeight = 5;
+        private const int RepresentativeRawWidth = 4;
+        private const int RepresentativeRawHeight = 3;
 
         private global::NINA.Test.ImageDataFactoryTestUtility dataFactoryUtility;
+
+        public sealed class InputScenario {
+            public required string Name { get; init; }
+            public required Func<int, int, ushort[]> CreatePixels { get; init; }
+        }
+
+        private static readonly IReadOnlyList<InputScenario> AllInputScenarios = new[] {
+            CreateInputScenario(DeterministicImageFixtures.UniformBlack),
+            CreateInputScenario(DeterministicImageFixtures.UniformWhite),
+            CreateInputScenario(DeterministicImageFixtures.SingleImpulseCenter),
+            CreateInputScenario(DeterministicImageFixtures.SparseStarField),
+            CreateInputScenario(DeterministicImageFixtures.StepEdge),
+            CreateInputScenario(DeterministicImageFixtures.DiagonalLine),
+            CreateInputScenario(DeterministicImageFixtures.Checkerboard),
+            CreateInputScenario(DeterministicImageFixtures.BandingAndHotPixels),
+            CreateInputScenario(DeterministicImageFixtures.SeededFuzz17),
+            CreateInputScenario(DeterministicImageFixtures.Structured)
+        };
 
         [SetUp]
         public void SetUp() {
             dataFactoryUtility = new global::NINA.Test.ImageDataFactoryTestUtility();
         }
+
+        private static InputScenario CreateInputScenario(DeterministicImageFixtures.ImageFixture fixture) {
+            return new InputScenario {
+                Name = fixture.Name,
+                CreatePixels = fixture.CreateUShorts
+            };
+        }
+
         private static IEnumerable<TestCaseData> AlternateBayerPatterns() {
             // Use a small set of representative Bayer layouts to ensure the filter honors overrides.
             // These patterns cover each color's position so the channel mapping logic is exercised.
@@ -76,411 +112,280 @@ namespace NINA.Test.Image.ImageAnalysis {
             yield return new TestCaseData("GRBG", new int[,] { { RGB.G, RGB.R }, { RGB.B, RGB.G } });
         }
 
-        private static IEnumerable<TestCaseData> DimensionCases() {
-            // Cover all even/odd width and height combinations to verify edge handling.
-            // Odd widths should force GDI+ to add stride padding for both 16bpp and 48bpp images.
-            yield return new TestCaseData(4, 4).SetName("EvenWidth_EvenHeight");
-            yield return new TestCaseData(5, 4).SetName("OddWidth_EvenHeight");
-            yield return new TestCaseData(4, 5).SetName("EvenWidth_OddHeight");
-            yield return new TestCaseData(5, 5).SetName("OddWidth_OddHeight");
+        private static IEnumerable<(string Name, int Width, int Height)> DimensionMatrix() {
+            yield return ("EvenWidth_EvenHeight", 4, 4);
+            yield return ("OddWidth_EvenHeight", 5, 4);
+            yield return ("EvenWidth_OddHeight", 4, 5);
+            yield return ("OddWidth_OddHeight", 5, 5);
         }
 
-        private static IEnumerable<TestCaseData> BorderOnlyDimensionCases() {
-            // Use a 2-row image so the demosaic path skips inner rows entirely.
-            // This forces all pixels through the border handling logic.
-            yield return new TestCaseData(2, 2).SetName("BorderOnly_EvenWidth_EvenHeight");
-
-            // Include an odd width to exercise stride padding while still running the border-only path.
-            // This validates the border logic against GDI+ row alignment rules.
-            yield return new TestCaseData(3, 2).SetName("BorderOnly_OddWidth_EvenHeight");
+        private static IEnumerable<(string Name, int Width, int Height)> BorderOnlyDimensionMatrix() {
+            yield return ("BorderOnly_EvenWidth_EvenHeight", 2, 2);
+            yield return ("BorderOnly_OddWidth_EvenHeight", 3, 2);
         }
 
         private static IEnumerable<TestCaseData> RealWorldFileFormatCases() {
-            // Each supported extension is covered once here. The large real-resolution matrix below uses
-            // XISF only so the integration path is exercised without exploding total test runtime.
-            yield return new TestCaseData(".xisf").SetName("RealWorldFormat_XISF");
-            yield return new TestCaseData(".fits").SetName("RealWorldFormat_FITS");
-            yield return new TestCaseData(".fit").SetName("RealWorldFormat_FIT");
-            yield return new TestCaseData(".fts").SetName("RealWorldFormat_FTS");
+            // Run each supported on-disk format against multiple deterministic source families.
+            // This keeps the file-backed integration path generic instead of relying on one pseudo-frame.
+            string[] extensions = { ".xisf", ".fits", ".fit", ".fts" };
+
+            foreach (string extension in extensions) {
+                foreach (InputScenario scenario in AllInputScenarios) {
+                    yield return new TestCaseData(extension, scenario)
+                        .SetName($"RealWorldFormat_{extension.TrimStart('.').ToUpperInvariant()}_{scenario.Name}");
+                }
+            }
         }
 
         private static IEnumerable<TestCaseData> AstroCameraResolutionCases() {
+            // Reuse the same deterministic input families across the full astro-camera resolution matrix.
+            // This keeps each frame size honest without depending on a single source texture.
             foreach (var resolution in AstroCameraResolutions) {
-                yield return new TestCaseData(
-                        resolution.Key,
-                        resolution.Value.Width,
-                        resolution.Value.Height)
-                    .SetName($"RealWorldResolution_{resolution.Key}");
+                foreach (InputScenario scenario in AllInputScenarios) {
+                    yield return new TestCaseData(
+                            resolution.Key,
+                            resolution.Value.Width,
+                            resolution.Value.Height,
+                            scenario)
+                        .SetName($"RealWorldResolution_{resolution.Key}_{scenario.Name}");
+                }
+            }
+        }
+
+        private static IEnumerable<TestCaseData> RepresentativeInputScenarioCases() {
+            // Use the same deterministic source families for the representative in-memory correctness checks.
+            foreach (InputScenario scenario in AllInputScenarios) {
+                yield return Scenario(scenario, scenario.Name);
+            }
+        }
+
+        private static IEnumerable<TestCaseData> DimensionScenarioCases() {
+            // Combine the even/odd dimension matrix with the deterministic source families so padding and
+            // border handling are exercised against more than one image structure.
+            foreach (InputScenario scenario in AllInputScenarios) {
+                foreach (var dimension in DimensionMatrix()) {
+                    yield return new TestCaseData(scenario, dimension.Width, dimension.Height)
+                        .SetName($"Dimensions_{scenario.Name}_{dimension.Name}");
+                }
+            }
+        }
+
+        private static IEnumerable<TestCaseData> BorderOnlyScenarioCases() {
+            // Border-only images are tiny, so include both degenerate uniform inputs and mixed-content fixtures.
+            foreach (InputScenario scenario in AllInputScenarios) {
+                foreach (var dimension in BorderOnlyDimensionMatrix()) {
+                    yield return new TestCaseData(scenario, dimension.Width, dimension.Height)
+                        .SetName($"BorderOnly_{scenario.Name}_{dimension.Name}");
+                }
+            }
+        }
+
+        private static IEnumerable<TestCaseData> BayerPatternScenarioCases() {
+            // Run every deterministic source family through the override matrix so pattern placement is
+            // checked against flat, structured, and high-frequency inputs alike.
+            foreach (InputScenario scenario in AllInputScenarios) {
+                foreach (var testCase in AlternateBayerPatterns()) {
+                    yield return new TestCaseData(scenario, testCase.Arguments[0], testCase.Arguments[1])
+                        .SetName($"PatternOverride_{scenario.Name}_{testCase.Arguments[0]}");
+                }
+            }
+        }
+
+        private static IEnumerable<TestCaseData> RealisticInMemoryScenarioCases() {
+            // Keep one padded odd-width case and one real-world frame size in the default suite.
+            // Every deterministic source family is run against both sizes so the same generators cover
+            // padding-sensitive and real-resolution behavior.
+            foreach (InputScenario scenario in AllInputScenarios) {
+                yield return new TestCaseData(scenario, HardeningPaddedWidth, HardeningPaddedHeight)
+                    .SetName($"Realistic_PaddedOdd_{HardeningPaddedWidth}x{HardeningPaddedHeight}_{scenario.Name}");
+                yield return new TestCaseData(scenario, HardeningRealWidth, HardeningRealHeight)
+                    .SetName($"Realistic_Planetary_{HardeningRealWidth}x{HardeningRealHeight}_{scenario.Name}");
+            }
+        }
+
+        private static IEnumerable<TestCaseData> ChannelScenarioCases() {
+            // Channel-allocation tests do not need every degenerate input, but they should still prove that
+            // the auxiliary arrays stay correct across several structured source families.
+            foreach (InputScenario scenario in AllInputScenarios) {
+                yield return Scenario(scenario, $"Channels_{scenario.Name}");
+            }
+        }
+
+        private static IEnumerable<TestCaseData> DeterminismScenarioCases() {
+            // Re-run every shared fixture to catch any non-deterministic data-dependent behavior.
+            foreach (InputScenario scenario in AllInputScenarios) {
+                yield return Scenario(scenario, $"Determinism_{scenario.Name}");
             }
         }
 
         [Test]
-        public void Demosaic_ProducesBitExactChannelsAndBuffers() {
-            // Build a small Bayer frame with mixed values so every neighbor path is exercised.
-            // An even width keeps stride padding out of this test so we isolate the demosaic logic.
-            int width = 6;
-            int height = 4;
-            ushort[] sourcePixels = CreateSequentialPixels(width, height, startValue: 100, step: 7);
-
-            // Create a 16bpp grayscale bitmap backed by GDI+ so the stride matches real-world usage.
-            // The filter will lock this bitmap and process the same memory layout as production code.
-            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
-            var filter = new BayerFilter16bpp {
-                SaveColorChannels = true,
-                SaveLumChannel = true,
-                PerformDemosaicing = true
-            };
-
-            // Apply the filter through the managed Bitmap path so the destination image is also GDI+ backed.
-            // This ensures both source and destination use real stride padding rules.
-            using var processed = filter.Apply(sourceImage);
-
-            // Compute expected output using the reference algorithm copied from BayerFilter16bpp.VerifyReference.
-            // This gives us a bit-exact baseline for the demosaic output and luminance.
-            ReferenceChannels reference = ComputeReference(sourceImage, filter.BayerPattern, performDemosaic: true, computeLum: true);
-            var processedChannels = Read48bppChannels(processed);
-
-            // Validate the BGR output channels produced by the filter.
-            // Any mismatch here indicates demosaic averaging or indexing errors.
-            Assert.That(processed.PixelFormat, Is.EqualTo(PixelFormat.Format48bppRgb), "Apply should produce a 48bpp RGB image");
-            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), "B channel mismatch");
-            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), "G channel mismatch");
-            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), "R channel mismatch");
-
-            // Validate the saved per-channel arrays, which intentionally mirror the BGR image layout.
-            // This ensures the auxiliary buffers stay consistent with the rendered image.
-            Assert.That(filter.LRGBArrays, Is.Not.Null, "LRGBArrays should be created when color or luminance is requested");
-            Assert.That(filter.LRGBArrays.Red, Is.EqualTo(reference.Blue), "LRGBArrays.Red should mirror image B");
-            Assert.That(filter.LRGBArrays.Green, Is.EqualTo(reference.Green), "LRGBArrays.Green should mirror image G");
-            Assert.That(filter.LRGBArrays.Blue, Is.EqualTo(reference.Red), "LRGBArrays.Blue should mirror image R");
-            Assert.That(filter.LRGBArrays.Lum, Is.EqualTo(reference.Lum), "LRGBArrays.Lum should match averaged luminance");
+        [TestCaseSource(nameof(RepresentativeInputScenarioCases))]
+        public void Demosaic_ProducesBitExactChannelsAndBuffers(InputScenario scenario) {
+            // Reuse the representative demosaic check, but drive it with deterministic source families instead
+            // of one linear ramp so the exact-reference comparison covers more than one source texture.
+            AssertDemosaicCase(
+                scenario,
+                RepresentativeDemosaicWidth,
+                RepresentativeDemosaicHeight,
+                saveColorChannels: true,
+                saveLumChannel: true,
+                caseName: $"Representative_{RepresentativeDemosaicWidth}x{RepresentativeDemosaicHeight}_{scenario.Name}");
         }
 
         [Test]
-        [TestCaseSource(nameof(DimensionCases))]
-        public void Demosaic_HandlesEvenAndOddDimensions(int width, int height) {
-            // Verify that every even/odd dimension combination produces bit-exact output.
-            // This ensures border logic and stride padding behave correctly at all sizes.
-            ushort[] sourcePixels = CreateSequentialPixels(width, height, startValue: 120, step: 5);
-
-            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
-            var filter = new BayerFilter16bpp {
-                SaveColorChannels = false,
-                SaveLumChannel = false,
-                PerformDemosaicing = true
-            };
-
-            using var processed = filter.Apply(sourceImage);
-
-            // Confirm that padding exists exactly when the stride cannot be 4-byte aligned without it.
-            // This makes the stride behavior part of the contract we verify in tests.
-            bool expectSourcePadding = ShouldHaveStridePadding(width, bytesPerPixel: 2);
-            bool expectDestPadding = ShouldHaveStridePadding(width, bytesPerPixel: 6);
-            Assert.That(HasStridePadding(sourceImage, bytesPerPixel: 2), Is.EqualTo(expectSourcePadding), "Unexpected source stride padding.");
-            Assert.That(HasStridePadding(processed, bytesPerPixel: 6), Is.EqualTo(expectDestPadding), "Unexpected destination stride padding.");
-
-            // Compute the reference output and validate the produced image channels.
-            // This is the core correctness check for all resolution combinations.
-            ReferenceChannels reference = ComputeReference(sourceImage, filter.BayerPattern, performDemosaic: true, computeLum: false);
-            var processedChannels = Read48bppChannels(processed);
-
-            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), "B channel mismatch");
-            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), "G channel mismatch");
-            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), "R channel mismatch");
-        }
-        [Test]
-        [TestCaseSource(nameof(AlternateBayerPatterns))]
-        public void Demosaic_RespectsBayerPatternOverride(string patternName, int[,] bayerPattern) {
-            // Use a non-default Bayer layout so we verify that the pattern override is honored.
-            // The sample is large enough to hit every neighbor path with mixed values.
-            int width = 6;
-            int height = 5;
-            ushort[] sourcePixels = CreateSequentialPixels(width, height, startValue: 250, step: 5);
-
-            // Create the input image and configure the filter with the supplied pattern.
-            // This isolates the effect of the pattern override on the output channels.
-            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
-            var filter = new BayerFilter16bpp {
-                SaveColorChannels = true,
-                SaveLumChannel = true,
-                PerformDemosaicing = true,
-                BayerPattern = bayerPattern
-            };
-
-            // Apply the filter and compute the expected output using the same pattern.
-            // This ties the reference directly to the override under test.
-            using var processed = filter.Apply(sourceImage);
-
-            ReferenceChannels reference = ComputeReference(sourceImage, bayerPattern, performDemosaic: true, computeLum: true);
-            var processedChannels = Read48bppChannels(processed);
-
-            // Verify the BGR output channels match the reference.
-            // A mismatch here means the pattern override is not respected in the core output.
-            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), $"B channel mismatch ({patternName})");
-            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), $"G channel mismatch ({patternName})");
-            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), $"R channel mismatch ({patternName})");
-
-            // Verify the saved LRGBArrays mirror the BGR output as implemented by the filter.
-            // This ensures the auxiliary buffers are consistent with the output image.
-            Assert.That(filter.LRGBArrays.Red, Is.EqualTo(reference.Blue), $"LRGBArrays.Red should mirror image B ({patternName})");
-            Assert.That(filter.LRGBArrays.Green, Is.EqualTo(reference.Green), $"LRGBArrays.Green should mirror image G ({patternName})");
-            Assert.That(filter.LRGBArrays.Blue, Is.EqualTo(reference.Red), $"LRGBArrays.Blue should mirror image R ({patternName})");
-            Assert.That(filter.LRGBArrays.Lum, Is.EqualTo(reference.Lum), $"LRGBArrays.Lum should match averaged luminance ({patternName})");
+        [TestCaseSource(nameof(DimensionScenarioCases))]
+        public void Demosaic_HandlesEvenAndOddDimensions(InputScenario scenario, int width, int height) {
+            // Keep the original size matrix, but pair each width/height combination with deterministic
+            // source families so padding and border handling are proven against varied input structure.
+            AssertDemosaicCase(
+                scenario,
+                width,
+                height,
+                saveColorChannels: false,
+                saveLumChannel: false,
+                caseName: $"Dimensions_{width}x{height}_{scenario.Name}");
         }
 
         [Test]
-        [TestCaseSource(nameof(BorderOnlyDimensionCases))]
-        public void Demosaic_HandlesBorderOnlyDimensions(int width, int height) {
-            // Exercise the path where no inner rows exist so the border handler processes every pixel.
-            // This ensures edge handling is correct when the image is only two rows tall.
-            ushort[] sourcePixels = CreateSequentialPixels(width, height, startValue: 90, step: 6);
-
-            // Use GDI+ bitmaps so stride padding mirrors production behavior.
-            // The filter must respect these padded rows in both source and destination images.
-            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
-            var filter = new BayerFilter16bpp {
-                SaveColorChannels = true,
-                SaveLumChannel = true,
-                PerformDemosaicing = true
-            };
-
-            using var processed = filter.Apply(sourceImage);
-
-            // Validate stride padding expectations for this width and pixel format.
-            // This confirms the test is actually hitting padded rows when expected.
-            bool expectSourcePadding = ShouldHaveStridePadding(width, bytesPerPixel: 2);
-            bool expectDestPadding = ShouldHaveStridePadding(width, bytesPerPixel: 6);
-            Assert.That(HasStridePadding(sourceImage, bytesPerPixel: 2), Is.EqualTo(expectSourcePadding), "Unexpected source stride padding.");
-            Assert.That(HasStridePadding(processed, bytesPerPixel: 6), Is.EqualTo(expectDestPadding), "Unexpected destination stride padding.");
-
-            // Compute the reference output and validate both the image and LRGBArrays.
-            // This asserts bit-exact behavior for both color planes and luminance.
-            ReferenceChannels reference = ComputeReference(sourceImage, filter.BayerPattern, performDemosaic: true, computeLum: true);
-            var processedChannels = Read48bppChannels(processed);
-
-            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), "B channel mismatch");
-            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), "G channel mismatch");
-            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), "R channel mismatch");
-
-            Assert.That(filter.LRGBArrays, Is.Not.Null, "LRGBArrays should be created when color or luminance is requested");
-            Assert.That(filter.LRGBArrays.Red, Is.EqualTo(reference.Blue), "LRGBArrays.Red should mirror image B");
-            Assert.That(filter.LRGBArrays.Green, Is.EqualTo(reference.Green), "LRGBArrays.Green should mirror image G");
-            Assert.That(filter.LRGBArrays.Blue, Is.EqualTo(reference.Red), "LRGBArrays.Blue should mirror image R");
-            Assert.That(filter.LRGBArrays.Lum, Is.EqualTo(reference.Lum), "LRGBArrays.Lum should match averaged luminance");
+        [TestCaseSource(nameof(BayerPatternScenarioCases))]
+        public void Demosaic_RespectsBayerPatternOverride(InputScenario scenario, string patternName, int[,] bayerPattern) {
+            // Keep the Bayer override matrix, but feed it the reusable deterministic source families so
+            // pattern placement is not only checked on one synthetic ramp.
+            AssertDemosaicCase(
+                scenario,
+                RepresentativePatternWidth,
+                RepresentativePatternHeight,
+                saveColorChannels: true,
+                saveLumChannel: true,
+                bayerPattern: bayerPattern,
+                caseName: $"PatternOverride_{patternName}_{scenario.Name}");
         }
 
         [Test]
-        public void RawMapping_NoDemosaicCopiesPixelsIntoPatternedChannels() {
-            // Verify the straight-through path respects the Bayer pattern and zeroes unused channels.
-            // This path should only copy the raw value into the plane dictated by the pattern.
-            int width = 4;
-            int height = 3;
-            ushort[] sourcePixels = {
-                50, 60, 70, 80,
-                90, 100, 110, 120,
-                130, 140, 150, 160
-            };
-
-            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
-            var filter = new BayerFilter16bpp {
-                SaveColorChannels = false,
-                SaveLumChannel = false,
-                PerformDemosaicing = false
-            };
-
-            // Apply the filter and extract the BGR planes for validation.
-            // Reading the output this way avoids any managed bitmap conversions.
-            using var processed = filter.Apply(sourceImage);
-
-            // Expected channels follow the Bayer pattern with other planes held at zero.
-            // The direct mapping should not synthesize values for missing colors.
-            ReferenceChannels reference = ComputeReference(sourceImage, filter.BayerPattern, performDemosaic: false, computeLum: false);
-            var processedChannels = Read48bppChannels(processed);
-
-            // Validate each channel is populated only where the Bayer pattern allows.
-            // Any non-zero value outside the pattern indicates incorrect mapping.
-            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), "B channel should contain Bayer B samples only");
-            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), "G channel should contain Bayer G samples only");
-            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), "R channel should contain Bayer R samples only");
+        [TestCaseSource(nameof(BorderOnlyScenarioCases))]
+        public void Demosaic_HandlesBorderOnlyDimensions(InputScenario scenario, int width, int height) {
+            // Border-only images still have their dedicated path, but now cover both uniform and mixed-content
+            // fixtures so the tiny-image behavior is checked across different value distributions.
+            AssertDemosaicCase(
+                scenario,
+                width,
+                height,
+                saveColorChannels: true,
+                saveLumChannel: true,
+                caseName: $"BorderOnly_{width}x{height}_{scenario.Name}");
         }
 
         [Test]
-        [TestCaseSource(nameof(DimensionCases))]
-        public void RawMapping_HandlesEvenAndOddDimensions(int width, int height) {
-            // Verify the raw mapping path for the full even/odd size matrix.
-            // This ensures row stepping and Bayer placement remain correct with padding.
-            ushort[] sourcePixels = CreateSequentialPixels(width, height, startValue: 60, step: 4);
-
-            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
-            var filter = new BayerFilter16bpp {
-                SaveColorChannels = false,
-                SaveLumChannel = false,
-                PerformDemosaicing = false
-            };
-
-            using var processed = filter.Apply(sourceImage);
-
-            // Confirm stride padding is present only when required by 4-byte alignment.
-            // This keeps the test aligned with actual GDI+ padding behavior.
-            bool expectSourcePadding = ShouldHaveStridePadding(width, bytesPerPixel: 2);
-            bool expectDestPadding = ShouldHaveStridePadding(width, bytesPerPixel: 6);
-            Assert.That(HasStridePadding(sourceImage, bytesPerPixel: 2), Is.EqualTo(expectSourcePadding), "Unexpected source stride padding.");
-            Assert.That(HasStridePadding(processed, bytesPerPixel: 6), Is.EqualTo(expectDestPadding), "Unexpected destination stride padding.");
-
-            // Expected channels follow the Bayer pattern with other planes held at zero.
-            // Padding bytes must not influence any of these logical pixel values.
-            ReferenceChannels reference = ComputeReference(sourceImage, filter.BayerPattern, performDemosaic: false, computeLum: false);
-            var processedChannels = Read48bppChannels(processed);
-
-            // Validate that the raw mapping respects the Bayer pattern even with padded strides.
-            // Failures here indicate row stepping is not correctly skipping padding.
-            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), "B channel mismatch");
-            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), "G channel mismatch");
-            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), "R channel mismatch");
+        [TestCaseSource(nameof(RealisticInMemoryScenarioCases))]
+        public void Demosaic_HandlesDeterministicInputFamiliesAtRealisticSizes(InputScenario scenario, int width, int height) {
+            // Replace the isolated hardening bucket with regular exact-reference coverage that runs the same
+            // deterministic source families against a padded odd-width frame and a realistic frame size.
+            AssertDemosaicCase(
+                scenario,
+                width,
+                height,
+                saveColorChannels: true,
+                saveLumChannel: true,
+                caseName: $"Realistic_{width}x{height}_{scenario.Name}");
         }
 
         [Test]
-        [TestCaseSource(nameof(AlternateBayerPatterns))]
-        public void RawMapping_RespectsBayerPatternOverride(string patternName, int[,] bayerPattern) {
-            // Exercise the no-demosaic path with non-default patterns to ensure mapping is correct.
-            // Keep width even so this test focuses strictly on pattern mapping, not stride padding.
-            int width = 6;
-            int height = 4;
-            ushort[] sourcePixels = CreateSequentialPixels(width, height, startValue: 50, step: 3);
-
-            // Configure the filter with the pattern override and run the raw mapping path.
-            // This isolates the mapping behavior without demosaic interpolation.
-            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
-            var filter = new BayerFilter16bpp {
-                PerformDemosaicing = false,
-                BayerPattern = bayerPattern
-            };
-
-            using var processed = filter.Apply(sourceImage);
-
-            // Compute expected raw channel placement for this pattern.
-            // This reference assumes a direct copy into the plane indicated by the pattern.
-            ReferenceChannels reference = ComputeReference(sourceImage, bayerPattern, performDemosaic: false, computeLum: false);
-            var processedChannels = Read48bppChannels(processed);
-
-            // Validate that the pattern override is honored for each channel.
-            // Any mismatch means the override is ignored or misapplied.
-            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), $"B channel mismatch ({patternName})");
-            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), $"G channel mismatch ({patternName})");
-            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), $"R channel mismatch ({patternName})");
-        }
-        [Test]
-        public void Demosaic_SaveLumOnly_PopulatesLumArray() {
-            // Confirm luminance output is available without allocating color planes.
-            // This verifies that SaveLumChannel can be used independently.
-            int width = 6;
-            int height = 4;
-            ushort[] sourcePixels = CreateSequentialPixels(width, height, startValue: 120, step: 11);
-
-            // Configure the filter to save only luminance and run demosaic.
-            // This ensures the color arrays remain empty while luminance is filled.
-            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
-            var filter = new BayerFilter16bpp {
-                SaveColorChannels = false,
-                SaveLumChannel = true,
-                PerformDemosaicing = true
-            };
-
-            using var processed = filter.Apply(sourceImage);
-
-            // Compute the expected demosaic output and luminance channel.
-            // The luminance is computed as the mean of the RGB channels.
-            ReferenceChannels reference = ComputeReference(sourceImage, filter.BayerPattern, performDemosaic: true, computeLum: true);
-            var processedChannels = Read48bppChannels(processed);
-
-            // Validate the output image channels and the luminance buffer.
-            // This confirms both the image and the saved arrays are consistent.
-            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), "B channel mismatch");
-            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), "G channel mismatch");
-            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), "R channel mismatch");
-
-            Assert.That(filter.LRGBArrays, Is.Not.Null, "LRGBArrays should be created when luminance is requested");
-            Assert.That(filter.LRGBArrays.Lum, Is.EqualTo(reference.Lum), "Lum channel mismatch");
-            Assert.That(filter.LRGBArrays.Red, Has.Length.EqualTo(0), "Red channel should be empty when SaveColorChannels is false");
-            Assert.That(filter.LRGBArrays.Green, Has.Length.EqualTo(0), "Green channel should be empty when SaveColorChannels is false");
-            Assert.That(filter.LRGBArrays.Blue, Has.Length.EqualTo(0), "Blue channel should be empty when SaveColorChannels is false");
+        [TestCaseSource(nameof(RepresentativeInputScenarioCases))]
+        public void RawMapping_NoDemosaicCopiesPixelsIntoPatternedChannels(InputScenario scenario) {
+            // The no-demosaic path now uses the same deterministic source families as the demosaic path so
+            // direct Bayer-plane placement is checked on more than one synthetic frame.
+            AssertRawMappingCase(
+                scenario,
+                RepresentativeRawWidth,
+                RepresentativeRawHeight,
+                caseName: $"RawRepresentative_{RepresentativeRawWidth}x{RepresentativeRawHeight}_{scenario.Name}");
         }
 
         [Test]
-        public void Demosaic_SaveColorOnly_PopulatesColorArrays() {
-            // Confirm color planes are populated while luminance remains empty.
-            // Use an even width to keep stride padding out of this specific validation.
-            int width = 6;
-            int height = 5;
-            ushort[] sourcePixels = CreateSequentialPixels(width, height, startValue: 200, step: 9);
-
-            // Configure the filter to save only the color planes.
-            // The luminance array should remain empty in this configuration.
-            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
-            var filter = new BayerFilter16bpp {
-                SaveColorChannels = true,
-                SaveLumChannel = false,
-                PerformDemosaicing = true
-            };
-
-            using var processed = filter.Apply(sourceImage);
-
-            // Compute the expected color planes and validate both image and saved arrays.
-            // This ensures the color buffers mirror the output image correctly.
-            ReferenceChannels reference = ComputeReference(sourceImage, filter.BayerPattern, performDemosaic: true, computeLum: false);
-            var processedChannels = Read48bppChannels(processed);
-
-            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), "B channel mismatch");
-            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), "G channel mismatch");
-            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), "R channel mismatch");
-
-            Assert.That(filter.LRGBArrays, Is.Not.Null, "LRGBArrays should be created when color channels are requested");
-            Assert.That(filter.LRGBArrays.Lum, Has.Length.EqualTo(0), "Lum channel should be empty when SaveLumChannel is false");
-            Assert.That(filter.LRGBArrays.Red, Is.EqualTo(reference.Blue), "LRGBArrays.Red should mirror image B");
-            Assert.That(filter.LRGBArrays.Green, Is.EqualTo(reference.Green), "LRGBArrays.Green should mirror image G");
-            Assert.That(filter.LRGBArrays.Blue, Is.EqualTo(reference.Red), "LRGBArrays.Blue should mirror image R");
+        [TestCaseSource(nameof(RealisticInMemoryScenarioCases))]
+        public void RawMapping_HandlesDeterministicInputFamiliesAtRealisticSizes(InputScenario scenario, int width, int height) {
+            // The straight-through path should also stay exact on the padded and real-sized deterministic inputs.
+            AssertRawMappingCase(
+                scenario,
+                width,
+                height,
+                caseName: $"RawRealistic_{width}x{height}_{scenario.Name}");
         }
 
         [Test]
-        public void Demosaic_NoChannelsRequested_LeavesLRGBArraysNull() {
-            // Avoid allocating LRGBArrays when no auxiliary channels are needed.
-            // This ensures the filter does not allocate unnecessary buffers.
-            int width = 4;
-            int height = 4;
-            ushort[] sourcePixels = CreateSequentialPixels(width, height, startValue: 500, step: 1);
-
-            // Run the filter with both save flags disabled.
-            // The output image should still be correct while no arrays are allocated.
-            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
-            var filter = new BayerFilter16bpp {
-                SaveColorChannels = false,
-                SaveLumChannel = false,
-                PerformDemosaicing = true
-            };
-
-            using var processed = filter.Apply(sourceImage);
-
-            // Validate the output image and confirm no LRGBArrays are allocated.
-            // This guards against unnecessary memory use when auxiliary channels are not needed.
-            ReferenceChannels reference = ComputeReference(sourceImage, filter.BayerPattern, performDemosaic: true, computeLum: false);
-            var processedChannels = Read48bppChannels(processed);
-
-            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), "B channel mismatch");
-            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), "G channel mismatch");
-            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), "R channel mismatch");
-            Assert.That(filter.LRGBArrays, Is.Null, "LRGBArrays should remain null when no channels are requested");
+        [TestCaseSource(nameof(DimensionScenarioCases))]
+        public void RawMapping_HandlesEvenAndOddDimensions(InputScenario scenario, int width, int height) {
+            // Keep the even/odd size matrix, but run each size against deterministic source families instead of
+            // a single ramp so padding-sensitive raw mapping is covered on varied data.
+            AssertRawMappingCase(
+                scenario,
+                width,
+                height,
+                caseName: $"RawDimensions_{width}x{height}_{scenario.Name}");
         }
 
         [Test]
-        public void Apply_DoesNotModifySourceBuffer() {
-            // Ensure the filter treats the source buffer as read-only.
-            // Use an even width so stride padding does not interfere with this integrity check.
-            int width = 6;
-            int height = 4;
-            ushort[] sourcePixels = CreateSequentialPixels(width, height, startValue: 1000, step: 7);
+        [TestCaseSource(nameof(BayerPatternScenarioCases))]
+        public void RawMapping_RespectsBayerPatternOverride(InputScenario scenario, string patternName, int[,] bayerPattern) {
+            // Keep the Bayer override matrix for the raw-copy path, but reuse the deterministic source families
+            // so the override is not only proven on one dedicated sample.
+            AssertRawMappingCase(
+                scenario,
+                RepresentativeDemosaicWidth,
+                RepresentativeDemosaicHeight,
+                bayerPattern: bayerPattern,
+                caseName: $"RawPatternOverride_{patternName}_{scenario.Name}");
+        }
 
-            // Capture the source bytes before processing and verify they are unchanged afterward.
-            // This protects against accidental writes to the input buffer.
+        [Test]
+        [TestCaseSource(nameof(ChannelScenarioCases))]
+        public void Demosaic_SaveLumOnly_PopulatesLumArray(InputScenario scenario) {
+            // Luminance-only output should remain exact regardless of source structure.
+            AssertDemosaicCase(
+                scenario,
+                RepresentativeDemosaicWidth,
+                RepresentativeDemosaicHeight,
+                saveColorChannels: false,
+                saveLumChannel: true,
+                caseName: $"LumOnly_{scenario.Name}");
+        }
+
+        [Test]
+        [TestCaseSource(nameof(ChannelScenarioCases))]
+        public void Demosaic_SaveColorOnly_PopulatesColorArrays(InputScenario scenario) {
+            // Color-only output should remain exact while luminance stays empty across the deterministic families.
+            AssertDemosaicCase(
+                scenario,
+                RepresentativePatternWidth,
+                RepresentativePatternHeight,
+                saveColorChannels: true,
+                saveLumChannel: false,
+                caseName: $"ColorOnly_{scenario.Name}");
+        }
+
+        [Test]
+        [TestCaseSource(nameof(ChannelScenarioCases))]
+        public void Demosaic_NoChannelsRequested_LeavesLRGBArraysNull(InputScenario scenario) {
+            // When callers do not request auxiliary channels, exact image parity must still hold and the side
+            // arrays must stay unallocated for the same deterministic source families used elsewhere.
+            AssertDemosaicCase(
+                scenario,
+                4,
+                4,
+                saveColorChannels: false,
+                saveLumChannel: false,
+                caseName: $"NoChannels_{scenario.Name}");
+        }
+
+        [Test]
+        [TestCaseSource(nameof(ChannelScenarioCases))]
+        public void Apply_DoesNotModifySourceBuffer(InputScenario scenario) {
+            // Source immutability should be guaranteed for the reusable deterministic input families, not only
+            // for one small ramp-shaped sample.
+            int width = RepresentativeDemosaicWidth;
+            int height = RepresentativeDemosaicHeight;
+            ushort[] sourcePixels = scenario.CreatePixels(width, height);
+
             using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
             byte[] before = ReadBitmapBytes(sourceImage);
 
@@ -489,10 +394,43 @@ namespace NINA.Test.Image.ImageAnalysis {
 
             byte[] after = ReadBitmapBytes(sourceImage);
 
-            // Validate output format and ensure no source buffer mutation occurred.
-            // This confirms the filter respects the read-only contract of Apply.
             Assert.That(processed.PixelFormat, Is.EqualTo(PixelFormat.Format48bppRgb), "Apply should produce a 48bpp RGB image");
-            Assert.That(after, Is.EqualTo(before), "Source buffer should remain unchanged after Apply");
+            Assert.That(after, Is.EqualTo(before), $"Source buffer should remain unchanged after Apply ({scenario.Name})");
+        }
+
+        [Test]
+        [TestCaseSource(nameof(DeterminismScenarioCases))]
+        public void Demosaic_RepeatedRuns_AreDeterministic(InputScenario scenario) {
+            ushort[] sourcePixels = scenario.CreatePixels(HardeningPaddedWidth, HardeningPaddedHeight);
+            byte[]? expectedBitmapBytes = null;
+            ushort[]? expectedRed = null;
+            ushort[]? expectedGreen = null;
+            ushort[]? expectedBlue = null;
+            ushort[]? expectedLum = null;
+
+            for (int iteration = 0; iteration < 3; iteration++) {
+                using var sourceImage = CreateGray16Bitmap(HardeningPaddedWidth, HardeningPaddedHeight, sourcePixels);
+                var filter = new BayerFilter16bpp {
+                    SaveColorChannels = true,
+                    SaveLumChannel = true,
+                    PerformDemosaicing = true
+                };
+
+                using var processed = filter.Apply(sourceImage);
+
+                byte[] actualBitmapBytes = ReadBitmapBytes(processed);
+                expectedBitmapBytes ??= actualBitmapBytes;
+                expectedRed ??= (ushort[])filter.LRGBArrays.Red.Clone();
+                expectedGreen ??= (ushort[])filter.LRGBArrays.Green.Clone();
+                expectedBlue ??= (ushort[])filter.LRGBArrays.Blue.Clone();
+                expectedLum ??= (ushort[])filter.LRGBArrays.Lum.Clone();
+
+                Assert.That(actualBitmapBytes, Is.EqualTo(expectedBitmapBytes), $"Bitmap output mismatch on iteration {iteration} ({scenario.Name}).");
+                Assert.That(filter.LRGBArrays.Red, Is.EqualTo(expectedRed), $"Red plane mismatch on iteration {iteration} ({scenario.Name}).");
+                Assert.That(filter.LRGBArrays.Green, Is.EqualTo(expectedGreen), $"Green plane mismatch on iteration {iteration} ({scenario.Name}).");
+                Assert.That(filter.LRGBArrays.Blue, Is.EqualTo(expectedBlue), $"Blue plane mismatch on iteration {iteration} ({scenario.Name}).");
+                Assert.That(filter.LRGBArrays.Lum, Is.EqualTo(expectedLum), $"Lum plane mismatch on iteration {iteration} ({scenario.Name}).");
+            }
         }
 
         [Test]
@@ -504,25 +442,29 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Explicit("Large file-backed integration coverage. Run on demand.")]
         [Category("BayerFilter16bppRealWorldFormats")]
         [Ignore("File-backed Bayer format coverage is intentionally opt-in because it exercises slow integration paths.")]
         [NonParallelizable]
         [CancelAfter(180000)]
         [TestCaseSource(nameof(RealWorldFileFormatCases))]
-        public async Task Demosaic_FileBackedRealWorldFormats_MatchReference(string extension) {
+        public async Task Demosaic_FileBackedRealWorldFormats_MatchReference(string extension, InputScenario scenario) {
             // These cases intentionally go through disk instead of reusing the in-memory Bayer tests.
             // Saving and reloading is what validates the FITS/XISF loader contract: raw 16-bit mosaic data
             // must round-trip unchanged and Bayer metadata must come back intact for the later auto-pattern path.
-            // One representative astro-camera resolution is enough here because the dedicated batch below covers the size matrix.
+            // One representative astro-camera resolution is enough here because the dedicated batch below covers the size matrix,
+            // while the scenario matrix ensures the file-backed path is not tied to one source texture.
             AstroCameraResolutionCase representativeResolution = AstroCameraResolutions[FormatCoverageResolutionKey];
             await AssertFileBackedRealWorldCase(
                 extension: extension,
                 width: representativeResolution.Width,
                 height: representativeResolution.Height,
-                bayerPattern: FileBackedBayerPattern);
+                bayerPattern: FileBackedBayerPattern,
+                scenario: scenario);
         }
 
         [Test]
+        [Explicit("Large file-backed integration coverage. Run on demand.")]
         [Category("BayerFilter16bppRealWorldFormats")]
         [Ignore("Large real-world Bayer resolution coverage is intentionally opt-in because it is exhaustive and slow.")]
         [NonParallelizable]
@@ -531,14 +473,16 @@ namespace NINA.Test.Image.ImageAnalysis {
         public async Task Demosaic_FileBackedAstroCameraResolutions_MatchReference(
             string resolutionName,
             int width,
-            int height) {
+            int height,
+            InputScenario scenario) {
             // Use XISF for the resolution matrix so every defined astro-camera size exercises the full
-            // file-backed load path without multiplying runtime by every supported extension.
+            // file-backed load path, and run more than one deterministic source family at each size.
             await AssertFileBackedRealWorldCase(
                 extension: ".xisf",
                 width: width,
                 height: height,
-                bayerPattern: FileBackedBayerPattern);
+                bayerPattern: FileBackedBayerPattern,
+                scenario: scenario);
         }
         private readonly struct ReferenceChannels {
             // Bundle the channel arrays so tests can pass reference results around cleanly.
@@ -556,52 +500,124 @@ namespace NINA.Test.Image.ImageAnalysis {
             public ushort[] Lum { get; }
         }
 
-        private static ushort[] CreateSequentialPixels(int width, int height, int startValue, int step) {
-            // Generate deterministic values that exercise the averaging paths without overflow.
-            // Using a simple linear sequence keeps the expected output easy to reason about.
-            int pixelCount = width * height;
-            ushort[] pixels = new ushort[pixelCount];
+        private static void AssertDemosaicCase(
+            InputScenario scenario,
+            int width,
+            int height,
+            bool saveColorChannels,
+            bool saveLumChannel,
+            int[,]? bayerPattern = null,
+            string? caseName = null) {
+            string effectiveCaseName = caseName ?? $"{width}x{height}_{scenario.Name}";
+            ushort[] sourcePixels = scenario.CreatePixels(width, height);
 
-            int value = startValue;
-            for (int i = 0; i < pixelCount; i++) {
-                pixels[i] = (ushort)value;
-                value += step;
+            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
+            var filter = new BayerFilter16bpp {
+                SaveColorChannels = saveColorChannels,
+                SaveLumChannel = saveLumChannel,
+                PerformDemosaicing = true
+            };
+
+            if (bayerPattern != null) {
+                filter.BayerPattern = bayerPattern;
             }
 
-            return pixels;
+            using var processed = filter.Apply(sourceImage);
+
+            AssertStridePaddingMatches(sourceImage, processed, width, effectiveCaseName);
+
+            ReferenceChannels reference = ComputeReference(sourceImage, filter.BayerPattern, performDemosaic: true, computeLum: saveLumChannel);
+            AssertProcessedChannelsMatchReference(processed, reference, effectiveCaseName);
+            AssertSavedChannelsMatchReference(filter, reference, saveColorChannels, saveLumChannel, effectiveCaseName);
         }
 
-        private static ushort[] CreatePseudoAstroPixels(int width, int height) {
-            // Generate deterministic data with gradients and sparse highlights to mimic a real frame's structure.
-            // This keeps the fixture synthetic while still looking like practical imaging data.
-            int pixelCount = width * height;
-            ushort[] pixels = new ushort[pixelCount];
+        private static void AssertRawMappingCase(
+            InputScenario scenario,
+            int width,
+            int height,
+            int[,]? bayerPattern = null,
+            string? caseName = null) {
+            string effectiveCaseName = caseName ?? $"{width}x{height}_{scenario.Name}";
+            ushort[] sourcePixels = scenario.CreatePixels(width, height);
 
-            for (int y = 0; y < height; y++) {
-                int rowOffset = y * width;
-                for (int x = 0; x < width; x++) {
-                    int background = 700 + ((x * 17 + y * 29) % 1200);
-                    int nebula = ((x * x + y * y) % 4096) / 2;
-                    int sparkle = (((x * 73856093) ^ (y * 19349663)) & 1023) < 2 ? 18000 : 0;
-                    int value = background + nebula + sparkle;
+            using var sourceImage = CreateGray16Bitmap(width, height, sourcePixels);
+            var filter = new BayerFilter16bpp {
+                SaveColorChannels = false,
+                SaveLumChannel = false,
+                PerformDemosaicing = false
+            };
 
-                    if (value > ushort.MaxValue) {
-                        value = ushort.MaxValue;
-                    }
-
-                    pixels[rowOffset + x] = (ushort)value;
-                }
+            if (bayerPattern != null) {
+                filter.BayerPattern = bayerPattern;
             }
 
-            return pixels;
+            using var processed = filter.Apply(sourceImage);
+
+            AssertStridePaddingMatches(sourceImage, processed, width, effectiveCaseName);
+
+            ReferenceChannels reference = ComputeReference(sourceImage, filter.BayerPattern, performDemosaic: false, computeLum: false);
+            AssertProcessedChannelsMatchReference(processed, reference, effectiveCaseName);
+            Assert.That(filter.LRGBArrays, Is.Null, $"LRGBArrays should remain null when raw mapping does not request channels ({effectiveCaseName}).");
+        }
+
+        private static void AssertStridePaddingMatches(Bitmap sourceImage, Bitmap processed, int width, string caseName) {
+            bool expectSourcePadding = ShouldHaveStridePadding(width, bytesPerPixel: 2);
+            bool expectDestPadding = ShouldHaveStridePadding(width, bytesPerPixel: 6);
+
+            Assert.That(HasStridePadding(sourceImage, bytesPerPixel: 2), Is.EqualTo(expectSourcePadding), $"Unexpected source stride padding ({caseName}).");
+            Assert.That(HasStridePadding(processed, bytesPerPixel: 6), Is.EqualTo(expectDestPadding), $"Unexpected destination stride padding ({caseName}).");
+        }
+
+        private static void AssertProcessedChannelsMatchReference(Bitmap processed, ReferenceChannels reference, string caseName) {
+            var processedChannels = Read48bppChannels(processed);
+
+            Assert.That(processed.PixelFormat, Is.EqualTo(PixelFormat.Format48bppRgb), $"Apply should produce a 48bpp RGB image ({caseName}).");
+            Assert.That(processedChannels.Blue, Is.EqualTo(reference.Blue), $"B channel mismatch ({caseName}).");
+            Assert.That(processedChannels.Green, Is.EqualTo(reference.Green), $"G channel mismatch ({caseName}).");
+            Assert.That(processedChannels.Red, Is.EqualTo(reference.Red), $"R channel mismatch ({caseName}).");
+        }
+
+        private static void AssertSavedChannelsMatchReference(
+            BayerFilter16bpp filter,
+            ReferenceChannels reference,
+            bool saveColorChannels,
+            bool saveLumChannel,
+            string caseName) {
+            if (!saveColorChannels && !saveLumChannel) {
+                Assert.That(filter.LRGBArrays, Is.Null, $"LRGBArrays should remain null when no channels are requested ({caseName}).");
+                return;
+            }
+
+            Assert.That(filter.LRGBArrays, Is.Not.Null, $"LRGBArrays should be created when auxiliary channels are requested ({caseName}).");
+
+            if (saveColorChannels) {
+                Assert.That(filter.LRGBArrays.Red, Is.EqualTo(reference.Blue), $"LRGBArrays.Red should mirror image B ({caseName}).");
+                Assert.That(filter.LRGBArrays.Green, Is.EqualTo(reference.Green), $"LRGBArrays.Green should mirror image G ({caseName}).");
+                Assert.That(filter.LRGBArrays.Blue, Is.EqualTo(reference.Red), $"LRGBArrays.Blue should mirror image R ({caseName}).");
+            } else {
+                Assert.That(filter.LRGBArrays.Red, Has.Length.EqualTo(0), $"Red channel should be empty when SaveColorChannels is false ({caseName}).");
+                Assert.That(filter.LRGBArrays.Green, Has.Length.EqualTo(0), $"Green channel should be empty when SaveColorChannels is false ({caseName}).");
+                Assert.That(filter.LRGBArrays.Blue, Has.Length.EqualTo(0), $"Blue channel should be empty when SaveColorChannels is false ({caseName}).");
+            }
+
+            if (saveLumChannel) {
+                Assert.That(filter.LRGBArrays.Lum, Is.EqualTo(reference.Lum), $"LRGBArrays.Lum should match averaged luminance ({caseName}).");
+            } else {
+                Assert.That(filter.LRGBArrays.Lum, Has.Length.EqualTo(0), $"Lum channel should be empty when SaveLumChannel is false ({caseName}).");
+            }
+        }
+
+        private static TestCaseData Scenario(InputScenario scenario, string testName) {
+            return new TestCaseData(scenario).SetName(testName);
         }
 
         private async Task AssertFileBackedRealWorldCase(
             string extension,
             int width,
             int height,
-            SensorType bayerPattern) {
-            ushort[] sourcePixels = CreatePseudoAstroPixels(width, height);
+            SensorType bayerPattern,
+            InputScenario scenario) {
+            ushort[] sourcePixels = scenario.CreatePixels(width, height);
             string tempDirectory = Path.Combine(TestContext.CurrentContext.TestDirectory, "BayerFilter16bppTests", Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(tempDirectory);
             string filePath = Path.Combine(tempDirectory, "synthetic-frame" + extension);
@@ -621,11 +637,11 @@ namespace NINA.Test.Image.ImageAnalysis {
 
                 Assert.That(loaded.Properties.Width, Is.EqualTo(width), "Loaded width mismatch.");
                 Assert.That(loaded.Properties.Height, Is.EqualTo(height), "Loaded height mismatch.");
-                Assert.That(loaded.Data.FlatArray, Is.EqualTo(sourcePixels), "Loaded pixels should round-trip through file I/O unchanged.");
-                Assert.That(loaded.MetaData.Camera.SensorType, Is.EqualTo(bayerPattern), "Loaded sensor metadata should preserve the Bayer pattern.");
+                Assert.That(loaded.Data.FlatArray, Is.EqualTo(sourcePixels), $"Loaded pixels should round-trip through file I/O unchanged ({scenario.Name}).");
+                Assert.That(loaded.MetaData.Camera.SensorType, Is.EqualTo(bayerPattern), $"Loaded sensor metadata should preserve the Bayer pattern ({scenario.Name}).");
 
                 SensorType metadataDrivenBayerPattern = ResolveMetadataDrivenBayerPattern(loaded.MetaData);
-                Assert.That(metadataDrivenBayerPattern, Is.EqualTo(bayerPattern), "Loaded metadata should drive the same Bayer pattern the file was written with.");
+                Assert.That(metadataDrivenBayerPattern, Is.EqualTo(bayerPattern), $"Loaded metadata should drive the same Bayer pattern the file was written with ({scenario.Name}).");
 
                 int[,] filterPattern = GetImageUtilityBayerPattern(metadataDrivenBayerPattern);
 
@@ -636,10 +652,10 @@ namespace NINA.Test.Image.ImageAnalysis {
                     saveLumChannel: false,
                     bayerPattern: metadataDrivenBayerPattern);
 
-                Assert.That(debayered.BayerPattern, Is.EqualTo(metadataDrivenBayerPattern), "Debayered image should record the metadata-selected Bayer pattern.");
-                Assert.That(debayered.Image.PixelWidth, Is.EqualTo(width), "Debayered image width mismatch.");
-                Assert.That(debayered.Image.PixelHeight, Is.EqualTo(height), "Debayered image height mismatch.");
-                Assert.That(debayered.Image.Format, Is.EqualTo(System.Windows.Media.PixelFormats.Rgb48), "Debayered image should stay in 48-bit color.");
+                Assert.That(debayered.BayerPattern, Is.EqualTo(metadataDrivenBayerPattern), $"Debayered image should record the metadata-selected Bayer pattern ({scenario.Name}).");
+                Assert.That(debayered.Image.PixelWidth, Is.EqualTo(width), $"Debayered image width mismatch ({scenario.Name}).");
+                Assert.That(debayered.Image.PixelHeight, Is.EqualTo(height), $"Debayered image height mismatch ({scenario.Name}).");
+                Assert.That(debayered.Image.Format, Is.EqualTo(System.Windows.Media.PixelFormats.Rgb48), $"Debayered image should stay in 48-bit color ({scenario.Name}).");
 
                 ReferenceChannels reference = ComputeDemosaicReference(
                     sourcePixels,
@@ -648,7 +664,7 @@ namespace NINA.Test.Image.ImageAnalysis {
                     filterPattern,
                     computeLum: false);
 
-                AssertDebayeredImageMatchesReference(debayered.Image, reference);
+                AssertDebayeredImageMatchesReference(debayered.Image, reference, scenario.Name);
             } finally {
                 if (Directory.Exists(tempDirectory)) {
                     Directory.Delete(tempDirectory, recursive: true);
@@ -672,13 +688,13 @@ namespace NINA.Test.Image.ImageAnalysis {
             return metaData.Camera.SensorType;
         }
 
-        private static void AssertDebayeredImageMatchesReference(BitmapSource image, ReferenceChannels reference) {
+        private static void AssertDebayeredImageMatchesReference(BitmapSource image, ReferenceChannels reference, string caseName) {
             using Bitmap bitmap = ImageUtility.BitmapFromSource(image, PixelFormat.Format48bppRgb);
             var actual = Read48bppChannels(bitmap);
 
-            Assert.That(actual.Blue, Is.EqualTo(reference.Blue), "Debayered image B channel should match the reference image.");
-            Assert.That(actual.Green, Is.EqualTo(reference.Green), "Debayered image G channel should match the reference image.");
-            Assert.That(actual.Red, Is.EqualTo(reference.Red), "Debayered image R channel should match the reference image.");
+            Assert.That(actual.Blue, Is.EqualTo(reference.Blue), $"Debayered image B channel should match the reference image ({caseName}).");
+            Assert.That(actual.Green, Is.EqualTo(reference.Green), $"Debayered image G channel should match the reference image ({caseName}).");
+            Assert.That(actual.Red, Is.EqualTo(reference.Red), $"Debayered image R channel should match the reference image ({caseName}).");
         }
 
         private static void WriteFileBackedFrame(string filePath, ushort[] pixels, int width, int height, SensorType pattern) {
