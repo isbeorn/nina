@@ -48,11 +48,11 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         }
 
         [Test]
-        public void WaitForSunAltitude_MustWait_GreaterThan_WaitsWhenBelowTarget() {
-            // 91° is unreachable by the sun, so the condition is never met and we must always wait
+        public void WaitForSunAltitude_MustWait_GreaterThan_WaitsWhileAboveTarget() {
+            // Sun is always above -91°, so it is always waiting while the condition (altitude > -91°) holds
             var sut = new WaitForSunAltitude(profileServiceMock.Object);
             sut.Data.Comparator = ComparisonOperatorEnum.GREATER_THAN;
-            sut.Data.Offset = 91;
+            sut.Data.Offset = -91;
 
             sut.CalculateExpectedTime();
 
@@ -60,11 +60,11 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         }
 
         [Test]
-        public void WaitForSunAltitude_MustWait_GreaterThan_DoesNotWaitWhenAboveTarget() {
-            // -91° is always below the sun, so the condition is already met and we must not wait
+        public void WaitForSunAltitude_MustWait_GreaterThan_DoesNotWaitWhenBelowTarget() {
+            // Sun can never reach 91°, so the condition (altitude > 91°) is never true and there is nothing to wait for
             var sut = new WaitForSunAltitude(profileServiceMock.Object);
             sut.Data.Comparator = ComparisonOperatorEnum.GREATER_THAN;
-            sut.Data.Offset = -91;
+            sut.Data.Offset = 91;
 
             sut.CalculateExpectedTime();
 
@@ -72,11 +72,11 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         }
 
         [Test]
-        public void WaitForSunAltitude_MustWait_LessThan_WaitsWhenAboveTarget() {
-            // Sun is always above -91°, so the condition is never met and we must always wait
+        public void WaitForSunAltitude_MustWait_LessThan_WaitsWhileBelowTarget() {
+            // Sun is always below 91°, so it is always waiting while the condition (altitude <= 91°) holds
             var sut = new WaitForSunAltitude(profileServiceMock.Object);
             sut.Data.Comparator = ComparisonOperatorEnum.LESS_THAN;
-            sut.Data.Offset = -91;
+            sut.Data.Offset = 91;
 
             sut.CalculateExpectedTime();
 
@@ -84,11 +84,11 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         }
 
         [Test]
-        public void WaitForSunAltitude_MustWait_LessThan_DoesNotWaitWhenBelowTarget() {
-            // 91° is always above the sun, so the condition is already met and we must not wait
+        public void WaitForSunAltitude_MustWait_LessThan_DoesNotWaitWhenAboveTarget() {
+            // Sun is always above -91°, so the condition (altitude <= -91°) is never true and there is nothing to wait for
             var sut = new WaitForSunAltitude(profileServiceMock.Object);
             sut.Data.Comparator = ComparisonOperatorEnum.LESS_THAN;
-            sut.Data.Offset = 91;
+            sut.Data.Offset = -91;
 
             sut.CalculateExpectedTime();
 
