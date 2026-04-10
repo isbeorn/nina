@@ -83,9 +83,9 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private bool MustWait() {
             switch (Data.Comparator) {
                 case ComparisonOperatorEnum.GREATER_THAN:
-                    return Data.CurrentAltitude > GetDataOffset();
-                default:
                     return Data.CurrentAltitude <= GetDataOffset();
+                default:
+                    return Data.CurrentAltitude > GetDataOffset();
             }
         }
 
@@ -131,7 +131,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private DateTime CalculateExpectedDateTime(DateTime time) {
             var customRiseAndSet = new MoonCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Observer.Elevation, GetDataOffset());
             customRiseAndSet.Compute();
-            return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN ? customRiseAndSet.Set : customRiseAndSet?.Rise) ?? DateTime.MaxValue;
+            return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN ? customRiseAndSet.Rise : customRiseAndSet?.Set) ?? DateTime.MaxValue;
         }
 
         public override string ToString() {
