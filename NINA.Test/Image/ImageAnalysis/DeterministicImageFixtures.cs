@@ -180,21 +180,17 @@ namespace NINA.Test.Image.ImageAnalysis {
             int starCount = Math.Max(24, (width * height) / 24000);
 
             for (int i = 0; i < starCount; i++) {
-                int x = random.Next(2, Math.Max(3, width - 2));
-                int y = random.Next(2, Math.Max(3, height - 2));
+                // Keep stars away from the outer frame so every size variant can fit without clipping.
+                int margin = Math.Min(4, Math.Min(Math.Max(0, width / 2), Math.Max(0, height / 2)));
+                int minX = Math.Min(margin, Math.Max(0, width - 1));
+                int maxX = Math.Max(minX + 1, width - margin);
+                int minY = Math.Min(margin, Math.Max(0, height - 1));
+                int maxY = Math.Max(minY + 1, height - margin);
+                int x = random.Next(minX, maxX);
+                int y = random.Next(minY, maxY);
                 ushort core = (ushort)random.Next(40000, 65536);
-                ushort halo = (ushort)Math.Max(6000, core / 4);
-                ushort shoulder = (ushort)Math.Max(3000, core / 7);
-
-                AddPixelSaturating(pixels, width, height, x, y, core);
-                AddPixelSaturating(pixels, width, height, x - 1, y, halo);
-                AddPixelSaturating(pixels, width, height, x + 1, y, halo);
-                AddPixelSaturating(pixels, width, height, x, y - 1, halo);
-                AddPixelSaturating(pixels, width, height, x, y + 1, halo);
-                AddPixelSaturating(pixels, width, height, x - 1, y - 1, shoulder);
-                AddPixelSaturating(pixels, width, height, x + 1, y - 1, shoulder);
-                AddPixelSaturating(pixels, width, height, x - 1, y + 1, shoulder);
-                AddPixelSaturating(pixels, width, height, x + 1, y + 1, shoulder);
+                int radius = random.Next(0, 3);
+                AddSyntheticStar(pixels, width, height, x, y, core, radius);
             }
 
             return pixels;
@@ -291,6 +287,31 @@ namespace NINA.Test.Image.ImageAnalysis {
                 CreateBytes = (width, height) => DownscaleToBytes(createUShorts(width, height)),
                 CreateUShorts = createUShorts
             };
+        }
+
+        private static void AddSyntheticStar(ushort[] pixels, int width, int height, int centerX, int centerY, ushort core, int radius) {
+            for (int dy = -radius; dy <= radius; dy++) {
+                for (int dx = -radius; dx <= radius; dx++) {
+                    int distance = Math.Max(Math.Abs(dx), Math.Abs(dy));
+                    ushort intensity = distance switch {
+                        0 => core,
+                        1 => (ushort)Math.Max(6000, core / 4),
+                        2 => (ushort)Math.Max(2500, core / 10),
+                        _ => 0
+                    };
+
+                    if (intensity == 0) {
+                        continue;
+                    }
+
+                    // Keep radius-1 stars slightly cross-shaped, while radius-2 stars stay broader.
+                    if (radius == 1 && distance == 1 && Math.Abs(dx) == 1 && Math.Abs(dy) == 1) {
+                        continue;
+                    }
+
+                    AddPixelSaturating(pixels, width, height, centerX + dx, centerY + dy, intensity);
+                }
+            }
         }
 
         private static void AddPixelSaturating(ushort[] pixels, int width, int height, int x, int y, ushort amount) {
