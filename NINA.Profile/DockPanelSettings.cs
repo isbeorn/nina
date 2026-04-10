@@ -17,6 +17,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             showImagingHistogram = true;
+            starMeasurementsInArcseconds = false;
             cameraInfoOnly = false;
             filterWheelInfoOnly = false;
             focuserInfoOnly = false;
@@ -33,6 +34,19 @@ namespace NINA.Profile {
             set {
                 if (showImagingHistogram != value) {
                     showImagingHistogram = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool starMeasurementsInArcseconds;
+
+        [DataMember]
+        public bool StarMeasurementsInArcseconds {
+            get => starMeasurementsInArcseconds;
+            set {
+                if (starMeasurementsInArcseconds != value) {
+                    starMeasurementsInArcseconds = value;
                     RaisePropertyChanged();
                 }
             }

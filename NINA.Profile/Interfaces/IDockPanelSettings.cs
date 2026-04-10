@@ -13,6 +13,7 @@ namespace NINA.Profile.Interfaces {
         bool SwitchInfoOnly { get; set; }
         bool FlatDeviceInfoOnly { get; set; }
         bool ShowImagingHistogram { get; set; }
+        bool StarMeasurementsInArcseconds { get; set; }
         bool IsLocked { get; set; }
     }
 }

@@ -26,6 +26,9 @@ using System.Threading.Tasks;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Utility.AutoFocus;
 using NINA.Core.Enum;
+using NINA.Profile;
+using NINA.WPF.Base.Model;
+using NINA.Astrometry;
 
 namespace NINA.Test {
 
@@ -34,10 +37,18 @@ namespace NINA.Test {
         private Mock<IProfileService> profileServiceMock = new Mock<IProfileService>();
         private Mock<IImageSaveMediator> imageSaveMediatorMock = new Mock<IImageSaveMediator>();
 
+        [SetUp]
+        public void SetUp() {
+            profileServiceMock = new Mock<IProfileService>();
+            imageSaveMediatorMock = new Mock<IImageSaveMediator>();
+        }
+
         [Test]
         public void ImageHistory_ConcurrentId_Order_Test() {
-            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected).Returns(ImageHistoryEnum.HFR);
-            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected).Returns(ImageHistoryEnum.Stars);
+            var profile = CreateProfile();
+            profile.ImageHistorySettings.ImageHistoryLeftSelected = ImageHistoryEnum.HFR;
+            profile.ImageHistorySettings.ImageHistoryRightSelected = ImageHistoryEnum.Stars;
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
 
             var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
 
@@ -52,20 +63,31 @@ namespace NINA.Test {
 
         [Test]
         public void ImageHistory_Value_Test() {
-            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected).Returns(ImageHistoryEnum.HFR);
-            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected).Returns(ImageHistoryEnum.Stars);
+            var profile = CreateProfile();
+            profile.ImageHistorySettings.ImageHistoryLeftSelected = ImageHistoryEnum.HFR;
+            profile.ImageHistorySettings.ImageHistoryRightSelected = ImageHistoryEnum.Stars;
+            profile.CameraSettings.PixelSize = 3.76;
+            profile.TelescopeSettings.FocalLength = 952;
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
             var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
             var hfr = 10.1234;
+            var fwhm = 4.5678;
+            var eccentricity = 0.42;
             var stars = 12323;
             var duration = 300;
             var filter = "Red";
 
             sut.Add(1, null, "LIGHT");
-            sut.AppendImageProperties(new ImageSavedEventArgs() { StarDetectionAnalysis = new StarDetectionAnalysis() { DetectedStars = stars, HFR = hfr }, Duration = duration, Filter = filter, MetaData = new ImageMetaData { Image = new ImageParameter { Id = 1 } } });
+            sut.AppendImageProperties(new ImageSavedEventArgs() { StarDetectionAnalysis = new StarDetectionAnalysis() { DetectedStars = stars, HFR = hfr, FWHM = fwhm, Eccentricity = eccentricity }, Duration = duration, Filter = filter, MetaData = new ImageMetaData { Image = new ImageParameter { Id = 1 } } });
 
             sut.ObservableImageHistory.First().HFR.Should().Be(hfr);
+            sut.ObservableImageHistory.First().FWHM.Should().Be(fwhm);
+            sut.ObservableImageHistory.First().Eccentricity.Should().Be(eccentricity);
+            sut.ObservableImageHistory.First().FWHMArcseconds.Should().BeApproximately(fwhm * AstroUtil.ArcsecPerPixel(profile.CameraSettings.PixelSize, profile.TelescopeSettings.FocalLength), 0.0001);
             sut.ObservableImageHistory.First().Stars.Should().Be(stars);
             sut.ImageHistory[0].HFR.Should().Be(hfr);
+            sut.ImageHistory[0].FWHM.Should().Be(fwhm);
+            sut.ImageHistory[0].Eccentricity.Should().Be(eccentricity);
             sut.ImageHistory[0].Stars.Should().Be(stars);
             sut.ImageHistory[0].Duration.Should().Be(duration);
             sut.ImageHistory[0].Filter.Should().Be(filter);
@@ -73,8 +95,10 @@ namespace NINA.Test {
 
         [Test]
         public void ImageHistory_LimitedStack_FullConcurrency_Test() {
-            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected).Returns(ImageHistoryEnum.HFR);
-            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected).Returns(ImageHistoryEnum.Stars);
+            var profile = CreateProfile();
+            profile.ImageHistorySettings.ImageHistoryLeftSelected = ImageHistoryEnum.HFR;
+            profile.ImageHistorySettings.ImageHistoryRightSelected = ImageHistoryEnum.Stars;
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
             var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
 
             for (int i = 0; i < 300; i++) {
@@ -90,8 +114,10 @@ namespace NINA.Test {
 
         [Test]
         public void ImageHistory_ClearPlot_Test() {
-            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected).Returns(ImageHistoryEnum.HFR);
-            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected).Returns(ImageHistoryEnum.Stars);
+            var profile = CreateProfile();
+            profile.ImageHistorySettings.ImageHistoryLeftSelected = ImageHistoryEnum.HFR;
+            profile.ImageHistorySettings.ImageHistoryRightSelected = ImageHistoryEnum.Stars;
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
             var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
 
             for (int i = 0; i < 100; i++) {
@@ -105,6 +131,46 @@ namespace NINA.Test {
             sut.ObservableImageHistory.Count.Should().Be(0);
             sut.AutoFocusPoints.Count.Should().Be(0);
             sut.ImageHistory.Count.Should().Be(0);
+        }
+
+        [Test]
+        public void ImageHistory_UnitToggle_UpdatesHistoryKeys() {
+            var profile = CreateProfile();
+            profile.ImageHistorySettings.ImageHistoryLeftSelected = ImageHistoryEnum.HFR;
+            profile.ImageHistorySettings.ImageHistoryRightSelected = ImageHistoryEnum.FWHM;
+            profile.CameraSettings.PixelSize = 3.76;
+            profile.TelescopeSettings.FocalLength = 952;
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
+
+            var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
+
+            sut.ImageHistoryLeftSelectedKey.Should().Be(nameof(ImageHistoryPoint.HFR));
+            sut.ImageHistoryRightSelectedKey.Should().Be(nameof(ImageHistoryPoint.FWHM));
+
+            profile.DockPanelSettings.StarMeasurementsInArcseconds = true;
+
+            sut.ImageHistoryLeftSelectedKey.Should().Be(nameof(ImageHistoryPoint.HFRArcseconds));
+            sut.ImageHistoryRightSelectedKey.Should().Be(nameof(ImageHistoryPoint.FWHMArcseconds));
+        }
+
+        [Test]
+        public void ImageHistory_EccentricitySelection_UsesPointPropertyKey() {
+            var profile = CreateProfile();
+            profile.ImageHistorySettings.ImageHistoryLeftSelected = ImageHistoryEnum.Eccentricity;
+            profile.ImageHistorySettings.ImageHistoryRightSelected = ImageHistoryEnum.Stars;
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
+
+            var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
+
+            sut.ImageHistoryLeftSelectedKey.Should().Be(nameof(ImageHistoryPoint.Eccentricity));
+
+            sut.ImageHistoryRightSelected = ImageHistoryEnum.Eccentricity;
+
+            sut.ImageHistoryRightSelectedKey.Should().Be(nameof(ImageHistoryPoint.Eccentricity));
+        }
+
+        private static NINA.Profile.Profile CreateProfile() {
+            return new NINA.Profile.Profile();
         }
     }
 }

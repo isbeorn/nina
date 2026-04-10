@@ -32,6 +32,7 @@
     <converters:InverseCollectionContainsItemsToVisibilityConverter x:Key="InverseCollectionContainsItemsToVisibilityConverter" />
     <converters:MinusOneToEmptyStringConverter x:Key="MinusOneToEmptyStringConverter" />
     <astroConverters:ArcsecToLabelConverter x:Key="ArcsecToLabelConverter" />
+    <astroConverters:ImageStatisticsUnitConverter x:Key="ImageStatisticsUnitConverter" />
     <converters:BoolToLabelConverter x:Key="BoolToLabelConverter" />
     <astroConverters:MoonPhaseToGeometryConverter x:Key="MoonPhaseToGeometryConverter" />
     <converters:MultiMarginConverter x:Key="MultiMarginConverter" />

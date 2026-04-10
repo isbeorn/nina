@@ -6844,6 +6844,9 @@ Increase minimum exposure time or wait until it is brighter.</value>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
   </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
+  </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Info only</value>
   </data>

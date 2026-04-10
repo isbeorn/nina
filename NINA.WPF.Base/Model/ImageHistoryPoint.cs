@@ -72,6 +72,8 @@ namespace NINA.WPF.Base.Model {
                 return;
             if (imageSavedEventArgs.StarDetectionAnalysis != null) {
                 HFR = imageSavedEventArgs.StarDetectionAnalysis.HFR;
+                FWHM = imageSavedEventArgs.StarDetectionAnalysis.FWHM;
+                Eccentricity = imageSavedEventArgs.StarDetectionAnalysis.Eccentricity;
                 Stars = imageSavedEventArgs.StarDetectionAnalysis.DetectedStars;
             }
             IsBayered = imageSavedEventArgs.IsBayered;
@@ -110,6 +112,12 @@ namespace NINA.WPF.Base.Model {
             }
         }
 
+        public void SetArcsecPerPixel(double value) {
+            arcsecPerPixel = value;
+            RaisePropertyChanged(nameof(HFRArcseconds));
+            RaisePropertyChanged(nameof(FWHMArcseconds));
+        }
+
         public int Id { get; private set; }
         public int Index { get; set; }
         public double Zero { get; } = 0.05;
@@ -119,6 +127,10 @@ namespace NINA.WPF.Base.Model {
         public NINA.Core.Model.AutoFocusPoint AutoFocusPoint { get; private set; }
 
         public double HFR { get; private set; }
+        public double FWHM { get; private set; } = double.NaN;
+        public double Eccentricity { get; private set; } = double.NaN;
+        public double HFRArcseconds => IsArcsecPerPixelValid && !double.IsNaN(HFR) ? HFR * arcsecPerPixel : double.NaN;
+        public double FWHMArcseconds => IsArcsecPerPixelValid && !double.IsNaN(FWHM) ? FWHM * arcsecPerPixel : double.NaN;
 
         public int Stars { get; private set; }
 
@@ -146,6 +158,9 @@ namespace NINA.WPF.Base.Model {
         public int FocuserPosition { get; private set; } = 0;
         public double RotatorPosition { get; private set; } = 0.0;
         public double RotatorMechanicalPosition { get; private set; } = 0.0;
+
+        private double arcsecPerPixel = double.NaN;
+        private bool IsArcsecPerPixelValid => !double.IsNaN(arcsecPerPixel) && !double.IsInfinity(arcsecPerPixel) && arcsecPerPixel > 0;
     }
 
     public sealed class ImageHistoryPointMap : ClassMap<ImageHistoryPoint> {
@@ -179,6 +194,7 @@ namespace NINA.WPF.Base.Model {
             Map(m => m.AutoFocusPoint.NewPosition).Optional().Index(26).Name("AutoFocus New Position");
             Map(m => m.AutoFocusPoint.Time).Index(27).Optional().Name("AutoFocus Time");
             Map(m => m.AutoFocusPoint.Filter).Optional().Index(28).Name("AutoFocus Filter");
+            Map(m => m.FWHM).Optional().Index(29).Name("FWHM");
         }
     }
 }
