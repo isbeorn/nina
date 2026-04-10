@@ -3336,6 +3336,12 @@ Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita 
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Transit Sud</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Transit time</value>
   </data>
@@ -6516,6 +6522,9 @@ Questa viene valutata DOPO l'impostazione di "Parcheggia la montatura prima di m
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>Target Dew Heater Strength</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Accelerazione Hardware</value>

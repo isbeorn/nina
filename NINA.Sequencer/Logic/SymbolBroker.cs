@@ -177,15 +177,6 @@ namespace NINA.Sequencer.Logic {
             return null;
         }
 
-        private void AddOptionalImageSymbol(IStarDetectionAnalysis analysis, string name) {
-            if (analysis.HasProperty(name)) {
-                var v = analysis.GetType().GetProperty(name).GetValue(analysis, null);
-                if (v is double vDouble) {
-                    AddOrUpdateSymbol("Image", name, Math.Round(vDouble, 2));
-                }
-            }
-        }
-
         private void AddOrUpdateSymbol(string source, string token, object value) {
             AddOrUpdateSymbol(source, token, value, null, SymbolType.SYMBOL_NORMAL);
         }
@@ -622,6 +613,8 @@ namespace NINA.Sequencer.Logic {
             }
 
             AddOrUpdateSymbol("Image", "HFR", Math.Round(analysis.HFR, 3));
+            AddOrUpdateSymbol("Image", "FWHM", Math.Round(analysis.FWHM, 3));
+            AddOrUpdateSymbol("Image", "Eccentricity", Math.Round(analysis.Eccentricity, 3));
             AddOrUpdateSymbol("Image", "StarCount", analysis.DetectedStars);
             AddOrUpdateSymbol("Image", "ImageId", imageMetaData.Image.Id);
             AddOrUpdateSymbol("Image", "ExposureTime", imageMetaData.Image.ExposureTime);
@@ -629,10 +622,6 @@ namespace NINA.Sequencer.Logic {
             AddOrUpdateSymbol("Image", "Gain", imageMetaData.Camera.Gain);
             AddOrUpdateSymbol("Image", "Offset", imageMetaData.Camera.Offset);
             AddOrUpdateSymbol("Image", "ImageType", imageMetaData.Image.ImageType);
-
-            // Add these if they exist (from Hocus Focus at this time)
-            AddOptionalImageSymbol(analysis, "Eccentricity");
-            AddOptionalImageSymbol(analysis, "FWHM");
         }
 
         public bool TryGetSymbol(string key, out Symbol symbol) {

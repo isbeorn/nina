@@ -109,3 +109,4 @@ lfs/
 /NINA.Setup/.wix/
 # the bundled .net runtime - it will be automatically downloaded from the ms page. no need to include this in source control
 /NINA.SetupBundle/dotnet-windowsdesktop-runtime-win-x64.exe
+/.dotnet-cli/.dotnet

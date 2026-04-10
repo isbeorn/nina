@@ -3331,6 +3331,12 @@ Arrossegueu el rectangle sobre la part del marc que vulgueu fer SubMostra i acti
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Trànsit Sud</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Temps de transició</value>
   </data>
@@ -6509,6 +6515,9 @@ Això s'avalua DESPRÉS del paràmetre "Aparcar la muntura abans de moure la per
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>Objectiu de Potència de l'escalfador de rosada</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Acceleració del Hardware</value>

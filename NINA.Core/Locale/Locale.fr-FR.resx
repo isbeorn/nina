@@ -3335,6 +3335,12 @@ Faites glisser le rectangle sur la partie du cadre que vous souhaitez sous-écha
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Transit Sud</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Transit time</value>
   </data>
@@ -6514,6 +6520,9 @@ Ceci est évalué APRÈS le paramètre "Stationner la monture avant de déplacer
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>Puissance cible pour la résistance chauffante</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Accélération matérielle</value>
