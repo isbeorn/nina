@@ -114,6 +114,9 @@ namespace NINA.Image.FileFormat.FITS {
         // int CFITS_API ffopen(fitsfile **fptr, const char *filename, int iomode, int *status);
         [DllImport(DLLNAME, EntryPoint = "ffopen", CallingConvention = CallingConvention.Cdecl)]
         public static extern int fits_open_file(out IntPtr fptr, string filename, IOMODE iomode, out int status);
+        
+        [DllImport(DLLNAME, EntryPoint = "ffdkopn", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_open_diskfile(out nint fptr, [MarshalAs(UnmanagedType.LPStr)] string filename, IOMODE iomode, out int status);
 
         // int CFITS_API ffghsp(fitsfile *fptr, int *nexist, int *nmore, int *status);
         [DllImport(DLLNAME, EntryPoint = "ffghsp", CallingConvention = CallingConvention.Cdecl)]
