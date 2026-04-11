@@ -16,8 +16,8 @@ namespace NINA.Image.FileFormat.FITS {
         private nint filePtr;
 
         private CFitsioFITS(string filePath, COMPRESSION compression) {
-            CfitsioNative.fits_create_file(out var ptr, filePath, out var status);
-            CheckStatus("fits_create_file", status);
+            CfitsioNative.fits_create_diskfile(out var ptr, filePath, out var status);
+            CheckStatus("fits_create_diskfile", status);
             this.filePtr = ptr;
 
             if (compression != COMPRESSION.NOCOMPRESS) {

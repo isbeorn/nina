@@ -477,9 +477,9 @@ namespace NINA.Image.ImageData {
 
         private string SaveFits(FileSaveInfo fileSaveInfo) {
             string extension = ".fits";
+            Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
 
-            if(fileSaveInfo.FITSUseLegacyWriter) {
-                Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
+            if (fileSaveInfo.FITSUseLegacyWriter) {
                 var uniquePath = CoreUtil.GetUniqueFilePath(fileSaveInfo.FilePath + fileSaveInfo.GetExtension(extension));
                 FITS f = new FITS(
                     Data.FlatArray,
@@ -497,10 +497,6 @@ namespace NINA.Image.ImageData {
                 if (fileSaveInfo.FITSAddFzExtension && fileSaveInfo.FITSCompressionType != FITSCompressionTypeEnum.NONE) {
                     extension += ".fz";
                 }
-
-                // CFitsio treats paranthesis for special logic and are thus not allowed
-                fileSaveInfo.FilePath = fileSaveInfo.FilePath.Replace("(", "_").Replace(")", "_").Replace("[", "_").Replace("]", "_");
-                Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
 
                 var uniquePath = CoreUtil.GetUniqueFilePath(fileSaveInfo.FilePath + fileSaveInfo.GetExtension(extension), "{0}_{1}");
                 

@@ -445,6 +445,11 @@ namespace NINA.Image.FileFormat.FITS {
             [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_FILENAME)] string filename,
             out int status);
 
+
+
+        [DllImport("cfitsionative.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "ffdkinit")]
+        public static extern int fits_create_diskfile(out nint fptr, [MarshalAs(UnmanagedType.LPStr)] string filename, out int status);
+
         [DllImport(DLLNAME, EntryPoint = "ffppr", CallingConvention = CallingConvention.Cdecl)]
         public static extern int fits_write_img(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, ushort[] array, out int status);
         [DllImport(DLLNAME, EntryPoint = "ffppr", CallingConvention = CallingConvention.Cdecl)]

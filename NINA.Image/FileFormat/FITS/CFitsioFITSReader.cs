@@ -35,8 +35,8 @@ namespace NINA.Image.FileFormat.FITS {
             if (compressionFlag > 0) {
                 // When the image is compresse, we decompress it into a temporary file
                 tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".fits");
-                CfitsioNative.fits_create_file(out var ptr, tempFile, out status);
-                CfitsioNative.CheckStatus("fits_create_file", status);
+                CfitsioNative.fits_create_diskfile(out var ptr, tempFile, out status);
+                CfitsioNative.CheckStatus("fits_create_diskfile", status);
 
                 CfitsioNative.fits_img_decompress(filePtr, ptr, out status);
                 CfitsioNative.CheckStatus("fits_img_decompress", status);
