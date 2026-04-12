@@ -737,11 +737,6 @@ namespace NINA.Test.Sequencer.Logic {
             ValidateSymbol(key: "Image_StarCount", expectedSuccess: true, expectedValue: 2222);
         }
 
-        public interface IMyExtraStatsStarDetectionAnalysis : IStarDetectionAnalysis {
-            double Eccentricity { get; set; }
-            double FWHM { get; set; }
-        }
-
         [Test]
         public void SymbolBroker_SetImageSymbols_AdditionalFields_HasSymbols() {
             // Arrange            
@@ -762,7 +757,7 @@ namespace NINA.Test.Sequencer.Logic {
                 }
             });
 
-            var starDetectionMock = new Mock<IMyExtraStatsStarDetectionAnalysis>();
+            var starDetectionMock = new Mock<IStarDetectionAnalysis>();
             renderedImageMock.SetupGet(x => x.RawImageData.StarDetectionAnalysis).Returns(starDetectionMock.Object);
             starDetectionMock.SetupGet(x => x.DetectedStars).Returns(2222);
             starDetectionMock.SetupGet(x => x.HFR).Returns(2.5);

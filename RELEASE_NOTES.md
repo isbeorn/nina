@@ -27,6 +27,7 @@ This allows you to safely return to a stable release if needed.
 - When updating the application, the color schema upgrades now properly apply updated or added colors
 - The native driver for SBIG cameras now provides the proper electrons/ADU value for the `EGAIN` keyword in image metadata
 - Fixed excessive debug logging after disconnecting the OpenMeteo weather client
+- The native star detector now rejects stars whose refined centroid falls on any edge of the detection rectangle, preventing truncated stars from biasing autofocus measurements
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
@@ -41,6 +42,10 @@ This allows you to safely return to a stable release if needed.
 - The manual focuser step buttons now use configurable multipliers. Users can adjust the small step (default 0.5x) and large step (default 5.0x) multipliers in Options > Imaging > Autofocus.
 - Debayer algorithm has been optimized to work fast even on older CPUs
 - Sky brightness readings in the Weather device windows have been increased from 2 decimal places to 5 so that measurements obtained in low light conditions are adequately displayed.
+- **Autofocus & Star Measurements**
+    - The native star detector now measures HFR from a centroid-refined curve of growth instead of using a first-moment approximation
+    - Local star background estimation now uses a robust sigma-clipped median to reduce bias from nearby stars and outliers
+    - Native FWHM and eccentricity measurements are now calculated and exposed alongside HFR
 
 ## Behavioral Changes
 - Unparking the mount no longer automatically starts sidereal tracking. Tracking will begin automatically during a slew to a target, as usual.
@@ -109,6 +114,12 @@ This allows you to safely return to a stable release if needed.
 ### File formats
 - **XISF ZStandard Compression**
   - Added support for ZStandard compression in XISF files.
+
+### **Autofocus & Star Detection**
+- **Star measurement enhancements**
+  - Added native FWHM reporting from background-subtracted radial profiles
+  - Added native eccentricity reporting from flux-weighted second moments
+  - Improved centroid refinement used by star measurements and annotations
 
 
 # Version 3.2

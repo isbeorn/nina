@@ -3330,6 +3330,12 @@
   <data name="LblTransitSouth" xml:space="preserve">
     <value>转向南天</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>中天时间</value>
   </data>
@@ -6508,6 +6514,9 @@
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>防结露加热强度</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>硬件加速</value>

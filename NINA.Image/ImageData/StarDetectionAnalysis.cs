@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,6 +21,8 @@ namespace NINA.Image.ImageData {
 
     public class StarDetectionAnalysis : BaseINPC, IStarDetectionAnalysis {
         private double _hfr = double.NaN;
+        private double _fwhm = double.NaN;
+        private double _eccentricity = double.NaN;
         private double _hfrStDev = double.NaN;
         private int _detectedStars = -1;
         private List<DetectedStar> _starList = new List<DetectedStar>();
@@ -29,6 +31,22 @@ namespace NINA.Image.ImageData {
             get => this._hfr;
             set {
                 this._hfr = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public double FWHM {
+            get => this._fwhm;
+            set {
+                this._fwhm = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public double Eccentricity {
+            get => this._eccentricity;
+            set {
+                this._eccentricity = value;
                 this.RaisePropertyChanged();
             }
         }

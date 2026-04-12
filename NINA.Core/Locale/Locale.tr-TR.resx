@@ -3328,6 +3328,12 @@ Dikdörtgeni kadrajın örneklemek istediğiniz kısmına sürükleyin ve örnek
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Güneye geçiş</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Transit time</value>
   </data>
@@ -6507,6 +6513,9 @@ Bu, "Kapağı hareket ettitmeden önce kundağı park et" ayarından SONRA değe
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>Hedeflenen çiğ ısıtıcı gücü</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Donanım hızlandırma</value>

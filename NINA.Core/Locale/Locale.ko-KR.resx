@@ -3324,6 +3324,12 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblTransitSouth" xml:space="preserve">
     <value>서쪽 통과[Transit South]</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Transit time</value>
   </data>
@@ -6534,6 +6540,9 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>이슬 방지 열선 강도 설정</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>하드웨어 가속</value>
