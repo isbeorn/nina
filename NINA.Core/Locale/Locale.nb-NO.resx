@@ -3329,6 +3329,12 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Sør</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Transit time</value>
   </data>
@@ -6500,6 +6506,9 @@ Når metadata er bekreftet, velg søkemotoren som skal brukes.</value>
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>Varmeeffekt</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Maskinvareakselerasjon</value>

@@ -3330,6 +3330,12 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Tranzit Jih</value>
   </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>North</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Čas přechodu</value>
   </data>
@@ -6512,6 +6518,9 @@ Toto se vyhodnotí PO nastavení "Zaparkovat montáž před pohybem štěrbiny".
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>Cílový Výkon Ohřívače</value>
+  </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Colored Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Hardwarová Akcelerace</value>

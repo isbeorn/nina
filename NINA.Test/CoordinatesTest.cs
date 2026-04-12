@@ -11,8 +11,10 @@
 #endregion "copyright"
 using FluentAssertions;
 using NINA.Astrometry;
+using NINA.Core.Utility;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
+using System;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -23,6 +25,16 @@ namespace NINA.Test {
     [TestFixture]
     public class CoordinatesTest {
         private static double ANGLE_TOLERANCE = 0.000000000001;
+
+        private sealed class FixedDateTime : ICustomDateTime {
+            public FixedDateTime(DateTime now, DateTime utcNow) {
+                Now = now;
+                UtcNow = utcNow;
+            }
+
+            public DateTime Now { get; }
+            public DateTime UtcNow { get; }
+        }
 
         [Test]
         [TestCase(10, 10)]
@@ -415,6 +427,56 @@ namespace NINA.Test {
 
             sut.RADegrees.Should().Be(expectedRA);
             sut.Dec.Should().Be(expectedDec);
+        }
+
+        [Test]
+        public void TransformToJ2000_UsesTtForEquationOfOrigins() {
+            var referenceDate = new DateTime(2026, 4, 3, 1, 23, 45, DateTimeKind.Utc);
+            var coordinates = new Coordinates(Angle.ByHours(5.5), Angle.ByDegree(-12.25), Epoch.JNOW, referenceDate);
+
+            var transformed = coordinates.Transform(Epoch.J2000);
+
+            var (jdTt1, jdTt2) = AstroUtil.GetJulianDateTTParts(referenceDate);
+            double expectedRa = 0, expectedDec = 0, eo = 0;
+            SOFA.IntermediateToCelestial(
+                SOFA.Anp(Angle.ByHours(5.5).Radians + SOFA.Eo06a(jdTt1, jdTt2)),
+                Angle.ByDegree(-12.25).Radians,
+                jdTt1,
+                jdTt2,
+                ref expectedRa,
+                ref expectedDec,
+                ref eo);
+
+            transformed.RADegrees.Should().BeApproximately(Angle.ByRadians(expectedRa).Degree, 1e-12);
+            transformed.Dec.Should().BeApproximately(Angle.ByRadians(expectedDec).Degree, 1e-12);
+        }
+
+        [Test]
+        public void TopocentricTransform_UsesProvidedObservationTimeForEpochConversion() {
+            var providerNow = new DateTime(2035, 8, 1, 12, 0, 0, DateTimeKind.Utc);
+            var observationTime = new DateTime(2021, 2, 3, 4, 5, 6, DateTimeKind.Utc);
+            var dateTimeProvider = new FixedDateTime(providerNow.ToLocalTime(), providerNow);
+            var topocentric = new TopocentricCoordinates(
+                Angle.ByDegree(135),
+                Angle.ByDegree(42),
+                Angle.ByDegree(52),
+                Angle.ByDegree(13),
+                100,
+                dateTimeProvider);
+
+            var transformed = topocentric.Transform(observationTime, Epoch.JNOW, 0d, 0d, 0d, 0d);
+
+            var zenithDistance = AstroUtil.ToRadians(90d - topocentric.Altitude.Degree);
+            var deltaUT = AstroUtil.DeltaUT(observationTime);
+            var (utc1, utc2) = AstroUtil.GetJulianDateUTCParts(observationTime);
+            var expectedRaRad = 0d;
+            var expectedDecRad = 0d;
+            SOFA.TopocentricToCelestial("A", topocentric.Azimuth.Radians, zenithDistance, utc1, utc2, deltaUT, topocentric.Longitude.Radians, topocentric.Latitude.Radians, topocentric.Elevation, 0d, 0d, 0d, 0d, 0d, 0d, ref expectedRaRad, ref expectedDecRad);
+
+            var expected = new Coordinates(Angle.ByRadians(expectedRaRad), Angle.ByRadians(expectedDecRad), Epoch.J2000, observationTime, dateTimeProvider).Transform(Epoch.JNOW);
+
+            transformed.RADegrees.Should().BeApproximately(expected.RADegrees, 1e-10);
+            transformed.Dec.Should().BeApproximately(expected.Dec, 1e-10);
         }
 
         [Test]

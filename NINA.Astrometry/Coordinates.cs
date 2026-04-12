@@ -190,10 +190,9 @@ namespace NINA.Astrometry {
         /// <returns></returns>
         private Coordinates TransformToJ2000() {
             var (jdTt1, jdTt2) = AstroUtil.GetJulianDateTTParts(this.creationDate);
-            var (utc1, utc2) = AstroUtil.GetJulianDateUTCParts(this.creationDate);
 
             double rc = 0, dc = 0, eo = 0;
-            SOFA.IntermediateToCelestial(SOFA.Anp(raAngle.Radians + SOFA.Eo06a(utc1, utc2)), decAngle.Radians, jdTt1, jdTt2, ref rc, ref dc, ref eo);
+            SOFA.IntermediateToCelestial(SOFA.Anp(raAngle.Radians + SOFA.Eo06a(jdTt1, jdTt2)), decAngle.Radians, jdTt1, jdTt2, ref rc, ref dc, ref eo);
 
             var raCelestial = Angle.ByRadians(rc);
             var decCelestial = Angle.ByRadians(dc);
