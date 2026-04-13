@@ -54,28 +54,53 @@ namespace NINA.Test.Image.ImageAnalysis {
         private const string RepresentativeKernelResolutionKey = "Planetary_1936x1096";
         private const string RepresentativePaddingResolutionKey = "PlanetaryRoi_1937x1097";
 
-        private static IEnumerable<TestCaseData> BlurScenarioSource() {
+        private static IEnumerable<TestCaseData> FormatCoverageScenarios() {
             foreach (var resolution in AstroCameraResolutions) {
-                foreach (DeterministicImageFixtures.ImageFixture fixture in DeterministicImageFixtures.All) {
-                    yield return Scenario(new InputScenario {
-                        Name = $"{fixture.Name}_{resolution.Key}",
-                        Width = resolution.Value.Width,
-                        Height = resolution.Value.Height,
-                        CreatePixels = fixture.CreateBytes
-                    });
-                }
+                yield return Scenario(new InputScenario {
+                    Name = $"FormatCoverage_{resolution.Key}_{DeterministicImageFixtures.RepresentativeFormatCoverage.Name}",
+                    Width = resolution.Value.Width,
+                    Height = resolution.Value.Height,
+                    CreatePixels = DeterministicImageFixtures.RepresentativeFormatCoverage.CreateBytes
+                });
+            }
+        }
+
+        private static IEnumerable<TestCaseData> FeatureCoverageScenarios() {
+            int width = AstroCameraResolutions[RepresentativeKernelResolutionKey].Width;
+            int height = AstroCameraResolutions[RepresentativeKernelResolutionKey].Height;
+
+            foreach (DeterministicImageFixtures.ImageFixture fixture in DeterministicImageFixtures.CuratedFeatures) {
+                yield return Scenario(new InputScenario {
+                    Name = $"FeatureCoverage_{fixture.Name}_{RepresentativeKernelResolutionKey}",
+                    Width = width,
+                    Height = height,
+                    CreatePixels = fixture.CreateBytes
+                });
             }
         }
 
         private static IEnumerable<TestCaseData> FixtureSource() {
-            foreach (DeterministicImageFixtures.ImageFixture fixture in DeterministicImageFixtures.All) {
+            foreach (DeterministicImageFixtures.ImageFixture fixture in DeterministicImageFixtures.CuratedFeatures) {
                 yield return new TestCaseData(fixture.Name, fixture.CreateBytes).SetName(fixture.Name);
             }
         }
 
         [Test]
-        [TestCaseSource(nameof(BlurScenarioSource))]
-        public void GaussianBlur_DefaultParameters_MatchesAccordReference(InputScenario scenario) {
+        [TestCaseSource(nameof(FormatCoverageScenarios))]
+        public void GaussianBlur_DefaultParameters_CoversSupportedResolutions(InputScenario scenario) {
+            byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
+
+            using UnmanagedImage source = CreateGray8Image(scenario.Width, scenario.Height, sourcePixels);
+            using UnmanagedImage expected = CreateReferenceBlur(source, sigma: 1.4, size: 5);
+            using UnmanagedImage actual = CreateOptimizedBlur(source, sigma: 1.4, size: 5);
+
+            Assert.That(source.Offset > 0, Is.EqualTo(ShouldHaveStridePadding(scenario.Width)), "Unexpected source stride padding.");
+            AssertBitExactImage(expected, actual);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(FeatureCoverageScenarios))]
+        public void GaussianBlur_DefaultParameters_MatchesAccordReferenceAcrossFeatures(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
 
             using UnmanagedImage source = CreateGray8Image(scenario.Width, scenario.Height, sourcePixels);

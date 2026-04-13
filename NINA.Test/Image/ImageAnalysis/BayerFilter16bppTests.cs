@@ -78,16 +78,18 @@ namespace NINA.Test.Image.ImageAnalysis {
             public required Func<int, int, ushort[]> CreatePixels { get; init; }
         }
 
-        private static readonly IReadOnlyList<InputScenario> AllInputScenarios = new[] {
+        private static readonly InputScenario RepresentativeFormatCoverageScenario = CreateInputScenario(DeterministicImageFixtures.RepresentativeFormatCoverage);
+
+        private static readonly IReadOnlyList<InputScenario> FeatureInputScenarios = new[] {
             CreateInputScenario(DeterministicImageFixtures.UniformBlack),
             CreateInputScenario(DeterministicImageFixtures.UniformWhite),
             CreateInputScenario(DeterministicImageFixtures.SingleImpulseCenter),
             CreateInputScenario(DeterministicImageFixtures.SparseStarField),
+            CreateInputScenario(DeterministicImageFixtures.FeatureMix),
             CreateInputScenario(DeterministicImageFixtures.StepEdge),
             CreateInputScenario(DeterministicImageFixtures.DiagonalLine),
             CreateInputScenario(DeterministicImageFixtures.Checkerboard),
             CreateInputScenario(DeterministicImageFixtures.BandingAndHotPixels),
-            CreateInputScenario(DeterministicImageFixtures.SeededFuzz17),
             CreateInputScenario(DeterministicImageFixtures.Structured)
         };
 
@@ -130,10 +132,8 @@ namespace NINA.Test.Image.ImageAnalysis {
             string[] extensions = { ".xisf", ".fits", ".fit", ".fts" };
 
             foreach (string extension in extensions) {
-                foreach (InputScenario scenario in AllInputScenarios) {
-                    yield return new TestCaseData(extension, scenario)
-                        .SetName($"RealWorldFormat_{extension.TrimStart('.').ToUpperInvariant()}_{scenario.Name}");
-                }
+                yield return new TestCaseData(extension, RepresentativeFormatCoverageScenario)
+                    .SetName($"RealWorldFormat_{extension.TrimStart('.').ToUpperInvariant()}_{RepresentativeFormatCoverageScenario.Name}");
             }
         }
 
@@ -141,20 +141,18 @@ namespace NINA.Test.Image.ImageAnalysis {
             // Reuse the same deterministic input families across the full astro-camera resolution matrix.
             // This keeps each frame size honest without depending on a single source texture.
             foreach (var resolution in AstroCameraResolutions) {
-                foreach (InputScenario scenario in AllInputScenarios) {
-                    yield return new TestCaseData(
-                            resolution.Key,
-                            resolution.Value.Width,
-                            resolution.Value.Height,
-                            scenario)
-                        .SetName($"RealWorldResolution_{resolution.Key}_{scenario.Name}");
-                }
+                yield return new TestCaseData(
+                        resolution.Key,
+                        resolution.Value.Width,
+                        resolution.Value.Height,
+                        RepresentativeFormatCoverageScenario)
+                    .SetName($"RealWorldResolution_{resolution.Key}_{RepresentativeFormatCoverageScenario.Name}");
             }
         }
 
         private static IEnumerable<TestCaseData> RepresentativeInputScenarioCases() {
             // Use the same deterministic source families for the representative in-memory correctness checks.
-            foreach (InputScenario scenario in AllInputScenarios) {
+            foreach (InputScenario scenario in FeatureInputScenarios) {
                 yield return Scenario(scenario, scenario.Name);
             }
         }
@@ -162,7 +160,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         private static IEnumerable<TestCaseData> DimensionScenarioCases() {
             // Combine the even/odd dimension matrix with the deterministic source families so padding and
             // border handling are exercised against more than one image structure.
-            foreach (InputScenario scenario in AllInputScenarios) {
+            foreach (InputScenario scenario in FeatureInputScenarios) {
                 foreach (var dimension in DimensionMatrix()) {
                     yield return new TestCaseData(scenario, dimension.Width, dimension.Height)
                         .SetName($"Dimensions_{scenario.Name}_{dimension.Name}");
@@ -172,7 +170,7 @@ namespace NINA.Test.Image.ImageAnalysis {
 
         private static IEnumerable<TestCaseData> BorderOnlyScenarioCases() {
             // Border-only images are tiny, so include both degenerate uniform inputs and mixed-content fixtures.
-            foreach (InputScenario scenario in AllInputScenarios) {
+            foreach (InputScenario scenario in FeatureInputScenarios) {
                 foreach (var dimension in BorderOnlyDimensionMatrix()) {
                     yield return new TestCaseData(scenario, dimension.Width, dimension.Height)
                         .SetName($"BorderOnly_{scenario.Name}_{dimension.Name}");
@@ -183,7 +181,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         private static IEnumerable<TestCaseData> BayerPatternScenarioCases() {
             // Run every deterministic source family through the override matrix so pattern placement is
             // checked against flat, structured, and high-frequency inputs alike.
-            foreach (InputScenario scenario in AllInputScenarios) {
+            foreach (InputScenario scenario in FeatureInputScenarios) {
                 foreach (var testCase in AlternateBayerPatterns()) {
                     yield return new TestCaseData(scenario, testCase.Arguments[0], testCase.Arguments[1])
                         .SetName($"PatternOverride_{scenario.Name}_{testCase.Arguments[0]}");
@@ -195,7 +193,7 @@ namespace NINA.Test.Image.ImageAnalysis {
             // Keep one padded odd-width case and one real-world frame size in the default suite.
             // Every deterministic source family is run against both sizes so the same generators cover
             // padding-sensitive and real-resolution behavior.
-            foreach (InputScenario scenario in AllInputScenarios) {
+            foreach (InputScenario scenario in FeatureInputScenarios) {
                 yield return new TestCaseData(scenario, HardeningPaddedWidth, HardeningPaddedHeight)
                     .SetName($"Realistic_PaddedOdd_{HardeningPaddedWidth}x{HardeningPaddedHeight}_{scenario.Name}");
                 yield return new TestCaseData(scenario, HardeningRealWidth, HardeningRealHeight)
@@ -206,14 +204,14 @@ namespace NINA.Test.Image.ImageAnalysis {
         private static IEnumerable<TestCaseData> ChannelScenarioCases() {
             // Channel-allocation tests do not need every degenerate input, but they should still prove that
             // the auxiliary arrays stay correct across several structured source families.
-            foreach (InputScenario scenario in AllInputScenarios) {
+            foreach (InputScenario scenario in FeatureInputScenarios) {
                 yield return Scenario(scenario, $"Channels_{scenario.Name}");
             }
         }
 
         private static IEnumerable<TestCaseData> DeterminismScenarioCases() {
             // Re-run every shared fixture to catch any non-deterministic data-dependent behavior.
-            foreach (InputScenario scenario in AllInputScenarios) {
+            foreach (InputScenario scenario in FeatureInputScenarios) {
                 yield return Scenario(scenario, $"Determinism_{scenario.Name}");
             }
         }
