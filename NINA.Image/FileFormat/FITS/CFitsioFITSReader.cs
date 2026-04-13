@@ -69,7 +69,7 @@ namespace NINA.Image.FileFormat.FITS {
 
         public T[] ReadPixelRow<T>(int row) where T : unmanaged {
             const int nelem = 2;
-            var firstpix = new int[nelem] { 1, row + 1 };
+            var firstpix = new long[nelem] { 1, row + 1 };
 
             var datatype = GetDataType(typeof(T));
 
@@ -88,7 +88,7 @@ namespace NINA.Image.FileFormat.FITS {
 
         public T[] ReadAllPixels<T>() where T : unmanaged {
             const int nelem = 2;
-            var firstpix = new int[nelem] { 1, 1 };
+            var firstpix = new long[nelem] { 1, 1 };
 
             var datatype = GetDataType(typeof(T));
 
