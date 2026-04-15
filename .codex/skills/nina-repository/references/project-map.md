@@ -1,56 +1,42 @@
 # NINA Project Map
 
-Use this reference after reading `AGENTS.md` and the relevant project-local `ARCHITECTURE.md`.
+This is a route sheet. Treat `AGENTS.md`, `CONTRIBUTING.md`, and each project's `ARCHITECTURE.md` as the source of truth.
 
-## Layering
+## Owners
 
-- `NINA.Core`: shared utilities, logging, localization, enums, common models, SQLite EF context, and protobuf contracts. Keep dependencies pointing outward from this foundation.
-- `NINA.Profile`: persisted profile and typed settings model. Add settings here, not in ad hoc files.
-- `NINA.Astrometry`: coordinates, astronomy math, twilight/night calculations, catalog access, and IERS earth-rotation updates.
-- `NINA.Image`: image model, file formats, RAW/FITS/XISF/TIFF loading and saving, rendering, statistics, and star analysis.
-- `NINA.MGEN`: standalone MGEN2/MGEN3 guider protocol/SDK library. Keep it free of WPF and profile dependencies.
-- `NINA.Equipment`: device abstractions and ASCOM, Alpaca, native SDK, file, and utility device adapters.
-- `NINA.PlateSolving`: plate solver factory and solve/capture/centering orchestration over solver integrations.
-- `NINA.CustomControlLibrary`: reusable WPF custom controls and default themes.
-- `NINA.WPF.Base`: shared WPF mediators, dockable/view-model bases, equipment UI support, and sky survey subsystem.
-- `NINA.Plugin`: plugin manifests, install/update/remove, compatibility, loading, MEF composition, plugin resources, and extension points.
-- `NINA.Sequencer`: advanced sequencer entity model, execution, serialization, target/template storage, expressions, and symbols.
-- `NINA.Sequencer.Generators`: Roslyn source generator for expression-backed sequence properties; used as an analyzer by `NINA.Sequencer`.
-- `NINA`: executable WPF app, startup, DI composition, shell, app-specific view models/views, runtime assets.
-- `NINA.Setup`: WiX MSI packaging; keep install layout aligned with runtime output.
-- `NINA.SetupBundle`: WiX Burn bootstrapper, release-note conversion, and outer installer UX.
-- `NINA.Test`: NUnit verification layer; folder layout mirrors production areas.
+| Area | Start Here | Neighboring Checks |
+| --- | --- | --- |
+| App startup, shell, DI | `NINA/App.xaml.cs`, `NINA/CompositionRoot.cs`, `NINA/Utility/IoCBindings.cs` | `MainWindow`, first-level VMs, service registrations |
+| App-specific UI/VMs | `NINA/ViewModel`, `NINA/View` | `IoCBindings.cs`, localization, dock/equipment composition |
+| Shared utilities, logging, locale, DB context | `NINA.Core` | `NINA/Database`, `Locale.resx`, generated protobuf consumers |
+| Persisted settings and profiles | `NINA.Profile` | `Profile`, `ProfileService`, settings interfaces/classes, serialized compatibility |
+| Astronomy math/catalogs | `NINA.Astrometry` | `NINA.Core.Database`, `NINA/Database`, `NINA.Test/AstrometryTest` |
+| Image model, formats, statistics, star analysis | `NINA.Image` | native/runtime assets, autofocus, plate solving, image history, sequencing tests |
+| Device integrations | `NINA.Equipment` | ASCOM/Alpaca helpers, vendor SDK folders, profile settings, mediators |
+| MGEN transport/protocol | `NINA.MGEN` | runtime DLL layout, `NINA.Equipment` guider adapter |
+| Plate solving | `NINA.Platesolving` | `PlateSolverFactory`, solver classes, capture/centering orchestration |
+| Shared WPF mediators/VM infrastructure | `NINA.WPF.Base` | mediator interfaces, app DI wiring, concrete app handlers |
+| Reusable custom controls | `NINA.CustomControlLibrary` | control class, default theme XAML, `Themes/Generic.xaml` |
+| Plugin contracts/loading/install | `NINA.Plugin` | public interfaces, `PluginLoader`, manifest model, compatibility/install paths |
+| Sequencer entities/runtime/serialization | `NINA.Sequencer` | MEF metadata, clone/parent/validation, `SequencerFactory`, serialization converters |
+| Sequencer expression generator | `NINA.Sequencer.Generators` | generated contract, diagnostics, expression-backed entity tests |
+| MSI packaging | `NINA.Setup` | runtime output layout, `Product.wxs`, shipped files/directories |
+| Burn bootstrapper | `NINA.SetupBundle` | bundle UI/theme, release-note conversion, chained MSI |
+| Tests | `NINA.Test` | folder matching production area, shared bootstrap/assets, x64/native dependencies |
 
-## Common Starting Points
+## Recurring Checks
 
-- App startup, shell, DI, app-specific view models: `NINA/App.xaml.cs`, `NINA/CompositionRoot.cs`, `NINA/Utility/IoCBindings.cs`, `NINA/ViewModel/*`.
-- New persisted settings or profile behavior: `NINA.Profile/Profile.cs`, `ProfileService.cs`, settings interfaces/classes, `KnownType` declarations, and change-notification registration.
-- Localization: `NINA.Core/Locale/Locale.resx` only. Use `Loc.Instance[...]` in code and `{ns:Loc Key}` in XAML.
-- Database schema or seed data: `NINA.Core/Database/NINADbContext.cs` plus runtime SQL under `NINA/Database/Initial` or `NINA/Database/Migration`.
-- New runtime file: add output copy behavior in `NINA/NINA.csproj`; check `NINA.Setup/Product.wxs`.
-- Shared cross-layer UI action: prefer an existing mediator in `NINA.WPF.Base/Mediator`; add a narrow interface/mediator there if needed, then wire in `NINA/Utility/IoCBindings.cs`.
-- New device integration: start in `NINA.Equipment/Interfaces`, implementation folders, and ASCOM/Alpaca/native SDK helpers. Use `IProfileService` for settings.
-- New image algorithm or file handling: start in `NINA.Image`; route supported formats through the existing image pipeline.
-- New plate solver: add under `NINA.Platesolving/Solvers` and register in `PlateSolverFactory`.
-- New plugin extension point: update public interfaces and `NINA.Plugin/PluginLoader.cs` composition/import logic.
-- New sequence entity: place under `NINA.Sequencer/SequenceItem`, `Conditions`, `Trigger`, or `Container`; add MEF metadata, validation, cloning, parent attachment, and serialization compatibility.
-- Expression-backed sequence property: follow the `[UsesExpressions]` and `[IsExpression]` generator pattern from `NINA.Sequencer.Generators`.
-- Installer behavior: `NINA.Setup` for MSI contents and actions; `NINA.SetupBundle` for bootstrapper shell and release-note presentation.
+- New service, mediator, or first-level VM: update `NINA/Utility/IoCBindings.cs`; check `CompositionRoot.cs` when the shell directly consumes it.
+- New setting: update profile interfaces, concrete settings, defaults, known types, change notifications, and compatibility/migration needs.
+- New localized label: edit only `NINA.Core/Locale/Locale.resx`.
+- New database schema/data requirement: coordinate `NINA.Core.Database.NINADbContext` with SQL under `NINA/Database`; prefer migrations for existing deployments.
+- New runtime file/native dependency: update `NINA/NINA.csproj`; check `NINA.Setup` packaging and test output copying when relevant.
+- New sequence entity or plugin-visible extension: check MEF export metadata, `PluginLoader`, factory/prototype creation, clone behavior, and JSON compatibility.
+- User-facing behavior change: consider `RELEASE_NOTES.md`; handle user documentation separately in the `NINA.Docs` submodule/repository.
 
-## Neighboring Checks
+## Verification Commands
 
-- DI or first-level composition change: check `NINA/Utility/IoCBindings.cs`, `NINA/CompositionRoot.cs`, and relevant view-model consumers.
-- Dockable panel or equipment UI change: check `DockManagerVM`, `EquipmentVM`, mediator registration, and docking settings.
-- Sequencer palette or plugin-visible entity change: check `PluginLoader`, MEF export metadata, `SequencerFactory`, clone behavior, and `NINA.Sequencer/Serialization/*`.
-- Profile setting change: check serialization compatibility, default construction, migrations for moved serialized types, and consumers that cache settings.
-- Native dependency change: check output layout, architecture-specific folders, test asset copying, and WiX packaging.
-- Astronomy/numerical change: add tests with authoritative reference values, edge cases, and regression coverage in `NINA.Test/AstrometryTest` or the closest matching fixture.
-- Image statistics or star detection change: test consumers in autofocus, plate solving, image history, and sequencing where relevant.
-- User-facing behavior change: consider `RELEASE_NOTES.md` and docs in the separate `NINA.Docs` submodule/repository.
-
-## Test Commands
-
-Use targeted filters while iterating:
+Targeted Windows test run:
 
 ```powershell
 $env:DOTNET_CLI_HOME = Join-Path (Get-Location) '.dotnet-cli'
@@ -60,7 +46,7 @@ $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 dotnet test NINA.Test\NINA.Test.csproj --filter 'FullyQualifiedName~NINA.Test.SomeFixture' -v minimal
 ```
 
-Run the broader CLI sequence from `CONTRIBUTING.md` when risk or blast radius justifies it:
+Broader CLI flow from `CONTRIBUTING.md`:
 
 ```powershell
 dotnet restore NINA.sln
