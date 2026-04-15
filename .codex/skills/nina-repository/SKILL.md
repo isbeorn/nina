@@ -13,7 +13,8 @@ Use this skill as a routing layer, not a replacement for the repo docs.
 2. Read `AGENTS.md` before making repo changes.
 3. Read `CONTRIBUTING.md` when the task touches contribution workflow, release notes, localization, docs, tests, installers, or PR expectations.
 4. Read the owning project's `ARCHITECTURE.md` before non-trivial edits in that project.
-5. Use `references/project-map.md` only to choose the likely owner, neighboring files, and verification command shape.
+5. Use `references/project-map.md` to choose the likely owner and neighboring files.
+6. Use `references/testing-map.md` to choose concrete test filters and command templates.
 
 ## Edit Rules
 
@@ -23,12 +24,17 @@ Use this skill as a routing layer, not a replacement for the repo docs.
 - Localize user-visible strings through `NINA.Core/Locale/Locale.resx` only; leave translated `Locale.<culture>.resx` files to Crowdin.
 - Treat runtime files as a three-part contract: code expectations, `NINA/NINA.csproj` output copying, and installer packaging in `NINA.Setup` when applicable.
 - For plugin or sequencer surface changes, check discovery/composition metadata, clone behavior, serialization, and plugin-loader integration.
-- For profile, database, astronomy, image-analysis, and native dependency changes, add focused tests and check compatibility with existing persisted/runtime data.
+- Add or update focused unit tests for any testable behavior change. Treat missing coverage as something to fix, not as a reason to leave new behavior untested.
+- When adding tests, update `references/testing-map.md` if the new coverage adds or changes a useful routing filter, fixture namespace, command pattern, or known constraint.
+- For profile, database, astronomy, image-analysis, and native dependency changes, also check compatibility with existing persisted/runtime data.
 
 ## Verification
 
-Prefer targeted tests while iterating and broaden only when the changed surface justifies it. Use `references/project-map.md` for the command templates and neighboring checks.
+Prefer targeted tests while iterating and broaden only when the changed surface justifies it. Use `references/testing-map.md` for concrete filters and command templates.
 
 ## Resources
 
-- `references/project-map.md`: compact owner map, common starting points, neighboring checks, and verification commands.
+- `references/project-map.md`: compact owner map, common starting points, and neighboring checks.
+- `references/testing-map.md`: actual `NINA.Test` routing filters, command templates, and known test constraints.
+
+

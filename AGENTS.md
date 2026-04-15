@@ -24,6 +24,7 @@ This guide covers the projects listed in `NINA.sln`.
 
 ## Code Style And Formatting
 
+- Maintain the existing line-ending style of every touched file; default to CRLF for new files unless the target location dictates LF.
 - Treat the root [`.editorconfig`](.editorconfig) as the canonical style source for C# in this repository.
 - The checked-in rules are C#-focused and currently specify 4-space indentation, CRLF line endings, block-scoped namespaces, `using` directives outside namespaces, and same-line opening braces (`csharp_new_line_before_open_brace = none`).
 - `.editorconfig` also prefers explicit types over `var` (`csharp_style_var_* = false`) and braces on control-flow blocks (`csharp_prefer_braces = true`).
