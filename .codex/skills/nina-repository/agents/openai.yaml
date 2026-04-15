@@ -1,0 +1,4 @@
+interface:
+  display_name: "NINA Repository"
+  short_description: "Work effectively in the NINA codebase"
+  default_prompt: "Use $nina-repository to make a focused change in the NINA repository."
