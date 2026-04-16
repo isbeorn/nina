@@ -133,7 +133,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
             if (Expr == null) {
                 Expression.ValidateExpressions(i, OriginalExpr);
-            } else {
+            } else if (!Executed) {
                 Expression.ValidateExpressions(i, Expr, OriginalExpr);
             }
 
