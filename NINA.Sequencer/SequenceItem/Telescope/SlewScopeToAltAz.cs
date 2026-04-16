@@ -59,7 +59,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         public override object Clone() {
             return new SlewScopeToAltAz(this) {
-                Coordinates = Coordinates?.Clone()
+                Coordinates = Coordinates?.Clone(),
+                Tracking = Tracking
             };
         }
 
@@ -69,6 +70,17 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         [JsonProperty]
         public InputTopocentricCoordinates Coordinates { get; set; }
+
+        private bool tracking = true;
+
+        [JsonProperty]
+        public bool Tracking {
+            get => tracking;
+            set {
+                tracking = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private IList<string> issues = new List<string>();
 
@@ -86,7 +98,14 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
                 throw new SequenceEntityFailedException(Loc.Instance["LblTelescopeParkedWarning"]);
             }
             var stoppedGuiding = await guiderMediator.StopGuiding(token);
-            await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
+            if (telescopeMediator.GetInfo().CanSlewAltAz) {
+                await telescopeMediator.SlewToTopocentricCoordinates(Coordinates.Coordinates, token);
+            } else {
+                await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
+            }
+            if (tracking != telescopeMediator.GetInfo().TrackingEnabled) {
+                telescopeMediator.SetTrackingEnabled(tracking);
+            }
             if (stoppedGuiding) {
                 await guiderMediator.StartGuiding(false, progress, token);
             }
@@ -106,7 +125,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SlewScopeToAltAz)}, Coordinates: {Coordinates}";
+            return $"Category: {Category}, Item: {nameof(SlewScopeToAltAz)}, Coordinates: {Coordinates}, Tracking: {Tracking}";
         }
     }
 }

@@ -48,6 +48,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             sut.Description = "SomeDescription";
             sut.Icon = new System.Windows.Media.GeometryGroup();
             sut.Coordinates.Coordinates = new TopocentricCoordinates(Angle.ByDegree(10), Angle.ByDegree(-10), Angle.ByDegree(1), Angle.ByDegree(5), 10);
+            sut.Tracking = true;
             var item2 = (SlewScopeToAltAz)sut.Clone();
 
             item2.Should().NotBeSameAs(sut);
@@ -58,6 +59,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             item2.Coordinates.Coordinates.Altitude.Should().Be(sut.Coordinates.Coordinates.Altitude);
             item2.Coordinates.Coordinates.Azimuth.Should().Be(sut.Coordinates.Coordinates.Azimuth);
             item2.Coordinates.Coordinates.Elevation.Should().Be(10);
+            item2.Tracking.Should().BeTrue();
         }
 
         [Test]
@@ -89,7 +91,38 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             var latitude = 5;
             var longitude = 5;
             var elevation = 100;
-            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true });
+
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true, CanSlewAltAz=true });
+            guiderMediatorMock.Setup(x => x.StopGuiding(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
+            var coordinates = new Coordinates(Angle.ByDegree(1), Angle.ByDegree(2), Epoch.J2000, referenceDate);
+            var topo = coordinates.Transform(Angle.ByDegree(latitude), Angle.ByDegree(longitude), elevation);
+
+            var sut = new SlewScopeToAltAz(profileServiceMock.Object, telescopeMediatorMock.Object, guiderMediatorMock.Object);
+            sut.Coordinates.Coordinates = topo;
+            await sut.Execute(default, default);
+
+            guiderMediatorMock.Verify(x => x.StopGuiding(It.IsAny<CancellationToken>()), Times.Once);
+            telescopeMediatorMock
+                .Verify(
+                x => x.SlewToTopocentricCoordinates(
+                    It.Is<TopocentricCoordinates>(c =>
+                        c.Altitude == topo.Altitude
+                        && c.Azimuth == topo.Azimuth),
+                    It.IsAny<CancellationToken>()
+                    )
+                , Times.Once
+            );
+            guiderMediatorMock.Verify(x => x.StartGuiding(It.IsAny<bool>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task Execute_NoIssues_LogicCalled_CannotSlewAltAz() {
+            var referenceDate = new DateTime(2020, 01, 01);
+            var latitude = 5;
+            var longitude = 5;
+            var elevation = 100;
+
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true, CanSlewAltAz = false });
             guiderMediatorMock.Setup(x => x.StopGuiding(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
             var coordinates = new Coordinates(Angle.ByDegree(1), Angle.ByDegree(2), Epoch.J2000, referenceDate);
             var topo = coordinates.Transform(Angle.ByDegree(latitude), Angle.ByDegree(longitude), elevation);
@@ -118,7 +151,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             var latitude = 5;
             var longitude = 5;
             var elevation = 100;
-            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true });
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true, CanSlewAltAz = true });
             guiderMediatorMock.Setup(x => x.StopGuiding(It.IsAny<CancellationToken>())).Returns(Task.FromResult(false));
             var coordinates = new Coordinates(Angle.ByDegree(1), Angle.ByDegree(2), Epoch.J2000, referenceDate);
             var topo = coordinates.Transform(Angle.ByDegree(latitude), Angle.ByDegree(longitude), elevation);
@@ -130,7 +163,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             guiderMediatorMock.Verify(x => x.StopGuiding(It.IsAny<CancellationToken>()), Times.Once);
             telescopeMediatorMock
                 .Verify(
-                x => x.SlewToCoordinatesAsync(
+                x => x.SlewToTopocentricCoordinates(
                     It.Is<TopocentricCoordinates>(c =>
                         c.Altitude == topo.Altitude
                         && c.Azimuth == topo.Azimuth),
