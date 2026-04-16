@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -115,8 +115,12 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         partial void AfterClone(TakeManyExposures clone) {
+            int iterations = Iterations;
             clone.Add((TakeExposure)GetTakeExposure().Clone());
             clone.Add((LoopCondition)GetLoopCondition().Clone());
+            clone.IterationsExpression.Validator = clone.IterationsExpressionValidator;
+            clone.GetLoopCondition().Iterations = iterations;
+            GetLoopCondition().Iterations = iterations;
         }
 
         private TakeManyExposures(TakeManyExposures cloneMe) {

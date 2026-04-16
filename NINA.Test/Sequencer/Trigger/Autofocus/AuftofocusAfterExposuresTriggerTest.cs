@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
 using NINA.ViewModel.ImageHistory;
@@ -226,6 +226,28 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             var should = afTrigger.ShouldTrigger(null, itemMock.Object);
 
             should.Should().Be(shouldTrigger);
+        }
+
+        /// <summary>
+        /// Verifies that the autofocus trigger evaluates its exposure-count expression before deciding to trigger after light frames.
+        /// </summary>
+        [Test]
+        public void ShouldTrigger_UsesEvaluatedAfterExposuresExpression() {
+            var afTrigger = new AutofocusAfterExposures(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
+            afTrigger.AfterExposuresDefinition = "2 + 3";
+            afTrigger.SequenceBlockInitialize();
+
+            for (int i = 0; i < 5; i++) {
+                var id = imagehistory.GetNextImageId();
+                imagehistory.Add(id, "LIGHT");
+                imagehistory.PopulateStatistics(i, ImageStatistics.Create(new ImageProperties(2, 2, 16, false, 100, 200), new ushort[] { 300, 400, 600, 800 }));
+            }
+
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+
+            afTrigger.ShouldTrigger(null, itemMock.Object).Should().BeTrue();
+            afTrigger.ProgressExposures.Should().Be(0);
         }
 
         [Test]

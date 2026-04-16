@@ -8,13 +8,17 @@ using NINA.Equipment.Model;
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Conditions;
 using NINA.Sequencer.SequenceItem.FlatDevice;
+using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Utility;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,8 +45,10 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             filterWheelMediator = new Mock<IFilterWheelMediator>();
 
 
-            profileService.Setup(x => x.ActiveProfile.ImageFileSettings).Returns(new Mock<IImageFileSettings>().Object);
-            cameraMediator.Setup(x => x.GetInfo()).Returns(new CameraInfo());
+            var imageFileSettings = new Mock<IImageFileSettings>();
+            imageFileSettings.SetupGet(x => x.FilePath).Returns(TestContext.CurrentContext.TestDirectory);
+            profileService.Setup(x => x.ActiveProfile.ImageFileSettings).Returns(imageFileSettings.Object);
+            cameraMediator.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = true });
             flatDeviceMediator.Setup(x => x.GetInfo()).Returns(new FlatDeviceInfo());
 
             sut = new AutoExposureFlat(profileService.Object, cameraMediator.Object, imagingMediator.Object, imageSaveMediator.Object, imageHistoryVM.Object, filterWheelMediator.Object, flatDeviceMediator.Object);
@@ -235,6 +241,73 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
 
             sut.GetExposureItem().ExposureTime.Should().BeApproximately(1.875, 0.01);
             imageSaveMediator.Verify(x => x.Enqueue(imageData.Object, It.IsAny<Task<IRenderedImage>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        /// <summary>
+        /// Verifies deserialization clears the Auto Exposure Flat immutable child graph before JSON rebuilds it.
+        /// </summary>
+        [Test]
+        public void OnDeserializing_ClearsExistingImmutableChildrenConditionsAndTriggers() {
+            sut.Add(new LoopCondition());
+            sut.Add(Mock.Of<ISequenceTrigger>());
+
+            sut.OnDeserializing(new StreamingContext());
+
+            sut.Items.Should().BeEmpty();
+            sut.Conditions.Should().BeEmpty();
+            sut.Triggers.Should().BeEmpty();
+        }
+
+        /// <summary>
+        /// Verifies retry and error-behavior settings propagate to every child instruction in the Auto Exposure Flat set.
+        /// </summary>
+        [Test]
+        public void ErrorBehaviorAndAttempts_PropagateToImmutableChildrenAndIgnoreInvalidAttempts() {
+            sut.ErrorBehavior = InstructionErrorBehavior.AbortOnError;
+            sut.Attempts = 5;
+
+            sut.Items.Should().OnlyContain(x => x.ErrorBehavior == InstructionErrorBehavior.AbortOnError);
+            sut.Items.Should().OnlyContain(x => x.Attempts == 5);
+
+            sut.Attempts = -1;
+
+            sut.Attempts.Should().Be(5);
+            sut.Items.Should().OnlyContain(x => x.Attempts == 5);
+        }
+
+        /// <summary>
+        /// Verifies histogram percentage inputs are constrained to valid bounds while the panel-closed preference is preserved.
+        /// </summary>
+        [Test]
+        public void HistogramPercentagesAndKeepPanelClosed_ClampAndStoreUserSettings() {
+            sut.HistogramTargetPercentage = -0.1;
+            sut.HistogramTolerancePercentage = 2;
+            sut.KeepPanelClosed = true;
+
+            sut.HistogramTargetPercentage.Should().Be(0);
+            sut.HistogramTolerancePercentage.Should().Be(1);
+            sut.KeepPanelClosed.Should().BeTrue();
+
+            sut.HistogramTargetPercentage = 2;
+            sut.HistogramTolerancePercentage = -0.1;
+
+            sut.HistogramTargetPercentage.Should().Be(1);
+            sut.HistogramTolerancePercentage.Should().Be(0);
+        }
+
+        /// <summary>
+        /// Verifies validation reports an invalid dynamic exposure range and still evaluates the expression-backed min/max values.
+        /// </summary>
+        [Test]
+        public void Validate_ReportsInvalidExposureRangeFromExpressionBackedValues() {
+            sut.MinExposureDefinition = "30 / 2";
+            sut.MaxExposureDefinition = "10";
+
+            sut.Validate().Should().BeFalse();
+
+            sut.MinExposure.Should().Be(15);
+            sut.MaxExposure.Should().Be(10);
+            sut.Issues.Should().Contain(x => x == NINA.Core.Locale.Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid"]);
         }
     }
 }

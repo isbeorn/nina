@@ -67,14 +67,16 @@ dotnet test NINA.Test\NINA.Test.csproj --configuration Debug --no-build -p:Platf
 | Sequencer conditions | `NINA.Test.Sequencer.Conditions` | astrometry/nighttime tests for altitude/sun/moon conditions |
 | Sequencer triggers | `NINA.Test.Sequencer.Trigger` | matching domain tests, sequence-item tests, serialization |
 | Sequencer sequence items | `NINA.Test.Sequencer.SequenceItem` | matching equipment/domain tests and serialization |
+| Sequencer connect/profile-switch items | `NINA.Test.Sequencer.SequenceItem.Connect.ConnectEquipmentTest` | profile settings, equipment mediator tests, and broader sequence-item tests |
+| Sequencer flat-device instruction sets | `NINA.Test.Sequencer.SequenceItem.FlatDevice` | flat-device settings/protocol tests and imaging/camera tests |
 | Sequencer camera items | `NINA.Test.Sequencer.SequenceItem.Camera`, `NINATest.Sequencer.SequenceItem.Camera` | camera/equipment and imaging tests; `SetUSBLimitTest` uses the `NINATest...` namespace |
 | Sequencer imaging items | `NINA.Test.Sequencer.SequenceItem.Imaging` | image model, capture sequence, camera/equipment tests |
 | Sequencer platesolving items/triggers | `NINA.Test.Sequencer.SequenceItem.Platesolving`, `NINA.Test.Sequencer.Trigger.Platesolving` | `NINA.Test.PlateSolving` and rotator/telescope tests |
 | Sequencer autofocus items/triggers | `NINA.Test.Sequencer.SequenceItem.Autofocus`, `NINA.Test.Sequencer.Trigger.Autofocus` | `NINA.Test.Autofocus`, focuser, image/star-detection tests |
 | Sequencer guider items/triggers | `NINA.Test.Sequencer.SequenceItem.Guider`, `NINA.Test.Sequencer.Trigger.Guider` | MGEN/equipment guider-related tests |
 | Sequencer time/date providers | `NINA.Test.Sequencer.Utility.DateTimeProvider` | astrometry/nighttime tests |
-| Sequencer expressions/symbols | `NINA.Test.Sequencer.Logic` | build `NINA.Sequencer`; add serialization and affected expression-backed entities |
-| Sequencer serialization/JSON compatibility | no active serialization fixture currently; run entity-specific tests and add/update serialization coverage | plugin discovery, target/template controller behavior, JSON compatibility checks |
+| Sequencer expressions/symbols | `NINA.Test.Sequencer.Logic`, `NINA.Test.Sequencer.ExpressionBackedEntityContractTest`, `NINA.Test.Sequencer.SequenceItem.Expressions.UserSymbolInstructionTest` | build `NINA.Sequencer`; add serialization and affected expression-backed entities |
+| Sequencer serialization/JSON compatibility | `NINA.Test.Sequencer.Serialization.JsonCreationConverterTest` | plugin discovery, target/template controller behavior, JSON compatibility checks |
 | Sequencer drag/drop/view selectors/converters | `NINA.Test.Sequencer.Behaviors`, `NINA.Test.Sequencer.DragDrop`, `NINA.Test.Sequencer.View` | WPF/shared UI tests and app-level view-model checks |
 | App/shared view models | `NINA.Test.ViewModel`, plus specific VM fixtures such as `FocuserVMTest`, `DomeVMTest`, `FlatDeviceVMTest`, `RotatorVMTest`, `AutofocusVMTest` | DI registration, mediator consumers, profile-setting tests |
 | Installer/runtime file changes | no direct unit-test filter | build `NINA`, inspect output layout, check `NINA.Setup/Product.wxs` and `NINA.SetupBundle` if bundle behavior changed |
@@ -88,7 +90,7 @@ Use these when the changed file is under the matching sequencer subtree:
 - `NINA.Test.Sequencer.Container`
 - `NINA.Test.Sequencer.Container.ExecutionStrategy`
 - `NINA.Test.Sequencer.Logic`
-- `NINA.Test.Sequencer.Serialization` is present as a namespace but its current fixture is commented out; add or reactivate coverage when serialization changes
+- `NINA.Test.Sequencer.Serialization`
 - `NINA.Test.Sequencer.SequenceItem.<Area>` where `<Area>` is `Autofocus`, `Camera`, `Dome`, `FilterWheel`, `FlatDevice`, `Focuser`, `Guider`, `Imaging`, `Platesolving`, `Rotator`, `SafetyMonitor`, `Switch`, `Telescope`, or `Utility`
 - `NINA.Test.Sequencer.Trigger.<Area>` where `<Area>` is `Autofocus`, `Dome`, `Guider`, `MeridianFlip`, or `Platesolving`
 - `NINA.Test.Sequencer.Utility.DateTimeProvider`

@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -104,6 +104,45 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             valid.Should().BeFalse();
 
             sut.Issues.Should().HaveCount(1);
+        }
+
+        /// <summary>
+        /// Verifies that TakeManyExposures keeps the internal loop condition synchronized with the evaluated iterations expression.
+        /// </summary>
+        [Test]
+        public void IterationsDefinition_UpdatesInternalLoopCondition() {
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageFileSettings.FilePath).Returns(TestContext.CurrentContext.TestDirectory);
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = true });
+            var sut = new TakeManyExposures(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, historyMock.Object);
+
+            sut.IterationsDefinition = "2 + 3";
+
+            sut.Iterations.Should().Be(5);
+            sut.GetLoopCondition().Iterations.Should().Be(5);
+        }
+
+        /// <summary>
+        /// Verifies that cloning TakeManyExposures copies the iterations expression and loop condition without sharing mutable state.
+        /// </summary>
+        [Test]
+        public void Clone_CopiesIterationsExpressionAndInternalLoopIndependently() {
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageFileSettings.FilePath).Returns(TestContext.CurrentContext.TestDirectory);
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = true });
+            var sut = new TakeManyExposures(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, historyMock.Object);
+            sut.IterationsDefinition = "2 + 3";
+
+            var clone = (TakeManyExposures)sut.Clone();
+
+            clone.Should().NotBeSameAs(sut);
+            clone.Iterations.Should().Be(5);
+            clone.IterationsExpression.Should().NotBeSameAs(sut.IterationsExpression);
+            clone.GetLoopCondition().Should().NotBeSameAs(sut.GetLoopCondition());
+            clone.GetLoopCondition().Iterations.Should().Be(5);
+
+            clone.IterationsDefinition = "1";
+
+            sut.IterationsExpression.Definition.Should().Be("2 + 3");
+            sut.GetLoopCondition().Iterations.Should().Be(5);
         }
 
         //[Test]

@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NINA.Core.Model;
 
-namespace NINATest.Sequencer.SequenceItem.Camera {
+namespace NINA.Test.Sequencer.SequenceItem.Camera {
 
     [TestFixture]
     internal class SetUSBLimitTest {

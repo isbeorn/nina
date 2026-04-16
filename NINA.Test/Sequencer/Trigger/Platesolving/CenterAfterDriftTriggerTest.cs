@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -17,7 +17,9 @@ using Moq;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Image.Interfaces;
+using NINA.Core.Model.Equipment;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.Trigger.Platesolving;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
@@ -25,6 +27,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -83,6 +86,58 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
             sut.DistanceArcMinutes = arcmin;
 
             sut.DistancePixels.Should().BeApproximately(expectedPixels, 1);
+        }
+
+        /// <summary>
+        /// Verifies that CenterAfterDrift evaluates its arc-minute distance expression and converts it into pixel distance.
+        /// </summary>
+        [Test]
+        public void DistanceArcMinutesExpression_CorrectlyCalculates_DistancePixels() {
+            profileServiceMock.SetupGet(x => x.ActiveProfile.CameraSettings.PixelSize).Returns(3.8);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.TelescopeSettings.FocalLength).Returns(400);
+
+            var sut = CreateSut();
+            sut.DistanceArcMinutesDefinition = "0.5 + 0.5";
+
+            sut.DistanceArcMinutes.Should().Be(1);
+            sut.DistancePixels.Should().BeApproximately(30, 1);
+        }
+
+        /// <summary>
+        /// Verifies that CenterAfterDrift uses the evaluated distance expression when deciding whether accumulated drift should trigger recentering.
+        /// </summary>
+        [Test]
+        public void ShouldTrigger_UsesEvaluatedDistanceArcMinutesExpression() {
+            var sut = CreateSut();
+            sut.DistanceArcMinutesDefinition = "2 + 3";
+            SetLastDistanceArcMinutes(sut, 5);
+
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            itemMock.Setup(x => x.GetEstimatedDuration()).Returns(TimeSpan.Zero);
+
+            sut.ShouldTrigger(null, itemMock.Object).Should().BeTrue();
+        }
+
+        private CenterAfterDriftTrigger CreateSut() {
+            return new CenterAfterDriftTrigger(
+                profileServiceMock.Object,
+                telescopeMediatorMock.Object,
+                filterMediatorMock.Object,
+                guiderMediatorMock.Object,
+                imagingMediatorMock.Object,
+                cameraMediatorMock.Object,
+                domeMediatorMock.Object,
+                domeFollowerMock.Object,
+                imageSaveMediatorMock.Object,
+                applicationStatusMediatorMock.Object,
+                safetyMonitorMediatorMock.Object);
+        }
+
+        private static void SetLastDistanceArcMinutes(CenterAfterDriftTrigger sut, double distanceArcMinutes) {
+            typeof(CenterAfterDriftTrigger)
+                .GetField("lastDistanceArcMinutes", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(sut, distanceArcMinutes);
         }
     }
 }

@@ -536,7 +536,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Distinct().ToList();
             RaisePropertyChanged(nameof(Issues));
 
-            return valid;
+            return valid && !issues.Any();
         }
 
         /// <summary>
