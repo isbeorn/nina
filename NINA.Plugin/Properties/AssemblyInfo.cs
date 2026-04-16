@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NINA.Plugin")]
 [assembly: AssemblyDescription("This assembly contains the plugin related components of N.I.N.A.")]
 [assembly: AssemblyConfiguration("")]
+[assembly: InternalsVisibleTo("NINA.Test")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
