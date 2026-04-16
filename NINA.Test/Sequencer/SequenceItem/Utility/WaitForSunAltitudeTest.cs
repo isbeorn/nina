@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -14,14 +14,16 @@
 
 using FluentAssertions;
 using Moq;
+using NINA.Core.Enum;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.SequenceItem.Utility;
 using NUnit.Framework;
+using System;
 
 namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
     [TestFixture]
-    public class WaitForMoonAltitudeTest {
+    public class WaitForSunAltitudeTest {
         private Mock<IProfileService> profileServiceMock;
 
         [SetUp]
@@ -32,10 +34,10 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         }
 
         [Test]
-        public void WaitForMoonAltitude_Clone_GoodClone() {
-            var sut = new WaitForMoonAltitude(profileServiceMock.Object);
+        public void WaitForSunAltitude_Clone_GoodClone() {
+            var sut = new WaitForSunAltitude(profileServiceMock.Object);
             sut.Icon = new System.Windows.Media.GeometryGroup();
-            var item2 = (WaitForMoonAltitude)sut.Clone();
+            var item2 = (WaitForSunAltitude)sut.Clone();
 
             item2.Should().NotBeSameAs(sut);
             item2.Name.Should().BeSameAs(sut.Name);
@@ -43,6 +45,54 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             item2.Icon.Should().BeSameAs(sut.Icon);
             item2.Data.TargetAltitude.Should().Be(sut.Data.TargetAltitude);
             item2.Data.Comparator.Should().Be(sut.Data.Comparator);
+        }
+
+        [Test]
+        public void WaitForSunAltitude_MustWait_GreaterThan_WaitsWhileAboveTarget() {
+            // Sun is always above -91°, so it is always waiting while the condition (altitude > -91°) holds
+            var sut = new WaitForSunAltitude(profileServiceMock.Object);
+            sut.Data.Comparator = ComparisonOperatorEnum.GREATER_THAN;
+            sut.Data.Offset = -91;
+
+            sut.CalculateExpectedTime();
+
+            sut.Data.ExpectedDateTime.Should().BeAfter(DateTime.Now);
+        }
+
+        [Test]
+        public void WaitForSunAltitude_MustWait_GreaterThan_DoesNotWaitWhenBelowTarget() {
+            // Sun can never reach 91°, so the condition (altitude > 91°) is never true and there is nothing to wait for
+            var sut = new WaitForSunAltitude(profileServiceMock.Object);
+            sut.Data.Comparator = ComparisonOperatorEnum.GREATER_THAN;
+            sut.Data.Offset = 91;
+
+            sut.CalculateExpectedTime();
+
+            sut.Data.ExpectedDateTime.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(5));
+        }
+
+        [Test]
+        public void WaitForSunAltitude_MustWait_LessThan_WaitsWhileBelowTarget() {
+            // Sun is always below 91°, so it is always waiting while the condition (altitude <= 91°) holds
+            var sut = new WaitForSunAltitude(profileServiceMock.Object);
+            sut.Data.Comparator = ComparisonOperatorEnum.LESS_THAN;
+            sut.Data.Offset = 91;
+
+            sut.CalculateExpectedTime();
+
+            sut.Data.ExpectedDateTime.Should().BeAfter(DateTime.Now);
+        }
+
+        [Test]
+        public void WaitForSunAltitude_MustWait_LessThan_DoesNotWaitWhenAboveTarget() {
+            // Sun is always above -91°, so the condition (altitude <= -91°) is never true and there is nothing to wait for
+            var sut = new WaitForSunAltitude(profileServiceMock.Object);
+            sut.Data.Comparator = ComparisonOperatorEnum.LESS_THAN;
+            sut.Data.Offset = -91;
+
+            sut.CalculateExpectedTime();
+
+            sut.Data.ExpectedDateTime.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(5));
         }
     }
 }
