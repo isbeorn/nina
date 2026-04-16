@@ -132,6 +132,17 @@
                         Exp="{Binding AzExpression, Mode=TwoWay}"
                         Label="(Decimal "
                         Unit=")" />
+                    <TextBlock
+                        Margin="20,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblTracking}" />
+                     <CheckBox
+                        MinWidth="40"
+                        Margin="5,0,8,0"
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding Mode=TwoWay, 
+                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, 
+                            Path=DataContext.Tracking}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

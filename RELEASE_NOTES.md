@@ -28,7 +28,8 @@ This allows you to safely return to a stable release if needed.
 - The native driver for SBIG cameras now provides the proper electrons/ADU value for the `EGAIN` keyword in image metadata
 - Fixed excessive debug logging after disconnecting the OpenMeteo weather client
 - The native star detector now rejects stars whose refined centroid falls on any edge of the detection rectangle, preventing truncated stars from biasing autofocus measurements
-
+- Fixed "Slew To Alt/Az" sequence instruction incorrectly using SlewToCoordinatesAsync instead of SlewToAltAzAsync
+- 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
     - new Trend per Filter checkbox to consider HFR Trend per filter (default) or across all filters to earlier trigger autofocus runs when imaging with continues filter loops 
