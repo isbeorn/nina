@@ -1,6 +1,6 @@
 #region "copyright"
 /*
-    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -11,15 +11,19 @@
 #endregion "copyright"
 using FluentAssertions;
 using NINA.Astrometry;
+using NINA.Astrometry.Body;
+using NINA.Astrometry.RiseAndSet;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using System;
 using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace NINA.Test.AstrometryTest {
 
     [TestFixture]
-    public class AstrometryTest {
+    public class AstroUtilTest {
+        private const double AngleTolerance = 1e-10;
+        
         private const double DEWPOINT_TOLERANCE = 0.5;
         private static double ANGLE_TOLERANCE = 0.0000000000001;
         private static double MODULUS_TOLERANCE = 0.0001;
@@ -764,6 +768,521 @@ namespace NINA.Test.AstrometryTest {
             var pattern = AstroUtil.DMSPattern;
             var match = Regex.Match(sut, pattern);
             match.Success.Should().BeFalse();
+        }
+
+        /// <summary>
+        /// Verifies UTC Julian Date conversion against standard epoch examples from Jean Meeus,
+        /// Astronomical Algorithms, so calendar-to-Julian conversion stays anchored to published values.
+        /// Reference: https://www.obliquity.com/astro/meeus.html
+        /// </summary>
+        [Test]
+        [TestCase(2000, 1, 1, 12, 0, 0, 2451545.0)]
+        [TestCase(1987, 1, 27, 0, 0, 0, 2446822.5)]
+        [TestCase(1987, 6, 19, 12, 0, 0, 2446966.0)]
+        [TestCase(1988, 1, 27, 0, 0, 0, 2447187.5)]
+        public void GetJulianDate_KnownAstronomicalEpochs_ReturnsPublishedJulianDate(int year, int month, int day, int hour, int minute, int second, double expectedJulianDate) {
+            DateTime utc = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc);
+
+            double julianDate = AstroUtil.GetJulianDate(utc);
+
+            julianDate.Should().BeApproximately(expectedJulianDate, 1e-9);
+            utc.ToJD().Should().BeApproximately(expectedJulianDate, 1e-9);
+            utc.ToMJD().Should().BeApproximately(expectedJulianDate - 2400000.5, 1e-9);
+            utc.ToMJD2000().Should().BeApproximately(expectedJulianDate - 2451545.0, 1e-9);
+        }
+
+        /// <summary>
+        /// Verifies TT conversion at the J2000 UTC instant, where TT is offset by TAI-UTC plus
+        /// 32.184 seconds; this catches leap-second and time-scale regressions in the SOFA path.
+        /// References: https://www.iers.org/IERS/EN/Service/FAQs/TheNewIAUResolutions/timeArgumentForUsingIERSProducts_104_157
+        /// and https://www.cnmoc.usff.navy.mil/Our-Commands/United-States-Naval-Observatory/Precise-Time-Department/Global-Positioning-System/USNO-GPS-Time-Transfer/Leap-Seconds/
+        /// </summary>
+        [Test]
+        public void GetJulianDateTT_J2000Utc_ContainsTerrestrialTimeOffset() {
+            DateTime utc = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+            double expectedTt = 2451545.0 + (32.0 + 32.184) / 86400.0;
+
+            double julianDateTt = AstroUtil.GetJulianDateTT(utc);
+
+            julianDateTt.Should().BeApproximately(expectedTt, 1e-9);
+        }
+
+        /// <summary>
+        /// Verifies that fractional seconds are preserved when SOFA receives UTC parts, because
+        /// sub-second exposure timing is relevant for precise astrometry and satellite work.
+        /// </summary>
+        [Test]
+        public void GetSecondOfMinuteWithFraction_MillisecondTime_PreservesFractionalSecond() {
+            DateTime timestamp = new DateTime(2024, 4, 8, 18, 17, 42, 375, DateTimeKind.Utc).AddTicks(1200);
+
+            double second = AstroUtil.GetSecondOfMinuteWithFraction(timestamp);
+
+            second.Should().BeApproximately(42.37512, 1e-12);
+        }
+
+        /// <summary>
+        /// Verifies that local sidereal time shifts by exactly one sidereal hour per 15 degrees
+        /// longitude, preserving the astronomical sign convention used by mount pointing.
+        /// </summary>
+        [Test]
+        public void GetLocalSiderealTime_LongitudeOffset_ChangesByOneHourPerFifteenDegrees() {
+            DateTime utc = new DateTime(2024, 3, 20, 0, 0, 0, DateTimeKind.Utc);
+
+            double greenwichSiderealTime = AstroUtil.GetLocalSiderealTime(utc, 0.0);
+            double eastSiderealTime = AstroUtil.GetLocalSiderealTime(utc, 15.0);
+            double westSiderealTime = AstroUtil.GetLocalSiderealTime(utc, -30.0);
+
+            eastSiderealTime.Should().BeApproximately(greenwichSiderealTime + 1.0, 1e-10);
+            westSiderealTime.Should().BeApproximately(greenwichSiderealTime - 2.0, 1e-10);
+        }
+
+        /// <summary>
+        /// Verifies small conversion helpers used by sidereal and formatting calculations,
+        /// including the zero-divisor modulus branch that represents an undefined wrap interval.
+        /// </summary>
+        [Test]
+        public void AngleAndModulusHelpers_CoreBranches_ReturnExpectedValues() {
+            AstroUtil.RadianToHour(Math.PI).Should().BeApproximately(12.0, AngleTolerance);
+            AstroUtil.MathMod(-10.0, 360.0).Should().BeApproximately(350.0, AngleTolerance);
+            AstroUtil.MathMod(10.0, 0.0).Should().Be(double.NaN);
+            AstroUtil.GetLocalSiderealTimeNow(0.0).Should().NotBe(double.NaN);
+        }
+
+        /// <summary>
+        /// Verifies inverse hour-angle conversion without normalization, matching the formula
+        /// RA = local sidereal time minus hour angle used in mount-side coordinate math.
+        /// </summary>
+        [Test]
+        public void GetRightAscensionFromHourAngle_SubtractsHourAngleFromSiderealTime() {
+            Angle rightAscension = AstroUtil.GetRightAscensionFromHourAngle(Angle.ByHours(7.0), Angle.ByHours(5.0));
+
+            rightAscension.Hours.Should().BeApproximately(-2.0, AngleTolerance);
+        }
+
+        /// <summary>
+        /// Verifies the closed-form equatorial altitude relation at upper and lower culmination,
+        /// a core spherical-astronomy identity for converting hour angle and declination to altitude.
+        /// </summary>
+        [Test]
+        [TestCase(51.5, 23.44, 0.0, 61.94)]
+        [TestCase(51.5, 23.44, 180.0, -15.06)]
+        [TestCase(-30.0, -60.0, 0.0, 60.0)]
+        [TestCase(-30.0, -60.0, 180.0, 0.0)]
+        public void GetAltitude_CulminationGeometry_ReturnsMeridianAltitudes(double latitude, double declination, double hourAngle, double expectedAltitude) {
+            double altitude = AstroUtil.GetAltitude(hourAngle, latitude, declination);
+
+            altitude.Should().BeApproximately(expectedAltitude, 1e-10);
+        }
+
+        /// <summary>
+        /// Verifies azimuth at meridian transit for targets north and south of the zenith, which
+        /// guards the branch logic that chooses north-versus-south culmination.
+        /// </summary>
+        [Test]
+        [TestCase(51.5, 23.44, 180.0)]
+        [TestCase(20.0, 70.0, 0.0)]
+        [TestCase(-30.0, -60.0, 180.0)]
+        public void GetAzimuth_MeridianTransit_IdentifiesNorthOrSouthTransit(double latitude, double declination, double expectedAzimuth) {
+            double altitude = AstroUtil.GetAltitude(0.0, latitude, declination);
+
+            double azimuth = AstroUtil.GetAzimuth(0.0, altitude, latitude, declination);
+
+            AngularDifference(azimuth, expectedAzimuth).Should().BeLessThan(1e-5);
+        }
+
+        /// <summary>
+        /// Verifies Greenwich equinox sunrise and sunset against public almanac expectations to
+        /// within a practical tolerance for the quadratic interpolation used by RiseAndSetEvent.
+        /// Reference: https://www.suntoday.org/sunrise-sunset/2024/march.html
+        /// </summary>
+        [Test]
+        public void GetSunRiseAndSet_GreenwichNearMarchEquinox_MatchesAlmanacTimesWithinMinutes() {
+            DateTime referenceDate = new DateTime(2024, 3, 20, 12, 0, 0, DateTimeKind.Utc);
+
+            RiseAndSetEvent sun = AstroUtil.GetSunRiseAndSet(referenceDate, 51.4769, 0.0, 46.0);
+
+            sun.Rise.Should().NotBeNull();
+            sun.Set.Should().NotBeNull();
+            AssertCloseToTime(sun.Rise, new DateTime(2024, 3, 21, 6, 1, 0, DateTimeKind.Utc), TimeSpan.FromMinutes(20));
+            AssertCloseToTime(sun.Set, new DateTime(2024, 3, 20, 18, 13, 0, DateTimeKind.Utc), TimeSpan.FromMinutes(20));
+        }
+
+        /// <summary>
+        /// Verifies that civil, nautical, and astronomical twilight are ordered by the physical
+        /// solar depression thresholds of -6, -12, and -18 degrees.
+        /// Reference: https://gml.noaa.gov/grad/solcalc/calcdetails.html
+        /// </summary>
+        [Test]
+        public void TwilightRiseAndSet_GreenwichNearMarchEquinox_OrdersBySolarDepression() {
+            DateTime referenceDate = new DateTime(2024, 3, 20, 12, 0, 0, DateTimeKind.Utc);
+
+            RiseAndSetEvent civil = AstroUtil.GetCivilNightTimes(referenceDate, 51.4769, 0.0, 46.0);
+            RiseAndSetEvent nautical = AstroUtil.GetNauticalNightTimes(referenceDate, 51.4769, 0.0, 46.0);
+            RiseAndSetEvent astronomical = AstroUtil.GetNightTimes(referenceDate, 51.4769, 0.0, 46.0);
+
+            civil.Set.Should().BeBefore(nautical.Set.Value);
+            nautical.Set.Should().BeBefore(astronomical.Set.Value);
+            astronomical.Rise.Should().BeBefore(nautical.Rise.Value);
+            nautical.Rise.Should().BeBefore(civil.Rise.Value);
+        }
+
+        /// <summary>
+        /// Verifies polar day behavior at Tromso near June solstice, where the Sun should not cross
+        /// the apparent horizon and the rise/set solver must report no event.
+        /// Reference: https://www.sunrise-and-sunset.com/en/sun/norway/tromso/2024
+        /// </summary>
+        [Test]
+        public void GetSunRiseAndSet_TromsoJuneSolstice_DetectsMidnightSunNoCrossing() {
+            DateTime referenceDate = new DateTime(2024, 6, 21, 12, 0, 0, DateTimeKind.Utc);
+
+            RiseAndSetEvent sun = AstroUtil.GetSunRiseAndSet(referenceDate, 69.6492, 18.9553, 10.0);
+
+            sun.Rise.Should().BeNull();
+            sun.Set.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Verifies polar night behavior at Tromso near December solstice, where the Sun remains
+        /// below the apparent horizon and no sunrise or sunset crossing should be produced.
+        /// Reference: https://www.sunrise-and-sunset.com/en/sun/norway/tromso/2024
+        /// </summary>
+        [Test]
+        public void GetSunRiseAndSet_TromsoDecemberSolstice_DetectsPolarNightNoCrossing() {
+            DateTime referenceDate = new DateTime(2024, 12, 21, 12, 0, 0, DateTimeKind.Utc);
+
+            RiseAndSetEvent sun = AstroUtil.GetSunRiseAndSet(referenceDate, 69.6492, 18.9553, 10.0);
+
+            sun.Rise.Should().BeNull();
+            sun.Set.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Verifies lunar illumination near the 2024 total solar eclipse new moon, an externally
+        /// recognizable syzygy where the illuminated fraction should be very small.
+        /// Reference: https://science.nasa.gov/eclipses/future-eclipses/eclipse-2024/
+        /// </summary>
+        [Test]
+        public void GetMoonIllumination_NewMoonAtSolarEclipse_ReturnsDarkMoon() {
+            DateTime eclipseNewMoon = new DateTime(2024, 4, 8, 18, 21, 0, DateTimeKind.Utc);
+            ObserverInfo observer = new ObserverInfo { Latitude = 29.7604, Longitude = -95.3698, Elevation = 15.0 };
+
+            double illumination = AstroUtil.GetMoonIllumination(eclipseNewMoon, observer);
+            AstroUtil.MoonPhase phase = AstroUtil.GetMoonPhase(eclipseNewMoon, observer);
+
+            phase.Should().BeOneOf(AstroUtil.MoonPhase.WaningCrescent, AstroUtil.MoonPhase.NewMoon, AstroUtil.MoonPhase.WaxingCrescent);
+            illumination.Should().BeLessThan(0.02);
+        }
+
+        /// <summary>
+        /// Verifies lunar illumination near the 2024 March full moon, where Sun-Moon
+        /// elongation is near opposition and the illuminated fraction should be near unity.
+        /// Reference: https://moon.nasa.gov/moon-in-motion/moon-phases/
+        /// </summary>
+        [Test]
+        public void GetMoonIllumination_FullMoon_ReturnsBrightMoon() {
+            DateTime fullMoon = new DateTime(2024, 3, 25, 7, 0, 0, DateTimeKind.Utc);
+            ObserverInfo observer = new ObserverInfo { Latitude = 51.4769, Longitude = 0.0, Elevation = 46.0 };
+
+            double illumination = AstroUtil.GetMoonIllumination(fullMoon, observer);
+            AstroUtil.MoonPhase phase = AstroUtil.GetMoonPhase(fullMoon, observer);
+
+            phase.Should().BeOneOf(AstroUtil.MoonPhase.WaxingGibbous, AstroUtil.MoonPhase.FullMoon, AstroUtil.MoonPhase.WaningGibbous);
+            illumination.Should().BeGreaterThan(0.98);
+        }
+
+        /// <summary>
+        /// Verifies that the 2024 March full moon has both moonrise and moonset around Greenwich,
+        /// covering the lunar rise/set path with the Moon-specific apparent-limb horizon threshold.
+        /// Reference: https://moon.nasa.gov/moon-in-motion/moon-phases/
+        /// </summary>
+        [Test]
+        public void GetMoonRiseAndSet_GreenwichFullMoon_FindsBothEvents() {
+            DateTime referenceDate = new DateTime(2024, 3, 25, 12, 0, 0, DateTimeKind.Utc);
+
+            RiseAndSetEvent moon = AstroUtil.GetMoonRiseAndSet(referenceDate, 51.4769, 0.0, 46.0);
+
+            moon.Rise.Should().NotBeNull();
+            moon.Set.Should().NotBeNull();
+            moon.Rise.Value.Should().BeAfter(referenceDate);
+            moon.Set.Value.Should().BeAfter(referenceDate);
+        }
+
+        /// <summary>
+        /// Verifies legacy no-elevation rise/set overloads still delegate to the elevation-aware
+        /// implementations, preserving old call sites while keeping the same astronomical events.
+        /// </summary>
+        [Test]
+        public void RiseAndSetCompatibilityOverloads_NoElevation_DelegateToZeroElevationImplementations() {
+            DateTime referenceDate = new DateTime(2024, 3, 20, 12, 0, 0, DateTimeKind.Utc);
+#pragma warning disable CS0618
+            RiseAndSetEvent astronomicalLegacy = AstroUtil.GetNightTimes(referenceDate, 51.4769, 0.0);
+            RiseAndSetEvent nauticalLegacy = AstroUtil.GetNauticalNightTimes(referenceDate, 51.4769, 0.0);
+            RiseAndSetEvent civilLegacy = AstroUtil.GetCivilNightTimes(referenceDate, 51.4769, 0.0);
+            RiseAndSetEvent sunLegacy = AstroUtil.GetSunRiseAndSet(referenceDate, 51.4769, 0.0);
+            RiseAndSetEvent moonLegacy = AstroUtil.GetMoonRiseAndSet(referenceDate, 51.4769, 0.0);
+#pragma warning restore CS0618
+
+            astronomicalLegacy.Rise.Should().Be(AstroUtil.GetNightTimes(referenceDate, 51.4769, 0.0, 0.0).Rise);
+            nauticalLegacy.Rise.Should().Be(AstroUtil.GetNauticalNightTimes(referenceDate, 51.4769, 0.0, 0.0).Rise);
+            civilLegacy.Rise.Should().Be(AstroUtil.GetCivilNightTimes(referenceDate, 51.4769, 0.0, 0.0).Rise);
+            sunLegacy.Rise.Should().Be(AstroUtil.GetSunRiseAndSet(referenceDate, 51.4769, 0.0, 0.0).Rise);
+            moonLegacy.Rise.Should().Be(AstroUtil.GetMoonRiseAndSet(referenceDate, 51.4769, 0.0, 0.0).Rise);
+        }
+
+        /// <summary>
+        /// Verifies solar altitude at the equator near equinox noon and midnight, exercising the
+        /// NOVAS solar position path against the expected day-night symmetry.
+        /// </summary>
+        [Test]
+        public void GetSunAltitude_EquatorAtEquinox_HighAtNoonAndLowAtMidnight() {
+            ObserverInfo observer = new ObserverInfo { Latitude = 0.0, Longitude = 0.0, Elevation = 0.0 };
+
+            double noonAltitude = AstroUtil.GetSunAltitude(new DateTime(2024, 3, 20, 12, 7, 0, DateTimeKind.Utc), observer);
+            double midnightAltitude = AstroUtil.GetSunAltitude(new DateTime(2024, 3, 20, 0, 7, 0, DateTimeKind.Utc), observer);
+
+            noonAltitude.Should().BeGreaterThan(88.0);
+            midnightAltitude.Should().BeLessThan(-88.0);
+        }
+
+        /// <summary>
+        /// Verifies lunar altitude at Greenwich around the March 2024 full moon, exercising the
+        /// NOVAS lunar position path independently of the rise/set interpolation.
+        /// </summary>
+        [Test]
+        public void GetMoonAltitude_GreenwichFullMoonNight_ReturnsAboveHorizonAltitude() {
+            DateTime date = new DateTime(2024, 3, 25, 0, 30, 0, DateTimeKind.Utc);
+            ObserverInfo observer = new ObserverInfo { Latitude = 51.4769, Longitude = 0.0, Elevation = 46.0 };
+
+            double altitude = AstroUtil.GetMoonAltitude(date, observer);
+
+            altitude.Should().BeGreaterThan(20.0);
+        }
+
+        /// <summary>
+        /// Verifies legacy latitude/longitude solar and lunar altitude overloads delegate to the
+        /// current ObserverInfo overloads for deterministic historical callers.
+        /// </summary>
+        [Test]
+        public void AltitudeCompatibilityOverloads_LatitudeLongitude_MatchObserverInfoOverloads() {
+            DateTime date = new DateTime(2024, 3, 25, 0, 30, 0, DateTimeKind.Utc);
+            ObserverInfo observer = new ObserverInfo { Latitude = 51.4769, Longitude = 0.0 };
+
+#pragma warning disable CS0618
+            double moonLegacy = AstroUtil.GetMoonAltitude(date, observer.Latitude, observer.Longitude);
+            double sunLegacy = AstroUtil.GetSunAltitude(date, observer.Latitude, observer.Longitude);
+#pragma warning restore CS0618
+
+            moonLegacy.Should().BeApproximately(AstroUtil.GetMoonAltitude(date, observer), 1e-10);
+            sunLegacy.Should().BeApproximately(AstroUtil.GetSunAltitude(date, observer), 1e-10);
+        }
+
+        /// <summary>
+        /// Verifies NOVAS standard refraction increases apparent altitude most near the horizon,
+        /// which protects the zenith-distance sign and unit conversion.
+        /// </summary>
+        [Test]
+        public void CalculateAltitudeForStandardRefraction_LowAltitude_IncreasesApparentAltitude() {
+            double lowAltitude = AstroUtil.CalculateAltitudeForStandardRefraction(5.0, 51.4769, 0.0, 46.0);
+            double highAltitude = AstroUtil.CalculateAltitudeForStandardRefraction(80.0, 51.4769, 0.0, 46.0);
+
+            lowAltitude.Should().BeGreaterThan(5.0);
+            highAltitude.Should().BeGreaterThan(80.0);
+            (lowAltitude - 5.0).Should().BeGreaterThan(highAltitude - 80.0);
+        }
+
+        /// <summary>
+        /// Verifies obsolete solar and lunar position overloads still return the same NOVAS body
+        /// positions as the current ObserverInfo overloads.
+        /// </summary>
+        [Test]
+        public void BodyPositionCompatibilityOverloads_IgnoreJulianDateArgument_DelegateToCurrentOverloads() {
+            DateTime date = new DateTime(2024, 3, 20, 12, 0, 0, DateTimeKind.Utc);
+            ObserverInfo observer = new ObserverInfo { Latitude = 51.4769, Longitude = 0.0, Elevation = 46.0 };
+            double julianDate = AstroUtil.GetJulianDate(date);
+
+#pragma warning disable CS0618
+            NOVAS.SkyPosition sunLegacy = AstroUtil.GetSunPosition(date, julianDate, observer);
+            NOVAS.SkyPosition moonLegacy = AstroUtil.GetMoonPosition(date, julianDate, observer);
+            Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition> tupleLegacy = AstroUtil.GetMoonAndSunPosition(date, julianDate, observer);
+#pragma warning restore CS0618
+
+            NOVAS.SkyPosition sun = AstroUtil.GetSunPosition(date, observer);
+            NOVAS.SkyPosition moon = AstroUtil.GetMoonPosition(date, observer);
+
+            sunLegacy.RA.Should().BeApproximately(sun.RA, AngleTolerance);
+            moonLegacy.RA.Should().BeApproximately(moon.RA, AngleTolerance);
+            tupleLegacy.Item1.RA.Should().BeApproximately(moon.RA, AngleTolerance);
+            tupleLegacy.Item2.RA.Should().BeApproximately(sun.RA, AngleTolerance);
+        }
+
+        /// <summary>
+        /// Verifies legacy Moon phase, illumination, and position-angle overloads continue to
+        /// produce finite values for default geocentric-style observer assumptions.
+        /// </summary>
+        [Test]
+        public void MoonCompatibilityOverloads_DefaultObserver_ReturnFinitePhaseAndIllumination() {
+            DateTime date = new DateTime(2024, 4, 8, 18, 21, 0, DateTimeKind.Utc);
+
+#pragma warning disable CS0618
+            double illumination = AstroUtil.GetMoonIllumination(date);
+            double positionAngle = AstroUtil.GetMoonPositionAngle(date);
+            AstroUtil.MoonPhase phase = AstroUtil.GetMoonPhase(date);
+            double calculatedIllumination = AstroUtil.CalculateMoonIllumination(date);
+#pragma warning restore CS0618
+
+            illumination.Should().BeInRange(0.0, 1.0);
+            calculatedIllumination.Should().BeApproximately(illumination, AngleTolerance);
+            positionAngle.Should().BeInRange(-180.0, 180.0);
+            phase.Should().NotBe(AstroUtil.MoonPhase.Unknown);
+        }
+
+        /// <summary>
+        /// Verifies the Gueymard 1993 airmass model at representative altitudes and rejects
+        /// physically invalid altitude inputs with NaN.
+        /// Reference: https://doi.org/10.1016/0038-092X(93)90074-X
+        /// </summary>
+        [Test]
+        [TestCase(90.0, 1.0)]
+        [TestCase(60.0, 1.15425329789205)]
+        [TestCase(45.0, 1.41282515211066)]
+        [TestCase(30.0, 1.99426095351295)]
+        [TestCase(10.0, 5.58083120021974)]
+        [TestCase(0.0, 37.8082182299908)]
+        public void Airmass_ValidAltitudes_ReturnsGueymardReferenceValues(double altitude, double expectedAirmass) {
+            double airmass = AstroUtil.Airmass(altitude);
+
+            airmass.Should().BeApproximately(expectedAirmass, 1e-12);
+        }
+
+        /// <summary>
+        /// Verifies invalid airmass inputs, because negative altitude and non-finite values are
+        /// outside the physical domain of the Gueymard approximation.
+        /// </summary>
+        [Test]
+        [TestCase(-0.1)]
+        [TestCase(90.1)]
+        [TestCase(double.NaN)]
+        [TestCase(double.PositiveInfinity)]
+        public void Airmass_InvalidAltitude_ReturnsNaN(double altitude) {
+            double airmass = AstroUtil.Airmass(altitude);
+
+            airmass.Should().Be(double.NaN);
+        }
+
+        /// <summary>
+        /// Verifies ISO 2533 standard-atmosphere pressure conversion from sea-level pressure to
+        /// local observing-site pressure at common elevations.
+        /// Reference: https://www.engineeringtoolbox.com/standard-atmosphere-d_604.html
+        /// </summary>
+        [Test]
+        [TestCase(1013.25, 0.0, 1013.25)]
+        [TestCase(1013.25, 1000.0, 898.745604273543)]
+        [TestCase(1013.25, 1609.344, 834.275729916201)]
+        [TestCase(1013.25, 2000.0, 794.951974352912)]
+        public void MslToLocalPressure_StandardAtmosphere_ReturnsExpectedPressure(double seaLevelPressure, double elevation, double expectedPressure) {
+            double pressure = AstroUtil.MslToLocalPressure(seaLevelPressure, elevation);
+
+            pressure.Should().BeApproximately(expectedPressure, 1e-9);
+        }
+
+        /// <summary>
+        /// Verifies SOFA refraction behavior by checking that denser air refracts a target more
+        /// than thin high-altitude air and that the apparent altitude increases.
+        /// </summary>
+        [Test]
+        public void CalculateRefractedAltitude_DifferentPressure_IncreasesAltitudeMoreAtSeaLevel() {
+            double vacuumAltitude = 20.0;
+
+            double seaLevel = AstroUtil.CalculateRefractedAltitude(vacuumAltitude, 1013.25, 10.0, 50.0, 0.574);
+            double highAltitude = AstroUtil.CalculateRefractedAltitude(vacuumAltitude, 600.0, 10.0, 50.0, 0.574);
+
+            seaLevel.Should().BeGreaterThan(vacuumAltitude);
+            highAltitude.Should().BeGreaterThan(vacuumAltitude);
+            seaLevel.Should().BeGreaterThan(highAltitude);
+        }
+
+        /// <summary>
+        /// Verifies that refraction rejects a negative geometric altitude, because the implemented
+        /// SOFA-based iteration is documented only for targets at or above the horizon.
+        /// </summary>
+        [Test]
+        public void CalculateRefractedAltitude_NegativeAltitude_ThrowsArgumentException() {
+            Action act = () => AstroUtil.CalculateRefractedAltitude(-0.01, 1013.25, 10.0, 50.0, 0.574);
+
+            act.Should().Throw<ArgumentException>();
+        }
+
+        /// <summary>
+        /// Verifies that astronomical unit conversion uses the IAU exact astronomical unit in
+        /// kilometers, which is then reused by Sun and Moon distance calculations.
+        /// Reference: https://iau-a3.gitlab.io/res.html
+        /// </summary>
+        [Test]
+        public void AUToKilometer_OneAstronomicalUnit_ReturnsIauKilometers() {
+            AstroUtil.AUToKilometer(1.0).Should().Be(149597870.7);
+            Earth.Radius.Should().Be(6371.0);
+        }
+
+        /// <summary>
+        /// Verifies FITS-compatible sexagesimal formatting for RA and Dec, including signed
+        /// declination output used in image headers.
+        /// </summary>
+        [Test]
+        public void FitsSexagesimalFormatting_PositiveAndNegativeCoordinates_ReturnsFitsHeaderStrings() {
+            AstroUtil.DegreesToFitsDMS(12.5).Should().Be("+12 30 00");
+            AstroUtil.DegreesToFitsDMS(-12.5).Should().Be("-12 30 00");
+            AstroUtil.HoursToFitsHMS(5.25).Should().Be("05 15 00");
+        }
+
+        /// <summary>
+        /// Verifies comma decimal DMS parsing for European-formatted source data, because imported
+        /// catalog and planetarium text can use comma decimal separators.
+        /// </summary>
+        [Test]
+        public void DMSToDegrees_CommaDecimalSeconds_ParsesUsingCommaPattern() {
+            double value = AstroUtil.DMSToDegrees("12°30'30,5\"");
+
+            value.Should().BeApproximately(12.508472222222222, 1e-12);
+        }
+
+        /// <summary>
+        /// Verifies image-scale field-of-view helpers with rectangular sensors, ensuring the
+        /// maximum field uses the longer side and per-axis field uses the requested axis only.
+        /// </summary>
+        [Test]
+        public void FieldOfView_RectangularSensor_ReturnsArcminuteExtent() {
+            const double arcsecPerPixel = 1.5;
+
+            AstroUtil.FieldOfView(arcsecPerPixel, 3000).Should().BeApproximately(75.0, AngleTolerance);
+            AstroUtil.MaxFieldOfView(arcsecPerPixel, 3000, 2000).Should().BeApproximately(75.0, AngleTolerance);
+        }
+
+        /// <summary>
+        /// Verifies polar-to-Cartesian conversion at axis-aligned spherical coordinates so 3D sky
+        /// preview geometry preserves the expected handedness.
+        /// </summary>
+        [Test]
+        public void Polar3DToCartesian_AxisAlignedAngles_ReturnsExpectedVectorComponents() {
+            var xAxis = AstroUtil.Polar3DToCartesian(2.0, 0.0, 0.0);
+            var zAxis = AstroUtil.Polar3DToCartesian(2.0, Math.PI / 2.0, 0.0);
+            var negativeYAxis = AstroUtil.Polar3DToCartesian(2.0, Math.PI / 2.0, Math.PI / 2.0);
+
+            xAxis.X.Should().BeApproximately(2.0, AngleTolerance);
+            xAxis.Y.Should().BeApproximately(0.0, AngleTolerance);
+            xAxis.Z.Should().BeApproximately(0.0, AngleTolerance);
+            zAxis.Z.Should().BeApproximately(2.0, AngleTolerance);
+            negativeYAxis.Y.Should().BeApproximately(-2.0, AngleTolerance);
+        }
+
+        private static double AngularDifference(double actualDegrees, double expectedDegrees) {
+            double difference = Math.Abs(AstroUtil.EuclidianModulus(actualDegrees - expectedDegrees + 180.0, 360.0) - 180.0);
+            return difference;
+        }
+
+        private static void AssertCloseToTime(DateTime? actual, DateTime expected, TimeSpan tolerance) {
+            actual.Should().NotBeNull();
+            TimeSpan difference = (actual.Value - expected).Duration();
+            difference.Should().BeLessThanOrEqualTo(tolerance);
         }
     }
 }

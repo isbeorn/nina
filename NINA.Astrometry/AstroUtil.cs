@@ -546,20 +546,23 @@ namespace NINA.Astrometry {
                 pattern = "[0-9\\,]+";
             }
             var regex = new Regex(pattern);
+            static double ParseSexagesimalPart(string value) {
+                return double.Parse(value.Replace(',', '.'), CultureInfo.InvariantCulture);
+            }
 
             var matches = regex.Matches(dms);
 
             double degree = 0, minutes = 0, seconds = 0;
 
             if (matches.Count > 0) {
-                degree = double.Parse(matches[0].Value, CultureInfo.InvariantCulture);
+                degree = ParseSexagesimalPart(matches[0].Value);
 
                 if (matches.Count > 1) {
-                    minutes = ArcminToDegree(double.Parse(matches[1].Value, CultureInfo.InvariantCulture));
+                    minutes = ArcminToDegree(ParseSexagesimalPart(matches[1].Value));
                 }
 
                 if (matches.Count > 2) {
-                    seconds = ArcsecToDegree(double.Parse(matches[2].Value, CultureInfo.InvariantCulture));
+                    seconds = ArcsecToDegree(ParseSexagesimalPart(matches[2].Value));
                 }
             }
 

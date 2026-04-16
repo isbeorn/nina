@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using NINA.Astrometry;
 using System;
 using System.Collections.Generic;
@@ -21,6 +21,60 @@ namespace NINA.Test.AstrometryTest {
             wcs.PositionAngle.Should().BeApproximately(AstroUtil.EuclidianModulus(360 - expectedRotation, 360), 0.001);
             wcs.PixelScaleX.Should().BeApproximately(expectedPixelScaleX, 0.001);
             wcs.PixelScaleY.Should().BeApproximately(expectedPixelScaleY, 0.001);
+        }
+
+        private const double AngleTolerance = 1e-10;
+
+        /// <summary>
+        /// Verifies WCS coordinate lookup at the reference pixel and one pixel from center, covering
+        /// the production GetCoordinates path in addition to direct projection helpers.
+        /// </summary>
+        [Test]
+        public void WorldCoordinateSystemGetCoordinates_ReferenceAndOffsetPixels_ReturnsExpectedSkyCoordinates() {
+            WorldCoordinateSystem wcs = new WorldCoordinateSystem(
+                180.0,
+                45.0,
+                1000.0,
+                1000.0,
+                -1.0 / 3600.0,
+                1.0 / 3600.0,
+                0.0);
+
+            Coordinates center = wcs.GetCoordinates(1000.0, 1000.0);
+            Coordinates offset = wcs.GetCoordinates(1001.0, 1000.0);
+
+            center.RADegrees.Should().BeApproximately(180.0, 1e-12);
+            center.Dec.Should().BeApproximately(45.0, 1e-12);
+            offset.RADegrees.Should().BeLessThan(center.RADegrees);
+        }
+
+        /// <summary>
+        /// Verifies WCS flipped-axis handling for both CD-matrix and CDELT/CROTA inputs, because
+        /// FITS solvers can encode handedness in either form.
+        /// </summary>
+        [Test]
+        public void WorldCoordinateSystem_FlippedAxisInputs_SetFlippedAndAdjustedRotation() {
+            WorldCoordinateSystem matrix = new WorldCoordinateSystem(
+                180.0,
+                45.0,
+                1000.0,
+                1000.0,
+                1.0 / 3600.0,
+                0.0,
+                0.0,
+                1.0 / 3600.0);
+            WorldCoordinateSystem cdelt = new WorldCoordinateSystem(
+                180.0,
+                45.0,
+                1000.0,
+                1000.0,
+                1.0 / 3600.0,
+                1.0 / 3600.0,
+                30.0);
+
+            matrix.Flipped.Should().BeTrue();
+            cdelt.Flipped.Should().BeTrue();
+            cdelt.Rotation.Should().BeApproximately(330.0, AngleTolerance);
         }
     }
 }
