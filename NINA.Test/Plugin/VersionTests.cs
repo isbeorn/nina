@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -43,6 +43,10 @@ namespace NINA.Test.Plugin {
     [TestFixture]
     public class VersionTests {
 
+        /// <summary>
+        /// Verifies plugin minimum-application compatibility when the running application version is
+        /// represented by System.Version, matching the loader's runtime comparison path.
+        /// </summary>
         [Test]
         //Major
         [TestCase("1.0.0.0", "1.0.0.0", true)]
@@ -67,6 +71,10 @@ namespace NINA.Test.Plugin {
             PluginVersion.IsPluginCompatible(pluginVersion, appVersion).Should().Be(isCompatible);
         }
 
+        /// <summary>
+        /// Verifies plugin minimum-application compatibility when both sides are plugin manifest
+        /// versions, matching repository manifest filtering before download.
+        /// </summary>
         [Test]
         //Major
         [TestCase("1.0.0.0", "1.0.0.0", true)]
@@ -91,6 +99,10 @@ namespace NINA.Test.Plugin {
             PluginVersion.IsPluginCompatible(pluginVersion, appVersion).Should().Be(isCompatible);
         }
 
+        /// <summary>
+        /// Verifies plugin-version ordering across major, minor, patch, and build components so
+        /// compatibility-map minimum-version checks use deterministic semantic ordering.
+        /// </summary>
         [Test]
         //Major
         [TestCase("1.0.0.0", "1.0.0.0", true)]

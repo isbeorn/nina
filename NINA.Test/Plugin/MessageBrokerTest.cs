@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using NINA.Plugin.Interfaces;
 using NINA.Plugin.Messaging;
 using System;
@@ -18,6 +18,10 @@ namespace NINA.Test.Plugin {
             _messageBroker = new MessageBroker();
         }
 
+        /// <summary>
+        /// Verifies that publishing a plugin message delivers the exact message object to a subscriber
+        /// registered for the same topic.
+        /// </summary>
         [Test]
         public async Task PublishAsync_ShouldNotifySubscribers() {
             // Arrange
@@ -33,6 +37,10 @@ namespace NINA.Test.Plugin {
                 .Which.Should().Be(message);
         }
 
+        /// <summary>
+        /// Verifies that topic routing isolates plugin messages from subscribers registered for a
+        /// different topic.
+        /// </summary>
         [Test]
         public async Task PublishAsync_ShouldNotNotifyUnsubscribedTopics() {
             // Arrange
@@ -47,6 +55,9 @@ namespace NINA.Test.Plugin {
             subscriber.ReceivedMessages.Should().BeEmpty();
         }
 
+        /// <summary>
+        /// Verifies that all subscribers on a plugin message topic receive the published message.
+        /// </summary>
         [Test]
         public async Task PublishAsync_ShouldHandleMultipleSubscribers() {
             // Arrange
@@ -66,6 +77,9 @@ namespace NINA.Test.Plugin {
                 .Which.Should().Be(message);
         }
 
+        /// <summary>
+        /// Verifies that a valid subscriber can be registered for a topic without side effects.
+        /// </summary>
         [Test]
         public void Subscribe_ShouldAddSubscriber() {
             // Arrange
@@ -78,6 +92,9 @@ namespace NINA.Test.Plugin {
             act.Should().NotThrow();
         }
 
+        /// <summary>
+        /// Verifies that a subscriber can be removed from a topic without throwing.
+        /// </summary>
         [Test]
         public void Unsubscribe_ShouldRemoveSubscriber() {
             // Arrange
@@ -91,6 +108,27 @@ namespace NINA.Test.Plugin {
             act.Should().NotThrow();
         }
 
+        /// <summary>
+        /// Verifies that an unsubscribed plugin listener no longer receives messages for that topic.
+        /// </summary>
+        [Test]
+        public async Task Unsubscribe_ShouldStopFutureDeliveryToSubscriber() {
+            // Arrange
+            var message = new ExampleMessage("test_topic", "Hello, World!", "TestSender", Guid.NewGuid());
+            var subscriber = new TestSubscriber();
+            _messageBroker.Subscribe("test_topic", subscriber);
+            _messageBroker.Unsubscribe("test_topic", subscriber);
+
+            // Act
+            await _messageBroker.Publish(message);
+
+            // Assert
+            subscriber.ReceivedMessages.Should().BeEmpty();
+        }
+
+        /// <summary>
+        /// Verifies that publishing a null message is rejected before routing is attempted.
+        /// </summary>
         [Test]
         public Task PublishAsync_ShouldThrowException_ForNullMessage() {
             // Act
@@ -100,6 +138,10 @@ namespace NINA.Test.Plugin {
             return act.Should().ThrowAsync<ArgumentException>().WithMessage("Message or message topic cannot be null.");
         }
 
+        /// <summary>
+        /// Verifies that a message with an empty topic is rejected because topic is the broker's
+        /// routing key.
+        /// </summary>
         [Test]
         public Task PublishAsync_ShouldThrowException_ForMessageWithEmptyTopic() {
             // Arrange
@@ -112,6 +154,9 @@ namespace NINA.Test.Plugin {
             return act.Should().ThrowAsync<ArgumentException>().WithMessage("Message or message topic cannot be null.");
         }
 
+        /// <summary>
+        /// Verifies that topic validation prevents subscriptions with null routing keys.
+        /// </summary>
         [Test]
         public void Subscribe_ShouldThrowException_ForNullTopic() {
             // Arrange
@@ -124,6 +169,9 @@ namespace NINA.Test.Plugin {
             act.Should().Throw<ArgumentException>().WithMessage("Topic or subscriber cannot be null.");
         }
 
+        /// <summary>
+        /// Verifies that subscriber validation prevents null handlers from being stored for a topic.
+        /// </summary>
         [Test]
         public void Subscribe_ShouldThrowException_ForNullSubscriber() {
             // Act
@@ -133,6 +181,9 @@ namespace NINA.Test.Plugin {
             act.Should().Throw<ArgumentException>().WithMessage("Topic or subscriber cannot be null.");
         }
 
+        /// <summary>
+        /// Verifies that topic validation is also enforced when removing subscribers.
+        /// </summary>
         [Test]
         public void Unsubscribe_ShouldThrowException_ForNullTopic() {
             // Arrange
@@ -145,6 +196,10 @@ namespace NINA.Test.Plugin {
             act.Should().Throw<ArgumentException>().WithMessage("Topic or subscriber cannot be null.");
         }
 
+        /// <summary>
+        /// Verifies that unsubscribe rejects null subscribers instead of silently mutating broker
+        /// state.
+        /// </summary>
         [Test]
         public void Unsubscribe_ShouldThrowException_ForNullSubscriber() {
             // Act
