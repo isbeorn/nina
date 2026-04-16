@@ -143,6 +143,10 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
             Constant sut = AddConstant("constantTarget", "target + 1", root);
             sut.Expr.Evaluate();
 
+            sut.Validate().Should().BeFalse();
+            sut.Issues.Should().Contain(i => i.Contains("may not include Variables"));
+
+            sut.Expr = CreateExpression("2 + 3", sut);
             sut.Validate().Should().BeTrue();
 
             sut.Identifier = "1 invalid";
@@ -150,7 +154,6 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
             sut.Issues.Should().Contain(i => i.Contains("alphanumeric"));
 
             sut.Identifier = "constantTarget";
-            sut.Expr = CreateExpression("2 + 3", sut);
             sut.Validate().Should().BeTrue();
 
             Constant clone = (Constant)sut.Clone();

@@ -224,6 +224,9 @@ namespace NINA.Sequencer.Logic {
         }
 
         static public bool IsAttachedToRoot(ISequenceEntity item) {
+            if (item is SequenceRootContainer || item == GlobalSymbols) {
+                return true;
+            }
             if (item.Parent == null) return false;
             return IsAttachedToRoot(item.Parent);
         }
