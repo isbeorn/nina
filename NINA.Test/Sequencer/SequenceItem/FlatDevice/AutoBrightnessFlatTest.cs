@@ -7,13 +7,17 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Conditions;
 using NINA.Sequencer.SequenceItem.FlatDevice;
+using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Utility;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,8 +43,10 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             imageHistoryVM = new Mock<IImageHistoryVM>();
             filterWheelMediator = new Mock<IFilterWheelMediator>();
 
-            profileService.Setup(x => x.ActiveProfile.ImageFileSettings).Returns(new Mock<IImageFileSettings>().Object);
-            cameraMediator.Setup(x => x.GetInfo()).Returns(new CameraInfo());
+            var imageFileSettings = new Mock<IImageFileSettings>();
+            imageFileSettings.SetupGet(x => x.FilePath).Returns(TestContext.CurrentContext.TestDirectory);
+            profileService.Setup(x => x.ActiveProfile.ImageFileSettings).Returns(imageFileSettings.Object);
+            cameraMediator.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = true });
             flatDeviceMediator.Setup(x => x.GetInfo()).Returns(new FlatDeviceInfo());
 
             sut = new AutoBrightnessFlat(profileService.Object, cameraMediator.Object, imagingMediator.Object, imageSaveMediator.Object, imageHistoryVM.Object, filterWheelMediator.Object, flatDeviceMediator.Object);
@@ -223,6 +229,82 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
 
             sut.GetSetBrightnessItem().Brightness.Should().Be(1875);
             imageSaveMediator.Verify(x => x.Enqueue(imageData.Object, It.IsAny<Task<IRenderedImage>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        /// <summary>
+        /// Verifies deserialization rebuilds the immutable Auto Brightness Flat instruction set from a clean item, condition, and trigger state.
+        /// </summary>
+        [Test]
+        public void OnDeserializing_ClearsExistingImmutableChildrenConditionsAndTriggers() {
+            sut.Add(new LoopCondition());
+            sut.Add(Mock.Of<ISequenceTrigger>());
+
+            sut.OnDeserializing(new StreamingContext());
+
+            sut.Items.Should().BeEmpty();
+            sut.Conditions.Should().BeEmpty();
+            sut.Triggers.Should().BeEmpty();
+        }
+
+        /// <summary>
+        /// Verifies retry and error-behavior settings propagate to every child instruction in the Auto Brightness Flat set.
+        /// </summary>
+        [Test]
+        public void ErrorBehaviorAndAttempts_PropagateToImmutableChildrenAndIgnoreInvalidAttempts() {
+            sut.ErrorBehavior = InstructionErrorBehavior.AbortOnError;
+            sut.Attempts = 4;
+
+            sut.Items.Should().OnlyContain(x => x.ErrorBehavior == InstructionErrorBehavior.AbortOnError);
+            sut.Items.Should().OnlyContain(x => x.Attempts == 4);
+
+            sut.Attempts = 0;
+
+            sut.Attempts.Should().Be(4);
+            sut.Items.Should().OnlyContain(x => x.Attempts == 4);
+        }
+
+        /// <summary>
+        /// Verifies histogram percentage inputs are clamped to their supported zero-to-one range and the panel-closed setting is retained.
+        /// </summary>
+        [Test]
+        public void HistogramPercentagesAndKeepPanelClosed_ClampAndStoreUserSettings() {
+            sut.HistogramTargetPercentage = -0.5;
+            sut.HistogramTolerancePercentage = 1.5;
+            sut.KeepPanelClosed = true;
+
+            sut.HistogramTargetPercentage.Should().Be(0);
+            sut.HistogramTolerancePercentage.Should().Be(1);
+            sut.KeepPanelClosed.Should().BeTrue();
+
+            sut.HistogramTargetPercentage = 1.5;
+            sut.HistogramTolerancePercentage = -0.5;
+
+            sut.HistogramTargetPercentage.Should().Be(1);
+            sut.HistogramTolerancePercentage.Should().Be(0);
+        }
+
+        /// <summary>
+        /// Verifies validation wires flat-device brightness limits into expressions and reports an invalid min/max brightness range.
+        /// </summary>
+        [Test]
+        public void Validate_UpdatesBrightnessExpressionRangesAndReportsInvalidInputRange() {
+            flatDeviceMediator.Setup(x => x.GetInfo()).Returns(new FlatDeviceInfo {
+                Connected = true,
+                MinBrightness = 10,
+                MaxBrightness = 90,
+                SupportsOnOff = true,
+                SupportsOpenClose = true
+            });
+            sut.MinBrightness = 80;
+            sut.MaxBrightness = 20;
+
+            sut.Validate().Should().BeFalse();
+
+            sut.Issues.Should().Contain(x => x == NINA.Core.Locale.Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid"]);
+            sut.MinBrightnessExpression.Range.Should().Equal(10, 90, 0);
+            sut.MaxBrightnessExpression.Range.Should().Equal(10, 90, 0);
+            sut.MinBrightnessExpression.DefaultString.Should().Be("{10}");
+            sut.MaxBrightnessExpression.DefaultString.Should().Be("{90}");
         }
     }
 }

@@ -421,5 +421,95 @@ namespace NINA.Test.Sequencer.Logic {
             // Regardless of "cloning"
             sut2.DefaultString.Should().Be("{20}");
         }
+
+        /// <summary>
+        /// Verifies default display text for empty string expressions, pre-braced defaults, and invalid numeric defaults used by generated properties.
+        /// </summary>
+        [Test]
+        public void Expression_DefaultString_FormatsStringBracedAndInvalidNumericDefaults() {
+            var stringExpression = new Expression("", _context.Object) { Type = "String" };
+            stringExpression.DefaultString = "ignored";
+
+            stringExpression.DefaultString.Should().BeEmpty();
+
+            var bracedExpression = new Expression("", _context.Object);
+            bracedExpression.DefaultString = "{Auto}";
+
+            bracedExpression.DefaultString.Should().Be("{Auto}");
+
+            var invalidExpression = new Expression("notDefined", _context.Object);
+            invalidExpression.Default = 12;
+            invalidExpression.DefaultString = "Fallback";
+
+            invalidExpression.DefaultString.Should().Be("{Fallback}");
+        }
+
+        /// <summary>
+        /// Verifies expression diagnostics distinguish warning-only unresolved variables from hard errors when collecting validation issues.
+        /// </summary>
+        [Test]
+        public void Expression_ValidateExpressions_AddsOnlyHardErrorsToIssues() {
+            List<string> issues = new List<string>();
+            Expression warning = new Expression("", _context.Object) {
+                Error = Loc.Instance["LblNotEvaluated"] + ": pending"
+            };
+            Expression hardError = new Expression("", _context.Object) {
+                Error = Loc.Instance["LblUndefined"] + ": missing"
+            };
+
+            Expression.ValidateExpressions(issues, warning, hardError);
+
+            issues.Should().ContainSingle().Which.Should().Contain(Loc.Instance["LblUndefined"]);
+        }
+
+        /// <summary>
+        /// Verifies expression refresh helpers clear cached parameters and force a fresh broker-backed evaluation.
+        /// </summary>
+        [Test]
+        public void Expression_RefreshRemoveParameterAndReferenceRemoved_ReevaluateBrokerValues() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            var parent = new SequentialContainer();
+            root.Add(parent);
+            _context.SetupGet(c => c.Parent).Returns(parent);
+            object brokerValue = 2.0;
+            _symbolBroker.Setup(b => b.TryGetValue("brokerValue", out brokerValue)).Returns(true);
+            Expression sut = CreateExpression("brokerValue + 1");
+            sut.Definition = "brokerValue + 1";
+
+            sut.Evaluate(ignoreRoot: true);
+            sut.Value.Should().Be(3);
+
+            sut.RemoveParameter("brokerValue");
+            sut.Refresh();
+
+            sut.Parameters.Should().ContainKey("brokerValue");
+            sut.Value.Should().Be(3);
+
+            var removedSymbol = new NINA.Sequencer.SequenceItem.Expressions.Variable {
+                Identifier = "brokerValue",
+                Expr = new Expression("1", parent)
+            };
+            sut.ReferenceRemoved(removedSymbol);
+
+            sut.Resolved.Should().ContainKey("brokerValue");
+            sut.Resolved["brokerValue"].Should().BeNull();
+        }
+
+        /// <summary>
+        /// Verifies expression stringification reports undefined, error, and evaluated states with enough context for diagnostics.
+        /// </summary>
+        [Test]
+        public void Expression_ToString_ReportsUndefinedErrorAndEvaluatedStates() {
+            Expression undefined = new Expression("", _context.Object);
+            Expression errored = new Expression("missing + 1", _context.Object) {
+                Error = "boom"
+            };
+            Expression evaluated = CreateExpression("1 + 2");
+            evaluated.Evaluate(ignoreRoot: true);
+
+            undefined.ToString().Should().Contain("Undefined").And.Contain("TestContext");
+            errored.ToString().Should().Contain("boom").And.Contain("missing + 1");
+            evaluated.ToString().Should().Contain("Expression: 1 + 2").And.Contain("Value: 3");
+        }
     }
 }

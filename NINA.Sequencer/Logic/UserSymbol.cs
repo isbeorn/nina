@@ -256,7 +256,6 @@ namespace NINA.Sequencer.Logic {
             TextBox tb = (TextBox)sender;
             BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
             Expression exp = be.ResolvedSource as Expression;
-            ISymbolBroker broker = exp.SymbolBroker;
 
             if (exp == null) {
                 UserSymbol s = be.ResolvedSource as UserSymbol;
@@ -267,6 +266,7 @@ namespace NINA.Sequencer.Logic {
                     return;
                 }
             }
+            ISymbolBroker broker = exp.SymbolBroker;
 
             if (exp.Definition?.Length == 0 && exp.Range != null) {
                 //tb.ToolTip = string.Format(Loc.Instance["LblValueBetween"], exp.Range[0], exp.Range[1]);

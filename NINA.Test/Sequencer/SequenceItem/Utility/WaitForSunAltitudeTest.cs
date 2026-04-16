@@ -14,9 +14,13 @@
 
 using FluentAssertions;
 using Moq;
+using NINA.Core.Enum;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Utility;
 using NUnit.Framework;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
@@ -35,6 +39,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         public void WaitForMoonAltitude_Clone_GoodClone() {
             var sut = new WaitForMoonAltitude(profileServiceMock.Object);
             sut.Icon = new System.Windows.Media.GeometryGroup();
+            sut.Data.Offset = 12;
+            sut.Data.Comparator = ComparisonOperatorEnum.LESS_THAN;
             var item2 = (WaitForMoonAltitude)sut.Clone();
 
             item2.Should().NotBeSameAs(sut);
@@ -43,6 +49,49 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             item2.Icon.Should().BeSameAs(sut.Icon);
             item2.Data.TargetAltitude.Should().Be(sut.Data.TargetAltitude);
             item2.Data.Comparator.Should().Be(sut.Data.Comparator);
+            item2.Data.Offset.Should().Be(12);
+        }
+
+        /// <summary>
+        /// Verifies that WaitForMoonAltitude can complete immediately when the evaluated threshold means no wait is required.
+        /// </summary>
+        [Test]
+        public async Task WaitForMoonAltitude_Execute_EndsImmediatelyWhenThresholdCannotRequireWaiting() {
+            WaitForMoonAltitude sut = new WaitForMoonAltitude(profileServiceMock.Object);
+            sut.Data.Offset = 90;
+            sut.Data.Comparator = ComparisonOperatorEnum.GREATER_THAN;
+
+            await sut.Execute(default, CancellationToken.None);
+
+            sut.Data.ExpectedDateTime.Should().BeCloseTo(System.DateTime.Now, System.TimeSpan.FromSeconds(2));
+            sut.Data.ExpectedTime.Should().NotBe("--");
+        }
+
+        /// <summary>
+        /// Verifies that WaitForMoonAltitude rejects offset expressions outside the valid altitude range.
+        /// </summary>
+        [Test]
+        public void WaitForMoonAltitude_Validate_ReportsInvalidOffsetExpression() {
+            WaitForMoonAltitude sut = new WaitForMoonAltitude(profileServiceMock.Object);
+            sut.OffsetExpression.Definition = "91";
+
+            sut.Validate().Should().BeFalse();
+
+            sut.Issues.Should().NotBeEmpty();
+        }
+
+        /// <summary>
+        /// Verifies that WaitForMoonAltitude restores the expression-backed offset from serialized data when older data is deserialized.
+        /// </summary>
+        [Test]
+        public void WaitForMoonAltitude_OnDeserialized_BackfillsOffsetExpressionFromData() {
+            WaitForMoonAltitude sut = new WaitForMoonAltitude(profileServiceMock.Object);
+            sut.Data.Offset = 12;
+            sut.OffsetExpression = new Expression(string.Empty, sut);
+
+            sut.OnDeserialized(default);
+
+            sut.OffsetExpression.Definition.Should().Be("12");
         }
     }
 }
