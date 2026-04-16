@@ -13,8 +13,12 @@ using FluentAssertions;
 using NINA.Astrometry;
 using NINA.Astrometry.Body;
 using NINA.Astrometry.RiseAndSet;
+using NINA.Core.Utility;
 using NUnit.Framework;
 using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
 
@@ -808,6 +812,41 @@ namespace NINA.Test.AstrometryTest {
         }
 
         /// <summary>
+        /// Verifies the Earth-rotation database lookup used by Delta-T selects the nearest UT1-UTC
+        /// sample for the requested UTC date, matching the IERS finals data model of daily samples.
+        /// Reference: https://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html
+        /// </summary>
+        [Test]
+        public void DeltaUT_EarthRotationTable_UsesNearestUt1MinusUtcSample() {
+            DateTime target = new DateTime(2030, 1, 3, 18, 0, 0, DateTimeKind.Utc);
+            using TempEarthRotationDatabase database = CreateEarthRotationDatabase(
+                (new DateTime(2030, 1, 1, 0, 0, 0, DateTimeKind.Utc), -0.25),
+                (new DateTime(2030, 1, 4, 0, 0, 0, DateTimeKind.Utc), 0.125));
+            ClearDeltaUTCaches();
+
+            double deltaUT = AstroUtil.DeltaUT(target, database.Interaction);
+
+            deltaUT.Should().BeApproximately(0.125, 1e-12);
+        }
+
+        /// <summary>
+        /// Verifies the Delta-T formula: Delta-T equals 32.184 seconds plus TAI-UTC minus UT1-UTC.
+        /// The controlled UT1-UTC row guards the sign of the Earth-rotation correction.
+        /// References: https://www.cnmoc.usff.navy.mil/Our-Commands/United-States-Naval-Observatory/Precise-Time-Department/Global-Positioning-System/USNO-GPS-Time-Transfer/Leap-Seconds/
+        /// and https://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html
+        /// </summary>
+        [Test]
+        public void DeltaT_ControlledUt1MinusUtc_SubtractsEarthRotationCorrection() {
+            DateTime date = new DateTime(2024, 4, 8, 18, 0, 0, DateTimeKind.Utc);
+            using TempEarthRotationDatabase database = CreateEarthRotationDatabase((date, 0.123456));
+            ClearDeltaUTCaches();
+
+            double deltaT = AstroUtil.DeltaT(date, database.Interaction);
+
+            deltaT.Should().BeApproximately(32.184 + 37.0 - 0.123456, 1e-6);
+        }
+
+        /// <summary>
         /// Verifies that fractional seconds are preserved when SOFA receives UTC parts, because
         /// sub-second exposure timing is relevant for precise astrometry and satellite work.
         /// </summary>
@@ -849,6 +888,25 @@ namespace NINA.Test.AstrometryTest {
             double siderealTime = AstroUtil.GetLocalSiderealTime(j2000, 0.0);
 
             siderealTime.Should().BeApproximately(18.697374558, 0.01);
+        }
+
+        /// <summary>
+        /// Verifies local sidereal time consumes UT1-UTC from the Earth-rotation table: one second
+        /// of UT1 changes sidereal time by one sidereal second, about 1.0027379 solar seconds.
+        /// Reference: https://aa.usno.navy.mil/faq/GAST
+        /// </summary>
+        [Test]
+        public void GetLocalSiderealTime_DifferentUt1MinusUtcRows_ShiftsBySiderealSecond() {
+            DateTime date = new DateTime(2024, 4, 8, 18, 0, 0, DateTimeKind.Utc);
+            using TempEarthRotationDatabase zeroUt1Database = CreateEarthRotationDatabase((date, 0.0));
+            using TempEarthRotationDatabase oneSecondUt1Database = CreateEarthRotationDatabase((date, 1.0));
+
+            ClearDeltaUTCaches();
+            double zeroUt1SiderealTime = AstroUtil.GetLocalSiderealTime(date, 0.0, zeroUt1Database.Interaction);
+            ClearDeltaUTCaches();
+            double oneSecondUt1SiderealTime = AstroUtil.GetLocalSiderealTime(date, 0.0, oneSecondUt1Database.Interaction);
+
+            (oneSecondUt1SiderealTime - zeroUt1SiderealTime).Should().BeApproximately(1.0027379 / 3600.0, 1e-7);
         }
 
         /// <summary>
@@ -1317,6 +1375,56 @@ namespace NINA.Test.AstrometryTest {
             actual.Should().NotBeNull();
             TimeSpan difference = (actual.Value - expected).Duration();
             difference.Should().BeLessThanOrEqualTo(tolerance);
+        }
+
+        private static TempEarthRotationDatabase CreateEarthRotationDatabase(params (DateTime Date, double Ut1MinusUtc)[] rows) {
+            string databasePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"earth-rotation-{Guid.NewGuid():N}.sqlite");
+            string connectionString = $"Data Source={databasePath};";
+            DatabaseInteraction databaseInteraction = new DatabaseInteraction(connectionString);
+
+            using (var context = databaseInteraction.GetContext()) {
+                foreach ((DateTime date, double ut1MinusUtc) in rows) {
+                    long unixTimestamp = CoreUtil.DateTimeToUnixTimeStamp(date);
+                    double modifiedJulianDate = AstroUtil.GetJulianDate(date) - 2400000.5;
+                    context.Database.ExecuteSqlCommand(
+                        "INSERT OR REPLACE INTO `earthrotationparameters` (date, modifiedjuliandate, x, y, ut1_utc, lod, dx, dy) VALUES (@p0, @p1, 0, 0, @p2, 1, 0, 0)",
+                        unixTimestamp,
+                        modifiedJulianDate,
+                        ut1MinusUtc);
+                }
+            }
+
+            return new TempEarthRotationDatabase(databasePath, databaseInteraction);
+        }
+
+        private static void ClearDeltaUTCaches() {
+            typeof(AstroUtil).GetField("DeltaUTToday", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
+            typeof(AstroUtil).GetField("DeltaUTYesterday", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
+            typeof(AstroUtil).GetField("DeltaUTTomorrow", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
+            typeof(AstroUtil).GetField("DeltaUTReference", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, default(DateTime));
+
+            FieldInfo cacheField = typeof(AstroUtil).GetField("DeltaUTCache", BindingFlags.NonPublic | BindingFlags.Static);
+            cacheField?.SetValue(null, new ConcurrentDictionary<DateTime, double>());
+        }
+
+        private sealed class TempEarthRotationDatabase : IDisposable {
+            public TempEarthRotationDatabase(string path, DatabaseInteraction interaction) {
+                Path = path;
+                Interaction = interaction;
+            }
+
+            public string Path { get; }
+            public DatabaseInteraction Interaction { get; }
+
+            public void Dispose() {
+                System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                if (File.Exists(Path)) {
+                    File.Delete(Path);
+                }
+            }
         }
     }
 }
