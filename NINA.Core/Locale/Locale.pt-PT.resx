@@ -7872,4 +7872,7 @@ If exposure count is not important to you, enable this option to avoid having to
   <data name="LblSequencerExpressionValues" xml:space="preserve">
     <value>Sequencer expressions values</value>
   </data>
+  <data name="LblEccentricity" xml:space="preserve">
+    <value>Eccentricity</value>
+  </data>
 </root>

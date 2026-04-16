@@ -7872,4 +7872,7 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
   <data name="LblSequencerExpressionValues" xml:space="preserve">
     <value>Valores de expresiones del secuenciador</value>
   </data>
+  <data name="LblEccentricity" xml:space="preserve">
+    <value>Excentricidad</value>
+  </data>
 </root>
