@@ -49,5 +49,20 @@ namespace NINA.Test.AstrometryTest {
 
             legacy.Should().Be(current);
         }
+
+        /// <summary>
+        /// Verifies polar-day behavior where neither astronomical-night rise nor normal sunrise/set
+        /// events exist; the calculator should return zero duration instead of manufacturing a
+        /// twilight interval from missing horizon crossings.
+        /// Reference: https://www.sunrise-and-sunset.com/en/sun/norway/tromso/2024
+        /// </summary>
+        [Test]
+        public void TwilightCalculator_TromsoMidnightSun_ReturnsZeroDurationForMissingCrossings() {
+            TwilightCalculator calculator = new TwilightCalculator();
+
+            TimeSpan duration = calculator.GetTwilightDuration(new DateTime(2024, 6, 21, 12, 0, 0, DateTimeKind.Utc), 69.6492, 18.9553, 10.0);
+
+            duration.Should().Be(TimeSpan.Zero);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
@@ -24,6 +24,85 @@ namespace NINA.Test.AstrometryTest {
 
     [TestFixture]
     public class InputCoordinatesTest {
+
+        /// <summary>
+        /// Verifies interactive alt-az entry for a target below the horizon, including the special
+        /// negative-zero degree case used for small negative altitudes such as -0 degrees 30 minutes.
+        /// The expected value is the direct sexagesimal conversion from degrees, arcminutes, and arcseconds.
+        /// </summary>
+        [Test]
+        public void InputTopocentricCoordinates_SexagesimalNegativeAltitude_PreservesBelowHorizonAngle() {
+            InputTopocentricCoordinates coordinates = new InputTopocentricCoordinates(Angle.ByDegree(51.4769), Angle.ByDegree(0.0), 46.0);
+
+            coordinates.AzDegrees = 123;
+            coordinates.AzMinutes = 45;
+            coordinates.AzSeconds = 30.0;
+            coordinates.AltMinutes = 30;
+            coordinates.AltSeconds = 15.0;
+            coordinates.NegativeAlt = true;
+            coordinates.AltDegrees = 0;
+
+            coordinates.Coordinates.Azimuth.Degree.Should().BeApproximately(123.75833333333334, 1e-12);
+            coordinates.Coordinates.Altitude.Degree.Should().BeApproximately(-0.5041666666666667, 1e-12);
+            coordinates.AltDegrees.Should().Be(0);
+            coordinates.AltMinutes.Should().Be(30);
+            coordinates.AltSeconds.Should().BeApproximately(15.0, 1e-12);
+            coordinates.NegativeAlt.Should().BeTrue();
+        }
+
+        /// <summary>
+        /// Verifies that changing the observing site preserves the entered horizontal target while
+        /// updating latitude, longitude, and elevation, which matters when the same local alt-az
+        /// pointing is evaluated for a different observing location.
+        /// </summary>
+        [Test]
+        public void InputTopocentricCoordinates_SetPosition_PreservesAltAzAndUpdatesSiteElevation() {
+            InputTopocentricCoordinates coordinates = new InputTopocentricCoordinates(
+                new TopocentricCoordinates(
+                    Angle.ByDegree(210.0),
+                    Angle.ByDegree(42.5),
+                    Angle.ByDegree(35.0),
+                    Angle.ByDegree(-105.0),
+                    1500.0));
+
+            coordinates.SetPosition(Angle.ByDegree(51.4769), Angle.ByDegree(0.0), 46.0);
+            InputTopocentricCoordinates clone = coordinates.Clone();
+
+            coordinates.Coordinates.Azimuth.Degree.Should().BeApproximately(210.0, 1e-12);
+            coordinates.Coordinates.Altitude.Degree.Should().BeApproximately(42.5, 1e-12);
+            coordinates.Coordinates.Latitude.Degree.Should().BeApproximately(51.4769, 1e-12);
+            coordinates.Coordinates.Longitude.Degree.Should().BeApproximately(0.0, 1e-12);
+            coordinates.Coordinates.Elevation.Should().Be(46.0);
+            clone.Should().NotBeSameAs(coordinates);
+            clone.Coordinates.Should().NotBeSameAs(coordinates.Coordinates);
+            clone.Coordinates.Elevation.Should().Be(46.0);
+        }
+
+        /// <summary>
+        /// Verifies invalid negative azimuth components are ignored while valid altitude edits below
+        /// the horizon retain their sign, protecting horizontal coordinate entry from impossible
+        /// negative azimuth fields without masking legitimate negative altitude fields.
+        /// </summary>
+        [Test]
+        public void InputTopocentricCoordinates_InvalidNegativeAzimuthParts_AreIgnored() {
+            InputTopocentricCoordinates coordinates = new InputTopocentricCoordinates(
+                new TopocentricCoordinates(
+                    Angle.ByDegree(15.25),
+                    Angle.ByDegree(-12.5),
+                    Angle.ByDegree(51.4769),
+                    Angle.ByDegree(0.0),
+                    46.0));
+
+            coordinates.AzDegrees = -1;
+            coordinates.AzMinutes = -1;
+            coordinates.AzSeconds = -1.0;
+            coordinates.AltMinutes = 45;
+            coordinates.AltSeconds = 0.0;
+
+            coordinates.Coordinates.Azimuth.Degree.Should().BeApproximately(15.25, 1e-12);
+            coordinates.Coordinates.Altitude.Degree.Should().BeApproximately(-12.75, 1e-12);
+            coordinates.NegativeAlt.Should().BeTrue();
+        }
 
         [Test]
         [TestCase(1, 10, 20, 1, 10, 20, false)]

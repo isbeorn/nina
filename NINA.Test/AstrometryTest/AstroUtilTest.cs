@@ -837,6 +837,21 @@ namespace NINA.Test.AstrometryTest {
         }
 
         /// <summary>
+        /// Verifies Greenwich sidereal time at the J2000 epoch against the standard 18.697374558 hour
+        /// reference for Greenwich mean sidereal time, allowing a small tolerance because this code asks
+        /// NOVAS for apparent sidereal time and therefore includes nutation/equation-of-equinoxes terms.
+        /// Reference: https://aa.usno.navy.mil/faq/GAST
+        /// </summary>
+        [Test]
+        public void GetLocalSiderealTime_J2000Greenwich_ReturnsPublishedSiderealEpochValue() {
+            DateTime j2000 = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+
+            double siderealTime = AstroUtil.GetLocalSiderealTime(j2000, 0.0);
+
+            siderealTime.Should().BeApproximately(18.697374558, 0.01);
+        }
+
+        /// <summary>
         /// Verifies small conversion helpers used by sidereal and formatting calculations,
         /// including the zero-divisor modulus branch that represents an undefined wrap interval.
         /// </summary>
@@ -1042,6 +1057,25 @@ namespace NINA.Test.AstrometryTest {
 
             noonAltitude.Should().BeGreaterThan(88.0);
             midnightAltitude.Should().BeLessThan(-88.0);
+        }
+
+        /// <summary>
+        /// Verifies the apparent solar declination near the equinoxes and solstices, where the Sun
+        /// should be near 0 degrees at equinox and near the obliquity of the ecliptic at solstice.
+        /// Reference: https://gml.noaa.gov/grad/solcalc/solareqns.PDF
+        /// </summary>
+        [Test]
+        [TestCase(2024, 3, 20, 3, 6, 0.0)]
+        [TestCase(2024, 6, 20, 20, 51, 23.44)]
+        [TestCase(2024, 9, 22, 12, 44, 0.0)]
+        [TestCase(2024, 12, 21, 9, 20, -23.44)]
+        public void GetSunPosition_EquinoxesAndSolstices_ReturnsExpectedSolarDeclination(int year, int month, int day, int hour, int minute, double expectedDeclination) {
+            DateTime date = new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
+            ObserverInfo observer = new ObserverInfo { Latitude = 0.0, Longitude = 0.0, Elevation = 0.0 };
+
+            NOVAS.SkyPosition sun = AstroUtil.GetSunPosition(date, observer);
+
+            sun.Dec.Should().BeApproximately(expectedDeclination, 0.35);
         }
 
         /// <summary>
