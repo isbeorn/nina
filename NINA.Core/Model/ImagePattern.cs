@@ -162,6 +162,7 @@ namespace NINA.Core.Model {
         public bool Add(ImagePattern pattern) {
             if(!patterns.ContainsKey(pattern.Key)) {
                 patterns.Add(pattern.Key, pattern);
+                return true;
             }
             return false;
         }
