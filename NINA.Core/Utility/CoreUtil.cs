@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -215,7 +216,7 @@ namespace NINA.Core.Utility {
             long max = (long)Math.Pow(scale, orders.Length - 1);
             foreach (string order in orders) {
                 if (bytes > max) {
-                    return string.Format("{0:D2.##} {1}", decimal.Divide(bytes, max), order);
+                    return string.Format(CultureInfo.InvariantCulture, "{0:0.##} {1}", decimal.Divide(bytes, max), order);
                 }
 
                 max /= scale;
