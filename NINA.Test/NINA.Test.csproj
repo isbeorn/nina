@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows</TargetFramework>
@@ -11,6 +11,7 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <PlatformTarget>x64</PlatformTarget>
+    <RunSettingsFilePath>$(MSBuildProjectDirectory)\CodeCoverage.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>
