@@ -137,30 +137,34 @@ namespace NINA.Equipment.Equipment.MyRotator {
         public async Task<bool> Move(float position, CancellationToken ct) {
             IsMoving = true;
 
-            TargetPosition = Position + position;
-            if (TargetPosition - Position > 180) {
-                TargetPosition = TargetPosition - 360;
-            }
+            try {
+                TargetPosition = Position + position;
+                if (TargetPosition - Position > 180) {
+                    TargetPosition = TargetPosition - 360;
+                }
 
-            if (TargetPosition - Position < -180) {
-                TargetPosition = TargetPosition + 360;
-            }
+                if (TargetPosition - Position < -180) {
+                    TargetPosition = TargetPosition + 360;
+                }
 
-            // Reference: https://devblogs.microsoft.com/premier-developer/the-danger-of-taskcompletionsourcet-class/
-            var window = WindowService.ShowDialog(this, Loc.Instance["LblRotationRequired"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
-            var cancelTaskSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-            using (ct.Register(() => cancelTaskSource.SetCanceled())) {
-                await Task.WhenAny(cancelTaskSource.Task, window.Task);
-            }
+                // Reference: https://devblogs.microsoft.com/premier-developer/the-danger-of-taskcompletionsourcet-class/
+                var window = WindowService.ShowDialog(this, Loc.Instance["LblRotationRequired"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+                var cancelTaskSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                using (ct.Register(() => cancelTaskSource.TrySetCanceled(ct))) {
+                    await Task.WhenAny(cancelTaskSource.Task, window.Task);
+                }
 
-            if (ct.IsCancellationRequested) {
-                _ = WindowService.Close();
-                ct.ThrowIfCancellationRequested();
-            }
-            Position = AstroUtil.EuclidianModulus(TargetPosition, 360);
+                if (ct.IsCancellationRequested) {
+                    await WindowService.Close();
+                    ct.ThrowIfCancellationRequested();
+                }
 
-            IsMoving = false;
-            return true;
+                Position = AstroUtil.EuclidianModulus(TargetPosition, 360);
+                TargetPosition = Position;
+                return true;
+            } finally {
+                IsMoving = false;
+            }
         }
 
         public async Task<bool> MoveAbsolute(float position, CancellationToken ct) {
