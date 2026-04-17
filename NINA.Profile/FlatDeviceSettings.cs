@@ -161,7 +161,7 @@ namespace NINA.Profile {
         }
 
         public void AddTrainedFlatExposureSetting(short? filterPosition, BinningMode binning, int gain, int offset, int brightness, double exposureTime) {
-            var existingSetting = GetTrainedFlatExposureSetting(filterPosition, binning, gain, offset);           
+            var existingSetting = GetExactTrainedFlatExposureSetting(filterPosition, binning, gain, offset);
 
             if (existingSetting == null) {
                 var filter = filterPosition ?? -1;
@@ -171,6 +171,18 @@ namespace NINA.Profile {
                 existingSetting.Brightness = brightness;
                 existingSetting.Time = exposureTime;
             }
+        }
+
+        private TrainedFlatExposureSetting GetExactTrainedFlatExposureSetting(short? filterPosition, BinningMode binning, int gain, int offset) {
+            var filter = filterPosition ?? -1;
+            if (binning == null) { binning = new BinningMode(1, 1); }
+
+            return TrainedFlatExposureSettings.FirstOrDefault(
+                x => x.Filter == filter
+                && x.Binning.X == binning.X
+                && x.Binning.Y == binning.Y
+                && x.Gain == gain
+                && x.Offset == offset);
         }
 
         public bool RemoveFlatExposureSetting(TrainedFlatExposureSetting setting) {
