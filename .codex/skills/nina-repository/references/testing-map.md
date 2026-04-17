@@ -46,7 +46,7 @@ dotnet test NINA.Test\NINA.Test.csproj --configuration Debug --no-build -p:Platf
 | Core validation and serial helpers | `NINA.Test.Utility.ValidationRules`, `NINA.Test.Utility.SerialCommunication` | `NINA.Test.Utility` and consumers of the validated setting/protocol |
 | CLI option parsing | `NINA.Test.Utility.CommandLineOptionsTest` | app startup/build checks |
 | Localization-facing converters/formatting | `NINA.Test.Converters` | affected VM/view tests and `NINA.Test.SerialCommunication` when response text is involved |
-| Profile plugin settings | `NINA.Test.ProfileTest.PluginSettingsTest`, `NINA.Test.ProfileTest.PluginOptionsAccessorTest` | plugin tests and changed consumers of profile settings |
+| Profile persistence/settings/service | `NINA.Test.ProfileTest` or specific fixtures such as `PluginSettingsTest`, `PluginOptionsAccessorTest`, `ProfilePersistenceTest`, `ProfileServiceBehaviorTest` | plugin tests, profile-switch sequencer tests, and changed consumers of profile settings |
 | Image data model/metadata/patterns | `NINA.Test.ImageDataTest`, `NINA.Test.ImageMetaDataTest`, `NINA.Test.FilePatternTest`, `NINA.Test.Image.ExposureDataFactoryTest` | image history, autofocus, plate solving, sequencer imaging items |
 | FITS/XISF/file format I/O | `NINA.Test.FITSTest`, `NINA.Test.XISFTest` | `NINA.Test.Image`, runtime native asset/output checks |
 | Bayer/debayer/image analysis | `NINA.Test.Image.ImageAnalysis.BayerFilter16bppTests` | autofocus and star-detection consumers; note this fixture is ignored by default |
