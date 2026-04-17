@@ -211,7 +211,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents {
 
             set {
                 decDistanceGuide = value;
-                DecDistanceGuideDisplay = DECDistanceRaw;
+                DecDistanceGuideDisplay = DECDistanceGuide;
             }
         }
 

@@ -42,7 +42,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
             return obj is LockPosition pos && pos.X == X && pos.Y == Y;
         }
 
-        public override int GetHashCode() => (X, Y, EventTime).GetHashCode();
+        public override int GetHashCode() => (X, Y).GetHashCode();
 
         public override string ToString() {
             return $"x={X} y={Y}";
