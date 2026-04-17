@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -32,6 +32,7 @@ using System.Runtime.ExceptionServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -163,7 +164,7 @@ namespace NINA.PlateSolving.Solvers {
 
         public void Execute(string pathToFITS, double imageScale = 2.00, bool isUnknownScale = true) {
             var script = new StringBuilder();
-            script.AppendLine($"ImageLink.scale = {imageScale};");
+            script.AppendLine($"ImageLink.scale = {imageScale.ToString(CultureInfo.InvariantCulture)};");
             script.AppendLine($"ImageLink.unknownScale = {(isUnknownScale ? 1 : 0)};");
 
             script.AppendLine($"ImageLink.pathToFITS = '{pathToFITS?.Trim()}';");
@@ -203,7 +204,7 @@ namespace NINA.PlateSolving.Solvers {
                 return result;
             }
             set {
-                this.SendToTheSkyX($"ImageLink.scale = {value};", out var errorMessage);
+                this.SendToTheSkyX($"ImageLink.scale = {value.ToString(CultureInfo.InvariantCulture)};", out var errorMessage);
             }
         }
 
@@ -382,6 +383,7 @@ namespace NINA.PlateSolving.Solvers {
 
             public Size ImageSize { get; set; }
 
+            [JsonPropertyName("imageIsMirrored")]
             public bool IsImageMirrored { get; set; }
 
             public string ImageFilePath { get; set; }
