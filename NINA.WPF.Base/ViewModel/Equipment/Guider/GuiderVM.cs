@@ -519,7 +519,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
         }
 
         public async Task<bool> SetShiftRate(SiderealShiftTrackingRate shiftTrackingRate, CancellationToken ct) {
-            if (!Guider.Connected) {
+            if (Guider?.Connected != true) {
                 Logger.Error("Attempted to set shift rate when guider is not connected");
                 return false;
             }
@@ -532,7 +532,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
         }
 
         public async Task<bool> StopShifting(CancellationToken ct) {
-            if (!Guider.Connected) {
+            if (Guider?.Connected != true) {
                 Logger.Error("Attempted to disable shift when guider is not connected");
                 return false;
             }
@@ -546,6 +546,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
         }
 
         public LockPosition GetLockPosition() {
+            if (Guider?.Connected != true) {
+                Logger.Error("Attempted to get lock position when guider is not connected");
+                return null;
+            }
 
             return Guider.GetLockPosition().Result;
         }
