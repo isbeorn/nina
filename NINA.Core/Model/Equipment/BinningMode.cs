@@ -85,8 +85,10 @@ namespace NINA.Core.Model.Equipment {
             mode = null;
             if (string.IsNullOrEmpty(s)) return false;
             try {
-                if (!short.TryParse(s.Split(SEPARATOR)[0], out var x)) return false;
-                if (!short.TryParse(s.Split(SEPARATOR)[1], out var y)) return false;
+                string[] parts = s.Split(SEPARATOR);
+                if (parts.Length != 2) return false;
+                if (!short.TryParse(parts[0], out short x)) return false;
+                if (!short.TryParse(parts[1], out short y)) return false;
                 mode = new BinningMode(x, y);
                 return true;
             } catch (Exception ex) {
