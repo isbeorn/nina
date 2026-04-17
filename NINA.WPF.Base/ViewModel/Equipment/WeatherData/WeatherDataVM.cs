@@ -146,6 +146,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                             profileService.ActiveProfile.WeatherDataSettings.Id = WeatherData.Id;
                             profileService.ActiveProfile.WeatherDataSettings.LastDeviceName = WeatherData.DisplayName;
 
+                            BroadcastWeatherDataInfo();
+
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Weather Device. Id: {weatherdev.Id} Name: {weatherdev.Name} DisplayName: {weatherdev.DisplayName} Driver Version: {weatherdev.DriverVersion}");
 

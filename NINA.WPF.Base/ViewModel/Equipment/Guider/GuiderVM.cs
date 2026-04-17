@@ -244,12 +244,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                         RMSError = new RMSError(),
                         PixelScale = Guider.PixelScale
                     });
-                    BroadcastGuiderInfo();
                     Notification.ShowSuccess(Loc.Instance["LblGuiderConnected"]);
                     RaisePropertyChanged(nameof(Guider));
                     profileService.ActiveProfile.GuiderSettings.GuiderName = Guider.Id;
                     RaisePropertyChanged(nameof(MainCameraPixelScale));
                     RaisePropertyChanged(nameof(MainCameraDitherPixels));
+
+                    BroadcastGuiderInfo();
 
                     await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 }
@@ -545,6 +546,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
         }
 
         public LockPosition GetLockPosition() {
+
             return Guider.GetLockPosition().Result;
         }
 

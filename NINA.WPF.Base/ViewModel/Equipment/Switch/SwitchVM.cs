@@ -250,8 +250,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
                             RaisePropertyChanged(nameof(WritableSwitches));
                             token.ThrowIfCancellationRequested();
-                            BroadcastSwitchInfo();
-                            token.ThrowIfCancellationRequested();
 
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
                             _ = updateTimer.Run();
@@ -259,6 +257,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                             profileService.ActiveProfile.SwitchSettings.Id = switchHub.Id;
                             profileService.ActiveProfile.SwitchSettings.LastDeviceName = switchHub.DisplayName;
                             Notification.ShowSuccess(Loc.Instance["LblSwitchConnected"]);
+
+                            BroadcastSwitchInfo();
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Switch. Id: {switchHub.Id} Name: {switchHub.Name} DisplayName: {switchHub.DisplayName} Driver Version: {switchHub.DriverVersion}");
