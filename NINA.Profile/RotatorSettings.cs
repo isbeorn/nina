@@ -74,7 +74,6 @@ namespace NINA.Profile {
                 if (reverse2 != value) {
                     reverse2 = value;
                     RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(Reverse2));
                 }
             }
         }

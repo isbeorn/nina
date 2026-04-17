@@ -399,6 +399,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                             profileService.ActiveProfile.RotatorSettings.LastDeviceName = Rotator.DisplayName;
                             profileService.ActiveProfile.RotatorSettings.Reverse2 = this.Rotator.Reverse;
 
+                            BroadcastRotatorInfo();
+
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Rotator. Id: {Rotator.Id} Name: {Rotator.Name} DisplayName: {Rotator.DisplayName} Driver Version: {Rotator.DriverVersion}");
 

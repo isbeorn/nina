@@ -34,6 +34,8 @@ dotnet build NINA.Test\NINA.Test.csproj --configuration Debug --no-restore
 dotnet test NINA.Test\NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64
 ```
 
+Use the solution-root `.runsettings` file for Visual Studio coverage collection. Visual Studio only auto-detects runsettings files with this exact name at the solution root, so keep coverage exclusions there. It excludes third-party/vendor modules such as `Trinet.Core.IO.Ntfs`, `Accord.Imaging`, `OxyPlot`, `ASCOM.Common`, `nikoncswrapper`, and `ASCOM.Alpaca` so reports stay focused on application code. If Visual Studio has an older user-selected runsettings file, clear it or select this file under `Test > Configure Run Settings`.
+
 ## Routing Table
 
 | Changed Surface | Primary Filters | Broaden With |
@@ -42,13 +44,14 @@ dotnet test NINA.Test\NINA.Test.csproj --configuration Debug --no-build -p:Platf
 | SOFA/NOVAS-backed astronomy calculations | `NINA.Test.AstrometryTest.AstrometryTest`, `NINA.Test.AstrometryTest.WorldCoordinateSystemTest` | root coordinate/nighttime tests and affected sequencer time/altitude providers |
 | Custom horizon parsing/visibility | `NINA.Test.AstrometryTest.CustomHorizonTest`, `NINA.Test.AstrometryTest.InputCoordinatesTest` | `NINA.Test.Sequencer.Conditions.AboveHorizonConditionTest`, wait-for-altitude sequence items |
 | Database/catalog access | `NINA.Test.Database.DatabaseInteractionTest` | astrometry/catalog callers and migration/runtime SQL checks |
-| Core utilities/models | `NINA.Test.Utility`, `NINA.Test.RMSTest`, `NINA.Test.GuideStepsHistoryTest` | nearest subsystem tests that consume the changed type |
+| Core utilities/models | `NINA.Test.Utility`, `NINA.Test.Model`, `NINA.Test.RMSTest`, `NINA.Test.GuideStepsHistoryTest` | nearest subsystem tests that consume the changed type |
+| Core validation and serial helpers | `NINA.Test.Utility.ValidationRules`, `NINA.Test.Utility.SerialCommunication` | `NINA.Test.Utility` and consumers of the validated setting/protocol |
 | CLI option parsing | `NINA.Test.Utility.CommandLineOptionsTest` | app startup/build checks |
 | Localization-facing converters/formatting | `NINA.Test.Converters` | affected VM/view tests and `NINA.Test.SerialCommunication` when response text is involved |
-| Profile plugin settings | `NINA.Test.ProfileTest.PluginSettingsTest`, `NINA.Test.ProfileTest.PluginOptionsAccessorTest` | plugin tests and changed consumers of profile settings |
+| Profile persistence/settings/service | `NINA.Test.ProfileTest` or specific fixtures such as `PluginSettingsTest`, `PluginOptionsAccessorTest`, `ProfilePersistenceTest`, `ProfileServiceBehaviorTest` | plugin tests, profile-switch sequencer tests, and changed consumers of profile settings |
 | Image data model/metadata/patterns | `NINA.Test.ImageDataTest`, `NINA.Test.ImageMetaDataTest`, `NINA.Test.FilePatternTest`, `NINA.Test.Image.ExposureDataFactoryTest` | image history, autofocus, plate solving, sequencer imaging items |
-| FITS/XISF/file format I/O | `NINA.Test.FITSTest`, `NINA.Test.XISFTest` | `NINA.Test.Image`, runtime native asset/output checks |
-| Bayer/debayer/image analysis | `NINA.Test.Image.ImageAnalysis.BayerFilter16bppTests` | autofocus and star-detection consumers; note this fixture is ignored by default |
+| FITS/XISF/file format I/O | `NINA.Test.FITSTest`, `NINA.Test.XISFTest`, `NINA.Test.Image.FileFormat` | `NINA.Test.Image`, runtime native asset/output checks |
+| Bayer/debayer/image analysis | `NINA.Test.Image.ImageAnalysis.BayerFilter16bppTests`, `NINA.Test.Image.ImageAnalysis.ImageAnalysisUtilityBehaviorTest` | autofocus and star-detection consumers; slow `BayerFilter16bppRealWorldFormats` cases are ignored by default |
 | Star detection measurements | `NINA.Test.Image.StarDetectionMeasurementTest` | `NINA.Test.Autofocus`, plate solving, image history, sequencer imaging items |
 | Image history VM | `NINA.Test.ImageHistoryVMTest` | image model/file pattern tests |
 | Autofocus fitting/report/VM | `NINA.Test.Autofocus` | sequencer autofocus item/trigger tests and star detection tests |
@@ -79,6 +82,8 @@ dotnet test NINA.Test\NINA.Test.csproj --configuration Debug --no-build -p:Platf
 | Sequencer serialization/JSON compatibility | `NINA.Test.Sequencer.Serialization.JsonCreationConverterTest` | plugin discovery, target/template controller behavior, JSON compatibility checks |
 | Sequencer drag/drop/view selectors/converters | `NINA.Test.Sequencer.Behaviors`, `NINA.Test.Sequencer.DragDrop`, `NINA.Test.Sequencer.View` | WPF/shared UI tests and app-level view-model checks |
 | App/shared view models | `NINA.Test.ViewModel`, plus specific VM fixtures such as `FocuserVMTest`, `DomeVMTest`, `FlatDeviceVMTest`, `RotatorVMTest`, `AutofocusVMTest` | DI registration, mediator consumers, profile-setting tests |
+| WPF base mediators | `NINA.Test.Mediator` | affected equipment/view-model tests for the concrete mediator consumers |
+| WPF base sky-survey cache/factory | `NINA.Test.SkySurvey` | framing assistant callers and image/file-format tests when image loading behavior changes |
 | Installer/runtime file changes | no direct unit-test filter | build `NINA`, inspect output layout, check `NINA.Setup/Product.wxs` and `NINA.SetupBundle` if bundle behavior changed |
 | Source generator changes | build `NINA.Sequencer` and affected generated consumers | `NINA.Test.Sequencer.Logic`, serialization, and expression-backed sequence entity tests |
 
@@ -100,8 +105,8 @@ Use these when the changed file is under the matching sequencer subtree:
 
 - `NINA.Test` targets `net10.0-windows` and `x64`; keep x64 for tests that load SOFA, NOVAS, image native libraries, device SDK wrappers, or copied runtime assets.
 - `NINA.Test/Usings.cs` preloads `SOFAlib.dll` and `NOVAS31lib.dll` for the test process.
-- `NINA.Test.Image.ImageAnalysis.BayerFilter16bppTests` is marked `[Ignore]` because it is exhaustive; run it deliberately only when debayer behavior warrants it.
-- `BayerFilter16bppRealWorldFormats` test cases are `[NonParallelizable]`.
+- Fast in-memory `NINA.Test.Image.ImageAnalysis.BayerFilter16bppTests` run by default; only `BayerFilter16bppRealWorldFormats` cases are ignored because they are exhaustive file-backed/resolution checks.
+- `BayerFilter16bppRealWorldFormats` test cases are `[NonParallelizable]` when enabled.
 - `NINA.Test.Sequencer.Behaviors.DragDropBehaviorTest` uses STA apartments for WPF drag/drop behavior.
 - `AutofocusAfterTimeTriggerTest` has an ignored time-dependent test; avoid treating that ignored case as a new regression without inspecting the fixture.
 - Hardware/provider code is generally mocked or protocol-level; do not require live hardware unless a specific integration path explicitly needs it.

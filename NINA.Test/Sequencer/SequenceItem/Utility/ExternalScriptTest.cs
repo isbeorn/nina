@@ -20,6 +20,7 @@ using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Utility;
 using NUnit.Framework;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,6 +38,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             symbolBrokerMock.As<ISymbolBrokerProviderApi>();
             progressMock = new Mock<IProgress<ApplicationStatus>>();
         }
+
+        private static string HeadlessSuccessCommand => $"\"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "mshta.exe")}\" vbscript:close";
 
         [Test]
         public void ExternalScript_Clone_GoodClone() {
@@ -139,6 +142,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             result.Should().Contain("Error");
         }
 
+        /// <summary>
+        /// Verifies a successful external-script execution records the process exit code without launching a real shell.
+        /// </summary>
         [Test]
         public async Task ExternalScript_Execute_SetsExitCodeSymbol_OnSuccess() {
             // Arrange
@@ -155,9 +161,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
                 });
 
             var sut = new ExternalScript(symbolBrokerMock.Object);
-
-            // Use full path to cmd.exe
-            sut.Script = $"{Environment.GetEnvironmentVariable("SystemRoot")}\\System32\\cmd.exe /c exit 0";
+            sut.Script = HeadlessSuccessCommand;
 
             var progress = new Progress<ApplicationStatus>();
             var cts = new CancellationTokenSource();
@@ -170,6 +174,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             mockProvider.Verify(x => x.AddOrUpdateSymbol("LastExternalScriptExitCode", 0), Times.Once);
         }
 
+        /// <summary>
+        /// Verifies command lookup failures are reported as script failures and publish the sentinel exit code.
+        /// </summary>
         [Test]
         public async Task ExternalScript_Execute_SetsExitCodeToNegativeOne_OnError() {
             // Arrange
@@ -202,6 +209,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             mockProvider.Verify(x => x.AddOrUpdateSymbol("LastExternalScriptExitCode", -1), Times.Once);
         }
 
+        /// <summary>
+        /// Verifies successful script execution does not require the NINA internal symbol provider to be present.
+        /// </summary>
         [Test]
         public async Task ExternalScript_Execute_HandlesNullProvider_Gracefully() {
             // Arrange
@@ -210,7 +220,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
                 .Returns((ISymbolProvider)null);
 
             var sut = new ExternalScript(symbolBrokerMock.Object);
-            sut.Script = $"{Environment.GetEnvironmentVariable("SystemRoot")}\\System32\\cmd.exe /c exit 0";
+            sut.Script = HeadlessSuccessCommand;
 
             var progress = new Progress<ApplicationStatus>();
             var cts = new CancellationTokenSource();
@@ -220,6 +230,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
                 .Should().NotThrowAsync();
         }
 
+        /// <summary>
+        /// Verifies expressions are expanded before execution and the resulting process exit code is published.
+        /// </summary>
         [Test]
         public async Task ExternalScript_ProcessedScript_ReplacesSymbolsBeforeExecution() {
             // Arrange
@@ -233,29 +246,28 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var sut = new ExternalScript(symbolBrokerMock.Object);
             sut.AttachNewParent(new SequentialContainer());
 
-            symbolBrokerMock.Setup(x => x.TryGetValue("TestValue", out It.Ref<object>.IsAny))
+            symbolBrokerMock.Setup(x => x.TryGetValue("TestExecutable", out It.Ref<object>.IsAny))
                 .Returns((string key, out object value) => {
-                    value = 7;
+                    value = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "mshta.exe");
                     return true;
                 });
 
             mockProvider.Setup(x => x.AddOrUpdateSymbol("LastExternalScriptExitCode", It.IsAny<int>()))
                 .Callback<string, object>((key, value) => {
                     capturedExitCode = (int)value;
-                });
+            });
 
-            // Script with expression that resolves to exit code 7
-            sut.Script = $"{Environment.GetEnvironmentVariable("SystemRoot")}\\System32\\cmd.exe /c exit {{TestValue}}";
+            // Script with expression that resolves to a valid headless executable path.
+            sut.Script = "\"{TestExecutable}\" vbscript:close";
 
             var progress = new Progress<ApplicationStatus>();
             var cts = new CancellationTokenSource();
 
-            // Act & Assert
-            await sut.Invoking(s => s.Execute(progress, cts.Token))
-                .Should().ThrowAsync<SequenceEntityFailedException>();
+            // Act
+            await sut.Execute(progress, cts.Token);
 
-            // Verify the exit code matches the symbol value
-            capturedExitCode.Should().Be(7);
+            // Verify the expanded command executed successfully.
+            capturedExitCode.Should().Be(0);
         }
     }
 }

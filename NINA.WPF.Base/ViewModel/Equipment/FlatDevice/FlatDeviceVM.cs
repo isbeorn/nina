@@ -237,6 +237,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                         profileService.ActiveProfile.FlatDeviceSettings.Id = newDevice.Id;
                         profileService.ActiveProfile.FlatDeviceSettings.LastDeviceName = newDevice.DisplayName;
 
+                        BroadcastFlatDeviceInfo();
+
                         await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                         Logger.Info(
                             $"Successfully connected flat device. Id: {newDevice.Id} Name: {newDevice.Name} DisplayName: {newDevice.DisplayName} Driver Version: {newDevice.DriverVersion}");
