@@ -34,7 +34,7 @@ dotnet build NINA.Test\NINA.Test.csproj --configuration Debug --no-restore
 dotnet test NINA.Test\NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64
 ```
 
-Use `NINA.Test\CodeCoverage.runsettings` for solution-level Visual Studio coverage collection. `NINA.Test.csproj` sets `RunSettingsFilePath` to this file so the VS test platform has a source-controlled default. It includes first-party `NINA.*` runtime assemblies and excludes third-party/vendor modules such as `Trinet.Core.IO.Ntfs`, `Accord.Imaging`, `OxyPlot`, `ASCOM.Common`, `nikoncswrapper`, and `ASCOM.Alpaca` so reports stay focused on application code. If Visual Studio has an older user-selected runsettings file, clear it or select this file under `Test > Configure Run Settings`.
+Use the solution-root `.runsettings` file for Visual Studio coverage collection. Visual Studio only auto-detects runsettings files with this exact name at the solution root, so keep coverage exclusions there. It excludes third-party/vendor modules such as `Trinet.Core.IO.Ntfs`, `Accord.Imaging`, `OxyPlot`, `ASCOM.Common`, `nikoncswrapper`, and `ASCOM.Alpaca` so reports stay focused on application code. If Visual Studio has an older user-selected runsettings file, clear it or select this file under `Test > Configure Run Settings`.
 
 ## Routing Table
 
