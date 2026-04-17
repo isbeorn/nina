@@ -1,4 +1,4 @@
-﻿using NINA.Core.Utility;
+using NINA.Core.Utility;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Plugin.Interfaces;
@@ -31,7 +31,7 @@ namespace NINA.Utility {
                     .Select(t => t[0])
                     .FirstOrDefault();
                 if (pluggedDevice == null) {
-                    Logger.Warning($"EquipmentProvider {pluggedDevice.FullName} implements IEquipmentProvider instead of IEquipmentProvider<T>");
+                    Logger.Warning($"EquipmentProvider {deviceProvider.GetType().FullName} implements IEquipmentProvider instead of IEquipmentProvider<T>");
                     continue;
                 }
 
