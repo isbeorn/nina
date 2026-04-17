@@ -157,11 +157,11 @@ namespace NINA.Image.FileFormat.XISF {
                 metaData.Camera.SensorType = metaData.StringToSensorType(value);
             }
 
-            if (TryGetFITSProperty("XBAYEROFF", out value)) {
+            if (TryGetFITSProperty("XBAYROFF", out value) || TryGetFITSProperty("XBAYEROFF", out value)) {
                 metaData.Camera.BayerOffsetX = int.Parse(value, CultureInfo.InvariantCulture);
             }
 
-            if (TryGetFITSProperty("YBAYEROFF", out value)) {
+            if (TryGetFITSProperty("YBAYROFF", out value) || TryGetFITSProperty("YBAYEROFF", out value)) {
                 metaData.Camera.BayerOffsetY = int.Parse(value, CultureInfo.InvariantCulture);
             }
 
@@ -204,7 +204,7 @@ namespace NINA.Image.FileFormat.XISF {
             }
 
             if (TryGetImageProperty(XISFImageProperty.Instrument.Telescope.Aperture, out value)) {
-                metaData.Telescope.FocalRatio = double.Parse(value, CultureInfo.InvariantCulture) * 1e3 / metaData.Telescope.FocalLength;
+                metaData.Telescope.FocalRatio = metaData.Telescope.FocalLength / (double.Parse(value, CultureInfo.InvariantCulture) * 1e3);
             }
 
             if (TryGetImageProperty(XISFImageProperty.Observation.Center.RA, out value)) {
@@ -232,7 +232,7 @@ namespace NINA.Image.FileFormat.XISF {
                 var ra = double.Parse(value, CultureInfo.InvariantCulture);
                 if (TryGetImageProperty(XISFImageProperty.Observation.Object.Dec, out value)) {
                     var dec = double.Parse(value, CultureInfo.InvariantCulture);
-                    metaData.Telescope.Coordinates = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(dec), Epoch.J2000);
+                    metaData.Target.Coordinates = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(dec), Epoch.J2000);
                 }
             }
 
@@ -268,10 +268,10 @@ namespace NINA.Image.FileFormat.XISF {
                 metaData.WeatherData.WindDirection = double.Parse(value, CultureInfo.InvariantCulture);
             }
             if (TryGetImageProperty(XISFImageProperty.Observation.Meteorology.WindGust, out value)) {
-                metaData.WeatherData.WindGust = double.Parse(value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.WindGust = double.Parse(value, CultureInfo.InvariantCulture) / 3.6;
             }
             if (TryGetImageProperty(XISFImageProperty.Observation.Meteorology.WindSpeed, out value)) {
-                metaData.WeatherData.WindSpeed = double.Parse(value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.WindSpeed = double.Parse(value, CultureInfo.InvariantCulture) / 3.6;
             }
 
             /* WCS */
@@ -867,7 +867,7 @@ namespace NINA.Image.FileFormat.XISF {
         /// </summary>
         public static string RemoveInvalidXMLChars(string text) {
             if (string.IsNullOrEmpty(text)) return "";
-            return _invalidXMLChars.Replace(text, "�");
+            return _invalidXMLChars.Replace(text, "\uFFFD");
         }
 
         /// <summary>

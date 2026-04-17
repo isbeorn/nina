@@ -33,7 +33,6 @@ using System.Windows.Media.Imaging;
 namespace NINA.Test.Image.ImageAnalysis {
 
     [TestFixture]
-    [Ignore("These tests are exhaustive and take some time to run. Enable if needed.")]
     public class BayerFilter16bppTests {
         private readonly struct AstroCameraResolutionCase {
             public AstroCameraResolutionCase(int width, int height) {
@@ -504,6 +503,7 @@ namespace NINA.Test.Image.ImageAnalysis {
 
         [Test]
         [Category("BayerFilter16bppRealWorldFormats")]
+        [Ignore("File-backed Bayer format coverage is intentionally opt-in because it exercises slow integration paths.")]
         [NonParallelizable]
         [CancelAfter(180000)]
         [TestCaseSource(nameof(RealWorldFileFormatCases))]
@@ -522,6 +522,7 @@ namespace NINA.Test.Image.ImageAnalysis {
 
         [Test]
         [Category("BayerFilter16bppRealWorldFormats")]
+        [Ignore("Large real-world Bayer resolution coverage is intentionally opt-in because it is exhaustive and slow.")]
         [NonParallelizable]
         [CancelAfter(600000)]
         [TestCaseSource(nameof(AstroCameraResolutionCases))]
