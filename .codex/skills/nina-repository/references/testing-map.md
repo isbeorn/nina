@@ -42,7 +42,8 @@ dotnet test NINA.Test\NINA.Test.csproj --configuration Debug --no-build -p:Platf
 | SOFA/NOVAS-backed astronomy calculations | `NINA.Test.AstrometryTest.AstrometryTest`, `NINA.Test.AstrometryTest.WorldCoordinateSystemTest` | root coordinate/nighttime tests and affected sequencer time/altitude providers |
 | Custom horizon parsing/visibility | `NINA.Test.AstrometryTest.CustomHorizonTest`, `NINA.Test.AstrometryTest.InputCoordinatesTest` | `NINA.Test.Sequencer.Conditions.AboveHorizonConditionTest`, wait-for-altitude sequence items |
 | Database/catalog access | `NINA.Test.Database.DatabaseInteractionTest` | astrometry/catalog callers and migration/runtime SQL checks |
-| Core utilities/models | `NINA.Test.Utility`, `NINA.Test.RMSTest`, `NINA.Test.GuideStepsHistoryTest` | nearest subsystem tests that consume the changed type |
+| Core utilities/models | `NINA.Test.Utility`, `NINA.Test.Model`, `NINA.Test.RMSTest`, `NINA.Test.GuideStepsHistoryTest` | nearest subsystem tests that consume the changed type |
+| Core validation and serial helpers | `NINA.Test.Utility.ValidationRules`, `NINA.Test.Utility.SerialCommunication` | `NINA.Test.Utility` and consumers of the validated setting/protocol |
 | CLI option parsing | `NINA.Test.Utility.CommandLineOptionsTest` | app startup/build checks |
 | Localization-facing converters/formatting | `NINA.Test.Converters` | affected VM/view tests and `NINA.Test.SerialCommunication` when response text is involved |
 | Profile plugin settings | `NINA.Test.ProfileTest.PluginSettingsTest`, `NINA.Test.ProfileTest.PluginOptionsAccessorTest` | plugin tests and changed consumers of profile settings |
