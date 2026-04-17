@@ -171,6 +171,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                             profileService.ActiveProfile.SafetyMonitorSettings.Id = sm.Id;
                             profileService.ActiveProfile.SafetyMonitorSettings.LastDeviceName = sm.DisplayName;
 
+                            BroadcastMonitorInfo();
+
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Safety Monitor. Id: {sm.Id} Name: {sm.Name} DisplayName: {sm.DisplayName} Driver Version: {sm.DriverVersion}");
 

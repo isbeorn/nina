@@ -14,6 +14,7 @@
 
 using Moq;
 using NINA.Equipment.Equipment.MyDome;
+using NINA.Equipment.Equipment.MyRotator;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Profile.Interfaces;
 using NINA.Astrometry;
@@ -103,6 +104,17 @@ namespace NINA.Test.Rotator {
             var connectionResult = await rotatorVM.Connect();
             Assert.That(connectionResult, Is.True);
             return rotatorVM;
+        }
+
+        /// <summary>
+        /// Verifies that a successful rotator connection broadcasts the populated connected info snapshot.
+        /// This protects mediator consumers that need the connected rotator state immediately after Connect completes.
+        /// </summary>
+        [Test]
+        public async Task Test_Connect_BroadcastsConnectedInfo() {
+            await CreateSUT();
+
+            mockRotatorMediator.Verify(x => x.Broadcast(It.Is<RotatorInfo>(info => info.Connected && info.DeviceId == rotatorId)), Times.AtLeastOnce);
         }
 
         [Test]

@@ -185,7 +185,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                             };
 
                             RaiseAllPropertiesChanged();
-                            BroadcastDomeInfo();
 
                             Notification.ShowSuccess(Loc.Instance["LblDomeConnected"]);
 
@@ -193,6 +192,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
                             profileService.ActiveProfile.DomeSettings.Id = Dome.Id;
                             profileService.ActiveProfile.DomeSettings.LastDeviceName = Dome.DisplayName;
+
+                            BroadcastDomeInfo();
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Dome. Id: {Dome.Id} Name: {Dome.Name} DisplayName: {Dome.DisplayName} Driver Version: {Dome.DriverVersion}");

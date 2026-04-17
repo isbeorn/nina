@@ -820,6 +820,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public void SetBinning(short x, short y) {
+            if (CameraInfo.Connected != true || Cam == null) {
+                return;
+            }
+
             Cam.SetBinning(x, y);
             CameraInfo.BinX = Cam.BinX;
             CameraInfo.BinY = Cam.BinY;
