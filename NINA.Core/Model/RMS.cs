@@ -104,15 +104,32 @@ namespace NINA.Core.Model {
         }
 
         public void RemoveDataPoint(double raDistance, double decDistance) {
-            double deltaRA = raDistance - meanRA;
-            meanRA -= deltaRA / datapoints;
-            m2RA -= deltaRA * (raDistance - meanRA);
+            if (datapoints <= 0) {
+                return;
+            }
 
-            double deltaDec = decDistance - meanDec;
-            meanDec -= deltaDec / datapoints;
-            m2Dec -= deltaDec * (decDistance - meanDec);
+            if (datapoints == 1) {
+                Clear();
+                return;
+            }
 
-            datapoints--;
+            int newDataPoints = datapoints - 1;
+
+            double previousMeanRA = meanRA;
+            meanRA = ((meanRA * datapoints) - raDistance) / newDataPoints;
+            m2RA -= (raDistance - previousMeanRA) * (raDistance - meanRA);
+
+            double previousMeanDec = meanDec;
+            meanDec = ((meanDec * datapoints) - decDistance) / newDataPoints;
+            m2Dec -= (decDistance - previousMeanDec) * (decDistance - meanDec);
+
+            datapoints = newDataPoints;
+            if (m2RA < 0 && m2RA > -1e-9) {
+                m2RA = 0;
+            }
+            if (m2Dec < 0 && m2Dec > -1e-9) {
+                m2Dec = 0;
+            }
 
             CalculateRMS();
         }
