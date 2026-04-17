@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace NINA.Core.Utility {
     public static class Retry {
         public static Task Do(Action action, TimeSpan retryInterval, int maxAttemptCount = 3) {
-            return Do<object>(() => {
+            return Do<bool>(() => {
                 action();
-                return null;
+                return true;
             }, retryInterval, maxAttemptCount);
         }
 
@@ -23,7 +23,7 @@ namespace NINA.Core.Utility {
         public static Task Do(Func<Task> action, TimeSpan retryInterval, int maxAttemptCount = 3) {
             return Do(async () => {
                 await action();
-                return Task.CompletedTask;
+                return true;
             }, retryInterval, maxAttemptCount);
         }
 
