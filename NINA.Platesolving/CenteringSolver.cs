@@ -140,7 +140,7 @@ namespace NINA.PlateSolving {
                         var domeInfo = domeMediator.GetInfo();
                         if (domeInfo.Connected && domeInfo.CanSetAzimuth && !domeFollower.IsFollowing) {
                             var domeSyncMeasurement = new Measurement("DomeSync").Start();
-                            progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSynchronizingDome"] });
+                            progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblSynchronizingDome"] });
                             Logger.Info($"Centering Solver - Synchronize dome to scope since dome following is not enabled");
                             if (!await domeFollower.TriggerTelescopeSync()) {
                                 Notification.ShowWarning(Loc.Instance["LblDomeSyncFailureDuringCentering"]);
