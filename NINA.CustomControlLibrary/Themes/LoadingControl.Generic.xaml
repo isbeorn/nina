@@ -32,6 +32,12 @@
                         HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                         VerticalAlignment="{TemplateBinding VerticalAlignment}"
                         RenderTransformOrigin="0.5,0.5">
+                        <Grid.CacheMode>
+                            <BitmapCache
+                                EnableClearType="False"
+                                RenderAtScale="1"
+                                SnapsToDevicePixels="False" />
+                        </Grid.CacheMode>
                         <Path
                             Data="{TemplateBinding LoadingImage}"
                             Fill="{TemplateBinding LoadingImageBrush}"
