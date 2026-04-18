@@ -72,7 +72,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             if (Inherited) {
                 var contextCoordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
                 if (contextCoordinates != null) {
-                    Coordinates.Coordinates = contextCoordinates.Coordinates;
+                    ApplyInheritedCoordinates(contextCoordinates);
                 }
             }
 

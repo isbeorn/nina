@@ -142,8 +142,45 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             var sut = new SlewScopeToRaDec(telescopeMediatorMock.Object, guiderMediatorMock.Object);
             sut.AttachNewParent(parentMock.Object);
 
-            sut.Coordinates.Coordinates.RA.Should().Be(coordinates.RA);
-            sut.Coordinates.Coordinates.Dec.Should().Be(coordinates.Dec);
+            sut.Coordinates.Coordinates.RA.Should().BeApproximately(coordinates.RA, 1e-10);
+            sut.Coordinates.Coordinates.Dec.Should().BeApproximately(coordinates.Dec, 1e-10);
+            sut.Coordinates.Coordinates.Should().NotBeSameAs(coordinates);
+        }
+
+        /// <summary>
+        /// Verifies moving an inherited slew instruction out of a target container clears the inherited coordinates and breaks the target reference.
+        /// </summary>
+        [Test]
+        public void AttachNewParent_RemovedFromDSOContainer_ClearsInheritedCoordinates() {
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true });
+
+            var coordinates = new Coordinates(Angle.ByDegree(1), Angle.ByDegree(2), Epoch.J2000);
+            var target = new InputTarget(Angle.ByDegree(1), Angle.ByDegree(2), null) {
+                InputCoordinates = new InputCoordinates(coordinates)
+            };
+            var dsoParentMock = new Mock<IDeepSkyObjectContainer>();
+            dsoParentMock.SetupGet(x => x.Target).Returns(target);
+
+            var normalParentMock = new Mock<ISequenceContainer>();
+
+            var sut = new SlewScopeToRaDec(telescopeMediatorMock.Object, guiderMediatorMock.Object);
+            sut.AttachNewParent(dsoParentMock.Object);
+
+            sut.Inherited.Should().BeTrue();
+
+            sut.AttachNewParent(normalParentMock.Object);
+
+            sut.Inherited.Should().BeFalse();
+            sut.Coordinates.Coordinates.RA.Should().Be(0);
+            sut.Coordinates.Coordinates.Dec.Should().Be(0);
+            sut.RaExpression.Definition.Should().Be("0");
+            sut.DecExpression.Definition.Should().Be("0");
+
+            coordinates.RA = 5;
+            coordinates.Dec = 6;
+
+            sut.Coordinates.Coordinates.RA.Should().Be(0);
+            sut.Coordinates.Coordinates.Dec.Should().Be(0);
         }
     }
 }

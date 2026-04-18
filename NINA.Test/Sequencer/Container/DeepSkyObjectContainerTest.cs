@@ -22,6 +22,7 @@ using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyFilterWheel;
+using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
@@ -34,6 +35,7 @@ using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Imaging;
+using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility;
@@ -126,6 +128,78 @@ namespace NINA.Test.Sequencer.Container {
             sut.CoordsFromPlanetariumCommand.Should().NotBeNull();
             sut.DropTargetCommand.Should().NotBeNull();
             sut.DeleteExposureInfoCommand.Should().NotBeNull();
+        }
+
+        /// <summary>
+        /// Verifies an inherited slew instruction remains attached to its target context and updates when that target's coordinates change.
+        /// </summary>
+        [Test]
+        public void TargetCoordinatesChanged_UpdatesInheritedSlewScopeCoordinates() {
+            DeepSkyObjectContainer sut = CreateSut();
+            Coordinates initialCoordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(20), Epoch.J2000);
+            Coordinates updatedCoordinates = new Coordinates(Angle.ByDegree(30), Angle.ByDegree(40), Epoch.J2000);
+            Mock<ITelescopeMediator> telescopeMediatorMock = new Mock<ITelescopeMediator>();
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo { Connected = true });
+            SlewScopeToRaDec slew = new SlewScopeToRaDec(telescopeMediatorMock.Object, new Mock<IGuiderMediator>().Object);
+
+            sut.Target.InputCoordinates.Coordinates = initialCoordinates;
+            sut.Add(slew);
+
+            slew.Inherited.Should().BeTrue();
+            slew.Coordinates.Coordinates.RADegrees.Should().BeApproximately(10, 1e-10);
+            slew.Coordinates.Coordinates.Dec.Should().BeApproximately(20, 1e-10);
+
+            sut.Target.InputCoordinates.Coordinates = updatedCoordinates;
+
+            slew.Inherited.Should().BeTrue();
+            slew.Coordinates.Coordinates.RADegrees.Should().BeApproximately(30, 1e-10);
+            slew.Coordinates.Coordinates.Dec.Should().BeApproximately(40, 1e-10);
+            slew.Coordinates.Coordinates.Should().NotBeSameAs(updatedCoordinates);
+        }
+
+        /// <summary>
+        /// Verifies moving an inherited slew instruction from one target container to another refreshes it to the new target and stops following the old one.
+        /// </summary>
+        [Test]
+        public void AddToDifferentTarget_UpdatesInheritedSlewScopeCoordinatesToNewTarget() {
+            DeepSkyObjectContainer firstTarget = CreateSut();
+            DeepSkyObjectContainer secondTarget = CreateSut();
+            Coordinates firstCoordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(20), Epoch.J2000);
+            Coordinates firstUpdatedCoordinates = new Coordinates(Angle.ByDegree(30), Angle.ByDegree(40), Epoch.J2000);
+            Coordinates secondCoordinates = new Coordinates(Angle.ByDegree(50), Angle.ByDegree(60), Epoch.J2000);
+            Coordinates secondUpdatedCoordinates = new Coordinates(Angle.ByDegree(70), Angle.ByDegree(80), Epoch.J2000);
+            Mock<ITelescopeMediator> telescopeMediatorMock = new Mock<ITelescopeMediator>();
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo { Connected = true });
+            SlewScopeToRaDec slew = new SlewScopeToRaDec(telescopeMediatorMock.Object, new Mock<IGuiderMediator>().Object);
+
+            firstTarget.Target.InputCoordinates.Coordinates = firstCoordinates;
+            secondTarget.Target.InputCoordinates.Coordinates = secondCoordinates;
+            firstTarget.Add(slew);
+
+            slew.Inherited.Should().BeTrue();
+            slew.Coordinates.Coordinates.RADegrees.Should().BeApproximately(10, 1e-10);
+            slew.Coordinates.Coordinates.Dec.Should().BeApproximately(20, 1e-10);
+
+            secondTarget.Add(slew);
+
+            firstTarget.Items.Should().NotContain(slew);
+            secondTarget.Items.Should().Contain(slew);
+            slew.Parent.Should().BeSameAs(secondTarget);
+            slew.Inherited.Should().BeTrue();
+            slew.Coordinates.Coordinates.RADegrees.Should().BeApproximately(50, 1e-10);
+            slew.Coordinates.Coordinates.Dec.Should().BeApproximately(60, 1e-10);
+            slew.Coordinates.Coordinates.Should().NotBeSameAs(secondCoordinates);
+
+            firstTarget.Target.InputCoordinates.Coordinates = firstUpdatedCoordinates;
+
+            slew.Coordinates.Coordinates.RADegrees.Should().BeApproximately(50, 1e-10);
+            slew.Coordinates.Coordinates.Dec.Should().BeApproximately(60, 1e-10);
+
+            secondTarget.Target.InputCoordinates.Coordinates = secondUpdatedCoordinates;
+
+            slew.Coordinates.Coordinates.RADegrees.Should().BeApproximately(70, 1e-10);
+            slew.Coordinates.Coordinates.Dec.Should().BeApproximately(80, 1e-10);
+            slew.Coordinates.Coordinates.Should().NotBeSameAs(secondUpdatedCoordinates);
         }
 
         /// <summary>
