@@ -20,6 +20,7 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer.Logic;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using FilterWheelInfo = NINA.Equipment.Equipment.MyFilterWheel.FilterWheelInfo;
 
@@ -94,6 +95,21 @@ namespace NINA.Test.Sequencer.Logic {
             } else {
                 value.Should().BeNull();
             }
+        }
+
+        [Test]
+        public void SymbolBroker_Instance_IsInternalSingletonFallback() {
+            typeof(SymbolBroker)
+                .GetProperty(nameof(SymbolBroker.Instance), BindingFlags.Public | BindingFlags.Static)
+                .Should().BeNull();
+
+            PropertyInfo instanceProperty = typeof(SymbolBroker)
+                .GetProperty(nameof(SymbolBroker.Instance), BindingFlags.NonPublic | BindingFlags.Static);
+
+            instanceProperty.Should().NotBeNull();
+            instanceProperty.GetMethod.IsAssembly.Should().BeTrue();
+            instanceProperty.SetMethod.IsPrivate.Should().BeTrue();
+            SymbolBroker.Instance.Should().BeSameAs(broker);
         }
 
         [Test]
