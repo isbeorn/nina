@@ -147,7 +147,7 @@ namespace NINA.PlateSolving.Solvers {
                 args.Add($"-r {parameter.SearchRadius}");
 
                 var ra = Math.Round(parameter.Coordinates.RA, 6);
-                //Right Ascension in degrees
+                //Right Ascension in hours
                 args.Add($"-ra {ra.ToString(CultureInfo.InvariantCulture)}");
 
                 var spd = Math.Round(parameter.Coordinates.Dec + 90.0, 6);

@@ -28,6 +28,11 @@ This allows you to safely return to a stable release if needed.
 - The native driver for SBIG cameras now provides the proper electrons/ADU value for the `EGAIN` keyword in image metadata
 - Fixed excessive debug logging after disconnecting the OpenMeteo weather client
 - The native star detector now rejects stars whose refined centroid falls on any edge of the detection rectangle, preventing truncated stars from biasing autofocus measurements
+- Fixed "Slew To Alt/Az" sequence instruction incorrectly using SlewToCoordinatesAsync instead of SlewToAltAzAsync
+- Trained flat exposure settings now update the exact matching filter, binning, gain, and offset entry instead of accidentally reusing a nearby fallback match.
+- FITS headers now write observer site latitude, longitude, and site name correctly when those values are present.
+- XISF metadata import now reads Bayer offsets, focal ratio, target coordinates, and wind speed/gust units correctly.
+- Manual rotator moves now clean up their moving state correctly when the rotation prompt is cancelled.
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**

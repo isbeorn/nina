@@ -15,6 +15,8 @@
 using FluentAssertions;
 using Moq;
 using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Model;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
@@ -22,6 +24,8 @@ using NINA.Image.ImageAnalysis;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Interfaces;
+using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Trigger.MeridianFlip;
 using NINA.Sequencer.Utility;
@@ -279,6 +283,146 @@ namespace NINA.Test.Sequencer.Utility {
             var isTooClose = ItemUtility.IsTooCloseToMeridianFlip(containerMock.Object, TimeSpan.FromHours(estimatedTime));
 
             isTooClose.Should().Be(expected);
+        }
+
+        /// <summary>
+        /// Verifies downward target discovery returns direct and nested deep-sky containers while ignoring normal sequence items.
+        /// </summary>
+        [Test]
+        public void LookForTargetsDownwards_ReturnsDirectAndNestedDeepSkyContainers() {
+            Mock<IDeepSkyObjectContainer> directTarget = new Mock<IDeepSkyObjectContainer>();
+            Mock<IDeepSkyObjectContainer> nestedTarget = new Mock<IDeepSkyObjectContainer>();
+            Mock<ISequenceContainer> nestedContainer = new Mock<ISequenceContainer>();
+            Mock<ISequenceItem> normalItem = new Mock<ISequenceItem>();
+            Mock<ISequenceContainer> root = new Mock<ISequenceContainer>();
+            nestedContainer.Setup(x => x.GetItemsSnapshot()).Returns(new List<ISequenceItem> { nestedTarget.Object });
+            root.Setup(x => x.GetItemsSnapshot()).Returns(new List<ISequenceItem> {
+                normalItem.Object,
+                directTarget.Object,
+                nestedContainer.Object
+            });
+
+            List<IDeepSkyObjectContainer> targets = ItemUtility.LookForTargetsDownwards(root.Object);
+
+            targets.Should().Equal(directTarget.Object, nestedTarget.Object);
+        }
+
+        /// <summary>
+        /// Verifies altitude iteration narrows an approximate rise time and records the first time that satisfies the requested threshold.
+        /// </summary>
+        [Test]
+        public void Iterate_FindsFutureThresholdAndMarksApproximateResult() {
+            WaitLoopData data = CreateWaitLoopData("IterateTarget");
+            DateTime threshold = DateTime.Now.AddMinutes(20);
+            data.ExpectedDateTime = DateTime.Now.AddMinutes(30);
+            data.Offset = 10;
+            ItemUtility.RiseSetMeridian riseSetMeridian = new ItemUtility.RiseSetMeridian(
+                threshold,
+                threshold.AddHours(2),
+                threshold.AddHours(1),
+                currentAltitude: 0,
+                isRising: true);
+
+            ItemUtility.Iterate(
+                data,
+                riseSetMeridian,
+                greater: true,
+                sense: true,
+                allowance: 120,
+                getCurrentAltitude: (when, observer) => when >= threshold ? 20 : 0);
+
+            data.ExpectedDateTime.Should().BeOnOrAfter(threshold.AddMinutes(-1));
+            data.TargetAltitude.Should().Be(10);
+            data.Approximate.Should().Be("\u2248");
+        }
+
+        /// <summary>
+        /// Verifies altitude iteration reports an unresolved expected time when no sampled point can satisfy the threshold.
+        /// </summary>
+        [Test]
+        public void Iterate_ReportsUnresolvedTimeWhenNoSampleSatisfiesThreshold() {
+            WaitLoopData data = CreateWaitLoopData("IterateTarget");
+            DateTime baseTime = DateTime.Now.AddMinutes(30);
+            data.ExpectedDateTime = baseTime;
+            data.Offset = 12;
+            data.TargetAltitude = 12;
+            ItemUtility.RiseSetMeridian riseSetMeridian = new ItemUtility.RiseSetMeridian(
+                baseTime,
+                baseTime.AddMinutes(20),
+                baseTime.AddMinutes(10),
+                currentAltitude: 0,
+                isRising: true);
+
+            ItemUtility.Iterate(
+                data,
+                riseSetMeridian,
+                greater: true,
+                sense: true,
+                allowance: 10,
+                getCurrentAltitude: (when, observer) => 0);
+
+            data.ExpectedTime.Should().Be("--");
+            data.TargetAltitude.Should().Be(12);
+        }
+
+        /// <summary>
+        /// Verifies common altitude-time calculation handles null and zero-coordinate inputs, plus the obsolete forwarding overload.
+        /// </summary>
+        [Test]
+        public void CalculateExpectedTimeCommon_HandlesGuardClausesAndNowResult() {
+            ItemUtility.CalculateExpectedTimeCommon(null, until: true, allowance: 10, getCurrentAltitude: (when, observer) => 0);
+            WaitLoopData emptyCoordinates = CreateWaitLoopData("Empty");
+            emptyCoordinates.Coordinates = null;
+
+            ItemUtility.CalculateExpectedTimeCommon(emptyCoordinates, until: true, allowance: 10, getCurrentAltitude: (when, observer) => 0);
+
+            emptyCoordinates.ExpectedDateTime.Should().Be(DateTime.MinValue);
+
+#pragma warning disable CS0618
+            WaitLoopData data = CreateWaitLoopData("Now");
+            data.CurrentAltitude = 20;
+            data.Offset = 10;
+            data.Comparator = ComparisonOperatorEnum.GREATER_THAN;
+
+            ItemUtility.CalculateExpectedTimeCommon(data, offset: 10, until: true, allowance: 120, getCurrentAltitude: (when, observer) => 20);
+#pragma warning restore CS0618
+
+            data.ExpectedTime.Should().NotBe("--");
+            data.TargetAltitude.Should().Be(10);
+        }
+
+        /// <summary>
+        /// Verifies altitude rise/set helpers cover normal, obsolete, and unreachable-altitude paths used by wait and condition entities.
+        /// </summary>
+        [Test]
+        public void CalculateTimeAtAltitude_ReturnsRiseSetAndUnreachableResults() {
+            Coordinates coordinates = new Coordinates(Angle.ByHours(5), Angle.ByDegree(20), Epoch.J2000);
+
+            ItemUtility.RiseSetMeridian normal = ItemUtility.CalculateTimeAtAltitude(coordinates, 47, 11, 650, 20, new DateTime(2026, 4, 16, 12, 0, 0));
+#pragma warning disable CS0618
+            ItemUtility.RiseSetMeridian obsoleteWithoutElevation = ItemUtility.CalculateTimeAtAltitude(coordinates, 47, 11, 20, new DateTime(2026, 4, 16, 12, 0, 0));
+            ItemUtility.RiseSetMeridian obsoleteCurrentTime = ItemUtility.CalculateTimeAtAltitude(coordinates, 47, 11, 20);
+#pragma warning restore CS0618
+            ItemUtility.RiseSetMeridian unreachable = ItemUtility.CalculateTimeAtAltitude(coordinates, 89, 11, 650, 89, new DateTime(2026, 4, 16, 12, 0, 0));
+
+            normal.Rise.Should().NotBe(DateTime.MinValue);
+            obsoleteWithoutElevation.Set.Should().NotBe(DateTime.MinValue);
+            obsoleteCurrentTime.Meridian.Should().NotBe(DateTime.MinValue);
+            unreachable.Rise.Should().Be(DateTime.MinValue);
+            unreachable.Set.Should().Be(DateTime.MinValue);
+            normal.ToString().Should().Contain("Altitude").And.Contain("Rise").And.Contain("Set");
+        }
+
+        private static WaitLoopData CreateWaitLoopData(string name) {
+            NINA.Profile.Profile profile = new NINA.Profile.Profile();
+            profile.AstrometrySettings.Latitude = 47;
+            profile.AstrometrySettings.Longitude = 11;
+            profile.AstrometrySettings.Elevation = 650;
+            Mock<IProfileService> profileServiceMock = new Mock<IProfileService>();
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
+            WaitLoopData data = new WaitLoopData(profileServiceMock.Object, useCustomHorizon: false, name);
+            data.Coordinates = new InputCoordinates(new Coordinates(Angle.ByHours(5), Angle.ByDegree(20), Epoch.J2000));
+            return data;
         }
     }
 }

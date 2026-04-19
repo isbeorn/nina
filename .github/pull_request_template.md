@@ -10,6 +10,11 @@
 
 <!-- Describe how you tested your changes. Include manual tests, automated tests, and testing across themes or configurations. -->
 
+## 🤖 AI / Tooling Disclosure
+
+<!-- If meaningful AI- or tool-generated content was used, list the tool or model used.
+If not, write "None". -->
+
 ## ✅ PR Checklist
 
 - [ ] All unit tests pass
@@ -17,7 +22,7 @@
 - [ ] Plugin API compatibility reviewed  
   - [ ] No breaking changes to interfaces  
   - [ ] No changes to method/class signatures (especially optional parameters)
-- [ ] `Changelog.md` updated (if applicable)
+- [ ] `RELEASE_NOTES.md` updated (if applicable)
 - [ ] [Documentation](https://github.com/isbeorn/nina.docs) updated (if applicable)
 
 ## 🔗 Related Issues

@@ -12,9 +12,36 @@ This repository contains the source code of the **N.I.N.A. - Nighttime Imaging '
 ## 🧭 About
 
 **N.I.N.A.** (Nighttime Imaging 'N' Astronomy) is a modular astrophotography suite designed to simplify and streamline image acquisition.  
-Originally created with DSO imaging in mind, the platform now supports a wide range of astrophotography and astronomy workflows via a powerful plugin system.
+Originally created with DSO imaging in mind, the platform now supports a wide range of astrophotography and astronomy workflows, including equipment control, imaging, sequencing, plate solving, and plugin-based extension.
 
 Whether you're new to astrophotography or a seasoned imager, N.I.N.A. aims to make your sessions easier, faster, and more comfortable.
+
+---
+
+## 🗂 Repository
+
+This repository contains the N.I.N.A. application source code, shared libraries, installers, and tests in [`NINA.sln`](NINA.sln). User-facing documentation is maintained separately in [`nina.docs`](https://github.com/isbeorn/nina.docs) and included here as the [`NINA.Docs`](NINA.Docs) submodule.
+
+If you are working on the codebase, start with:
+
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) for workflow, prerequisites, testing, localization, and pull request expectations
+- [`AGENTS.md`](AGENTS.md) for solution-wide architecture, boundaries, and coding guidance
+- the `ARCHITECTURE.md` file in the project you are changing for project-local structure and responsibilities
+
+---
+
+## 🛠 Development
+
+The repository CI uses the .NET CLI on Windows. The basic local workflow is:
+
+```powershell
+dotnet restore NINA.sln
+dotnet build NINA/NINA.csproj --configuration Debug --no-restore
+dotnet build NINA.Test/NINA.Test.csproj --configuration Debug --no-restore
+dotnet test NINA.Test/NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64
+```
+
+For prerequisites, setup details, and contributor rules, use [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
@@ -30,7 +57,9 @@ Whether you're new to astrophotography or a seasoned imager, N.I.N.A. aims to ma
 ## 🤝 Contributing
 
 Interested in contributing code, reporting bugs, or improving documentation?  
-Please check out our [Contributing Guidelines](https://github.com/isbeorn/nina.docs/blob/develop/CONTRIBUTING.md).
+Please start with the local [Contributing Guidelines](CONTRIBUTING.md).
+
+For documentation-only changes, use the separate [nina.docs](https://github.com/isbeorn/nina.docs) repository and its contribution guide.
 
 We welcome all kinds of contributions — from small fixes to large feature proposals.
 

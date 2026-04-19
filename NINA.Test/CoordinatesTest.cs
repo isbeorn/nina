@@ -495,5 +495,52 @@ namespace NINA.Test {
                 sut.Epoch.Should().Be(Epoch.JNOW);
             }
         }
+
+        private const double ArcSecondToleranceInDegrees = 1.0 / 3600.0;
+
+        /// <summary>
+        /// Verifies J2000 to JNOW and back for bright-star style coordinates, ensuring precession,
+        /// nutation, and equation-of-origins handling remains numerically reversible.
+        /// References: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=Vega,
+        /// https://simbad.cds.unistra.fr/simbad/sim-id?Ident=Sirius, and
+        /// https://simbad.cds.unistra.fr/simbad/sim-id?Ident=Polaris
+        /// </summary>
+        [Test]
+        [TestCase(279.23473479, 38.78368896)]
+        [TestCase(101.28715533, -16.71611586)]
+        [TestCase(37.95456067, 89.26410897)]
+        public void CoordinatesTransform_J2000ToJNowRoundTrip_ReturnsOriginalCoordinatesWithinArcsecond(double rightAscensionDegrees, double declinationDegrees) {
+            DateTime observationTime = new DateTime(2026, 4, 16, 22, 0, 0, DateTimeKind.Utc);
+            Coordinates j2000 = new Coordinates(Angle.ByDegree(rightAscensionDegrees), Angle.ByDegree(declinationDegrees), Epoch.J2000, observationTime);
+
+            Coordinates roundTrip = j2000.Transform(Epoch.JNOW).Transform(Epoch.J2000);
+
+            AngularDifference(roundTrip.RADegrees, rightAscensionDegrees).Should().BeLessThan(ArcSecondToleranceInDegrees);
+            roundTrip.Dec.Should().BeApproximately(declinationDegrees, ArcSecondToleranceInDegrees);
+        }
+
+        /// <summary>
+        /// Verifies a full topocentric round trip without atmospheric refraction, using a realistic
+        /// mid-latitude observing site and a high-altitude target to avoid horizon singularities.
+        /// </summary>
+        [Test]
+        public void TopocentricTransform_CelestialToObservedAndBackWithoutRefraction_PreservesAstrometricCoordinates() {
+            DateTime observationTime = new DateTime(2024, 8, 1, 3, 0, 0, DateTimeKind.Utc);
+            Coordinates vega = new Coordinates(Angle.ByDegree(279.23473479), Angle.ByDegree(38.78368896), Epoch.J2000, observationTime);
+            Angle latitude = Angle.ByDegree(40.7378);
+            Angle longitude = Angle.ByDegree(-74.0010);
+            double elevation = 10.0;
+
+            TopocentricCoordinates observed = vega.Transform(latitude, longitude, elevation, observationTime);
+            Coordinates roundTrip = observed.Transform(observationTime, Epoch.J2000, 0.0, 0.0, 0.0, 0.0);
+
+            AngularDifference(roundTrip.RADegrees, vega.RADegrees).Should().BeLessThan(2.0 * ArcSecondToleranceInDegrees);
+            roundTrip.Dec.Should().BeApproximately(vega.Dec, 2.0 * ArcSecondToleranceInDegrees);
+        }
+
+        private static double AngularDifference(double actualDegrees, double expectedDegrees) {
+            double difference = Math.Abs(AstroUtil.EuclidianModulus(actualDegrees - expectedDegrees + 180.0, 360.0) - 180.0);
+            return difference;
+        }
     }
 }

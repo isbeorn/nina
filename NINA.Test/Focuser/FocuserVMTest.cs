@@ -208,6 +208,7 @@ namespace NINA.Test.Focuser {
             deviceInfo.TempCompAvailable.Should().Be(tempCompAvailable);
             deviceInfo.TempComp.Should().Be(tempComp);
             deviceInfo.Temperature.Should().Be(temperature);
+            mockFocuserMediator.Verify(m => m.Broadcast(It.Is<FocuserInfo>(info => info.Connected && info.Name == "TestFocuserName" && info.Position == position)), Times.AtLeastOnce);
         }
     }
 }

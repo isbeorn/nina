@@ -79,7 +79,6 @@ namespace NINA.Profile {
 
             zwoAsiMonoBinMode = false;
 
-            ascomCreate32BitData = false;
         }
 
         private string id;
@@ -697,16 +696,10 @@ namespace NINA.Profile {
             }
         }
 
-        private bool ascomCreate32BitData;
-
         [DataMember]
         public bool ASCOMCreate32BitData {
-            get => false; //ascomCreate32BitData;
+            get => false;
             set {
-                //if(ascomCreate32BitData != value) {
-                //    ascomCreate32BitData = value;
-                //    RaisePropertyChanged();
-                //}
             }
         }
 

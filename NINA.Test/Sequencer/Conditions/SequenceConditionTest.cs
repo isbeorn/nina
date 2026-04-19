@@ -17,7 +17,9 @@ using Moq;
 using NINA.Core.Enum;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Validations;
 using NUnit.Framework;
 using OxyPlot;
 using System;
@@ -32,13 +34,18 @@ namespace NINA.Test.Sequencer.Conditions {
     public class SequenceConditionTest {
 
         private class SeuqenceConditionImpl : SequenceCondition {
+            public Action CheckAction { get; set; }
+            public int CheckCount { get; private set; }
+            public bool CheckResult { get; set; }
 
             public override bool Check(ISequenceItem prevItem, ISequenceItem nextItem) {
-                throw new NotImplementedException();
+                CheckCount++;
+                CheckAction?.Invoke();
+                return CheckResult;
             }
 
             public override object Clone() {
-                throw new NotImplementedException();
+                return new SeuqenceConditionImpl();
             }
         }
 
@@ -210,6 +217,146 @@ namespace NINA.Test.Sequencer.Conditions {
             sut.ShowMenuCommand.Execute(default);
 
             sut.ShowMenu.Should().BeFalse();
+        }
+
+        /// <summary>
+        /// Verifies condition menu and enable commands toggle state and prevent menu opening while disabled.
+        /// </summary>
+        [Test]
+        public void Commands_ToggleMenuAndDisabledState() {
+            SeuqenceConditionImpl sut = new SeuqenceConditionImpl();
+
+            sut.ShowMenuCommand.Execute(null);
+            sut.ShowMenu.Should().BeTrue();
+
+            sut.DisableEnableCommand.Execute(null);
+
+            sut.Status.Should().Be(SequenceEntityStatus.DISABLED);
+            sut.ShowMenu.Should().BeFalse();
+            sut.ShowMenuCommand.CanExecute(null).Should().BeFalse();
+
+            sut.DisableEnableCommand.Execute(null);
+
+            sut.Status.Should().Be(SequenceEntityStatus.CREATED);
+            sut.ShowMenuCommand.CanExecute(null).Should().BeTrue();
+        }
+
+        /// <summary>
+        /// Verifies disabled conditions return false without running the concrete condition check.
+        /// </summary>
+        [Test]
+        public void RunCheck_DisabledConditionSkipsCheck() {
+            SeuqenceConditionImpl sut = new SeuqenceConditionImpl {
+                Status = SequenceEntityStatus.DISABLED
+            };
+
+            sut.RunCheck(null, null).Should().BeFalse();
+
+            sut.CheckCount.Should().Be(0);
+        }
+
+        /// <summary>
+        /// Verifies successful condition checks return the concrete result and leave status unchanged.
+        /// </summary>
+        [Test]
+        public void RunCheck_SuccessReturnsConcreteCheckResult() {
+            SeuqenceConditionImpl sut = new SeuqenceConditionImpl {
+                CheckResult = true
+            };
+
+            sut.RunCheck(null, null).Should().BeTrue();
+
+            sut.CheckCount.Should().Be(1);
+            sut.Status.Should().Be(SequenceEntityStatus.CREATED);
+        }
+
+        /// <summary>
+        /// Verifies condition check exceptions are caught, marked failed, and surfaced as a false run-check result.
+        /// </summary>
+        [Test]
+        public void RunCheck_ExceptionMarksConditionFailed() {
+            SeuqenceConditionImpl sut = new SeuqenceConditionImpl {
+                CheckAction = () => throw new InvalidOperationException("boom")
+            };
+
+            sut.RunCheck(null, null).Should().BeFalse();
+
+            sut.Status.Should().Be(SequenceEntityStatus.FAILED);
+        }
+
+        /// <summary>
+        /// Verifies validatable conditions fail before checking when validation reports issues.
+        /// </summary>
+        [Test]
+        public void RunCheck_InvalidValidatableConditionFailsWithoutChecking() {
+            InvalidCondition sut = new InvalidCondition();
+
+            sut.RunCheck(null, null).Should().BeFalse();
+
+            sut.CheckCount.Should().Be(0);
+            sut.Status.Should().Be(SequenceEntityStatus.FAILED);
+            sut.Issues.Should().ContainSingle("invalid condition");
+        }
+
+        /// <summary>
+        /// Verifies watchdogs start only when the condition is inside a sequence root and cancel outside the runnable tree.
+        /// </summary>
+        [Test]
+        public void RunWatchdogIfInsideSequenceRoot_StartsInsideRootAndCancelsOutsideRoot() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer child = new SequentialContainer();
+            WatchdogCondition sut = new WatchdogCondition();
+            Mock<IConditionWatchdog> watchdogMock = new Mock<IConditionWatchdog>();
+            sut.ConditionWatchdog = watchdogMock.Object;
+            root.Add(child);
+            child.Add(sut);
+
+            sut.RunWatchdog();
+
+            watchdogMock.Verify(x => x.Start(), Times.Once);
+
+            sut.AttachNewParent(new SequentialContainer());
+            sut.RunWatchdog();
+
+            watchdogMock.Verify(x => x.Cancel(), Times.Once);
+        }
+
+        /// <summary>
+        /// Verifies active-state detection requires a root-contained running parent and an enabled condition.
+        /// </summary>
+        [Test]
+        public void IsActive_RequiresRootRunningParentAndEnabledCondition() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer child = new SequentialContainer();
+            WatchdogCondition sut = new WatchdogCondition();
+            root.Add(child);
+            child.Add(sut);
+
+            sut.IsConditionActive().Should().BeFalse();
+
+            child.Status = SequenceEntityStatus.RUNNING;
+            sut.IsConditionActive().Should().BeTrue();
+
+            sut.Status = SequenceEntityStatus.DISABLED;
+            sut.IsConditionActive().Should().BeFalse();
+        }
+
+        private class WatchdogCondition : SeuqenceConditionImpl {
+            public void RunWatchdog() {
+                RunWatchdogIfInsideSequenceRoot();
+            }
+
+            public bool IsConditionActive() {
+                return IsActive();
+            }
+        }
+
+        private sealed class InvalidCondition : SeuqenceConditionImpl, IValidatable {
+            public IList<string> Issues { get; set; } = new List<string> { "invalid condition" };
+
+            public bool Validate() {
+                return false;
+            }
         }
     }
 }

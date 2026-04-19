@@ -110,7 +110,12 @@ namespace NINA.Sequencer.Logic {
         private IRotatorMediator _rotatorMediator;
         public static readonly char DELIMITER = '_';
 
-        public static SymbolBroker Instance { get; set; }
+        /// <summary>
+        /// Internal fallback for legacy expression construction paths that cannot receive
+        /// an <see cref="ISymbolBroker"/> through constructor injection. Plugin and app code
+        /// should use the injected <see cref="ISymbolBroker"/> service instead.
+        /// </summary>
+        internal static SymbolBroker Instance { get; private set; }
 
         public SymbolBroker(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
                                                                                             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,

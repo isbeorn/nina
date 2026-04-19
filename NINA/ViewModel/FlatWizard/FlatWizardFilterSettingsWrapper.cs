@@ -92,8 +92,19 @@ namespace NINA.ViewModel.FlatWizard {
         public FlatWizardFilterSettings Settings {
             get => settings;
             set {
+                if (settings != null) {
+                    settings.PropertyChanged -= Settings_PropertyChanged;
+                }
                 settings = value;
+                if (settings != null) {
+                    settings.PropertyChanged += Settings_PropertyChanged;
+                }
+                if (Filter?.FlatWizardFilterSettings != null) {
+                    Filter.FlatWizardFilterSettings = Settings;
+                }
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HistogramMeanTargetADU));
+                RaisePropertyChanged(nameof(HistogramToleranceADU));
             }
         }
 

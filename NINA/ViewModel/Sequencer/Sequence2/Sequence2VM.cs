@@ -498,8 +498,6 @@ namespace NINA.ViewModel.Sequencer {
             }
         }
 
-        private static readonly int MAX_SYMBOLS = 100;
-
         private List<Symbol> dataSymbols;
 
         public List<Symbol> DataSymbols {

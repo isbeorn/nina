@@ -523,14 +523,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             // Supporting custom would require an additional dialog box to input the custom rates. We can add that later if there's demand for it
                             SupportedTrackingModes = new AsyncObservableCollection<TrackingMode>(Telescope.TrackingModes.Where(m => m != TrackingMode.Custom));
 
-                            BroadcastTelescopeInfo();
-
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
                             _ = updateTimer.Run();
 
                             Notification.ShowSuccess(Loc.Instance["LblTelescopeConnected"]);
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
                             profileService.ActiveProfile.TelescopeSettings.LastDeviceName = Telescope.DisplayName;
+
+                            BroadcastTelescopeInfo();
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected mount. Id: {telescope.Id} Name: {telescope.Name} DisplayName: {telescope.DisplayName} Driver Version: {telescope.DriverVersion}");

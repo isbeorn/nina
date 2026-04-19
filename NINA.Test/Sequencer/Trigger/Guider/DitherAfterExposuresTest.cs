@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -116,6 +116,27 @@ namespace NINA.Test.Sequencer.Trigger.Guider {
             var trigger = sut.ShouldTrigger(null, nextItem.Object);
 
             trigger.Should().Be(shouldTrigger);
+        }
+
+        /// <summary>
+        /// Verifies that the dither trigger evaluates its exposure-count expression before deciding to trigger after light frames.
+        /// </summary>
+        [Test]
+        public void ShouldTrigger_UsesEvaluatedAfterExposuresExpression() {
+            var history = new List<ImageHistoryPoint>();
+            for (int i = 0; i < 5; i++) {
+                history.Add(new ImageHistoryPoint(i, null, "LIGHT"));
+            }
+            historyMock.SetupGet(x => x.ImageHistory).Returns(history);
+
+            var sut = new DitherAfterExposures(guiderMediatorMock.Object, historyMock.Object, profileServiceMock.Object, safetyMonitorMediatorMock.Object);
+            sut.AfterExposuresDefinition = "2 + 3";
+
+            var nextItem = new Mock<IExposureItem>();
+            nextItem.SetupGet(x => x.ImageType).Returns("LIGHT");
+
+            sut.ShouldTrigger(null, nextItem.Object).Should().BeTrue();
+            sut.ProgressExposures.Should().Be(0);
         }
 
         [Test]

@@ -151,10 +151,10 @@ jobs:
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Set up .NET 10.0 SDK
+    - name: Set up .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.201
+        global-json-file: global.json
 
     - name: Install MkDocs and plugins
       run: |

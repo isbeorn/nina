@@ -31,7 +31,19 @@ namespace NINA.Sequencer.Behaviors {
     /// </summary>
     public class DragOverBehavior : Behavior<FrameworkElement> {
 
-        public DragOverBehavior() {
+        public DragOverBehavior(Grid layoutParent) {
+            this.layoutParent = layoutParent;
+        }
+
+        public DragOverBehavior() : this(TryGetLayoutParent()) {
+        }
+
+        private static Grid TryGetLayoutParent() {
+            try {
+                return Application.Current?.MainWindow?.FindName("RootGrid") as Grid;
+            } catch (InvalidOperationException) {
+                return null;
+            }
         }
 
         public static readonly DependencyProperty DragBelowSizeProperty = DependencyProperty.Register(nameof(DragBelowSize), typeof(double), typeof(DragOverBehavior), new PropertyMetadata(0d));
@@ -45,7 +57,7 @@ namespace NINA.Sequencer.Behaviors {
         public static readonly DependencyProperty DragOverBottomTextProperty = DependencyProperty.Register(nameof(DragOverBottomText), typeof(string), typeof(DragOverBehavior), new PropertyMetadata(Loc.Instance["LblDragOver_BottomText"]));
         public static readonly DependencyProperty DragOverCenterTextProperty = DependencyProperty.Register(nameof(DragOverCenterText), typeof(string), typeof(DragOverBehavior), new PropertyMetadata(Loc.Instance["LblDragOver_CenterText"]));
 
-        private readonly Grid layoutParent = (Application.Current.MainWindow.FindName("RootGrid") as Grid);
+        private readonly Grid layoutParent;
         private DragOverAdorner dragOverAdorner;
         private FrameworkElement hitElement;
 
@@ -106,9 +118,10 @@ namespace NINA.Sequencer.Behaviors {
 
         private void MouseInObject(object sender, MouseEventArgs e) {
             if (!Enabled) return;
+            if (layoutParent == null) return;
             layoutParent.RaiseEvent(e);
 
-            var layoutHitTestBase = Application.Current.MainWindow as UIElement;
+            var layoutHitTestBase = layoutParent as UIElement;
 
             var mousePosition = e.GetPosition(layoutHitTestBase);
 
@@ -161,6 +174,10 @@ namespace NINA.Sequencer.Behaviors {
 
         private void AttachAdorner() {
             try {
+                if (layoutParent == null) {
+                    return;
+                }
+
                 if (lastDropTarget == DropTargetEnum.Top || lastDropTarget == DropTargetEnum.Bottom || lastDropTarget == DropTargetEnum.Center) {
                     int index = -1;
 
@@ -225,6 +242,10 @@ namespace NINA.Sequencer.Behaviors {
         }
 
         private bool DetachAdorner() {
+            if (layoutParent == null) {
+                return false;
+            }
+
             if (layoutParent.Children.Contains(dragOverAdorner)) {
                 layoutParent.Children.Remove(dragOverAdorner);
                 return true;

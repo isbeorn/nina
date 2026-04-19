@@ -7880,4 +7880,7 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
   <data name="LblSequencerExpressionValues" xml:space="preserve">
     <value>Hodnoty výrazů sekvenceru</value>
   </data>
+  <data name="LblEccentricity" xml:space="preserve">
+    <value>Excentricita</value>
+  </data>
 </root>

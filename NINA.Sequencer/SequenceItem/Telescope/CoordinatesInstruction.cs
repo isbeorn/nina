@@ -27,10 +27,11 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
     public partial class CoordinatesInstruction : SequenceItem, IValidatable {
 
-        public CoordinatesInstruction(ISequenceEntity e) {
+        public CoordinatesInstruction(ISequenceEntity e) : this() {
         }
 
         public CoordinatesInstruction() {
+            Coordinates = new InputCoordinates();
         }
 
         partial void AfterClone(CoordinatesInstruction clone) {
@@ -51,7 +52,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        private InputCoordinates coordinates = new InputCoordinates();
+        private InputCoordinates coordinates;
 
         /// <summary>
         /// This field is used for backwards compatibility when deserializing older sequences or saving it in >=3.3 and going backwards
@@ -62,7 +63,20 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
                 return coordinates;
             }
             set {
+                if (ReferenceEquals(coordinates, value)) {
+                    return;
+                }
+
+                if (coordinates != null) {
+                    coordinates.PropertyChanged -= Coordinates_PropertyChanged;
+                }
+
                 coordinates = value;
+                if (coordinates != null) {
+                    coordinates.PropertyChanged += Coordinates_PropertyChanged;
+                }
+
+                RaisePropertyChanged();
             }
         }
 
@@ -161,21 +175,41 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             lastDec = c.Dec;
         }
 
+        protected void ApplyInheritedCoordinates(ContextCoordinates coordinates) {
+            Protect = true;
+            Coordinates.Coordinates = coordinates.Coordinates.Clone();
+            PositionAngle = coordinates.PositionAngle;
+            lastRA = Coordinates.Coordinates.RA;
+            lastDec = Coordinates.Coordinates.Dec;
+            Protect = false;
+        }
+
+        private void ClearInheritedCoordinates() {
+            Protect = true;
+            Coordinates = new InputCoordinates();
+            RaExpression.Definition = "0";
+            DecExpression.Definition = "0";
+            PositionAngleExpression.Definition = "0";
+            PositionAngle = 0;
+            lastRA = 0;
+            lastDec = 0;
+            Protect = false;
+        }
+
         public override void AfterParentChanged() {
             base.AfterParentChanged();
 
             var coordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
             if (coordinates != null) {
-                Coordinates.Coordinates = coordinates.Coordinates;
-                PositionAngle = coordinates.PositionAngle;
+                ApplyInheritedCoordinates(coordinates);
                 Inherited = true;
             } else {
+                if (Inherited) {
+                    ClearInheritedCoordinates();
+                }
                 Inherited = false;
             }
 
-            if (Coordinates != null) {
-                Coordinates.PropertyChanged += Coordinates_PropertyChanged;
-            }
             RaExpression.Context = this;
             DecExpression.Context = this;
             PositionAngleExpression.Context = this;

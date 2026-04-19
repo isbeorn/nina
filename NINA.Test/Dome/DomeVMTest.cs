@@ -144,6 +144,17 @@ namespace NINA.Test.Dome {
             return domeVM;
         }
 
+        /// <summary>
+        /// Verifies that a successful dome connection broadcasts the populated connected info snapshot.
+        /// This protects mediator consumers that need dome state immediately after Connect completes.
+        /// </summary>
+        [Test]
+        public async Task Test_Connect_BroadcastsConnectedInfo() {
+            await CreateSUT();
+
+            mockDomeMediator.Verify(x => x.Broadcast(It.Is<DomeInfo>(info => info.Connected && info.DeviceId == domeId)), Times.AtLeastOnce);
+        }
+
         [Test]
         public async Task Test_DomeFollowEnabled_Starts() {
             var sut = await CreateSUT();

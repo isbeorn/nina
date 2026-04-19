@@ -47,7 +47,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         private IProfileService profileService;
         private IImagingMediator imagingMediator;
         private IFlatDeviceMediator flatDeviceMediator;
-        private ISymbolBroker symbolBroker;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {

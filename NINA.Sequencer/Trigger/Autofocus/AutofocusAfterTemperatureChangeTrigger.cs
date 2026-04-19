@@ -39,13 +39,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Locale;
-using NINA.Sequencer.Utility;
-using NINA.Core.Utility;
-using NINA.Sequencer.Interfaces;
-using NINA.Image.ImageAnalysis;
-using NINA.WPF.Base.Interfaces;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
 

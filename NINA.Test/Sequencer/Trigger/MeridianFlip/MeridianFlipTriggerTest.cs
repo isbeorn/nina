@@ -14,8 +14,13 @@
 
 using FluentAssertions;
 using Moq;
+using NINA.Core.Model;
+using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Equipment.MyFocuser;
+using NINA.Equipment.Equipment.MySafetyMonitor;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger.MeridianFlip;
 using NINA.Astrometry;
@@ -441,6 +446,123 @@ namespace NINA.Test.Sequencer.Trigger.MeridianFlip {
             var timeToFlip = NINA.Astrometry.MeridianFlip.TimeToMeridianFlip(settings.Object, coordinates, Angle.ByHours(lst), PierSide.pierEast);
 
             Assert.That(timeToFlip > TimeSpan.FromHours(12));
+        }
+
+        /// <summary>
+        /// Verifies execution falls back to the current telescope position when no target context exists and clamps very delayed flips to run immediately.
+        /// </summary>
+        [Test]
+        public async Task Execute_UsesCurrentPositionWithoutContextAndClampsDelayedFlipToNow() {
+            MeridianFlipTrigger sut = CreateSUT();
+            Coordinates currentPosition = new Coordinates(Angle.ByHours(10), Angle.ByDegree(20), Epoch.JNOW);
+            TimeSpan capturedDelay = TimeSpan.MinValue;
+            Coordinates capturedTarget = null;
+            Mock<IMeridianFlipVM> meridianFlipVmMock = new Mock<IMeridianFlipVM>();
+            meridianFlipVmMock.Setup(x => x.MeridianFlip(It.IsAny<Coordinates>(), It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>()))
+                .Callback<Coordinates, TimeSpan, CancellationToken>((target, delay, token) => {
+                    capturedTarget = target;
+                    capturedDelay = delay;
+                })
+                .ReturnsAsync(true);
+            meridianFlipVMFactoryMock.Setup(x => x.Create()).Returns(meridianFlipVmMock.Object);
+            Mock<IMeridianFlipSettings> settings = SetupMeridianFlipSettings(minutesAfter: 5, maxMinutesAfter: 10, pauseBefore: 0, useSideOfPier: false);
+            telescopeMediatorMock.Setup(x => x.GetCurrentPosition()).Returns(currentPosition);
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo {
+                Connected = true,
+                TrackingEnabled = true,
+                TimeToMeridianFlip = 5
+            });
+
+            await sut.Execute(new SequentialContainer(), Mock.Of<IProgress<ApplicationStatus>>(), CancellationToken.None);
+
+            capturedTarget.Should().BeSameAs(currentPosition);
+            capturedDelay.Should().Be(TimeSpan.Zero);
+            settings.VerifyGet(x => x.MaxMinutesAfterMeridian, Times.AtLeastOnce);
+        }
+
+        /// <summary>
+        /// Verifies changing parent clears the remembered flip state so the same target can be evaluated again in a new sequence context.
+        /// </summary>
+        [Test]
+        public async Task AfterParentChanged_ClearsRememberedFlipForSameTarget() {
+            MeridianFlipTrigger sut = CreateSUT();
+            Coordinates currentPosition = new Coordinates(Angle.ByHours(10), Angle.ByDegree(20), Epoch.JNOW);
+            Mock<IMeridianFlipVM> meridianFlipVmMock = new Mock<IMeridianFlipVM>();
+            meridianFlipVmMock.Setup(x => x.MeridianFlip(It.IsAny<Coordinates>(), It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+            meridianFlipVMFactoryMock.Setup(x => x.Create()).Returns(meridianFlipVmMock.Object);
+            SetupMeridianFlipSettings(minutesAfter: 0, maxMinutesAfter: 0, pauseBefore: 0, useSideOfPier: false);
+            telescopeMediatorMock.Setup(x => x.GetCurrentPosition()).Returns(currentPosition);
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo {
+                Connected = true,
+                TrackingEnabled = true,
+                Coordinates = currentPosition,
+                TimeToMeridianFlip = 0
+            });
+            Mock<ISequenceItem> nextItemMock = new Mock<ISequenceItem>();
+            nextItemMock.Setup(x => x.GetEstimatedDuration()).Returns(TimeSpan.Zero);
+
+            await sut.Execute(new SequentialContainer(), Mock.Of<IProgress<ApplicationStatus>>(), CancellationToken.None);
+
+            sut.ShouldTrigger(null, nextItemMock.Object).Should().BeFalse("the trigger remembers the recent flip for that target");
+            sut.AfterParentChanged();
+            sut.ShouldTrigger(null, nextItemMock.Object).Should().BeTrue("parent changes reset the recent-flip guard");
+        }
+
+        /// <summary>
+        /// Verifies an unsafe connected safety monitor prevents an otherwise due flip and stops telescope tracking instead.
+        /// </summary>
+        [Test]
+        public void ShouldTrigger_UnsafeSafetyMonitorStopsTrackingInsteadOfFlipping() {
+            MeridianFlipTrigger sut = CreateSUT();
+            SetupMeridianFlipSettings(minutesAfter: 0, maxMinutesAfter: 0, pauseBefore: 0, useSideOfPier: false);
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo {
+                Connected = true,
+                TrackingEnabled = true,
+                TimeToMeridianFlip = 0
+            });
+            safetyMonitorMediatorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo {
+                Connected = true,
+                IsSafe = false
+            });
+            Mock<ISequenceItem> nextItemMock = new Mock<ISequenceItem>();
+            nextItemMock.Setup(x => x.GetEstimatedDuration()).Returns(TimeSpan.Zero);
+
+            sut.ShouldTrigger(null, nextItemMock.Object).Should().BeFalse();
+
+            telescopeMediatorMock.Verify(x => x.SetTrackingEnabled(false), Times.Once);
+        }
+
+        /// <summary>
+        /// Verifies validation distinguishes a blocking disconnected telescope from optional recenter/autofocus equipment warnings.
+        /// </summary>
+        [Test]
+        public void Validate_ReportsOptionalCameraAndFocuserIssuesWithoutInvalidatingConnectedTelescope() {
+            MeridianFlipTrigger sut = CreateSUT();
+            SetupMeridianFlipSettings(minutesAfter: 0, maxMinutesAfter: 0, pauseBefore: 0, useSideOfPier: false, recenter: true, autofocusAfterFlip: true);
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo { Connected = true });
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo { Connected = false });
+            focuserMediatorMock.Setup(x => x.GetInfo()).Returns(new FocuserInfo { Connected = false });
+
+            sut.Validate().Should().BeTrue();
+            sut.Issues.Should().HaveCount(2);
+
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo { Connected = false });
+
+            sut.Validate().Should().BeFalse();
+            sut.Issues.Should().HaveCount(3);
+        }
+
+        private Mock<IMeridianFlipSettings> SetupMeridianFlipSettings(double minutesAfter, double maxMinutesAfter, double pauseBefore, bool useSideOfPier, bool recenter = false, bool autofocusAfterFlip = false) {
+            Mock<IMeridianFlipSettings> settings = new Mock<IMeridianFlipSettings>();
+            settings.SetupGet(m => m.MinutesAfterMeridian).Returns(minutesAfter);
+            settings.SetupGet(m => m.MaxMinutesAfterMeridian).Returns(maxMinutesAfter);
+            settings.SetupGet(m => m.PauseTimeBeforeMeridian).Returns(pauseBefore);
+            settings.SetupGet(m => m.UseSideOfPier).Returns(useSideOfPier);
+            settings.SetupGet(m => m.Recenter).Returns(recenter);
+            settings.SetupGet(m => m.AutoFocusAfterFlip).Returns(autofocusAfterFlip);
+            profileServiceMock.SetupGet(m => m.ActiveProfile.MeridianFlipSettings).Returns(settings.Object);
+            return settings;
         }
     }
 }

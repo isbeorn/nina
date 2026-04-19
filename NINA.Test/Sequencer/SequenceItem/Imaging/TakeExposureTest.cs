@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -159,6 +159,79 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
 
             imageSaveMediatorMock.Verify(x => x.Enqueue(It.Is<IImageData>(d => d == imageDataMock.Object), It.Is<Task<IRenderedImage>>(t => t == prepareTask), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
             historyMock.Verify(x => x.Add(1, imageType), Times.Exactly(historycalls));
+        }
+
+        /// <summary>
+        /// Verifies that TakeExposure evaluates exposure time, gain, and offset expressions before building the capture sequence.
+        /// </summary>
+        [Test]
+        public async Task Execute_UsesEvaluatedExposureGainAndOffsetExpressions() {
+            var imageMock = new Mock<IExposureData>();
+            var imageDataMock = new Mock<IImageData>();
+            var stats = new Mock<IImageStatistics>();
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageFileSettings.FilePath).Returns(TestContext.CurrentContext.TestDirectory);
+            imageDataMock.SetupGet(x => x.Statistics).Returns(new AsyncLazy<IImageStatistics>(() => Task.FromResult(stats.Object)));
+            imageDataMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData() { Image = new ImageParameter { Id = 7 } });
+            imageMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData() { Image = new ImageParameter { Id = 7 } });
+            imageMock.Setup(x => x.ToImageData(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(imageDataMock.Object));
+            var imageTask = Task.FromResult(imageMock.Object);
+            var prepareTask = Task.FromResult(new Mock<IRenderedImage>().Object);
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() {
+                Connected = true,
+                CanSetGain = true,
+                GainMin = 0,
+                GainMax = 300,
+                CanSetOffset = true,
+                OffsetMin = 0,
+                OffsetMax = 300
+            });
+            imagingMediatorMock.Setup(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>())).Returns(imageTask);
+            imagingMediatorMock.Setup(x => x.PrepareImage(It.IsAny<IImageData>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>())).Returns(prepareTask);
+
+            var sut = new TakeExposure(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, historyMock.Object);
+            sut.ExposureTimeDefinition = "30 + 15";
+            sut.GainDefinition = "100 + 5";
+            sut.OffsetDefinition = "20 + 2";
+            sut.Binning = new BinningMode(1, 1);
+            sut.ImageType = CaptureSequence.ImageTypes.LIGHT;
+
+            await sut.Execute(default, default);
+
+            imagingMediatorMock.Verify(
+                x => x.CaptureImage(
+                    It.Is<CaptureSequence>(
+                        cs =>
+                            cs.ExposureTime == 45
+                            && cs.Gain == 105
+                            && cs.Offset == 22
+                            && cs.ImageType == CaptureSequence.ImageTypes.LIGHT
+                    ),
+                    It.IsAny<CancellationToken>(),
+                    It.IsAny<IProgress<ApplicationStatus>>(),
+                    It.IsAny<string>()
+                ), Times.Once);
+            historyMock.Verify(x => x.Add(7, CaptureSequence.ImageTypes.LIGHT), Times.Once);
+        }
+
+        /// <summary>
+        /// Verifies that TakeExposure reports validation issues when the evaluated gain expression is outside the connected camera range.
+        /// </summary>
+        [Test]
+        public void Validate_GainExpressionOutsideCameraRange_ReturnsIssue() {
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageFileSettings.FilePath).Returns(TestContext.CurrentContext.TestDirectory);
+            cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() {
+                Connected = true,
+                CanSetGain = true,
+                GainMin = 0,
+                GainMax = 100
+            });
+            var sut = new TakeExposure(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, historyMock.Object);
+            sut.GainDefinition = "200";
+
+            var valid = sut.Validate();
+
+            valid.Should().BeFalse();
+            sut.Issues.Should().NotBeEmpty();
         }
 
         [Test]

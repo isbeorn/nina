@@ -14,12 +14,17 @@
 
 using FluentAssertions;
 using Moq;
+using NINA.Core.Locale;
+using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace NINA.Test.Sequencer.Logic {
     [TestFixture]
@@ -766,6 +771,145 @@ namespace NINA.Test.Sequencer.Logic {
 
             // assert
             cache1.Should().BeSameAs(cache2);
+        }
+
+        /// <summary>
+        /// Verifies global symbol lookup ignores a cached global definition that is no longer attached to the active sequence tree.
+        /// </summary>
+        [Test]
+        public void UserSymbol_FindGlobalSymbol_IgnoresOrphanedGlobalDefinitions() {
+            var orphanParent = CreateContainer("Orphan");
+            var orphan = CreateGlobalVariable("orphanGlobal", "42");
+            orphanParent.Add(orphan);
+            orphan.AfterParentChanged();
+
+            UserSymbol.FindGlobalSymbol("orphanGlobal").Should().BeNull();
+        }
+
+        /// <summary>
+        /// Verifies removing a scoped symbol from a rooted sequence clears the cache entry and marks dependent expressions dirty.
+        /// </summary>
+        [Test]
+        public void UserSymbol_AfterParentChanged_RemovesDeletedScopedSymbolAndDirtiesConsumers() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer container = CreateContainer("Child");
+            root.Add(container);
+            Variable variable = CreateVariable("local", "10", container);
+            Expression consumer = new Expression("local + 1", variable) { SymbolBroker = _symbolBroker.Object };
+            variable.AddConsumer(consumer);
+
+            variable.AttachNewParent(null);
+
+            UserSymbol.SymbolCache[container].Should().NotContainKey("local");
+            consumer.Dirty.Should().BeTrue();
+        }
+
+        /// <summary>
+        /// Verifies the symbol tooltip helper reports numeric range guidance when an empty expression has range metadata.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void UserSymbol_ShowSymbols_UsesRangeTooltipForEmptyRangedExpression() {
+            TextBox textBox = new TextBox();
+            Expression expression = new Expression("", Mock.Of<ISequenceEntity>()) {
+                Range = new[] { 1.0, 3.0, 0.0 }
+            };
+            textBox.SetBinding(TextBox.TextProperty, new Binding(nameof(Expression.Definition)) { Source = expression });
+
+            UserSymbol.ShowSymbols(textBox);
+
+            textBox.ToolTip.Should().Be("Value must be between 1 and 3.");
+        }
+
+        /// <summary>
+        /// Verifies the symbol tooltip helper explains when an expression has unresolved references and no resolved symbols.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void UserSymbol_ShowSymbols_ReportsNotYetDefinedForSingleUnresolvedReference() {
+            TextBox textBox = new TextBox();
+            Expression expression = new Expression("missing + 1", Mock.Of<ISequenceEntity>()) {
+                SymbolBroker = _symbolBroker.Object
+            };
+            textBox.SetBinding(TextBox.TextProperty, new Binding(nameof(Expression.Definition)) { Source = expression });
+
+            UserSymbol.ShowSymbols(textBox);
+
+            textBox.ToolTip.Should().BeOfType<string>().Which.Should().Contain("not yet defined");
+        }
+
+        /// <summary>
+        /// Verifies the symbol tooltip helper lists resolved user symbols and broker-provided data symbols with their current values.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void UserSymbol_ShowSymbols_ListsResolvedUserAndBrokerSymbols() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer container = CreateContainer("Scope");
+            root.Add(container);
+            Variable variable = CreateVariable("local", "42", container);
+            variable.Expr.Evaluate(ignoreRoot: true);
+            object brokerValue = 12.3456;
+            Symbol brokerSymbol = new Symbol("brokerValue", brokerValue, "Broker", null, Symbol.SymbolType.SYMBOL_NORMAL);
+            _symbolBroker.Setup(b => b.TryGetValue("brokerValue", out brokerValue)).Returns(true);
+            _symbolBroker.Setup(b => b.TryGetSymbol("brokerValue", out brokerSymbol)).Returns(true);
+            Mock<ISequenceEntity> context = new Mock<ISequenceEntity>();
+            context.SetupGet(c => c.Parent).Returns(container);
+            Expression expression = new Expression("local + brokerValue", context.Object) {
+                SymbolBroker = _symbolBroker.Object
+            };
+            expression.Evaluate(ignoreRoot: true);
+            TextBox textBox = new TextBox();
+            textBox.SetBinding(TextBox.TextProperty, new Binding(nameof(Expression.Definition)) { Source = expression });
+
+            UserSymbol.ShowSymbols(textBox);
+
+            textBox.ToolTip.Should().BeOfType<string>().Which
+                .Should().Contain("local").And.Contain("Scope").And.Contain("brokerValue").And.Contain("Broker");
+        }
+
+        /// <summary>
+        /// Verifies the symbol tooltip helper falls back to a symbol's expression when the binding source is a UserSymbol rather than an Expression.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void UserSymbol_ShowSymbols_UsesUserSymbolExpressionWhenBindingSourceIsSymbol() {
+            Variable variable = CreateVariable("local", "42");
+            TextBox textBox = new TextBox();
+            textBox.SetBinding(TextBox.TextProperty, new Binding(nameof(UserSymbol.Identifier)) { Source = variable });
+
+            UserSymbol.ShowSymbols(textBox);
+
+            textBox.ToolTip.Should().Be(Loc.Instance["LblNoSymbols"]);
+        }
+
+        /// <summary>
+        /// Verifies the symbol tooltip helper reports an unknown binding source when neither an expression nor user symbol is available.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void UserSymbol_ShowSymbols_ReportsUnknownBindingSource() {
+            TextBox textBox = new TextBox();
+            textBox.SetBinding(TextBox.TextProperty, new Binding(nameof(TextBox.Tag)) { Source = textBox });
+
+            UserSymbol.ShowSymbols(textBox);
+
+            textBox.ToolTip.Should().Be("??");
+        }
+
+        /// <summary>
+        /// Verifies symbol diagnostic helpers and fallback stringification remain safe for detached symbols.
+        /// </summary>
+        [Test]
+        public void UserSymbol_Diagnostics_LogOnceWarnAndStringifyDetachedSymbols() {
+            Variable variable = CreateVariable("local", "42");
+
+            UserSymbol.LogOnce("symbol warning");
+            UserSymbol.LogOnce("symbol warning");
+            UserSymbol.Warn("symbol warning direct");
+
+            variable.SParent().Should().BeNull();
+            variable.ToString().Should().Contain("local");
         }
     }
 }

@@ -50,7 +50,7 @@ namespace NINA.Profile {
         protected override void SetDefaultValues() {
             id = "No_Device";
             lastDeviceName = string.Empty;
-            filterWheelFilters = new ObserveAllCollection<FilterInfo>();
+            FilterWheelFilters = new ObserveAllCollection<FilterInfo>();
             disableGuidingOnFilterChange = false;
             unidirectional = true;
         }

@@ -244,12 +244,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                         RMSError = new RMSError(),
                         PixelScale = Guider.PixelScale
                     });
-                    BroadcastGuiderInfo();
                     Notification.ShowSuccess(Loc.Instance["LblGuiderConnected"]);
                     RaisePropertyChanged(nameof(Guider));
                     profileService.ActiveProfile.GuiderSettings.GuiderName = Guider.Id;
                     RaisePropertyChanged(nameof(MainCameraPixelScale));
                     RaisePropertyChanged(nameof(MainCameraDitherPixels));
+
+                    BroadcastGuiderInfo();
 
                     await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 }
@@ -519,7 +520,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
         }
 
         public async Task<bool> SetShiftRate(SiderealShiftTrackingRate shiftTrackingRate, CancellationToken ct) {
-            if (!Guider.Connected) {
+            if (Guider?.Connected != true) {
                 Logger.Error("Attempted to set shift rate when guider is not connected");
                 return false;
             }
@@ -532,7 +533,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
         }
 
         public async Task<bool> StopShifting(CancellationToken ct) {
-            if (!Guider.Connected) {
+            if (Guider?.Connected != true) {
                 Logger.Error("Attempted to disable shift when guider is not connected");
                 return false;
             }
@@ -546,6 +547,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
         }
 
         public LockPosition GetLockPosition() {
+            if (Guider?.Connected != true) {
+                Logger.Error("Attempted to get lock position when guider is not connected");
+                return null;
+            }
+
             return Guider.GetLockPosition().Result;
         }
 

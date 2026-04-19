@@ -36,11 +36,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Locale;
-using NINA.Profile.Interfaces;
-using NINA.Sequencer.Utility;
-using NINA.Core.Utility;
-using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
 
