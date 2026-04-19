@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -142,7 +143,19 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
+            BackfillIterationsExpressionFromLoopCondition();
             Validate();
+        }
+
+        private void BackfillIterationsExpressionFromLoopCondition() {
+            LoopCondition loopCondition = GetLoopCondition();
+            if (loopCondition == null ||
+                    IterationsExpression.Definition.Length > 0 ||
+                    loopCondition.Iterations == Iterations) {
+                return;
+            }
+
+            IterationsExpression.Definition = loopCondition.Iterations.ToString(CultureInfo.InvariantCulture);
         }
 
         public override bool Validate() {

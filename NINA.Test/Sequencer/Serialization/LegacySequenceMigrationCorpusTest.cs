@@ -465,6 +465,12 @@ namespace NINA.Test.Sequencer.Serialization {
                 AddNumericExpressionExpectation(expectations, "OffsetExpression", "Data.Offset", dataOffset);
             }
 
+            if (expressionPropertyNames.Contains("IterationsExpression") &&
+                    !TryReadNumberPath(legacyJson, "Iterations", out _) &&
+                    TryReadFirstLoopConditionIterations(legacyJson, out double loopIterations)) {
+                AddNumericExpressionExpectation(expectations, "IterationsExpression", "Conditions[0].Iterations", loopIterations);
+            }
+
             if (expressionPropertyNames.Contains("XfilterExpression") &&
                     TryReadStringPath(legacyJson, "Filter._name", out string filterName)) {
                 AddStringExpressionExpectation(expectations, "XfilterExpression", "Filter._name", SymbolBroker.SanitizeIdentifier(filterName));
@@ -631,6 +637,21 @@ namespace NINA.Test.Sequencer.Serialization {
 
             value = Convert.ToDouble(jValue.Value, CultureInfo.InvariantCulture);
             return true;
+        }
+
+        /// <summary>
+        /// Reads the legacy nested loop count used by immutable imaging containers before they gained their own IterationsExpression.
+        /// </summary>
+        private static bool TryReadFirstLoopConditionIterations(JObject root, out double value) {
+            value = 0;
+            if (root["Conditions"] is not JObject conditions ||
+                    conditions["$values"] is not JArray values ||
+                    values.Count == 0 ||
+                    values[0] is not JObject loopConditionJson) {
+                return false;
+            }
+
+            return TryReadNumberPath(loopConditionJson, "Iterations", out value);
         }
 
         /// <summary>

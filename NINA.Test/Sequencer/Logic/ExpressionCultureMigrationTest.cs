@@ -15,6 +15,9 @@
 using FluentAssertions;
 using Moq;
 using NINA.Astrometry;
+using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Equipment.MyFilterWheel;
+using NINA.Equipment.Equipment.MyGuider;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
@@ -150,6 +153,49 @@ namespace NINA.Test.Sequencer.Logic {
             }
         }
 
+        /// <summary>
+        /// Verifies immutable imaging containers backfill their generated IterationsExpression from a legacy nested LoopCondition value.
+        /// Without this, old imported sequences could execute the legacy loop count while the container-level expression still showed default 1.
+        /// </summary>
+        [Test]
+        public void LegacyImagingContainerLoopIterations_BackfillContainerIterationsExpressions() {
+            IProfileService profileService = CreateProfileService();
+
+            SmartExposure smartExposure = new SmartExposure(
+                profileService,
+                CreateCameraMediator(),
+                new Mock<IImagingMediator>().Object,
+                new Mock<IImageSaveMediator>().Object,
+                new Mock<IImageHistoryVM>().Object,
+                CreateFilterWheelMediator(),
+                CreateGuiderMediator(),
+                new Mock<ISafetyMonitorMediator>().Object);
+            smartExposure.GetLoopCondition().Iterations = 5;
+
+            smartExposure.AfterParentChanged();
+
+            smartExposure.Iterations.Should().Be(5);
+            smartExposure.IterationsExpression.Definition.Should().Be("5");
+            smartExposure.GetLoopCondition().Iterations.Should().Be(5);
+
+            TakeManyExposures takeManyExposures = new TakeManyExposures(
+                profileService,
+                CreateCameraMediator(),
+                new Mock<IImagingMediator>().Object,
+                new Mock<IImageSaveMediator>().Object,
+                new Mock<IImageHistoryVM>().Object);
+            takeManyExposures.GetLoopCondition().Iterations = 6;
+
+            takeManyExposures.AfterParentChanged();
+
+            takeManyExposures.Iterations.Should().Be(6);
+            takeManyExposures.IterationsExpression.Definition.Should().Be("6");
+            takeManyExposures.GetLoopCondition().Iterations.Should().Be(6);
+        }
+
+        /// <summary>
+        /// Creates a profile with only the settings needed by the migration backfill tests.
+        /// </summary>
         private static IProfileService CreateProfileService() {
             NINA.Profile.Profile profile = new NINA.Profile.Profile();
             profile.AstrometrySettings.Latitude = 0;
@@ -159,6 +205,33 @@ namespace NINA.Test.Sequencer.Logic {
             Mock<IProfileService> profileServiceMock = new Mock<IProfileService>();
             profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
             return profileServiceMock.Object;
+        }
+
+        /// <summary>
+        /// Creates a disconnected camera mediator so imaging containers can be constructed without hardware.
+        /// </summary>
+        private static ICameraMediator CreateCameraMediator() {
+            Mock<ICameraMediator> cameraMediator = new Mock<ICameraMediator>();
+            cameraMediator.Setup(x => x.GetInfo()).Returns(new CameraInfo { Connected = false });
+            return cameraMediator.Object;
+        }
+
+        /// <summary>
+        /// Creates a disconnected filter wheel mediator for SmartExposure construction.
+        /// </summary>
+        private static IFilterWheelMediator CreateFilterWheelMediator() {
+            Mock<IFilterWheelMediator> filterWheelMediator = new Mock<IFilterWheelMediator>();
+            filterWheelMediator.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo { Connected = false });
+            return filterWheelMediator.Object;
+        }
+
+        /// <summary>
+        /// Creates a disconnected guider mediator for SmartExposure construction.
+        /// </summary>
+        private static IGuiderMediator CreateGuiderMediator() {
+            Mock<IGuiderMediator> guiderMediator = new Mock<IGuiderMediator>();
+            guiderMediator.Setup(x => x.GetInfo()).Returns(new GuiderInfo { Connected = false });
+            return guiderMediator.Object;
         }
     }
 }
