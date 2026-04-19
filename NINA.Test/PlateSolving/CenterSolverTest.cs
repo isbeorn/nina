@@ -44,6 +44,7 @@ namespace NINA.Test.PlateSolving {
             domeMediatorMock = new Mock<IDomeMediator>();
             domeMediatorMock.Setup(m => m.GetInfo()).Returns(new NINA.Equipment.Equipment.MyDome.DomeInfo() { Connected = false });
             domeFollowerMock = new Mock<IDomeFollower>();
+            telescopeMediatorMock.Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
         }
 
         [Test]
@@ -111,6 +112,44 @@ namespace NINA.Test.PlateSolving {
         }
 
         [Test]
+        public async Task Successful_Centering_AfterEffectiveSync_SlewsToRequestedTargetWithoutMeasuredCorrection_Test() {
+            var seq = new CaptureSequence();
+            var solvedCoordinates = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(3), Epoch.J2000);
+            var positionAfterSync = new Coordinates(Angle.ByDegree(4), Angle.ByDegree(3), Epoch.J2000);
+            var targetCoordinates = new Coordinates(Angle.ByDegree(5), Angle.ByDegree(3), Epoch.J2000);
+            var parameter = new CenterSolveParameter() {
+                Coordinates = targetCoordinates.Transform(Epoch.J2000),
+                FocalLength = 700,
+                Threshold = 1
+            };
+
+            captureSolverMock
+                .SetupSequence(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PlateSolveResult() { Success = true, Coordinates = solvedCoordinates })
+                .ReturnsAsync(new PlateSolveResult() { Success = true, Coordinates = targetCoordinates });
+            telescopeMediatorMock
+                .SetupSequence(x => x.GetCurrentPosition())
+                .Returns(targetCoordinates)
+                .Returns(positionAfterSync)
+                .Returns(positionAfterSync)
+                .Returns(targetCoordinates);
+            telescopeMediatorMock
+                .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
+                .ReturnsAsync(true);
+
+            var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object, filterMediatorMock.Object, domeMediatorMock.Object, domeFollowerMock.Object);
+            sut.CaptureSolver = captureSolverMock.Object;
+
+            var result = await sut.Center(seq, parameter, default, default, default);
+
+            result.Success.Should().BeTrue();
+            telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(1));
+            telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(
+                It.Is<Coordinates>(c => IsWithinArcSeconds(c, targetCoordinates, 0.01)),
+                It.IsAny<CancellationToken>()), Times.Exactly(1));
+        }
+
+        [Test]
         public async Task Successful_Centering_AfterTwoCorrections_Test() {
             var seq = new CaptureSequence();
             var coordinates1 = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(3), Epoch.JNOW);
@@ -155,7 +194,44 @@ namespace NINA.Test.PlateSolving {
         }
 
         [Test]
-        public async Task Successful_Centering_FailedSyncs_CenteringWithOffset_Test() {
+        public async Task Successful_Centering_FailedSyncs_InvalidMeasuredCorrectionSlewsToRequestedTarget_Test() {
+            var seq = new CaptureSequence();
+            var solvedCoordinates = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(0), Epoch.J2000);
+            var targetCoordinates = new Coordinates(Angle.ByDegree(5), Angle.ByDegree(0), Epoch.J2000);
+            var invalidReportedCoordinates = new Coordinates(Angle.ByDegree(double.NaN), Angle.ByDegree(0), Epoch.J2000);
+            var parameter = new CenterSolveParameter() {
+                Coordinates = targetCoordinates.Transform(Epoch.J2000),
+                FocalLength = 700,
+                Threshold = 1
+            };
+
+            captureSolverMock
+                .SetupSequence(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PlateSolveResult() { Success = true, Coordinates = solvedCoordinates })
+                .ReturnsAsync(new PlateSolveResult() { Success = true, Coordinates = targetCoordinates });
+            telescopeMediatorMock
+                .SetupSequence(x => x.GetCurrentPosition())
+                .Returns(targetCoordinates)
+                .Returns(invalidReportedCoordinates)
+                .Returns(targetCoordinates);
+            telescopeMediatorMock
+                .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
+                .ReturnsAsync(false);
+
+            var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object, filterMediatorMock.Object, domeMediatorMock.Object, domeFollowerMock.Object);
+            sut.CaptureSolver = captureSolverMock.Object;
+
+            var result = await sut.Center(seq, parameter, default, default, default);
+
+            result.Success.Should().BeTrue();
+            telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(1));
+            telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(
+                It.Is<Coordinates>(c => IsWithinArcSeconds(c, targetCoordinates, 0.01)),
+                It.IsAny<CancellationToken>()), Times.Exactly(1));
+        }
+
+        [Test]
+        public async Task Successful_Centering_FailedSyncs_CenteringWithMeasuredCorrection_Test() {
             var seq = new CaptureSequence();
             var coordinates1 = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(3), Epoch.J2000);
             var coordinates2 = new Coordinates(Angle.ByDegree(4), Angle.ByDegree(3), Epoch.J2000);
@@ -189,16 +265,15 @@ namespace NINA.Test.PlateSolving {
             captureSolverMock.Verify(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
             telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(1));
 
-            //Verify that the slew coordinates are using the offset
+            // Verify that the slew coordinates are using the measured correction.
+            Coordinates expectedSlewCoordinates = ExpectedCorrectedTarget(coordinates3, coordinates3, coordinates1);
             telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(
-                It.Is<Coordinates>(c => Math.Round(c.RA, 4) == Math.Round((coordinates3.RA + (coordinates3.RA - coordinates1.RA)), 4)
-                                        && Math.Round(c.Dec, 4) == Math.Round((coordinates3.Dec + (coordinates3.Dec - coordinates1.Dec)), 4)
-                                  ),
+                It.Is<Coordinates>(c => IsWithinArcSeconds(c, expectedSlewCoordinates, 0.01)),
                 It.IsAny<CancellationToken>()), Times.Exactly(1));
         }
 
         [Test]
-        public async Task Successful_Centering_SkippedSyncs_CenteringWithOffset_Test() {
+        public async Task Successful_Centering_SkippedSyncs_CenteringWithMeasuredCorrection_Test() {
             var seq = new CaptureSequence();
             var coordinates1 = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(3), Epoch.J2000);
             var coordinates2 = new Coordinates(Angle.ByDegree(4), Angle.ByDegree(3), Epoch.J2000);
@@ -232,16 +307,15 @@ namespace NINA.Test.PlateSolving {
             result.Success.Should().BeTrue();
             captureSolverMock.Verify(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
             telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(0));
-            //Verify that the slew coordinates are using the offset
+            // Verify that the slew coordinates are using the measured correction.
+            Coordinates expectedSlewCoordinates = ExpectedCorrectedTarget(coordinates3, coordinates3, coordinates1);
             telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(
-                It.Is<Coordinates>(c => Math.Round(c.RA, 4) == Math.Round((coordinates3.RA + (coordinates3.RA - coordinates1.RA)), 4)
-                                        && Math.Round(c.Dec, 4) == Math.Round((coordinates3.Dec + (coordinates3.Dec - coordinates1.Dec)), 4)
-                                  ),
+                It.Is<Coordinates>(c => IsWithinArcSeconds(c, expectedSlewCoordinates, 0.01)),
                 It.IsAny<CancellationToken>()), Times.Exactly(1));
         }
 
         [Test]
-        public async Task Successful_Centering_SilentlyFailedSyncs_CenteringWithOffset_Test() {
+        public async Task Successful_Centering_SilentlyFailedSyncs_CenteringWithMeasuredCorrection_Test() {
             var seq = new CaptureSequence();
             var coordinates1 = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(3), Epoch.J2000);
             var coordinates2 = new Coordinates(Angle.ByDegree(4), Angle.ByDegree(3), Epoch.J2000);
@@ -274,12 +348,29 @@ namespace NINA.Test.PlateSolving {
             result.Success.Should().BeTrue();
             captureSolverMock.Verify(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
             telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(1));
-            //Verify that the slew coordinates are using the offset
+            // Verify that the slew coordinates are using the measured correction.
+            Coordinates expectedSlewCoordinates = ExpectedCorrectedTarget(coordinates3, coordinates3, coordinates1);
             telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(
-                It.Is<Coordinates>(c => Math.Round(c.RA, 4) == Math.Round((coordinates3.RA + (coordinates3.RA - coordinates1.RA)), 4)
-                                        && Math.Round(c.Dec, 4) == Math.Round((coordinates3.Dec + (coordinates3.Dec - coordinates1.Dec)), 4)
-                                  ),
+                It.Is<Coordinates>(c => IsWithinArcSeconds(c, expectedSlewCoordinates, 0.01)),
                 It.IsAny<CancellationToken>()), Times.Exactly(1));
+        }
+
+        private static Coordinates ExpectedCorrectedTarget(Coordinates targetCoordinates, Coordinates reportedCoordinates, Coordinates solvedCoordinates) {
+            RectangularCoordinates solved = RectangularCoordinates.FromPolar(solvedCoordinates);
+            RectangularCoordinates reported = RectangularCoordinates.FromPolar(reportedCoordinates);
+            RectangularCoordinates target = RectangularCoordinates.FromPolar(targetCoordinates);
+            RectangularCoordinates axis = solved.Cross(reported);
+            double sinAngle = axis.Distance;
+            if (sinAngle < 1e-12) {
+                return targetCoordinates;
+            }
+
+            double cosAngle = solved.Dot(reported);
+            return target.RotateAroundAxis(axis / sinAngle, Angle.ByRadians(Math.Atan2(sinAngle, cosAngle))).ToPolar(targetCoordinates.Epoch);
+        }
+
+        private static bool IsWithinArcSeconds(Coordinates actual, Coordinates expected, double arcSeconds) {
+            return Math.Abs((actual - expected).Distance.ArcSeconds) <= arcSeconds;
         }
     }
 }

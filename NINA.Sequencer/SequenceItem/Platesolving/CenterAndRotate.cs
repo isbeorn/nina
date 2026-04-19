@@ -117,7 +117,10 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
 
                 stoppedGuiding = await guiderMediator.StopGuiding(token);
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblSlew"] });
-                await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
+                bool slewSuccessful = await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
+                if (!slewSuccessful) {
+                    throw new SequenceEntityFailedException(Loc.Instance["LblSlewFailed"]);
+                }
 
                 var domeInfo = domeMediator.GetInfo();
                 if (domeInfo.Connected && domeInfo.CanSetAzimuth && !domeFollower.IsFollowing) {
@@ -227,6 +230,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                 new BinningMode(profileService.ActiveProfile.PlateSolveSettings.Binning, profileService.ActiveProfile.PlateSolveSettings.Binning),
                 1
             );
+            seq.Gain = profileService.ActiveProfile.PlateSolveSettings.Gain;
             return await solver.Solve(seq, parameter, PlateSolveStatusVM.Progress, progress, token);
         }
 

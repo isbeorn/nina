@@ -80,6 +80,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
             windowServiceFactoryMock.Reset();
 
             profileServiceMock.SetupGet(x => x.ActiveProfile.PlateSolveSettings).Returns(new Mock<IPlateSolveSettings>().Object);
+            telescopeMediatorMock.Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
             sut = new Center(profileServiceMock.Object, telescopeMediatorMock.Object, imagingMediatorMock.Object, filterWheelMediatorMock.Object, guiderMediatorMock.Object, domeMediatorMock.Object, domeFollowerMock.Object, plateSolverFactoryMock.Object, windowServiceFactoryMock.Object);
         }
@@ -174,6 +175,30 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
 
             guiderMediatorMock.Verify(x => x.StopGuiding(It.IsAny<CancellationToken>()), Times.Once);
             guiderMediatorMock.Verify(x => x.StartGuiding(It.IsAny<bool>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task Execute_InitialSlewFails_ThrowsFailedExceptionWithoutCentering() {
+            var service = new Mock<IWindowService>();
+            var centeringSolver = new Mock<ICenteringSolver>();
+
+            windowServiceFactoryMock.Setup(x => x.Create()).Returns(service.Object);
+
+            profileServiceMock.SetupGet(x => x.ActiveProfile.PlateSolveSettings).Returns(new Mock<IPlateSolveSettings>().Object);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.TelescopeSettings).Returns(new Mock<ITelescopeSettings>().Object);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.CameraSettings).Returns(new Mock<ICameraSettings>().Object);
+
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo { Connected = true, AtPark = false });
+            telescopeMediatorMock.Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
+
+            plateSolverFactoryMock.Setup(x => x.GetPlateSolver(It.IsAny<IPlateSolveSettings>())).Returns(new Mock<IPlateSolver>().Object);
+            plateSolverFactoryMock.Setup(x => x.GetBlindSolver(It.IsAny<IPlateSolveSettings>())).Returns(new Mock<IPlateSolver>().Object);
+            plateSolverFactoryMock.Setup(x => x.GetCenteringSolver(It.IsAny<IPlateSolver>(), It.IsAny<IPlateSolver>(), It.IsAny<IImagingMediator>(), It.IsAny<ITelescopeMediator>(), It.IsAny<IFilterWheelMediator>(), It.IsAny<IDomeMediator>(), It.IsAny<IDomeFollower>())).Returns(centeringSolver.Object);
+
+            Func<Task> act = () => sut.Execute(default, default);
+
+            await act.Should().ThrowAsync<SequenceEntityFailedException>().WithMessage(Loc.Instance["LblSlewFailed"]);
+            centeringSolver.Verify(x => x.Center(It.IsAny<CaptureSequence>(), It.IsAny<CenterSolveParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]

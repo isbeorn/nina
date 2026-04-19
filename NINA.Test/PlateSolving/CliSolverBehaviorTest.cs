@@ -83,6 +83,32 @@ namespace NINA.Test.PlateSolving {
             }
         }
 
+        /// <summary>
+        /// Verifies the solver-owned timeout token, not just the caller token, cancels a hung CLI process.
+        /// </summary>
+        [Test]
+        public async Task SolveAsync_TimeoutUsesLinkedSolverTimeoutToken() {
+            var solver = new TestableCliSolver {
+                ShouldSucceed = true,
+                Timeout = TimeSpan.FromMilliseconds(100),
+                ArgumentsToReturn = "/C ping 127.0.0.1 -n 6 > nul"
+            };
+            IImageData imageData = CreateImageData("CliTimeout", out _);
+            var parameter = new PlateSolveParameter {
+                FocalLength = 600,
+                PixelSize = 3.76,
+                Coordinates = null
+            };
+
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            PlateSolveResult result = await solver.SolveAsync(imageData, parameter, default, CancellationToken.None);
+            stopwatch.Stop();
+
+            result.Success.Should().BeFalse();
+            solver.ReadResultCalled.Should().BeFalse();
+            stopwatch.Elapsed.Should().BeLessThan(TimeSpan.FromSeconds(3));
+        }
+
         private static IImageData CreateImageData(string targetName, out ImageMetaData metadata) {
             metadata = new ImageMetaData();
             metadata.Target.Name = targetName;
@@ -113,8 +139,11 @@ namespace NINA.Test.PlateSolving {
             }
 
             public bool ShouldSucceed { get; set; }
+            public TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(10);
+            public string ArgumentsToReturn { get; set; } = "/C exit 0";
             public bool ArgumentsSeen { get; private set; }
             public bool OutputExistsDuringRead { get; private set; }
+            public bool ReadResultCalled { get; private set; }
             public string ImagePathSeen { get; private set; }
             public string OutputPathSeen { get; private set; }
             public string SidecarPathSeen { get; private set; }
@@ -125,15 +154,18 @@ namespace NINA.Test.PlateSolving {
                 return "test solver";
             }
 
+            protected override TimeSpan SolverTimeout => Timeout;
+
             protected override string GetArguments(string imageFilePath, string outputFilePath, PlateSolveParameter parameter, PlateSolveImageProperties imageProperties) {
                 ArgumentsSeen = true;
                 ImagePathSeen = imageFilePath;
                 OutputPathSeen = outputFilePath;
                 SidecarPathSeen = GetSideCarFilePaths(imageFilePath).Single();
-                return "/C exit 0";
+                return ArgumentsToReturn;
             }
 
             protected override PlateSolveResult ReadResult(string outputFilePath, PlateSolveParameter parameter, PlateSolveImageProperties imageProperties) {
+                ReadResultCalled = true;
                 File.WriteAllText(outputFilePath, "solver output");
                 File.WriteAllText(SidecarPathSeen, "sidecar output");
                 OutputExistsDuringRead = File.Exists(outputFilePath);

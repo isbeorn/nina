@@ -273,6 +273,42 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
         }
 
         [Test]
+        public async Task Execute_PassesPlateSolveGainToRotationCapture() {
+            var service = new Mock<IWindowService>();
+            var coordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(20), Epoch.J2000);
+            CaptureSequence rotationSequence = null;
+
+            var captureSolver = new Mock<ICaptureSolver>();
+            captureSolver
+                .Setup(x => x.Solve(It.IsAny<CaptureSequence>(), It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .Callback<CaptureSequence, CaptureSolverParameter, IProgress<PlateSolveProgress>, IProgress<ApplicationStatus>, CancellationToken>((seq, _, _, _, _) => rotationSequence = seq)
+                .ReturnsAsync(new PlateSolveResult { Success = true, Coordinates = coordinates, PositionAngle = 260 });
+
+            windowServiceFactoryMock.Setup(x => x.Create()).Returns(service.Object);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.RotatorSettings.RangeType).Returns(RotatorRangeTypeEnum.FULL);
+            rotatorMediatorMock.Setup(x => x.GetTargetPosition(It.IsAny<float>())).Returns(260);
+            guiderMediatorMock.Setup(x => x.StopGuiding(It.IsAny<CancellationToken>())).ReturnsAsync(false);
+            telescopeMediatorMock.Setup(x => x.GetCurrentPosition()).Returns(coordinates);
+
+            var plateSolveSettings = new Mock<IPlateSolveSettings>();
+            plateSolveSettings.SetupGet(x => x.Gain).Returns(123);
+            plateSolveSettings.SetupGet(x => x.RotationTolerance).Returns(1);
+            plateSolveSettings.SetupGet(x => x.NumberOfAttempts).Returns(1);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.PlateSolveSettings).Returns(plateSolveSettings.Object);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.TelescopeSettings).Returns(new Mock<ITelescopeSettings>().Object);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.CameraSettings).Returns(new Mock<ICameraSettings>().Object);
+
+            plateSolverFactoryMock.Setup(x => x.GetPlateSolver(It.IsAny<IPlateSolveSettings>())).Returns(new Mock<IPlateSolver>().Object);
+            plateSolverFactoryMock.Setup(x => x.GetBlindSolver(It.IsAny<IPlateSolveSettings>())).Returns(new Mock<IPlateSolver>().Object);
+            plateSolverFactoryMock.Setup(x => x.GetCaptureSolver(It.IsAny<IPlateSolver>(), It.IsAny<IPlateSolver>(), It.IsAny<IImagingMediator>(), It.IsAny<IFilterWheelMediator>())).Returns(captureSolver.Object);
+
+            sut.PositionAngle = 260;
+            await sut.Execute(default, CancellationToken.None);
+
+            rotationSequence.Gain.Should().Be(123);
+        }
+
+        [Test]
         [TestCase(160, 260, -80)]
         [TestCase(160, 170, 10)]
         public async Task Execute_FullRotatorRange_PlateSolveSuccess_RotationOffOneTime_NoException(double first, double second, double movement) {

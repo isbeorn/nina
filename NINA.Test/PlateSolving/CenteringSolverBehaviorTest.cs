@@ -22,6 +22,7 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
 using NINA.PlateSolving;
 using NINA.PlateSolving.Interfaces;
+using NINA.Core.Locale;
 
 namespace NINA.Test.PlateSolving {
 
@@ -115,8 +116,84 @@ namespace NINA.Test.PlateSolving {
             harness.TelescopeMediator.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Never());
         }
 
+        /// <summary>
+        /// Verifies centering stops immediately when a correction slew is rejected by the mount.
+        /// </summary>
+        [Test]
+        public async Task Center_CorrectionSlewFailureStopsCenteringWithFailureReason() {
+            var harness = new CenteringHarness();
+            var target = CreateCoordinates(5, 3);
+            var offTarget = CreateCoordinates(3, 3);
+            var sequence = new CaptureSequence();
+            var parameter = new CenterSolveParameter {
+                Coordinates = target,
+                FocalLength = 700,
+                Threshold = 0.1,
+                NoSync = true
+            };
+            harness.CaptureSolver
+                .Setup(x => x.Solve(sequence, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PlateSolveResult { Success = true, Coordinates = offTarget });
+            harness.TelescopeMediator.Setup(x => x.GetCurrentPosition()).Returns(target);
+            harness.TelescopeMediator.Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
+            var sut = harness.CreateSolver();
+
+            CenteringSolveResult result = await sut.CenterWithMeasurements(sequence, parameter, default, default, CancellationToken.None);
+
+            result.Success.Should().BeFalse();
+            result.Attempts.Should().HaveCount(1);
+            harness.CaptureSolver.Verify(x => x.Solve(sequence, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once());
+            harness.TelescopeMediator.Verify(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+        /// <summary>
+        /// Verifies fallback correction slews use a spherical correction instead of raw RA/Dec addition.
+        /// </summary>
+        [Test]
+        public async Task Center_CorrectionSlewUsesSphericalRotationForHighDeclinationFallback() {
+            var harness = new CenteringHarness();
+            var target = CreateCoordinates(25, 80);
+            var offTarget = CreateCoordinates(20, 79.25);
+            var sequence = new CaptureSequence();
+            var parameter = new CenterSolveParameter {
+                Coordinates = target,
+                FocalLength = 700,
+                Threshold = 0.1,
+                NoSync = true
+            };
+            harness.CaptureSolver
+                .SetupSequence(x => x.Solve(sequence, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PlateSolveResult { Success = true, Coordinates = offTarget })
+                .ReturnsAsync(new PlateSolveResult { Success = true, Coordinates = target });
+            harness.TelescopeMediator.Setup(x => x.GetCurrentPosition()).Returns(target);
+            harness.TelescopeMediator.Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            var sut = harness.CreateSolver();
+
+            CenteringSolveResult result = await sut.CenterWithMeasurements(sequence, parameter, default, default, CancellationToken.None);
+
+            Coordinates expectedSlewCoordinates = ExpectedCorrectedTarget(target, target, offTarget);
+            result.Success.Should().BeTrue();
+            harness.TelescopeMediator.Verify(x => x.SlewToCoordinatesAsync(
+                It.Is<Coordinates>(c => Math.Abs((c - expectedSlewCoordinates).Distance.ArcSeconds) <= 0.01),
+                It.IsAny<CancellationToken>()), Times.Once());
+        }
+
         private static Coordinates CreateCoordinates(double raDegrees, double decDegrees) {
             return new Coordinates(Angle.ByDegree(raDegrees), Angle.ByDegree(decDegrees), Epoch.J2000);
+        }
+
+        private static Coordinates ExpectedCorrectedTarget(Coordinates targetCoordinates, Coordinates reportedCoordinates, Coordinates solvedCoordinates) {
+            RectangularCoordinates solved = RectangularCoordinates.FromPolar(solvedCoordinates);
+            RectangularCoordinates reported = RectangularCoordinates.FromPolar(reportedCoordinates);
+            RectangularCoordinates target = RectangularCoordinates.FromPolar(targetCoordinates);
+            RectangularCoordinates axis = solved.Cross(reported);
+            double sinAngle = axis.Distance;
+            if (sinAngle < 1e-12) {
+                return targetCoordinates;
+            }
+
+            double cosAngle = solved.Dot(reported);
+            return target.RotateAroundAxis(axis / sinAngle, Angle.ByRadians(Math.Atan2(sinAngle, cosAngle))).ToPolar(targetCoordinates.Epoch);
         }
 
         private sealed class CenteringHarness {
@@ -131,6 +208,7 @@ namespace NINA.Test.PlateSolving {
 
             public CenteringHarness() {
                 DomeMediator.Setup(x => x.GetInfo()).Returns(new DomeInfo { Connected = false });
+                TelescopeMediator.Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
             }
 
             public CenteringSolver CreateSolver() {

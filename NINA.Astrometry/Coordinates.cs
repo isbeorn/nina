@@ -392,7 +392,8 @@ namespace NINA.Astrometry {
                 viewPort.ViewPortCenterPoint,
                 viewPort.ArcSecWidth,
                 viewPort.ArcSecHeight,
-                viewPort.Rotation);
+                viewPort.Rotation,
+                type);
         }
 
         /// <summary>

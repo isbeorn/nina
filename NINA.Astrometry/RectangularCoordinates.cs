@@ -23,6 +23,16 @@ namespace NINA.Astrometry {
     /// </summary>
     public class RectangularCoordinates {
 
+        public static RectangularCoordinates FromPolar(Coordinates coordinates) {
+            double ra = Angle.ByDegree(coordinates.RADegrees).Radians;
+            double dec = Angle.ByDegree(coordinates.Dec).Radians;
+            double cosDec = Math.Cos(dec);
+            return new RectangularCoordinates(
+                cosDec * Math.Cos(ra),
+                cosDec * Math.Sin(ra),
+                Math.Sin(dec));
+        }
+
         public RectangularCoordinates(double x, double y, double z) {
             this.X = x;
             this.Y = y;
@@ -40,6 +50,30 @@ namespace NINA.Astrometry {
             var y = this.Y * Math.Cos(meanObliquityRad) - this.Z * Math.Sin(meanObliquityRad);
             var z = this.Y * Math.Sin(meanObliquityRad) + this.Z * Math.Cos(meanObliquityRad);
             return new RectangularCoordinates(x, y, z);
+        }
+
+        public RectangularCoordinates Normalize() {
+            return this / Distance;
+        }
+
+        public double Dot(RectangularCoordinates other) {
+            return X * other.X + Y * other.Y + Z * other.Z;
+        }
+
+        public RectangularCoordinates Cross(RectangularCoordinates other) {
+            return new RectangularCoordinates(
+                Y * other.Z - Z * other.Y,
+                Z * other.X - X * other.Z,
+                X * other.Y - Y * other.X);
+        }
+
+        public RectangularCoordinates RotateAroundAxis(RectangularCoordinates axis, Angle angle) {
+            RectangularCoordinates normalizedAxis = axis.Normalize();
+            double sinAngle = Math.Sin(angle.Radians);
+            double cosAngle = Math.Cos(angle.Radians);
+            return this * cosAngle
+                + normalizedAxis.Cross(this) * sinAngle
+                + normalizedAxis * normalizedAxis.Dot(this) * (1 - cosAngle);
         }
 
         public static RectangularCoordinates operator +(RectangularCoordinates l, RectangularCoordinates r) {
