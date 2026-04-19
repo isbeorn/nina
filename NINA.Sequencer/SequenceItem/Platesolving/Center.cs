@@ -138,7 +138,10 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             }
 
             progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblSlew"] });
-            await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);            
+            bool slewSuccessful = await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
+            if (!slewSuccessful) {
+                throw new SequenceEntityFailedException(Loc.Instance["LblSlewFailed"]);
+            }
 
             var domeInfo = domeMediator.GetInfo();
             if (domeInfo.Connected && domeInfo.CanSetAzimuth && !domeFollower.IsFollowing) {

@@ -7329,4 +7329,7 @@ Hinweis: Dieser Modus setzt voraus, dass die HFR-Unterschiede zwischen den Filte
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
     <value>Reset progress of all targets in the current Target Set</value>
   </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Schwenken fehlgeschlagen</value>
+  </data>
 </root>

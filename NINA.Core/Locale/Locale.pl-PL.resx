@@ -7325,4 +7325,7 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
     <value>Reset progress of all targets in the current Target Set</value>
   </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
+  </data>
 </root>

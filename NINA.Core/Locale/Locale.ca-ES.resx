@@ -7329,4 +7329,7 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
     <value>Reset progress of all targets in the current Target Set</value>
   </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
+  </data>
 </root>

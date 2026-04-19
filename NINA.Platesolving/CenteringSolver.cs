@@ -133,9 +133,15 @@ namespace NINA.PlateSolving {
                         progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblPlateSolveNotInsideToleranceReslew"] });
 
                         var slewMeasurement = new Measurement("Reslew").Start();
-                        await telescopeMediator.SlewToCoordinatesAsync(parameterCoordinates + offset, ct);
+                        bool slewSuccessful = await telescopeMediator.SlewToCoordinatesAsync(parameterCoordinates + offset, ct);
                         slewMeasurement.Stop();
                         centeringAttempt.AddSubMeasurement(slewMeasurement);
+                        if (!slewSuccessful) {
+                            result.Success = false;
+                            Logger.Error("Centering correction slew failed");
+                            centeringAttempt.Stop();
+                            break;
+                        }
 
                         var domeInfo = domeMediator.GetInfo();
                         if (domeInfo.Connected && domeInfo.CanSetAzimuth && !domeFollower.IsFollowing) {

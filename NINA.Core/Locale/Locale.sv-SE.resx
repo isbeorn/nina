@@ -7337,4 +7337,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
     <value>Reset progress of all targets in the current Target Set</value>
   </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
+  </data>
 </root>

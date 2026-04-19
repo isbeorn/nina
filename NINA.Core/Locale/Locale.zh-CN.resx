@@ -7328,4 +7328,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
     <value>Reset progress of all targets in the current Target Set</value>
   </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
+  </data>
 </root>

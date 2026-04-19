@@ -7343,4 +7343,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   <data name="LblDomeParkTimeout" xml:space="preserve">
     <value>Dome park has timed out after {0} minutes.</value>
   </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
+  </data>
 </root>
