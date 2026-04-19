@@ -153,6 +153,13 @@ If you are unsure where an app-wide service comes from, start with `IoCBindings.
 - For locale additions or label changes, edit only `NINA.Core/Locale/Locale.resx`, which is the source resource file in the current solution layout.
 - Do not manually edit the other `Locale.<culture>.resx` files; those are managed through Crowdin, as noted in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
+### Third-Party Licenses
+
+- Any third-party package addition, removal, or replacement requires a license metadata check before the change is complete.
+- Keep both the in-app list in `NINA/View/About/ThirdPartyLicensesView.xaml` and the bundled text file `NINA/3rd-party-licenses.txt` synchronized with the actual dependency set.
+- Remove stale license entries when a package is no longer used.
+- If a dependency offers multiple licenses and this project intentionally uses one of them, document the chosen license consistently in both places.
+
 ### Native Runtime Assets
 
 Runtime code expects files in the application output layout, especially under:

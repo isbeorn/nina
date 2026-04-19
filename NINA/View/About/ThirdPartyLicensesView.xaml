@@ -104,6 +104,19 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
+                    <TextBlock Text="AvalonEdit             " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/icsharpcode/AvalonEdit" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/icsharpcode/AvalonEdit</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
                     <TextBlock Text="Castle Core            " />
                     <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/castleproject/Core      " RequestNavigate="Hyperlink_RequestNavigate">https://github.com/castleproject/Core</Hyperlink></TextBlock>
                     <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.apache.org/licenses/LICENSE-2.0" RequestNavigate="Hyperlink_RequestNavigate">Apache 2.0</Hyperlink></TextBlock>
@@ -130,8 +143,8 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="CoreWCF.WebHttp        " />
-                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/CoreWCF/CoreWCF       " RequestNavigate="Hyperlink_RequestNavigate">https://github.com/CoreWCF/CoreWCF</Hyperlink></TextBlock>
+                    <TextBlock Text="CommandLineParser      " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/commandlineparser/commandline" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/commandlineparser/commandline</Hyperlink></TextBlock>
                     <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
                 </Grid>
                 <Grid Margin="5,5,5,0">
@@ -143,9 +156,9 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="CSharpFITS             " />
-                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="http://vo.iucaa.ernet.in/~voi/CSharpFITS.html    " RequestNavigate="Hyperlink_RequestNavigate">http://vo.iucaa.ernet.in/~voi/CSharpFITS.html</Hyperlink></TextBlock>
-                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/BSD-3-Clause" RequestNavigate="Hyperlink_RequestNavigate">The 3-Clause BSD License</Hyperlink></TextBlock>
+                    <TextBlock Text="EntityFramework        " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/dotnet/ef6" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/dotnet/ef6</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
                 </Grid>
                 <Grid Margin="5,5,5,0">
                     <Grid.ColumnDefinitions>
@@ -299,9 +312,74 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
+                    <TextBlock Text="Microsoft.Bcl.AsyncInterfaces" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/dotnet/runtime" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/dotnet/runtime</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Microsoft.CodeAnalysis " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/dotnet/roslyn" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/dotnet/roslyn</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Microsoft.Extensions   " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/dotnet/runtime" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/dotnet/runtime</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Microsoft.Xaml.Behaviors.Wpf" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/microsoft/XamlBehaviorsWpf" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/microsoft/XamlBehaviorsWpf</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
                     <TextBlock Text="Microsoft.Web.WebView2         " />
-                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://learn.microsoft.com/en-us/microsoft-edge/webview2       " RequestNavigate="Hyperlink_RequestNavigate">https://learn.microsoft.com/en-us/microsoft-edge/webview2</Hyperlink></TextBlock>
-                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.nuget.org/packages/Microsoft.Web.WebView2/1.0.2535.41/License" RequestNavigate="Hyperlink_RequestNavigate">Copyright (C) Microsoft Corporation. All rights reserved.</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://learn.microsoft.com/en-us/microsoft-edge/webview2" RequestNavigate="Hyperlink_RequestNavigate">https://learn.microsoft.com/en-us/microsoft-edge/webview2</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.nuget.org/packages/Microsoft.Web.WebView2/1.0.3650.58/License" RequestNavigate="Hyperlink_RequestNavigate">Microsoft WebView2 License</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Namotion.Reflection    " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/RicoSuter/Namotion.Reflection" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/RicoSuter/Namotion.Reflection</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
                 </Grid>
                 <Grid Margin="5,5,5,0">
                     <Grid.ColumnDefinitions>
@@ -416,6 +494,19 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
+                    <TextBlock Text="Parlot                 " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/sebastienros/parlot" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/sebastienros/parlot</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/BSD-3-Clause" RequestNavigate="Hyperlink_RequestNavigate">The 3-Clause BSD License</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
                     <TextBlock Text="Serilog                " />
                     <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://serilog.net/          " RequestNavigate="Hyperlink_RequestNavigate">https://serilog.net/</Hyperlink></TextBlock>
                     <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.apache.org/licenses/LICENSE-2.0" RequestNavigate="Hyperlink_RequestNavigate">Apache 2.0</Hyperlink></TextBlock>
@@ -455,9 +546,74 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="System.Data.SQLite     " />
-                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://system.data.sqlite.org/        " RequestNavigate="Hyperlink_RequestNavigate">https://system.data.sqlite.org/</Hyperlink></TextBlock>
-                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.sqlite.org/copyright.html" RequestNavigate="Hyperlink_RequestNavigate">https://www.sqlite.org/copyright.html</Hyperlink></TextBlock>
+                    <TextBlock Text="SourceGear.sqlite3     " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://sqlite.org/" RequestNavigate="Hyperlink_RequestNavigate">https://sqlite.org/</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.sqlite.org/copyright.html" RequestNavigate="Hyperlink_RequestNavigate">SQLite Public Domain</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="System.Data.SQLite / EF6" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://system.data.sqlite.org/" RequestNavigate="Hyperlink_RequestNavigate">https://system.data.sqlite.org/</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.sqlite.org/copyright.html" RequestNavigate="Hyperlink_RequestNavigate">SQLite Public Domain</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="System.ComponentModel.Composition" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/dotnet/runtime" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/dotnet/runtime</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="System.Data.SqlClient / DataSetExtensions" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/dotnet/SqlClient" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/dotnet/SqlClient</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="System.Drawing.Common  " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/dotnet/runtime" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/dotnet/runtime</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="System.IO.Ports / Management / Runtime.Caching" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/dotnet/runtime" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/dotnet/runtime</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
                 </Grid>
                 <Grid Margin="5,5,5,0">
                     <Grid.ColumnDefinitions>
@@ -497,6 +653,19 @@
                     <TextBlock Text="Wpf Extended Toolkit   " />
                     <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/dotnetprojects/WpfExtendedToolkit  " RequestNavigate="Hyperlink_RequestNavigate">https://github.com/dotnetprojects/WpfExtendedToolkit</Hyperlink></TextBlock>
                     <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MS-PL" RequestNavigate="Hyperlink_RequestNavigate">Microsoft Public License (MS-PL)</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="ZstdSharp.Port         " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/oleg-st/ZstdSharp" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/oleg-st/ZstdSharp</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
                 </Grid>
 
             </StackPanel>
