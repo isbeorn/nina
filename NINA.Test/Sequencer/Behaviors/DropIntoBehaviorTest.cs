@@ -112,15 +112,18 @@ namespace NINA.Test.Sequencer.Behaviors {
                 this.execute = execute;
             }
 
-            public bool CanExecute(object parameter) {
+            public bool CanExecute(object? parameter) {
                 return true;
             }
 
-            public void Execute(object parameter) {
-                execute(parameter);
+            public void Execute(object? parameter) {
+                execute(parameter!);
             }
 
-            public event System.EventHandler CanExecuteChanged;
+            public event System.EventHandler? CanExecuteChanged {
+                add { }
+                remove { }
+            }
         }
     }
 }

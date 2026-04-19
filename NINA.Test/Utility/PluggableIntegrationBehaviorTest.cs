@@ -165,7 +165,10 @@ namespace NINA.Test.Utility {
         }
 
         private sealed class TestDevice : ITestDevice {
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged {
+                add { }
+                remove { }
+            }
             public bool HasSetupDialog => false;
             public string Id => "test";
             public string Name => "Test";

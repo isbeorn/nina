@@ -166,7 +166,7 @@
   </Package>
 
   <Fragment>
-      <Directory Id="$(var.PlatformProgramFilesFolder)">
+      <StandardDirectory Id="$(var.PlatformProgramFilesFolder)">
         <Directory Id="INSTALLFOLDER" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy">
           <Component Id="CrashDumpRegistry" Guid="FBD97166-8D65-4B4E-99AF-09A4AD98B64E" Bitness="$(var.Win64)">
             <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\NINA.exe" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
@@ -312,7 +312,7 @@
           <Directory Id="uk_UA" Name="uk-UA" />
           <Directory Id="DocumentationDirectory" Name="docs" />
         </Directory>
-      </Directory>
+      </StandardDirectory>
       <StandardDirectory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" />
       </StandardDirectory>
@@ -369,7 +369,7 @@
 
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <Component Id="e_sqlite3.dll" Guid="2498761c-837d-4c24-a049-7bc0bc8aae98">
-        <File Id="e_sqlite3.dll" Name="e_sqlite3.dll" Source="$(var.NINA_TargetDir)e_sqlite3.dll" />
+        <File Id="e_sqlite3.dll" Name="e_sqlite3.dll" Source="$(var.NINA_TargetDir)e_sqlite3.dll" DefaultLanguage="0" />
       </Component>
       <Component Id="Accord.dll" Guid="2ea6a34b-6c9a-42da-bb4c-24dcf06e9ef2" Bitness="$(var.Win64)">
         <File Id="Accord.dll" Name="Accord.dll" Source="$(var.NINA_TargetDir)Accord.dll" />
@@ -830,8 +830,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_10.0.526.15411.dll" Guid="1ead7aea-186d-47c2-af56-d93fbffc7bc7">
-        <File Id="mscordaccore_amd64_amd64_10.0.526.15411.dll" Name="mscordaccore_amd64_amd64_10.0.526.15411.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_10.0.526.15411.dll" />
+      <Component Id="mscordaccore_amd64_amd64_10.0.626.17701.dll" Guid="fe14c1b6-7783-4dcd-9ae7-73fa1d6df4a5">
+        <File Id="mscordaccore_amd64_amd64_10.0.626.17701.dll" Name="mscordaccore_amd64_amd64_10.0.626.17701.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_10.0.626.17701.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
@@ -1749,7 +1749,7 @@
   <Fragment>
     <ComponentGroup Id="External_JPLEPH_files" Directory="External">
       <Component Id="JPLEPH" Guid="3D939C40-47D8-4BF2-8C93-5324FAD7CD08" Bitness="$(var.Win64)">
-        <File Id="JPLEPH" Name="JPLEPH" Source="$(var.NINA_TargetDir)External\JPLEPH" DefaultVersion="1.0.0.0" />
+        <File Id="JPLEPH" Name="JPLEPH" Source="$(var.NINA_TargetDir)External\JPLEPH" DefaultVersion="1.0.0.0" DefaultLanguage="0" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -1821,7 +1821,7 @@
         <File Id="External_x64_Atik_AtikCameras.dll" Name="AtikCameras.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\AtikCameras.dll" />
       </Component>
       <Component Id="External_x64_Atik_Atik.Core.dll" Guid="455c64c7-04c6-474b-8b72-fa407be89d6d" Bitness="$(var.Win64)">
-        <File DefaultVersion="65535.0.0.0" Id="External_x64_Atik_Atik.Core.dll" Name="Atik.Core.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\Atik.Core.dll" />
+        <File DefaultVersion="65535.0.0.0" DefaultLanguage="0" Id="External_x64_Atik_Atik.Core.dll" Name="Atik.Core.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\Atik.Core.dll" />
       </Component>
       <Component Id="External_x64_FlyCapture2_v140.dll" Guid="452A92A5-DE18-45A9-AE6A-36D097E314AD" Bitness="$(var.Win64)">
         <File Id="External_x64_Atik_FlyCapture2_v140.dll" Name="FlyCapture2_v140.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\FlyCapture2_v140.dll" />
@@ -2272,7 +2272,7 @@
   <Fragment>
     <ComponentGroup Id="External_x64_MGEN_files" Directory="External_x64_MGEN">
       <Component Id="External_x64_MGEN_MG3lib.dll" Guid="25032fe1-1d0f-4a32-b73e-0a6ff8895766" Bitness="$(var.Win64)">
-        <File DefaultVersion="65535.0.0.0" Id="External_x64_MGEN_MG3lib.dll" Name="MG3lib.dll" Source="$(var.NINA_TargetDir)External\x64\MGEN\MG3lib.dll" />
+        <File DefaultVersion="65535.0.0.0" DefaultLanguage="0" Id="External_x64_MGEN_MG3lib.dll" Name="MG3lib.dll" Source="$(var.NINA_TargetDir)External\x64\MGEN\MG3lib.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -2346,7 +2346,7 @@
   <Fragment>
     <ComponentGroup Id="External_x64_ASTPAN_files" Directory="External_x64_ASTPAN">
       <Component Id="External_x64_ASTPAN_ASTPANCamera.dll" Guid="e40be9b9-5232-4a19-a39e-a01a80490bb2" Bitness="$(var.Win64)">
-        <File DefaultVersion="65535.0.0.0" Id="External_x64_ASTPAN_ASTPANCamera.dll" Name="ASTPANCamera.dll" Source="$(var.NINA_TargetDir)External\x64\ASTPAN\ASTPANCamera.dll" />
+        <File DefaultVersion="65535.0.0.0" DefaultLanguage="0" Id="External_x64_ASTPAN_ASTPANCamera.dll" Name="ASTPANCamera.dll" Source="$(var.NINA_TargetDir)External\x64\ASTPAN\ASTPANCamera.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

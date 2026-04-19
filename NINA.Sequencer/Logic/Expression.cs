@@ -549,9 +549,6 @@ namespace NINA.Sequencer.Logic {
                     resolved.Clear();
                 }
 
-                // External, don't report error during validation
-                bool ext = false;
-
                 if (SymbolBroker == null && Context != null) {
                     SymbolBroker = Context.SymbolBroker;
                 }

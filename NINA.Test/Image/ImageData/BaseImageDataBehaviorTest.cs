@@ -210,7 +210,10 @@ namespace NINA.Test.Image.ImageData {
         }
 
         private class StarDetectionAnalysisStub : IStarDetectionAnalysis {
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged {
+                add { }
+                remove { }
+            }
             public double HFR { get; set; }
             public double FWHM { get; set; }
             public double Eccentricity { get; set; }
