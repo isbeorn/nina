@@ -68,7 +68,7 @@ namespace NINA.PlateSolving.Solvers {
 
                 using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancelToken)) {
                     cts.CancelAfter(TimeSpan.FromMinutes(10));
-                    await StartCLI(imagePath, outputPath, parameter, imageProperties, progress, cancelToken);
+                    await StartCLI(imagePath, outputPath, parameter, imageProperties, progress, cts.Token);
                 }
 
                 //Extract solution coordinates
@@ -148,7 +148,7 @@ namespace NINA.PlateSolving.Solvers {
                 throw new FileNotFoundException("Platesolver executable not found. Please point to the correct platesolver executable in platsolving options.", executableLocation);
             }
 
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            using System.Diagnostics.Process process = new System.Diagnostics.Process();
             System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
 
             startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
@@ -171,7 +171,19 @@ namespace NINA.PlateSolving.Solvers {
             };
             Logger.Debug($"Starting process '{executableLocation}' with args '{startInfo.Arguments}'");
             process.Start();
-            await process.WaitForExitAsync(ct);
+            try {
+                await process.WaitForExitAsync(ct);
+            } catch (OperationCanceledException) {
+                if (!process.HasExited) {
+                    try {
+                        process.Kill(entireProcessTree: true);
+                        await process.WaitForExitAsync(CancellationToken.None);
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                    }
+                }
+                throw;
+            }
         }
     }
 }
