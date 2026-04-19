@@ -63,13 +63,6 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             }
         }
 
-        [OnSerializing]
-        public void Serializing(StreamingContext context) {
-            // We only save this in 3.2
-            filter = null;
-        }
-
-
         [ImportingConstructor]
         public SwitchFilter(IProfileService profileservice, IFilterWheelMediator filterWheelMediator) {
             this.profileService = profileservice;
@@ -136,7 +129,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         partial void AfterClone(SwitchFilter clone) {
             clone.comboBoxText = comboBoxText;
-            SetupFilter(comboBoxText);
+            clone.SetupFilter(comboBoxText);
         }
 
         [IsExpression]
@@ -270,7 +263,10 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             return $"Category: {Category}, Item: {nameof(SwitchFilter)}, Filter: {Filter?.Name}";
         }
 
-        // We don't want any of these serialized; only ComboBoxTest
+        // We don't want any of these serialized; only ComboBoxText
+        public bool ShouldSerializeFilter() {
+            return false;
+        }
         public bool ShouldSerializeXfilterExpression() {
             return false;
         }
