@@ -34,6 +34,7 @@ using NINA.Sequencer.Logic;
 using NINA.Sequencer.Validations;
 using NINA.Core.Model;
 using System.Threading;
+using System.Globalization;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -186,7 +187,19 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
+            BackfillIterationsExpressionFromLoopCondition();
             Validate();
+        }
+
+        private void BackfillIterationsExpressionFromLoopCondition() {
+            LoopCondition loopCondition = GetLoopCondition();
+            if (loopCondition == null ||
+                    IterationsExpression.Definition.Length > 0 ||
+                    loopCondition.Iterations == Iterations) {
+                return;
+            }
+
+            IterationsExpression.Definition = loopCondition.Iterations.ToString(CultureInfo.InvariantCulture);
         }
 
         public override bool Validate() {

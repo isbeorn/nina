@@ -1,0 +1,1317 @@
+{
+  "SourceBranch": "master",
+  "SourceCommit": "2393eae581145ed5b8114bf07c48ca2580540fd5",
+  "GeneratedBy": "LegacySequenceCorpusGenerator",
+  "SequenceFile": "master-3.2-all-sequence-entities.sequence.json",
+  "Items": [
+    "NINA.Sequencer.Container.DeepSkyObjectContainer",
+    "NINA.Sequencer.Container.ParallelContainer",
+    "NINA.Sequencer.Container.SequentialContainer",
+    "NINA.Sequencer.SequenceItem.Autofocus.RunAutofocus",
+    "NINA.Sequencer.SequenceItem.Camera.CoolCamera",
+    "NINA.Sequencer.SequenceItem.Camera.DewHeater",
+    "NINA.Sequencer.SequenceItem.Camera.SetReadoutMode",
+    "NINA.Sequencer.SequenceItem.Camera.SetUSBLimit",
+    "NINA.Sequencer.SequenceItem.Camera.WarmCamera",
+    "NINA.Sequencer.SequenceItem.Connect.ConnectAllEquipment",
+    "NINA.Sequencer.SequenceItem.Connect.ConnectEquipment",
+    "NINA.Sequencer.SequenceItem.Connect.DisconnectAllEquipment",
+    "NINA.Sequencer.SequenceItem.Connect.DisconnectEquipment",
+    "NINA.Sequencer.SequenceItem.Connect.SwitchProfile",
+    "NINA.Sequencer.SequenceItem.Dome.CloseDomeShutter",
+    "NINA.Sequencer.SequenceItem.Dome.DisableDomeSynchronization",
+    "NINA.Sequencer.SequenceItem.Dome.EnableDomeSynchronization",
+    "NINA.Sequencer.SequenceItem.Dome.FindHomeDome",
+    "NINA.Sequencer.SequenceItem.Dome.OpenDomeShutter",
+    "NINA.Sequencer.SequenceItem.Dome.ParkDome",
+    "NINA.Sequencer.SequenceItem.Dome.SlewDomeAzimuth",
+    "NINA.Sequencer.SequenceItem.Dome.SynchronizeDome",
+    "NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter",
+    "NINA.Sequencer.SequenceItem.FlatDevice.AutoBrightnessFlat",
+    "NINA.Sequencer.SequenceItem.FlatDevice.AutoExposureFlat",
+    "NINA.Sequencer.SequenceItem.FlatDevice.CloseCover",
+    "NINA.Sequencer.SequenceItem.FlatDevice.OpenCover",
+    "NINA.Sequencer.SequenceItem.FlatDevice.SetBrightness",
+    "NINA.Sequencer.SequenceItem.FlatDevice.SkyFlat",
+    "NINA.Sequencer.SequenceItem.FlatDevice.ToggleLight",
+    "NINA.Sequencer.SequenceItem.FlatDevice.TrainedDarkFlatExposure",
+    "NINA.Sequencer.SequenceItem.FlatDevice.TrainedFlatExposure",
+    "NINA.Sequencer.SequenceItem.Focuser.MoveFocuserAbsolute",
+    "NINA.Sequencer.SequenceItem.Focuser.MoveFocuserByTemperature",
+    "NINA.Sequencer.SequenceItem.Focuser.MoveFocuserRelative",
+    "NINA.Sequencer.SequenceItem.Guider.Dither",
+    "NINA.Sequencer.SequenceItem.Guider.StartGuiding",
+    "NINA.Sequencer.SequenceItem.Guider.StopGuiding",
+    "NINA.Sequencer.SequenceItem.Imaging.SmartExposure",
+    "NINA.Sequencer.SequenceItem.Imaging.TakeExposure",
+    "NINA.Sequencer.SequenceItem.Imaging.TakeManyExposures",
+    "NINA.Sequencer.SequenceItem.Imaging.TakeSubframeExposure",
+    "NINA.Sequencer.SequenceItem.Platesolving.Center",
+    "NINA.Sequencer.SequenceItem.Platesolving.CenterAndRotate",
+    "NINA.Sequencer.SequenceItem.Platesolving.SolveAndRotate",
+    "NINA.Sequencer.SequenceItem.Platesolving.SolveAndSync",
+    "NINA.Sequencer.SequenceItem.Rotator.MoveRotatorMechanical",
+    "NINA.Sequencer.SequenceItem.SafetyMonitor.WaitUntilSafe",
+    "NINA.Sequencer.SequenceItem.Switch.SetSwitchValue",
+    "NINA.Sequencer.SequenceItem.Telescope.FindHome",
+    "NINA.Sequencer.SequenceItem.Telescope.ParkScope",
+    "NINA.Sequencer.SequenceItem.Telescope.SetTracking",
+    "NINA.Sequencer.SequenceItem.Telescope.SlewScopeToAltAz",
+    "NINA.Sequencer.SequenceItem.Telescope.SlewScopeToRaDec",
+    "NINA.Sequencer.SequenceItem.Telescope.UnparkScope",
+    "NINA.Sequencer.SequenceItem.Utility.Annotation",
+    "NINA.Sequencer.SequenceItem.Utility.ExternalScript",
+    "NINA.Sequencer.SequenceItem.Utility.MessageBox",
+    "NINA.Sequencer.SequenceItem.Utility.SaveSequence",
+    "NINA.Sequencer.SequenceItem.Utility.WaitForAltitude",
+    "NINA.Sequencer.SequenceItem.Utility.WaitForMoonAltitude",
+    "NINA.Sequencer.SequenceItem.Utility.WaitForSunAltitude",
+    "NINA.Sequencer.SequenceItem.Utility.WaitForTime",
+    "NINA.Sequencer.SequenceItem.Utility.WaitForTimeSpan",
+    "NINA.Sequencer.SequenceItem.Utility.WaitUntilAboveHorizon"
+  ],
+  "Conditions": [
+    "NINA.Sequencer.Conditions.AboveHorizonCondition",
+    "NINA.Sequencer.Conditions.AltitudeCondition",
+    "NINA.Sequencer.Conditions.LoopCondition",
+    "NINA.Sequencer.Conditions.LoopWhileUnsafe",
+    "NINA.Sequencer.Conditions.MoonAltitudeCondition",
+    "NINA.Sequencer.Conditions.MoonIlluminationCondition",
+    "NINA.Sequencer.Conditions.SafetyMonitorCondition",
+    "NINA.Sequencer.Conditions.SunAltitudeCondition",
+    "NINA.Sequencer.Conditions.TimeCondition",
+    "NINA.Sequencer.Conditions.TimeSpanCondition"
+  ],
+  "Triggers": [
+    "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterExposures",
+    "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterFilterChange",
+    "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterHFRIncreaseTrigger",
+    "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterTemperatureChangeTrigger",
+    "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterTimeTrigger",
+    "NINA.Sequencer.Trigger.Connect.ReconnectOnDownloadFailure",
+    "NINA.Sequencer.Trigger.Connect.ReconnectTrigger",
+    "NINA.Sequencer.Trigger.Dome.SynchronizeDomeTrigger",
+    "NINA.Sequencer.Trigger.Guider.DitherAfterExposures",
+    "NINA.Sequencer.Trigger.Guider.RestoreGuiding",
+    "NINA.Sequencer.Trigger.MeridianFlip.MeridianFlipTrigger",
+    "NINA.Sequencer.Trigger.Platesolving.CenterAfterDriftTrigger"
+  ],
+  "Containers": [
+    "NINA.Sequencer.Container.DeepSkyObjectContainer",
+    "NINA.Sequencer.Container.EndAreaContainer",
+    "NINA.Sequencer.Container.ParallelContainer",
+    "NINA.Sequencer.Container.SequenceRootContainer",
+    "NINA.Sequencer.Container.SequentialContainer",
+    "NINA.Sequencer.Container.StartAreaContainer",
+    "NINA.Sequencer.Container.TargetAreaContainer",
+    "NINA.Sequencer.SequenceItem.FlatDevice.AutoBrightnessFlat",
+    "NINA.Sequencer.SequenceItem.FlatDevice.AutoExposureFlat",
+    "NINA.Sequencer.SequenceItem.FlatDevice.SkyFlat",
+    "NINA.Sequencer.SequenceItem.FlatDevice.TrainedDarkFlatExposure",
+    "NINA.Sequencer.SequenceItem.FlatDevice.TrainedFlatExposure",
+    "NINA.Sequencer.SequenceItem.Imaging.SmartExposure",
+    "NINA.Sequencer.SequenceItem.Imaging.TakeManyExposures"
+  ],
+  "Entities": [
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Container.DeepSkyObjectContainer",
+      "Name": "Legacy Default Item DeepSkyObjectContainer 001"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Container.DeepSkyObjectContainer",
+      "Name": "Legacy Name 001"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Container.ParallelContainer",
+      "Name": "Legacy Default Item ParallelContainer 002"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Container.ParallelContainer",
+      "Name": "Legacy Name 002"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Container.SequentialContainer",
+      "Name": "Legacy Default Item SequentialContainer 003"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Container.SequentialContainer",
+      "Name": "Legacy Name 003"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Autofocus.RunAutofocus",
+      "Name": "Legacy Default Item RunAutofocus 004"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Autofocus.RunAutofocus",
+      "Name": "Legacy Name 004"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Camera.CoolCamera",
+      "Name": "Legacy Default Item CoolCamera 005"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Camera.CoolCamera",
+      "Name": "Legacy Name 005"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Camera.DewHeater",
+      "Name": "Legacy Default Item DewHeater 006"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Camera.DewHeater",
+      "Name": "Legacy Name 006"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Camera.SetReadoutMode",
+      "Name": "Legacy Default Item SetReadoutMode 007"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Camera.SetReadoutMode",
+      "Name": "Legacy Name 007"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Camera.SetUSBLimit",
+      "Name": "Legacy Default Item SetUSBLimit 008"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Camera.SetUSBLimit",
+      "Name": "Legacy Name 008"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Camera.WarmCamera",
+      "Name": "Legacy Default Item WarmCamera 009"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Camera.WarmCamera",
+      "Name": "Legacy Name 009"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Connect.ConnectAllEquipment",
+      "Name": "Legacy Default Item ConnectAllEquipment 010"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Connect.ConnectAllEquipment",
+      "Name": "Legacy Name 010"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Connect.ConnectEquipment",
+      "Name": "Legacy Default Item ConnectEquipment 011"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Connect.ConnectEquipment",
+      "Name": "Legacy Name 011"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Connect.DisconnectAllEquipment",
+      "Name": "Legacy Default Item DisconnectAllEquipment 012"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Connect.DisconnectAllEquipment",
+      "Name": "Legacy Name 012"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Connect.DisconnectEquipment",
+      "Name": "Legacy Default Item DisconnectEquipment 013"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Connect.DisconnectEquipment",
+      "Name": "Legacy Name 013"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Connect.SwitchProfile",
+      "Name": "Legacy Default Item SwitchProfile 014"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Connect.SwitchProfile",
+      "Name": "Legacy Name 014"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.CloseDomeShutter",
+      "Name": "Legacy Default Item CloseDomeShutter 015"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.CloseDomeShutter",
+      "Name": "Legacy Name 015"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.DisableDomeSynchronization",
+      "Name": "Legacy Default Item DisableDomeSynchronization 016"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.DisableDomeSynchronization",
+      "Name": "Legacy Name 016"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.EnableDomeSynchronization",
+      "Name": "Legacy Default Item EnableDomeSynchronization 017"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.EnableDomeSynchronization",
+      "Name": "Legacy Name 017"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.FindHomeDome",
+      "Name": "Legacy Default Item FindHomeDome 018"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.FindHomeDome",
+      "Name": "Legacy Name 018"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.OpenDomeShutter",
+      "Name": "Legacy Default Item OpenDomeShutter 019"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.OpenDomeShutter",
+      "Name": "Legacy Name 019"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.ParkDome",
+      "Name": "Legacy Default Item ParkDome 020"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.ParkDome",
+      "Name": "Legacy Name 020"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.SlewDomeAzimuth",
+      "Name": "Legacy Default Item SlewDomeAzimuth 021"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.SlewDomeAzimuth",
+      "Name": "Legacy Name 021"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.SynchronizeDome",
+      "Name": "Legacy Default Item SynchronizeDome 022"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Dome.SynchronizeDome",
+      "Name": "Legacy Name 022"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter",
+      "Name": "Legacy Default Item SwitchFilter 023"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter",
+      "Name": "Legacy Name 023"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.AutoBrightnessFlat",
+      "Name": "Legacy Default Item AutoBrightnessFlat 024"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.AutoBrightnessFlat",
+      "Name": "Legacy Name 024"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.AutoExposureFlat",
+      "Name": "Legacy Default Item AutoExposureFlat 025"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.AutoExposureFlat",
+      "Name": "Legacy Name 025"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.CloseCover",
+      "Name": "Legacy Default Item CloseCover 026"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.CloseCover",
+      "Name": "Legacy Name 026"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.OpenCover",
+      "Name": "Legacy Default Item OpenCover 027"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.OpenCover",
+      "Name": "Legacy Name 027"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.SetBrightness",
+      "Name": "Legacy Default Item SetBrightness 028"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.SetBrightness",
+      "Name": "Legacy Name 028"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.SkyFlat",
+      "Name": "Legacy Default Item SkyFlat 029"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.SkyFlat",
+      "Name": "Legacy Name 029"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.ToggleLight",
+      "Name": "Legacy Default Item ToggleLight 030"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.ToggleLight",
+      "Name": "Legacy Name 030"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.TrainedDarkFlatExposure",
+      "Name": "Legacy Default Item TrainedDarkFlatExposure 031"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.TrainedDarkFlatExposure",
+      "Name": "Legacy Name 031"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.TrainedFlatExposure",
+      "Name": "Legacy Default Item TrainedFlatExposure 032"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.TrainedFlatExposure",
+      "Name": "Legacy Name 032"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Focuser.MoveFocuserAbsolute",
+      "Name": "Legacy Default Item MoveFocuserAbsolute 033"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Focuser.MoveFocuserAbsolute",
+      "Name": "Legacy Name 033"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Focuser.MoveFocuserByTemperature",
+      "Name": "Legacy Default Item MoveFocuserByTemperature 034"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Focuser.MoveFocuserByTemperature",
+      "Name": "Legacy Name 034"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Focuser.MoveFocuserRelative",
+      "Name": "Legacy Default Item MoveFocuserRelative 035"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Focuser.MoveFocuserRelative",
+      "Name": "Legacy Name 035"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Guider.Dither",
+      "Name": "Legacy Default Item Dither 036"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Guider.Dither",
+      "Name": "Legacy Name 036"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Guider.StartGuiding",
+      "Name": "Legacy Default Item StartGuiding 037"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Guider.StartGuiding",
+      "Name": "Legacy Name 037"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Guider.StopGuiding",
+      "Name": "Legacy Default Item StopGuiding 038"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Guider.StopGuiding",
+      "Name": "Legacy Name 038"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.SmartExposure",
+      "Name": "Legacy Default Item SmartExposure 039"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.SmartExposure",
+      "Name": "Legacy Name 039"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.TakeExposure",
+      "Name": "Legacy Default Item TakeExposure 040"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.TakeExposure",
+      "Name": "Legacy Name 040"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.TakeManyExposures",
+      "Name": "Legacy Default Item TakeManyExposures 041"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.TakeManyExposures",
+      "Name": "Legacy Name 041"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.TakeSubframeExposure",
+      "Name": "Legacy Default Item TakeSubframeExposure 042"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.TakeSubframeExposure",
+      "Name": "Legacy Name 042"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Platesolving.Center",
+      "Name": "Legacy Default Item Center 043"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Platesolving.Center",
+      "Name": "Legacy Name 043"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Platesolving.CenterAndRotate",
+      "Name": "Legacy Default Item CenterAndRotate 044"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Platesolving.CenterAndRotate",
+      "Name": "Legacy Name 044"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Platesolving.SolveAndRotate",
+      "Name": "Legacy Default Item SolveAndRotate 045"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Platesolving.SolveAndRotate",
+      "Name": "Legacy Name 045"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Platesolving.SolveAndSync",
+      "Name": "Legacy Default Item SolveAndSync 046"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Platesolving.SolveAndSync",
+      "Name": "Legacy Name 046"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Rotator.MoveRotatorMechanical",
+      "Name": "Legacy Default Item MoveRotatorMechanical 047"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Rotator.MoveRotatorMechanical",
+      "Name": "Legacy Name 047"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.SafetyMonitor.WaitUntilSafe",
+      "Name": "Legacy Default Item WaitUntilSafe 048"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.SafetyMonitor.WaitUntilSafe",
+      "Name": "Legacy Name 048"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Switch.SetSwitchValue",
+      "Name": "Legacy Default Item SetSwitchValue 049"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Switch.SetSwitchValue",
+      "Name": "Legacy Name 049"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.FindHome",
+      "Name": "Legacy Default Item FindHome 050"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.FindHome",
+      "Name": "Legacy Name 050"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.ParkScope",
+      "Name": "Legacy Default Item ParkScope 051"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.ParkScope",
+      "Name": "Legacy Name 051"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.SetTracking",
+      "Name": "Legacy Default Item SetTracking 052"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.SetTracking",
+      "Name": "Legacy Name 052"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.SlewScopeToAltAz",
+      "Name": "Legacy Default Item SlewScopeToAltAz 053"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.SlewScopeToAltAz",
+      "Name": "Legacy Name 053"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.SlewScopeToRaDec",
+      "Name": "Legacy Default Item SlewScopeToRaDec 054"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.SlewScopeToRaDec",
+      "Name": "Legacy Name 054"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.UnparkScope",
+      "Name": "Legacy Default Item UnparkScope 055"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Telescope.UnparkScope",
+      "Name": "Legacy Name 055"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.Annotation",
+      "Name": "Legacy Default Item Annotation 056"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.Annotation",
+      "Name": "Legacy Name 056"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.ExternalScript",
+      "Name": "Legacy Default Item ExternalScript 057"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.ExternalScript",
+      "Name": "Legacy Name 057"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.MessageBox",
+      "Name": "Legacy Default Item MessageBox 058"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.MessageBox",
+      "Name": "Legacy Name 058"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.SaveSequence",
+      "Name": "Legacy Default Item SaveSequence 059"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.SaveSequence",
+      "Name": "Legacy Name 059"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitForAltitude",
+      "Name": "Legacy Default Item WaitForAltitude 060"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitForAltitude",
+      "Name": "Legacy Name 060"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitForMoonAltitude",
+      "Name": "Legacy Default Item WaitForMoonAltitude 061"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitForMoonAltitude",
+      "Name": "Legacy Name 061"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitForSunAltitude",
+      "Name": "Legacy Default Item WaitForSunAltitude 062"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitForSunAltitude",
+      "Name": "Legacy Name 062"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitForTime",
+      "Name": "Legacy Default Item WaitForTime 063"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitForTime",
+      "Name": "Legacy Name 063"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitForTimeSpan",
+      "Name": "Legacy Default Item WaitForTimeSpan 064"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitForTimeSpan",
+      "Name": "Legacy Name 064"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitUntilAboveHorizon",
+      "Name": "Legacy Default Item WaitUntilAboveHorizon 065"
+    },
+    {
+      "Kind": "Item",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Utility.WaitUntilAboveHorizon",
+      "Name": "Legacy Name 065"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Conditions.AboveHorizonCondition",
+      "Name": "Legacy Default Condition AboveHorizonCondition 066"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Conditions.AboveHorizonCondition",
+      "Name": "Legacy Name 066"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Conditions.AltitudeCondition",
+      "Name": "Legacy Default Condition AltitudeCondition 067"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Conditions.AltitudeCondition",
+      "Name": "Legacy Name 067"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Conditions.LoopCondition",
+      "Name": "Legacy Default Condition LoopCondition 068"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Conditions.LoopCondition",
+      "Name": "Legacy Name 068"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Conditions.LoopWhileUnsafe",
+      "Name": "Legacy Default Condition LoopWhileUnsafe 069"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Conditions.LoopWhileUnsafe",
+      "Name": "Legacy Name 069"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Conditions.MoonAltitudeCondition",
+      "Name": "Legacy Default Condition MoonAltitudeCondition 070"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Conditions.MoonAltitudeCondition",
+      "Name": "Legacy Name 070"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Conditions.MoonIlluminationCondition",
+      "Name": "Legacy Default Condition MoonIlluminationCondition 071"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Conditions.MoonIlluminationCondition",
+      "Name": "Legacy Name 071"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Conditions.SafetyMonitorCondition",
+      "Name": "Legacy Default Condition SafetyMonitorCondition 072"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Conditions.SafetyMonitorCondition",
+      "Name": "Legacy Name 072"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Conditions.SunAltitudeCondition",
+      "Name": "Legacy Default Condition SunAltitudeCondition 073"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Conditions.SunAltitudeCondition",
+      "Name": "Legacy Name 073"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Conditions.TimeCondition",
+      "Name": "Legacy Default Condition TimeCondition 074"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Conditions.TimeCondition",
+      "Name": "Legacy Name 074"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Conditions.TimeSpanCondition",
+      "Name": "Legacy Default Condition TimeSpanCondition 075"
+    },
+    {
+      "Kind": "Condition",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Conditions.TimeSpanCondition",
+      "Name": "Legacy Name 075"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterExposures",
+      "Name": "Legacy Default Trigger AutofocusAfterExposures 076"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterExposures",
+      "Name": "Legacy Name 076"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterFilterChange",
+      "Name": "Legacy Default Trigger AutofocusAfterFilterChange 077"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterFilterChange",
+      "Name": "Legacy Name 077"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterHFRIncreaseTrigger",
+      "Name": "Legacy Default Trigger AutofocusAfterHFRIncreaseTrigger 078"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterHFRIncreaseTrigger",
+      "Name": "Legacy Name 078"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterTemperatureChangeTrigger",
+      "Name": "Legacy Default Trigger AutofocusAfterTemperatureChangeTrigger 079"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterTemperatureChangeTrigger",
+      "Name": "Legacy Name 079"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterTimeTrigger",
+      "Name": "Legacy Default Trigger AutofocusAfterTimeTrigger 080"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Autofocus.AutofocusAfterTimeTrigger",
+      "Name": "Legacy Name 080"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Connect.ReconnectOnDownloadFailure",
+      "Name": "Legacy Default Trigger ReconnectOnDownloadFailure 081"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Connect.ReconnectOnDownloadFailure",
+      "Name": "Legacy Name 081"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Connect.ReconnectTrigger",
+      "Name": "Legacy Default Trigger ReconnectTrigger 082"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Connect.ReconnectTrigger",
+      "Name": "Legacy Name 082"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Dome.SynchronizeDomeTrigger",
+      "Name": "Legacy Default Trigger SynchronizeDomeTrigger 083"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Dome.SynchronizeDomeTrigger",
+      "Name": "Legacy Name 083"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Guider.DitherAfterExposures",
+      "Name": "Legacy Default Trigger DitherAfterExposures 084"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Guider.DitherAfterExposures",
+      "Name": "Legacy Name 084"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Guider.RestoreGuiding",
+      "Name": "Legacy Default Trigger RestoreGuiding 085"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Guider.RestoreGuiding",
+      "Name": "Legacy Name 085"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.MeridianFlip.MeridianFlipTrigger",
+      "Name": "Legacy Default Trigger MeridianFlipTrigger 086"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.MeridianFlip.MeridianFlipTrigger",
+      "Name": "Legacy Name 086"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Trigger.Platesolving.CenterAfterDriftTrigger",
+      "Name": "Legacy Default Trigger CenterAfterDriftTrigger 087"
+    },
+    {
+      "Kind": "Trigger",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Trigger.Platesolving.CenterAfterDriftTrigger",
+      "Name": "Legacy Name 087"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Container.DeepSkyObjectContainer",
+      "Name": "Legacy Default Container DeepSkyObjectContainer 088"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Container.DeepSkyObjectContainer",
+      "Name": "Legacy Name 088"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Container.EndAreaContainer",
+      "Name": "Legacy Default Container EndAreaContainer 089"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Container.EndAreaContainer",
+      "Name": "Legacy Name 089"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Container.ParallelContainer",
+      "Name": "Legacy Default Container ParallelContainer 090"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Container.ParallelContainer",
+      "Name": "Legacy Name 090"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Container.SequentialContainer",
+      "Name": "Legacy Default Container SequentialContainer 091"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Container.SequentialContainer",
+      "Name": "Legacy Name 091"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Container.StartAreaContainer",
+      "Name": "Legacy Default Container StartAreaContainer 092"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Container.StartAreaContainer",
+      "Name": "Legacy Name 092"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.Container.TargetAreaContainer",
+      "Name": "Legacy Default Container TargetAreaContainer 093"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.Container.TargetAreaContainer",
+      "Name": "Legacy Name 093"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.AutoBrightnessFlat",
+      "Name": "Legacy Default Container AutoBrightnessFlat 094"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.AutoBrightnessFlat",
+      "Name": "Legacy Name 094"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.AutoExposureFlat",
+      "Name": "Legacy Default Container AutoExposureFlat 095"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.AutoExposureFlat",
+      "Name": "Legacy Name 095"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.SkyFlat",
+      "Name": "Legacy Default Container SkyFlat 096"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.SkyFlat",
+      "Name": "Legacy Name 096"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.TrainedDarkFlatExposure",
+      "Name": "Legacy Default Container TrainedDarkFlatExposure 097"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.TrainedDarkFlatExposure",
+      "Name": "Legacy Name 097"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.TrainedFlatExposure",
+      "Name": "Legacy Default Container TrainedFlatExposure 098"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.FlatDevice.TrainedFlatExposure",
+      "Name": "Legacy Name 098"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.SmartExposure",
+      "Name": "Legacy Default Container SmartExposure 099"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.SmartExposure",
+      "Name": "Legacy Name 099"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Default",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.TakeManyExposures",
+      "Name": "Legacy Default Container TakeManyExposures 100"
+    },
+    {
+      "Kind": "Container",
+      "Variant": "Populated",
+      "Type": "NINA.Sequencer.SequenceItem.Imaging.TakeManyExposures",
+      "Name": "Legacy Name 100"
+    }
+  ]
+}

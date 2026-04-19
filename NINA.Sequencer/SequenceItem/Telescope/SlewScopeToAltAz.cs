@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -72,10 +73,10 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             // Fix up Ra and Dec Expressions (auto-update to existing sequences)
             TopocentricCoordinates c = Coordinates.Coordinates;
             if (AltExpression.Definition.Length == 0 && c.Altitude.Degree != 0) {
-                AltExpression.Definition = c.Altitude.Degree.ToString();
+                AltExpression.Definition = c.Altitude.Degree.ToString(CultureInfo.InvariantCulture);
             }
             if (AzExpression.Definition.Length == 0 && c.Azimuth.Degree != 0) {
-                AzExpression.Definition = c.Azimuth.Degree.ToString();
+                AzExpression.Definition = c.Azimuth.Degree.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -167,9 +168,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             if (Protect) return;
 
             if (c.Altitude != lastAlt) {
-                AltExpression.Definition = Math.Round(c.Altitude.Degree, 7).ToString();
+                AltExpression.Definition = Math.Round(c.Altitude.Degree, 7).ToString(CultureInfo.InvariantCulture);
             } else if (c.Azimuth != lastAz) {
-                AzExpression.Definition = Math.Round(c.Azimuth.Degree, 7).ToString();
+                AzExpression.Definition = Math.Round(c.Azimuth.Degree, 7).ToString(CultureInfo.InvariantCulture);
             }
 
             lastAlt = c.Altitude;

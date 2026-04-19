@@ -126,7 +126,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             get => ROIPctExpression.Value / 100;
             set {
                 // When loaded, we set the expression
-                ROIPctExpression.Definition = (value * 100).ToString();
+                ROIPctExpression.Definition = (value * 100).ToString(CultureInfo.InvariantCulture);
             }
         }
 

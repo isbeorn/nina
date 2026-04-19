@@ -24,6 +24,7 @@ using NINA.Sequencer.Utility;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Runtime.Serialization;
 using static NINA.Sequencer.Utility.ItemUtility;
 
@@ -63,13 +64,13 @@ namespace NINA.Sequencer.Conditions {
                 Coordinates c = Data.Coordinates.Coordinates;
                 if (c.RA != 0 || c.Dec != 0) {
                     // Fix up decimals
-                    RaExpression.Definition = Math.Round(c.RA, 7).ToString();
-                    DecExpression.Definition = Math.Round(c.Dec, 7).ToString();
-                    OffsetExpression.Definition = Data.Offset.ToString();
+                    RaExpression.Definition = Math.Round(c.RA, 7).ToString(CultureInfo.InvariantCulture);
+                    DecExpression.Definition = Math.Round(c.Dec, 7).ToString(CultureInfo.InvariantCulture);
+                    OffsetExpression.Definition = Data.Offset.ToString(CultureInfo.InvariantCulture);
                 }
             }
             if (OffsetExpression.Definition.Length == 0 && Data.Offset != OffsetExpression.Default) {
-                OffsetExpression.Definition = Data.Offset.ToString();
+                OffsetExpression.Definition = Data.Offset.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -91,9 +92,9 @@ namespace NINA.Sequencer.Conditions {
             if (Protect) return;
 
             if (c.RA != lastRA) {
-                RaExpression.Definition = Math.Round(c.RA, 7).ToString();
+                RaExpression.Definition = Math.Round(c.RA, 7).ToString(CultureInfo.InvariantCulture);
             } else if (c.Dec != lastDec) {
-                DecExpression.Definition = Math.Round(c.Dec, 7).ToString();
+                DecExpression.Definition = Math.Round(c.Dec, 7).ToString(CultureInfo.InvariantCulture);
             }
 
             lastRA = c.RA;
