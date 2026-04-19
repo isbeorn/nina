@@ -16,21 +16,21 @@ $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 Run one fixture, namespace, or group with `FullyQualifiedName~`:
 
 ```powershell
-dotnet test NINA.Test\NINA.Test.csproj --filter 'FullyQualifiedName~NINA.Test.PlateSolving.ImageSolverTest' -v minimal
+dotnet test NINA.Test\NINA.Test.csproj --filter 'FullyQualifiedName~NINA.Test.PlateSolving.ImageSolverTest' -v minimal --no-restore -m:1 -p:UseSharedCompilation=false -p:GeneratePackageOnBuild=false
 ```
 
 Run multiple groups with `|`:
 
 ```powershell
-dotnet test NINA.Test\NINA.Test.csproj --filter 'FullyQualifiedName~NINA.Test.Image|FullyQualifiedName~NINA.Test.FITSTest' -v minimal
+dotnet test NINA.Test\NINA.Test.csproj --filter 'FullyQualifiedName~NINA.Test.Image|FullyQualifiedName~NINA.Test.FITSTest' -v minimal --no-restore -m:1 -p:UseSharedCompilation=false -p:GeneratePackageOnBuild=false
 ```
 
 Broader CLI flow from `CONTRIBUTING.md`:
 
 ```powershell
 dotnet restore NINA.sln
-dotnet build NINA\NINA.csproj --configuration Debug --no-restore
-dotnet build NINA.Test\NINA.Test.csproj --configuration Debug --no-restore
+dotnet build NINA\NINA.csproj --configuration Debug --no-restore -m:1 -p:UseSharedCompilation=false -p:GeneratePackageOnBuild=false -p:RunPostBuildEvent=Never
+dotnet build NINA.Test\NINA.Test.csproj --configuration Debug --no-restore -m:1 -p:UseSharedCompilation=false -p:GeneratePackageOnBuild=false
 dotnet test NINA.Test\NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64
 ```
 

@@ -32,6 +32,14 @@ Use this skill as a routing layer, not a replacement for the repo docs.
 
 Prefer targeted tests while iterating and broaden only when the changed surface justifies it. Use `references/testing-map.md` for concrete filters and command templates.
 
+For .NET build and test commands in this sandbox, start with the stable invocation shape instead of rediscovering environment failures:
+
+- Set `DOTNET_CLI_HOME` to the repo-local `.dotnet-cli` directory and set `DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1`, `DOTNET_ADD_GLOBAL_TOOLS_TO_PATH=0`, and `DOTNET_CLI_TELEMETRY_OPTOUT=1` in the same PowerShell command.
+- Use `--no-restore` unless restore is the explicit task or a missing-assets error proves it is needed.
+- Add `-m:1 -p:UseSharedCompilation=false -p:GeneratePackageOnBuild=false` to targeted `dotnet build` and `dotnet test` commands to avoid MSBuild/compiler-server sandbox failures.
+- For `NINA/NINA.csproj` app builds, also add `-p:RunPostBuildEvent=Never` unless the post-build output is part of the task.
+- If a previous .NET command fails with no compiler errors, first rerun it with these flags before inspecting long diagnostic logs.
+
 ## Resources
 
 - `references/project-map.md`: compact owner map, common starting points, and neighboring checks.
