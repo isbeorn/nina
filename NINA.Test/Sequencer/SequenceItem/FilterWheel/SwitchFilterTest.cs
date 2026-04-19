@@ -14,6 +14,7 @@
 
 using FluentAssertions;
 using Moq;
+using Newtonsoft.Json;
 using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer;
@@ -52,6 +53,19 @@ namespace NINA.Test.Sequencer.SequenceItem.FilterWheel {
 
         private delegate void TryGetValueCallback(string key, out object value);
 
+        private void SetupProfileFilters(params FilterInfo[] filters) {
+            var filterCollection = new Core.Utility.ObserveAllCollection<FilterInfo>();
+            foreach (FilterInfo filter in filters) {
+                filterCollection.Add(filter);
+            }
+
+            var profileMock = new Mock<IProfile>();
+            var filterWheelSettingsMock = new Mock<NINA.Profile.Interfaces.IFilterWheelSettings>();
+            filterWheelSettingsMock.Setup(x => x.FilterWheelFilters).Returns(filterCollection);
+            profileMock.Setup(x => x.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
+            profileServiceMock.Setup(x => x.ActiveProfile).Returns(profileMock.Object);
+        }
+
         [Test]
         public void Clone_ItemClonedProperly() {
             var sut = new SwitchFilter(profileServiceMock.Object, fwMediatorMock.Object);
@@ -65,6 +79,53 @@ namespace NINA.Test.Sequencer.SequenceItem.FilterWheel {
             item2.Description.Should().BeSameAs(sut.Description);
             item2.Icon.Should().BeSameAs(sut.Icon);
             item2.Filter.Should().BeSameAs(sut.Filter);
+        }
+
+        /// <summary>
+        /// Verifies that cloning resolves the selected filter on the clone instance.
+        /// This covers the regression where AfterClone resolved the source instance instead,
+        /// leaving cloned sequences with ComboBoxText set but Filter unset.
+        /// </summary>
+        [Test]
+        public void Clone_ResolvesSelectedFilterOnClone() {
+            var redFilter = new FilterInfo("Red", 0, 1);
+            var greenFilter = new FilterInfo("Green", 0, 2);
+            SetupProfileFilters(redFilter, greenFilter);
+            fwMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true });
+
+            var sut = new SwitchFilter(profileServiceMock.Object, fwMediatorMock.Object);
+            sut.ComboBoxText = "Green";
+
+            var clone = (SwitchFilter)sut.Clone();
+
+            clone.Should().NotBeSameAs(sut);
+            clone.ComboBoxText.Should().Be("Green");
+            clone.Filter.Should().NotBeNull();
+            clone.Filter.Name.Should().Be("Green");
+            clone.Filter.Position.Should().Be(2);
+        }
+
+        /// <summary>
+        /// Verifies that serialization suppresses the legacy Filter payload without mutating live state.
+        /// This protects old 3.2 sequence migration support while avoiding the regression where saving
+        /// cleared the resolved in-memory filter value.
+        /// </summary>
+        [Test]
+        public void Serialize_DoesNotMutateResolvedFilterOrWriteLegacyFilter() {
+            var redFilter = new FilterInfo("Red", 0, 1);
+            var greenFilter = new FilterInfo("Green", 0, 2);
+            SetupProfileFilters(redFilter, greenFilter);
+            fwMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true });
+
+            var sut = new SwitchFilter(profileServiceMock.Object, fwMediatorMock.Object);
+            sut.ComboBoxText = "Green";
+
+            string json = JsonConvert.SerializeObject(sut);
+
+            sut.Filter.Should().NotBeNull();
+            sut.Filter.Name.Should().Be("Green");
+            json.Should().Contain("\"ComboBoxText\"");
+            json.Should().NotContain("\"Filter\"");
         }
 
         [Test]

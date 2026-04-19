@@ -23,6 +23,7 @@ using NINA.Sequencer.Utility.DateTimeProvider;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using SequencerExpression = NINA.Sequencer.Logic.Expression;
@@ -215,6 +216,32 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
 
             variable.Expr.Definition.Should().Be("42");
             consumer.Dirty.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task ResetVariable_Execute_FormatsNumericDefinitionWithInvariantCulture() {
+            CultureInfo originalCulture = CultureInfo.CurrentCulture;
+            CultureInfo originalUICulture = CultureInfo.CurrentUICulture;
+
+            try {
+                CultureInfo commaDecimalCulture = CultureInfo.GetCultureInfo("de-DE");
+                CultureInfo.CurrentCulture = commaDecimalCulture;
+                CultureInfo.CurrentUICulture = commaDecimalCulture;
+
+                SequenceRootContainer root = CreateRoot();
+                Variable variable = CreateVariable("target", "1", root);
+                await variable.Execute(default, CancellationToken.None);
+
+                ResetVariable sut = CreateResetVariable("target", "12.5", root);
+
+                sut.Validate().Should().BeTrue();
+                await sut.Execute(default, CancellationToken.None);
+
+                variable.Expr.Definition.Should().Be("12.5");
+            } finally {
+                CultureInfo.CurrentCulture = originalCulture;
+                CultureInfo.CurrentUICulture = originalUICulture;
+            }
         }
 
         /// <summary>
