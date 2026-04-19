@@ -197,5 +197,101 @@ namespace NINA.Test.PlateSolving {
             imagingMediatorMock.Verify(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), Times.Exactly(3));
             imageSolverMock.Verify(x => x.Solve(imageDataMock.Object, It.IsAny<PlateSolveParameter>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
         }
+
+        [Test]
+        public async Task Solve_RestoresFilterWhenCaptureReturnsNull() {
+            var initialFilter = new FilterInfo() { Name = "L", Position = 1 };
+            filterMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { SelectedFilter = initialFilter });
+            var seq = new CaptureSequence();
+            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 1 };
+            imagingMediatorMock
+                .Setup(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .ReturnsAsync((IRenderedImage)null);
+
+            var sut = new CaptureSolver(plateSolverMock.Object, blindSolverMock.Object, imagingMediatorMock.Object, filterMediatorMock.Object);
+            sut.ImageSolver = imageSolverMock.Object;
+
+            PlateSolveResult result = await sut.Solve(seq, parameter, default, default, CancellationToken.None);
+
+            result.Success.Should().BeFalse();
+            filterMediatorMock.Verify(x => x.ChangeFilter(initialFilter, It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), Times.Once());
+        }
+
+        [Test]
+        public async Task Solve_RestoresFilterWhenCaptureThrows() {
+            var initialFilter = new FilterInfo() { Name = "L", Position = 1 };
+            filterMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { SelectedFilter = initialFilter });
+            var seq = new CaptureSequence();
+            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 1 };
+            imagingMediatorMock
+                .Setup(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .ThrowsAsync(new InvalidOperationException("capture failed"));
+
+            var sut = new CaptureSolver(plateSolverMock.Object, blindSolverMock.Object, imagingMediatorMock.Object, filterMediatorMock.Object);
+            sut.ImageSolver = imageSolverMock.Object;
+
+            Func<Task> act = () => sut.Solve(seq, parameter, default, default, CancellationToken.None);
+
+            await act.Should().ThrowAsync<InvalidOperationException>();
+            filterMediatorMock.Verify(x => x.ChangeFilter(initialFilter, It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), Times.Once());
+        }
+
+        [Test]
+        public async Task Solve_RestoresFilterWhenCaptureIsCanceled() {
+            var initialFilter = new FilterInfo() { Name = "L", Position = 1 };
+            filterMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { SelectedFilter = initialFilter });
+            var seq = new CaptureSequence();
+            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 1 };
+            using var cts = new CancellationTokenSource();
+            cts.Cancel();
+            imagingMediatorMock
+                .Setup(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .ThrowsAsync(new OperationCanceledException(cts.Token));
+
+            var sut = new CaptureSolver(plateSolverMock.Object, blindSolverMock.Object, imagingMediatorMock.Object, filterMediatorMock.Object);
+            sut.ImageSolver = imageSolverMock.Object;
+
+            Func<Task> act = () => sut.Solve(seq, parameter, default, default, cts.Token);
+
+            await act.Should().ThrowAsync<OperationCanceledException>();
+            filterMediatorMock.Verify(x => x.ChangeFilter(initialFilter, It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), Times.Once());
+        }
+
+        [Test]
+        public async Task Solve_WaitsForFilterRestoreWhenImageSolverThrows() {
+            var imageDataMock = new Mock<IImageData>();
+            var renderedImageMock = new Mock<IRenderedImage>();
+            renderedImageMock.SetupGet(x => x.RawImageData).Returns(imageDataMock.Object);
+            var initialFilter = new FilterInfo() { Name = "L", Position = 1 };
+            var restoreStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var releaseRestore = new TaskCompletionSource<FilterInfo>(TaskCreationOptions.RunContinuationsAsynchronously);
+            filterMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { SelectedFilter = initialFilter });
+            filterMediatorMock
+                .Setup(x => x.ChangeFilter(initialFilter, It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .Returns(async () => {
+                    restoreStarted.SetResult();
+                    return await releaseRestore.Task;
+                });
+            var seq = new CaptureSequence();
+            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 1 };
+            imagingMediatorMock
+                .Setup(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .ReturnsAsync(renderedImageMock.Object);
+            imageSolverMock
+                .Setup(x => x.Solve(imageDataMock.Object, It.IsAny<PlateSolveParameter>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new InvalidOperationException("solve failed"));
+
+            var sut = new CaptureSolver(plateSolverMock.Object, blindSolverMock.Object, imagingMediatorMock.Object, filterMediatorMock.Object);
+            sut.ImageSolver = imageSolverMock.Object;
+
+            Task<PlateSolveResult> solveTask = sut.Solve(seq, parameter, default, default, CancellationToken.None);
+            await restoreStarted.Task.WaitAsync(TimeSpan.FromSeconds(1));
+            await Task.Delay(50);
+
+            solveTask.IsCompleted.Should().BeFalse();
+            releaseRestore.SetResult(initialFilter);
+            Func<Task> act = async () => await solveTask;
+            await act.Should().ThrowAsync<InvalidOperationException>();
+        }
     }
 }
