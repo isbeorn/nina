@@ -72,6 +72,9 @@
     <None Update="Autofocus\TestImage_Jelly.xisf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Sequencer\Serialization\LegacySequences\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
