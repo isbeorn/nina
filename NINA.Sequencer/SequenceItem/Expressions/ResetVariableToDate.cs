@@ -4,6 +4,7 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Sequencer.Container;
@@ -123,7 +124,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 sym.Expr.Error = null;
                 sym.Expr.Definition = "'" + Expr.StringValue + "'";
             } else {
-                sym.Expr.Definition = Expr.Value.ToString();
+                sym.Expr.Definition = Expr.Value.ToString(CultureInfo.InvariantCulture);
             }
 
             Logger.Info("SetVariableToDate: " + Variable + " from " + oldDefinition + " to " + sym.Expr.Definition);

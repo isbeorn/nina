@@ -26,6 +26,7 @@ using NINA.Sequencer.Generators;
 using System.Runtime.Serialization;
 using NINA.Sequencer.Logic;
 using System.Drawing;
+using System.Globalization;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -56,7 +57,7 @@ namespace NINA.Sequencer.Conditions {
         public new void OnDeserialized(StreamingContext context) {
             base.OnDeserialized(context);
             if (OffsetExpression.Definition.Length == 0 && Data.Offset != OffsetExpression.Default) {
-                OffsetExpression.Definition = Data.Offset.ToString();
+                OffsetExpression.Definition = Data.Offset.ToString(CultureInfo.InvariantCulture);
             }
         }
 

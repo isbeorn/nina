@@ -20,6 +20,7 @@ using NINA.Core.Utility;
 using NINA.Astrometry;
 using System;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
@@ -49,7 +50,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
             if (OffsetExpression.Definition.Length == 0) {
-                OffsetExpression.Definition = Data.Offset.ToString();
+                OffsetExpression.Definition = Data.Offset.ToString(CultureInfo.InvariantCulture);
             }
         }
 
