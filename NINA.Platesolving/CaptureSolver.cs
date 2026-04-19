@@ -50,27 +50,21 @@ namespace NINA.PlateSolving {
             do {
                 remainingAttempts--;
                 var oldFilter = filterWheelMediator.GetInfo()?.SelectedFilter;
-                progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblCameraStateExposing"] });
-                var renderedImage = await imagingMediator.CaptureAndPrepareImage(seq, new PrepareImageParameters(detectStars: false), ct, progress);
-                progress?.Report(new ApplicationStatus() { Status = string.Empty });
-
-                if (renderedImage == null) {
-                    plateSolveResult = new PlateSolveResult() { Success = false }; ;
-                } else {
-                    Task filterChangeTask = Task.CompletedTask;
-                    if (oldFilter != null) {
-                        filterChangeTask = filterWheelMediator.ChangeFilter(oldFilter);
-                    }
-
-                    solveProgress?.Report(
-                        new PlateSolveProgress {
-                            Thumbnail = await renderedImage.GetThumbnail()
-                        }
-                    );
-
-                    ct.ThrowIfCancellationRequested();
+                Exception attemptFailure = null;
+                try {
+                    progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblCameraStateExposing"] });
+                    var renderedImage = await imagingMediator.CaptureAndPrepareImage(seq, new PrepareImageParameters(detectStars: false), ct, progress);
+                    progress?.Report(new ApplicationStatus() { Status = string.Empty });
 
                     if (renderedImage != null) {
+                        solveProgress?.Report(
+                            new PlateSolveProgress {
+                                Thumbnail = await renderedImage.GetThumbnail()
+                            }
+                        );
+
+                        ct.ThrowIfCancellationRequested();
+
                         plateSolveResult = await ImageSolver.Solve(renderedImage.RawImageData, parameter, progress, ct);
                     } else {
                         plateSolveResult = new PlateSolveResult() { Success = false };
@@ -81,12 +75,24 @@ namespace NINA.PlateSolving {
                             PlateSolveResult = plateSolveResult
                         }
                     );
-
-                    await filterChangeTask;
-
-                    if (!plateSolveResult.Success && remainingAttempts > 0) {
-                        await CoreUtil.Wait(parameter.ReattemptDelay, true, ct, progress, "");
+                } catch (Exception ex) {
+                    attemptFailure = ex;
+                    throw;
+                } finally {
+                    progress?.Report(new ApplicationStatus() { Status = string.Empty });
+                    if (oldFilter != null) {
+                        Logger.Info($"Restoring filter to {oldFilter} after capture solve attempt");
+                        using var timeoutCts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+                        try {
+                            await filterWheelMediator.ChangeFilter(oldFilter, timeoutCts.Token, progress);
+                        } catch (Exception ex) when (attemptFailure != null) {
+                            Logger.Error("Filter restoration failed after an unsuccessful capture solve attempt", ex);
+                        }
                     }
+                }
+
+                if (!plateSolveResult.Success && remainingAttempts > 0) {
+                    await CoreUtil.Wait(parameter.ReattemptDelay, true, ct, progress, "");
                 }
             } while (!plateSolveResult.Success && remainingAttempts > 0);
             return plateSolveResult;
