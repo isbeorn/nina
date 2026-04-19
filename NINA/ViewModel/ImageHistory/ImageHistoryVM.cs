@@ -35,6 +35,7 @@ using NINA.WPF.Base.Utility.AutoFocus;
 using Microsoft.Win32;
 using NINA.Equipment.Model;
 using NINA.Profile;
+using NINA.Astrometry;
 
 namespace NINA.ViewModel.ImageHistory {
 
@@ -59,6 +60,7 @@ namespace NINA.ViewModel.ImageHistory {
             ImageHistoryLeftSelected = profileService.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected;
             ImageHistoryRightSelected = profileService.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected;
             profileService.ProfileChanged += ProfileChanged;
+            SubscribeToProfileSettings();
 
             FilterList = new AsyncObservableCollection<string>();
             AllFilters = Loc.Instance["LblHFRHistoryAllFilters"];
@@ -170,10 +172,12 @@ namespace NINA.ViewModel.ImageHistory {
         }
 
         private void ProfileChanged(object sender, EventArgs e) {
+            SubscribeToProfileSettings();
             _imageHistoryLeftSelected = profileService.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected;
             RaisePropertyChanged(nameof(ImageHistoryLeftSelected));
             _imageHistoryRightSelected = profileService.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected;
             RaisePropertyChanged(nameof(ImageHistoryRightSelected));
+            RefreshImageHistoryKeys();
         }
 
         private ImageHistoryEnum _imageHistoryLeftSelected;
@@ -183,7 +187,7 @@ namespace NINA.ViewModel.ImageHistory {
             set {
                 _imageHistoryLeftSelected = value;
                 profileService.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected = value;
-                ImageHistoryLeftSelectedKey = value.ToString();
+                ImageHistoryLeftSelectedKey = GetImageHistoryKey(value);
                 RaisePropertyChanged();
             }
         }
@@ -195,7 +199,7 @@ namespace NINA.ViewModel.ImageHistory {
             set {
                 _imageHistoryRightSelected = value;
                 profileService.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected = value;
-                ImageHistoryRightSelectedKey = value.ToString();
+                ImageHistoryRightSelectedKey = GetImageHistoryKey(value);
                 RaisePropertyChanged();
             }
         }
@@ -244,6 +248,7 @@ namespace NINA.ViewModel.ImageHistory {
         public void Add(int id, IImageStatistics statistics, string imageType) {
             lock (lockObj) {
                 var point = new ImageHistoryPoint(id, statistics, imageType);
+                point.SetArcsecPerPixel(GetArcsecPerPixel());
                 ImageHistory.Add(point);
             }
         }
@@ -251,6 +256,7 @@ namespace NINA.ViewModel.ImageHistory {
         public void Add(int id, string imageType) {
             lock (lockObj) {
                 var point = new ImageHistoryPoint(id, imageType);
+                point.SetArcsecPerPixel(GetArcsecPerPixel());
                 ImageHistory.Add(point);
             }
         }
@@ -273,6 +279,7 @@ namespace NINA.ViewModel.ImageHistory {
 
                 if (imageHistoryItem != null) {
                     imageHistoryItem.PopulateProperties(imageSavedEventArgs);
+                    imageHistoryItem.SetArcsecPerPixel(GetArcsecPerPixel());
                     ObservableImageHistory.Add(imageHistoryItem);
                     // Check if the filter needs to be added to the list
                     if (!FilterList.Contains(imageSavedEventArgs.Filter))
@@ -334,5 +341,98 @@ namespace NINA.ViewModel.ImageHistory {
 
         public ICommand PlotClearCommand { get; private set; }
         public ICommand PlotSaveCommand { get; private set; }
+
+        private IDockPanelSettings observedDockPanelSettings;
+        private ICameraSettings observedCameraSettings;
+        private ITelescopeSettings observedTelescopeSettings;
+
+        private void SubscribeToProfileSettings() {
+            UnsubscribeFromProfileSettings();
+
+            var activeProfile = profileService.ActiveProfile;
+            observedDockPanelSettings = activeProfile?.DockPanelSettings;
+            observedCameraSettings = activeProfile?.CameraSettings;
+            observedTelescopeSettings = activeProfile?.TelescopeSettings;
+
+            if (observedDockPanelSettings != null) {
+                observedDockPanelSettings.PropertyChanged += ActiveProfileSettings_PropertyChanged;
+            }
+
+            if (observedCameraSettings != null) {
+                observedCameraSettings.PropertyChanged += ActiveProfileSettings_PropertyChanged;
+            }
+
+            if (observedTelescopeSettings != null) {
+                observedTelescopeSettings.PropertyChanged += ActiveProfileSettings_PropertyChanged;
+            }
+
+            RefreshArcsecPerPixel();
+            RefreshImageHistoryKeys();
+        }
+
+        private void UnsubscribeFromProfileSettings() {
+            if (observedDockPanelSettings != null) {
+                observedDockPanelSettings.PropertyChanged -= ActiveProfileSettings_PropertyChanged;
+            }
+
+            if (observedCameraSettings != null) {
+                observedCameraSettings.PropertyChanged -= ActiveProfileSettings_PropertyChanged;
+            }
+
+            if (observedTelescopeSettings != null) {
+                observedTelescopeSettings.PropertyChanged -= ActiveProfileSettings_PropertyChanged;
+            }
+        }
+
+        private void ActiveProfileSettings_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (sender == observedDockPanelSettings && e.PropertyName == nameof(IDockPanelSettings.StarMeasurementsInArcseconds)) {
+                RefreshImageHistoryKeys();
+                return;
+            }
+
+            if ((sender == observedCameraSettings && e.PropertyName == nameof(ICameraSettings.PixelSize))
+                || (sender == observedTelescopeSettings && e.PropertyName == nameof(ITelescopeSettings.FocalLength))) {
+                RefreshArcsecPerPixel();
+                RefreshImageHistoryKeys();
+            }
+        }
+
+        private void RefreshArcsecPerPixel() {
+            var arcsecPerPixel = GetArcsecPerPixel();
+            lock (lockObj) {
+                foreach (var imageHistoryPoint in ImageHistory) {
+                    imageHistoryPoint.SetArcsecPerPixel(arcsecPerPixel);
+                }
+            }
+        }
+
+        private void RefreshImageHistoryKeys() {
+            ImageHistoryLeftSelectedKey = GetImageHistoryKey(_imageHistoryLeftSelected);
+            ImageHistoryRightSelectedKey = GetImageHistoryKey(_imageHistoryRightSelected);
+        }
+
+        private string GetImageHistoryKey(ImageHistoryEnum imageHistoryEnum) {
+            var useArcseconds = profileService.ActiveProfile?.DockPanelSettings?.StarMeasurementsInArcseconds == true;
+
+            switch (imageHistoryEnum) {
+                case ImageHistoryEnum.HFR:
+                    return useArcseconds ? nameof(ImageHistoryPoint.HFRArcseconds) : nameof(ImageHistoryPoint.HFRPixels);
+                case ImageHistoryEnum.FWHM:
+                    return useArcseconds ? nameof(ImageHistoryPoint.FWHMArcseconds) : nameof(ImageHistoryPoint.FWHMPixels);
+                default:
+                    return imageHistoryEnum.ToString();
+            }
+        }
+
+        private double GetArcsecPerPixel() {
+            var pixelSize = profileService.ActiveProfile?.CameraSettings?.PixelSize ?? double.NaN;
+            var focalLength = profileService.ActiveProfile?.TelescopeSettings?.FocalLength ?? double.NaN;
+
+            if (double.IsNaN(pixelSize) || double.IsNaN(focalLength) || pixelSize <= 0 || focalLength <= 0) {
+                return double.NaN;
+            }
+
+            return AstroUtil.ArcsecPerPixel(pixelSize, focalLength);
+        }
     }
 }

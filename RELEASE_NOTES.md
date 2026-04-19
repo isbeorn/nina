@@ -51,6 +51,8 @@ This allows you to safely return to a stable release if needed.
     - The native star detector now measures HFR from a centroid-refined curve of growth instead of using a first-moment approximation
     - Local star background estimation now uses a robust sigma-clipped median to reduce bias from nearby stars and outliers
     - Native FWHM and eccentricity measurements are now calculated and exposed alongside HFR
+    - The image history panel now offers FWHM and eccentricity as selectable metrics
+    - The image statistics and image history panels can display FWHM, HFR and HFR deviation in either pixels or arcseconds, based on the active profile's camera pixel size and telescope focal length
 
 ## Behavioral Changes
 - Unparking the mount no longer automatically starts sidereal tracking. Tracking will begin automatically during a slew to a target, as usual.

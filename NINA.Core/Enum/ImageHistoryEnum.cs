@@ -26,6 +26,12 @@ namespace NINA.Core.Enum {
         [Description("LblHFR")]
         HFR,
 
+        [Description("LblFWHM")]
+        FWHM,
+
+        [Description("LblEccentricity")]
+        Eccentricity,
+
         [Description("LblStars")]
         Stars,
 
