@@ -21,6 +21,7 @@ using NINA.Equipment.Model;
 using NINA.Core.Model;
 using NINA.PlateSolving.Interfaces;
 using NINA.Equipment.Interfaces;
+using System.Windows;
 
 namespace NINA.Test.PlateSolving {
 
@@ -44,6 +45,7 @@ namespace NINA.Test.PlateSolving {
             domeMediatorMock = new Mock<IDomeMediator>();
             domeMediatorMock.Setup(m => m.GetInfo()).Returns(new NINA.Equipment.Equipment.MyDome.DomeInfo() { Connected = false });
             domeFollowerMock = new Mock<IDomeFollower>();
+            telescopeMediatorMock.Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
         }
 
         [Test]
@@ -190,10 +192,9 @@ namespace NINA.Test.PlateSolving {
             telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(1));
 
             //Verify that the slew coordinates are using the offset
+            Coordinates expectedSlewCoordinates = ExpectedCorrectedTarget(coordinates3, coordinates3, coordinates1);
             telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(
-                It.Is<Coordinates>(c => Math.Round(c.RA, 4) == Math.Round((coordinates3.RA + (coordinates3.RA - coordinates1.RA)), 4)
-                                        && Math.Round(c.Dec, 4) == Math.Round((coordinates3.Dec + (coordinates3.Dec - coordinates1.Dec)), 4)
-                                  ),
+                It.Is<Coordinates>(c => IsWithinArcSeconds(c, expectedSlewCoordinates, 0.01)),
                 It.IsAny<CancellationToken>()), Times.Exactly(1));
         }
 
@@ -233,10 +234,9 @@ namespace NINA.Test.PlateSolving {
             captureSolverMock.Verify(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
             telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(0));
             //Verify that the slew coordinates are using the offset
+            Coordinates expectedSlewCoordinates = ExpectedCorrectedTarget(coordinates3, coordinates3, coordinates1);
             telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(
-                It.Is<Coordinates>(c => Math.Round(c.RA, 4) == Math.Round((coordinates3.RA + (coordinates3.RA - coordinates1.RA)), 4)
-                                        && Math.Round(c.Dec, 4) == Math.Round((coordinates3.Dec + (coordinates3.Dec - coordinates1.Dec)), 4)
-                                  ),
+                It.Is<Coordinates>(c => IsWithinArcSeconds(c, expectedSlewCoordinates, 0.01)),
                 It.IsAny<CancellationToken>()), Times.Exactly(1));
         }
 
@@ -275,11 +275,19 @@ namespace NINA.Test.PlateSolving {
             captureSolverMock.Verify(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
             telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(1));
             //Verify that the slew coordinates are using the offset
+            Coordinates expectedSlewCoordinates = ExpectedCorrectedTarget(coordinates3, coordinates3, coordinates1);
             telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(
-                It.Is<Coordinates>(c => Math.Round(c.RA, 4) == Math.Round((coordinates3.RA + (coordinates3.RA - coordinates1.RA)), 4)
-                                        && Math.Round(c.Dec, 4) == Math.Round((coordinates3.Dec + (coordinates3.Dec - coordinates1.Dec)), 4)
-                                  ),
+                It.Is<Coordinates>(c => IsWithinArcSeconds(c, expectedSlewCoordinates, 0.01)),
                 It.IsAny<CancellationToken>()), Times.Exactly(1));
+        }
+
+        private static Coordinates ExpectedCorrectedTarget(Coordinates targetCoordinates, Coordinates reportedCoordinates, Coordinates solvedCoordinates) {
+            Point correction = reportedCoordinates.XYProjection(solvedCoordinates, new Point(0, 0), 1, 1, 0, Coordinates.ProjectionType.Gnomonic);
+            return targetCoordinates.Shift(correction.X, correction.Y, 0, 1, 1, Coordinates.ProjectionType.Gnomonic);
+        }
+
+        private static bool IsWithinArcSeconds(Coordinates actual, Coordinates expected, double arcSeconds) {
+            return Math.Abs((actual - expected).Distance.ArcSeconds) <= arcSeconds;
         }
     }
 }

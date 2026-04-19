@@ -26,6 +26,7 @@ using NINA.Equipment.Interfaces;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Model.Equipment;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace NINA.PlateSolving {
 
@@ -133,9 +134,16 @@ namespace NINA.PlateSolving {
                         progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblPlateSolveNotInsideToleranceReslew"] });
 
                         var slewMeasurement = new Measurement("Reslew").Start();
-                        await telescopeMediator.SlewToCoordinatesAsync(parameterCoordinates + offset, ct);
+                        Coordinates correctedTarget = CalculateCorrectedTarget(parameterCoordinates, scopePosition, resultCoordinates);
+                        bool slewSuccessful = await telescopeMediator.SlewToCoordinatesAsync(correctedTarget, ct);
                         slewMeasurement.Stop();
                         centeringAttempt.AddSubMeasurement(slewMeasurement);
+                        if (!slewSuccessful) {
+                            result.Success = false;
+                            Logger.Error($"Centering correction slew failed. Current Position: {scopePosition}; Corrected Target: {correctedTarget}; Solved: {resultCoordinates}");
+                            centeringAttempt.Stop();
+                            break;
+                        }
 
                         var domeInfo = domeMediator.GetInfo();
                         if (domeInfo.Connected && domeInfo.CanSetAzimuth && !domeFollower.IsFollowing) {
@@ -170,6 +178,30 @@ namespace NINA.PlateSolving {
                     await filterWheelMediator.ChangeFilter(oldFilter, timeoutCts.Token, progress);
                 }
             }
+        }
+
+        private static Coordinates CalculateCorrectedTarget(Coordinates targetCoordinates, Coordinates reportedCoordinates, Coordinates solvedCoordinates) {
+            Coordinates target = targetCoordinates.Transform(reportedCoordinates.Epoch);
+            Coordinates reported = reportedCoordinates.Transform(reportedCoordinates.Epoch);
+            Coordinates solved = solvedCoordinates.Transform(reportedCoordinates.Epoch);
+
+            Point correction = reported.XYProjection(solved, new Point(0, 0), 1, 1, 0, Coordinates.ProjectionType.Gnomonic);
+            if (!IsFinite(correction.X) || !IsFinite(correction.Y)) {
+                Logger.Warning($"Centering correction projection returned an invalid vector. Falling back to raw coordinate offset. Reported: {reported}; Solved: {solved}");
+                return target + (reported - solved);
+            }
+
+            Coordinates correctedTarget = target.Shift(correction.X, correction.Y, 0, 1, 1, Coordinates.ProjectionType.Gnomonic);
+            if (!IsFinite(correctedTarget.RADegrees) || !IsFinite(correctedTarget.Dec)) {
+                Logger.Warning($"Centering correction produced invalid coordinates. Falling back to raw coordinate offset. Target: {target}; Reported: {reported}; Solved: {solved}");
+                return target + (reported - solved);
+            }
+
+            return correctedTarget;
+        }
+
+        private static bool IsFinite(double value) {
+            return !double.IsNaN(value) && !double.IsInfinity(value);
         }
     }
 
