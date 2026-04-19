@@ -828,10 +828,9 @@
         <File Id="Microsoft.Win32.SystemEvents.dll" Name="Microsoft.Win32.SystemEvents.dll" Source="$(var.NINA_TargetDir)Microsoft.Win32.SystemEvents.dll" />
       </Component>
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
-        <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
-      </Component>
-      <Component Id="mscordaccore_amd64_amd64_10.0.626.17701.dll" Guid="fe14c1b6-7783-4dcd-9ae7-73fa1d6df4a5">
-        <File Id="mscordaccore_amd64_amd64_10.0.626.17701.dll" Name="mscordaccore_amd64_amd64_10.0.626.17701.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_10.0.626.17701.dll" />
+        <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" KeyPath="yes" />
+        <!-- Source the runtime-versioned DAC alias from mscordaccore.dll so .NET patch updates do not hard-code a missing file name. -->
+        <File Id="mscordaccore_amd64_amd64.dll" Name="mscordaccore_amd64_amd64_!(bind.fileVersion.mscordaccore.dll).dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
