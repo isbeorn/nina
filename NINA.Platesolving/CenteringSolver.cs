@@ -72,7 +72,6 @@ namespace NINA.PlateSolving {
                 var centered = false;
                 var maxSlewAttempts = 10;
                 PlateSolveResult result;
-                Separation offset = new Separation();
                 do {
                     var centeringAttempt = new CenteringMeasurement();
                     centeringAttempts.Add(centeringAttempt);
@@ -90,51 +89,55 @@ namespace NINA.PlateSolving {
                         break;
                     }
 
-                    // All coordinates need to be in the same epoch as the scope for offsets to correctly be calculated
+                    // All coordinates need to be in the same epoch as the scope for corrections to correctly be calculated
                     var position = telescopeMediator.GetCurrentPosition();
                     var resultCoordinates = result.Coordinates.Transform(position.Epoch);
                     var parameterCoordinates = parameter.Coordinates.Transform(position.Epoch);
                     result.Separation = parameterCoordinates - resultCoordinates;
 
-                    var positionWithOffset = position - offset;
-                    Logger.Info($"Centering Solver - Scope Position: {position}; Offset: {offset}; Centering Coordinates: {parameterCoordinates}; Solved: {resultCoordinates}; Separation {result.Separation}; Threshold: {parameter.Threshold}");
+                    Logger.Info($"Centering Solver - Scope Position: {position}; Centering Coordinates: {parameterCoordinates}; Solved: {resultCoordinates}; Separation {result.Separation}; Threshold: {parameter.Threshold}");
 
                     solveProgress?.Report(new PlateSolveProgress() { PlateSolveResult = result });
 
                     if (Math.Abs(result.Separation.Distance.ArcMinutes) > parameter.Threshold) {
                         var syncMeasurement = new Measurement("Sync").Start();
+                        bool useMeasuredCorrection = false;
 
                         progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblPlateSolveNotInsideToleranceSyncing"] });
                         if (parameter.NoSync || !await telescopeMediator.Sync(resultCoordinates)) {
-                            var oldOffset = offset;
-                            offset = position - resultCoordinates;
-
-                            Logger.Info($"Sync {(parameter.NoSync ? "disabled" : "failed")} - calculating offset instead to compensate.  Original: {positionWithOffset}; Original Offset {oldOffset}; Solved: {resultCoordinates}; New Offset: {offset}");
+                            useMeasuredCorrection = true;
+                            Logger.Info($"Sync {(parameter.NoSync ? "disabled" : "failed")} - using measured centering correction instead. Reported: {position}; Solved: {resultCoordinates}");
                         } else {
                             var positionAfterSync = telescopeMediator.GetCurrentPosition();
 
                             // If Sync affects the scope position by at least 1 arcsecond, then continue iterating without
-                            // using an offset
+                            // applying an additional measured correction.
                             var syncEffect = positionAfterSync - position;
                             if (Math.Abs(syncEffect.Distance.ArcSeconds) < 1.0d) {
-                                var syncDistance = positionAfterSync - resultCoordinates;
-                                offset = syncDistance;
-                                Logger.Warning($"Sync failed silently - calculating offset instead to compensate.  Position after sync: {positionAfterSync}; Solved: {resultCoordinates}; New Offset: {offset}");
+                                useMeasuredCorrection = true;
+                                Logger.Warning($"Sync failed silently - using measured centering correction instead. Position after sync: {positionAfterSync}; Solved: {resultCoordinates}");
                             } else {
-                                // Sync worked - reset offset
                                 Logger.Debug($"Synced sucessfully. Position after sync: {positionAfterSync}");
-                                offset = new Separation();
                             }
 
                             centeringAttempt.AddSubMeasurement(syncMeasurement.Stop());
                         }
 
                         var scopePosition = telescopeMediator.GetCurrentPosition();
-                        Logger.Info($"Slewing to target after sync. Current Position: {scopePosition}; Target coordinates: {parameterCoordinates}; Offset {offset}");
                         progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblPlateSolveNotInsideToleranceReslew"] });
 
                         var slewMeasurement = new Measurement("Reslew").Start();
-                        Coordinates correctedTarget = CalculateCorrectedTarget(parameterCoordinates, scopePosition, resultCoordinates);
+                        // The measured correction needs the mount-reported position and the solved sky position.
+                        // Using the solve result for both sides would erase the mount-vs-sky error that no-sync fallback corrects.
+                        Coordinates correctedTarget;
+                        if (useMeasuredCorrection) {
+                            correctedTarget = CalculateCorrectedTarget(parameterCoordinates, scopePosition, resultCoordinates);
+                            Logger.Info($"Slewing to corrected target after sync fallback. Current Position: {scopePosition}; Target coordinates: {parameterCoordinates}; Solved: {resultCoordinates}; Corrected target: {correctedTarget}");
+                        } else {
+                            correctedTarget = parameterCoordinates;
+                            Logger.Info($"Slewing to target after sync. Current Position: {scopePosition}; Target coordinates: {parameterCoordinates}; Solved: {resultCoordinates}");
+                        }
+
                         bool slewSuccessful = await telescopeMediator.SlewToCoordinatesAsync(correctedTarget, ct);
                         slewMeasurement.Stop();
                         centeringAttempt.AddSubMeasurement(slewMeasurement);
