@@ -26,7 +26,6 @@ using NINA.Equipment.Interfaces;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Model.Equipment;
 using System.Collections.Generic;
-using System.Windows;
 
 namespace NINA.PlateSolving {
 
@@ -188,16 +187,31 @@ namespace NINA.PlateSolving {
             Coordinates reported = reportedCoordinates.Transform(reportedCoordinates.Epoch);
             Coordinates solved = solvedCoordinates.Transform(reportedCoordinates.Epoch);
 
-            Point correction = reported.XYProjection(solved, new Point(0, 0), 1, 1, 0, Coordinates.ProjectionType.Gnomonic);
-            if (!IsFinite(correction.X) || !IsFinite(correction.Y)) {
-                Logger.Warning($"Centering correction projection returned an invalid vector. Falling back to raw coordinate offset. Reported: {reported}; Solved: {solved}");
-                return target + (reported - solved);
+            RectangularCoordinates solvedVector = RectangularCoordinates.FromPolar(solved);
+            RectangularCoordinates reportedVector = RectangularCoordinates.FromPolar(reported);
+            RectangularCoordinates targetVector = RectangularCoordinates.FromPolar(target);
+
+            RectangularCoordinates rotationAxis = solvedVector.Cross(reportedVector);
+            double sinAngle = rotationAxis.Distance;
+            double cosAngle = solvedVector.Dot(reportedVector);
+            if (!IsFinite(sinAngle) || !IsFinite(cosAngle)) {
+                Logger.Warning($"Centering correction rotation produced invalid values. Slewing to the requested target without measured correction. Reported: {reported}; Solved: {solved}");
+                return target;
             }
 
-            Coordinates correctedTarget = target.Shift(correction.X, correction.Y, 0, 1, 1, Coordinates.ProjectionType.Gnomonic);
+            if (sinAngle < 1e-12) {
+                if (cosAngle < 0) {
+                    Logger.Warning($"Centering correction rotation is ambiguous for nearly opposite coordinates. Slewing to the requested target without measured correction. Reported: {reported}; Solved: {solved}");
+                }
+
+                return target;
+            }
+
+            RectangularCoordinates correctedVector = targetVector.RotateAroundAxis(rotationAxis / sinAngle, Angle.ByRadians(Math.Atan2(sinAngle, cosAngle)));
+            Coordinates correctedTarget = correctedVector.ToPolar(target.Epoch);
             if (!IsFinite(correctedTarget.RADegrees) || !IsFinite(correctedTarget.Dec)) {
-                Logger.Warning($"Centering correction produced invalid coordinates. Falling back to raw coordinate offset. Target: {target}; Reported: {reported}; Solved: {solved}");
-                return target + (reported - solved);
+                Logger.Warning($"Centering correction produced invalid coordinates. Slewing to the requested target without measured correction. Target: {target}; Reported: {reported}; Solved: {solved}");
+                return target;
             }
 
             return correctedTarget;

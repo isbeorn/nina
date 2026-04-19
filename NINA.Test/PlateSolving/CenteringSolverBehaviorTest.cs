@@ -147,10 +147,10 @@ namespace NINA.Test.PlateSolving {
         }
 
         /// <summary>
-        /// Verifies fallback correction slews use the tangent-plane correction instead of raw RA/Dec addition.
+        /// Verifies fallback correction slews use a spherical correction instead of raw RA/Dec addition.
         /// </summary>
         [Test]
-        public async Task Center_CorrectionSlewUsesTangentPlaneForHighDeclinationFallback() {
+        public async Task Center_CorrectionSlewUsesSphericalRotationForHighDeclinationFallback() {
             var harness = new CenteringHarness();
             var target = CreateCoordinates(25, 80);
             var offTarget = CreateCoordinates(20, 79.25);
@@ -183,60 +183,18 @@ namespace NINA.Test.PlateSolving {
         }
 
         private static Coordinates ExpectedCorrectedTarget(Coordinates targetCoordinates, Coordinates reportedCoordinates, Coordinates solvedCoordinates) {
-            TangentFrame solvedFrame = CreateTangentFrame(solvedCoordinates);
-            Vector3 reported = ToUnitVector(reportedCoordinates);
-            double denominator = Dot(reported, solvedFrame.Center);
-            double eastOffset = Dot(reported, solvedFrame.East) / denominator;
-            double northOffset = Dot(reported, solvedFrame.North) / denominator;
-
-            TangentFrame targetFrame = CreateTangentFrame(targetCoordinates);
-            Vector3 corrected = Normalize(new Vector3(
-                targetFrame.Center.X + eastOffset * targetFrame.East.X + northOffset * targetFrame.North.X,
-                targetFrame.Center.Y + eastOffset * targetFrame.East.Y + northOffset * targetFrame.North.Y,
-                targetFrame.Center.Z + eastOffset * targetFrame.East.Z + northOffset * targetFrame.North.Z));
-            return ToCoordinates(corrected, targetCoordinates.Epoch);
-        }
-
-        private static TangentFrame CreateTangentFrame(Coordinates coordinates) {
-            double ra = AstroUtil.ToRadians(coordinates.RADegrees);
-            double dec = AstroUtil.ToRadians(coordinates.Dec);
-            double cosRa = Math.Cos(ra);
-            double sinRa = Math.Sin(ra);
-            double cosDec = Math.Cos(dec);
-            double sinDec = Math.Sin(dec);
-
-            return new TangentFrame(
-                Center: new Vector3(cosDec * cosRa, cosDec * sinRa, sinDec),
-                East: new Vector3(-sinRa, cosRa, 0),
-                North: new Vector3(-sinDec * cosRa, -sinDec * sinRa, cosDec));
-        }
-
-        private static Vector3 ToUnitVector(Coordinates coordinates) {
-            return CreateTangentFrame(coordinates).Center;
-        }
-
-        private static Coordinates ToCoordinates(Vector3 vector, Epoch epoch) {
-            double ra = Math.Atan2(vector.Y, vector.X);
-            if (ra < 0) {
-                ra += 2 * Math.PI;
+            RectangularCoordinates solved = RectangularCoordinates.FromPolar(solvedCoordinates);
+            RectangularCoordinates reported = RectangularCoordinates.FromPolar(reportedCoordinates);
+            RectangularCoordinates target = RectangularCoordinates.FromPolar(targetCoordinates);
+            RectangularCoordinates axis = solved.Cross(reported);
+            double sinAngle = axis.Distance;
+            if (sinAngle < 1e-12) {
+                return targetCoordinates;
             }
 
-            double dec = Math.Asin(vector.Z);
-            return new Coordinates(Angle.ByRadians(ra), Angle.ByRadians(dec), epoch);
+            double cosAngle = solved.Dot(reported);
+            return target.RotateAroundAxis(axis / sinAngle, Angle.ByRadians(Math.Atan2(sinAngle, cosAngle))).ToPolar(targetCoordinates.Epoch);
         }
-
-        private static Vector3 Normalize(Vector3 vector) {
-            double length = Math.Sqrt(Dot(vector, vector));
-            return new Vector3(vector.X / length, vector.Y / length, vector.Z / length);
-        }
-
-        private static double Dot(Vector3 a, Vector3 b) {
-            return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
-        }
-
-        private readonly record struct TangentFrame(Vector3 Center, Vector3 East, Vector3 North);
-
-        private readonly record struct Vector3(double X, double Y, double Z);
 
         private sealed class CenteringHarness {
             public Mock<IPlateSolver> PlateSolver { get; } = new();

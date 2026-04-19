@@ -21,7 +21,6 @@ using NINA.Equipment.Model;
 using NINA.Core.Model;
 using NINA.PlateSolving.Interfaces;
 using NINA.Equipment.Interfaces;
-using System.Windows;
 
 namespace NINA.Test.PlateSolving {
 
@@ -195,6 +194,43 @@ namespace NINA.Test.PlateSolving {
         }
 
         [Test]
+        public async Task Successful_Centering_FailedSyncs_InvalidMeasuredCorrectionSlewsToRequestedTarget_Test() {
+            var seq = new CaptureSequence();
+            var solvedCoordinates = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(0), Epoch.J2000);
+            var targetCoordinates = new Coordinates(Angle.ByDegree(5), Angle.ByDegree(0), Epoch.J2000);
+            var invalidReportedCoordinates = new Coordinates(Angle.ByDegree(double.NaN), Angle.ByDegree(0), Epoch.J2000);
+            var parameter = new CenterSolveParameter() {
+                Coordinates = targetCoordinates.Transform(Epoch.J2000),
+                FocalLength = 700,
+                Threshold = 1
+            };
+
+            captureSolverMock
+                .SetupSequence(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PlateSolveResult() { Success = true, Coordinates = solvedCoordinates })
+                .ReturnsAsync(new PlateSolveResult() { Success = true, Coordinates = targetCoordinates });
+            telescopeMediatorMock
+                .SetupSequence(x => x.GetCurrentPosition())
+                .Returns(targetCoordinates)
+                .Returns(invalidReportedCoordinates)
+                .Returns(targetCoordinates);
+            telescopeMediatorMock
+                .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
+                .ReturnsAsync(false);
+
+            var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object, filterMediatorMock.Object, domeMediatorMock.Object, domeFollowerMock.Object);
+            sut.CaptureSolver = captureSolverMock.Object;
+
+            var result = await sut.Center(seq, parameter, default, default, default);
+
+            result.Success.Should().BeTrue();
+            telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(1));
+            telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(
+                It.Is<Coordinates>(c => IsWithinArcSeconds(c, targetCoordinates, 0.01)),
+                It.IsAny<CancellationToken>()), Times.Exactly(1));
+        }
+
+        [Test]
         public async Task Successful_Centering_FailedSyncs_CenteringWithMeasuredCorrection_Test() {
             var seq = new CaptureSequence();
             var coordinates1 = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(3), Epoch.J2000);
@@ -320,8 +356,17 @@ namespace NINA.Test.PlateSolving {
         }
 
         private static Coordinates ExpectedCorrectedTarget(Coordinates targetCoordinates, Coordinates reportedCoordinates, Coordinates solvedCoordinates) {
-            Point correction = reportedCoordinates.XYProjection(solvedCoordinates, new Point(0, 0), 1, 1, 0, Coordinates.ProjectionType.Gnomonic);
-            return targetCoordinates.Shift(correction.X, correction.Y, 0, 1, 1, Coordinates.ProjectionType.Gnomonic);
+            RectangularCoordinates solved = RectangularCoordinates.FromPolar(solvedCoordinates);
+            RectangularCoordinates reported = RectangularCoordinates.FromPolar(reportedCoordinates);
+            RectangularCoordinates target = RectangularCoordinates.FromPolar(targetCoordinates);
+            RectangularCoordinates axis = solved.Cross(reported);
+            double sinAngle = axis.Distance;
+            if (sinAngle < 1e-12) {
+                return targetCoordinates;
+            }
+
+            double cosAngle = solved.Dot(reported);
+            return target.RotateAroundAxis(axis / sinAngle, Angle.ByRadians(Math.Atan2(sinAngle, cosAngle))).ToPolar(targetCoordinates.Epoch);
         }
 
         private static bool IsWithinArcSeconds(Coordinates actual, Coordinates expected, double arcSeconds) {

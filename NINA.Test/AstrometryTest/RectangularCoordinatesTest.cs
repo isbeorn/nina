@@ -71,5 +71,35 @@ namespace NINA.Test.AstrometryTest {
             pv.Velocity.Should().BeSameAs(right);
             pv.ToString().Should().Contain(nameof(RectangularPV.Position));
         }
+
+        [Test]
+        public void RectangularCoordinates_FromPolarRoundTripsRaDec() {
+            Coordinates coordinates = new Coordinates(Angle.ByDegree(123.4), Angle.ByDegree(-45.6), Epoch.J2000);
+
+            Coordinates roundTrip = RectangularCoordinates.FromPolar(coordinates).ToPolar(coordinates.Epoch);
+
+            roundTrip.RADegrees.Should().BeApproximately(coordinates.RADegrees, AngleTolerance);
+            roundTrip.Dec.Should().BeApproximately(coordinates.Dec, AngleTolerance);
+        }
+
+        [Test]
+        public void RectangularCoordinates_DotCrossNormalizeAndAxisRotation_ReturnExpectedVectors() {
+            RectangularCoordinates xAxis = new RectangularCoordinates(1.0, 0.0, 0.0);
+            RectangularCoordinates yAxis = new RectangularCoordinates(0.0, 1.0, 0.0);
+            RectangularCoordinates zAxis = new RectangularCoordinates(0.0, 0.0, 1.0);
+
+            RectangularCoordinates cross = xAxis.Cross(yAxis);
+            RectangularCoordinates normalized = new RectangularCoordinates(3.0, 0.0, 4.0).Normalize();
+            RectangularCoordinates rotated = xAxis.RotateAroundAxis(zAxis, Angle.ByDegree(90.0));
+
+            xAxis.Dot(yAxis).Should().BeApproximately(0.0, AngleTolerance);
+            cross.X.Should().BeApproximately(0.0, AngleTolerance);
+            cross.Y.Should().BeApproximately(0.0, AngleTolerance);
+            cross.Z.Should().BeApproximately(1.0, AngleTolerance);
+            normalized.Distance.Should().BeApproximately(1.0, AngleTolerance);
+            rotated.X.Should().BeApproximately(0.0, AngleTolerance);
+            rotated.Y.Should().BeApproximately(1.0, AngleTolerance);
+            rotated.Z.Should().BeApproximately(0.0, AngleTolerance);
+        }
     }
 }
