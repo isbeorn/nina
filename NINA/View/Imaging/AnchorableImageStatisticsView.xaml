@@ -11,6 +11,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -191,11 +192,12 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center">
                                 <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}">
+                                    <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}" ConverterParameter="{x:Static enum:StarMeasurementUnit.Arcseconds}">
                                         <Binding Path="StarDetectionAnalysis.FWHM" />
                                         <Binding Path="ActiveProfile.DockPanelSettings.StarMeasurementsInArcseconds" Source="{StaticResource ProfileService}" />
                                         <Binding Path="ActiveProfile.CameraSettings.PixelSize" Source="{StaticResource ProfileService}" />
                                         <Binding Path="ActiveProfile.TelescopeSettings.FocalLength" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="StarDetectionAnalysis.FWHMUnit" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -212,11 +214,12 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center">
                                 <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}">
+                                    <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}" ConverterParameter="{x:Static enum:StarMeasurementUnit.Pixels}">
                                         <Binding Path="StarDetectionAnalysis.HFR" />
                                         <Binding Path="ActiveProfile.DockPanelSettings.StarMeasurementsInArcseconds" Source="{StaticResource ProfileService}" />
                                         <Binding Path="ActiveProfile.CameraSettings.PixelSize" Source="{StaticResource ProfileService}" />
                                         <Binding Path="ActiveProfile.TelescopeSettings.FocalLength" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="StarDetectionAnalysis.HFRUnit" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -231,11 +234,12 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center">
                                 <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}">
+                                    <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}" ConverterParameter="{x:Static enum:StarMeasurementUnit.Pixels}">
                                         <Binding Path="StarDetectionAnalysis.HFRStDev" />
                                         <Binding Path="ActiveProfile.DockPanelSettings.StarMeasurementsInArcseconds" Source="{StaticResource ProfileService}" />
                                         <Binding Path="ActiveProfile.CameraSettings.PixelSize" Source="{StaticResource ProfileService}" />
                                         <Binding Path="ActiveProfile.TelescopeSettings.FocalLength" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="StarDetectionAnalysis.HFRStDevUnit" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>

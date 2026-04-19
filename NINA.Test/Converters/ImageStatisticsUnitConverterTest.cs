@@ -12,6 +12,7 @@
 using FluentAssertions;
 using NINA.Astrometry;
 using NINA.Astrometry.Converters;
+using NINA.Core.Enum;
 using NINA.Profile;
 using NUnit.Framework;
 using System.Globalization;
@@ -38,6 +39,45 @@ namespace NINA.Test.Converters {
             var output = sut.Convert(new object[] { 2.5d, true, 3.76d, 952d }, typeof(string), null, CultureInfo.InvariantCulture);
 
             output.Should().Be(expected);
+        }
+
+        [Test]
+        public void Convert_ReturnsArcsecondsWithoutPixelScaleWhenSourceIsArcseconds() {
+            var sut = new ImageStatisticsUnitConverter();
+
+            var output = sut.Convert(new object[] { 2.5d, true, double.NaN, 952d, StarMeasurementUnit.Arcseconds }, typeof(string), null, CultureInfo.InvariantCulture);
+
+            output.Should().Be("2.50\"");
+        }
+
+        [Test]
+        public void Convert_ReturnsPixelsWhenSourceIsArcseconds() {
+            var sut = new ImageStatisticsUnitConverter();
+            var arcsecPerPixel = AstroUtil.ArcsecPerPixel(3.76d, 952d);
+            var expected = (2.5d / arcsecPerPixel).ToString("0.00", CultureInfo.InvariantCulture) + " px";
+
+            var output = sut.Convert(new object[] { 2.5d, false, 3.76d, 952d, StarMeasurementUnit.Arcseconds }, typeof(string), null, CultureInfo.InvariantCulture);
+
+            output.Should().Be(expected);
+        }
+
+        [Test]
+        public void Convert_UsesUnitBindingBeforeFallbackParameter() {
+            var sut = new ImageStatisticsUnitConverter();
+            var expected = (2.5d * AstroUtil.ArcsecPerPixel(3.76d, 952d)).ToString("0.00", CultureInfo.InvariantCulture) + "\"";
+
+            var output = sut.Convert(new object[] { 2.5d, true, 3.76d, 952d, StarMeasurementUnit.Pixels }, typeof(string), StarMeasurementUnit.Arcseconds, CultureInfo.InvariantCulture);
+
+            output.Should().Be(expected);
+        }
+
+        [Test]
+        public void Convert_UsesFallbackUnitWhenUnitBindingIsMissing() {
+            var sut = new ImageStatisticsUnitConverter();
+
+            var output = sut.Convert(new object[] { 2.5d, true, double.NaN, 952d }, typeof(string), StarMeasurementUnit.Arcseconds, CultureInfo.InvariantCulture);
+
+            output.Should().Be("2.50\"");
         }
 
         [Test]

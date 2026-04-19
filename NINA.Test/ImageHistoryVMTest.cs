@@ -11,7 +11,9 @@
 #endregion "copyright"
 using FluentAssertions;
 using Moq;
+using NINA.Image.ImageAnalysis;
 using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.ViewModel;
@@ -19,6 +21,7 @@ using NINA.ViewModel.ImageHistory;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -78,11 +81,14 @@ namespace NINA.Test {
             var filter = "Red";
 
             sut.Add(1, null, "LIGHT");
-            sut.AppendImageProperties(new ImageSavedEventArgs() { StarDetectionAnalysis = new StarDetectionAnalysis() { DetectedStars = stars, HFR = hfr, FWHM = fwhm, Eccentricity = eccentricity }, Duration = duration, Filter = filter, MetaData = new ImageMetaData { Image = new ImageParameter { Id = 1 } } });
+            sut.AppendImageProperties(new ImageSavedEventArgs() { StarDetectionAnalysis = new StarDetectionAnalysis() { DetectedStars = stars, HFR = hfr, FWHM = fwhm, FWHMUnit = StarMeasurementUnit.Pixels, Eccentricity = eccentricity }, Duration = duration, Filter = filter, MetaData = new ImageMetaData { Image = new ImageParameter { Id = 1 } } });
 
             sut.ObservableImageHistory.First().HFR.Should().Be(hfr);
             sut.ObservableImageHistory.First().FWHM.Should().Be(fwhm);
             sut.ObservableImageHistory.First().Eccentricity.Should().Be(eccentricity);
+            sut.ObservableImageHistory.First().HFRUnit.Should().Be(StarMeasurementUnit.Pixels);
+            sut.ObservableImageHistory.First().FWHMUnit.Should().Be(StarMeasurementUnit.Pixels);
+            sut.ObservableImageHistory.First().FWHMPixels.Should().Be(fwhm);
             sut.ObservableImageHistory.First().FWHMArcseconds.Should().BeApproximately(fwhm * AstroUtil.ArcsecPerPixel(profile.CameraSettings.PixelSize, profile.TelescopeSettings.FocalLength), 0.0001);
             sut.ObservableImageHistory.First().Stars.Should().Be(stars);
             sut.ImageHistory[0].HFR.Should().Be(hfr);
@@ -144,13 +150,63 @@ namespace NINA.Test {
 
             var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
 
-            sut.ImageHistoryLeftSelectedKey.Should().Be(nameof(ImageHistoryPoint.HFR));
-            sut.ImageHistoryRightSelectedKey.Should().Be(nameof(ImageHistoryPoint.FWHM));
+            sut.ImageHistoryLeftSelectedKey.Should().Be(nameof(ImageHistoryPoint.HFRPixels));
+            sut.ImageHistoryRightSelectedKey.Should().Be(nameof(ImageHistoryPoint.FWHMPixels));
 
             profile.DockPanelSettings.StarMeasurementsInArcseconds = true;
 
             sut.ImageHistoryLeftSelectedKey.Should().Be(nameof(ImageHistoryPoint.HFRArcseconds));
             sut.ImageHistoryRightSelectedKey.Should().Be(nameof(ImageHistoryPoint.FWHMArcseconds));
+        }
+
+        [Test]
+        public void ImageHistory_LegacyAnalysisDefaultsToHocusFocusUnits() {
+            var profile = CreateProfile();
+            profile.ImageHistorySettings.ImageHistoryLeftSelected = ImageHistoryEnum.FWHM;
+            profile.ImageHistorySettings.ImageHistoryRightSelected = ImageHistoryEnum.HFR;
+            profile.CameraSettings.PixelSize = 3.76;
+            profile.TelescopeSettings.FocalLength = 952;
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(profile);
+            var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
+            var arcsecPerPixel = AstroUtil.ArcsecPerPixel(profile.CameraSettings.PixelSize, profile.TelescopeSettings.FocalLength);
+
+            sut.Add(1, null, "LIGHT");
+            sut.AppendImageProperties(new ImageSavedEventArgs() {
+                StarDetectionAnalysis = new LegacyStarDetectionAnalysis {
+                    DetectedStars = 10,
+                    HFR = 2.5,
+                    FWHM = 4.0
+                },
+                MetaData = new ImageMetaData { Image = new ImageParameter { Id = 1 } }
+            });
+
+            var point = sut.ObservableImageHistory.First();
+            point.HFRUnit.Should().Be(StarMeasurementUnit.Pixels);
+            point.FWHMUnit.Should().Be(StarMeasurementUnit.Arcseconds);
+            point.HFRArcseconds.Should().BeApproximately(2.5 * arcsecPerPixel, 0.0001);
+            point.FWHMArcseconds.Should().Be(4.0);
+            point.FWHMPixels.Should().BeApproximately(4.0 / arcsecPerPixel, 0.0001);
+        }
+
+        [Test]
+        public void StarDetectionAnalysis_DefaultsToHocusFocusUnitsUntilDetectorOverridesThem() {
+            var sut = new StarDetectionAnalysis();
+
+            sut.HFRUnit.Should().Be(StarMeasurementUnit.Pixels);
+            sut.FWHMUnit.Should().Be(StarMeasurementUnit.Arcseconds);
+            sut.HFRStDevUnit.Should().Be(StarMeasurementUnit.Pixels);
+        }
+
+        [Test]
+        public void NativeStarDetection_UpdateAnalysisOverridesFwhmUnitToPixels() {
+            var analysis = new StarDetectionAnalysis();
+            var starDetection = new StarDetection();
+
+            starDetection.UpdateAnalysis(analysis, new StarDetectionParams(), new StarDetectionResult());
+
+            analysis.HFRUnit.Should().Be(StarMeasurementUnit.Pixels);
+            analysis.FWHMUnit.Should().Be(StarMeasurementUnit.Pixels);
+            analysis.HFRStDevUnit.Should().Be(StarMeasurementUnit.Pixels);
         }
 
         [Test]
@@ -171,6 +227,19 @@ namespace NINA.Test {
 
         private static NINA.Profile.Profile CreateProfile() {
             return new NINA.Profile.Profile();
+        }
+
+        private class LegacyStarDetectionAnalysis : IStarDetectionAnalysis {
+            public double HFR { get; set; }
+            public double FWHM { get; set; }
+            public double Eccentricity { get; set; }
+            public double HFRStDev { get; set; }
+            public int DetectedStars { get; set; }
+            public List<DetectedStar> StarList { get; set; }
+            public event PropertyChangedEventHandler PropertyChanged {
+                add { }
+                remove { }
+            }
         }
     }
 }

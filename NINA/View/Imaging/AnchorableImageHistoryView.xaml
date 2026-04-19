@@ -263,11 +263,12 @@
                                                     <TextBlock Text=": " />
                                                     <TextBlock>
                                                         <TextBlock.Text>
-                                                            <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}">
+                                                            <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}" ConverterParameter="{x:Static enum:StarMeasurementUnit.Pixels}">
                                                                 <Binding Path="Item.HFR" />
                                                                 <Binding Path="ActiveProfile.DockPanelSettings.StarMeasurementsInArcseconds" Source="{StaticResource ProfileService}" />
                                                                 <Binding Path="ActiveProfile.CameraSettings.PixelSize" Source="{StaticResource ProfileService}" />
                                                                 <Binding Path="ActiveProfile.TelescopeSettings.FocalLength" Source="{StaticResource ProfileService}" />
+                                                                <Binding Path="Item.HFRUnit" />
                                                             </MultiBinding>
                                                         </TextBlock.Text>
                                                     </TextBlock>
@@ -282,11 +283,12 @@
                                                     <TextBlock Text=": " />
                                                     <TextBlock>
                                                         <TextBlock.Text>
-                                                            <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}">
+                                                            <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}" ConverterParameter="{x:Static enum:StarMeasurementUnit.Arcseconds}">
                                                                 <Binding Path="Item.FWHM" />
                                                                 <Binding Path="ActiveProfile.DockPanelSettings.StarMeasurementsInArcseconds" Source="{StaticResource ProfileService}" />
                                                                 <Binding Path="ActiveProfile.CameraSettings.PixelSize" Source="{StaticResource ProfileService}" />
                                                                 <Binding Path="ActiveProfile.TelescopeSettings.FocalLength" Source="{StaticResource ProfileService}" />
+                                                                <Binding Path="Item.FWHMUnit" />
                                                             </MultiBinding>
                                                         </TextBlock.Text>
                                                     </TextBlock>

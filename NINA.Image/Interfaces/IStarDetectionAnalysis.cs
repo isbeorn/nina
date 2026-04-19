@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Enum;
 using NINA.Image.ImageAnalysis;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,5 +26,20 @@ namespace NINA.Image.Interfaces {
         double HFRStDev { get; set; }
         int DetectedStars { get; set; }
         List<DetectedStar> StarList { get; set; }
+
+        StarMeasurementUnit HFRUnit {
+            get => StarMeasurementUnit.Pixels;
+            set { }
+        }
+
+        StarMeasurementUnit FWHMUnit {
+            get => StarMeasurementUnit.Arcseconds;
+            set { }
+        }
+
+        StarMeasurementUnit HFRStDevUnit {
+            get => StarMeasurementUnit.Pixels;
+            set { }
+        }
     }
 }

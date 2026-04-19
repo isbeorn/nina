@@ -17,6 +17,8 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Utility;
 
 namespace NINA.Astrometry.Converters {
 
@@ -29,11 +31,13 @@ namespace NINA.Astrometry.Converters {
                 return "--";
             }
 
-            var showArcseconds = TryGetBool(values, 1, out var displayInArcseconds) && displayInArcseconds;
-            var displayValue = measurement;
-            var unit = PixelsUnit;
+            var targetUnit = TryGetBool(values, 1, out var displayInArcseconds) && displayInArcseconds
+                ? StarMeasurementUnit.Arcseconds
+                : StarMeasurementUnit.Pixels;
+            var sourceUnit = GetSourceUnit(values, parameter);
+            var arcsecPerPixel = double.NaN;
 
-            if (showArcseconds) {
+            if (sourceUnit != targetUnit) {
                 if (!TryGetDouble(values, 2, out var pixelSize)
                     || !TryGetDouble(values, 3, out var focalLength)
                     || pixelSize <= 0
@@ -43,21 +47,60 @@ namespace NINA.Astrometry.Converters {
                     return "--";
                 }
 
-                var pixelScale = AstroUtil.ArcsecPerPixel(pixelSize, focalLength);
-                if (double.IsNaN(pixelScale) || double.IsInfinity(pixelScale) || pixelScale <= 0) {
+                arcsecPerPixel = AstroUtil.ArcsecPerPixel(pixelSize, focalLength);
+                if (double.IsNaN(arcsecPerPixel) || double.IsInfinity(arcsecPerPixel) || arcsecPerPixel <= 0) {
                     return "--";
                 }
-
-                displayValue *= pixelScale;
-                unit = ArcsecondsUnit;
             }
 
+            if (!StarMeasurementUnitConverter.TryConvert(measurement, sourceUnit, targetUnit, arcsecPerPixel, out var displayValue)) {
+                return "--";
+            }
+
+            var unit = targetUnit == StarMeasurementUnit.Arcseconds ? ArcsecondsUnit : PixelsUnit;
             var effectiveCulture = culture ?? CultureInfo.InvariantCulture;
             return displayValue.ToString("0.00", effectiveCulture) + unit;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
             throw new NotImplementedException();
+        }
+
+        private static StarMeasurementUnit GetSourceUnit(object[] values, object parameter) {
+            if (TryGetStarMeasurementUnit(values, 4, out var sourceUnit)) {
+                return sourceUnit;
+            }
+
+            if (TryGetStarMeasurementUnit(parameter, out sourceUnit)) {
+                return sourceUnit;
+            }
+
+            return StarMeasurementUnit.Pixels;
+        }
+
+        private static bool TryGetStarMeasurementUnit(object[] values, int index, out StarMeasurementUnit result) {
+            result = default;
+            if (!TryGetValue(values, index, out var value)) {
+                return false;
+            }
+
+            return TryGetStarMeasurementUnit(value, out result);
+        }
+
+        private static bool TryGetStarMeasurementUnit(object value, out StarMeasurementUnit result) {
+            result = default;
+            switch (value) {
+                case StarMeasurementUnit starMeasurementUnit:
+                    result = starMeasurementUnit;
+                    return true;
+                case string stringValue:
+                    return System.Enum.TryParse(stringValue, ignoreCase: true, out result);
+                case int intValue when System.Enum.IsDefined(typeof(StarMeasurementUnit), intValue):
+                    result = (StarMeasurementUnit)intValue;
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private static bool TryGetDouble(object[] values, int index, out double result) {

@@ -801,6 +801,9 @@ namespace NINA.Image.ImageAnalysis {
             analysis.FWHM = result.AverageFWHM;
             analysis.Eccentricity = result.AverageEccentricity;
             analysis.HFRStDev = result.HFRStdDev;
+            analysis.HFRUnit = StarMeasurementUnit.Pixels;
+            analysis.FWHMUnit = StarMeasurementUnit.Pixels;
+            analysis.HFRStDevUnit = StarMeasurementUnit.Pixels;
             analysis.DetectedStars = result.DetectedStars;
             analysis.StarList = result.StarList;
         }

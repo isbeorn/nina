@@ -412,16 +412,16 @@ namespace NINA.ViewModel.ImageHistory {
         }
 
         private string GetImageHistoryKey(ImageHistoryEnum imageHistoryEnum) {
-            if (profileService.ActiveProfile?.DockPanelSettings?.StarMeasurementsInArcseconds == true) {
-                switch (imageHistoryEnum) {
-                    case ImageHistoryEnum.HFR:
-                        return nameof(ImageHistoryPoint.HFRArcseconds);
-                    case ImageHistoryEnum.FWHM:
-                        return nameof(ImageHistoryPoint.FWHMArcseconds);
-                }
-            }
+            var useArcseconds = profileService.ActiveProfile?.DockPanelSettings?.StarMeasurementsInArcseconds == true;
 
-            return imageHistoryEnum.ToString();
+            switch (imageHistoryEnum) {
+                case ImageHistoryEnum.HFR:
+                    return useArcseconds ? nameof(ImageHistoryPoint.HFRArcseconds) : nameof(ImageHistoryPoint.HFRPixels);
+                case ImageHistoryEnum.FWHM:
+                    return useArcseconds ? nameof(ImageHistoryPoint.FWHMArcseconds) : nameof(ImageHistoryPoint.FWHMPixels);
+                default:
+                    return imageHistoryEnum.ToString();
+            }
         }
 
         private double GetArcsecPerPixel() {

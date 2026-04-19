@@ -14,6 +14,7 @@
 
 using CsvHelper.Configuration;
 using NINA.Image.ImageData;
+using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
@@ -74,7 +75,11 @@ namespace NINA.WPF.Base.Model {
                 HFR = imageSavedEventArgs.StarDetectionAnalysis.HFR;
                 FWHM = imageSavedEventArgs.StarDetectionAnalysis.FWHM;
                 Eccentricity = imageSavedEventArgs.StarDetectionAnalysis.Eccentricity;
+                HFRUnit = imageSavedEventArgs.StarDetectionAnalysis.HFRUnit;
+                FWHMUnit = imageSavedEventArgs.StarDetectionAnalysis.FWHMUnit;
+                HFRStDevUnit = imageSavedEventArgs.StarDetectionAnalysis.HFRStDevUnit;
                 Stars = imageSavedEventArgs.StarDetectionAnalysis.DetectedStars;
+                RaiseStarMeasurementPropertyChanges();
             }
             IsBayered = imageSavedEventArgs.IsBayered;
             Filter = imageSavedEventArgs.Filter;
@@ -114,6 +119,8 @@ namespace NINA.WPF.Base.Model {
 
         public void SetArcsecPerPixel(double value) {
             arcsecPerPixel = value;
+            RaisePropertyChanged(nameof(HFRPixels));
+            RaisePropertyChanged(nameof(FWHMPixels));
             RaisePropertyChanged(nameof(HFRArcseconds));
             RaisePropertyChanged(nameof(FWHMArcseconds));
         }
@@ -129,8 +136,13 @@ namespace NINA.WPF.Base.Model {
         public double HFR { get; private set; }
         public double FWHM { get; private set; } = double.NaN;
         public double Eccentricity { get; private set; } = double.NaN;
-        public double HFRArcseconds => IsArcsecPerPixelValid && !double.IsNaN(HFR) ? HFR * arcsecPerPixel : double.NaN;
-        public double FWHMArcseconds => IsArcsecPerPixelValid && !double.IsNaN(FWHM) ? FWHM * arcsecPerPixel : double.NaN;
+        public StarMeasurementUnit HFRUnit { get; private set; } = StarMeasurementUnit.Pixels;
+        public StarMeasurementUnit FWHMUnit { get; private set; } = StarMeasurementUnit.Arcseconds;
+        public StarMeasurementUnit HFRStDevUnit { get; private set; } = StarMeasurementUnit.Pixels;
+        public double HFRPixels => ConvertStarMeasurement(HFR, HFRUnit, StarMeasurementUnit.Pixels);
+        public double FWHMPixels => ConvertStarMeasurement(FWHM, FWHMUnit, StarMeasurementUnit.Pixels);
+        public double HFRArcseconds => ConvertStarMeasurement(HFR, HFRUnit, StarMeasurementUnit.Arcseconds);
+        public double FWHMArcseconds => ConvertStarMeasurement(FWHM, FWHMUnit, StarMeasurementUnit.Arcseconds);
 
         public int Stars { get; private set; }
 
@@ -160,7 +172,25 @@ namespace NINA.WPF.Base.Model {
         public double RotatorMechanicalPosition { get; private set; } = 0.0;
 
         private double arcsecPerPixel = double.NaN;
-        private bool IsArcsecPerPixelValid => !double.IsNaN(arcsecPerPixel) && !double.IsInfinity(arcsecPerPixel) && arcsecPerPixel > 0;
+
+        private double ConvertStarMeasurement(double value, StarMeasurementUnit sourceUnit, StarMeasurementUnit targetUnit) {
+            return StarMeasurementUnitConverter.TryConvert(value, sourceUnit, targetUnit, arcsecPerPixel, out var convertedValue)
+                ? convertedValue
+                : double.NaN;
+        }
+
+        private void RaiseStarMeasurementPropertyChanges() {
+            RaisePropertyChanged(nameof(HFR));
+            RaisePropertyChanged(nameof(FWHM));
+            RaisePropertyChanged(nameof(Eccentricity));
+            RaisePropertyChanged(nameof(HFRUnit));
+            RaisePropertyChanged(nameof(FWHMUnit));
+            RaisePropertyChanged(nameof(HFRStDevUnit));
+            RaisePropertyChanged(nameof(HFRPixels));
+            RaisePropertyChanged(nameof(FWHMPixels));
+            RaisePropertyChanged(nameof(HFRArcseconds));
+            RaisePropertyChanged(nameof(FWHMArcseconds));
+        }
     }
 
     public sealed class ImageHistoryPointMap : ClassMap<ImageHistoryPoint> {
@@ -195,6 +225,8 @@ namespace NINA.WPF.Base.Model {
             Map(m => m.AutoFocusPoint.Time).Index(27).Optional().Name("AutoFocus Time");
             Map(m => m.AutoFocusPoint.Filter).Optional().Index(28).Name("AutoFocus Filter");
             Map(m => m.FWHM).Optional().Index(29).Name("FWHM");
+            Map(m => m.HFRUnit).Optional().Index(30).Name("HFR Unit");
+            Map(m => m.FWHMUnit).Optional().Index(31).Name("FWHM Unit");
         }
     }
 }
