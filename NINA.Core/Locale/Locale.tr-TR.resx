@@ -2479,6 +2479,9 @@ Hesaplanan HFR: {2}
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
     <value>İki plate solve denemesi arasındaki dakika olarak bekleme</value>
   </data>
+  <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
+    <value>Centering failed after {0} correction attempts</value>
+  </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Mevcut resme plate solve uygula</value>
   </data>
@@ -2932,6 +2935,9 @@ Bu şablon, başlangıçta varsayılan şablon yerine sekansı başlatmak için 
   </data>
   <data name="LblSlew" xml:space="preserve">
     <value>Çevir</value>
+  </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Çevir ve merkezle</value>
@@ -6832,6 +6838,9 @@ Daha aydınlık oluncaya kadar bekleyin veya pozlama süresini maksimum yapın.<
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Histogram'ı göster</value>
+  </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Sadece bilgi için</value>
