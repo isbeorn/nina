@@ -2477,6 +2477,9 @@ Verbonden cliënten: {0}
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
     <value>Vertraging in minuten tussen twee plate solve pogingen</value>
   </data>
+  <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
+    <value>Centering failed after {0} correction attempts</value>
+  </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Plate solve huidige afbeelding</value>
   </data>
@@ -2930,6 +2933,9 @@ Dit sjabloon zal worden gebruikt bij het opstarten om de sequentie te initialise
   </data>
   <data name="LblSlew" xml:space="preserve">
     <value>Zwenken</value>
+  </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Zwenk en centreer</value>
@@ -6831,6 +6837,9 @@ Increase minimum exposure time or wait until it is brighter.</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
+  </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Info only</value>
