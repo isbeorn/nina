@@ -32,6 +32,7 @@ namespace NINA.Image.ImageAnalysis {
 
         public async Task<ContrastDetectionResult> Measure(IRenderedImage image, ContrastDetectionParams p, IProgress<ApplicationStatus> progress, CancellationToken token) {
             var result = new ContrastDetectionResult();
+            Bitmap bitmapToAnalyze = null;
             try {
                 var state = GetInitialState(image, p);
 
@@ -39,27 +40,28 @@ namespace NINA.Image.ImageAnalysis {
                     Stopwatch overall = Stopwatch.StartNew();
                     progress?.Report(new ApplicationStatus() { Status = "Preparing image for contrast measurement" });
 
-                    var _bitmapToAnalyze = ImageUtility.Convert16BppTo8Bpp(state._originalBitmapSource);
+                    bitmapToAnalyze = ImageUtility.Convert16BppTo8Bpp(state._originalBitmapSource);
 
                     token.ThrowIfCancellationRequested();
 
                     //Crop if there is ROI
 
                     if (p.UseROI && p.InnerCropRatio < 1) {
-                        Rectangle cropRectangle = DetectionUtility.GetCropRectangle(_bitmapToAnalyze, p.InnerCropRatio);
-                        _bitmapToAnalyze = new Crop(cropRectangle).Apply(_bitmapToAnalyze);
+                        Rectangle cropRectangle = DetectionUtility.GetCropRectangle(bitmapToAnalyze, p.InnerCropRatio);
+                        Bitmap croppedBitmap = new Crop(cropRectangle).Apply(bitmapToAnalyze);
+                        bitmapToAnalyze = ReplaceBitmap(bitmapToAnalyze, croppedBitmap);
                     }
 
                     if (p.NoiseReduction == NoiseReductionEnum.Median) {
-                        new Median().ApplyInPlace(_bitmapToAnalyze);
+                        new Median().ApplyInPlace(bitmapToAnalyze);
                     }
 
                     //Make sure resizing is independent of Star Sensitivity
-                    state._resizefactor = (double)_maxWidth / _bitmapToAnalyze.Width;
+                    state._resizefactor = (double)_maxWidth / bitmapToAnalyze.Width;
                     state._inverseResizefactor = 1.0 / state._resizefactor;
 
                     /* Resize to speed up manipulation */
-                    _bitmapToAnalyze = DetectionUtility.ResizeForDetection(_bitmapToAnalyze, _maxWidth, state._resizefactor);
+                    bitmapToAnalyze = DetectionUtility.ResizeForDetection(bitmapToAnalyze, _maxWidth, state._resizefactor);
 
                     progress?.Report(new ApplicationStatus() { Status = "Measuring Contrast" });
 
@@ -69,33 +71,36 @@ namespace NINA.Image.ImageAnalysis {
                         if (p.NoiseReduction == NoiseReductionEnum.None || p.NoiseReduction == NoiseReductionEnum.Median) {
                             int[,] kernel = new int[7, 7];
                             kernel = DetectionUtility.LaplacianOfGaussianKernel(7, 1.0);
-                            new Convolution(kernel).ApplyInPlace(_bitmapToAnalyze);
+                            new Convolution(kernel).ApplyInPlace(bitmapToAnalyze);
                         } else if (p.NoiseReduction == NoiseReductionEnum.Normal) {
                             int[,] kernel = new int[9, 9];
                             kernel = DetectionUtility.LaplacianOfGaussianKernel(9, 1.4);
-                            new Convolution(kernel).ApplyInPlace(_bitmapToAnalyze);
+                            new Convolution(kernel).ApplyInPlace(bitmapToAnalyze);
                         } else if (p.NoiseReduction == NoiseReductionEnum.High) {
                             int[,] kernel = new int[11, 11];
                             kernel = DetectionUtility.LaplacianOfGaussianKernel(11, 1.8);
-                            new Convolution(kernel).ApplyInPlace(_bitmapToAnalyze);
+                            new Convolution(kernel).ApplyInPlace(bitmapToAnalyze);
                         } else {
                             int[,] kernel = new int[13, 13];
                             kernel = DetectionUtility.LaplacianOfGaussianKernel(13, 2.2);
-                            new Convolution(kernel).ApplyInPlace(_bitmapToAnalyze);
+                            new Convolution(kernel).ApplyInPlace(bitmapToAnalyze);
                         }
                         //Get mean and standard dev
-                        Accord.Imaging.ImageStatistics stats = new Accord.Imaging.ImageStatistics(_bitmapToAnalyze);
+                        Accord.Imaging.ImageStatistics stats = new Accord.Imaging.ImageStatistics(bitmapToAnalyze);
                         result.AverageContrast = stats.GrayWithoutBlack.Mean;
                         result.ContrastStdev = 0.01; //Stdev of convoluted image is not a measure of error - using same figure for all
                     } else if (p.Method == ContrastDetectionMethodEnum.Sobel) {
                         if (p.NoiseReduction == NoiseReductionEnum.None || p.NoiseReduction == NoiseReductionEnum.Median) {
                             //Nothing to do
                         } else if (p.NoiseReduction == NoiseReductionEnum.Normal) {
-                            _bitmapToAnalyze = new FastGaussianBlur(_bitmapToAnalyze).Process(1);
+                            Bitmap blurredBitmap = new FastGaussianBlur(bitmapToAnalyze).Process(1);
+                            bitmapToAnalyze = ReplaceBitmap(bitmapToAnalyze, blurredBitmap);
                         } else if (p.NoiseReduction == NoiseReductionEnum.High) {
-                            _bitmapToAnalyze = new FastGaussianBlur(_bitmapToAnalyze).Process(2);
+                            Bitmap blurredBitmap = new FastGaussianBlur(bitmapToAnalyze).Process(2);
+                            bitmapToAnalyze = ReplaceBitmap(bitmapToAnalyze, blurredBitmap);
                         } else {
-                            _bitmapToAnalyze = new FastGaussianBlur(_bitmapToAnalyze).Process(3);
+                            Bitmap blurredBitmap = new FastGaussianBlur(bitmapToAnalyze).Process(3);
+                            bitmapToAnalyze = ReplaceBitmap(bitmapToAnalyze, blurredBitmap);
                         }
                         int[,] kernel = {
                             {-1, -2, 0, 2, 1},
@@ -104,25 +109,33 @@ namespace NINA.Image.ImageAnalysis {
                             {2, 4, 0, -4, -2},
                             {1, 2, 0, -2, -1}
                         };
-                        new Convolution(kernel).ApplyInPlace(_bitmapToAnalyze);
+                        new Convolution(kernel).ApplyInPlace(bitmapToAnalyze);
                         //Get mean and standard dev
-                        Accord.Imaging.ImageStatistics stats = new Accord.Imaging.ImageStatistics(_bitmapToAnalyze);
+                        Accord.Imaging.ImageStatistics stats = new Accord.Imaging.ImageStatistics(bitmapToAnalyze);
                         result.AverageContrast = stats.GrayWithoutBlack.Mean;
                         result.ContrastStdev = 0.01; //Stdev of convoluted image is not a measure of error - using same figure for all
                     }
 
                     token.ThrowIfCancellationRequested();
 
-                    _bitmapToAnalyze.Dispose();
                     overall.Stop();
                     Debug.Print("Overall contrast detection: " + overall.Elapsed);
                     overall = null;
                 }
             } catch (OperationCanceledException) {
             } finally {
+                bitmapToAnalyze?.Dispose();
                 progress?.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return result;
+        }
+
+        private static Bitmap ReplaceBitmap(Bitmap current, Bitmap replacement) {
+            if (!ReferenceEquals(current, replacement)) {
+                current?.Dispose();
+            }
+
+            return replacement;
         }
 
         private class State {

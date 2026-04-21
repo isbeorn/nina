@@ -156,16 +156,20 @@ namespace NINA.Image.ImageAnalysis {
         }
 
         public static BitmapSource ConvertBitmap(System.Drawing.Bitmap bitmap, System.Windows.Media.PixelFormat pf) {
-            var bitmapData = bitmap.LockBits(
-                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
+            BitmapData bitmapData = null;
+            try {
+                bitmapData = bitmap.LockBits(
+                    new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                    System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
-            var bitmapSource = BitmapSource.Create(
-                bitmapData.Width, bitmapData.Height, 96, 96, pf, null,
-                bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
-
-            bitmap.UnlockBits(bitmapData);
-            return bitmapSource;
+                return BitmapSource.Create(
+                    bitmapData.Width, bitmapData.Height, 96, 96, pf, null,
+                    bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
+            } finally {
+                if (bitmapData != null) {
+                    bitmap.UnlockBits(bitmapData);
+                }
+            }
         }
 
         public static Bitmap BitmapFromSource(BitmapSource source) {
@@ -177,16 +181,22 @@ namespace NINA.Image.ImageAnalysis {
                     source.PixelWidth,
                     source.PixelHeight,
                     pf);
-            BitmapData data = bmp.LockBits(
-                    new Rectangle(System.Drawing.Point.Empty, bmp.Size),
-                    ImageLockMode.WriteOnly,
-                    pf);
-            source.CopyPixels(
-                    Int32Rect.Empty,
-                    data.Scan0,
-                    data.Height * data.Stride,
-                    data.Stride);
-            bmp.UnlockBits(data);
+            BitmapData data = null;
+            try {
+                data = bmp.LockBits(
+                        new Rectangle(System.Drawing.Point.Empty, bmp.Size),
+                        ImageLockMode.WriteOnly,
+                        pf);
+                source.CopyPixels(
+                        Int32Rect.Empty,
+                        data.Scan0,
+                        data.Height * data.Stride,
+                        data.Stride);
+            } finally {
+                if (data != null) {
+                    bmp.UnlockBits(data);
+                }
+            }
             return bmp;
         }
 
@@ -275,8 +285,10 @@ namespace NINA.Image.ImageAnalysis {
                 }
 
                 DebayeredImageData debayered = new DebayeredImageData();
-                debayered.ImageSource = ConvertBitmap(filter.Apply(bmp), PixelFormats.Rgb48);
-                debayered.ImageSource.Freeze();
+                using (var debayeredBitmap = filter.Apply(bmp)) {
+                    debayered.ImageSource = ConvertBitmap(debayeredBitmap, PixelFormats.Rgb48);
+                    debayered.ImageSource.Freeze();
+                }
                 debayered.Data = filter.LRGBArrays;
                 return debayered;
             }

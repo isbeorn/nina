@@ -42,9 +42,11 @@ namespace NINA.Image.ImageAnalysis {
             if (originalSource.Format != System.Windows.Media.PixelFormats.Gray8) {
                 if (originalSource.Format != System.Windows.Media.PixelFormats.Gray16) {
                     using (var imgToConvert = ImageUtility.BitmapFromSource(originalSource, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
-                        convertedSource = new Grayscale(0.2125, 0.7154, 0.0721).Apply(imgToConvert);
+                        using (var graySource = new Grayscale(0.2125, 0.7154, 0.0721).Apply(imgToConvert)) {
+                            var grayBitmapSource = ImageUtility.ConvertBitmap(graySource, System.Windows.Media.PixelFormats.Gray16);
+                            convertedSource = ImageUtility.Convert16BppTo8Bpp(grayBitmapSource);
+                        }
                     }
-                    convertedSource = ImageUtility.Convert16BppTo8Bpp(ImageUtility.ConvertBitmap(convertedSource, System.Windows.Media.PixelFormats.Gray16));
                 } else {
                     convertedSource = ImageUtility.Convert16BppTo8Bpp(originalSource);
                 }
@@ -59,7 +61,7 @@ namespace NINA.Image.ImageAnalysis {
                     var drawingColor = System.Drawing.Color.FromArgb(mediaColor.A, mediaColor.R, mediaColor.G, mediaColor.B);
                     using (var linePen = new System.Drawing.Pen(drawingColor, 1)) {
                         using (var bahtinovedBitmap = new Bitmap(convertedSource.Width, convertedSource.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb)) {
-                            Graphics graphics = Graphics.FromImage(bahtinovedBitmap);
+                            using (Graphics graphics = Graphics.FromImage(bahtinovedBitmap)) {
                             graphics.DrawImage(convertedSource, 0, 0);
 
                             /* Apply filters and detection*/
@@ -142,11 +144,12 @@ namespace NINA.Image.ImageAnalysis {
                                 }
                             }
 
-                            var img = ImageUtility.ConvertBitmap(bahtinovedBitmap, System.Windows.Media.PixelFormats.Bgr24);
-                            convertedSource.Dispose();
-                            img.Freeze();
-                            bahtinovImage.Image = img;
-                            return bahtinovImage;
+                                var img = ImageUtility.ConvertBitmap(bahtinovedBitmap, System.Windows.Media.PixelFormats.Bgr24);
+                                convertedSource.Dispose();
+                                img.Freeze();
+                                bahtinovImage.Image = img;
+                                return bahtinovImage;
+                            }
                         }
                     }
                 }
