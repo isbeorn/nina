@@ -82,7 +82,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 i.Add("The Constant is already defined here; this definition will be ignored.");
             }
 
-            Expression.ValidateExpressions(Issues, Expr);
+            Expression.ValidateExpressions(i, Expr);
 
             foreach (var kvp in Expr.Resolved) {
                 if (kvp.Value is Variable) {
