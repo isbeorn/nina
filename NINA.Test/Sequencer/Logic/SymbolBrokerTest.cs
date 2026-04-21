@@ -19,6 +19,7 @@ using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Logic;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -973,7 +974,75 @@ namespace NINA.Test.Sequencer.Logic {
             symbols.Should().Contain(x => x.Category == "Camera" && x.Key == "XSize" && x.Type == Symbol.SymbolType.SYMBOL_HIDDEN);
         }
 
-       [Test]
+        [Test]
+        public void SymbolBroker_GetHiddenSymbols_ReturnsSnapshot() {
+            // Arrange
+            var info = new CameraInfo {
+                Connected = true,
+                TemperatureSetPoint = -15.0,
+                Temperature = -10.5,
+                XSize = 4000,
+                YSize = 3000,
+                PixelSize = 4.54
+            };
+
+            // Act
+            broker.UpdateDeviceInfo(info);
+            var symbols = broker.GetHiddenSymbols("Camera");
+            symbols.Clear();
+
+            // Assert
+            broker.GetHiddenSymbols("Camera")
+                .Should()
+                .Contain(x => x.Category == "Camera" && x.Key == "XSize" && x.Type == Symbol.SymbolType.SYMBOL_HIDDEN);
+        }
+
+        [Test]
+        public async Task SymbolBroker_ConcurrentSymbolSnapshotsAndUpdates_DoNotThrow() {
+            // Arrange
+            ISymbolProvider provider = broker.RegisterSymbolProvider("ConcurrentProvider");
+            provider.AddOrUpdateSymbol("Value", 0);
+            provider.AddOrUpdateHiddenSymbol("HiddenValue", 0, Array.Empty<Symbol>());
+            ConcurrentQueue<Exception> exceptions = new ConcurrentQueue<Exception>();
+
+            Task updater = Task.Run(() => {
+                try {
+                    for (int i = 0; i < 10000; i++) {
+                        provider.AddOrUpdateSymbol("Value", i);
+                        provider.AddOrUpdateHiddenSymbol("HiddenValue", i, Array.Empty<Symbol>());
+
+                        if (i % 5 == 0) {
+                            provider.RemoveSymbol("Value");
+                        }
+                    }
+                } catch (Exception ex) {
+                    exceptions.Enqueue(ex);
+                }
+            });
+
+            Task[] readers = Enumerable.Range(0, 16)
+                .Select(index => Task.Run(() => {
+                    try {
+                        for (int i = 0; i < 10000; i++) {
+                            broker.TryGetValue("ConcurrentProvider_Value", out _);
+                            broker.TryGetSymbol("ConcurrentProvider_HiddenValue", out _);
+                            broker.GetSymbols();
+                            broker.GetHiddenSymbols("ConcurrentProvider");
+                        }
+                    } catch (Exception ex) {
+                        exceptions.Enqueue(ex);
+                    }
+                }))
+                .ToArray();
+
+            // Act
+            await Task.WhenAll(readers.Concat(new[] { updater }));
+
+            // Assert
+            exceptions.Should().BeEmpty();
+        }
+
+        [Test]
         public void SymbolBroker_GetMyProviders_ReturnsOnlyProvidersRegisteredByCallingAssembly() {
             // Arrange
             var provider1 = broker.RegisterSymbolProvider("TestProvider1");

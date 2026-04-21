@@ -85,6 +85,7 @@ namespace NINA.Sequencer.Logic {
             new Symbol("ShutterError", 4)
         };
         private readonly ConcurrentDictionary<string, IList<SymbolFunction>> _functions = new(StringComparer.OrdinalIgnoreCase);
+        private readonly object _brokerStateLock = new object();
 
         private ICameraMediator _cameraMediator;
         private ConditionWatchdog _conditionWatchdog;
@@ -198,129 +199,138 @@ namespace NINA.Sequencer.Logic {
         }
 
         private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values, SymbolType type) {
-            if (!_providers.Contains(source)) {
-                _providers.Add(source);
-            }
-
-            if (!_dataSymbols.TryGetValue(token, out IList<Symbol> list)) {
-                list = new List<Symbol>();
-                _dataSymbols[token] = list;
-                Symbol sym = new Symbol(token, value, source, values, type);
-                if (type == SymbolType.SYMBOL_HIDDEN) {
-                    AddHiddenSymbol(source, sym);
+            lock (_brokerStateLock) {
+                if (!_providers.Contains(source)) {
+                    _providers.Add(source);
                 }
-                list.Add(sym);
-            } else {
-                bool found = false;
-                for (int idx = 0; idx < list.Count; idx++) {
-                    Symbol s = list[idx];
-                    if (s.Category == source) {
-                        s.Value = value;
-                        found = true;
-                        break;
+
+                if (!_dataSymbols.TryGetValue(token, out IList<Symbol> list)) {
+                    list = new List<Symbol>();
+                    _dataSymbols[token] = list;
+                    Symbol sym = new Symbol(token, value, source, values, type);
+                    if (type == SymbolType.SYMBOL_HIDDEN) {
+                        AddHiddenSymbol(source, sym);
+                    }
+                    list.Add(sym);
+                } else {
+                    bool found = false;
+                    for (int idx = 0; idx < list.Count; idx++) {
+                        Symbol s = list[idx];
+                        if (s.Category == source) {
+                            s.Value = value;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        Symbol sym = new Symbol(token, value, source, values, type);
+                        if (type == SymbolType.SYMBOL_HIDDEN) {
+                            AddHiddenSymbol(source, sym);
+                        }
+                        list.Add(sym);
                     }
                 }
-                if (!found) {
-                    Symbol sym = new Symbol(token, value, source, values, type);
-                    list.Add(sym);
-                }
-            }
 
-            // Defined constants...
-            if (values != null) {
-                foreach (Symbol d in values) {
-                    AddOrUpdateSymbol(source, d.Key, d.Value, null, SymbolType.SYMBOL_CONSTANT);
+                // Defined constants...
+                if (values != null) {
+                    foreach (Symbol d in values) {
+                        AddOrUpdateSymbol(source, d.Key, d.Value, null, SymbolType.SYMBOL_CONSTANT);
+                    }
                 }
             }
         }
 
         private SymbolFunction GetFunction(string key) {
-            // 1) Direct lookup - if exactly one function matches the key, return it.
-            if (_functions.TryGetValue(key, out var list) && list.Count == 1) {
-                return list[0];
-            }
-
-            // 2) Parse prefix if key contains a delimiter (e.g., "prefix_key").
-            string prefix = null;
-            int delimiterIndex = key.IndexOf(DELIMITER);
-
-            if (delimiterIndex > 0) {
-                // Split only once: "prefix_key" → ["prefix", "key"]
-                var parts = key.Split(DELIMITER, 2);
-                if (parts.Length == 2) {
-                    prefix = parts[0];
-                    key = parts[1]; // lookup is performed on the key part
+            lock (_brokerStateLock) {
+                // 1) Direct lookup - if exactly one function matches the key, return it.
+                if (_functions.TryGetValue(key, out var list) && list.Count == 1) {
+                    return list[0];
                 }
-            }
 
-            // 3) Lookup base key (after removing prefix if present).
-            if (!_functions.TryGetValue(key, out list)) {
-                throw new ArgumentException("Function not found: " + key); // not found
-            }
+                // 2) Parse prefix if key contains a delimiter (e.g., "prefix_key").
+                string prefix = null;
+                int delimiterIndex = key.IndexOf(DELIMITER);
 
-            // 4) If a prefix is available, use it to disambiguate between multiple functions.
-            if (prefix != null) {
-                foreach (var f in list) {
-                    if (f.Category == prefix) {
-                        return f;
+                if (delimiterIndex > 0) {
+                    // Split only once: "prefix_key" → ["prefix", "key"]
+                    var parts = key.Split(DELIMITER, 2);
+                    if (parts.Length == 2) {
+                        prefix = parts[0];
+                        key = parts[1]; // lookup is performed on the key part
                     }
                 }
-            }
 
-            // 5) If only one symbol exists at this point, return it.
-            if (list.Count == 1) {
-                return list[0];
-            }
+                // 3) Lookup base key (after removing prefix if present).
+                if (!_functions.TryGetValue(key, out list)) {
+                    throw new ArgumentException("Function not found: " + key); // not found
+                }
 
-            // 6) Multiple symbols remain → ambiguous.
-            throw new ArgumentException("Ambiguous function symbol: " + key);
+                // 4) If a prefix is available, use it to disambiguate between multiple functions.
+                if (prefix != null) {
+                    foreach (var f in list) {
+                        if (f.Category == prefix) {
+                            return f;
+                        }
+                    }
+                }
+
+                // 5) If only one symbol exists at this point, return it.
+                if (list.Count == 1) {
+                    return list[0];
+                }
+
+                // 6) Multiple symbols remain → ambiguous.
+                throw new ArgumentException("Ambiguous function symbol: " + key);
+            }
         }
 
         private bool GetSymbol(string key, out Symbol symbol) {
-            IList<Symbol> list;
-            string prefix = null;
+            lock (_brokerStateLock) {
+                IList<Symbol> list;
+                string prefix = null;
 
-            if (_dataSymbols.TryGetValue(key, out list) && list.Count == 1) {
-                symbol = list[0];
-                return true;
-            }
-
-            if (key.IndexOf(DELIMITER) > 0) {
-                string[] parts = key.Split(DELIMITER, 2);
-                if (parts.Length == 2) {
-                    key = parts[1];
-                    prefix = parts[0];
+                if (_dataSymbols.TryGetValue(key, out list) && list.Count == 1) {
+                    symbol = list[0];
+                    return true;
                 }
-            }
 
-            if (!_dataSymbols.TryGetValue(key, out list)) {
-                symbol = null;
-                return false;
-            }
-
-            if (prefix != null) {
-                foreach (Symbol kvp in list) {
-                    if (kvp.Category == prefix) {
-                        symbol = kvp;
-                        return true;
+                if (key.IndexOf(DELIMITER) > 0) {
+                    string[] parts = key.Split(DELIMITER, 2);
+                    if (parts.Length == 2) {
+                        key = parts[1];
+                        prefix = parts[0];
                     }
                 }
-            }
 
-            // If the list has one item, we're done
-            if (list.Count == 1) {
-                symbol = list[0];
-                if (!string.IsNullOrWhiteSpace(prefix) && !symbol.Key.Contains(prefix)) {
+                if (!_dataSymbols.TryGetValue(key, out list)) {
                     symbol = null;
                     return false;
                 }
 
-                return true;
-            }
+                if (prefix != null) {
+                    foreach (Symbol kvp in list) {
+                        if (kvp.Category == prefix) {
+                            symbol = kvp;
+                            return true;
+                        }
+                    }
+                }
 
-            // Ambiguous
-            symbol = new AmbiguousSymbol(key, list);
-            return false;
+                // If the list has one item, we're done
+                if (list.Count == 1) {
+                    symbol = list[0];
+                    if (!string.IsNullOrWhiteSpace(prefix) && !symbol.Key.Contains(prefix)) {
+                        symbol = null;
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                // Ambiguous
+                symbol = new AmbiguousSymbol(key, list);
+                return false;
+            }
         }
 
         private void RegisterCoreFunctions() {
@@ -346,79 +356,109 @@ namespace NINA.Sequencer.Logic {
         }
 
         private void RegisterFunction(string source, SymbolFunction function) {
-            if (source != function.Category) {
-                throw new ArgumentException("Function category does not match source provider.");
-            }
+            lock (_brokerStateLock) {
+                if (source != function.Category) {
+                    throw new ArgumentException("Function category does not match source provider.");
+                }
 
-            if (!_providers.Contains(source)) {
-                _providers.Add(source);
-            }
+                if (!_providers.Contains(source)) {
+                    _providers.Add(source);
+                }
 
-            if (!_functions.ContainsKey(function.Key)) {
-                _functions[function.Key] = new List<SymbolFunction>();
-            }
+                if (!_functions.ContainsKey(function.Key)) {
+                    _functions[function.Key] = new List<SymbolFunction>();
+                }
 
-            if (_functions[function.Key].Any(x => x.Category == source)) {
-                throw new ArgumentException("Function symbol already registered: " + function.Key + " in category " + source);
-            }
+                if (_functions[function.Key].Any(x => x.Category == source)) {
+                    throw new ArgumentException("Function symbol already registered: " + function.Key + " in category " + source);
+                }
 
-            _functions[function.Key].Add(function);
+                _functions[function.Key].Add(function);
+            }
         }
 
         private void RemoveAllSymbols(string source) {
-            int count = 0;
-            var keysToRemove = new List<string>();
+            lock (_brokerStateLock) {
+                int count = 0;
+                var keysToRemove = new List<string>();
 
-            foreach (var kvp in _dataSymbols) {
-                var list = kvp.Value;
+                foreach (var kvp in _dataSymbols) {
+                    var list = kvp.Value;
 
-                for (int i = list.Count - 1; i >= 0; i--) {
-                    if (list[i].Category == source) {
-                        list.RemoveAt(i);
-                        count++;
+                    for (int i = list.Count - 1; i >= 0; i--) {
+                        if (list[i].Category == source) {
+                            list.RemoveAt(i);
+                            count++;
+                        }
+                    }
+
+                    if (list.Count == 0) {
+                        keysToRemove.Add(kvp.Key);
                     }
                 }
 
-                if (list.Count == 0) {
-                    keysToRemove.Add(kvp.Key);
+                foreach (var key in keysToRemove) {
+                    _dataSymbols.Remove(key, out _);
                 }
-            }
 
-            foreach (var key in keysToRemove) {
-                _dataSymbols.Remove(key, out _);
-            }
+                _hiddenSymbols.Remove(source, out _);
 
-            Logger.Info($"Removing all symbols from: {source} ({count})");
+                Logger.Info($"Removing all symbols from: {source} ({count})");
+            }
         }
 
         private bool RemoveSymbol(string source, string key) {
-            IList<Symbol> list;
+            lock (_brokerStateLock) {
+                IList<Symbol> list;
 
-            if (!_dataSymbols.TryGetValue(key, out list)) {
-                return false;
-            }
-
-            if (list.Count == 1) {
-                if (list[0].Category == source) {
-                    _dataSymbols.Remove(key, out _);
-                    return true;
+                if (!_dataSymbols.TryGetValue(key, out list)) {
+                    return false;
                 }
-                return false;
+
+                if (list.Count == 1) {
+                    if (list[0].Category == source) {
+                        if (list[0].Type == SymbolType.SYMBOL_HIDDEN) {
+                            RemoveHiddenSymbol(source, key);
+                        }
+                        _dataSymbols.Remove(key, out _);
+                        return true;
+                    }
+                    return false;
+                }
+
+                Symbol toRemove = null;
+                foreach (var sym in list) {
+                    if (sym.Category == source) {
+                        toRemove = sym;
+                        break;
+                    }
+                }
+
+                if (toRemove != null) {
+                    if (toRemove.Type == SymbolType.SYMBOL_HIDDEN) {
+                        RemoveHiddenSymbol(source, key);
+                    }
+                    list.Remove(toRemove);
+                }
+
+                return true;
+            }
+        }
+
+        private void RemoveHiddenSymbol(string source, string key) {
+            if (!_hiddenSymbols.TryGetValue(source, out IList<Symbol> list)) {
+                return;
             }
 
-            Symbol toRemove = null;
-            foreach (var sym in list) {
-                if (sym.Category == source) {
-                    toRemove = sym;
-                    break;
+            for (int i = list.Count - 1; i >= 0; i--) {
+                if (list[i].Category == source && list[i].Key == key) {
+                    list.RemoveAt(i);
                 }
             }
 
-            if (toRemove != null) {
-                list.Remove(toRemove);
+            if (list.Count == 0) {
+                _hiddenSymbols.Remove(source, out _);
             }
-
-            return true;
         }
 
         private Task UpdateNINASymbols() {
@@ -523,26 +563,37 @@ namespace NINA.Sequencer.Logic {
         }
 
         public IReadOnlyCollection<SymbolFunction> GetFunctions() {
-            return _functions.Values.SelectMany(l => l).ToList();
+            lock (_brokerStateLock) {
+                return _functions.Values.SelectMany(l => l).ToList();
+            }
         }
 
         public IList<Symbol> GetHiddenSymbols(string source) {
-            IList<Symbol> syms = null;
-            _hiddenSymbols.TryGetValue(source, out syms);
-            return syms;
+            lock (_brokerStateLock) {
+                if (_hiddenSymbols.TryGetValue(source, out IList<Symbol> syms)) {
+                    return syms.Select(CopySymbol).ToList();
+                }
+
+                return null;
+            }
+        }
+
+        private static Symbol CopySymbol(Symbol symbol) {
+            return new Symbol(symbol.Key, symbol.Value, symbol.Category, symbol.Constants, symbol.Type);
         }
 
         public List<Symbol> GetSymbols() {
-            IList<Symbol> ss = new List<Symbol>();
+            lock (_brokerStateLock) {
+                IList<Symbol> ss = new List<Symbol>();
 
-            foreach (var kvp in _dataSymbols) {
-                IList<Symbol> sources = kvp.Value;
-                foreach (Symbol ds in sources) {
-                    Symbol symCopy = new Symbol(kvp.Key, ds.Value, ds.Category, ds.Constants, ds.Type);
-                    ss.Add(symCopy);
+                foreach (var kvp in _dataSymbols) {
+                    IList<Symbol> sources = kvp.Value;
+                    foreach (Symbol ds in sources) {
+                        ss.Add(CopySymbol(ds));
+                    }
                 }
+                return ss.Where(x => x.Type == SymbolType.SYMBOL_NORMAL).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
             }
-            return ss.Where(x => x.Type == SymbolType.SYMBOL_NORMAL).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
         }
 
         public void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile) {
@@ -560,37 +611,41 @@ namespace NINA.Sequencer.Logic {
             RegisterFunction(symbolProvider.GetProviderName(), symbolFunction);
         }
         public ISymbolProvider RegisterSymbolProvider(string name) {
-            // Check if provider already exists
-            if (_providers.Contains(name)) {
-                throw new ArgumentException($"Symbol provider '{name}' is already registered.");
+            lock (_brokerStateLock) {
+                // Check if provider already exists
+                if (_providers.Contains(name)) {
+                    throw new ArgumentException($"Symbol provider '{name}' is already registered.");
+                }
+
+                var callingAssembly = Assembly.GetCallingAssembly();
+                var provider = new SymbolProvider(name, this);
+
+                // Track which assembly registered this provider
+                _providerOwnership[name] = callingAssembly.FullName;
+                _providers.Add(name);
+
+                return provider;
             }
-
-            var callingAssembly = Assembly.GetCallingAssembly();
-            var provider = new SymbolProvider(name, this);
-
-            // Track which assembly registered this provider
-            _providerOwnership[name] = callingAssembly.FullName;
-            _providers.Add(name);
-
-            return provider;
         }
 
         public IReadOnlyCollection<ISymbolProvider> GetMyProviders() {
             var callingAssembly = Assembly.GetCallingAssembly();
             var assemblyName = callingAssembly.FullName;
 
-            var ownedProviders = _providerOwnership
-                .Where(kvp => kvp.Value == assemblyName)
-                .Select(kvp => kvp.Key)
-                .ToList();
+            lock (_brokerStateLock) {
+                var ownedProviders = _providerOwnership
+                    .Where(kvp => kvp.Value == assemblyName)
+                    .Select(kvp => kvp.Key)
+                    .ToList();
 
-            // Return the actual provider instances
-            var result = new List<ISymbolProvider>();
-            foreach (var providerName in ownedProviders) {
-                result.Add(new SymbolProvider(providerName, this));
+                // Return the actual provider instances
+                var result = new List<ISymbolProvider>();
+                foreach (var providerName in ownedProviders) {
+                    result.Add(new SymbolProvider(providerName, this));
+                }
+
+                return result.AsReadOnly();
             }
-
-            return result.AsReadOnly();
         }
 
         public bool RemoveSymbol(ISymbolProvider provider, string token) {

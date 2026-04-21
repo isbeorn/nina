@@ -16,12 +16,13 @@ using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace NINA.Sequencer.Logic {
 
     public class AmbiguousSymbol : Symbol {
 
-        public AmbiguousSymbol(string key, IList<Symbol> symbols) : base(key, null, null, ((List<Symbol>)symbols).ToArray(), SymbolType.SYMBOL_NORMAL) {
+        public AmbiguousSymbol(string key, IList<Symbol> symbols) : base(key, null, null, symbols.ToArray(), SymbolType.SYMBOL_NORMAL) {
         }
 
         public Symbol[] Symbols => Constants;
