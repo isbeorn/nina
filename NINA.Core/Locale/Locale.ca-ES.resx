@@ -2482,6 +2482,9 @@ HFR calculat: {2}    </value>
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
     <value>Interval, en minuts, entre dos intents de resolució de plaques (platesolve)</value>
   </data>
+  <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
+    <value>Centering failed after {0} correction attempts</value>
+  </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Resolució de plaques (platesolve) de la imatge actual</value>
   </data>
@@ -2935,6 +2938,9 @@ Aquesta plantilla s'utilitzarà al començament per inicialitzar la seqüència 
   </data>
   <data name="LblSlew" xml:space="preserve">
     <value>Gira</value>
+  </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Gira i centra</value>
@@ -6835,6 +6841,9 @@ Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</va
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Mostra l'Histrograma</value>
+  </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Només info</value>

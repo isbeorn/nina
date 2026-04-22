@@ -222,8 +222,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         public bool Validate() {
+            Issues.Clear();
             Expression.ValidateExpressions(Issues, RaExpression, DecExpression, PositionAngleExpression, OffsetExpression);
-            RaisePropertyChanged("Issues");
+            RaisePropertyChanged(nameof(Issues));
             return Issues.Count == 0;
         }
 
@@ -232,7 +233,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         public IList<string> Issues {
             get { return issues; }
             set {
-                Issues = value;
+                issues = value;
             }
         }
     }

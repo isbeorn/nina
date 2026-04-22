@@ -2487,6 +2487,9 @@ HFR calculé: {2}</value>
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
     <value>Délai en minutes entre deux tentatives de résolutions astrométriques</value>
   </data>
+  <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
+    <value>Centering failed after {0} correction attempts</value>
+  </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Astrométrie sur image courante</value>
   </data>
@@ -2940,6 +2943,9 @@ Ce modèle sera utilisé au démarrage pour initialiser la séquence au lieu de 
   </data>
   <data name="LblSlew" xml:space="preserve">
     <value>Pointer</value>
+  </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Déplacer et centrer</value>
@@ -6837,6 +6843,9 @@ Augmenter le temps d'exposition minimum ou attendre qu'il fasse plus clair.</val
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
+  </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Infos uniquement</value>

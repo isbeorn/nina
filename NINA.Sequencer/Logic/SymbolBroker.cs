@@ -811,6 +811,8 @@ namespace NINA.Sequencer.Logic {
                 AddOrUpdateSymbol("Dome", "DomeAltitude", deviceInfo.Altitude, SymbolType.SYMBOL_HIDDEN);
             } else {
                 RemoveSymbol("Dome", "ShutterStatus");
+                RemoveSymbol("Dome", "Azimuth");
+                RemoveSymbol("Dome", "Altitude");
                 RemoveSymbol("Dome", "DomeAzimuth");
                 RemoveSymbol("Dome", "DomeAltitude");
             }

@@ -637,6 +637,23 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         [Test]
+        public void UserSymbol_GlobalVariable_DetachedDuplicateShouldNotReplaceRootedGlobal() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer activeContainer = CreateContainer("Active");
+            root.Add(activeContainer);
+            GlobalVariable activeGlobal = CreateGlobalVariable("sharedGlobal", "1");
+            activeContainer.Add(activeGlobal);
+
+            SequentialContainer detachedContainer = CreateContainer("Detached");
+            GlobalVariable detachedGlobal = CreateGlobalVariable("sharedGlobal", "2");
+
+            detachedContainer.Add(detachedGlobal);
+
+            UserSymbol.SymbolCache[UserSymbol.GlobalSymbols]["sharedGlobal"].Should().BeSameAs(activeGlobal);
+            UserSymbol.FindGlobalSymbol("sharedGlobal").Should().BeSameAs(activeGlobal);
+        }
+
+        [Test]
         public void UserSymbol_Identifier_ValidPattern_ShouldMatch() {
             // Valid identifiers according to VALID_SYMBOL pattern: ^[a-zA-Z_][a-zA-Z0-9_]*$
             var validIdentifiers = new[] {

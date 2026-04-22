@@ -584,6 +584,8 @@ namespace NINA.Test.Sequencer.Logic {
             // Assert
             ValidateSymbol(key: "Dome_Connected", expectedSuccess: true, expectedValue: false);
             ValidateSymbol(key: "Dome_ShutterStatus", expectedSuccess: false);
+            ValidateSymbol(key: "Dome_Altitude", expectedSuccess: false);
+            ValidateSymbol(key: "Dome_Azimuth", expectedSuccess: false);
             ValidateSymbol(key: "Dome_DomeAltitude", expectedSuccess: false);
             ValidateSymbol(key: "Dome_DomeAzimuth", expectedSuccess: false);
         }
