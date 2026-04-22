@@ -101,7 +101,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
 
                     // Wait for the filter wheel to initialize
                     using (var cts = CancellationTokenSource.CreateLinkedTokenSource(token)) {
-                        cts.CancelAfter(TimeSpan.FromSeconds(10));
+                        cts.CancelAfter(TimeSpan.FromMinutes(2));
                         try {
                             while (Position == -1) {
                                 await Task.Delay(500, cts.Token);
