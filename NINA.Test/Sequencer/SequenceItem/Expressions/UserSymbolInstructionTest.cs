@@ -92,6 +92,31 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
             clone.Identifier.Should().Be("target");
             clone.Expr.Should().NotBeSameAs(sut.Expr);
             clone.OriginalExpr.Should().NotBeSameAs(sut.OriginalExpr);
+            clone.Expr.Definition.Should().Be("40 + 2");
+            clone.OriginalDefinition.Should().Be("20 + 22");
+            clone.Expr.Symbol.Should().BeSameAs(clone);
+            clone.OriginalExpr.Symbol.Should().BeSameAs(clone);
+        }
+
+        /// <summary>
+        /// Verifies cloning a global variable keeps the authored original definition separate from the current runtime expression.
+        /// </summary>
+        [Test]
+        public void GlobalVariable_Clone_PreservesOriginalDefinitionAndOwnsExpressions() {
+            SequenceRootContainer root = CreateRoot();
+            GlobalVariable sut = new GlobalVariable("globalTarget", "initialValue", root) {
+                SymbolBroker = symbolBrokerMock.Object
+            };
+            sut.Expr.Definition = "runtimeValue";
+
+            GlobalVariable clone = (GlobalVariable)sut.Clone();
+
+            clone.Should().NotBeSameAs(sut);
+            clone.Identifier.Should().Be("globalTarget");
+            clone.Expr.Definition.Should().Be("runtimeValue");
+            clone.OriginalDefinition.Should().Be("initialValue");
+            clone.Expr.Symbol.Should().BeSameAs(clone);
+            clone.OriginalExpr.Symbol.Should().BeSameAs(clone);
         }
 
         /// <summary>
