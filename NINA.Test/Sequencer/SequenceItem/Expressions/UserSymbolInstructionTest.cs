@@ -281,6 +281,27 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
         }
 
         /// <summary>
+        /// Verifies detached global variable copies created while saving or loading templates do not make the active global target appear out of scope.
+        /// </summary>
+        [Test]
+        public void ResetVariable_Validate_ResolvesRootedGlobalAfterDetachedDuplicate() {
+            SequenceRootContainer root = CreateRoot();
+            _ = new GlobalVariable("target", "1", root) {
+                SymbolBroker = symbolBrokerMock.Object
+            };
+            SequentialContainer detachedContainer = new SequentialContainer {
+                SymbolBroker = symbolBrokerMock.Object
+            };
+            _ = new GlobalVariable("target", "2", detachedContainer) {
+                SymbolBroker = symbolBrokerMock.Object
+            };
+            ResetVariable sut = CreateResetVariable("target", "3", root);
+
+            sut.Validate().Should().BeTrue();
+            sut.Issues.Should().NotContain(i => i.Contains("not in scope"));
+        }
+
+        /// <summary>
         /// Verifies the Reset Variable Execute Throws When Variable Has Not Executed scenario for the sequencer behavior under test.
         /// </summary>
         [Test]
