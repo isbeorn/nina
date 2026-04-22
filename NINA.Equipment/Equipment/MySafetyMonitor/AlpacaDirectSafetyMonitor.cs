@@ -64,7 +64,7 @@ namespace NINA.Equipment.Equipment.MySafetyMonitor {
 
         public bool HasSetupDialog => true;
 
-        public string Id => "7F937C44-9ECE-49A7-B56E-8090FF8267A8";
+        public string Id => "C4DB7AFB-8092-45F9-9CB1-AB7992977234";
 
         public string Name => device?.Name ?? "Alpaca Safety Monitor - Static IP";
 

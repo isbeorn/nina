@@ -92,6 +92,31 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
             clone.Identifier.Should().Be("target");
             clone.Expr.Should().NotBeSameAs(sut.Expr);
             clone.OriginalExpr.Should().NotBeSameAs(sut.OriginalExpr);
+            clone.Expr.Definition.Should().Be("40 + 2");
+            clone.OriginalDefinition.Should().Be("20 + 22");
+            clone.Expr.Symbol.Should().BeSameAs(clone);
+            clone.OriginalExpr.Symbol.Should().BeSameAs(clone);
+        }
+
+        /// <summary>
+        /// Verifies cloning a global variable keeps the authored original definition separate from the current runtime expression.
+        /// </summary>
+        [Test]
+        public void GlobalVariable_Clone_PreservesOriginalDefinitionAndOwnsExpressions() {
+            SequenceRootContainer root = CreateRoot();
+            GlobalVariable sut = new GlobalVariable("globalTarget", "initialValue", root) {
+                SymbolBroker = symbolBrokerMock.Object
+            };
+            sut.Expr.Definition = "runtimeValue";
+
+            GlobalVariable clone = (GlobalVariable)sut.Clone();
+
+            clone.Should().NotBeSameAs(sut);
+            clone.Identifier.Should().Be("globalTarget");
+            clone.Expr.Definition.Should().Be("runtimeValue");
+            clone.OriginalDefinition.Should().Be("initialValue");
+            clone.Expr.Symbol.Should().BeSameAs(clone);
+            clone.OriginalExpr.Symbol.Should().BeSameAs(clone);
         }
 
         /// <summary>
@@ -278,6 +303,27 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
 
             missingTarget.Validate().Should().BeFalse();
             missingTarget.Issues.Should().Contain(i => i.Contains("not in scope"));
+        }
+
+        /// <summary>
+        /// Verifies detached global variable copies created while saving or loading templates do not make the active global target appear out of scope.
+        /// </summary>
+        [Test]
+        public void ResetVariable_Validate_ResolvesRootedGlobalAfterDetachedDuplicate() {
+            SequenceRootContainer root = CreateRoot();
+            _ = new GlobalVariable("target", "1", root) {
+                SymbolBroker = symbolBrokerMock.Object
+            };
+            SequentialContainer detachedContainer = new SequentialContainer {
+                SymbolBroker = symbolBrokerMock.Object
+            };
+            _ = new GlobalVariable("target", "2", detachedContainer) {
+                SymbolBroker = symbolBrokerMock.Object
+            };
+            ResetVariable sut = CreateResetVariable("target", "3", root);
+
+            sut.Validate().Should().BeTrue();
+            sut.Issues.Should().NotContain(i => i.Contains("not in scope"));
         }
 
         /// <summary>

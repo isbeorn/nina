@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
 
@@ -44,17 +45,30 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         protected void PreClone(Variable clone) {
             clone.Identifier = Identifier;
             if (Expr != null) {
-                clone.Expr = new Expression(Expr.Definition, clone.Parent, this);
+                clone.Expr = CloneExpression(Expr, clone.Parent, clone);
             }
 
-            clone.OriginalExpr = OriginalExpr;
             if (OriginalExpr != null) {
-                clone.OriginalExpr = new Expression(Expr.Definition, clone.Parent, this);
+                clone.OriginalExpr = CloneExpression(OriginalExpr, clone.Parent, clone);
             } else {
-                clone.OriginalExpr = new Expression("", clone.Parent, this);
+                clone.OriginalExpr = new Expression("", clone.Parent, clone);
             }
-            clone.OriginalDefinition = OriginalDefinition;
 
+        }
+
+        private static Expression CloneExpression(Expression source, ISequenceEntity context, Variable owner) {
+            Expression clone = new Expression("", context, owner) {
+                AutoValue = source.AutoValue,
+                Default = source.Default,
+                DefaultString = source.DefaultString,
+                IsValid = source.IsValid,
+                Range = source.Range,
+                SymbolBroker = source.SymbolBroker,
+                Type = source.Type,
+                Validator = source.Validator
+            };
+            clone.Definition = source.Definition;
+            return clone;
         }
 
         public override object Clone() {

@@ -403,6 +403,12 @@ namespace NINA.Sequencer.Logic {
                             UserSymbol gv;
                             cached.TryGetValue(Identifier, out gv);
                             if (gv != null) {
+                                if (IsAttachedToRoot(gv) && !IsAttachedToRoot(this)) {
+                                    // Detached template/save copies must not shadow the active sequence symbol.
+                                    LastSParent = null;
+                                    return;
+                                }
+
                                 Logger.Warning("New Symbol for Global Variable: " + Identifier);
                                 SymbolDirty(gv);
                                 gv.Consumers.Clear();
