@@ -2477,6 +2477,9 @@ Do you want to continue and lose the changes anyway?</value>
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
     <value>Καθυστέρηση, σε λεπτά, ανάμεσα σε δυο προσπάθειες plate solve</value>
   </data>
+  <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
+    <value>Centering failed after {0} correction attempts</value>
+  </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Plate solve την τρέχουσα εικόνα</value>
   </data>
@@ -2930,6 +2933,9 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblSlew" xml:space="preserve">
     <value>Μετακίνηση</value>
+  </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Κύλιση και Στόχευση</value>
@@ -6833,6 +6839,9 @@ Increase minimum exposure time or wait until it is brighter.</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
+  </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Info only</value>

@@ -2475,6 +2475,9 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
     <value>두 플레이트솔빙 시도 간 지연 시간[분]</value>
   </data>
+  <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
+    <value>Centering failed after {0} correction attempts</value>
+  </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>현재 이미지 플레이트솔브</value>
   </data>
@@ -2928,6 +2931,9 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblSlew" xml:space="preserve">
     <value>Go-To</value>
+  </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Go-To와 중심</value>
@@ -6859,6 +6865,9 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>히스토그램 보기</value>
+  </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Info Only</value>

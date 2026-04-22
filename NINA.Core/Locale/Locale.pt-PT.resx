@@ -2482,6 +2482,9 @@ HFR Calculado: {2}
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
     <value>Intervalo, em minutos, entre duas tentativas de plate solve</value>
   </data>
+  <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
+    <value>Centering failed after {0} correction attempts</value>
+  </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Efectuar Plate solve na imagem actual</value>
   </data>
@@ -2935,6 +2938,9 @@ Este modelo será usado no inicio para inicializar a sequência, em vez do model
   </data>
   <data name="LblSlew" xml:space="preserve">
     <value>Mover</value>
+  </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Mover e centrar</value>
@@ -6829,6 +6835,9 @@ Aumente o tempo de exposição mínimo ou espere até estar mais claro.</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Mostrar Histograma</value>
+  </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Apenas informação</value>

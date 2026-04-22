@@ -2487,6 +2487,9 @@ HFR المحسوب: {2}
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
     <value>التأخير بالدقائق، بين محاولتين لحل الإحداثيات</value>
   </data>
+  <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
+    <value>Centering failed after {0} correction attempts</value>
+  </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>حل الإحداثيات للصورة الحالية</value>
   </data>
@@ -2940,6 +2943,9 @@ HFR المحسوب: {2}
   </data>
   <data name="LblSlew" xml:space="preserve">
     <value>توجيه</value>
+  </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>توجيه وتوسيط</value>
@@ -6840,6 +6846,9 @@ Increase minimum exposure time or wait until it is brighter.</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
+  </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Info only</value>

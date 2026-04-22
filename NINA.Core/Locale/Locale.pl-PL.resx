@@ -2478,6 +2478,9 @@ Obliczone HFR: {2}</value>
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
     <value>Opóźnienie, w minutach, pomiędzy dwoma próbami plate solve</value>
   </data>
+  <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
+    <value>Centering failed after {0} correction attempts</value>
+  </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Plate solve wybranego obrazu</value>
   </data>
@@ -2931,6 +2934,9 @@ Ten szablon będzie używany przy starcie do inicjowania sekwencji zamiast domy�
   </data>
   <data name="LblSlew" xml:space="preserve">
     <value>Przesuń</value>
+  </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Przesuń i wyśrodkuj</value>
@@ -6831,6 +6837,9 @@ Zwiększ minimalny czas ekspozycji lub poczekaj aż będzie jaśniejsze.</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Pokaż Histogram</value>
+  </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Tylko info</value>
