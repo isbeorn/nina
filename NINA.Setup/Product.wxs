@@ -166,7 +166,7 @@
   </Package>
 
   <Fragment>
-      <StandardDirectory Id="$(var.PlatformProgramFilesFolder)">
+    <Directory Id="$(var.PlatformProgramFilesFolder)">
         <Directory Id="INSTALLFOLDER" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy">
           <Component Id="CrashDumpRegistry" Guid="FBD97166-8D65-4B4E-99AF-09A4AD98B64E" Bitness="$(var.Win64)">
             <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\NINA.exe" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
@@ -312,7 +312,7 @@
           <Directory Id="uk_UA" Name="uk-UA" />
           <Directory Id="DocumentationDirectory" Name="docs" />
         </Directory>
-      </StandardDirectory>
+      </Directory>
       <StandardDirectory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" />
       </StandardDirectory>
