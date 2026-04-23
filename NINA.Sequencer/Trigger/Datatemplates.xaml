@@ -13,6 +13,9 @@
     xmlns:af="clr-namespace:NINA.Sequencer.Trigger.Autofocus"
     xmlns:behaviors="clr-namespace:NINA.Sequencer.Behaviors"
     xmlns:connect="clr-namespace:NINA.Sequencer.Trigger.Connect"
+    xmlns:cont="clr-namespace:NINA.Sequencer.Container"
+    xmlns:converter="clr-namespace:NINA.View.Sequencer.Converter"
+    xmlns:coreUtil="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:d="clr-namespace:NINA.Sequencer.Trigger.Dome"
     xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
     xmlns:g="clr-namespace:NINA.Sequencer.Trigger.Guider"
@@ -26,8 +29,215 @@
     xmlns:p="clr-namespace:NINA.Sequencer.Trigger.Platesolving"
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:safety="clr-namespace:NINA.Sequencer.Trigger.SafetyMonitor"
+    xmlns:seqItem="clr-namespace:NINA.Sequencer.SequenceItem"
+    xmlns:utility="clr-namespace:NINA.Sequencer.Trigger.Utility"
     xmlns:view="clr-namespace:NINA.View.Sequencer"
+    xmlns:wpfbehaviors="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
     xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base">
+
+    <converter:TreeViewDepthToColorConverter x:Key="TriggerInstructionTreeViewDepthToColorConverter" />
+    <Style x:Key="TriggerInstructionItemStyle" TargetType="{x:Type TreeViewItem}">
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="20" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border
+                            x:Name="Bd"
+                            Grid.Column="1"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="true">
+                            <ContentPresenter
+                                x:Name="PART_Header"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                ContentSource="Header"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                        <ItemsPresenter
+                            x:Name="ItemsHost"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="-21,0,0,0"
+                            HorizontalAlignment="Stretch">
+                            <i:Interaction.Behaviors>
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                            </i:Interaction.Behaviors>
+                        </ItemsPresenter>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="true" />
+                                <Condition Property="IsSelectionActive" Value="false" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="TriggerInstructionContainerStyle" TargetType="{x:Type TreeViewItem}">
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                    <Grid Margin="0,5,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="20" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Border
+                            x:Name="Bd"
+                            Grid.Column="1"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="4,0,0,0"
+                            SnapsToDevicePixels="true">
+                            <Border.BorderBrush>
+                                <MultiBinding Converter="{StaticResource TriggerInstructionTreeViewDepthToColorConverter}">
+                                    <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                </MultiBinding>
+                            </Border.BorderBrush>
+                            <ContentPresenter
+                                x:Name="PART_Header"
+                                Margin="-1,-5,0,-5"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                ContentSource="Header"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                        <Border
+                            x:Name="ContainerColorSideBorder"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            BorderThickness="4,0,0,0">
+                            <Border.BorderBrush>
+                                <MultiBinding Converter="{StaticResource TriggerInstructionTreeViewDepthToColorConverter}">
+                                    <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                </MultiBinding>
+                            </Border.BorderBrush>
+                            <Border
+                                x:Name="ContainerSideBorder"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                BorderThickness="10,0,0,0">
+                                <ItemsPresenter
+                                    x:Name="ItemsHost"
+                                    Margin="0,0,0,15"
+                                    HorizontalAlignment="Stretch">
+                                    <i:Interaction.Behaviors>
+                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                    </i:Interaction.Behaviors>
+                                </ItemsPresenter>
+                            </Border>
+                        </Border>
+                        <Border
+                            x:Name="ContainerBottomBorder"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="0,0,0,5"
+                            BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                            BorderThickness="4,0,0,15">
+                            <i:Interaction.Behaviors>
+                                <behaviors:DragOverBehavior
+                                    AllowDragAbove="False"
+                                    AllowDragBelow="{Binding IsExpanded}"
+                                    AllowDragCenter="False"
+                                    DragBelowSize="15"
+                                    Enabled="{Binding IsExpanded}" />
+                            </i:Interaction.Behaviors>
+                        </Border>
+                        <Rectangle
+                            x:Name="ContainerBottomCapLine"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Width="40"
+                            Height="2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            IsHitTestVisible="False">
+                            <Rectangle.Fill>
+                                <MultiBinding Converter="{StaticResource TriggerInstructionTreeViewDepthToColorConverter}">
+                                    <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                </MultiBinding>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsExpanded}" Value="false">
+                            <Setter TargetName="ContainerSideBorder" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="ContainerColorSideBorder" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="ContainerBottomBorder" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="ContainerBottomCapLine" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ApplicationSettings.ColoredContainerBorders}" Value="False">
+                            <Setter TargetName="Bd" Property="BorderThickness" Value="0,0,0,0" />
+                            <Setter TargetName="ContainerColorSideBorder" Property="BorderThickness" Value="0,0,0,0" />
+                            <Setter TargetName="ContainerSideBorder" Property="BorderThickness" Value="10,0,0,0" />
+                            <Setter TargetName="ContainerBottomBorder" Property="BorderThickness" Value="0,0,0,15" />
+                            <Setter TargetName="ContainerBottomCapLine" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="true" />
+                                <Condition Property="IsSelectionActive" Value="false" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <view:SequenceTreeViewItemStyleSelector
+        x:Key="TriggerInstructionTreeViewItemStyleSelector"
+        ContainerStyle="{StaticResource TriggerInstructionContainerStyle}"
+        DefaultStyle="{StaticResource TriggerInstructionItemStyle}"
+        ItemStyle="{StaticResource TriggerInstructionItemStyle}" />
 
     <DataTemplate x:Key="NINA.Sequencer.Trigger.MeridianFlip.MeridianFlipTrigger_Mini">
         <mini:MiniTrigger>
@@ -596,18 +806,292 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <DataTemplate DataType="{x:Type utility:CustomTrigger}">
+        <Border>
+            <Border.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+                    </ResourceDictionary.MergedDictionaries>
+                    <coreUtil:BindingProxy x:Key="ViewModel" Data="{Binding RelativeSource={RelativeSource AncestorType={x:Type view:SequenceView}}, Path=DataContext}" />
+                    <DataTemplate x:Key="TriggerSourceMenuItemTemplate">
+                        <StackPanel MinHeight="30" Orientation="Horizontal">
+                            <Path
+                                Width="20"
+                                Height="20"
+                                Margin="5"
+                                Data="{Binding Entity.Icon}"
+                                Fill="{StaticResource PrimaryBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Entity.Name}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ResourceDictionary>
+            </Border.Resources>
+            <ninactrl:DetachingExpander Style="{StaticResource TriggerOnUnsafeSequenceContainerExpander}">
+                <ninactrl:DetachingExpander.Header>
+                    <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}" Background="{StaticResource SecondaryBackgroundBrush}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock
+                                MinHeight="25"
+                                Margin="10,10,10,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{Binding Name}" />
+                            <Border
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,5,0"
+                                Background="{StaticResource NotificationErrorBrush}"
+                                BorderBrush="Transparent"
+                                CornerRadius="10">
+                                <Border.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                            Converter="{StaticResource ZeroToVisibilityConverter}"
+                                            FallbackValue="Collapsed"
+                                            Path="Issues.Count" />
+                                    </PriorityBinding>
+                                </Border.Visibility>
+                                <Path
+                                    HorizontalAlignment="Right"
+                                    Data="{StaticResource ExclamationCircledSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                                <Border.ToolTip>
+                                    <ItemsControl ItemsSource="{Binding Issues}" />
+                                </Border.ToolTip>
+                            </Border>
+                        </StackPanel>
+                        <Border
+                            Grid.Column="1"
+                            MinHeight="30"
+                            Margin="10,3,10,3"
+                            Background="{StaticResource BackgroundBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ContentControl
+                                    Grid.Column="0"
+                                    MinHeight="30"
+                                    Content="{Binding TriggerSource}"
+                                    Visibility="{Binding TriggerSource, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                                <TextBlock
+                                    Grid.Column="0"
+                                    Height="18"
+                                    MaxHeight="18"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontStyle="Italic"
+                                    Opacity="0.4"
+                                    Text="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription}"
+                                    Visibility="{Binding TriggerSource, Converter={StaticResource InverseNullToVisibilityCollapsedConverter}}" />
+                                <Button
+                                    x:Name="AddTriggerSourceButton"
+                                    Grid.Column="1"
+                                    Width="25"
+                                    Height="25"
+                                    Margin="5,0,5,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource AddSVG}"
+                                        Fill="{StaticResource PrimaryBrush}"
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
+                                    <Button.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_AddTrigger_Tooltip}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource BackgroundButton}" TargetType="{x:Type Button}">
+                                            <EventSetter Event="Click" Handler="AddTriggerSourceButton_Click" />
+                                            <Setter Property="ContextMenu">
+                                                <Setter.Value>
+                                                    <ContextMenu ItemTemplate="{StaticResource TriggerSourceMenuItemTemplate}" ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.SequencerFactory.TriggersView}">
+                                                        <ContextMenu.Template>
+                                                            <ControlTemplate>
+                                                                <Border Background="{StaticResource BackgroundBrush}">
+                                                                    <ScrollViewer
+                                                                        CanContentScroll="True"
+                                                                        HorizontalScrollBarVisibility="Disabled"
+                                                                        Style="{StaticResource MenuScrollViewer}"
+                                                                        VerticalScrollBarVisibility="Auto">
+                                                                        <ItemsPresenter />
+                                                                    </ScrollViewer>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </ContextMenu.Template>
+                                                        <ContextMenu.ItemContainerStyle>
+                                                            <Style TargetType="MenuItem">
+                                                                <EventSetter Event="Click" Handler="MenuItemTriggerSource_Click" />
+                                                            </Style>
+                                                        </ContextMenu.ItemContainerStyle>
+                                                    </ContextMenu>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <i:Interaction.Behaviors>
+                                    <behaviors:DragOverBehavior
+                                        AllowDragAbove="False"
+                                        AllowDragBelow="False"
+                                        AllowDragCenter="True"
+                                        DragOverCenterText="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription}" />
+                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.ISequenceTrigger" OnDropCommand="DropIntoTriggerSourceCommand" />
+                                </i:Interaction.Behaviors>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="2" Background="{StaticResource SecondaryBackgroundBrush}">
+                            <ContentPresenter
+                                Margin="2,0,10,0"
+                                HorizontalAlignment="Right"
+                                Content="{Binding}"
+                                DockPanel.Dock="Right"
+                                Style="{StaticResource ProgressPresenter}" />
+                        </Border>
+                        <Border
+                            x:Name="ButtonCommands"
+                            Grid.Column="3"
+                            HorizontalAlignment="Stretch"
+                            Background="{StaticResource SecondaryBackgroundBrush}">
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                <Button
+                                    x:Name="EnableDisableButton"
+                                    Width="25"
+                                    Height="25"
+                                    Margin="25,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding DisableEnableCommand}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
+                                    Visibility="{Binding DisableEnableCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                    <Grid>
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource PowerSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </Grid>
+                                    <Button.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_DisableEnable_Tooltip}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
+
+                                <Button
+                                    x:Name="CloseButton"
+                                    Width="25"
+                                    Height="25"
+                                    Margin="25,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding DetachCommand}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
+                                    Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                    <Grid>
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource TrashCanSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </Grid>
+                                    <Button.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Delete_Tooltip}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ninactrl:DetachingExpander.Header>
+
+                <Grid
+                    MinHeight="50"
+                    Background="{StaticResource BackgroundBrush}"
+                    DataContext="{Binding TriggerRunner}">
+                    <TreeView
+                        MinHeight="50"
+                        Background="{StaticResource BackgroundBrush}"
+                        BorderThickness="0"
+                        ItemContainerStyleSelector="{StaticResource TriggerInstructionTreeViewItemStyleSelector}"
+                        ItemsSource="{Binding Items}">
+                        <i:Interaction.Behaviors>
+                            <wpfbehaviors:BubbleScrollEvent />
+                        </i:Interaction.Behaviors>
+                        <TreeView.Resources>
+                            <ResourceDictionary>
+                                <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
+                                    <view:SequenceBlockView />
+                                </DataTemplate>
+                            </ResourceDictionary>
+                        </TreeView.Resources>
+                    </TreeView>
+                    <TextBlock
+                        Height="18"
+                        MaxHeight="18"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontStyle="Italic"
+                        Opacity="0.4"
+                        Text="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription}"
+                        Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                    <i:Interaction.Behaviors>
+                        <behaviors:DragOverBehavior
+                            DragAboveSize="0"
+                            DragBelowSize="0"
+                            DragOverCenterText="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription}" />
+                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                    </i:Interaction.Behaviors>
+                </Grid>
+            </ninactrl:DetachingExpander>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NINA.Sequencer.Trigger.Utility.CustomTrigger_Mini">
+        <StackPanel Orientation="Vertical">
+            <mini:MiniTrigger />
+            <StackPanel Orientation="Vertical">
+                <StackPanel.Style>
+                    <Style TargetType="{x:Type StackPanel}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.RUNNING}">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <mini:MiniContainer DataContext="{Binding TriggerRunner}" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type safety:TriggerOnUnsafe}">
         <Border>
             <Border.Resources>
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
             </Border.Resources>
-            <i:Interaction.Behaviors>
-                <!--  Drop area above and below the Sequence Container  -->
-                <behaviors:DragOverBehavior
-                    AllowDragCenter="False"
-                    DragAboveSize="25"
-                    DragBelowSize="15" />
-            </i:Interaction.Behaviors>
             <ninactrl:DetachingExpander Style="{StaticResource TriggerOnUnsafeSequenceContainerExpander}">
                 <ninactrl:DetachingExpander.Header>
                     <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}" Background="{StaticResource SecondaryBackgroundBrush}">
@@ -729,7 +1213,23 @@
                                 BorderBrush="{StaticResource BorderBrush}"
                                 BorderThickness="1">
                                 <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding BeforeWaitForSafe}">
-                                    <ItemsControl MinHeight="50" ItemsSource="{Binding Items}" />
+                                    <TreeView
+                                        MinHeight="50"
+                                        Background="{StaticResource BackgroundBrush}"
+                                        BorderThickness="0"
+                                        ItemContainerStyleSelector="{StaticResource TriggerInstructionTreeViewItemStyleSelector}"
+                                        ItemsSource="{Binding Items}">
+                                        <i:Interaction.Behaviors>
+                                            <wpfbehaviors:BubbleScrollEvent />
+                                        </i:Interaction.Behaviors>
+                                        <TreeView.Resources>
+                                            <ResourceDictionary>
+                                                <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
+                                                    <view:SequenceBlockView />
+                                                </DataTemplate>
+                                            </ResourceDictionary>
+                                        </TreeView.Resources>
+                                    </TreeView>
                                     <TextBlock
                                         Height="18"
                                         MaxHeight="18"
@@ -759,7 +1259,23 @@
                                 BorderBrush="{StaticResource BorderBrush}"
                                 BorderThickness="1">
                                 <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding AfterWaitForSafe}">
-                                    <ItemsControl MinHeight="50" ItemsSource="{Binding Items}" />
+                                    <TreeView
+                                        MinHeight="50"
+                                        Background="{StaticResource BackgroundBrush}"
+                                        BorderThickness="0"
+                                        ItemContainerStyleSelector="{StaticResource TriggerInstructionTreeViewItemStyleSelector}"
+                                        ItemsSource="{Binding Items}">
+                                        <i:Interaction.Behaviors>
+                                            <wpfbehaviors:BubbleScrollEvent />
+                                        </i:Interaction.Behaviors>
+                                        <TreeView.Resources>
+                                            <ResourceDictionary>
+                                                <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
+                                                    <view:SequenceBlockView />
+                                                </DataTemplate>
+                                            </ResourceDictionary>
+                                        </TreeView.Resources>
+                                    </TreeView>
                                     <TextBlock
                                         Height="18"
                                         MaxHeight="18"
