@@ -98,7 +98,7 @@ Use these when the changed file is under the matching sequencer subtree:
 - `NINA.Test.Sequencer.Serialization`
 - `NINA.Test.Sequencer.SequenceItem.<Area>` where `<Area>` is `Autofocus`, `Camera`, `Dome`, `FilterWheel`, `FlatDevice`, `Focuser`, `Guider`, `Imaging`, `Platesolving`, `Rotator`, `SafetyMonitor`, `Switch`, `Telescope`, or `Utility`
 - Target-coordinate inheritance across `CoordinatesInstruction` sequence items: `NINA.Test.Sequencer.SequenceItem.CoordinatesInstructionInheritanceTest`
-- `NINA.Test.Sequencer.Trigger.<Area>` where `<Area>` is `Autofocus`, `Dome`, `Guider`, `MeridianFlip`, or `Platesolving`
+- `NINA.Test.Sequencer.Trigger.<Area>` where `<Area>` is `Autofocus`, `Dome`, `Guider`, `MeridianFlip`, `Platesolving`, or `Utility`
 - `NINA.Test.Sequencer.Utility.DateTimeProvider`
 - `NINA.Test.Sequencer.View`, `NINA.Test.Sequencer.View.Converter`, or `NINA.Test.Sequencer.View.MiniSequencer`
 
