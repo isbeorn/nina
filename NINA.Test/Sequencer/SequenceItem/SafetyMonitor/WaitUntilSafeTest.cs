@@ -70,10 +70,10 @@ namespace NINA.Test.Sequencer.SequenceItem.SafetyMonitor {
             var sut = new WaitUntilSafe(safetyMonitorMock.Object);
             var valid = sut.Validate();
 
+            // Should still run when disconnected but report issues
             valid.Should().BeTrue();
 
-            // Should still run when disconnected
-            sut.Issues.Should().HaveCount(0);
+            sut.Issues.Should().HaveCount(1);
         }
 
         [Test]
