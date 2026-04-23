@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -15,12 +15,15 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace NINA.Core.Utility.WindowService {
 
     public class CustomWindow : Window {
+        private bool suppressInitialPaint = true;
+
         public CustomWindow() {
-            FixLayout();
+            FixInitialLayout();
         }
 
         public static readonly DependencyProperty CloseCommandProperty =
@@ -31,13 +34,30 @@ namespace NINA.Core.Utility.WindowService {
             set => SetValue(CloseCommandProperty, value);
         }
 
-        private void FixLayout() {
-            void Window_SourceInitialized(object sender, EventArgs e) {
-                this.InvalidateMeasure();
-                this.SourceInitialized -= Window_SourceInitialized;
+        private void FixInitialLayout() {
+            SourceInitialized += Window_SourceInitialized;
+            Loaded += Window_Loaded;
+        }
+
+        private void Window_SourceInitialized(object sender, EventArgs e) {
+            if (suppressInitialPaint) {
+                Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            if (!suppressInitialPaint) {
+                return;
             }
 
-            this.SourceInitialized += Window_SourceInitialized;
+            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => {
+                InvalidateMeasure();
+                UpdateLayout();
+                Visibility = Visibility.Visible;
+                suppressInitialPaint = false;
+                Loaded -= Window_Loaded;
+                SourceInitialized -= Window_SourceInitialized;
+            }));
         }
     }
 }

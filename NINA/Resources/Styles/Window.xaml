@@ -17,7 +17,8 @@
             <Setter.Value>
                 <WindowChrome
                     CaptionHeight="30"
-                    GlassFrameThickness="-1"
+                    CornerRadius="1"
+                    GlassFrameThickness="0"
                     UseAeroCaptionButtons="False" />
             </Setter.Value>
         </Setter>
@@ -25,7 +26,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
                     <AdornerDecorator>
-                        <Border BorderBrush="Transparent">
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="Transparent"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
                                     <Style.Triggers>
@@ -35,7 +40,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Border.Style>
-                            <Grid Background="{StaticResource SecondaryBackgroundBrush}">
+                            <Grid Background="{StaticResource SecondaryBackgroundBrush}" ClipToBounds="True">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="30" />
                                     <RowDefinition Height="*" />
@@ -200,7 +205,8 @@
             <Setter.Value>
                 <WindowChrome
                     CaptionHeight="30"
-                    GlassFrameThickness="-1"
+                    CornerRadius="1"
+                    GlassFrameThickness="0"
                     UseAeroCaptionButtons="False" />
             </Setter.Value>
         </Setter>
@@ -208,9 +214,14 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
                     <AdornerDecorator>
-                        <Border BorderBrush="Transparent">
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
+                                    <Setter Property="BorderThickness" Value="1" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
                                             <Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}" />
@@ -218,7 +229,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Border.Style>
-                            <Grid Background="{StaticResource SecondaryBackgroundBrush}">
+                            <Grid Background="{StaticResource SecondaryBackgroundBrush}" ClipToBounds="True">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="30" />
                                     <RowDefinition Height="*" />

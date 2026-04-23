@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using System;
 using System.Windows;
 
 namespace NINA.Core.MyMessageBox {
@@ -20,9 +21,9 @@ namespace NINA.Core.MyMessageBox {
     /// Interaction logic for MyMessageBoxView.xaml
     /// </summary>
     public partial class MyMessageBoxView : Window {
-
         public MyMessageBoxView() {
             InitializeComponent();
+            FixInitialLayout();
         }
 
         private void Button_OK_Click(object sender, RoutedEventArgs e) {
@@ -33,8 +34,15 @@ namespace NINA.Core.MyMessageBox {
             DialogResult = false;
         }
 
-        private void Window_ContentRendered(object sender, System.EventArgs e) {
+        private void FixInitialLayout() {
+            SourceInitialized += Window_SourceInitialized;
+        }
+
+        private void Window_SourceInitialized(object sender, EventArgs e) {
+            InvalidateMeasure();
             InvalidateVisual();
+            UpdateLayout();
+            SourceInitialized -= Window_SourceInitialized;
         }
     }
 }

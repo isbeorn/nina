@@ -33,6 +33,7 @@ This allows you to safely return to a stable release if needed.
 - FITS headers now write observer site latitude, longitude, and site name correctly when those values are present.
 - XISF metadata import now reads Bayer offsets, focal ratio, target coordinates, and wind speed/gust units correctly.
 - Manual rotator moves now clean up their moving state correctly when the rotation prompt is cancelled.
+- Fixed an issue where custom popout windows and message boxes could briefly render incorrectly when opened.
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
