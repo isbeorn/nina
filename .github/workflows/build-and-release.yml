@@ -166,8 +166,11 @@ jobs:
         dotnet tool install --global wix --version 4.0.5
         wix --version
     
-    - name: Install Pandoc
-      run: choco install pandoc -y
+    - name: Set up Pandoc
+      uses: pandoc/actions/setup@v1
+
+    - name: Verify Pandoc
+      run: pandoc --version
 
     - name: Restore NuGet packages
       run: dotnet restore NINA.sln
