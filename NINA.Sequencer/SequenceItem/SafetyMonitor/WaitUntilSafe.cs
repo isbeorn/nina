@@ -81,7 +81,8 @@ namespace NINA.Sequencer.SequenceItem.SafetyMonitor {
             }
 
             Issues = i;
-            return i.Count == 0;
+            // The instruction is always valid. A disconnected safety monitor should still execute the instruction and wait until it is connected again.
+            return true;
         }
 
         public override string ToString() {

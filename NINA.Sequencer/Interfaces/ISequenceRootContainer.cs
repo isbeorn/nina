@@ -29,6 +29,8 @@ namespace NINA.Sequencer.Container {
 
         void SkipCurrentRunningItems();
 
+        void InterruptAndResetCurrentRunningItems();
+
         IReadOnlyCollection<ISequenceItem> GetCurrentRunningItems();
 
         string SequenceTitle { get; set; }

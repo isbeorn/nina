@@ -106,6 +106,22 @@ namespace NINA.Sequencer.Container {
             }
         }
 
+        public void InterruptAndResetCurrentRunningItems() {
+            List<ISequenceItem> items;
+            lock (runningItemsLock) {
+                items = runningItems.ToList();
+            }
+
+            foreach (var item in items) {
+                if (item is NINA.Sequencer.SequenceItem.SequenceItem sequenceItem) {
+                    sequenceItem.InterruptAndReset();
+                } else {
+                    item.Skip();
+                    item.ResetProgress();
+                }
+            }
+        }
+
         public IReadOnlyCollection<ISequenceItem> GetCurrentRunningItems() {
             lock (runningItemsLock) {
                 return runningItems.ToList().AsReadOnly();

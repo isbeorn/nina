@@ -182,6 +182,7 @@ namespace NINA.Sequencer.SequenceItem {
         }
 
         private CancellationTokenSource localCts;
+        private volatile bool resetOnCancel;
 
         private void RunErrorBehavior(ISequenceRootContainer root) {
             var attemptWord = Attempts != 1 ? "attempts" : "attempt";
@@ -296,15 +297,19 @@ namespace NINA.Sequencer.SequenceItem {
                         Logger.Warning($"Skipped {this}");
                         Status = SequenceEntityStatus.SKIPPED;
                     } catch (OperationCanceledException) {
-                        if (token.IsCancellationRequested) {
+                        if (token.IsCancellationRequested || resetOnCancel) {
                             Status = SequenceEntityStatus.CREATED;
                             Logger.Debug($"Cancelled {this}");
-                            throw;
+                            if (token.IsCancellationRequested) {
+                                resetOnCancel = false;
+                                throw;
+                            }
                         } else {
                             Status = SequenceEntityStatus.SKIPPED;
                             Logger.Debug($"Skipped {this}");
                         }
                     } finally {
+                        resetOnCancel = false;
                         progress?.Report(new ApplicationStatus());
                         if (root != null && !(this is ISequenceContainer)) {
                             root?.RemoveRunningItem(this);
@@ -334,6 +339,22 @@ namespace NINA.Sequencer.SequenceItem {
                     localCts?.Cancel();
                 } catch { }
             }
+        }
+
+        public virtual void InterruptAndReset() {
+            if (this.Status == SequenceEntityStatus.DISABLED) {
+                return;
+            }
+
+            if (this.Status != SequenceEntityStatus.RUNNING) {
+                ResetProgress();
+                return;
+            }
+
+            resetOnCancel = true;
+            try {
+                localCts?.Cancel();
+            } catch { }
         }
 
         public virtual void Initialize() {

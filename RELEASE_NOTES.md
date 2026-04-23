@@ -58,6 +58,7 @@ This allows you to safely return to a stable release if needed.
 - Unparking the mount no longer automatically starts sidereal tracking. Tracking will begin automatically during a slew to a target, as usual.
   - This change only affects mount drivers that previously started tracking immediately upon unparking; drivers that did not exhibit this behavior are unaffected.
   - Preventing automatic tracking on unpark avoids unexpected mount movement and reduces the risk of pier collisions or other unintended motion, while ensuring consistent and predictable behavior across drivers.
+- `Wait Until Safe` instruction no longer requires a safety monitor to be connected. A disconnected safety monitor is treated as unsafe, as it could be disconnected due to communication failures.
 
 ## Features
 
@@ -87,6 +88,10 @@ This allows you to safely return to a stable release if needed.
   - Expression support for plugin-provided sequence items is **opt-in** and requires plugin updates.
   - Plugins must explicitly adopt the new expression system to expose expression-enabled fields.
   - Plugins that are not updated continue to function normally, but their sequence items will not offer expression support.
+
+- **Sequencer**
+    - Added a new **Trigger On Unsafe** safety monitor trigger. It can run configured instructions when the safety monitor reports unsafe or disconnects after it has been connected, then wait until the safety monitor reports safe again before running follow-up instructions.
+    - When triggered, the currently running instruction is interrupted and reset so safety handling can take over immediately.
 
 ### **Device Management**
 - **ASCOM Alpaca Direct Drivers**
