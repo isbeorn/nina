@@ -15,12 +15,16 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace NINA.Core.Utility.WindowService {
 
     public class CustomWindow : Window {
+        private bool suppressInitialPaint = true;
+        private double initialOpacity = 1d;
+
         public CustomWindow() {
-            FixLayout();
+            FixInitialLayout();
         }
 
         public static readonly DependencyProperty CloseCommandProperty =
@@ -31,13 +35,31 @@ namespace NINA.Core.Utility.WindowService {
             set => SetValue(CloseCommandProperty, value);
         }
 
-        private void FixLayout() {
-            void Window_SourceInitialized(object sender, EventArgs e) {
-                this.InvalidateMeasure();
-                this.SourceInitialized -= Window_SourceInitialized;
+        private void FixInitialLayout() {
+            SourceInitialized += Window_SourceInitialized;
+            Loaded += Window_Loaded;
+        }
+
+        private void Window_SourceInitialized(object sender, EventArgs e) {
+            if (suppressInitialPaint) {
+                initialOpacity = Opacity;
+                Opacity = 0d;
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            if (!suppressInitialPaint) {
+                return;
             }
 
-            this.SourceInitialized += Window_SourceInitialized;
+            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => {
+                InvalidateMeasure();
+                UpdateLayout();
+                Opacity = initialOpacity;
+                suppressInitialPaint = false;
+                Loaded -= Window_Loaded;
+                SourceInitialized -= Window_SourceInitialized;
+            }));
         }
     }
 }

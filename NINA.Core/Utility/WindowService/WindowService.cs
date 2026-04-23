@@ -66,15 +66,16 @@ namespace NINA.Core.Utility.WindowService {
 
         private CustomWindow GenerateWindow(object content, string title, ResizeMode resizeMode, WindowStyle windowStyle, ICommand closeCommand) {
             var mainwindow = Application.Current.MainWindow;
+            var customWindowStyle = Application.Current.TryFindResource("NoResizeWindow") as Style;
             var window = new CustomWindow() {
                 SizeToContent = SizeToContent.WidthAndHeight,
                 Title = title,
                 Background = Application.Current.TryFindResource("BackgroundBrush") as Brush,
                 ResizeMode = resizeMode,
-                WindowStyle = windowStyle,
+                WindowStyle = customWindowStyle != null ? WindowStyle.None : windowStyle,
+                Style = customWindowStyle,
                 MinHeight = 300,
                 MinWidth = 350,
-                Style = Application.Current.TryFindResource("NoResizeWindow") as Style,
                 Owner = mainwindow,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Content = content

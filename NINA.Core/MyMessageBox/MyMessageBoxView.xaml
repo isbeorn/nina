@@ -20,7 +20,6 @@
     MinHeight="155"
     util:DialogCloser.DialogResult="{Binding DialogResult}"
     Background="{StaticResource BackgroundBrush}"
-    ContentRendered="Window_ContentRendered"
     SizeToContent="WidthAndHeight"
     mc:Ignorable="d">
     <Window.Style>
@@ -31,7 +30,8 @@
                 <Setter.Value>
                     <WindowChrome
                         CaptionHeight="20"
-                        GlassFrameThickness="-1"
+                        CornerRadius="1"
+                        GlassFrameThickness="0"
                         UseAeroCaptionButtons="False" />
                 </Setter.Value>
             </Setter>
@@ -41,9 +41,12 @@
                         <Border
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            BorderBrush="Transparent"
-                            BorderThickness="0">
-                            <Grid Background="{StaticResource SecondaryBackgroundBrush}">
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
+                            <Grid Background="{StaticResource SecondaryBackgroundBrush}" ClipToBounds="True">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="30" />
                                     <RowDefinition Height="*" />
