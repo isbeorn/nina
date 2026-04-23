@@ -64,15 +64,16 @@ namespace NINA.Test.Sequencer.SequenceItem.SafetyMonitor {
         }
 
         [Test]
-        public void Validate_NotConnected_OneIssue() {
+        public void Validate_NotConnected_NoIssue() {
             safetyMonitorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = false });
 
             var sut = new WaitUntilSafe(safetyMonitorMock.Object);
             var valid = sut.Validate();
 
-            valid.Should().BeFalse();
+            valid.Should().BeTrue();
 
-            sut.Issues.Should().HaveCount(1);
+            // Should still run when disconnected
+            sut.Issues.Should().HaveCount(0);
         }
 
         [Test]
