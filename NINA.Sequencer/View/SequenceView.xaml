@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
@@ -74,6 +74,7 @@
                     <local:SequenceBlockView />
                 </DataTemplate>
                 <Style x:Key="RootStyle" TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="ItemsControl.AlternationCount" Value="1024" />
                     <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
                     <Setter Property="Focusable" Value="False" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -150,6 +151,7 @@
                     </Style.Triggers>
                 </Style>
                 <Style x:Key="ItemStyle" TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="ItemsControl.AlternationCount" Value="1024" />
                     <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
                     <Setter Property="Focusable" Value="False" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -787,6 +789,7 @@
                     </Style.Triggers>
                 </Style>
                 <Style x:Key="ContainerStyle" TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="ItemsControl.AlternationCount" Value="1024" />
                     <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
                     <Setter Property="Focusable" Value="False" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -816,6 +819,7 @@
                                             <MultiBinding Converter="{StaticResource TreeViewDepthToColorConverter}">
                                                 <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
                                                 <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                                <Binding Path="(ItemsControl.AlternationIndex)" RelativeSource="{RelativeSource TemplatedParent}" />
                                             </MultiBinding>
                                         </Border.BorderBrush>
                                         <ContentPresenter
@@ -836,6 +840,7 @@
                                             <MultiBinding Converter="{StaticResource TreeViewDepthToColorConverter}">
                                                 <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
                                                 <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                                <Binding Path="(ItemsControl.AlternationIndex)" RelativeSource="{RelativeSource TemplatedParent}" />
                                             </MultiBinding>
                                         </Border.BorderBrush>
                                         <Border
@@ -888,6 +893,7 @@
                                             <MultiBinding Converter="{StaticResource TreeViewDepthToColorConverter}">
                                                 <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
                                                 <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                                <Binding Path="(ItemsControl.AlternationIndex)" RelativeSource="{RelativeSource TemplatedParent}" />
                                             </MultiBinding>
                                         </Rectangle.Fill>
                                     </Rectangle>

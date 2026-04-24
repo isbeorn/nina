@@ -32,6 +32,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Expression = NINA.Sequencer.Logic.Expression;
 
 namespace NINA.Test.Sequencer.Logic {
@@ -144,30 +145,122 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         /// <summary>
-        /// Verifies the Tree View Depth To Color Converter Uses Fallback Brush Base Brush Depth And Rejects Convert Back scenario for the sequencer behavior under test.
+        /// Verifies the Tree View Depth To Color Converter uses the fallback/base brush, distinguishes top-level containers, and rejects ConvertBack.
         /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
-        public void TreeViewDepthToColorConverter_UsesFallbackBrushBaseBrushDepthAndRejectsConvertBack() {
+        public void TreeViewDepthToColorConverter_UsesFallbackBrushBaseBrushDistinguishesTopLevelContainersAndRejectsConvertBack() {
             TreeViewDepthToColorConverter sut = new TreeViewDepthToColorConverter();
             TreeView tree = new TreeView();
-            TreeViewItem parent = new TreeViewItem();
-            TreeViewItem child = new TreeViewItem();
-            parent.Items.Add(child);
-            tree.Items.Add(parent);
+            TreeViewItem startArea = new TreeViewItem { DataContext = new StartAreaContainer() };
+            TreeViewItem firstRootContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            TreeViewItem secondRootContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            TreeViewItem nestedContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            firstRootContainer.Items.Add(nestedContainer);
+            startArea.Items.Add(firstRootContainer);
+            startArea.Items.Add(secondRootContainer);
+            tree.Items.Add(startArea);
 
             object fallback = sut.Convert(new object[] { "not a brush", "not a tree item" }, typeof(Brush), null, CultureInfo.InvariantCulture);
-            object rootBrush = sut.Convert(new object[] { new SolidColorBrush(Color.FromRgb(40, 60, 80)), parent }, typeof(Brush), null, CultureInfo.InvariantCulture);
-            object childBrush = sut.Convert(new object[] { new SolidColorBrush(Color.FromRgb(40, 60, 80)), child }, typeof(Brush), null, CultureInfo.InvariantCulture);
+            object firstRootBrush = sut.Convert(new object[] { new SolidColorBrush(Color.FromRgb(40, 60, 80)), firstRootContainer }, typeof(Brush), null, CultureInfo.InvariantCulture);
+            object secondRootBrush = sut.Convert(new object[] { new SolidColorBrush(Color.FromRgb(40, 60, 80)), secondRootContainer }, typeof(Brush), null, CultureInfo.InvariantCulture);
+            object childBrush = sut.Convert(new object[] { new SolidColorBrush(Color.FromRgb(40, 60, 80)), nestedContainer }, typeof(Brush), null, CultureInfo.InvariantCulture);
 
             sut.Convert(Array.Empty<object>(), typeof(Brush), null, CultureInfo.InvariantCulture).Should().BeNull();
             fallback.Should().BeAssignableTo<Brush>();
-            rootBrush.Should().BeAssignableTo<Brush>();
+            firstRootBrush.Should().BeAssignableTo<Brush>();
+            secondRootBrush.Should().BeAssignableTo<Brush>();
             childBrush.Should().BeAssignableTo<Brush>();
-            childBrush.Should().NotBeSameAs(rootBrush);
+            ((SolidColorBrush)secondRootBrush).Color.Should().NotBe(((SolidColorBrush)firstRootBrush).Color);
+            ((SolidColorBrush)childBrush).Color.Should().NotBe(((SolidColorBrush)firstRootBrush).Color);
 
-            Action convertBack = () => sut.ConvertBack(rootBrush, new[] { typeof(Brush) }, null, CultureInfo.InvariantCulture);
+            Action convertBack = () => sut.ConvertBack(firstRootBrush, new[] { typeof(Brush) }, null, CultureInfo.InvariantCulture);
             convertBack.Should().Throw<NotImplementedException>();
+        }
+
+        /// <summary>
+        /// Verifies branch descendants do not reuse the same color as their shifted root container or neighboring root branches.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void TreeViewDepthToColorConverter_KeepsBranchLevelsDistinctFromRootLevels() {
+            TreeViewDepthToColorConverter sut = new TreeViewDepthToColorConverter();
+            TreeView tree = new TreeView();
+            TreeViewItem startArea = new TreeViewItem { DataContext = new StartAreaContainer() };
+            TreeViewItem firstRootContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            TreeViewItem secondRootContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            TreeViewItem thirdRootContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            TreeViewItem secondLevelContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            TreeViewItem thirdLevelContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            secondLevelContainer.Items.Add(thirdLevelContainer);
+            secondRootContainer.Items.Add(secondLevelContainer);
+            startArea.Items.Add(firstRootContainer);
+            startArea.Items.Add(secondRootContainer);
+            startArea.Items.Add(thirdRootContainer);
+            tree.Items.Add(startArea);
+
+            Color firstRootColor = ((SolidColorBrush)sut.Convert(new object[] { new SolidColorBrush(Color.FromRgb(40, 60, 80)), firstRootContainer }, typeof(Brush), null, CultureInfo.InvariantCulture)).Color;
+            Color secondRootColor = ((SolidColorBrush)sut.Convert(new object[] { new SolidColorBrush(Color.FromRgb(40, 60, 80)), secondRootContainer }, typeof(Brush), null, CultureInfo.InvariantCulture)).Color;
+            Color thirdRootColor = ((SolidColorBrush)sut.Convert(new object[] { new SolidColorBrush(Color.FromRgb(40, 60, 80)), thirdRootContainer }, typeof(Brush), null, CultureInfo.InvariantCulture)).Color;
+            Color secondLevelColor = ((SolidColorBrush)sut.Convert(new object[] { new SolidColorBrush(Color.FromRgb(40, 60, 80)), secondLevelContainer }, typeof(Brush), null, CultureInfo.InvariantCulture)).Color;
+            Color thirdLevelColor = ((SolidColorBrush)sut.Convert(new object[] { new SolidColorBrush(Color.FromRgb(40, 60, 80)), thirdLevelContainer }, typeof(Brush), null, CultureInfo.InvariantCulture)).Color;
+
+            secondRootColor.Should().NotBe(firstRootColor);
+            secondLevelColor.Should().NotBe(secondRootColor);
+            secondLevelColor.Should().NotBe(thirdRootColor);
+            thirdLevelColor.Should().NotBe(secondLevelColor);
+            thirdLevelColor.Should().NotBe(thirdRootColor);
+        }
+
+        /// <summary>
+        /// Verifies existing top-level container color bindings are invalidated when sibling insertion changes their alternation index.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void TreeViewDepthToColorConverter_ReevaluatesExistingTopLevelContainerColorsWhenSiblingInserted() {
+            EnsureApplication();
+            TreeViewDepthToColorConverter sut = new TreeViewDepthToColorConverter();
+            TreeView tree = new TreeView();
+            TreeViewItem startArea = new TreeViewItem {
+                DataContext = new StartAreaContainer(),
+                IsExpanded = true
+            };
+            startArea.SetValue(ItemsControl.AlternationCountProperty, 1024);
+
+            TreeViewItem firstRootContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            TreeViewItem thirdRootContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            startArea.Items.Add(firstRootContainer);
+            startArea.Items.Add(thirdRootContainer);
+            tree.Items.Add(startArea);
+
+            tree.Measure(new Size(400, 400));
+            tree.Arrange(new Rect(0, 0, 400, 400));
+            tree.UpdateLayout();
+            DrainDispatcher();
+
+            ItemsControl.GetAlternationIndex(firstRootContainer).Should().Be(0);
+            ItemsControl.GetAlternationIndex(thirdRootContainer).Should().Be(1);
+
+            Border firstProbe = CreateColorProbe(sut, firstRootContainer);
+            Border thirdProbe = CreateColorProbe(sut, thirdRootContainer);
+            Color initialThirdColor = ((SolidColorBrush)thirdProbe.BorderBrush).Color;
+
+            TreeViewItem secondRootContainer = new TreeViewItem { DataContext = new SequentialContainer() };
+            startArea.Items.Insert(1, secondRootContainer);
+
+            tree.UpdateLayout();
+            DrainDispatcher();
+
+            ItemsControl.GetAlternationIndex(secondRootContainer).Should().Be(1);
+            ItemsControl.GetAlternationIndex(thirdRootContainer).Should().Be(2);
+
+            Border secondProbe = CreateColorProbe(sut, secondRootContainer);
+            Color secondColor = ((SolidColorBrush)secondProbe.BorderBrush).Color;
+            Color thirdColor = ((SolidColorBrush)thirdProbe.BorderBrush).Color;
+
+            secondColor.Should().NotBe(thirdColor);
+            thirdColor.Should().NotBe(initialThirdColor);
+            ((SolidColorBrush)firstProbe.BorderBrush).Color.Should().NotBe(secondColor);
         }
 
         /// <summary>
@@ -276,6 +369,41 @@ namespace NINA.Test.Sequencer.Logic {
             MethodInfo method = instance.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
             method.Should().NotBeNull();
             method.Invoke(instance, arguments);
+        }
+
+        private static Border CreateColorProbe(TreeViewDepthToColorConverter converter, TreeViewItem item) {
+            Border probe = new Border();
+            MultiBinding binding = new MultiBinding {
+                Converter = converter
+            };
+            binding.Bindings.Add(new Binding {
+                Source = new SolidColorBrush(Color.FromRgb(40, 60, 80))
+            });
+            binding.Bindings.Add(new Binding {
+                Source = item
+            });
+            binding.Bindings.Add(new Binding {
+                Source = item,
+                Path = new PropertyPath("(0)", ItemsControl.AlternationIndexProperty)
+            });
+
+            BindingOperations.SetBinding(probe, Border.BorderBrushProperty, binding);
+            DrainDispatcher();
+            return probe;
+        }
+
+        private static void EnsureApplication() {
+            if (Application.Current == null) {
+                _ = new Application {
+                    ShutdownMode = ShutdownMode.OnExplicitShutdown
+                };
+            }
+        }
+
+        private static void DrainDispatcher() {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => frame.Continue = false));
+            Dispatcher.PushFrame(frame);
         }
     }
 }

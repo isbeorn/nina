@@ -19,10 +19,13 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using NINA.Sequencer.Container;
 
 namespace NINA.View.Sequencer.Converter {
 
     public class TreeViewDepthToColorConverter : IMultiValueConverter {
+        private const int BranchPaletteStride = 4;
+        private const int PaletteSize = 32;
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             if (values.Length < 2) return null;
@@ -32,11 +35,11 @@ namespace NINA.View.Sequencer.Converter {
             if (values[0] is SolidColorBrush scb) {
                 baseColor = scb.Color;
             }
-            Brush[] palette = DistinctColorPalette.Generate(baseColor, 10, minContrastRatio: 3.0);
+            Brush[] palette = DistinctColorPalette.Generate(baseColor, PaletteSize, minContrastRatio: 3.0);
 
             if (values[1] is TreeViewItem item) {
-                int depth = GetDepth(item);
-                return palette[depth % palette.Length];
+                int paletteIndex = GetPaletteIndex(item);
+                return palette[paletteIndex % palette.Length];
             }
 
             return palette[0];
@@ -54,6 +57,87 @@ namespace NINA.View.Sequencer.Converter {
                 parent = ItemsControl.ItemsControlFromItemContainer(treeViewItem);
             }
             return depth;
+        }
+
+        private int GetPaletteIndex(TreeViewItem item) {
+            if (!IsColoredContainer(item.DataContext)) {
+                return GetDepth(item);
+            }
+
+            TreeViewItem topLevelColoredContainer = GetTopLevelColoredContainer(item);
+            int branchOffset = GetColoredSiblingIndex(topLevelColoredContainer) * BranchPaletteStride;
+            int depthWithinBranch = GetColoredDepthWithinBranch(topLevelColoredContainer, item);
+
+            return GetDepth(topLevelColoredContainer) + branchOffset + depthWithinBranch;
+        }
+
+        private TreeViewItem GetTopLevelColoredContainer(TreeViewItem item) {
+            TreeViewItem topLevelColoredContainer = item;
+            ItemsControl parent = ItemsControl.ItemsControlFromItemContainer(item);
+
+            while (parent is TreeViewItem parentItem) {
+                if (IsColoredContainer(parentItem.DataContext)) {
+                    topLevelColoredContainer = parentItem;
+                }
+
+                parent = ItemsControl.ItemsControlFromItemContainer(parentItem);
+            }
+
+            return topLevelColoredContainer;
+        }
+
+        private int GetColoredDepthWithinBranch(TreeViewItem topLevelColoredContainer, TreeViewItem item) {
+            int depthWithinBranch = 0;
+            TreeViewItem current = item;
+
+            while (current != null && current != topLevelColoredContainer) {
+                current = ItemsControl.ItemsControlFromItemContainer(current) as TreeViewItem;
+                if (current != null && IsColoredContainer(current.DataContext)) {
+                    depthWithinBranch++;
+                }
+            }
+
+            return depthWithinBranch;
+        }
+
+        private int GetColoredSiblingIndex(TreeViewItem item) {
+            ItemsControl parent = ItemsControl.ItemsControlFromItemContainer(item);
+            if (parent == null) {
+                return 0;
+            }
+
+            int itemIndex = parent.ItemContainerGenerator.IndexFromContainer(item);
+            if (itemIndex < 0) {
+                itemIndex = parent.Items.IndexOf(item);
+            }
+            if (itemIndex < 0 && item.DataContext != null) {
+                itemIndex = parent.Items.IndexOf(item.DataContext);
+            }
+            if (itemIndex <= 0) {
+                return 0;
+            }
+
+            int coloredSiblingIndex = 0;
+            for (int i = 0; i < itemIndex; i++) {
+                if (IsColoredContainer(parent.Items[i])) {
+                    coloredSiblingIndex++;
+                }
+            }
+
+            return coloredSiblingIndex;
+        }
+
+        private bool IsColoredContainer(object itemOrDataContext) {
+            object dataContext = itemOrDataContext is TreeViewItem treeViewItem
+                ? treeViewItem.DataContext
+                : itemOrDataContext;
+
+            return dataContext is ISequenceContainer
+                && dataContext is not IImmutableContainer
+                && dataContext is not ISequenceRootContainer
+                && dataContext is not StartAreaContainer
+                && dataContext is not TargetAreaContainer
+                && dataContext is not EndAreaContainer;
         }
     }
 

@@ -37,6 +37,7 @@
 
     <converter:TreeViewDepthToColorConverter x:Key="TriggerInstructionTreeViewDepthToColorConverter" />
     <Style x:Key="TriggerInstructionItemStyle" TargetType="{x:Type TreeViewItem}">
+        <Setter Property="ItemsControl.AlternationCount" Value="1024" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
         <Setter Property="Focusable" Value="False" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -101,6 +102,7 @@
         </Setter>
     </Style>
     <Style x:Key="TriggerInstructionContainerStyle" TargetType="{x:Type TreeViewItem}">
+        <Setter Property="ItemsControl.AlternationCount" Value="1024" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
         <Setter Property="Focusable" Value="False" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -129,6 +131,7 @@
                                 <MultiBinding Converter="{StaticResource TriggerInstructionTreeViewDepthToColorConverter}">
                                     <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
                                     <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                    <Binding Path="(ItemsControl.AlternationIndex)" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
                             </Border.BorderBrush>
                             <ContentPresenter
@@ -148,6 +151,7 @@
                                 <MultiBinding Converter="{StaticResource TriggerInstructionTreeViewDepthToColorConverter}">
                                     <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
                                     <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                    <Binding Path="(ItemsControl.AlternationIndex)" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
                             </Border.BorderBrush>
                             <Border
@@ -197,6 +201,7 @@
                                 <MultiBinding Converter="{StaticResource TriggerInstructionTreeViewDepthToColorConverter}">
                                     <Binding Source="{StaticResource SecondaryBackgroundBrush}" />
                                     <Binding RelativeSource="{RelativeSource AncestorType=TreeViewItem}" />
+                                    <Binding Path="(ItemsControl.AlternationIndex)" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
                             </Rectangle.Fill>
                         </Rectangle>
