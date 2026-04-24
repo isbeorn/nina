@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -136,10 +136,18 @@ namespace NINA.Sequencer.Behaviors {
                 new PointHitTestParameters(mousePosition));
 
             if (hasDragOverElement /*&& hitElement.DataContext == AssociatedObject.DataContext*/) {
+                Type draggedType = lastAdorner?.DragDropBehavior?.OriginalParentedObject?.DataContext?.GetType();
+
+                if (HasNestedCompatibleDropTarget(draggedType)) {
+                    lastDropTarget = DropTargetEnum.None;
+                    DetachAdorner();
+                    return;
+                }
+
                 // check if we can actually drop into the found element
                 var behaviors = Interaction.GetBehaviors(hitElement);
                 var dropIntoBehavior = behaviors.FirstOrDefault(ex => ex is DropIntoBehavior) as DropIntoBehavior;
-                if (dropIntoBehavior != null && !dropIntoBehavior.CanDropInto(lastAdorner.DragDropBehavior.OriginalParentedObject.DataContext.GetType())) {
+                if (dropIntoBehavior != null && !dropIntoBehavior.CanDropInto(draggedType)) {
                     lastDropTarget = DropTargetEnum.None;
                     DetachAdorner();
                     return;
@@ -170,6 +178,30 @@ namespace NINA.Sequencer.Behaviors {
                     DetachAdorner();
                 }
             }
+        }
+
+        private bool HasNestedCompatibleDropTarget(Type draggedType) {
+            if (hitElement == null || draggedType == null) {
+                return false;
+            }
+
+            DependencyObject current = hitElement;
+            while (current != null && !ReferenceEquals(current, AssociatedObject)) {
+                if (current is FrameworkElement frameworkElement) {
+                    DropIntoBehavior nestedDropIntoBehavior = Interaction
+                        .GetBehaviors(frameworkElement)
+                        .OfType<DropIntoBehavior>()
+                        .FirstOrDefault();
+
+                    if (nestedDropIntoBehavior != null && nestedDropIntoBehavior.CanDropInto(draggedType)) {
+                        return true;
+                    }
+                }
+
+                current = VisualTreeHelper.GetParent(current);
+            }
+
+            return false;
         }
 
         private void AttachAdorner() {

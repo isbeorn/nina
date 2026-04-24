@@ -163,6 +163,39 @@ namespace NINA.Test.Sequencer.Behaviors {
         }
 
         /// <summary>
+        /// Verifies an outer drag target yields when the cursor is already over a nested compatible drop target.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void HasNestedCompatibleDropTarget_CompatibleDescendantReturnsTrue() {
+            Grid outer = new Grid {
+                DataContext = new object(),
+                Width = 100,
+                Height = 40
+            };
+            Border nestedTarget = new Border();
+            TextBlock hitElement = new TextBlock();
+
+            nestedTarget.Child = hitElement;
+            outer.Children.Add(nestedTarget);
+            layoutParent.Children.Add(outer);
+            layoutParent.Measure(new Size(200, 200));
+            layoutParent.Arrange(new Rect(0, 0, 200, 200));
+
+            DragOverBehavior behavior = new DragOverBehavior(layoutParent);
+            behavior.Attach(outer);
+            Interaction.GetBehaviors(nestedTarget).Add(new DropIntoBehavior {
+                AllowedDragDropTypesString = typeof(object).AssemblyQualifiedName
+            });
+
+            SetPrivateField(behavior, "hitElement", hitElement);
+
+            bool result = (bool)InvokePrivate(behavior, "HasNestedCompatibleDropTarget", typeof(object));
+
+            result.Should().BeTrue();
+        }
+
+        /// <summary>
         /// Verifies leaving a drag-over element commits the last calculated target and resets the pending drop target.
         /// </summary>
         [Test]
@@ -222,15 +255,23 @@ namespace NINA.Test.Sequencer.Behaviors {
         }
 
         private void SetPrivateField(string fieldName, object value) {
+            SetPrivateField(sut, fieldName, value);
+        }
+
+        private static void SetPrivateField(DragOverBehavior behavior, string fieldName, object value) {
             FieldInfo field = typeof(DragOverBehavior).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             field.Should().NotBeNull();
-            field.SetValue(sut, value);
+            field.SetValue(behavior, value);
         }
 
         private object InvokePrivate(string methodName, params object[] args) {
+            return InvokePrivate(sut, methodName, args);
+        }
+
+        private static object InvokePrivate(DragOverBehavior behavior, string methodName, params object[] args) {
             MethodInfo method = typeof(DragOverBehavior).GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
             method.Should().NotBeNull();
-            return method.Invoke(sut, args);
+            return method.Invoke(behavior, args);
         }
     }
 }
