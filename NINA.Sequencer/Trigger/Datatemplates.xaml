@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
@@ -954,7 +954,7 @@
                                     AllowDragAbove="False"
                                     AllowDragBelow="False"
                                     AllowDragCenter="True"
-                                    DragOverCenterText="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription}" />
+                                    DragOverCenterText="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText}" />
                                 <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.ISequenceTrigger" OnDropCommand="DropIntoTriggerSourceCommand" />
                             </i:Interaction.Behaviors>
                         </Border>
@@ -1060,7 +1060,7 @@
                         <behaviors:DragOverBehavior
                             DragAboveSize="0"
                             DragBelowSize="0"
-                            DragOverCenterText="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription}" />
+                            DragOverCenterText="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText}" />
                         <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
                     </i:Interaction.Behaviors>
                 </Grid>
