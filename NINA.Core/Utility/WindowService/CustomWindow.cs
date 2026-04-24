@@ -21,6 +21,7 @@ namespace NINA.Core.Utility.WindowService {
 
     public class CustomWindow : Window {
         private bool suppressInitialPaint = true;
+        private double initialOpacity = 1d;
 
         public CustomWindow() {
             FixInitialLayout();
@@ -41,7 +42,8 @@ namespace NINA.Core.Utility.WindowService {
 
         private void Window_SourceInitialized(object sender, EventArgs e) {
             if (suppressInitialPaint) {
-                Visibility = Visibility.Hidden;
+                initialOpacity = Opacity;
+                Opacity = 0d;
             }
         }
 
@@ -53,7 +55,7 @@ namespace NINA.Core.Utility.WindowService {
             Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => {
                 InvalidateMeasure();
                 UpdateLayout();
-                Visibility = Visibility.Visible;
+                Opacity = initialOpacity;
                 suppressInitialPaint = false;
                 Loaded -= Window_Loaded;
                 SourceInitialized -= Window_SourceInitialized;
