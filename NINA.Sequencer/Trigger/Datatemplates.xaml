@@ -1058,6 +1058,7 @@
                         Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                     <i:Interaction.Behaviors>
                         <behaviors:DragOverBehavior
+                            AllowDragCenter="{Binding Items.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
                             DragAboveSize="0"
                             DragBelowSize="0"
                             DragOverCenterText="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText}" />
@@ -1240,7 +1241,10 @@
                                         Text="{ns:Loc Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription}"
                                         Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                                     <i:Interaction.Behaviors>
-                                        <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                                        <behaviors:DragOverBehavior
+                                            AllowDragCenter="{Binding Items.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
+                                            DragAboveSize="0"
+                                            DragBelowSize="0" />
                                         <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
                                     </i:Interaction.Behaviors>
                                 </Grid>
@@ -1286,7 +1290,10 @@
                                         Text="{ns:Loc Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription}"
                                         Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                                     <i:Interaction.Behaviors>
-                                        <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                                        <behaviors:DragOverBehavior
+                                            AllowDragCenter="{Binding Items.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
+                                            DragAboveSize="0"
+                                            DragBelowSize="0" />
                                         <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
                                     </i:Interaction.Behaviors>
                                 </Grid>
