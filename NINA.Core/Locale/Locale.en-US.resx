@@ -7898,6 +7898,31 @@ If exposure count is not important to you, enable this option to avoid having to
   <data name="LblEccentricity" xml:space="preserve">
     <value>Eccentricity</value>
   </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
+    <value>Custom Trigger</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
+    <value>Use an existing trigger as the trigger source, then choose your own instructions to run when that trigger would normally fire.
+This is useful when a built-in trigger has the timing you need, but you want custom actions.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
+    <value>Trigger Source</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
+    <value>Custom Trigger Instructions</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
+    <value>Drop a trigger here to choose when the custom trigger runs.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
+    <value>Drop instructions here to run when the selected trigger source fires.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
+    <value>Add a trigger source.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
+    <value>Add at least one instruction.</value>
+  </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
     <value>Trigger On Unsafe</value>
   </data>
