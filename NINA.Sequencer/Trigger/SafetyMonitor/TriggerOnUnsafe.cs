@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Locale;
 using NINA.Core.Model;
@@ -106,12 +106,24 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
         public WaitUntilSafe WaitUntilSafe { get; private set; }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            ISequenceContainer originalTriggerRunnerParent = TriggerRunner.Parent;
+            ISequenceContainer originalBeforeWaitForSafeParent = BeforeWaitForSafe.Parent;
+            ISequenceContainer originalAfterWaitForSafeParent = AfterWaitForSafe.Parent;
+            ISequenceContainer runtimeParent = ItemUtility.CreateTriggerRunnerContext(context ?? Parent);
+
             lock (triggerLock) {
                 shouldTrigger = false;
                 triggerIsRunning = true;
             }
 
             try {
+                // Run the unsafe instruction sets against an isolated context proxy. That keeps
+                // target/root data available for inherited instructions, but prevents the nested
+                // runner from climbing back into the live ancestor trigger set while it executes.
+                if (!ReferenceEquals(TriggerRunner.Parent, runtimeParent)) {
+                    TriggerRunner.AttachNewParent(runtimeParent);
+                }
+
                 BeforeWaitForSafe.ResetProgress();
                 WaitUntilSafe.ResetProgress();
                 AfterWaitForSafe.ResetProgress();
@@ -120,10 +132,13 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
                 Logger.Info("Unsafe conditions detected, running Trigger On Unsafe");
                 await TriggerRunner.Run(progress, token);
             } finally {
-
                 lock (triggerLock) {
-                    BeforeWaitForSafe.AttachNewParent(null);
-                    AfterWaitForSafe.AttachNewParent(null);
+                    if (!ReferenceEquals(TriggerRunner.Parent, originalTriggerRunnerParent)) {
+                        TriggerRunner.AttachNewParent(originalTriggerRunnerParent);
+                    }
+
+                    BeforeWaitForSafe.AttachNewParent(originalBeforeWaitForSafeParent);
+                    AfterWaitForSafe.AttachNewParent(originalAfterWaitForSafeParent);
                     BeforeWaitForSafe.ResetProgress();
                     WaitUntilSafe.ResetProgress();
                     AfterWaitForSafe.ResetProgress();
@@ -154,11 +169,19 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
         }
 
         public override void AfterParentChanged() {
+            AttachInstructionSetsToContext(Parent);
+
             if (Parent == null) {
                 SequenceBlockTeardown();
             } else if (Parent.Status == SequenceEntityStatus.RUNNING) {
                 SequenceBlockInitialize();
             }
+        }
+
+        private void AttachInstructionSetsToContext(ISequenceContainer parent) {
+            ISequenceContainer instructionSetParent = ItemUtility.CreateTriggerRunnerContext(parent);
+            BeforeWaitForSafe.AttachNewParent(instructionSetParent);
+            AfterWaitForSafe.AttachNewParent(instructionSetParent);
         }
 
         public override void SequenceBlockInitialize() {

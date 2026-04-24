@@ -948,15 +948,15 @@
                                         </Style>
                                     </Button.Style>
                                 </Button>
-                                <i:Interaction.Behaviors>
-                                    <behaviors:DragOverBehavior
-                                        AllowDragAbove="False"
-                                        AllowDragBelow="False"
-                                        AllowDragCenter="True"
-                                        DragOverCenterText="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription}" />
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.ISequenceTrigger" OnDropCommand="DropIntoTriggerSourceCommand" />
-                                </i:Interaction.Behaviors>
                             </Grid>
+                            <i:Interaction.Behaviors>
+                                <behaviors:DragOverBehavior
+                                    AllowDragAbove="False"
+                                    AllowDragBelow="False"
+                                    AllowDragCenter="True"
+                                    DragOverCenterText="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription}" />
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.ISequenceTrigger" OnDropCommand="DropIntoTriggerSourceCommand" />
+                            </i:Interaction.Behaviors>
                         </Border>
                         <Border Grid.Column="2" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter

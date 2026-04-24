@@ -21,6 +21,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Equipment.MyRotator;
+using NINA.Equipment.Equipment.MySafetyMonitor;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
@@ -32,10 +33,16 @@ using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Platesolving;
 using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.SequenceItem.Utility;
+using NINA.Sequencer.Trigger.SafetyMonitor;
+using NINA.Sequencer.Trigger.Utility;
+using NINA.Sequencer.Utility;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NUnit.Framework;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace NINA.Test.Sequencer.SequenceItem {
 
@@ -179,6 +186,174 @@ namespace NINA.Test.Sequencer.SequenceItem {
                 expectedPositionAngle: 45);
         }
 
+        /// <summary>
+        /// Verifies a coordinate-inheriting instruction inside a custom trigger still inherits and refreshes deep-sky target coordinates.
+        /// </summary>
+        /// <param name="instructionName">The custom-trigger instruction type to verify.</param>
+        [TestCase(CenterInstruction)]
+        [TestCase(CenterAndRotateInstruction)]
+        [TestCase(SlewScopeToRaDecInstruction)]
+        [TestCase(WaitForAltitudeInstruction)]
+        [TestCase(WaitUntilAboveHorizonInstruction)]
+        public void CustomTrigger_TargetCoordinatesChanged_UpdatesInheritedInstructionCoordinates(string instructionName) {
+            DeepSkyObjectContainer target = CreateTargetContainer();
+            Coordinates initialCoordinates = new Coordinates(
+                ra: Angle.ByDegree(degree: 10),
+                dec: Angle.ByDegree(degree: 20),
+                epoch: Epoch.J2000);
+            Coordinates updatedCoordinates = new Coordinates(
+                ra: Angle.ByDegree(degree: 30),
+                dec: Angle.ByDegree(degree: 40),
+                epoch: Epoch.J2000);
+            CoordinatesInstruction instruction = CreateInstruction(instructionName: instructionName);
+            CustomTrigger customTrigger = CreateCustomTrigger();
+
+            customTrigger.TriggerRunner.Add(instruction);
+            SetTarget(target: target, coordinates: initialCoordinates, positionAngle: 15);
+            target.Add(customTrigger);
+
+            instruction.Parent.Should().BeSameAs(customTrigger.TriggerRunner);
+            AssertTriggerRunnerContext(
+                customTrigger: customTrigger,
+                sourceCoordinates: initialCoordinates,
+                expectedPositionAngle: 15);
+            AssertInheritedCoordinates(
+                instruction: instruction,
+                sourceCoordinates: initialCoordinates,
+                expectedRaDegrees: 10,
+                expectedDecDegrees: 20,
+                expectedPositionAngle: 15);
+
+            SetTarget(target: target, coordinates: updatedCoordinates, positionAngle: 25);
+
+            AssertInheritedCoordinates(
+                instruction: instruction,
+                sourceCoordinates: updatedCoordinates,
+                expectedRaDegrees: 30,
+                expectedDecDegrees: 40,
+                expectedPositionAngle: 25);
+        }
+
+        /// <summary>
+        /// Verifies runtime execution of a custom trigger keeps deep-sky target coordinates available to nested slew instructions.
+        /// </summary>
+        [Test]
+        public async Task CustomTrigger_Execute_PreservesInheritedCoordinatesForSlewInstruction() {
+            DeepSkyObjectContainer target = CreateTargetContainer();
+            Coordinates targetCoordinates = new Coordinates(
+                ra: Angle.ByDegree(degree: 10),
+                dec: Angle.ByDegree(degree: 20),
+                epoch: Epoch.J2000);
+            (SlewScopeToRaDec instruction, Mock<ITelescopeMediator> telescopeMediatorMock) = CreateExecutableSlewScopeToRaDec();
+            CustomTrigger customTrigger = CreateCustomTrigger();
+            Coordinates slewedCoordinates = null;
+
+            telescopeMediatorMock
+                .Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>()))
+                .Callback<Coordinates, CancellationToken>((coordinates, _) => slewedCoordinates = coordinates)
+                .ReturnsAsync(true);
+
+            customTrigger.TriggerRunner.Add(instruction);
+            SetTarget(target: target, coordinates: targetCoordinates, positionAngle: 15);
+            target.Add(customTrigger);
+
+            await customTrigger.Execute(target, progress: new Progress<ApplicationStatus>(), token: CancellationToken.None);
+
+            instruction.Inherited.Should().BeTrue();
+            slewedCoordinates.Should().NotBeNull();
+            slewedCoordinates.RADegrees.Should().BeApproximately(targetCoordinates.RADegrees, Tolerance);
+            slewedCoordinates.Dec.Should().BeApproximately(targetCoordinates.Dec, Tolerance);
+            AssertTriggerRunnerContext(
+                customTrigger: customTrigger,
+                sourceCoordinates: targetCoordinates,
+                expectedPositionAngle: 15);
+        }
+
+        /// <summary>
+        /// Verifies TriggerOnUnsafe before/after instruction sets inherit and refresh deep-sky target coordinates.
+        /// </summary>
+        [TestCase(true)]
+        [TestCase(false)]
+        public void TriggerOnUnsafe_TargetCoordinatesChanged_UpdatesInheritedInstructionCoordinates(bool useBeforeWaitForSafe) {
+            DeepSkyObjectContainer target = CreateTargetContainer();
+            Coordinates initialCoordinates = new Coordinates(
+                ra: Angle.ByDegree(degree: 10),
+                dec: Angle.ByDegree(degree: 20),
+                epoch: Epoch.J2000);
+            Coordinates updatedCoordinates = new Coordinates(
+                ra: Angle.ByDegree(degree: 30),
+                dec: Angle.ByDegree(degree: 40),
+                epoch: Epoch.J2000);
+            SlewScopeToRaDec instruction = CreateSlewScopeToRaDec();
+            TriggerOnUnsafe triggerOnUnsafe = CreateTriggerOnUnsafe();
+            SequentialContainer instructionSet = useBeforeWaitForSafe ? triggerOnUnsafe.BeforeWaitForSafe : triggerOnUnsafe.AfterWaitForSafe;
+
+            instructionSet.Add(instruction);
+            SetTarget(target: target, coordinates: initialCoordinates, positionAngle: 15);
+            target.Add(triggerOnUnsafe);
+
+            AssertTriggerRunnerContext(
+                container: instructionSet,
+                sourceCoordinates: initialCoordinates,
+                expectedPositionAngle: 15);
+            AssertInheritedCoordinates(
+                instruction: instruction,
+                sourceCoordinates: initialCoordinates,
+                expectedRaDegrees: 10,
+                expectedDecDegrees: 20,
+                expectedPositionAngle: 15);
+
+            SetTarget(target: target, coordinates: updatedCoordinates, positionAngle: 25);
+
+            AssertTriggerRunnerContext(
+                container: instructionSet,
+                sourceCoordinates: updatedCoordinates,
+                expectedPositionAngle: 25);
+            AssertInheritedCoordinates(
+                instruction: instruction,
+                sourceCoordinates: updatedCoordinates,
+                expectedRaDegrees: 30,
+                expectedDecDegrees: 40,
+                expectedPositionAngle: 25);
+        }
+
+        /// <summary>
+        /// Verifies TriggerOnUnsafe runtime execution preserves inherited coordinates for before/after instruction sets.
+        /// </summary>
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task TriggerOnUnsafe_Execute_PreservesInheritedCoordinatesForInstructionSet(bool useBeforeWaitForSafe) {
+            DeepSkyObjectContainer target = CreateTargetContainer();
+            Coordinates targetCoordinates = new Coordinates(
+                ra: Angle.ByDegree(degree: 10),
+                dec: Angle.ByDegree(degree: 20),
+                epoch: Epoch.J2000);
+            (SlewScopeToRaDec instruction, Mock<ITelescopeMediator> telescopeMediatorMock) = CreateExecutableSlewScopeToRaDec();
+            TriggerOnUnsafe triggerOnUnsafe = CreateTriggerOnUnsafe();
+            SequentialContainer instructionSet = useBeforeWaitForSafe ? triggerOnUnsafe.BeforeWaitForSafe : triggerOnUnsafe.AfterWaitForSafe;
+            Coordinates slewedCoordinates = null;
+
+            telescopeMediatorMock
+                .Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>()))
+                .Callback<Coordinates, CancellationToken>((coordinates, _) => slewedCoordinates = coordinates)
+                .ReturnsAsync(true);
+
+            instructionSet.Add(instruction);
+            SetTarget(target: target, coordinates: targetCoordinates, positionAngle: 15);
+            target.Add(triggerOnUnsafe);
+
+            await triggerOnUnsafe.Execute(target, progress: new Progress<ApplicationStatus>(), token: CancellationToken.None);
+
+            instruction.Inherited.Should().BeTrue();
+            slewedCoordinates.Should().NotBeNull();
+            slewedCoordinates.RADegrees.Should().BeApproximately(targetCoordinates.RADegrees, Tolerance);
+            slewedCoordinates.Dec.Should().BeApproximately(targetCoordinates.Dec, Tolerance);
+            AssertTriggerRunnerContext(
+                container: instructionSet,
+                sourceCoordinates: targetCoordinates,
+                expectedPositionAngle: 15);
+        }
+
         private CoordinatesInstruction CreateInstruction(string instructionName) {
             switch (instructionName) {
                 case CenterInstruction:
@@ -233,10 +408,37 @@ namespace NINA.Test.Sequencer.SequenceItem {
             return new SlewScopeToRaDec(telescopeMediator: telescopeMediatorMock.Object, guiderMediator: new Mock<IGuiderMediator>().Object);
         }
 
+        private (SlewScopeToRaDec Instruction, Mock<ITelescopeMediator> TelescopeMediator) CreateExecutableSlewScopeToRaDec() {
+            Mock<ITelescopeMediator> telescopeMediatorMock = CreateConnectedTelescopeMediator();
+            Mock<IGuiderMediator> guiderMediatorMock = new Mock<IGuiderMediator>();
+            guiderMediatorMock
+                .Setup(x => x.StopGuiding(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            return (
+                Instruction: new SlewScopeToRaDec(telescopeMediator: telescopeMediatorMock.Object, guiderMediator: guiderMediatorMock.Object),
+                TelescopeMediator: telescopeMediatorMock);
+        }
+
         private static Mock<ITelescopeMediator> CreateConnectedTelescopeMediator() {
             Mock<ITelescopeMediator> telescopeMediatorMock = new Mock<ITelescopeMediator>();
             telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo { Connected = true });
             return telescopeMediatorMock;
+        }
+
+        private static CustomTrigger CreateCustomTrigger() {
+            Mock<IApplicationResourceDictionary> resourceDictionaryMock = new Mock<IApplicationResourceDictionary>();
+            resourceDictionaryMock.Setup(x => x[It.IsAny<string>()]).Returns(new GeometryGroup());
+            return new CustomTrigger(resourceDictionaryMock.Object);
+        }
+
+        private static TriggerOnUnsafe CreateTriggerOnUnsafe() {
+            Mock<ISafetyMonitorMediator> safetyMonitorMediatorMock = new Mock<ISafetyMonitorMediator>();
+            safetyMonitorMediatorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo { Connected = true, IsSafe = true });
+
+            Mock<IApplicationResourceDictionary> resourceDictionaryMock = new Mock<IApplicationResourceDictionary>();
+            resourceDictionaryMock.Setup(x => x[It.IsAny<string>()]).Returns(new GeometryGroup());
+            return new TriggerOnUnsafe(safetyMonitorMediator: safetyMonitorMediatorMock.Object, resourceDictionary: resourceDictionaryMock.Object);
         }
 
         private DeepSkyObjectContainer CreateTargetContainer() {
@@ -284,6 +486,20 @@ namespace NINA.Test.Sequencer.SequenceItem {
             }
 
             return instruction.Coordinates;
+        }
+
+        private static void AssertTriggerRunnerContext(CustomTrigger customTrigger, Coordinates sourceCoordinates, double expectedPositionAngle) {
+            customTrigger.TriggerRunner.Parent.Should().NotBeNull();
+            AssertTriggerRunnerContext(customTrigger.TriggerRunner, sourceCoordinates, expectedPositionAngle);
+        }
+
+        private static void AssertTriggerRunnerContext(ISequenceContainer container, Coordinates sourceCoordinates, double expectedPositionAngle) {
+            container.Parent.Should().NotBeNull();
+            ContextCoordinates contextCoordinates = ItemUtility.RetrieveContextCoordinates(container);
+            contextCoordinates.Should().NotBeNull();
+            contextCoordinates.PositionAngle.Should().BeApproximately(expectedPositionAngle, Tolerance);
+            contextCoordinates.Coordinates.RADegrees.Should().BeApproximately(sourceCoordinates.RADegrees, Tolerance);
+            contextCoordinates.Coordinates.Dec.Should().BeApproximately(sourceCoordinates.Dec, Tolerance);
         }
 
         private static void AssertInputCoordinates(InputCoordinates inputCoordinates, Coordinates sourceCoordinates, double expectedRaDegrees, double expectedDecDegrees) {

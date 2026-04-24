@@ -206,6 +206,31 @@ namespace NINA.Test.Sequencer.Trigger.Utility {
         }
 
         /// <summary>
+        /// Verifies the trigger runner does not walk back into the owning trigger set and evaluate its own trigger source while executing.
+        /// </summary>
+        [Test]
+        public async Task Execute_DoesNotEvaluateOwningTriggerSourceFromParentTriggerSet() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer context = new SequentialContainer();
+            TestTrigger source = new TestTrigger() {
+                ShouldTriggerResult = false,
+                ShouldTriggerAfterResult = false
+            };
+            TestInstruction instruction = new TestInstruction();
+
+            root.Add(context);
+            sut.TriggerSource = source;
+            sut.TriggerRunner.Add(instruction);
+            context.Add(sut);
+
+            await sut.Execute(context, Mock.Of<IProgress<ApplicationStatus>>(), CancellationToken.None);
+
+            instruction.ExecuteCount.Should().Be(1);
+            source.ShouldTriggerCount.Should().Be(0);
+            source.ShouldTriggerAfterCount.Should().Be(0);
+        }
+
+        /// <summary>
         /// Verifies validation reports missing configuration and passes once a trigger source and instruction exist.
         /// </summary>
         [Test]

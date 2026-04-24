@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -43,6 +43,33 @@ namespace NINA.Sequencer.Utility {
             } else {
                 return null;
             }
+        }
+
+        public static IDeepSkyObjectContainer FindDeepSkyObjectContainer(ISequenceContainer parent) {
+            while (parent != null) {
+                if (parent is IDeepSkyObjectContainer deepSkyObjectContainer) {
+                    return deepSkyObjectContainer;
+                }
+
+                parent = parent.Parent;
+            }
+
+            return null;
+        }
+
+        public static ISequenceContainer CreateTriggerRunnerContext(ISequenceContainer parent) {
+            ISequenceRootContainer root = GetRootContainer(parent);
+            IDeepSkyObjectContainer deepSkyObjectContainer = FindDeepSkyObjectContainer(parent);
+
+            if (root != null) {
+                return new TriggerRunnerRootContextContainer(root, deepSkyObjectContainer);
+            }
+
+            if (deepSkyObjectContainer != null) {
+                return new TriggerRunnerContextContainer(deepSkyObjectContainer);
+            }
+
+            return null;
         }
 
         public static bool IsInRootContainer(ISequenceContainer parent) {

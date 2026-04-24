@@ -26,7 +26,6 @@ using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -99,6 +98,7 @@ namespace NINA.Sequencer.Trigger.Utility {
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
             EnsureAreaContainers();
+            AttachTriggerRunnerToContext(Parent);
             AttachTriggerSourceToParent();
         }
 
@@ -120,8 +120,10 @@ namespace NINA.Sequencer.Trigger.Utility {
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             ISequenceContainer originalParent = TriggerRunner.Parent;
-            ISequenceRootContainer root = ItemUtility.GetRootContainer(context ?? Parent);
-            ISequenceContainer runtimeParent = root == null ? originalParent : new TriggerRunnerRuntimeRoot(root);
+            // Execute custom instructions against an isolated context proxy instead of the live
+            // ancestor chain. That keeps target/root data available, but prevents the runner from
+            // walking back into the owning trigger set and re-triggering this CustomTrigger on itself.
+            ISequenceContainer runtimeParent = ItemUtility.CreateTriggerRunnerContext(context ?? Parent);
 
             if (!ReferenceEquals(TriggerRunner.Parent, runtimeParent)) {
                 TriggerRunner.AttachNewParent(runtimeParent);
@@ -138,6 +140,8 @@ namespace NINA.Sequencer.Trigger.Utility {
         }
 
         public override void AfterParentChanged() {
+            EnsureAreaContainers();
+            AttachTriggerRunnerToContext(Parent);
             AttachTriggerSourceToParent();
             Validate();
         }
@@ -230,6 +234,10 @@ namespace NINA.Sequencer.Trigger.Utility {
             }
         }
 
+        private void AttachTriggerRunnerToContext(ISequenceContainer parent) {
+            TriggerRunner?.AttachNewParent(ItemUtility.CreateTriggerRunnerContext(parent));
+        }
+
         private SequentialContainer CreateAreaContainer(string labelKey) {
             SequentialContainer container = new SequentialContainer() {
                 Name = Loc.Instance[labelKey],
@@ -270,63 +278,6 @@ namespace NINA.Sequencer.Trigger.Utility {
                 }
 
                 return base.Remove(trigger);
-            }
-        }
-
-        private sealed class TriggerRunnerRuntimeRoot : SequentialContainer, ISequenceRootContainer {
-            private readonly ISequenceRootContainer root;
-
-            public TriggerRunnerRuntimeRoot(ISequenceRootContainer root) {
-                this.root = root;
-                Items = root.Items;
-            }
-
-            public string SequenceTitle {
-                get => root.SequenceTitle;
-                set => root.SequenceTitle = value;
-            }
-
-            public Dictionary<string, bool> HasChanges => root.HasChanges;
-
-            public event Func<object, SequenceEntityFailureEventArgs, Task> FailureEvent {
-                add => root.FailureEvent += value;
-                remove => root.FailureEvent -= value;
-            }
-
-            public void AddRunningItem(ISequenceItem item) {
-                root.AddRunningItem(item);
-            }
-
-            public void RemoveRunningItem(ISequenceItem item) {
-                root.RemoveRunningItem(item);
-            }
-
-            public void SkipCurrentRunningItems() {
-                root.SkipCurrentRunningItems();
-            }
-
-            public void InterruptAndResetCurrentRunningItems() {
-                root.InterruptAndResetCurrentRunningItems();
-            }
-
-            public IReadOnlyCollection<ISequenceItem> GetCurrentRunningItems() {
-                return root.GetCurrentRunningItems();
-            }
-
-            public Task RaiseFailureEvent(ISequenceEntity sender, Exception ex) {
-                return root.RaiseFailureEvent(sender, ex);
-            }
-
-            public bool DoesHaveChanges(string hasChangeSet) {
-                return root.DoesHaveChanges(hasChangeSet);
-            }
-
-            public void SetChanged(string changedSet = defaultChangeSet) {
-                root.SetChanged(changedSet);
-            }
-
-            public override Task Interrupt() {
-                return root.Interrupt();
             }
         }
     }
