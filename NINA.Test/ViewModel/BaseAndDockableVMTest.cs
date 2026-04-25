@@ -9,6 +9,7 @@ using System.Windows.Media;
 namespace NINA.Test.ViewModel {
 
     [TestFixture]
+    [NonParallelizable]
     public class BaseAndDockableVMTest {
 
         /// <summary>

@@ -19,6 +19,7 @@ namespace NINA.Test.ViewModel {
 
     [TestFixture]
     [Apartment(ApartmentState.STA)]
+    [NonParallelizable]
     public class GuiderVMTest {
         private Mock<IProfileService> profileService;
         private Mock<IProfile> profile;
@@ -281,7 +282,9 @@ namespace NINA.Test.ViewModel {
 
         private static void EnsureApplicationResources() {
             if (Application.Current == null) {
-                _ = new Application();
+                _ = new Application {
+                    ShutdownMode = ShutdownMode.OnExplicitShutdown
+                };
             }
 
             Application.Current.Resources["PuzzlePieceSVG"] = new GeometryGroup();

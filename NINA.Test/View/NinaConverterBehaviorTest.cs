@@ -34,6 +34,7 @@ namespace NINA.Test.View {
 
     [TestFixture]
     [Apartment(ApartmentState.STA)]
+    [NonParallelizable]
     public class NinaConverterBehaviorTest {
 
         /// <summary>

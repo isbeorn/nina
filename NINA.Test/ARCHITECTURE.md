@@ -92,6 +92,7 @@ It is the verification layer, not a reusable library.
 
 - Place new tests under the folder that matches the production area under test; the existing layout makes failures easy to navigate.
 - Reuse existing helpers and mocks when possible instead of rebuilding factory/bootstrap code in each fixture.
+- For WPF-facing tests that instantiate `System.Windows.Application`, depend on `Application.Current.Resources`, or construct XAML-backed views, keep the fixture in an STA apartment and generally mark it `[NonParallelizable]` to avoid multiple-application races during full-suite execution.
 - If a production change needs native files or sample data at test time, update the project file so the assets are copied into the test output.
 - For astronomical or other numerically sensitive changes, prefer assertions based on documented reference values, authoritative sample data, and edge cases rather than only hand-derived spot checks.
 - `AstrometryTest/AstrometryTest.cs` already contains that pattern, including cases annotated with SOFA documented values and other cited reference data; extend those fixtures when the production change touches the same calculation families.

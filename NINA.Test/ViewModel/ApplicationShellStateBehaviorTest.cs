@@ -29,6 +29,7 @@ namespace NINA.Test.ViewModel {
 
     [TestFixture]
     [Apartment(ApartmentState.STA)]
+    [NonParallelizable]
     public class ApplicationShellStateBehaviorTest {
 
         /// <summary>

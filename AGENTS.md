@@ -219,6 +219,12 @@ If a library project needs to trigger UI-side behavior, prefer an existing media
 - Validate those changes with extensive automated tests in `NINA.Test`, using reference values, edge cases, and regression coverage rather than only spot-checking results manually.
 - Existing tests already follow that pattern in places such as `NINA.Test/AstrometryTest/AstrometryTest.cs`, which includes cases annotated as coming from documented SOFA values and other cited reference data.
 
+## Test Bootstrap Constraints
+
+- WPF-facing unit tests that instantiate `System.Windows.Application`, depend on `Application.Current.Resources`, or construct XAML-backed views must run in an STA apartment and should generally be marked `[NonParallelizable]`.
+- This avoids parallel fixture races such as `Cannot create more than one System.Windows.Application instance in the same AppDomain`.
+- When such tests need application resources, prefer a shared test bootstrap/helper pattern over ad hoc per-test application setup.
+
 ## Where To Start For Common Changes
 
 ### App startup, shell, DI, runtime assets

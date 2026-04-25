@@ -321,7 +321,9 @@ namespace NINA.Test.ProfileTest {
 
         private static void EnsureWpfApplication() {
             if (Application.Current == null) {
-                _ = new Application();
+                _ = new Application {
+                    ShutdownMode = ShutdownMode.OnExplicitShutdown
+                };
             }
         }
 

@@ -20,6 +20,7 @@ namespace NINA.Test.Utility {
 
     [TestFixture]
     [Apartment(ApartmentState.STA)]
+    [NonParallelizable]
     public class CustomWindowTest {
 
         /// <summary>
