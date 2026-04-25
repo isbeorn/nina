@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -7910,6 +7910,12 @@ To se hodí v případě, že vestavěný spouštěč má sice požadované nač
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
     <value>Zde zadejte příkazy, které se mají spustit při aktivaci vybraného spouštěcího zdroje.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
+    <value>ADD TRIGGER SOURCE</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
+    <value>ADD CUSTOM INSTRUCTIONS</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
     <value>Přidejte zdroj spouštěče.</value>
