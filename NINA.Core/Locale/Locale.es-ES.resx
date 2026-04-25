@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -7901,6 +7901,12 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
     <value>Pon aquí las instrucciones que deseas que se ejecuten cuando el activador base seleccionado se active.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
+    <value>AÑADIR ACTIVADOR BASE</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
+    <value>AÑADIR INSTRUCCIONES PERSONALIZADAS</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
     <value>Añade un activador base.</value>
