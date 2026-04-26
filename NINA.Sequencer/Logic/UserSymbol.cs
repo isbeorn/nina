@@ -144,7 +144,7 @@ namespace NINA.Sequencer.Logic {
 
         public bool IsDuplicate { get; private set; } = false;
 
-        public IList<string> Issues { get; set; }
+        public IList<string> Issues { get; set; } = new List<string>();
 
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;

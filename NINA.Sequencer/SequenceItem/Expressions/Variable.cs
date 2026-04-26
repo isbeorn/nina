@@ -131,8 +131,12 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
         public override bool Validate() {
             SymbolDictionary cached = null;
-            if (!IsAttachedToRoot()) return true;
             IList<string> i = new List<string>();
+            if (!IsAttachedToRoot()) {
+                Issues = i;
+                RaisePropertyChanged("Issues");
+                return true;
+            }
 
             if (Identifier.Length == 0 || OriginalExpr.Definition?.Length == 0) {
                 i.Add("A name and an initial value must be specified");

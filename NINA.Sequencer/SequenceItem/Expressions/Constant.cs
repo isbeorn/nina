@@ -67,12 +67,13 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
         public override bool Validate() {
             ISequenceRootContainer root = ItemUtility.GetRootContainer(Parent);
+            IList<string> i = new List<string>();
 
             if (root == null) {
+                Issues = i;
+                RaisePropertyChanged("Issues");
                 return true;
             }
-
-            IList<string> i = new List<string>();
 
             if (Identifier.Length == 0 || Expr.Definition.Length == 0) {
                 i.Add("A name and a value must be specified");

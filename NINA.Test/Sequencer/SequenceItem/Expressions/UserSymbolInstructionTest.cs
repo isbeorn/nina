@@ -158,6 +158,18 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
             variable.Issues.Should().Contain(i => i.Contains("alphanumeric"));
         }
 
+        [Test]
+        public void Variable_Validate_WhenDetached_LeavesEmptyIssues() {
+            Variable sut = new Variable {
+                Issues = default!
+            };
+
+            sut.Validate().Should().BeTrue();
+
+            sut.Issues.Should().NotBeNull();
+            sut.Issues.Should().BeEmpty();
+        }
+
         /// <summary>
         /// Verifies constants clone their expression, reject invalid definitions, reject variable references, and remain a no-op during execution.
         /// </summary>
@@ -196,6 +208,18 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
                 Expr = CreateExpression("1", null)
             };
             detached.Validate().Should().BeTrue();
+        }
+
+        [Test]
+        public void Constant_Validate_WhenDetached_LeavesEmptyIssues() {
+            Constant sut = new Constant {
+                Issues = default!
+            };
+
+            sut.Validate().Should().BeTrue();
+
+            sut.Issues.Should().NotBeNull();
+            sut.Issues.Should().BeEmpty();
         }
 
         /// <summary>
