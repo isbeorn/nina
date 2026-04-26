@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Core.Utility;
+using System;
 using System.Collections.Generic;
 
 namespace QHYCCD {
@@ -37,21 +38,29 @@ namespace QHYCCD {
                     Sdk.GetId(i, out cameraId);
                     Sdk.Open(cameraId);
 
-                    if (Sdk.IsCfwPlugged()) {
-                        positions = (uint)Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_CFWSLOTSNUM);
+                    try {
+                        if (Sdk.IsCfwPlugged()) {
+                            positions = (uint)Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_CFWSLOTSNUM);
 
-                        /*
-                         * Ensure that the filter wheel we found is reporting that it has filter slots.
-                         */
-                        if (positions > 0) {
-                            Logger.Debug($"QHYCFW: Camera {i} ({cameraId}) has a {positions}-position CFW");
-                            FWheels.Add(cameraId.ToString());
-                        } else {
-                            Logger.Error($"QHYCFW: Camera {i} ({cameraId}) has a filter wheel but says it has {positions} slots! Skipping.");
+                            /*
+                             * Ensure that the filter wheel we found is reporting that it has filter slots.
+                             */
+                            if (positions > 0) {
+                                Logger.Debug($"QHYCFW: Camera {i} ({cameraId}) has a {positions}-position CFW");
+                                FWheels.Add(cameraId.ToString());
+                            } else {
+                                Logger.Error($"QHYCFW: Camera {i} ({cameraId}) has a filter wheel but says it has {positions} slots! Skipping.");
+                            }
+                        }
+                    } catch (Exception ex) {
+                        Logger.Error($"QHYCFW: Error querying camera {i} ({cameraId}) for filter wheel: {ex.Message}");
+                    } finally {
+                        try {
+                            Sdk.Close();
+                        } catch (Exception ex) {
+                            Logger.Error($"QHYCFW: Error closing camera {i} ({cameraId}): {ex.Message}");
                         }
                     }
-
-                    Sdk.Close();
                 }
             }
 
