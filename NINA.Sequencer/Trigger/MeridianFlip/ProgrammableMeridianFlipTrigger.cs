@@ -213,6 +213,8 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                 EarliestFlipTime = flipDeadlineLocal;
                 LatestFlipTime = flipDeadlineLocal;
 
+                LogExecutionSummary(target, timeToFlip, flipDeadlineLocal);
+
                 if (!ReferenceEquals(BeforeFlipActions.Parent, runtimeParent)) {
                     BeforeFlipActions.AttachNewParent(runtimeParent);
                 }
@@ -223,18 +225,21 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
 
                 SetActiveStage(ProgrammableMeridianFlipStage.StopTracking, Loc.Instance["LblStopTracking"]);
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblStopTracking"] });
+                Logger.Info("Programmable Meridian Flip - Stopping tracking before running pre-flip actions");
                 telescopeMediator.SetTrackingEnabled(false);
                 trackingStopped = true;
 
                 await ExecuteActionSet(BeforeFlipActions, ProgrammableMeridianFlipStage.BeforeFlipActions, progress, token);
 
                 SetActiveStage(ProgrammableMeridianFlipStage.WaitForFlipWindow, Loc.Instance["Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description"]);
+                Logger.Info("Programmable Meridian Flip - Keeping tracking stopped while waiting for the flip window");
                 telescopeMediator.SetTrackingEnabled(false);
                 trackingStopped = true;
                 await WaitForFlipDeadline(flipDeadlineUtc, progress, token);
 
                 SetActiveStage(ProgrammableMeridianFlipStage.ResumeTrackingAndFlip, Loc.Instance["Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description"]);
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblResumeTracking"] });
+                Logger.Info("Programmable Meridian Flip - Resuming tracking before initiating the flip");
                 telescopeMediator.SetTrackingEnabled(true);
                 trackingStopped = false;
 
@@ -263,6 +268,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
 
                 if (!completed) {
                     if (trackingStopped) {
+                        Logger.Info("Programmable Meridian Flip - Restoring tracking after incomplete programmable meridian flip");
                         telescopeMediator.SetTrackingEnabled(true);
                     }
                 }
@@ -272,6 +278,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                 }
 
                 progress?.Report(new ApplicationStatus());
+                Logger.Info($"Programmable Meridian Flip - Exiting programmable meridian flip. Completed: {completed}");
             }
         }
 
@@ -393,6 +400,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
 
         private async Task ExecuteActionSet(SequentialContainer actionSet, ProgrammableMeridianFlipStage stage, IProgress<ApplicationStatus> progress, CancellationToken token) {
             SetActiveStage(stage, actionSet.Name);
+            Logger.Info($"Programmable Meridian Flip - Running {actionSet.Name}: {CountEnabledItems(actionSet)} enabled item(s), estimated duration {EstimateContainerDuration(actionSet)}");
             actionSet.ResetAll();
             await actionSet.Run(progress, token);
 
@@ -425,6 +433,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblFlippingScope"] });
                 Logger.Info($"Programmable Meridian Flip - Scope will flip to coordinates RA: {target.RAString} Dec: {target.DecString} Epoch: {target.Epoch}");
                 flipSuccessful = await telescopeMediator.MeridianFlip(target, token);
+                Logger.Trace($"Programmable Meridian Flip - Successful flip: {flipSuccessful}");
 
                 SetActiveStage(ProgrammableMeridianFlipStage.Settle, Loc.Instance["Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description"]);
                 await Settle(progress, token);
@@ -474,8 +483,31 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
 
         private Task RotateImageAfterFlip(IProgress<ApplicationStatus> progress) {
             progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblRotateImageAfterFlip"] });
+            Logger.Info("Programmable Meridian Flip - Rotating image after flip by 180 degrees");
             imagingMediator.SetImageRotation(imagingMediator.GetImageRotation() + 180);
             return Task.CompletedTask;
+        }
+
+        private void LogExecutionSummary(Coordinates target, TimeSpan timeToFlip, DateTime flipDeadlineLocal) {
+            var settings = profileService.ActiveProfile.MeridianFlipSettings;
+            var telescopeInfo = telescopeMediator.GetInfo();
+
+            Logger.Info("Programmable Meridian Flip - Initializing programmable meridian flip. " +
+                $"Target: {FormatCoordinates(target)}; " +
+                $"Remaining wait time: {timeToFlip}; " +
+                $"Flip deadline: {flipDeadlineLocal:yyyy-MM-dd HH:mm:ss}; " +
+                $"Settings: PauseBeforeMeridian={settings.PauseTimeBeforeMeridian} min, MinutesAfterMeridian={settings.MinutesAfterMeridian} min, MaxMinutesAfterMeridian={settings.MaxMinutesAfterMeridian} min, UseSideOfPier={settings.UseSideOfPier}, SettleTime={settings.SettleTime} sec, RotateImageAfterFlip={settings.RotateImageAfterFlip}; " +
+                $"Profile seeding defaults: AutoFocusAfterFlip={settings.AutoFocusAfterFlip}, Recenter={settings.Recenter}; " +
+                $"Action plan: BeforeActions={CountEnabledItems(BeforeFlipActions)} enabled item(s) / {EstimateContainerDuration(BeforeFlipActions)}, AfterActions={CountEnabledItems(AfterFlipActions)} enabled item(s) / {EstimateContainerDuration(AfterFlipActions)}; " +
+                $"Telescope state: Tracking={telescopeInfo.TrackingEnabled}, SideOfPier={telescopeInfo.SideOfPier}, TimeToMeridianFlip={telescopeInfo.TimeToMeridianFlip} h, AtPark={telescopeInfo.AtPark}, AtHome={telescopeInfo.AtHome}");
+        }
+
+        private static string FormatCoordinates(Coordinates coordinates) {
+            if (coordinates == null) {
+                return "unknown";
+            }
+
+            return $"RA: {coordinates.RAString} Dec: {coordinates.DecString} Epoch: {coordinates.Epoch}";
         }
 
         private void SetActiveStage(ProgrammableMeridianFlipStage stage, string stageTitle) {
@@ -536,6 +568,27 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
             }
 
             return false;
+        }
+
+        private static int CountEnabledItems(ISequenceContainer container) {
+            if (container == null) {
+                return 0;
+            }
+
+            int total = 0;
+            foreach (ISequenceItem item in container.GetItemsSnapshot()) {
+                if (item.Status == SequenceEntityStatus.DISABLED) {
+                    continue;
+                }
+
+                if (item is ISequenceContainer childContainer) {
+                    total += CountEnabledItems(childContainer);
+                } else {
+                    total++;
+                }
+            }
+
+            return total;
         }
 
         private static TimeSpan EstimateContainerDuration(ISequenceContainer container) {
