@@ -30,6 +30,7 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
         private readonly ISafetyMonitorMediator safetyMonitorMediator;
         private readonly IApplicationResourceDictionary resourceDictionary;
         private readonly object triggerLock = new object();
+        private bool isExpanded = true;
         private bool shouldTrigger;
         private bool triggerIsRunning;
         private bool hasSeenConnected;
@@ -48,6 +49,7 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
             BeforeWaitForSafe = (SequentialContainer)cloneMe.BeforeWaitForSafe.Clone();
             AfterWaitForSafe = (SequentialContainer)cloneMe.AfterWaitForSafe.Clone();
             WaitUntilSafe = (WaitUntilSafe)cloneMe.WaitUntilSafe.Clone();
+            IsExpanded = cloneMe.IsExpanded;
         }
 
 
@@ -102,6 +104,15 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
             set;
         }
 
+        [JsonProperty]
+        public bool IsExpanded {
+            get => isExpanded;
+            set {
+                isExpanded = value;
+                RaisePropertyChanged();
+            }
+        }
+
         [Newtonsoft.Json.JsonIgnore]
         public WaitUntilSafe WaitUntilSafe { get; private set; }
 
@@ -110,11 +121,14 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
             ISequenceContainer originalBeforeWaitForSafeParent = BeforeWaitForSafe.Parent;
             ISequenceContainer originalAfterWaitForSafeParent = AfterWaitForSafe.Parent;
             ISequenceContainer runtimeParent = ItemUtility.CreateTriggerRunnerContext(context ?? Parent);
+            bool restoreCollapsedAfterExecution = !IsExpanded;
 
             lock (triggerLock) {
                 shouldTrigger = false;
                 triggerIsRunning = true;
             }
+
+            IsExpanded = true;
 
             try {
                 // Run the unsafe instruction sets against an isolated context proxy. That keeps
@@ -145,6 +159,10 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
 
                     triggerIsRunning = false;
                     shouldTrigger = IsUnsafe();
+                }
+
+                if (restoreCollapsedAfterExecution) {
+                    IsExpanded = false;
                 }
             }
         }

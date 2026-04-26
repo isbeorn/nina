@@ -94,6 +94,7 @@ This allows you to safely return to a stable release if needed.
     - Added a new **Trigger On Unsafe** safety monitor trigger. It can run configured instructions when the safety monitor reports unsafe or disconnects after it has been connected, then wait until the safety monitor reports safe again before running follow-up instructions.
     - When triggered, the currently running instruction is interrupted and reset so safety handling can take over immediately.
     - Added a new **Custom Trigger** that uses an existing trigger as its trigger source and runs user-configured instructions when that source would normally fire.
+    - Added a new **Programmable Meridian Flip** trigger that combines a built-in meridian flip with user-configurable before and after instruction sets while preserving the planned flip time after tracking is stopped.
 
 ### **Device Management**
 - **ASCOM Alpaca Direct Drivers**

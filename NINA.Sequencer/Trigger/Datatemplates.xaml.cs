@@ -15,15 +15,12 @@
 using NINA.Core.Enum;
 using NINA.Sequencer;
 using NINA.Sequencer.DragDrop;
+using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger.Utility;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace NINA.Sequencer.Trigger {
 
@@ -35,14 +32,11 @@ namespace NINA.Sequencer.Trigger {
         }
 
         private void AddTriggerSourceButton_Click(object sender, RoutedEventArgs e) {
-            if (sender is not Button button || button.ContextMenu == null) {
-                return;
-            }
+            OpenButtonContextMenu(sender as Button, e);
+        }
 
-            button.ContextMenu.PlacementTarget = button;
-            button.ContextMenu.DataContext = button.DataContext;
-            button.ContextMenu.IsOpen = true;
-            e.Handled = true;
+        private void AddTriggerInstructionButton_Click(object sender, RoutedEventArgs e) {
+            OpenButtonContextMenu(sender as Button, e);
         }
 
         private void MenuItemTriggerSource_Click(object sender, RoutedEventArgs e) {
@@ -54,7 +48,8 @@ namespace NINA.Sequencer.Trigger {
                 return;
             }
 
-            if (ItemsControl.ItemsControlFromItemContainer(menuItem) is not ContextMenu contextMenu) {
+            ContextMenu contextMenu = GetOwningContextMenu(menuItem);
+            if (contextMenu == null) {
                 return;
             }
 
@@ -72,6 +67,74 @@ namespace NINA.Sequencer.Trigger {
             };
 
             customTrigger.DropIntoTriggerSourceCommand.Execute(parameters);
+        }
+
+        private void MenuItemTriggerInstruction_Click(object sender, RoutedEventArgs e) {
+            if (sender is not MenuItem menuItem) {
+                return;
+            }
+
+            if (menuItem.DataContext is not SidebarEntity entity || entity.Entity is not ISequenceItem sequenceItem) {
+                return;
+            }
+
+            ContextMenu contextMenu = GetOwningContextMenu(menuItem);
+            if (contextMenu == null) {
+                return;
+            }
+
+            IDropContainer dropContainer = contextMenu.DataContext as IDropContainer;
+            if (dropContainer == null && contextMenu.PlacementTarget is FrameworkElement placementTarget) {
+                dropContainer = placementTarget.DataContext as IDropContainer;
+            }
+
+            if (dropContainer == null) {
+                return;
+            }
+
+            DropIntoParameters parameters = new DropIntoParameters(sequenceItem as IDroppable) {
+                Position = DropTargetEnum.Center
+            };
+
+            dropContainer.DropIntoCommand.Execute(parameters);
+        }
+
+        private static void OpenButtonContextMenu(Button button, RoutedEventArgs e) {
+            if (button == null || button.ContextMenu == null) {
+                return;
+            }
+
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.DataContext = button.DataContext;
+            button.ContextMenu.IsOpen = true;
+            e.Handled = true;
+        }
+
+        private static ContextMenu GetOwningContextMenu(MenuItem menuItem) {
+            DependencyObject current = menuItem;
+
+            while (current != null) {
+                if (current is ContextMenu contextMenu) {
+                    return contextMenu;
+                }
+
+                current = GetParent(current);
+            }
+
+            return null;
+        }
+
+        private static DependencyObject GetParent(DependencyObject dependencyObject) {
+            DependencyObject parent = LogicalTreeHelper.GetParent(dependencyObject);
+            if (parent != null) {
+                return parent;
+            }
+
+            if (dependencyObject is Visual) {
+                return VisualTreeHelper.GetParent(dependencyObject);
+            }
+
+            return null;
         }
     }
 }
