@@ -7862,7 +7862,7 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Eccentricity</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
-    <value>Custom Trigger</value>
+    <value>カスタムトリガー</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
     <value>Use an existing trigger as the trigger source, then choose your own instructions to run when that trigger would normally fire.
