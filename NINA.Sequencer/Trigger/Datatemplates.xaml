@@ -244,6 +244,171 @@
         DefaultStyle="{StaticResource TriggerInstructionItemStyle}"
         ItemStyle="{StaticResource TriggerInstructionItemStyle}" />
 
+    <Style x:Key="TriggerOnUnsafeSequenceContainerHeaderExpanderStyle" TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <StackPanel>
+                        <Border
+                            x:Name="topBorder"
+                            BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                            BorderThickness="1,1,0,0">
+                            <Grid
+                                x:Name="Head"
+                                MinHeight="30"
+                                Background="{StaticResource SecondaryBackgroundBrush}"
+                                UseLayoutRounding="True">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Path
+                                    x:Name="iconarrow"
+                                    Grid.Column="0"
+                                    Width="10"
+                                    Height="10"
+                                    Margin="10,0,10,0"
+                                    Data="{StaticResource ArrowRightSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                                <Path
+                                    x:Name="icon"
+                                    Grid.Column="1"
+                                    Margin="5,0,3,0"
+                                    Data="{StaticResource BoxClosedSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                                <Path
+                                    Grid.Column="2"
+                                    Width="20"
+                                    Height="20"
+                                    Margin="5,0,3,0"
+                                    Data="{Binding Icon}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                                <ContentPresenter
+                                    Grid.Column="3"
+                                    Margin="4,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    RecognizesAccessKey="True"
+                                    UseLayoutRounding="True">
+                                    <i:Interaction.Behaviors>
+                                        <!--  This gives the ability to drag and drop a sequence container by its header  -->
+                                        <behaviors:DragDropBehavior />
+                                    </i:Interaction.Behaviors>
+                                </ContentPresenter>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="icon" Property="Data" Value="{StaticResource BoxSVG}" />
+                            <Setter TargetName="iconarrow" Property="Data" Value="{StaticResource ArrowDownSVG}" />
+                            <Setter TargetName="iconarrow" Property="Margin" Value="5,0,10,0" />
+                        </Trigger>
+
+                        <Trigger Property="IsChecked" Value="false">
+                            <Setter TargetName="topBorder" Property="BorderThickness" Value="1,1,1,1" />
+                        </Trigger>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Head" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="TriggerOnUnsafeSequenceContainerExpander" TargetType="{x:Type ninactrl:DetachingExpander}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ninactrl:DetachingExpander}">
+                    <Border
+                        Margin="0,5,0,5"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Focusable="False"
+                        UseLayoutRounding="True">
+                        <DockPanel>
+                            <ToggleButton
+                                x:Name="HeaderSite"
+                                MinWidth="0"
+                                MinHeight="0"
+                                Padding="{TemplateBinding Padding}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Header}"
+                                ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
+                                DockPanel.Dock="Top"
+                                FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}"
+                                FontFamily="{TemplateBinding FontFamily}"
+                                FontSize="{TemplateBinding FontSize}"
+                                FontStretch="{TemplateBinding FontStretch}"
+                                FontStyle="{TemplateBinding FontStyle}"
+                                FontWeight="{TemplateBinding FontWeight}"
+                                Foreground="{TemplateBinding Foreground}"
+                                IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                Style="{StaticResource TriggerOnUnsafeSequenceContainerHeaderExpanderStyle}" />
+                            <Border x:Name="ContainerBorder" BorderBrush="{StaticResource SecondaryBackgroundBrush}">
+                                <ContentPresenter
+                                    x:Name="ExpandSite"
+                                    Margin="{TemplateBinding Padding}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Focusable="false" />
+                            </Border>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="true">
+                            <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="ContainerBorder" Property="BorderThickness" Value="10,0,0,15" />
+                        </Trigger>
+                        <Trigger Property="IsExpanded" Value="False">
+                            <Setter TargetName="ExpandSite" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="ContainerBorder" Property="BorderThickness" Value="0" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="TriggerWorkflowStageBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource TertiaryBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Tag.Status, RelativeSource={RelativeSource Self}}" Value="{x:Static enum:SequenceEntityStatus.RUNNING}">
+                <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource SecondaryBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Tag.Status, RelativeSource={RelativeSource Self}}" Value="{x:Static enum:SequenceEntityStatus.FAILED}">
+                <Setter Property="Background" Value="{StaticResource NotificationErrorBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource NotificationErrorBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="TriggerWorkflowStageTitleStyle" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Tag.Status, RelativeSource={RelativeSource AncestorType=Border}}" Value="{x:Static enum:SequenceEntityStatus.RUNNING}">
+                <Setter Property="FontWeight" Value="Bold" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <DataTemplate x:Key="NINA.Sequencer.Trigger.MeridianFlip.MeridianFlipTrigger_Mini">
         <mini:MiniTrigger>
             <mini:MiniTrigger.TriggerProgressContent>
@@ -292,6 +457,410 @@
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
         </view:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NINA.Sequencer.Trigger.MeridianFlip.ProgrammableMeridianFlipTrigger_Mini">
+        <mini:MiniTrigger>
+            <mini:MiniTrigger.TriggerProgressContent>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Visibility="{Binding EarliestFlipTime, Converter={StaticResource DateTimeZeroToVisibilityCollapsedConverter}}">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlipTime}" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding EarliestFlipTime, StringFormat='{}{0:HH:mm:ss}'}" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="-" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding LatestFlipTime, StringFormat='{}{0:HH:mm:ss}'}" />
+                    </StackPanel>
+                    <TextBlock
+                        Margin="10,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding ActiveStageTitle}"
+                        Visibility="{Binding ActiveStageTitle, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                </StackPanel>
+            </mini:MiniTrigger.TriggerProgressContent>
+        </mini:MiniTrigger>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type mf:ProgrammableMeridianFlipTrigger}">
+        <Border>
+            <Border.Resources>
+                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+            </Border.Resources>
+            <ninactrl:DetachingExpander IsExpanded="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TriggerOnUnsafeSequenceContainerExpander}">
+                <ninactrl:DetachingExpander.Header>
+                    <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}" Background="{StaticResource SecondaryBackgroundBrush}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock
+                                MinHeight="25"
+                                Margin="10,10,10,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{Binding Name}" />
+                            <Border
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,5,0"
+                                Background="{StaticResource NotificationErrorBrush}"
+                                BorderBrush="Transparent"
+                                CornerRadius="10">
+                                <Border.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                            Converter="{StaticResource ZeroToVisibilityConverter}"
+                                            FallbackValue="Collapsed"
+                                            Path="Issues.Count" />
+                                    </PriorityBinding>
+                                </Border.Visibility>
+                                <Path
+                                    HorizontalAlignment="Right"
+                                    Data="{StaticResource ExclamationCircledSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                                <Border.ToolTip>
+                                    <ItemsControl ItemsSource="{Binding Issues}" />
+                                </Border.ToolTip>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="10,3,10,3"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Orientation="Vertical">
+                            <StackPanel
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal"
+                                Visibility="{Binding EarliestFlipTime, Converter={StaticResource DateTimeZeroToVisibilityCollapsedConverter}}">
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlipTime}" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    Foreground="{StaticResource ButtonForegroundBrush}"
+                                    Text="{Binding EarliestFlipTime, StringFormat='{}{0:HH:mm:ss}'}" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    Foreground="{StaticResource ButtonForegroundBrush}"
+                                    Text="-" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    Foreground="{StaticResource ButtonForegroundBrush}"
+                                    Text="{Binding LatestFlipTime, StringFormat='{}{0:HH:mm:ss}'}" />
+                            </StackPanel>
+                            <TextBlock
+                                HorizontalAlignment="Right"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Opacity="0.8"
+                                Text="{Binding ActiveStageTitle}"
+                                Visibility="{Binding ActiveStageTitle, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                        </StackPanel>
+                        <Border Grid.Column="2" Background="{StaticResource SecondaryBackgroundBrush}">
+                            <ContentPresenter
+                                Margin="2,0,10,0"
+                                HorizontalAlignment="Right"
+                                Content="{Binding}"
+                                DockPanel.Dock="Right"
+                                Style="{StaticResource ProgressPresenter}" />
+                        </Border>
+                        <Border
+                            Grid.Column="3"
+                            HorizontalAlignment="Stretch"
+                            Background="{StaticResource SecondaryBackgroundBrush}">
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Margin="25,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding DisableEnableCommand}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
+                                    Visibility="{Binding DisableEnableCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                    <Grid>
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource PowerSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </Grid>
+                                    <Button.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_DisableEnable_Tooltip}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
+
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Margin="25,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding DetachCommand}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
+                                    Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                    <Grid>
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource TrashCanSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </Grid>
+                                    <Button.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Delete_Tooltip}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ninactrl:DetachingExpander.Header>
+                <StackPanel Margin="0,10,0,0" Orientation="Vertical">
+                    <Border
+                        Tag="{Binding StopTrackingStage}"
+                        Style="{StaticResource TriggerWorkflowStageBorderStyle}"
+                        Margin="0,0,0,8"
+                        Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                Content="{Binding Tag, RelativeSource={RelativeSource AncestorType=Border}}"
+                                Style="{StaticResource ProgressPresenter}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Style="{StaticResource TriggerWorkflowStageTitleStyle}"
+                                Text="{ns:Loc LblStopTracking}" />
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Tag="{Binding BeforeFlipActions}"
+                        Style="{StaticResource TriggerWorkflowStageBorderStyle}"
+                        Margin="0,0,0,8"
+                        Padding="10">
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    Content="{Binding Tag, RelativeSource={RelativeSource AncestorType=Border}}"
+                                    Style="{StaticResource ProgressPresenter}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Style="{StaticResource TriggerWorkflowStageTitleStyle}"
+                                    Text="{ns:Loc Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description}" />
+                            </Grid>
+                            <TextBlock
+                                Margin="0,6,0,0"
+                                FontSize="11"
+                                FontStyle="Italic"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{ns:Loc Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning}" />
+                            <Border
+                                MinHeight="50"
+                                Margin="0,10,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1">
+                                <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding BeforeFlipActions}">
+                                    <TreeView
+                                        MinHeight="50"
+                                        Background="{StaticResource BackgroundBrush}"
+                                        BorderThickness="0"
+                                        ItemContainerStyleSelector="{StaticResource TriggerInstructionTreeViewItemStyleSelector}"
+                                        ItemsSource="{Binding Items}">
+                                        <i:Interaction.Behaviors>
+                                            <wpfbehaviors:BubbleScrollEvent />
+                                        </i:Interaction.Behaviors>
+                                        <TreeView.Resources>
+                                            <ResourceDictionary>
+                                                <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
+                                                    <view:SequenceBlockView />
+                                                </DataTemplate>
+                                            </ResourceDictionary>
+                                        </TreeView.Resources>
+                                    </TreeView>
+                                    <TextBlock
+                                        Height="18"
+                                        MaxHeight="18"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontStyle="Italic"
+                                        Opacity="0.4"
+                                        Text="{ns:Loc Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription}"
+                                        Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                                    <i:Interaction.Behaviors>
+                                        <behaviors:DragOverBehavior
+                                            AllowDragCenter="{Binding Items.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
+                                            DragAboveSize="0"
+                                            DragBelowSize="0" />
+                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                    </i:Interaction.Behaviors>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border
+                        Tag="{Binding WaitForFlipWindowStage}"
+                        Style="{StaticResource TriggerWorkflowStageBorderStyle}"
+                        Margin="0,0,0,8"
+                        Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                Content="{Binding Tag, RelativeSource={RelativeSource AncestorType=Border}}"
+                                Style="{StaticResource ProgressPresenter}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Style="{StaticResource TriggerWorkflowStageTitleStyle}"
+                                Text="{ns:Loc Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description}" />
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Tag="{Binding ResumeTrackingAndFlipStage}"
+                        Style="{StaticResource TriggerWorkflowStageBorderStyle}"
+                        Margin="0,0,0,8"
+                        Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                Content="{Binding Tag, RelativeSource={RelativeSource AncestorType=Border}}"
+                                Style="{StaticResource ProgressPresenter}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Style="{StaticResource TriggerWorkflowStageTitleStyle}"
+                                Text="{ns:Loc Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description}" />
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Tag="{Binding SettleStage}"
+                        Style="{StaticResource TriggerWorkflowStageBorderStyle}"
+                        Margin="0,0,0,8"
+                        Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                Content="{Binding Tag, RelativeSource={RelativeSource AncestorType=Border}}"
+                                Style="{StaticResource ProgressPresenter}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Style="{StaticResource TriggerWorkflowStageTitleStyle}"
+                                Text="{ns:Loc Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description}" />
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Tag="{Binding AfterFlipActions}"
+                        Style="{StaticResource TriggerWorkflowStageBorderStyle}"
+                        Margin="0,0,0,8"
+                        Padding="10">
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    Content="{Binding Tag, RelativeSource={RelativeSource AncestorType=Border}}"
+                                    Style="{StaticResource ProgressPresenter}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Style="{StaticResource TriggerWorkflowStageTitleStyle}"
+                                    Text="{ns:Loc Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description}" />
+                            </Grid>
+                            <Border
+                                MinHeight="50"
+                                Margin="0,10,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1">
+                                <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding AfterFlipActions}">
+                                    <TreeView
+                                        MinHeight="50"
+                                        Background="{StaticResource BackgroundBrush}"
+                                        BorderThickness="0"
+                                        ItemContainerStyleSelector="{StaticResource TriggerInstructionTreeViewItemStyleSelector}"
+                                        ItemsSource="{Binding Items}">
+                                        <i:Interaction.Behaviors>
+                                            <wpfbehaviors:BubbleScrollEvent />
+                                        </i:Interaction.Behaviors>
+                                        <TreeView.Resources>
+                                            <ResourceDictionary>
+                                                <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
+                                                    <view:SequenceBlockView />
+                                                </DataTemplate>
+                                            </ResourceDictionary>
+                                        </TreeView.Resources>
+                                    </TreeView>
+                                    <TextBlock
+                                        Height="18"
+                                        MaxHeight="18"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontStyle="Italic"
+                                        Opacity="0.4"
+                                        Text="{ns:Loc Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription}"
+                                        Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                                    <i:Interaction.Behaviors>
+                                        <behaviors:DragOverBehavior
+                                            AllowDragCenter="{Binding Items.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
+                                            DragAboveSize="0"
+                                            DragBelowSize="0" />
+                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                    </i:Interaction.Behaviors>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ninactrl:DetachingExpander>
+        </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="NINA.Sequencer.Trigger.Autofocus.AutofocusAfterHFRIncreaseTrigger_Mini">
@@ -671,147 +1240,6 @@
         </mini:MiniSequenceItem>
     </DataTemplate>
 
-    <Style x:Key="TriggerOnUnsafeSequenceContainerHeaderExpanderStyle" TargetType="ToggleButton">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ToggleButton}">
-                    <StackPanel>
-                        <Border
-                            x:Name="topBorder"
-                            BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                            BorderThickness="1,1,0,0">
-                            <Grid
-                                x:Name="Head"
-                                MinHeight="30"
-                                Background="{StaticResource SecondaryBackgroundBrush}"
-                                UseLayoutRounding="True">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30" />
-                                    <ColumnDefinition Width="30" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Path
-                                    x:Name="iconarrow"
-                                    Grid.Column="0"
-                                    Width="10"
-                                    Height="10"
-                                    Margin="10,0,10,0"
-                                    Data="{StaticResource ArrowRightSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform"
-                                    UseLayoutRounding="True" />
-                                <Path
-                                    x:Name="icon"
-                                    Grid.Column="1"
-                                    Margin="5,0,3,0"
-                                    Data="{StaticResource BoxClosedSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform"
-                                    UseLayoutRounding="True" />
-                                <Path
-                                    Grid.Column="2"
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,3,0"
-                                    Data="{Binding Icon}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform"
-                                    UseLayoutRounding="True" />
-                                <ContentPresenter
-                                    Grid.Column="3"
-                                    Margin="4,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    RecognizesAccessKey="True"
-                                    UseLayoutRounding="True">
-                                    <i:Interaction.Behaviors>
-                                        <!--  This gives the ability to drag and drop a sequence container by its header  -->
-                                        <behaviors:DragDropBehavior />
-                                    </i:Interaction.Behaviors>
-                                </ContentPresenter>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsChecked" Value="true">
-                            <Setter TargetName="icon" Property="Data" Value="{StaticResource BoxSVG}" />
-                            <Setter TargetName="iconarrow" Property="Data" Value="{StaticResource ArrowDownSVG}" />
-                            <Setter TargetName="iconarrow" Property="Margin" Value="5,0,10,0" />
-                        </Trigger>
-
-                        <Trigger Property="IsChecked" Value="false">
-                            <Setter TargetName="topBorder" Property="BorderThickness" Value="1,1,1,1" />
-                        </Trigger>
-
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Head" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    <Style x:Key="TriggerOnUnsafeSequenceContainerExpander" TargetType="{x:Type ninactrl:DetachingExpander}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ninactrl:DetachingExpander}">
-                    <Border
-                        Margin="0,5,0,5"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        Focusable="False"
-                        UseLayoutRounding="True">
-                        <DockPanel>
-                            <ToggleButton
-                                x:Name="HeaderSite"
-                                MinWidth="0"
-                                MinHeight="0"
-                                Padding="{TemplateBinding Padding}"
-                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                Content="{TemplateBinding Header}"
-                                ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
-                                DockPanel.Dock="Top"
-                                FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}"
-                                FontFamily="{TemplateBinding FontFamily}"
-                                FontSize="{TemplateBinding FontSize}"
-                                FontStretch="{TemplateBinding FontStretch}"
-                                FontStyle="{TemplateBinding FontStyle}"
-                                FontWeight="{TemplateBinding FontWeight}"
-                                Foreground="{TemplateBinding Foreground}"
-                                IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                Style="{StaticResource TriggerOnUnsafeSequenceContainerHeaderExpanderStyle}" />
-                            <Border x:Name="ContainerBorder" BorderBrush="{StaticResource SecondaryBackgroundBrush}">
-                                <ContentPresenter
-                                    x:Name="ExpandSite"
-                                    Margin="{TemplateBinding Padding}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    Focusable="false" />
-                            </Border>
-                        </DockPanel>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsExpanded" Value="true">
-                            <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="ContainerBorder" Property="BorderThickness" Value="10,0,0,15" />
-                        </Trigger>
-                        <Trigger Property="IsExpanded" Value="False">
-                            <Setter TargetName="ExpandSite" Property="Visibility" Value="Collapsed" />
-                            <Setter TargetName="ContainerBorder" Property="BorderThickness" Value="0" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <DataTemplate DataType="{x:Type utility:CustomTrigger}">
         <Border>
             <Border.Resources>
@@ -835,7 +1263,7 @@
                     </DataTemplate>
                 </ResourceDictionary>
             </Border.Resources>
-            <ninactrl:DetachingExpander Style="{StaticResource TriggerOnUnsafeSequenceContainerExpander}">
+            <ninactrl:DetachingExpander IsExpanded="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TriggerOnUnsafeSequenceContainerExpander}">
                 <ninactrl:DetachingExpander.Header>
                     <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}" Background="{StaticResource SecondaryBackgroundBrush}">
                         <Grid.ColumnDefinitions>
@@ -1098,7 +1526,7 @@
             <Border.Resources>
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
             </Border.Resources>
-            <ninactrl:DetachingExpander Style="{StaticResource TriggerOnUnsafeSequenceContainerExpander}">
+            <ninactrl:DetachingExpander IsExpanded="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TriggerOnUnsafeSequenceContainerExpander}">
                 <ninactrl:DetachingExpander.Header>
                     <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}" Background="{StaticResource SecondaryBackgroundBrush}">
                         <Grid.ColumnDefinitions>
@@ -1207,12 +1635,28 @@
                     </Grid>
                 </ninactrl:DetachingExpander.Header>
 
-                <StackPanel Orientation="Vertical">
-                    <ninactrl:DetachingExpander Style="{StaticResource TriggerOnUnsafeSequenceContainerExpander}">
-                        <ninactrl:DetachingExpander.Header>
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description}" />
-                        </ninactrl:DetachingExpander.Header>
+                <StackPanel Margin="0,10,0,0" Orientation="Vertical">
+                    <Border
+                        Tag="{Binding BeforeWaitForSafe}"
+                        Style="{StaticResource TriggerWorkflowStageBorderStyle}"
+                        Margin="0,0,0,8"
+                        Padding="10">
                         <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    Content="{Binding Tag, RelativeSource={RelativeSource AncestorType=Border}}"
+                                    Style="{StaticResource ProgressPresenter}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Style="{StaticResource TriggerWorkflowStageTitleStyle}"
+                                    Text="{ns:Loc Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description}" />
+                            </Grid>
                             <Border
                                 MinHeight="50"
                                 Margin="0,10,0,0"
@@ -1255,13 +1699,57 @@
                                 </Grid>
                             </Border>
                         </StackPanel>
-                    </ninactrl:DetachingExpander>
-                    <ContentControl DataContext="{Binding WaitUntilSafe}" IsEnabled="False" />
-                    <ninactrl:DetachingExpander Style="{StaticResource TriggerOnUnsafeSequenceContainerExpander}">
-                        <ninactrl:DetachingExpander.Header>
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description}" />
-                        </ninactrl:DetachingExpander.Header>
+                    </Border>
+
+                    <Border
+                        Tag="{Binding WaitUntilSafe}"
+                        Style="{StaticResource TriggerWorkflowStageBorderStyle}"
+                        Margin="0,0,0,8"
+                        Padding="10">
                         <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    Content="{Binding Tag, RelativeSource={RelativeSource AncestorType=Border}}"
+                                    Style="{StaticResource ProgressPresenter}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Style="{StaticResource TriggerWorkflowStageTitleStyle}"
+                                    Text="{ns:Loc Lbl_SequenceItem_SafetyMonitor_WaitUntilSafe_Description}" />
+                            </Grid>
+                            <ContentControl
+                                Margin="0,10,0,0"
+                                DataContext="{Binding WaitUntilSafe}"
+                                IsEnabled="False" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border
+                        Tag="{Binding AfterWaitForSafe}"
+                        Style="{StaticResource TriggerWorkflowStageBorderStyle}"
+                        Padding="10"
+                        >
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    Content="{Binding Tag, RelativeSource={RelativeSource AncestorType=Border}}"
+                                    Style="{StaticResource ProgressPresenter}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Style="{StaticResource TriggerWorkflowStageTitleStyle}"
+                                    Text="{ns:Loc Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description}" />
+                            </Grid>
                             <Border
                                 MinHeight="50"
                                 Margin="0,10,0,0"
@@ -1304,7 +1792,7 @@
                                 </Grid>
                             </Border>
                         </StackPanel>
-                    </ninactrl:DetachingExpander>
+                    </Border>
                 </StackPanel>
 
             </ninactrl:DetachingExpander>

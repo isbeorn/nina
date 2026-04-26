@@ -65,6 +65,8 @@ namespace NINA.Test.Sequencer.Trigger.SafetyMonitor {
         /// </summary>
         [Test]
         public void Clone_CopiesMetadataAndNestedSteps() {
+            sut.IsExpanded = false;
+
             TriggerOnUnsafe clone = (TriggerOnUnsafe)sut.Clone();
 
             clone.Should().NotBeSameAs(sut);
@@ -75,6 +77,7 @@ namespace NINA.Test.Sequencer.Trigger.SafetyMonitor {
             clone.BeforeWaitForSafe.Should().NotBeSameAs(sut.BeforeWaitForSafe);
             clone.AfterWaitForSafe.Should().NotBeSameAs(sut.AfterWaitForSafe);
             clone.WaitUntilSafe.Should().NotBeSameAs(sut.WaitUntilSafe);
+            clone.IsExpanded.Should().BeFalse();
         }
 
         /// <summary>
@@ -180,6 +183,22 @@ namespace NINA.Test.Sequencer.Trigger.SafetyMonitor {
             sut.WaitUntilSafe.Status.Should().Be(SequenceEntityStatus.CREATED);
             sut.AfterWaitForSafe.Status.Should().Be(SequenceEntityStatus.CREATED);
             sut.TriggerRunner.GetItemsSnapshot().Should().HaveCount(3);
+        }
+
+        [Test]
+        public async Task Execute_WhenCollapsed_ExpandsDuringRunAndRestoresCollapsedState() {
+            safetyMonitorInfo.Connected = true;
+            safetyMonitorInfo.IsSafe = true;
+            bool? expandedDuringBeforeWaitForSafe = null;
+            sut.IsExpanded = false;
+            sut.BeforeWaitForSafe.Add(new TestInstruction() {
+                ExecuteAction = () => expandedDuringBeforeWaitForSafe = sut.IsExpanded
+            });
+
+            await sut.Execute(new SequentialContainer(), Mock.Of<IProgress<ApplicationStatus>>(), CancellationToken.None);
+
+            expandedDuringBeforeWaitForSafe.Should().BeTrue();
+            sut.IsExpanded.Should().BeFalse();
         }
 
         /// <summary>
@@ -301,6 +320,7 @@ namespace NINA.Test.Sequencer.Trigger.SafetyMonitor {
 
         private sealed class TestInstruction : NINA.Sequencer.SequenceItem.SequenceItem {
             public int ExecuteCount { get; private set; }
+            public Action? ExecuteAction { get; init; }
 
             public override object Clone() {
                 return new TestInstruction();
@@ -308,6 +328,7 @@ namespace NINA.Test.Sequencer.Trigger.SafetyMonitor {
 
             public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
                 ExecuteCount++;
+                ExecuteAction?.Invoke();
                 return Task.CompletedTask;
             }
         }
