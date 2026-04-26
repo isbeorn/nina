@@ -20,6 +20,7 @@ using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Validations;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,26 @@ namespace NINA.Test.Sequencer {
             var ct = new CancellationToken();
             await sut.Start(progress, ct);
 
+            rootMock.Verify(x => x.Run(It.Is<IProgress<ApplicationStatus>>(p => p == progress), It.Is<CancellationToken>(c => c == ct)), Times.Once);
+        }
+
+        [Test]
+        public async Task Start_ValidatableItemWithNullIssues_MainContainerExecuted() {
+            var rootMock = new Mock<ISequenceRootContainer>();
+            var itemMock = new Mock<ISequenceItem>();
+            var validatableItemMock = itemMock.As<IValidatable>();
+            validatableItemMock.Setup(x => x.Validate()).Returns(true);
+            validatableItemMock.SetupGet(x => x.Issues).Returns((IList<string>)null);
+
+            rootMock.Setup(x => x.GetItemsSnapshot()).Returns(new List<ISequenceItem>() { itemMock.Object });
+            rootMock.Setup(x => x.GetTriggersSnapshot()).Returns(new List<ISequenceTrigger>());
+            var sut = new NINA.Sequencer.Sequencer(rootMock.Object);
+
+            var progress = new Progress<ApplicationStatus>();
+            var ct = new CancellationToken();
+            await sut.Start(progress, ct);
+
+            validatableItemMock.Verify(x => x.Validate(), Times.Once);
             rootMock.Verify(x => x.Run(It.Is<IProgress<ApplicationStatus>>(p => p == progress), It.Is<CancellationToken>(c => c == ct)), Times.Once);
         }
 
