@@ -220,7 +220,7 @@ namespace NINA.Test.Sequencer.Trigger.MeridianFlip {
             Task executeTask = sut.Execute(new SequentialContainer(), new Progress<ApplicationStatus>(), cts.Token);
 
             bool observedCountdown = SpinWait.SpinUntil(
-                () => sut.ActiveStageId == "WaitForFlipWindow"
+                () => sut.WaitForFlipWindowStage.Status == SequenceEntityStatus.RUNNING
                     && sut.ActiveStageTitle != null
                     && sut.ActiveStageTitle.StartsWith($"{waitForFlipWindowDescription} ", StringComparison.Ordinal),
                 TimeSpan.FromSeconds(2));

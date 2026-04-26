@@ -51,12 +51,15 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class ProgrammableMeridianFlipTrigger : MeridianFlipTrigger {
-        private const string StageStopTracking = "StopTracking";
-        private const string StageBeforeFlipActions = "BeforeFlipActions";
-        private const string StageWaitForFlipWindow = "WaitForFlipWindow";
-        private const string StageResumeTrackingAndFlip = "ResumeTrackingAndFlip";
-        private const string StageInitialSettleAndSyncDome = "InitialSettleAndSyncDome";
-        private const string StageAfterFlipActions = "AfterFlipActions";
+        private enum ProgrammableMeridianFlipStage {
+            None,
+            StopTracking,
+            BeforeFlipActions,
+            WaitForFlipWindow,
+            ResumeTrackingAndFlip,
+            Settle,
+            AfterFlipActions
+        }
 
         private readonly IApplicationResourceDictionary resourceDictionary;
         private readonly IGuiderMediator guiderMediator;
@@ -70,7 +73,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
         private readonly IWindowServiceFactory windowServiceFactory;
         private bool isExpanded = true;
         private bool shouldSeedDefaults = true;
-        private string activeStageId;
+        private ProgrammableMeridianFlipStage activeStage = ProgrammableMeridianFlipStage.None;
         private string activeStageTitle;
 
         [ImportingConstructor]
@@ -150,15 +153,6 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
         }
 
         [JsonIgnore]
-        public string ActiveStageId {
-            get => activeStageId;
-            private set {
-                activeStageId = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        [JsonIgnore]
         public string ActiveStageTitle {
             get => activeStageTitle;
             private set {
@@ -168,16 +162,16 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
         }
 
         [JsonIgnore]
-        public TriggerStageState StopTrackingStage { get; } = new TriggerStageState();
+        public WorkflowStageState StopTrackingStage { get; } = new WorkflowStageState();
 
         [JsonIgnore]
-        public TriggerStageState WaitForFlipWindowStage { get; } = new TriggerStageState();
+        public WorkflowStageState WaitForFlipWindowStage { get; } = new WorkflowStageState();
 
         [JsonIgnore]
-        public TriggerStageState ResumeTrackingAndFlipStage { get; } = new TriggerStageState();
+        public WorkflowStageState ResumeTrackingAndFlipStage { get; } = new WorkflowStageState();
 
         [JsonIgnore]
-        public TriggerStageState SettleStage { get; } = new TriggerStageState();
+        public WorkflowStageState SettleStage { get; } = new WorkflowStageState();
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
@@ -201,7 +195,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
 
             Coordinates target = ResolveFlipTarget(context ?? Parent);
             TimeSpan timeToFlip = CalculateScheduledFlipDelay();
-            DateTime flipDeadlineUtc = GetUtcNow().Add(timeToFlip);
+            DateTime flipDeadlineUtc = DateTime.UtcNow.Add(timeToFlip);
             bool trackingStopped = false;
             bool completed = false;
             DateTime flipDeadlineLocal = DateTime.Now.Add(timeToFlip);
@@ -227,26 +221,26 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                     AfterFlipActions.AttachNewParent(runtimeParent);
                 }
 
-                SetActiveStage(StageStopTracking, Loc.Instance["LblStopTracking"]);
+                SetActiveStage(ProgrammableMeridianFlipStage.StopTracking, Loc.Instance["LblStopTracking"]);
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblStopTracking"] });
                 telescopeMediator.SetTrackingEnabled(false);
                 trackingStopped = true;
 
-                await ExecuteActionSet(BeforeFlipActions, StageBeforeFlipActions, progress, token);
+                await ExecuteActionSet(BeforeFlipActions, ProgrammableMeridianFlipStage.BeforeFlipActions, progress, token);
 
-                SetActiveStage(StageWaitForFlipWindow, Loc.Instance["Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description"]);
+                SetActiveStage(ProgrammableMeridianFlipStage.WaitForFlipWindow, Loc.Instance["Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description"]);
                 telescopeMediator.SetTrackingEnabled(false);
                 trackingStopped = true;
                 await WaitForFlipDeadline(flipDeadlineUtc, progress, token);
 
-                SetActiveStage(StageResumeTrackingAndFlip, Loc.Instance["Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description"]);
+                SetActiveStage(ProgrammableMeridianFlipStage.ResumeTrackingAndFlip, Loc.Instance["Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description"]);
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblResumeTracking"] });
                 telescopeMediator.SetTrackingEnabled(true);
                 trackingStopped = false;
 
                 await ExecuteMeridianFlipCore(target, progress, token);
 
-                await ExecuteActionSet(AfterFlipActions, StageAfterFlipActions, progress, token);
+                await ExecuteActionSet(AfterFlipActions, ProgrammableMeridianFlipStage.AfterFlipActions, progress, token);
 
                 if (profileService.ActiveProfile.MeridianFlipSettings.RotateImageAfterFlip) {
                     await RotateImageAfterFlip(progress);
@@ -397,8 +391,8 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
             return timeToFlip;
         }
 
-        private async Task ExecuteActionSet(SequentialContainer actionSet, string stageId, IProgress<ApplicationStatus> progress, CancellationToken token) {
-            SetActiveStage(stageId, actionSet.Name);
+        private async Task ExecuteActionSet(SequentialContainer actionSet, ProgrammableMeridianFlipStage stage, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            SetActiveStage(stage, actionSet.Name);
             actionSet.ResetAll();
             await actionSet.Run(progress, token);
 
@@ -409,7 +403,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
 
         private async Task WaitForFlipDeadline(DateTime flipDeadlineUtc, IProgress<ApplicationStatus> progress, CancellationToken token) {
             string waitForFlipWindowDescription = Loc.Instance["Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description"];
-            TimeSpan remaining = flipDeadlineUtc - GetUtcNow();
+            TimeSpan remaining = flipDeadlineUtc - DateTime.UtcNow;
             if (remaining < TimeSpan.Zero) {
                 Logger.Warning($"Programmable Meridian Flip - Before-flip actions exceeded the saved flip deadline by {-remaining}. Flipping immediately.");
                 remaining = TimeSpan.Zero;
@@ -432,7 +426,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                 Logger.Info($"Programmable Meridian Flip - Scope will flip to coordinates RA: {target.RAString} Dec: {target.DecString} Epoch: {target.Epoch}");
                 flipSuccessful = await telescopeMediator.MeridianFlip(target, token);
 
-                SetActiveStage(StageInitialSettleAndSyncDome, Loc.Instance["Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description"]);
+                SetActiveStage(ProgrammableMeridianFlipStage.Settle, Loc.Instance["Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description"]);
                 await Settle(progress, token);
                 await SynchronizeDome(progress, token);
 
@@ -484,11 +478,11 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
             return Task.CompletedTask;
         }
 
-        private void SetActiveStage(string stageId, string stageTitle) {
-            CompleteStage(activeStageId);
-            ActiveStageId = stageId;
+        private void SetActiveStage(ProgrammableMeridianFlipStage stage, string stageTitle) {
+            CompleteStage(activeStage);
+            activeStage = stage;
             ActiveStageTitle = stageTitle;
-            SetStageStatus(stageId, SequenceEntityStatus.RUNNING);
+            SetStageStatus(stage, SequenceEntityStatus.RUNNING);
         }
 
         private void UpdateWaitForFlipWindowStatus(string stageTitle, TimeSpan remaining, IProgress<ApplicationStatus> progress) {
@@ -504,34 +498,30 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
             SettleStage.Status = SequenceEntityStatus.CREATED;
         }
 
-        private void CompleteStage(string stageId) {
-            SetStageStatus(stageId, SequenceEntityStatus.FINISHED);
+        private void CompleteStage(ProgrammableMeridianFlipStage stage) {
+            SetStageStatus(stage, SequenceEntityStatus.FINISHED);
         }
 
-        private void SetStageStatus(string stageId, SequenceEntityStatus status) {
-            TriggerStageState stage = GetStageState(stageId);
-            if (stage != null) {
-                stage.Status = status;
+        private void SetStageStatus(ProgrammableMeridianFlipStage stage, SequenceEntityStatus status) {
+            WorkflowStageState stageState = GetStageState(stage);
+            if (stageState != null) {
+                stageState.Status = status;
             }
         }
 
-        private TriggerStageState GetStageState(string stageId) {
-            return stageId switch {
-                StageStopTracking => StopTrackingStage,
-                StageWaitForFlipWindow => WaitForFlipWindowStage,
-                StageResumeTrackingAndFlip => ResumeTrackingAndFlipStage,
-                StageInitialSettleAndSyncDome => SettleStage,
+        private WorkflowStageState GetStageState(ProgrammableMeridianFlipStage stage) {
+            return stage switch {
+                ProgrammableMeridianFlipStage.StopTracking => StopTrackingStage,
+                ProgrammableMeridianFlipStage.WaitForFlipWindow => WaitForFlipWindowStage,
+                ProgrammableMeridianFlipStage.ResumeTrackingAndFlip => ResumeTrackingAndFlipStage,
+                ProgrammableMeridianFlipStage.Settle => SettleStage,
                 _ => null
             };
         }
 
         private void ClearActiveStage() {
-            ActiveStageId = null;
+            activeStage = ProgrammableMeridianFlipStage.None;
             ActiveStageTitle = null;
-        }
-
-        private DateTime GetUtcNow() {
-            return DateTime.UtcNow;
         }
 
         private static bool HasFailedItems(ISequenceContainer container) {
@@ -568,19 +558,19 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
 
             return total;
         }
-    }
 
-    /// <summary>
-    /// Lightweight status holder for fixed trigger workflow stages so sequencer progress templates can be reused in the trigger UI.
-    /// </summary>
-    public sealed class TriggerStageState : BaseINPC {
-        private SequenceEntityStatus status = SequenceEntityStatus.CREATED;
+        /// <summary>
+        /// Lightweight status holder for fixed trigger workflow stages so sequencer progress templates can be reused in the trigger UI.
+        /// </summary>
+        public sealed class WorkflowStageState : BaseINPC {
+            private SequenceEntityStatus status = SequenceEntityStatus.CREATED;
 
-        public SequenceEntityStatus Status {
-            get => status;
-            set {
-                status = value;
-                RaisePropertyChanged();
+            public SequenceEntityStatus Status {
+                get => status;
+                set {
+                    status = value;
+                    RaisePropertyChanged();
+                }
             }
         }
     }
