@@ -15,18 +15,16 @@ Use this skill as a routing layer, not a replacement for the repo docs.
 4. Read the owning project's `ARCHITECTURE.md` before non-trivial edits in that project.
 5. Use `references/project-map.md` to choose the likely owner and neighboring files.
 6. Use `references/testing-map.md` to choose concrete test filters and command templates.
+7. If a task reveals missing reusable guidance, update the closest repository doc, route map, test, or tooling before finishing.
 
 ## Edit Rules
 
-- Keep changes in the owning layer. Do not put reusable domain logic in `NINA` when a lower `NINA.*` library owns it.
-- Follow existing local patterns first: DI registrations, mediators, factories, MEF exports, serialization converters, settings models, and test helpers.
-- Follow `.editorconfig` and surrounding style. For new or refactored MVVM code, prefer `CommunityToolkit.Mvvm` where it fits the existing class design.
-- Localize user-visible strings through `NINA.Core/Locale/Locale.resx` only; leave translated `Locale.<culture>.resx` files to Crowdin.
-- Treat runtime files as a three-part contract: code expectations, `NINA/NINA.csproj` output copying, and installer packaging in `NINA.Setup` when applicable.
-- For plugin or sequencer surface changes, check discovery/composition metadata, clone behavior, serialization, and plugin-loader integration.
-- Add or update focused unit tests for any testable behavior change. Treat missing coverage as something to fix, not as a reason to leave new behavior untested.
-- When adding tests, update `references/testing-map.md` if the new coverage adds or changes a useful routing filter, fixture namespace, command pattern, or known constraint.
-- For profile, database, astronomy, image-analysis, and native dependency changes, also check compatibility with existing persisted/runtime data.
+- Keep changes in the owning layer and follow existing local patterns first.
+- Use `references/project-map.md` for recurring checks such as DI, localization, runtime files, plugin/sequencer metadata, persistence, and documentation/release-note implications.
+- Follow `.editorconfig` and surrounding style; prefer `CommunityToolkit.Mvvm` for new or refactored MVVM code where it fits.
+- Add or update focused tests for testable behavior changes, and update `references/testing-map.md` only when a new route, command, or constraint will help future agents.
+- Keep file-writing tests isolated from shared user state unless the shared location is the behavior under test.
+- Prefer making durable rules enforceable with tests, analyzers, scripts, or CI when the boundary matters repeatedly.
 
 ## Verification
 
@@ -39,6 +37,7 @@ For .NET build and test commands in this sandbox, start with the stable invocati
 - Add `-m:1 -p:UseSharedCompilation=false -p:GeneratePackageOnBuild=false` to targeted `dotnet build` and `dotnet test` commands to avoid MSBuild/compiler-server sandbox failures.
 - For `NINA/NINA.csproj` app builds, also add `-p:RunPostBuildEvent=Never` unless the post-build output is part of the task.
 - If a previous .NET command fails with no compiler errors, first rerun it with these flags before inspecting long diagnostic logs.
+- If a build or test run fails only because the sandbox denied writes under `obj`, `bin`, `TestResults`, or user-profile test paths, rerun the same command with appropriate filesystem access before treating it as a product regression.
 
 ## Resources
 

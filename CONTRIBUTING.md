@@ -91,6 +91,7 @@ git submodule update --init --recursive
 * Before making non-trivial changes, read the repository-level [AGENTS.md](AGENTS.md)
 * Read the `ARCHITECTURE.md` file in the project you are changing before making structural changes there
 * `AGENTS.md` links the project architecture documents and explains solution-wide boundaries, startup/composition, localization, plugin/sequencer surfaces, and other cross-cutting rules
+* If a change depends on durable project knowledge that is only in an issue, Discord thread, or review comment, add it to the appropriate checked-in doc, test, or automation.
 
 ## Coding rules
 
@@ -99,7 +100,8 @@ git submodule update --init --recursive
 * Prefer modern C# syntax that is supported by the target project instead of preserving older patterns unnecessarily
 * For new or refactored MVVM code, prefer the referenced `CommunityToolkit.Mvvm` APIs and attributes over older local relay-command wrappers
 * Follow clean code guidelines. There are many resources about this topic available online.
-* Try to unit test your code
+* Add or update focused unit tests for behavior changes. If a behavior change cannot reasonably be automated, explain the manual verification path in the pull request.
+* Avoid introducing new build warnings. If a warning must remain, make the reason clear in the pull request so it can be tracked deliberately.
 
 ## AI / Tool-Assisted Contributions
 
@@ -236,8 +238,9 @@ dotnet test NINA.Test/NINA.Test.csproj --configuration Debug --no-build -p:Platf
 
 * Before making large changes, that will change existing patterns or disrupt ongoing features, please first discuss this via an issue or in discord, before starting to work on the changes! This way we can make sure, that it is the proper time for this change.  
 * Make sure that only relevant changes are inside the pull request  
-* Validate that all unit tests are sill passing  
+* Validate that all unit tests are still passing
 * Test your changes *thoroughly* and give a short overview on how you tested your changes in the pull request's description
+* Include any notable skipped tests, warnings, environment constraints, or manual verification limits in the pull request description.
 * Add yourself to the AUTHORS file, so you will be given proper credit!  
 * Create **one pull request per feature/fix**
 * Create your pull requests for new features only against the **develop** branch  
