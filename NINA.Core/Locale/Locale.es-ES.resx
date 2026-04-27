@@ -4505,34 +4505,34 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
     <value>Cambio de meridiano</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
-    <value>Programmable Meridian Flip</value>
+    <value>Giro de Meridiano Programable</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
-    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+    <value>Un giro de meridiano con acciones personalizables antes y después del giro.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
-    <value>Before Flip Actions</value>
+    <value>Acciones antes del Giro</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
-    <value>After Flip Actions</value>
+    <value>Acciones después del Giro</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting for the meridian flip.</value>
+    <value>Instrucciones a realizar antes de esperar el giro del meridiano.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after the meridian flip.</value>
+    <value>Instrucciones a realizar después de esperar el giro del meridiano.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
-    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+    <value>Mantén estos pasos breves. Las acciones largas pueden retrasar el giro del meridiano.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
-    <value>Wait For Flip Window</value>
+    <value>Esperar a la ventana para el Giro</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
-    <value>Resume Tracking and Flip</value>
+    <value>Reanudar seguimiento y Girar</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>Estabilizado</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>La cámara no tiene un refrigerador y no puede establecer una temperatura</value>
