@@ -90,6 +90,18 @@ namespace NINA.View.Sequencer {
             }
         }
 
+        private void MenuItemLinkedTemplate_Click(object sender, RoutedEventArgs e) {
+            if (sender is Control ctrl) {
+                if (ctrl.DataContext is TemplatedSequenceContainer template) {
+                    if (this.DataContext is SequenceContainer container) {
+                        DropIntoParameters p = new DropIntoParameters(template.CreateLinkedContainer());
+                        p.Position = DropTargetEnum.Center;
+                        container.DropIntoCommand.Execute(p);
+                    }
+                }
+            }
+        }
+
         private void MenuItemInstruction_Click(object sender, RoutedEventArgs e) {
             if (sender is Control ctrl) {
                 if (ctrl.DataContext is SidebarEntity entity) {

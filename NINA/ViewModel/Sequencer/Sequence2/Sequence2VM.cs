@@ -51,6 +51,7 @@ namespace NINA.ViewModel.Sequencer {
         private ISequenceMediator sequenceMediator;
         private IApplicationMediator applicationMediator;
         private ICameraMediator cameraMediator;
+        private readonly ITemplateLinkResolver templateLinkResolver;
         private CancellationTokenSource backgroundValidationCts;
         private Task backgroundValidationTask;
 
@@ -62,7 +63,8 @@ namespace NINA.ViewModel.Sequencer {
             IApplicationStatusMediator applicationStatusMediator,
             ICameraMediator cameraMediator,
             ISequencerFactory factory,
-            ISymbolBroker symbolBroker
+            ISymbolBroker symbolBroker,
+            ITemplateLinkResolver templateLinkResolver
             ) : base(profileService) {
 
             this.commandLineOptions = commandLineOptions;
@@ -71,6 +73,7 @@ namespace NINA.ViewModel.Sequencer {
             this.sequenceMediator = sequenceMediator;
             this.applicationMediator = applicationMediator;
             this.cameraMediator = cameraMediator;
+            this.templateLinkResolver = templateLinkResolver;
             SymbolBroker = symbolBroker;
             cameraMediator.RegisterConsumer(this);
 
@@ -198,7 +201,7 @@ namespace NINA.ViewModel.Sequencer {
             return Task.Run(async () => {
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
                     SequenceJsonConverter = new SequenceJsonConverter(SequencerFactory);
-                    TemplateController = new TemplateController(SequenceJsonConverter, profileService);
+                    TemplateController = new TemplateController(SequenceJsonConverter, profileService, templateLinkResolver);
                     TargetController = new TargetController(SequenceJsonConverter, profileService);
                     SymbolController = new SymbolController(SymbolBroker, profileService);
                     SymbolFunctionController = new SymbolFunctionController(SymbolBroker, profileService);
@@ -230,9 +233,42 @@ namespace NINA.ViewModel.Sequencer {
                     }
 
                     ClearHasChanged();
+                    templateLinkResolver.TemplatesChanged += TemplateLinkResolver_TemplatesChanged;
+                    ResolveLinkedTemplates();
 
                 }));
             });
+        }
+
+        private void TemplateLinkResolver_TemplatesChanged(object sender, EventArgs e) {
+            if (IsRunning) {
+                return;
+            }
+
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(ResolveLinkedTemplates));
+        }
+
+        private void ResolveLinkedTemplates() {
+            if (Sequencer?.MainContainer == null) {
+                return;
+            }
+
+            ResolveLinkedTemplates(Sequencer.MainContainer, 0);
+        }
+
+        private void ResolveLinkedTemplates(ISequenceContainer container, int depth) {
+            if (depth > 64) {
+                Logger.Warning("Linked template refresh stopped because the linked template nesting is too deep.");
+                return;
+            }
+
+            if (container is LinkedTemplateContainer linkedTemplateContainer && !linkedTemplateContainer.IsEditing) {
+                linkedTemplateContainer.TryResolveTemplate();
+            }
+
+            foreach (ISequenceContainer childContainer in container.GetItemsSnapshot().OfType<ISequenceContainer>()) {
+                ResolveLinkedTemplates(childContainer, depth + 1);
+            }
         }
 
         private Task RunBackgroundValidationTimer(CancellationToken token) {
@@ -396,6 +432,7 @@ namespace NINA.ViewModel.Sequencer {
                 if (container is ISequenceRootContainer root) {
                     SavePath = file;
                     Sequencer.MainContainer = root;
+                    ResolveLinkedTemplates();
                     Sequencer.MainContainer.Validate();
                     SavePath = file;
                 } else if (container != null) {
@@ -411,6 +448,7 @@ namespace NINA.ViewModel.Sequencer {
                     // Save path will be empty, as the origin file is not a complete sequencer file
                     SavePath = string.Empty;
                     Sequencer.MainContainer = rootContainer;
+                    ResolveLinkedTemplates();
                     Sequencer.MainContainer.Validate();
 
                 } else {
@@ -562,9 +600,12 @@ namespace NINA.ViewModel.Sequencer {
             cts?.Dispose();
             cts = new CancellationTokenSource();
             var token = cts.Token;
-            IsRunning = true;
-            TaskBarProgressState = TaskbarItemProgressState.Normal;
             try {
+                await templateLinkResolver.WaitForInitialLoad(token);
+                ResolveLinkedTemplates();
+
+                IsRunning = true;
+                TaskBarProgressState = TaskbarItemProgressState.Normal;
                 cameraMediator.RegisterCaptureBlock(this);
 
                 //Set base containers to created to rerun

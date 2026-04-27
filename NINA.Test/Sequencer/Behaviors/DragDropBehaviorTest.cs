@@ -168,6 +168,21 @@ namespace NINA.Test.Sequencer.Behaviors {
             GetPrivateField<DropIntoBehavior>("hitTestDropIntoBehavior").Should().BeSameAs(dropIntoBehavior);
         }
 
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void GetFirstDropIntoBehaviorBelowMyself_IgnoresNonHitTestableAncestor() {
+            Grid parent = new Grid { IsHitTestVisible = false };
+            FrameworkElement child = new FrameworkElement();
+            DropIntoBehavior dropIntoBehavior = new DropIntoBehavior();
+            parent.Children.Add(child);
+            Interaction.GetBehaviors(child).Add(dropIntoBehavior);
+
+            HitTestResultBehavior result = sut.GetFirstDropIntoBehaviorBelowMyself(new PointHitTestResult(child, new Point()));
+
+            result.Should().Be(HitTestResultBehavior.Continue);
+            GetPrivateField<DropIntoBehavior>("hitTestDropIntoBehavior").Should().BeNull();
+        }
+
         /// <summary>
         /// Verifies drag-drop hit testing gathers foreign drag behaviors below the dragged element while ignoring the dragged element itself.
         /// </summary>
@@ -337,6 +352,21 @@ namespace NINA.Test.Sequencer.Behaviors {
             GetPrivateField<FrameworkElement>("draggedOverElement").Should().BeSameAs(target);
         }
 
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void GetFirstDraggedOverBehaviorElementBelowMyself_IgnoresDisabledAncestor() {
+            Grid parent = new Grid { IsEnabled = false };
+            FrameworkElement child = new FrameworkElement();
+            DragOverBehavior dragOverBehavior = new DragOverBehavior(mainGrid);
+            parent.Children.Add(child);
+            Interaction.GetBehaviors(child).Add(dragOverBehavior);
+
+            HitTestResultBehavior result = sut.GetFirstDraggedOverBehaviorElementBelowMyself(new PointHitTestResult(child, new Point()));
+
+            result.Should().Be(HitTestResultBehavior.Continue);
+            GetPrivateField<FrameworkElement>("draggedOverElement").Should().BeNull();
+        }
+
         /// <summary>
         /// Verifies drop-into hit testing stops for dragged children and continues when no drop behavior exists.
         /// </summary>
@@ -351,6 +381,20 @@ namespace NINA.Test.Sequencer.Behaviors {
                 .Should().Be(HitTestResultBehavior.Stop);
             sut.GetFirstDropIntoBehaviorBelowMyself(new PointHitTestResult(plain, new Point()))
                 .Should().Be(HitTestResultBehavior.Continue);
+        }
+
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void GetDropSource_UsesSourceProviderResult() {
+            IDroppable source = Mock.Of<IDroppable>();
+            TestSourceProvider provider = new TestSourceProvider(source);
+            element.DataContext = provider;
+            sut.OriginalParentedObject = element;
+
+            IDroppable result = (IDroppable)InvokePrivate("GetDropSource");
+
+            result.Should().BeSameAs(source);
+            provider.Modifiers.Should().Be(Keyboard.Modifiers);
         }
 
         private T GetPrivateField<T>(string fieldName) {
@@ -375,6 +419,21 @@ namespace NINA.Test.Sequencer.Behaviors {
             PropertyInfo property = typeof(Behavior).GetProperty("AssociatedObject", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             property.Should().NotBeNull();
             return (DependencyObject)property.GetValue(behavior);
+        }
+
+        private sealed class TestSourceProvider : IDroppableSourceProvider {
+            private readonly IDroppable source;
+
+            public TestSourceProvider(IDroppable source) {
+                this.source = source;
+            }
+
+            public ModifierKeys Modifiers { get; private set; }
+
+            public IDroppable GetDropSource(ModifierKeys modifiers) {
+                Modifiers = modifiers;
+                return source;
+            }
         }
     }
 }

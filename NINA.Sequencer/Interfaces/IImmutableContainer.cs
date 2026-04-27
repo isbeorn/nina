@@ -16,4 +16,8 @@ namespace NINA.Sequencer.Container {
 
     public interface IImmutableContainer {
     }
+
+    public interface ISequenceItemPlacementTarget {
+        bool CanAcceptSequenceItemPlacement { get; }
+    }
 }

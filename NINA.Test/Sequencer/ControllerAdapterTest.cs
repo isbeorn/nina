@@ -30,6 +30,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace NINA.Test.Sequencer {
 
@@ -82,6 +83,37 @@ namespace NINA.Test.Sequencer {
             sut.Detach();
             sut.MoveDown();
             sut.MoveUp();
+        }
+
+        [Test]
+        public void TemplatedSequenceContainer_GetDropSource_ReturnsLinkedContainerForControlModifier() {
+            SequentialContainer container = new SequentialContainer {
+                Name = "Template",
+                IsExpanded = true
+            };
+            TemplateReference reference = new TemplateReference {
+                SourceKind = TemplateReferenceSourceKind.User,
+                RelativePath = "Template.template.json",
+                DisplayName = "Template"
+            };
+            TemplateLinkResolver resolver = new TemplateLinkResolver();
+            TemplatedSequenceContainer sut = new TemplatedSequenceContainer(
+                profileServiceMock.Object,
+                "LblTemplate_UserTemplates",
+                container,
+                reference,
+                resolver);
+
+            sut.GetDropSource(ModifierKeys.None).Should().BeSameAs(sut);
+
+            LinkedTemplateContainer linkedTemplateContainer = sut.GetDropSource(ModifierKeys.Control)
+                .Should().BeOfType<LinkedTemplateContainer>().Subject;
+
+            linkedTemplateContainer.TemplateReference.RelativePath.Should().Be("Template.template.json");
+            linkedTemplateContainer.TemplateReference.SourceKind.Should().Be(TemplateReferenceSourceKind.User);
+            ISequenceContainer materialized = linkedTemplateContainer.Items.Should().ContainSingle().Subject
+                .Should().BeAssignableTo<ISequenceContainer>().Subject;
+            materialized.Name.Should().Be("Template");
         }
 
         /// <summary>

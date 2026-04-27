@@ -96,6 +96,11 @@ This allows you to safely return to a stable release if needed.
     - Added a new **Custom Trigger** that uses an existing trigger as its trigger source and runs user-configured instructions when that source would normally fire.
     - Added a new **Programmable Meridian Flip** trigger that combines a built-in meridian flip with user-configurable before and after instruction sets while preserving the planned flip time after tracking is stopped.
 
+### **Sequencer Templates**
+- Templates can now be added to a sequence as **Linked Templates** by holding Ctrl while dropping a template from the Templates sidebar, or by using the linked-template context menu.
+- A linked template follows the source template instead of creating an independent copy. It shows the current template contents in a dimmed, read-only preview, updates automatically when the source template changes, and can be edited from the sequence to update the underlying user template.
+- Linked templates can carry their own target override, so the same template can be reused for different targets without storing target data in the template itself.
+
 ### **Device Management**
 - **ASCOM Alpaca Direct Drivers**
     - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery

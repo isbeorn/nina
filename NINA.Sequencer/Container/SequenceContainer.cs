@@ -139,7 +139,7 @@ namespace NINA.Sequencer.Container {
                 }
                 var target = parameters.Target as ISequenceItem;
 
-                if (parameters.Position == DropTargetEnum.Center && item.Parent != this) {
+                if (parameters.Position == DropTargetEnum.Center && item.Parent != this && CanAcceptSequenceItemPlacement(this)) {
                     InsertIntoSequenceBlocks(Items.Count, item);
                 }
 
@@ -375,7 +375,7 @@ namespace NINA.Sequencer.Container {
                 } else {
                     int newIndex = index + 1;
                     var container = Items[newIndex] as ISequenceContainer;
-                    if (container?.IsExpanded == true && !(container is IImmutableContainer)) {
+                    if (CanMoveIntoContainer(container)) {
                         container.Items.Insert(0, item);
                         item.Parent?.Remove(item);
                         item.AttachNewParent(container);
@@ -407,7 +407,7 @@ namespace NINA.Sequencer.Container {
                 } else {
                     int newIndex = index - 1;
                     var container = Items[newIndex] as ISequenceContainer;
-                    if (container?.IsExpanded == true && !(container is IImmutableContainer)) {
+                    if (CanMoveIntoContainer(container)) {
                         container.Items.Add(item);
                         item.Parent?.Remove(item);
                         item.AttachNewParent(container);
@@ -421,6 +421,17 @@ namespace NINA.Sequencer.Container {
 
         private void SetChanged() {
             GetRootContainer(this)?.SetChanged();
+        }
+
+        private static bool CanMoveIntoContainer(ISequenceContainer container) {
+            return container?.IsExpanded == true
+                && !(container is IImmutableContainer)
+                && CanAcceptSequenceItemPlacement(container);
+        }
+
+        private static bool CanAcceptSequenceItemPlacement(ISequenceContainer container) {
+            return !(container is ISequenceItemPlacementTarget placementTarget)
+                || placementTarget.CanAcceptSequenceItemPlacement;
         }
 
         public void MoveWithinIntoSequenceBlocks(int index, int newIndex) {

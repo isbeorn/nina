@@ -257,6 +257,18 @@
                                             </Style>
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
+                                    <MenuItem MinHeight="30" ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.TemplateController.TemplatesMenuView}">
+                                        <MenuItem.Header>
+                                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblLinkedTemplates}" />
+                                        </MenuItem.Header>
+                                        <MenuItem.ItemContainerStyle>
+                                            <Style TargetType="MenuItem">
+                                                <Setter Property="Header" Value="{StaticResource TemplateMenuHeader}" />
+                                                <Setter Property="Icon" Value="{StaticResource TemplateMenuIcon}" />
+                                                <EventSetter Event="Click" Handler="MenuItemLinkedTemplate_Click" />
+                                            </Style>
+                                        </MenuItem.ItemContainerStyle>
+                                    </MenuItem>
                                     <MenuItem MinHeight="30" ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.TargetController.TargetsMenuView}">
                                         <MenuItem.Header>
                                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargets}" />

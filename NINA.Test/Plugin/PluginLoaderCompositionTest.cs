@@ -361,7 +361,8 @@ namespace NINA.Test.Plugin {
                 Mock.Of<IExposureDataFactory>(),
                 Mock.Of<ITwilightCalculator>(),
                 Mock.Of<IMessageBroker>(),
-                symbolBroker);
+                symbolBroker,
+                Mock.Of<ITemplateLinkResolver>());
         }
 
         [ExportMetadata("Name", "Synthetic Focus Sweep")]
