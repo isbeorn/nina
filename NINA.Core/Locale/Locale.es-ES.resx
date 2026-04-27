@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -4504,6 +4504,36 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
   <data name="Lbl_SequenceTrigger_MeridianFlipTrigger_Name" xml:space="preserve">
     <value>Cambio de meridiano</value>
   </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
+    <value>Programmable Meridian Flip</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
+    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
+    <value>Before Flip Actions</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
+    <value>After Flip Actions</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
+    <value>Instructions that run before waiting for the meridian flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
+    <value>Instructions that run after the meridian flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
+    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
+    <value>Wait For Flip Window</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
+    <value>Resume Tracking and Flip</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
+    <value>Settle</value>
+  </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>La cámara no tiene un refrigerador y no puede establecer una temperatura</value>
   </data>
@@ -7884,22 +7914,52 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
   <data name="LblEccentricity" xml:space="preserve">
     <value>Excentricidad</value>
   </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
+    <value>Activador personalizado</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
+    <value>Usa un activador existente como base, pero luego puedes elegir tus propias instrucciones para que se active. Esto es útil cuando alguno de los activadores integrados tiene la definición de activación que precisas pero quieres incluir acciones personalizadas.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
+    <value>Activador base</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
+    <value>Instrucciones personalizadas para el activador</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
+    <value>Arrastra aquí un activador para elegir cuándo se ejecuta el activador personalizado.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
+    <value>Pon aquí las instrucciones que deseas que se ejecuten cuando el activador base seleccionado se active.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
+    <value>AÑADIR ACTIVADOR BASE</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
+    <value>AÑADIR INSTRUCCIONES PERSONALIZADAS</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
+    <value>Añade un activador base.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
+    <value>Añade al menos una instrucción.</value>
+  </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
-    <value>Trigger On Unsafe</value>
+    <value>Activar en caso de peligro</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Description" xml:space="preserve">
-    <value>Runs configured instructions when the safety monitor reports unsafe conditions or disconnects after being connected, waits until conditions are safe again, then runs follow-up instructions.</value>
+    <value>Ejecuta las instrucciones configuradas cuando el monitor de seguridad informa de condiciones inseguras o se desconecta después de haber sido conectado, espera hasta que las condiciones sean seguras de nuevo y luego ejecuta las instrucciones de seguimiento.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
-    <value>Before Waiting For Safety</value>
+    <value>Antes de esperar a condiciones seguras</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description" xml:space="preserve">
-    <value>After Waiting For Safety</value>
+    <value>Después de esperar a condiciones seguras</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting until conditions are safe again.</value>
+    <value>Instrucciones que se ejecutan antes de esperar hasta que las condiciones vuelvan a ser seguras.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after conditions are safe again.</value>
+    <value>Instrucciones que se ejecutarán una vez que las condiciones vuelven a ser seguras.</value>
   </data>
 </root>

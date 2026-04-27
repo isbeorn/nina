@@ -33,4 +33,5 @@ This is a route sheet. Treat `AGENTS.md`, `CONTRIBUTING.md`, and each project's 
 - New runtime file/native dependency: update `NINA/NINA.csproj`; check `NINA.Setup` packaging and test output copying when relevant.
 - New sequence entity or plugin-visible extension: check MEF export metadata, `PluginLoader`, factory/prototype creation, clone behavior, and JSON compatibility.
 - User-facing behavior change: consider `RELEASE_NOTES.md`; handle user documentation separately in the `NINA.Docs` submodule/repository.
+- New or changed architectural rule: update the owning `ARCHITECTURE.md`; add a focused test, analyzer, or script when the rule can be checked mechanically.
 - Test selection: use `references/testing-map.md` for actual filters, command templates, and known test constraints.

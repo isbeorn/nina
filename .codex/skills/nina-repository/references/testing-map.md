@@ -107,6 +107,8 @@ Use these when the changed file is under the matching sequencer subtree:
 - `NINA.Test` targets `net10.0-windows` and `x64`; keep x64 for tests that load SOFA, NOVAS, image native libraries, device SDK wrappers, or copied runtime assets.
 - `NINA.Test/Usings.cs` preloads `SOFAlib.dll` and `NOVAS31lib.dll` for the test process.
 - WPF-facing tests that instantiate `System.Windows.Application`, depend on `Application.Current.Resources`, or construct XAML-backed views should run in STA and generally be marked `[NonParallelizable]` to avoid multiple-application races inside the same AppDomain.
+- New file-writing tests should prefer `TestContext.CurrentContext.WorkDirectory`, a test-created temp root, or an injected path provider. Avoid shared `%LOCALAPPDATA%` writes unless user-profile storage is the behavior under test.
+- In sandboxed agent runs, access-denied failures while writing under `obj`, `bin`, `TestResults`, or user-profile paths should be rerun with appropriate filesystem access before being treated as a product regression.
 - Fast in-memory `NINA.Test.Image.ImageAnalysis.BayerFilter16bppTests` run by default; only `BayerFilter16bppRealWorldFormats` cases are ignored because they are exhaustive file-backed/resolution checks.
 - `BayerFilter16bppRealWorldFormats` test cases are `[NonParallelizable]` when enabled.
 - `NINA.Test.Sequencer.Behaviors.DragDropBehaviorTest` uses STA apartments for WPF drag/drop behavior.

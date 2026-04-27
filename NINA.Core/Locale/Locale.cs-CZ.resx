@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -4510,6 +4510,36 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
   <data name="Lbl_SequenceTrigger_MeridianFlipTrigger_Name" xml:space="preserve">
     <value>Překlopení Poledníku</value>
   </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
+    <value>Programmable Meridian Flip</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
+    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
+    <value>Before Flip Actions</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
+    <value>After Flip Actions</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
+    <value>Instructions that run before waiting for the meridian flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
+    <value>Instructions that run after the meridian flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
+    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
+    <value>Wait For Flip Window</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
+    <value>Resume Tracking and Flip</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
+    <value>Settle</value>
+  </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>Kamera nemá chlazení proto nemůže nastavit teplotu</value>
   </data>
@@ -7892,11 +7922,42 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
   <data name="LblEccentricity" xml:space="preserve">
     <value>Excentricita</value>
   </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
+    <value>Vlastní Spouštěč</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
+    <value>Jako zdroj spouštěče použijte existující spouštěč a poté vyberte vlastní pokyny, které se mají spustit v okamžiku, kdy by se tento spouštěč normálně aktivoval.
+To se hodí v případě, že vestavěný spouštěč má sice požadované načasování, ale vy chcete provést vlastní akce.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
+    <value>Zdroj Spouštěče</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
+    <value>Pokyny pro vlastní spouštěče</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
+    <value>Umístěte sem spouštěč a určete, kdy se má vlastní spouštěč spustit.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
+    <value>Zde zadejte příkazy, které se mají spustit při aktivaci vybraného spouštěcího zdroje.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
+    <value>ADD TRIGGER SOURCE</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
+    <value>ADD CUSTOM INSTRUCTIONS</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
+    <value>Přidejte zdroj spouštěče.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
+    <value>Zadejte alespoň jeden příkaz.</value>
+  </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
-    <value>Trigger On Unsafe</value>
+    <value>Spustit Při Nebezpečí</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Description" xml:space="preserve">
-    <value>Runs configured instructions when the safety monitor reports unsafe conditions or disconnects after being connected, waits until conditions are safe again, then runs follow-up instructions.</value>
+    <value>Provede nakonfigurované pokyny, jakmile bezpečnostní monitor nahlásí nebezpečné podmínky nebo se po připojení odpojí, počká, až budou podmínky opět bezpečné, a poté provede následné pokyny.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
     <value>Before Waiting For Safety</value>
@@ -7905,9 +7966,9 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
     <value>After Waiting For Safety</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting until conditions are safe again.</value>
+    <value>Příkazy, které se provedou ještě předtím, než se situace opět stane bezpečnou.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after conditions are safe again.</value>
+    <value>Příkazy, které se spustí poté, co jsou podmínky opět bezpečné.</value>
   </data>
 </root>
