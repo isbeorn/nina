@@ -34,6 +34,7 @@ This allows you to safely return to a stable release if needed.
 - XISF metadata import now reads Bayer offsets, focal ratio, target coordinates, and wind speed/gust units correctly.
 - Manual rotator moves now clean up their moving state correctly when the rotation prompt is cancelled.
 - Fixed an issue where custom popout windows and message boxes could briefly render incorrectly when opened.
+- Firmware version is now correctly displayed for certain QHY camera models.
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
