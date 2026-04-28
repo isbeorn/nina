@@ -326,7 +326,7 @@ namespace QHYCCD {
                 uint year = 0, month = 0, day = 0, subday = 0;
                 CheckReturn(GetQHYCCDSDKVersion(ref year, ref month, ref day, ref subday), MethodBase.GetCurrentMethod());
 
-                return year.ToString() + "-" + month.ToString() + "-" + day.ToString() + "-" + subday.ToString();
+                return $"{year}-{month}-{day}-{subday}";
             }
         }
 
@@ -355,7 +355,7 @@ namespace QHYCCD {
                             version += ", ";
                         }
 
-                        version = i + ": " + Convert.ToString(buf[0]) + "-" + Convert.ToString(buf[1]) + "-" + Convert.ToString(buf[2]) + "-" + Convert.ToString(buf[3]);
+                        version = $"{i}: {buf[0]}-{buf[1]}-{buf[2]}-{buf[3]}";
                     } else {
                         break;
                     }
