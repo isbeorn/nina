@@ -336,12 +336,8 @@ namespace QHYCCD {
                 byte[] buf = new byte[10];
 
                 if (GetQHYCCDFWVersion(handle, buf) != QHYCCD_ERROR) {
-                    int ver = buf[0] >> 4;
-                    if (ver <= 9) {
-                        version = Convert.ToString(ver + 16) + "-" + Convert.ToString(buf[0] & -241) + "-" + Convert.ToString(buf[1]);
-                    } else {
-                        version = Convert.ToString(ver) + "-" + Convert.ToString(buf[0] & -241) + "-" + Convert.ToString(buf[1]);
-                    }
+                    int major = buf[0] >> 4;
+                    version = $"{(major <= 9 ? major + 16 : major)}-{buf[0] & 0x0F}-{buf[1]}";
                 }
 
                 return version;
