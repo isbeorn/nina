@@ -16,10 +16,13 @@ using FluentAssertions;
 using Microsoft.Xaml.Behaviors;
 using NINA.Sequencer.Behaviors;
 using NUnit.Framework;
+using System;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace NINA.Test.Sequencer.Behaviors {
 
@@ -67,6 +70,20 @@ namespace NINA.Test.Sequencer.Behaviors {
             dragDropBehavior.IsEnabled.Should().BeTrue();
         }
 
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public async Task DetachFromAssociatedObject_MarshalsCleanupToAssociatedDispatcher() {
+            LinkedTemplatePreviewBehavior sut = new LinkedTemplatePreviewBehavior();
+            FrameworkElement associatedObject = new FrameworkElement();
+            sut.Attach(associatedObject);
+
+            await Task.Run(() => InvokePrivate(sut, "DetachFromAssociatedObject", associatedObject))
+                .WaitAsync(TimeSpan.FromSeconds(5));
+            DrainDispatcher();
+
+            sut.Detach();
+        }
+
         private static void SetPrivateField(object target, string fieldName, object value) {
             FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             field.Should().NotBeNull();
@@ -77,6 +94,18 @@ namespace NINA.Test.Sequencer.Behaviors {
             MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
             method.Should().NotBeNull();
             method.Invoke(target, null);
+        }
+
+        private static void InvokePrivate(object target, string methodName, params object[] args) {
+            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            method.Should().NotBeNull();
+            method.Invoke(target, args);
+        }
+
+        private static void DrainDispatcher() {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => frame.Continue = false));
+            Dispatcher.PushFrame(frame);
         }
     }
 }

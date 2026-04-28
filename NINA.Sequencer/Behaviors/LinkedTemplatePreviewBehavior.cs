@@ -42,19 +42,45 @@ namespace NINA.Sequencer.Behaviors {
 
         protected override void OnAttached() {
             base.OnAttached();
-            WeakEventManager<FrameworkElement, RoutedEventArgs>.AddHandler(AssociatedObject, nameof(AssociatedObject.Loaded), AssociatedObject_Loaded);
-            WeakEventManager<FrameworkElement, RoutedEventArgs>.AddHandler(AssociatedObject, nameof(AssociatedObject.Unloaded), AssociatedObject_Unloaded);
+            AssociatedObject.Loaded += AssociatedObject_Loaded;
+            AssociatedObject.Unloaded += AssociatedObject_Unloaded;
             ScheduleApplyPreviewState();
         }
 
         protected override void OnDetaching() {
-            DetachFromTreeViewItem();
-            if (AssociatedObject != null) {
-                WeakEventManager<FrameworkElement, RoutedEventArgs>.RemoveHandler(AssociatedObject, nameof(AssociatedObject.Loaded), AssociatedObject_Loaded);
-                WeakEventManager<FrameworkElement, RoutedEventArgs>.RemoveHandler(AssociatedObject, nameof(AssociatedObject.Unloaded), AssociatedObject_Unloaded);
+            DetachFromAssociatedObject(AssociatedObject);
+            base.OnDetaching();
+        }
+
+        private void DetachFromAssociatedObject(FrameworkElement associatedObject) {
+            if (associatedObject == null) {
+                return;
             }
 
-            base.OnDetaching();
+            Dispatcher dispatcher = associatedObject.Dispatcher;
+            if (dispatcher == null) {
+                return;
+            }
+
+            if (dispatcher.CheckAccess()) {
+                DetachFromAssociatedObjectOnDispatcher(associatedObject);
+                return;
+            }
+
+            if (dispatcher.HasShutdownStarted || dispatcher.HasShutdownFinished) {
+                return;
+            }
+
+            try {
+                dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => DetachFromAssociatedObjectOnDispatcher(associatedObject)));
+            } catch (InvalidOperationException) {
+            }
+        }
+
+        private void DetachFromAssociatedObjectOnDispatcher(FrameworkElement associatedObject) {
+            DetachFromTreeViewItem();
+            associatedObject.Loaded -= AssociatedObject_Loaded;
+            associatedObject.Unloaded -= AssociatedObject_Unloaded;
         }
 
         private static void IsEditingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -107,11 +133,20 @@ namespace NINA.Sequencer.Behaviors {
         }
 
         private void ScheduleApplyPreviewState() {
-            if (AssociatedObject == null) {
+            FrameworkElement associatedObject = AssociatedObject;
+            if (associatedObject == null) {
                 return;
             }
 
-            AssociatedObject.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(ApplyPreviewState));
+            Dispatcher dispatcher = associatedObject.Dispatcher;
+            if (dispatcher == null || dispatcher.HasShutdownStarted || dispatcher.HasShutdownFinished) {
+                return;
+            }
+
+            try {
+                dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(ApplyPreviewState));
+            } catch (InvalidOperationException) {
+            }
         }
 
         private void ApplyPreviewState() {
