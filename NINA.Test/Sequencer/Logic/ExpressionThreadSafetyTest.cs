@@ -169,6 +169,16 @@ namespace NINA.Test.Sequencer.Logic {
                 double minExpected = minTemperature + minCoolerPower;
                 double maxExpected = maxTemperature + maxCoolerPower;
 
+                broker.UpdateDeviceInfo(new CameraInfo {
+                    Connected = true,
+                    Temperature = minTemperature,
+                    CoolerPower = minCoolerPower
+                });
+
+                expr.Evaluate(true);
+                expr.Error.Should().BeNull();
+                expr.Value.Should().Be(minExpected);
+
                 var startGate = new ManualResetEventSlim(false);
                 var exceptions = new ConcurrentQueue<Exception>();
                 var outOfRangeValues = new ConcurrentQueue<double>();
