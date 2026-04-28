@@ -1180,6 +1180,7 @@ namespace NINA.Test.Sequencer.Serialization {
                 container.ComposeExportedValue<ITwilightCalculator>(Mock.Of<ITwilightCalculator>());
                 container.ComposeExportedValue<IMessageBroker>(Mock.Of<IMessageBroker>());
                 container.ComposeExportedValue<ISymbolBroker>(Mock.Of<ISymbolBroker>());
+                container.ComposeExportedValue<ITemplateLinkResolver>(Mock.Of<ITemplateLinkResolver>());
 
                 IList<ISequenceItem> items = container.GetExports<ISequenceItem, IDictionary<string, object>>().Select(x => x.Value).ToList();
                 IList<ISequenceCondition> conditions = container.GetExports<ISequenceCondition, IDictionary<string, object>>().Select(x => x.Value).ToList();
