@@ -4615,11 +4615,20 @@ Note: This mode requires that HFR differences between filters in your setup are 
   <data name="LblTemplates" xml:space="preserve">
     <value>Maler</value>
   </data>
+  <data name="LblLinkedTemplates" xml:space="preserve">
+    <value>Linked Templates</value>
+  </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>Standard-maler</value>
   </data>
   <data name="LblTemplate_DropTemplateHere" xml:space="preserve">
     <value>Dra en instruksjonsblokk hit fra sekvensen for å lage en ny mal</value>
+  </data>
+  <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
+    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+  </data>
+  <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
+    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>Overskriv mal?</value>
@@ -4977,6 +4986,60 @@ Brukes best med en annen repetisjonsbetingelse for å unngå uendelig repetisjon
   </data>
   <data name="Lbl_SequenceContainer_SaveAsTemplate_Tooltip" xml:space="preserve">
     <value>Lagre instruksjonsblokken som en gjenbrukbar mal</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
+    <value>Linked Template</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
+    <value>Linked Template: {0}</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
+    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
+    <value>Linked template preview</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
+    <value>Editing linked template</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
+    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
+    <value>Editing the source template. Saving updates the template for every linked use.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
+    <value>Waiting for template "{0}" to finish loading.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
+    <value>Template "{0}" could not be found.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
+    <value>This linked template does not have a valid source template.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
+    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
+    <value>Edit Template</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
+    <value>Save Template</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
+    <value>Cancel Template Editing</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
+    <value>Target: {0}</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
+    <value>No target selected. Drop a target here or enter target details below.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
+    <value>Use this target with the linked template</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
+    <value>Select a target for this linked template before running the sequence.</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>Sikkerhetsovervåker er ikke koblet til</value>
