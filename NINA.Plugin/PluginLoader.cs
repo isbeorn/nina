@@ -100,7 +100,8 @@ namespace NINA.Plugin {
                               IExposureDataFactory exposureDataFactory,
                               ITwilightCalculator twilightCalculator,
                               IMessageBroker messageBroker,
-                              ISymbolBroker symbolBroker) {
+                              ISymbolBroker symbolBroker,
+                              ITemplateLinkResolver templateLinkResolver) {
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
             this.telescopeMediator = telescopeMediator;
@@ -139,7 +140,8 @@ namespace NINA.Plugin {
             this.exposureDataFactory = exposureDataFactory;
             this.twilightCalculator = twilightCalculator;
             this.messageBroker = messageBroker;
-            this.symbolBroker = symbolBroker; 
+            this.symbolBroker = symbolBroker;
+            this.templateLinkResolver = templateLinkResolver;
             DateTimeProviders = new List<IDateTimeProvider>() {
                 new Sequencer.Utility.DateTimeProvider.TimeProvider(nighttimeCalculator),
                 new SunsetProvider(nighttimeCalculator),
@@ -545,6 +547,7 @@ namespace NINA.Plugin {
             container.ComposeExportedValue(twilightCalculator);
             container.ComposeExportedValue(messageBroker);
             container.ComposeExportedValue(symbolBroker);
+            container.ComposeExportedValue(templateLinkResolver);
 
             return container;
         }
@@ -602,6 +605,7 @@ namespace NINA.Plugin {
         private readonly ITwilightCalculator twilightCalculator;
         private readonly IMessageBroker messageBroker;
         private readonly ISymbolBroker symbolBroker;
+        private readonly ITemplateLinkResolver templateLinkResolver;
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
             // Split resolver name by comma in case there is version or other info in the name - we just have one version of each plugin anyways
             var parts = args?.Name?.Split(',');

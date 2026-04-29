@@ -58,6 +58,7 @@
                 <wpfutil:SharedResourceDictionary>
                     <converter:DroppableToDropIntoParametersConverter x:Key="DroppableToDropIntoParametersConverter" />
                     <converter:IsIDeepSkyObjectContainerConverter x:Key="DeepSkyObjectContainerToVisibilityConverter" />
+                    <converter:IsLinkedTemplateContainerConverter x:Key="LinkedTemplateContainerToVisibilityConverter" />
                     <converter:StrategyEvaluatesConditionsAndTriggersToVisibilityConverter x:Key="StrategyEvaluatesConditionsAndTriggersToVisibilityConverter" />
                     <converter:StatusToEnabledConverter x:Key="StatusToEnabledConverter" />
                     <converter:DisabledStatusToStrikethroughConverter x:Key="DisabledStatusToStrikethroughConverter" />
@@ -164,7 +165,6 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBox
                                 Grid.Column="0"
@@ -234,8 +234,17 @@
                                         Margin="25,0,0,0"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Click="TemplateContainerButton_Click"
-                                        Style="{StaticResource SecondaryBackgroundButton}">
+                                        Click="TemplateContainerButton_Click">
+                                        <Button.Style>
+                                            <Style BasedOn="{StaticResource SecondaryBackgroundButton}" TargetType="Button">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=., Converter={StaticResource LinkedTemplateContainerToVisibilityConverter}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
                                         <Grid>
                                             <Path
                                                 Margin="5"
@@ -784,6 +793,18 @@
                                                                             <MenuItem.ItemContainerStyle>
                                                                                 <Style TargetType="MenuItem">
                                                                                     <EventSetter Event="Click" Handler="MenuItemTemplate_Click" />
+                                                                                    <Setter Property="Header" Value="{StaticResource TemplateMenuHeader}" />
+                                                                                    <Setter Property="Icon" Value="{StaticResource TemplateMenuIcon}" />
+                                                                                </Style>
+                                                                            </MenuItem.ItemContainerStyle>
+                                                                        </MenuItem>
+                                                                        <MenuItem MinHeight="30" ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.TemplateController.TemplatesMenuView}">
+                                                                            <MenuItem.Header>
+                                                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblLinkedTemplates}" />
+                                                                            </MenuItem.Header>
+                                                                            <MenuItem.ItemContainerStyle>
+                                                                                <Style TargetType="MenuItem">
+                                                                                    <EventSetter Event="Click" Handler="MenuItemLinkedTemplate_Click" />
                                                                                     <Setter Property="Header" Value="{StaticResource TemplateMenuHeader}" />
                                                                                     <Setter Property="Icon" Value="{StaticResource TemplateMenuIcon}" />
                                                                                 </Style>

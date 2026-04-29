@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -29,6 +29,9 @@ namespace NINA.Sequencer.Serialization {
                 if (t == null) {
                     return new UnknownSequenceContainer(token?.ToString());
                 }
+                if (t == typeof(LinkedTemplateContainer)) {
+                    RemoveLinkedTemplateRuntimeState(jObject);
+                }
                 try {
                     var method = Factory.GetType().GetMethod(nameof(Factory.GetContainer)).MakeGenericMethod(new Type[] { t });
                     var obj = method.Invoke(Factory, null);
@@ -44,6 +47,14 @@ namespace NINA.Sequencer.Serialization {
             } else {
                 return new UnknownSequenceContainer(token?.ToString());
             }
+        }
+
+        private static void RemoveLinkedTemplateRuntimeState(JObject jObject) {
+            jObject.Remove(nameof(SequenceContainer.Items));
+            jObject.Remove(nameof(SequenceContainer.Conditions));
+            jObject.Remove(nameof(SequenceContainer.Triggers));
+            jObject.Remove(nameof(SequenceContainer.IsExpanded));
+            jObject.Remove(nameof(LinkedTemplateContainer.LinkState));
         }
     }
 }

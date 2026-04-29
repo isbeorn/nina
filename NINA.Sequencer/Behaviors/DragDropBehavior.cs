@@ -328,11 +328,22 @@ namespace NINA.Sequencer.Behaviors {
 
             var behavior = draggedOverElement == null ? null : Interaction.GetBehaviors(draggedOverElement).FirstOrDefault(i => i is DragOverBehavior) as DragOverBehavior;
 
-            hitTestDropIntoBehavior.ExecuteDropInto(new DropIntoParameters(OriginalParentedObject.DataContext as IDroppable,
+            IDroppable source = GetDropSource();
+            if (source == null) return;
+
+            hitTestDropIntoBehavior.ExecuteDropInto(new DropIntoParameters(source,
                 draggedOverElement?.DataContext as IDroppable,
                 behavior?.DropTarget));
 
             return;
+        }
+
+        private IDroppable GetDropSource() {
+            if (OriginalParentedObject?.DataContext is IDroppableSourceProvider sourceProvider) {
+                return sourceProvider.GetDropSource(Keyboard.Modifiers);
+            }
+
+            return OriginalParentedObject?.DataContext as IDroppable;
         }
 
         private void HandleLeaveObject() {
@@ -426,6 +437,10 @@ namespace NINA.Sequencer.Behaviors {
                 return HitTestResultBehavior.Continue;
             }
             // add item below self, continue
+            if (!IsHitTestAllowed(hit)) {
+                return HitTestResultBehavior.Continue;
+            }
+
             var possibleBehaviorItem = hit.GetSelfAndAncestors().FirstOrDefault(ancestor => {
                 var possibleBehavior = Interaction.GetBehaviors(ancestor).FirstOrDefault(b => b is DragDropBehavior);
                 if (possibleBehavior == null) return false;
@@ -443,6 +458,9 @@ namespace NINA.Sequencer.Behaviors {
                 //Debug.WriteLine("?? DraggedOver search found child " + hit.GetHashCode());
                 return HitTestResultBehavior.Continue;
             }
+            if (!IsHitTestAllowed(hit)) {
+                return HitTestResultBehavior.Continue;
+            }
             draggedOverElement = result.VisualHit as FrameworkElement;
             //Debug.WriteLine("?? WheelOver search found " + draggedOverElement);
             return HitTestResultBehavior.Stop;
@@ -455,6 +473,9 @@ namespace NINA.Sequencer.Behaviors {
             if (selfAndChildren.Contains(hit)) {
                 //Debug.WriteLine("?? DraggedOver search found child " + hit.GetHashCode());
                 return HitTestResultBehavior.Stop;
+            }
+            if (!IsHitTestAllowed(hit)) {
+                return HitTestResultBehavior.Continue;
             }
             var possibleBehaviorItem = hit.GetSelfAndAncestors().FirstOrDefault(ancestor => {
                 var possibleBehavior = Interaction.GetBehaviors(ancestor).FirstOrDefault(b => b is DragOverBehavior);
@@ -474,6 +495,9 @@ namespace NINA.Sequencer.Behaviors {
             if (selfAndChildren.Contains(hit)) {
                 return HitTestResultBehavior.Stop;
             }
+            if (!IsHitTestAllowed(hit)) {
+                return HitTestResultBehavior.Continue;
+            }
             var possibleBehaviorItem = hit.GetSelfAndAncestors().FirstOrDefault(ancestor => {
                 var possibleBehavior = Interaction.GetBehaviors(ancestor).FirstOrDefault(b => b is DropIntoBehavior);
                 if (possibleBehavior == null) return false;
@@ -483,6 +507,27 @@ namespace NINA.Sequencer.Behaviors {
             });
             if (possibleBehaviorItem == null) return HitTestResultBehavior.Continue;
             else return HitTestResultBehavior.Stop;
+        }
+
+        private bool IsHitTestAllowed(FrameworkElement hit) {
+            if (hit == null) {
+                return false;
+            }
+
+            DependencyObject current = hit;
+            while (current != null) {
+                if (current is UIElement element && (!element.IsHitTestVisible || !element.IsEnabled)) {
+                    return false;
+                }
+
+                if (ReferenceEquals(current, layoutParent)) {
+                    return true;
+                }
+
+                current = VisualTreeHelper.GetParent(current);
+            }
+
+            return true;
         }
     }
 }

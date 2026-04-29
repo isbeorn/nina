@@ -278,6 +278,368 @@
         </view:HierarchicalSequenceContainerView>
     </HierarchicalDataTemplate>
 
+    <HierarchicalDataTemplate DataType="{x:Type local:LinkedTemplateContainer}" ItemsSource="{Binding Items}">
+        <view:HierarchicalSequenceContainerView ShowDetails="False">
+            <view:HierarchicalSequenceContainerView.SequenceContainerContent>
+                <Border
+                    Margin="5,5,0,0"
+                    Padding="8,6,8,6">
+                    <i:Interaction.Behaviors>
+                        <behaviors:LinkedTemplatePreviewBehavior IsEditing="{Binding IsEditing}" />
+                    </i:Interaction.Behaviors>
+                    <Border.Background>
+                        <SolidColorBrush Opacity="0.1" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
+                    </Border.Background>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Path
+                                Grid.RowSpan="2"
+                                Grid.Column="0"
+                                Width="18"
+                                Height="18"
+                                Margin="0,2,8,0"
+                                VerticalAlignment="Top"
+                                Data="{StaticResource LockSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True"
+                                Visibility="{Binding IsEditing, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                            <Path
+                                Grid.RowSpan="2"
+                                Grid.Column="0"
+                                Width="18"
+                                Height="18"
+                                Margin="0,2,8,0"
+                                VerticalAlignment="Top"
+                                Data="{StaticResource Pen_NoFill_SVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True"
+                                Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Grid.Row="0"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{Binding HeaderText}"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Grid.Row="1"
+                                Margin="0,2,0,0"
+                                VerticalAlignment="Center"
+                                FontStyle="Italic"
+                                Text="{Binding LinkStatusText}"
+                                TextWrapping="Wrap">
+                                <TextBlock.ToolTip>
+                                    <ToolTip MaxWidth="480">
+                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                                    </ToolTip>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <StackPanel
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Orientation="Horizontal">
+                                <Button
+                                    MinWidth="90"
+                                    Height="25"
+                                    Margin="0,0,5,0"
+                                    Command="{Binding BeginEditTemplateCommand}"
+                                    Style="{StaticResource TertiaryBackgroundButton}"
+                                    Visibility="{Binding IsEditing, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                                    <Border Padding="8,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path
+                                                Width="13"
+                                                Height="13"
+                                                Margin="0,0,6,0"
+                                                VerticalAlignment="Center"
+                                                Data="{StaticResource Pen_NoFill_SVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                Text="{ns:Loc Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate}" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Button.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
+                                <Button
+                                    MinWidth="90"
+                                    Height="25"
+                                    Margin="0,0,5,0"
+                                    Command="{Binding SaveTemplateCommand}"
+                                    Style="{StaticResource TertiaryBackgroundButton}"
+                                    Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <Border Padding="8,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path
+                                                Width="13"
+                                                Height="13"
+                                                Margin="0,0,6,0"
+                                                VerticalAlignment="Center"
+                                                Data="{StaticResource SaveSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                Text="{ns:Loc Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate}" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Button.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
+                                <Button
+                                    MinWidth="90"
+                                    Height="25"
+                                    Margin="0,0,5,0"
+                                    Command="{Binding CancelEditTemplateCommand}"
+                                    Style="{StaticResource TertiaryBackgroundButton}"
+                                    Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <Border Padding="8,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path
+                                                Width="13"
+                                                Height="13"
+                                                Margin="0,0,6,0"
+                                                VerticalAlignment="Center"
+                                                Data="{StaticResource CancelSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                Text="{ns:Loc Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate}" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Button.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                        <Border
+                            Grid.Row="1"
+                            Margin="20,6,0,0"
+                            Padding="0"
+                            Background="Transparent"
+                            Visibility="{Binding SupportsTargetOverride, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            <i:Interaction.Behaviors>
+                                <behaviors:DragOverBehavior
+                                    AllowDragAbove="False"
+                                    AllowDragBelow="False"
+                                    DragAboveSize="0"
+                                    DragBelowSize="0"
+                                    DragOverCenterText="{ns:Loc Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop}" />
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.TargetSequenceContainer;NINA.Sequencer.Container.IDeepSkyObjectContainer" OnDropCommand="DropTargetCommand" />
+                            </i:Interaction.Behaviors>
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Path
+                                        Width="15"
+                                        Height="15"
+                                        Margin="0,1,7,0"
+                                        VerticalAlignment="Top"
+                                        Data="{StaticResource TelescopeSVG}"
+                                        Fill="{StaticResource PrimaryBrush}"
+                                        Opacity="0.75"
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontStyle="Italic"
+                                        Text="{Binding TargetStatusText}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                                <StackPanel Margin="22,6,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="60"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblTargetName}" />
+                                        <ninactrl:HintTextBox
+                                            Width="220"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Foreground="{StaticResource PrimaryBrush}"
+                                            HintText="{ns:Loc LblObjectNameHint}"
+                                            Text="{Binding TargetEditor.TargetName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                    <StackPanel
+                                        Margin="0,5,0,0"
+                                        DataContext="{Binding TargetEditor.InputCoordinates}"
+                                        Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="60"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblRA}" />
+                                        <TextBox
+                                            Width="40"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding Path="RAHours" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <rules:HoursRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">h</TextBlock>
+                                        <TextBox
+                                            Width="40"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding Path="RAMinutes" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <rules:MinutesRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">m</TextBlock>
+                                        <TextBox
+                                            Width="40"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding
+                                                    Path="RASeconds"
+                                                    StringFormat="N1"
+                                                    UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <rules:SecondsRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">s</TextBlock>
+                                    </StackPanel>
+                                    <StackPanel
+                                        Margin="0,5,0,0"
+                                        DataContext="{Binding TargetEditor.InputCoordinates}"
+                                        Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="60"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblDec}" />
+                                        <TextBox
+                                            Width="40"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding Path="NegativeDec" />
+                                                    <Binding Path="DecDegrees">
+                                                        <Binding.ValidationRules>
+                                                            <rules:DegreesRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </MultiBinding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">d</TextBlock>
+                                        <TextBox
+                                            Width="40"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding Path="DecMinutes" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <rules:MinutesRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">m</TextBlock>
+                                        <TextBox
+                                            Width="40"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding
+                                                    Path="DecSeconds"
+                                                    StringFormat="N1"
+                                                    UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <rules:SecondsRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">s</TextBlock>
+                                    </StackPanel>
+                                    <StackPanel
+                                        Margin="0,5,0,0"
+                                        DataContext="{Binding TargetEditor}"
+                                        Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="60"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblRotation}" />
+                                        <TextBox
+                                            Width="40"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding Path="PositionAngle" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <rules:FullCircleDegreesRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">°</TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </view:HierarchicalSequenceContainerView.SequenceContainerContent>
+        </view:HierarchicalSequenceContainerView>
+    </HierarchicalDataTemplate>
+
     <HierarchicalDataTemplate DataType="{x:Type local:DeepSkyObjectContainer}" ItemsSource="{Binding Items}">
         <view:HierarchicalSequenceContainerView>
             <view:HierarchicalSequenceContainerView.SequenceContainerContent>
