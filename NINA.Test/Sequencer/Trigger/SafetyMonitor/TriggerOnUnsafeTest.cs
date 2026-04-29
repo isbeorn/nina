@@ -170,6 +170,31 @@ namespace NINA.Test.Sequencer.Trigger.SafetyMonitor {
         }
 
         /// <summary>
+        /// Verifies an unsafe state-change event cancels another running trigger's execution token even when it has no child item.
+        /// </summary>
+        [Test]
+        public async Task IsSafeChanged_ToUnsafe_InterruptsRunningTriggerToken() {
+            safetyMonitorInfo.Connected = true;
+            safetyMonitorInfo.IsSafe = true;
+            SequenceRootContainer root = new SequenceRootContainer() {
+                Status = SequenceEntityStatus.RUNNING
+            };
+            TokenObservingTrigger runningTrigger = new TokenObservingTrigger();
+            runningTrigger.AttachNewParent(root);
+            sut.AttachNewParent(root);
+
+            Task runTask = runningTrigger.Run(root, Mock.Of<IProgress<ApplicationStatus>>(), CancellationToken.None);
+            await runningTrigger.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+            safetyMonitorInfo.IsSafe = false;
+            safetyMonitorMediatorMock.Raise(x => x.IsSafeChanged += null, safetyMonitorMediatorMock.Object, new IsSafeEventArgs(false));
+            await runTask.WaitAsync(TimeSpan.FromSeconds(5));
+
+            runningTrigger.ObservedCancellation.Should().BeTrue();
+            runningTrigger.Status.Should().Be(SequenceEntityStatus.CREATED);
+        }
+
+        /// <summary>
         /// Verifies executing the trigger builds the expected nested instruction list and resets progress afterwards.
         /// </summary>
         [Test]
@@ -315,6 +340,29 @@ namespace NINA.Test.Sequencer.Trigger.SafetyMonitor {
 
             public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
                 return Task.CompletedTask;
+            }
+        }
+
+        private sealed class TokenObservingTrigger : SequenceTrigger {
+            public TaskCompletionSource<bool> Started { get; } = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            public bool ObservedCancellation { get; private set; }
+
+            public override object Clone() {
+                return new TokenObservingTrigger();
+            }
+
+            public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
+                return true;
+            }
+
+            public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
+                Started.TrySetResult(true);
+                try {
+                    await Task.Delay(TimeSpan.FromMinutes(1), token);
+                } catch (OperationCanceledException) when (token.IsCancellationRequested) {
+                    ObservedCancellation = true;
+                    throw;
+                }
             }
         }
 

@@ -85,6 +85,8 @@ namespace NINA.Sequencer.Container {
 
         private object runningItemsLock = new object();
         private List<ISequenceItem> runningItems = new List<ISequenceItem>();
+        private object runningTriggersLock = new object();
+        private List<ISequenceTrigger> runningTriggers = new List<ISequenceTrigger>();
 
         public void AddRunningItem(ISequenceItem item) {
             lock (runningItemsLock) {
@@ -98,6 +100,18 @@ namespace NINA.Sequencer.Container {
             }
         }
 
+        public void AddRunningTrigger(ISequenceTrigger trigger) {
+            lock (runningTriggersLock) {
+                runningTriggers.Add(trigger);
+            }
+        }
+
+        public void RemoveRunningTrigger(ISequenceTrigger trigger) {
+            lock (runningTriggersLock) {
+                runningTriggers.Remove(trigger);
+            }
+        }
+
         public void SkipCurrentRunningItems() {
             lock (runningItemsLock) {
                 foreach (var item in runningItems) {
@@ -107,6 +121,15 @@ namespace NINA.Sequencer.Container {
         }
 
         public void InterruptAndResetCurrentRunningItems() {
+            List<ISequenceTrigger> triggers;
+            lock (runningTriggersLock) {
+                triggers = runningTriggers.ToList();
+            }
+
+            foreach (var trigger in triggers) {
+                trigger.InterruptAndReset();
+            }
+
             List<ISequenceItem> items;
             lock (runningItemsLock) {
                 items = runningItems.ToList();

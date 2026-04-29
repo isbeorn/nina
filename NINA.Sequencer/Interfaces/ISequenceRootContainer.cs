@@ -27,6 +27,10 @@ namespace NINA.Sequencer.Container {
 
         void RemoveRunningItem(ISequenceItem item);
 
+        void AddRunningTrigger(ISequenceTrigger trigger);
+
+        void RemoveRunningTrigger(ISequenceTrigger trigger);
+
         void SkipCurrentRunningItems();
 
         void InterruptAndResetCurrentRunningItems();

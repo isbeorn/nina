@@ -15,6 +15,7 @@
 using NINA.Astrometry;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Trigger;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -86,6 +87,14 @@ namespace NINA.Sequencer.Utility {
 
         public void RemoveRunningItem(ISequenceItem item) {
             root?.RemoveRunningItem(item);
+        }
+
+        public void AddRunningTrigger(ISequenceTrigger trigger) {
+            root?.AddRunningTrigger(trigger);
+        }
+
+        public void RemoveRunningTrigger(ISequenceTrigger trigger) {
+            root?.RemoveRunningTrigger(trigger);
         }
 
         public void SkipCurrentRunningItems() {

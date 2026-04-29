@@ -52,5 +52,10 @@ namespace NINA.Sequencer.Trigger {
         /// <param name="token"></param>
         /// <returns></returns>
         Task Run(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token);
+
+        /// <summary>
+        /// Interrupts the currently running trigger and resets its progress.
+        /// </summary>
+        void InterruptAndReset();
     }
 }

@@ -98,6 +98,7 @@ namespace NINA.Sequencer.Trigger {
         public SequentialContainer TriggerRunner { get; protected set; }
 
         private SequenceEntityStatus status = SequenceEntityStatus.CREATED;
+        private CancellationTokenSource localCts;
 
         public SequenceEntityStatus Status {
             get => status;
@@ -114,41 +115,63 @@ namespace NINA.Sequencer.Trigger {
 
             Status = SequenceEntityStatus.RUNNING;
 
-            var root = ItemUtility.GetRootContainer(this.Parent);
-            try {
-                Logger.Info($"Starting {this}");
-                this.TriggerRunner.ResetAll();
+            var root = ItemUtility.GetRootContainer(context ?? this.Parent);
+            using (localCts = CancellationTokenSource.CreateLinkedTokenSource(token)) {
+                root?.AddRunningTrigger(this);
+                try {
+                    Logger.Info($"Starting {this}");
+                    this.TriggerRunner.ResetAll();
 
-                if (this is IValidatable && !(this is ISequenceContainer)) {
-                    var validatable = this as IValidatable;
-                    if (!validatable.Validate()) {
-                        throw new SequenceEntityFailedValidationException(string.Join(", ", validatable.Issues));
+                    if (this is IValidatable && !(this is ISequenceContainer)) {
+                        var validatable = this as IValidatable;
+                        if (!validatable.Validate()) {
+                            throw new SequenceEntityFailedValidationException(string.Join(", ", validatable.Issues));
+                        }
                     }
-                }
 
-                await this.Execute(context, progress, token);
-                foreach (var instruction in TriggerRunner.GetItemsSnapshot()) {
-                    if (instruction.Status == SequenceEntityStatus.FAILED) {
-                        throw new SequenceEntityFailedException($"{instruction} failed to exectue");
+                    await this.Execute(context, progress, localCts.Token);
+                    localCts.Token.ThrowIfCancellationRequested();
+                    foreach (var instruction in TriggerRunner.GetItemsSnapshot()) {
+                        if (instruction.Status == SequenceEntityStatus.FAILED) {
+                            throw new SequenceEntityFailedException($"{instruction} failed to exectue");
+                        }
                     }
+                    Status = SequenceEntityStatus.FINISHED;
+                } catch (SequenceEntityFailedException ex) {
+                    Logger.Error($"Failed: {this} - " + ex.Message);
+                    Status = SequenceEntityStatus.FAILED;
+                    root?.RaiseFailureEvent(this, ex);
+                } catch (SequenceEntityFailedValidationException ex) {
+                    Status = SequenceEntityStatus.FAILED;
+                    Logger.Error($"Failed validation: {this} - " + ex.Message);
+                    root?.RaiseFailureEvent(this, ex);
+                } catch (OperationCanceledException) {
+                    Status = SequenceEntityStatus.CREATED;
+                } catch (Exception ex) {
+                    Status = SequenceEntityStatus.FAILED;
+                    Logger.Error(ex);
+                    root?.RaiseFailureEvent(this, ex);
+                    //Todo Error policy - e.g. Continue; Throw and cancel; Retry;
+                } finally {
+                    root?.RemoveRunningTrigger(this);
                 }
-                Status = SequenceEntityStatus.FINISHED;
-            } catch (SequenceEntityFailedException ex) {
-                Logger.Error($"Failed: {this} - " + ex.Message);
-                Status = SequenceEntityStatus.FAILED;
-                root?.RaiseFailureEvent(this, ex);
-            } catch (SequenceEntityFailedValidationException ex) {
-                Status = SequenceEntityStatus.FAILED;
-                Logger.Error($"Failed validation: {this} - " + ex.Message);
-                root?.RaiseFailureEvent(this, ex);
-            } catch (OperationCanceledException) {
-                Status = SequenceEntityStatus.CREATED;
-            } catch (Exception ex) {
-                Status = SequenceEntityStatus.FAILED;
-                Logger.Error(ex);
-                root?.RaiseFailureEvent(this, ex);
-                //Todo Error policy - e.g. Continue; Throw and cancel; Retry;
             }
+        }
+
+        public virtual void InterruptAndReset() {
+            if (this.Status == SequenceEntityStatus.DISABLED) {
+                return;
+            }
+
+            if (this.Status != SequenceEntityStatus.RUNNING) {
+                this.TriggerRunner.ResetAll();
+                Status = SequenceEntityStatus.CREATED;
+                return;
+            }
+
+            try {
+                localCts?.Cancel();
+            } catch { }
         }
 
         public virtual void AfterParentChanged() {
