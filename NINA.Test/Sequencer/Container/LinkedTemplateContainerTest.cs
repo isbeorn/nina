@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -14,6 +14,7 @@
 
 using FluentAssertions;
 using Moq;
+using Newtonsoft.Json;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Locale;
@@ -26,6 +27,7 @@ using NINA.Sequencer.Container;
 using NINA.Sequencer.DragDrop;
 using NINA.Sequencer.Serialization;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility.DateTimeProvider;
 using NUnit.Framework;
@@ -172,7 +174,25 @@ namespace NINA.Test.Sequencer.Container {
         }
 
         [Test]
-        public void SequenceJsonConverter_RoundTripsLinkedTemplateReferenceAndPreviewContent() {
+        public void IsExpanded_MaterializesTemplateContentOnDemand() {
+            TemplateReference reference = CreateReference("Expand.template.json", "Expand");
+            TemplateLinkResolver resolver = new TemplateLinkResolver();
+            resolver.UpdateTemplates(new[] { CreateTemplate(reference, "Expand", "Expanded item") }, true, null);
+            LinkedTemplateContainer sut = new LinkedTemplateContainer(resolver) {
+                TemplateReference = reference.Clone()
+            };
+
+            sut.Items.Should().BeEmpty();
+
+            sut.IsExpanded = true;
+
+            sut.Items.Should().ContainSingle();
+            sut.Items.OfType<ISequenceContainer>().Single().Items.Should().ContainSingle(i => i.Name == "Expanded item");
+            sut.LinkState.Should().Be(TemplateLinkState.Resolved);
+        }
+
+        [Test]
+        public void SequenceJsonConverter_RoundTripsLinkedTemplateReferenceWithoutPreviewContent() {
             TemplateReference reference = CreateReference("RoundTrip.template.json", "RoundTrip");
             TemplateLinkResolver resolver = new TemplateLinkResolver();
             resolver.UpdateTemplates(new[] { CreateTemplate(reference, "RoundTrip", "Preview item") }, true, null);
@@ -191,13 +211,51 @@ namespace NINA.Test.Sequencer.Container {
             SequenceJsonConverter converter = new SequenceJsonConverter(factory);
 
             string json = converter.Serialize(sut);
+            json.Should().NotContain("Preview item");
             ISequenceContainer roundTripped = converter.Deserialize(json);
 
             LinkedTemplateContainer linkedTemplateContainer = roundTripped.Should().BeOfType<LinkedTemplateContainer>().Subject;
             linkedTemplateContainer.TemplateReference.SourceKind.Should().Be(TemplateReferenceSourceKind.User);
             linkedTemplateContainer.TemplateReference.RelativePath.Should().Be("RoundTrip.template.json");
+            linkedTemplateContainer.Items.Should().BeEmpty();
+
+            linkedTemplateContainer.TryResolveTemplate().Should().BeTrue();
             linkedTemplateContainer.Items.Should().ContainSingle();
             linkedTemplateContainer.Items.OfType<ISequenceContainer>().Single().Name.Should().Be("RoundTrip");
+        }
+
+        [Test]
+        public void SequenceJsonConverter_IgnoresLegacyLinkedTemplatePreviewContent() {
+            TemplateReference reference = CreateReference("LegacyRoundTrip.template.json", "LegacyRoundTrip");
+            TemplateLinkResolver resolver = new TemplateLinkResolver();
+            resolver.UpdateTemplates(new[] { CreateTemplate(reference, "LegacyRoundTrip", "Current item") }, true, null);
+            LinkedTemplateContainer sut = new LinkedTemplateContainer(resolver) {
+                TemplateReference = reference.Clone()
+            };
+            sut.TryResolveTemplate();
+            SequencerFactory factory = new SequencerFactory(
+                profileServiceMock.Object,
+                new List<ISequenceItem> { new NamedInstruction("Prototype") },
+                new List<NINA.Sequencer.Conditions.ISequenceCondition>(),
+                new List<NINA.Sequencer.Trigger.ISequenceTrigger>(),
+                new List<ISequenceContainer> { new LinkedTemplateContainer(resolver), new SequentialContainer() },
+                new List<IDateTimeProvider>(),
+                new List<ISequenceEntityUpgrader>());
+            SequenceJsonConverter converter = new SequenceJsonConverter(factory);
+            string legacyJson = JsonConvert.SerializeObject(sut, Formatting.Indented, new JsonSerializerSettings {
+                TypeNameHandling = TypeNameHandling.All,
+                PreserveReferencesHandling = PreserveReferencesHandling.All
+            });
+            legacyJson.Should().Contain(nameof(NamedInstruction));
+
+            ISequenceContainer roundTripped = converter.Deserialize(legacyJson);
+
+            LinkedTemplateContainer linkedTemplateContainer = roundTripped.Should().BeOfType<LinkedTemplateContainer>().Subject;
+            linkedTemplateContainer.Items.Should().BeEmpty();
+            linkedTemplateContainer.LinkState.Should().Be(TemplateLinkState.Pending);
+
+            linkedTemplateContainer.TryResolveTemplate().Should().BeTrue();
+            linkedTemplateContainer.Items.OfType<ISequenceContainer>().Single().Items.Should().ContainSingle(i => i.Name == "Current item");
         }
 
         [Test]
@@ -270,6 +328,89 @@ namespace NINA.Test.Sequencer.Container {
         }
 
         [Test]
+        public void TargetEditorCoordinatePartChanges_UpdateMaterializedDsoTemplateInPlace() {
+            TemplateReference reference = CreateReference("EditableTargetParts.template.json", "EditableTargetParts");
+            TemplateLinkResolver resolver = new TemplateLinkResolver();
+            LinkedTemplateContainer sut = new LinkedTemplateContainer(resolver) {
+                TemplateReference = reference.Clone()
+            };
+            TargetableContainer templateContainer = CreateTargetableTemplate("Galaxy workflow", "Original item");
+            CoordinatesInstruction inheritedCoordinatesInstruction = new CoordinatesInstruction();
+            templateContainer.Add(inheritedCoordinatesInstruction);
+            resolver.UpdateTemplates(new[] { CreateTemplate(reference, templateContainer) }, true, null);
+            sut.TryResolveTemplate();
+            TargetableContainer materialized = sut.Items.Should().ContainSingle().Subject.Should().BeOfType<TargetableContainer>().Subject;
+            CoordinatesInstruction materializedCoordinatesInstruction = materialized.Items.OfType<CoordinatesInstruction>().Should().ContainSingle().Subject;
+            InputCoordinates originalMaterializedCoordinates = materialized.Target.InputCoordinates;
+            List<string> coordinatePropertyChanges = new List<string>();
+            materialized.Target.InputCoordinates.PropertyChanged += (sender, args) => {
+                if (args.PropertyName != null) {
+                    coordinatePropertyChanges.Add(args.PropertyName);
+                }
+            };
+
+            sut.TargetEditor.TargetName = "M81";
+            sut.TargetEditor.InputCoordinates.RAHours = 9;
+            sut.TargetEditor.InputCoordinates.RAMinutes = 55;
+            sut.TargetEditor.InputCoordinates.RASeconds = 33.2d;
+            sut.TargetEditor.InputCoordinates.DecDegrees = 69;
+            sut.TargetEditor.InputCoordinates.DecMinutes = 3;
+            sut.TargetEditor.InputCoordinates.DecSeconds = 55.1d;
+            sut.TargetEditor.PositionAngle = 27.4d;
+
+            materialized.Target.TargetName.Should().Be("M81");
+            materialized.Target.InputCoordinates.Should().BeSameAs(originalMaterializedCoordinates);
+            materialized.Target.InputCoordinates.RAHours.Should().Be(9);
+            materialized.Target.InputCoordinates.RAMinutes.Should().Be(55);
+            materialized.Target.InputCoordinates.RASeconds.Should().BeApproximately(33.2d, 0.0000001);
+            materialized.Target.InputCoordinates.DecDegrees.Should().Be(69);
+            materialized.Target.InputCoordinates.DecMinutes.Should().Be(3);
+            materialized.Target.InputCoordinates.DecSeconds.Should().BeApproximately(55.1d, 0.0000001);
+            materialized.Target.PositionAngle.Should().BeApproximately(27.4d, 0.0000001);
+            coordinatePropertyChanges.Should().Contain(nameof(InputCoordinates.RAHours));
+            coordinatePropertyChanges.Should().Contain(nameof(InputCoordinates.DecDegrees));
+            materializedCoordinatesInstruction.Inherited.Should().BeTrue();
+            materializedCoordinatesInstruction.Coordinates.Coordinates.RA.Should().BeApproximately(materialized.Target.InputCoordinates.Coordinates.RA, 0.0000001);
+            materializedCoordinatesInstruction.Coordinates.Coordinates.Dec.Should().BeApproximately(materialized.Target.InputCoordinates.Coordinates.Dec, 0.0000001);
+            materializedCoordinatesInstruction.PositionAngle.Should().BeApproximately(materialized.Target.PositionAngle, 0.0000001);
+        }
+
+        [Test]
+        public void TargetEditorCoordinatePartChangesWithoutName_CountAsTargetOverrideAndUpdateSubtree() {
+            TemplateReference reference = CreateReference("CoordinateOnlyTarget.template.json", "CoordinateOnlyTarget");
+            TemplateLinkResolver resolver = new TemplateLinkResolver();
+            LinkedTemplateContainer sut = new LinkedTemplateContainer(resolver) {
+                TemplateReference = reference.Clone()
+            };
+            TargetableContainer templateContainer = CreateTargetableTemplate("Galaxy workflow", "Original item");
+            templateContainer.Add(new CoordinatesInstruction());
+            resolver.UpdateTemplates(new[] { CreateTemplate(reference, templateContainer) }, true, null);
+            sut.TryResolveTemplate();
+            TargetableContainer materialized = sut.Items.Should().ContainSingle().Subject.Should().BeOfType<TargetableContainer>().Subject;
+            CoordinatesInstruction materializedCoordinatesInstruction = materialized.Items.OfType<CoordinatesInstruction>().Should().ContainSingle().Subject;
+
+            sut.TargetEditor.InputCoordinates.RAHours = 9;
+            sut.TargetEditor.InputCoordinates.RAMinutes = 55;
+            sut.TargetEditor.InputCoordinates.RASeconds = 33.2d;
+            sut.TargetEditor.InputCoordinates.DecDegrees = 69;
+            sut.TargetEditor.InputCoordinates.DecMinutes = 3;
+            sut.TargetEditor.InputCoordinates.DecSeconds = 55.1d;
+
+            sut.HasTargetOverride.Should().BeTrue();
+            materialized.Name.Should().Be("Galaxy workflow");
+            materialized.Target.TargetName.Should().BeEmpty();
+            materialized.Target.InputCoordinates.RAHours.Should().Be(9);
+            materialized.Target.InputCoordinates.RAMinutes.Should().Be(55);
+            materialized.Target.InputCoordinates.RASeconds.Should().BeApproximately(33.2d, 0.0000001);
+            materialized.Target.InputCoordinates.DecDegrees.Should().Be(69);
+            materialized.Target.InputCoordinates.DecMinutes.Should().Be(3);
+            materialized.Target.InputCoordinates.DecSeconds.Should().BeApproximately(55.1d, 0.0000001);
+            materializedCoordinatesInstruction.Inherited.Should().BeTrue();
+            materializedCoordinatesInstruction.Coordinates.Coordinates.RA.Should().BeApproximately(materialized.Target.InputCoordinates.Coordinates.RA, 0.0000001);
+            materializedCoordinatesInstruction.Coordinates.Coordinates.Dec.Should().BeApproximately(materialized.Target.InputCoordinates.Coordinates.Dec, 0.0000001);
+        }
+
+        [Test]
         public void MaterializedDsoTargetChanges_UpdateTargetOverrideAndTargetEditor() {
             TemplateReference reference = CreateReference("ExternalTargetUpdate.template.json", "ExternalTargetUpdate");
             TemplateLinkResolver resolver = new TemplateLinkResolver();
@@ -280,6 +421,12 @@ namespace NINA.Test.Sequencer.Container {
             resolver.UpdateTemplates(new[] { CreateTemplate(reference, templateContainer) }, true, null);
             sut.TryResolveTemplate();
             TargetableContainer materialized = sut.Items.Should().ContainSingle().Subject.Should().BeOfType<TargetableContainer>().Subject;
+            List<string> changedProperties = new List<string>();
+            sut.PropertyChanged += (sender, args) => {
+                if (args.PropertyName != null) {
+                    changedProperties.Add(args.PropertyName);
+                }
+            };
 
             materialized.Target.TargetName = "M101";
             materialized.Target.PositionAngle = 12.3d;
@@ -295,6 +442,46 @@ namespace NINA.Test.Sequencer.Container {
             sut.TargetEditor.InputCoordinates.Coordinates.Dec.Should().BeApproximately(54.3489, 0.0000001);
             sut.TargetEditor.PositionAngle.Should().BeApproximately(12.3d, 0.0000001);
             sut.TargetStatusText.Should().Contain("M101");
+            materialized.Name.Should().Be("M101");
+            changedProperties.Should().Contain(nameof(LinkedTemplateContainer.TargetOverride));
+            changedProperties.Should().Contain(nameof(LinkedTemplateContainer.TargetEditor));
+            changedProperties.Should().Contain(nameof(LinkedTemplateContainer.TargetStatusText));
+        }
+
+        [Test]
+        public void RefreshLinkState_DetectsTargetSupportWithoutMaterializingContent() {
+            TemplateReference reference = CreateReference("LazyTarget.template.json", "LazyTarget");
+            TemplateLinkResolver resolver = new TemplateLinkResolver();
+            TargetableContainer templateContainer = CreateTargetableTemplate("Galaxy workflow", "Original item");
+            resolver.UpdateTemplates(new[] { CreateTemplate(reference, templateContainer) }, true, null);
+            LinkedTemplateContainer sut = new LinkedTemplateContainer(resolver) {
+                TemplateReference = reference.Clone()
+            };
+
+            sut.RefreshLinkState().Should().BeTrue();
+
+            sut.Items.Should().BeEmpty();
+            sut.SupportsTargetOverride.Should().BeTrue();
+            sut.HasTargetOverride.Should().BeFalse();
+
+            TargetableContainer targetSource = CreateTargetableTemplate("M31", "Target item");
+            targetSource.Target.TargetName = "M31";
+            targetSource.Target.InputCoordinates = new InputCoordinates(new Coordinates(0.7123, 41.269, Epoch.J2000, Coordinates.RAType.Hours));
+            targetSource.Target.PositionAngle = 123.4d;
+
+            sut.DropTargetCommand.Execute(new DropIntoParameters(new TargetSequenceContainer(profileServiceMock.Object, targetSource), sut));
+
+            sut.HasTargetOverride.Should().BeTrue();
+            sut.TargetStatusText.Should().Contain("M31");
+            sut.Items.Should().BeEmpty();
+
+            sut.IsExpanded = true;
+
+            TargetableContainer materialized = sut.Items.Should().ContainSingle().Subject.Should().BeOfType<TargetableContainer>().Subject;
+            materialized.Target.TargetName.Should().Be("M31");
+            materialized.Target.InputCoordinates.Coordinates.RA.Should().BeApproximately(0.7123, 0.0000001);
+            materialized.Target.InputCoordinates.Coordinates.Dec.Should().BeApproximately(41.269, 0.0000001);
+            materialized.Target.PositionAngle.Should().BeApproximately(123.4d, 0.0000001);
         }
 
         [Test]
@@ -389,13 +576,35 @@ namespace NINA.Test.Sequencer.Container {
         }
 
         private sealed class TargetableContainer : SequentialContainer, IDeepSkyObjectContainer {
+            private InputTarget target = new InputTarget(Angle.Zero, Angle.Zero, null);
+
             public TargetableContainer() {
                 Target = new InputTarget(Angle.Zero, Angle.Zero, null);
             }
 
-            public InputTarget Target { get; set; }
+            public InputTarget Target {
+                get => target;
+                set {
+                    if (ReferenceEquals(target, value)) {
+                        return;
+                    }
+
+                    if (target != null) {
+                        target.CoordinatesChanged -= Target_OnCoordinatesChanged;
+                    }
+
+                    target = value;
+                    if (target != null) {
+                        target.CoordinatesChanged += Target_OnCoordinatesChanged;
+                    }
+                }
+            }
 
             public NighttimeData NighttimeData => null;
+
+            private void Target_OnCoordinatesChanged(object? sender, EventArgs e) {
+                AfterParentChanged();
+            }
 
             public override object Clone() {
                 TargetableContainer clone = new TargetableContainer {

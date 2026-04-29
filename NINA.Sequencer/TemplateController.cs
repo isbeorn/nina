@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -391,7 +391,7 @@ namespace NINA.Sequencer {
 
         public LinkedTemplateContainer CreateLinkedContainer() {
             LinkedTemplateContainer linkedTemplateContainer = new LinkedTemplateContainer(templateLinkResolver);
-            linkedTemplateContainer.MaterializeFromTemplate(this);
+            linkedTemplateContainer.MaterializeFromTemplate(this, !profileService.ActiveProfile.SequenceSettings.CollapseSequencerTemplatesByDefault);
             return linkedTemplateContainer;
         }
 

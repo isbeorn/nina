@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
@@ -245,29 +245,33 @@ namespace NINA.ViewModel.Sequencer {
                 return;
             }
 
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(ResolveLinkedTemplates));
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => ResolveLinkedTemplates()));
         }
 
-        private void ResolveLinkedTemplates() {
+        private void ResolveLinkedTemplates(bool materializeAll = false) {
             if (Sequencer?.MainContainer == null) {
                 return;
             }
 
-            ResolveLinkedTemplates(Sequencer.MainContainer, 0);
+            ResolveLinkedTemplates(Sequencer.MainContainer, 0, materializeAll);
         }
 
-        private void ResolveLinkedTemplates(ISequenceContainer container, int depth) {
+        private void ResolveLinkedTemplates(ISequenceContainer container, int depth, bool materializeAll) {
             if (depth > 64) {
                 Logger.Warning("Linked template refresh stopped because the linked template nesting is too deep.");
                 return;
             }
 
             if (container is LinkedTemplateContainer linkedTemplateContainer && !linkedTemplateContainer.IsEditing) {
-                linkedTemplateContainer.TryResolveTemplate();
+                if (materializeAll || linkedTemplateContainer.IsMaterialized) {
+                    linkedTemplateContainer.TryResolveTemplate();
+                } else {
+                    linkedTemplateContainer.RefreshLinkState();
+                }
             }
 
             foreach (ISequenceContainer childContainer in container.GetItemsSnapshot().OfType<ISequenceContainer>()) {
-                ResolveLinkedTemplates(childContainer, depth + 1);
+                ResolveLinkedTemplates(childContainer, depth + 1, materializeAll);
             }
         }
 
@@ -602,7 +606,7 @@ namespace NINA.ViewModel.Sequencer {
             var token = cts.Token;
             try {
                 await templateLinkResolver.WaitForInitialLoad(token);
-                ResolveLinkedTemplates();
+                ResolveLinkedTemplates(materializeAll: true);
 
                 IsRunning = true;
                 TaskBarProgressState = TaskbarItemProgressState.Normal;

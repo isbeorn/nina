@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -55,10 +55,13 @@ namespace NINA.Sequencer.Container {
         private InputTarget observedMaterializedTarget;
         private bool suppressTargetEditorUpdate;
         private bool suppressMaterializedTargetUpdate;
+        private bool isDeserializing;
+        private bool resolvedTemplateSupportsTargetOverride;
 
         [ImportingConstructor]
         public LinkedTemplateContainer(ITemplateLinkResolver templateLinkResolver) : base(new SequentialStrategy()) {
             this.templateLinkResolver = templateLinkResolver;
+            IsExpanded = false;
             Name = Loc.Instance["Lbl_SequenceContainer_LinkedTemplateContainer_Name"];
             Description = Loc.Instance["Lbl_SequenceContainer_LinkedTemplateContainer_Description"];
             Category = Loc.Instance["Lbl_SequenceCategory_Container"];
@@ -73,16 +76,19 @@ namespace NINA.Sequencer.Container {
         public LinkedTemplateContainer() : this(null) {
         }
 
+        [OnDeserializing]
+        public void OnLinkedTemplateContainerDeserializing(StreamingContext context) {
+            isDeserializing = true;
+        }
+
         [OnDeserialized]
         public void OnLinkedTemplateContainerDeserialized(StreamingContext context) {
+            isDeserializing = false;
             TemplateReference ??= new TemplateReference();
-            if (TemplateReference.IsValid) {
-                TryResolveTemplate();
-            } else {
-                LinkState = TemplateLinkState.Invalid;
-            }
-
-            ObserveMaterializedTarget(GetMaterializedDeepSkyObjectContainer());
+            ClearMaterializedTemplate();
+            resolvedTemplateSupportsTargetOverride = false;
+            base.IsExpanded = false;
+            LinkState = TemplateReference.IsValid ? TemplateLinkState.Pending : TemplateLinkState.Invalid;
         }
 
         [JsonProperty]
@@ -154,6 +160,20 @@ namespace NINA.Sequencer.Container {
 
         public bool CanSaveTemplate => IsEditing && CanEditTemplate && Items.OfType<ISequenceContainer>().Count() == 1;
 
+        public bool IsMaterialized => Items.Count > 0;
+
+        [JsonProperty]
+        public override bool IsExpanded {
+            get => base.IsExpanded;
+            set {
+                bool wasExpanded = base.IsExpanded;
+                base.IsExpanded = value;
+                if (!isDeserializing && value && !wasExpanded && !IsEditing) {
+                    TryResolveTemplate();
+                }
+            }
+        }
+
         [JsonProperty]
         public LinkedTemplateTargetOverride TargetOverride {
             get => targetOverride;
@@ -162,13 +182,13 @@ namespace NINA.Sequencer.Container {
 
         public InputTarget TargetEditor => EnsureTargetEditor();
 
-        public bool SupportsTargetOverride => GetMaterializedDeepSkyObjectContainer() != null;
+        public bool SupportsTargetOverride => resolvedTemplateSupportsTargetOverride || GetMaterializedDeepSkyObjectContainer() != null;
 
         public bool HasTargetOverride => HasTarget(TargetOverride);
 
         public string TargetStatusText => SupportsTargetOverride
             ? (HasTargetOverride
-                ? string.Format(Loc.Instance["Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected"], TargetOverride.TargetName)
+                ? string.Format(Loc.Instance["Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected"], GetTargetDisplayText(TargetOverride))
                 : Loc.Instance["Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing"])
             : string.Empty;
 
@@ -188,28 +208,49 @@ namespace NINA.Sequencer.Container {
             return null;
         }
 
-        public void MaterializeFromTemplate(TemplatedSequenceContainer template) {
+        private void UpdateReferenceFromTemplate(TemplatedSequenceContainer template) {
+            TemplateReference = template.Reference?.Clone() ?? TemplateReference;
+            TemplateReference.DisplayName = template.Container.Name;
+            Name = string.Format(Loc.Instance["Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName"], template.Container.Name);
+            resolvedTemplateSupportsTargetOverride = template.Container is IDeepSkyObjectContainer;
+            LinkState = TemplateLinkState.Resolved;
+            RaisePropertyChanged(nameof(SourceTemplateName));
+            RaiseTargetPropertiesChanged();
+        }
+
+        public void MaterializeFromTemplate(TemplatedSequenceContainer template, bool? isExpanded = null) {
             if (template?.Container == null) {
                 LinkState = TemplateLinkState.Invalid;
                 return;
             }
 
-            TemplateReference = template.Reference?.Clone() ?? TemplateReference;
-            TemplateReference.DisplayName = template.Container.Name;
+            if (isExpanded.HasValue) {
+                base.IsExpanded = isExpanded.Value;
+            }
+
+            UpdateReferenceFromTemplate(template);
             ISequenceContainer materializedTemplate = (ISequenceContainer)template.Clone();
             ApplyTargetOverride(materializedTemplate);
             materializedTemplate.AttachNewParent(this);
             Items = new ObservableCollection<ISequenceItem> { materializedTemplate };
             ObserveMaterializedTarget(GetMaterializedDeepSkyObjectContainer());
-            Name = string.Format(Loc.Instance["Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName"], template.Container.Name);
-            LinkState = TemplateLinkState.Resolved;
             RaisePropertyChanged(nameof(Items));
-            RaisePropertyChanged(nameof(SourceTemplateName));
+            RaisePropertyChanged(nameof(IsMaterialized));
             RaiseTargetPropertiesChanged();
         }
 
         public bool TryResolveTemplate() {
+            return TryResolveTemplate(true);
+        }
+
+        public bool RefreshLinkState() {
+            return TryResolveTemplate(false);
+        }
+
+        private bool TryResolveTemplate(bool materialize) {
             if (TemplateReference == null || !TemplateReference.IsValid) {
+                resolvedTemplateSupportsTargetOverride = false;
+                RaiseTargetPropertiesChanged();
                 LinkState = TemplateLinkState.Invalid;
                 return false;
             }
@@ -220,17 +261,19 @@ namespace NINA.Sequencer.Container {
             }
 
             if (templateLinkResolver.TryResolve(TemplateReference, out TemplatedSequenceContainer template)) {
-                if (!IsEditing) {
+                if (materialize && !IsEditing) {
                     MaterializeFromTemplate(template);
                 } else {
-                    TemplateReference.DisplayName = template.Container.Name;
-                    RaisePropertyChanged(nameof(SourceTemplateName));
-                    RaisePropertyChanged(nameof(LinkStatusText));
+                    UpdateReferenceFromTemplate(template);
                 }
                 return true;
             }
 
             LinkState = templateLinkResolver.InitialLoadComplete ? TemplateLinkState.Missing : TemplateLinkState.Loading;
+            if (templateLinkResolver.InitialLoadComplete) {
+                resolvedTemplateSupportsTargetOverride = false;
+                RaiseTargetPropertiesChanged();
+            }
             return false;
         }
 
@@ -247,12 +290,16 @@ namespace NINA.Sequencer.Container {
             }
 
             if (LinkState != TemplateLinkState.Resolved) {
-                TryResolveTemplate();
+                RefreshLinkState();
             }
 
             if (LinkState != TemplateLinkState.Resolved) {
                 Issues.Add(LinkStatusText);
                 return false;
+            }
+
+            if (!IsMaterialized) {
+                return true;
             }
 
             bool valid = base.Validate();
@@ -274,6 +321,7 @@ namespace NINA.Sequencer.Container {
                 IsExpanded = IsExpanded,
                 TemplateReference = TemplateReference?.Clone() ?? new TemplateReference(),
                 TargetOverride = TargetOverride?.Clone(),
+                resolvedTemplateSupportsTargetOverride = resolvedTemplateSupportsTargetOverride,
                 LinkState = LinkState,
                 Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem)),
                 Triggers = new ObservableCollection<ISequenceTrigger>(Triggers.Select(t => t.Clone() as ISequenceTrigger)),
@@ -339,6 +387,7 @@ namespace NINA.Sequencer.Container {
             }
 
             SetTargetOverride(LinkedTemplateTargetOverride.FromInputTarget(observedMaterializedTarget), true, false);
+            SynchronizeMaterializedTargetName();
         }
 
         private void SetTargetOverride(LinkedTemplateTargetOverride value, bool updateTargetEditor, bool applyToMaterializedTemplate = true) {
@@ -360,9 +409,9 @@ namespace NINA.Sequencer.Container {
             suppressTargetEditorUpdate = true;
             try {
                 if (TargetOverride != null) {
-                    CopyTarget(TargetOverride, editor);
+                    CopyTarget(TargetOverride, editor, true);
                 } else {
-                    ClearTarget(editor);
+                    ClearTarget(editor, true);
                 }
             } finally {
                 suppressTargetEditorUpdate = false;
@@ -417,15 +466,23 @@ namespace NINA.Sequencer.Container {
             }
 
             if (HasTargetOverride) {
-                CopyTarget(TargetOverride, deepSkyObjectContainer.Target);
-                deepSkyObjectContainer.Name = TargetOverride.TargetName;
+                CopyTarget(TargetOverride, deepSkyObjectContainer.Target, true);
+                SynchronizeMaterializedTargetName();
             } else {
-                ClearTarget(deepSkyObjectContainer.Target);
+                ClearTarget(deepSkyObjectContainer.Target, true);
             }
         }
 
         private IDeepSkyObjectContainer GetMaterializedDeepSkyObjectContainer() {
             return Items.OfType<IDeepSkyObjectContainer>().FirstOrDefault();
+        }
+
+        private void SynchronizeMaterializedTargetName() {
+            IDeepSkyObjectContainer deepSkyObjectContainer = GetMaterializedDeepSkyObjectContainer();
+            if (deepSkyObjectContainer is ISequenceContainer sequenceContainer
+                && !string.IsNullOrWhiteSpace(deepSkyObjectContainer.Target?.TargetName)) {
+                sequenceContainer.Name = deepSkyObjectContainer.Target.TargetName;
+            }
         }
 
         private void ObserveMaterializedTarget(IDeepSkyObjectContainer deepSkyObjectContainer) {
@@ -441,22 +498,52 @@ namespace NINA.Sequencer.Container {
         }
 
         private static bool HasTarget(LinkedTemplateTargetOverride target) {
-            return !string.IsNullOrWhiteSpace(target?.TargetName);
+            return target != null
+                && (!string.IsNullOrWhiteSpace(target.TargetName)
+                    || HasCoordinates(target.InputCoordinates));
         }
 
-        private static void CopyTarget(LinkedTemplateTargetOverride source, InputTarget target) {
+        private static bool HasCoordinates(InputCoordinates inputCoordinates) {
+            Coordinates coordinates = inputCoordinates?.Coordinates;
+            return coordinates != null
+                && (Math.Abs(coordinates.RA) > double.Epsilon || Math.Abs(coordinates.Dec) > double.Epsilon);
+        }
+
+        private static string GetTargetDisplayText(LinkedTemplateTargetOverride target) {
+            if (!string.IsNullOrWhiteSpace(target?.TargetName)) {
+                return target.TargetName;
+            }
+
+            if (HasCoordinates(target?.InputCoordinates)) {
+                return target.InputCoordinates.ToString();
+            }
+
+            return Loc.Instance["Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing"];
+        }
+
+        private static void CopyTarget(LinkedTemplateTargetOverride source, InputTarget target, bool preserveInputCoordinatesInstance = false) {
             if (source == null || target == null) {
                 return;
             }
 
             target.TargetName = source.TargetName ?? string.Empty;
-            target.InputCoordinates = source.InputCoordinates?.Clone() ?? new InputCoordinates();
+            CopyCoordinates(source.InputCoordinates, target, preserveInputCoordinatesInstance);
             target.PositionAngle = source.PositionAngle;
         }
 
-        private static void ClearTarget(InputTarget target) {
+        private static void CopyCoordinates(InputCoordinates source, InputTarget target, bool preserveInputCoordinatesInstance) {
+            InputCoordinates copy = source?.Clone() ?? new InputCoordinates();
+            if (preserveInputCoordinatesInstance && target.InputCoordinates != null) {
+                target.InputCoordinates.Coordinates = copy.Coordinates;
+                return;
+            }
+
+            target.InputCoordinates = copy;
+        }
+
+        private static void ClearTarget(InputTarget target, bool preserveInputCoordinatesInstance = false) {
             target.TargetName = string.Empty;
-            target.InputCoordinates = new InputCoordinates();
+            CopyCoordinates(new InputCoordinates(), target, preserveInputCoordinatesInstance);
             target.PositionAngle = 0;
         }
 
@@ -481,6 +568,10 @@ namespace NINA.Sequencer.Container {
 
         private void BeginEditTemplate() {
             if (!CanEditTemplate) {
+                return;
+            }
+
+            if (!IsMaterialized && !TryResolveTemplate()) {
                 return;
             }
 
@@ -509,6 +600,23 @@ namespace NINA.Sequencer.Container {
         private void CancelEditTemplate() {
             IsEditing = false;
             TryResolveTemplate();
+        }
+
+        private void ClearMaterializedTemplate() {
+            if (Items.Count == 0) {
+                ObserveMaterializedTarget(null);
+                return;
+            }
+
+            foreach (ISequenceItem item in Items.ToArray()) {
+                item.AttachNewParent(null);
+            }
+
+            Items = new ObservableCollection<ISequenceItem>();
+            ObserveMaterializedTarget(null);
+            RaisePropertyChanged(nameof(Items));
+            RaisePropertyChanged(nameof(IsMaterialized));
+            RaiseTargetPropertiesChanged();
         }
     }
 

@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -13,13 +13,17 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NINA.Sequencer.Container;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.Serialization {
 
     public class SequenceJsonConverter {
+        private static readonly IContractResolver ContractResolver = new SequenceContractResolver();
         private ISequencerFactory factory;
 
         private List<JsonConverter> converters;
@@ -39,7 +43,8 @@ namespace NINA.Sequencer.Serialization {
         public string Serialize(ISequenceContainer container) {
             var json = JsonConvert.SerializeObject(container, Formatting.Indented, new JsonSerializerSettings {
                 TypeNameHandling = TypeNameHandling.All,
-                PreserveReferencesHandling = PreserveReferencesHandling.All
+                PreserveReferencesHandling = PreserveReferencesHandling.All,
+                ContractResolver = ContractResolver
             });
             return json;
         }
@@ -57,5 +62,33 @@ namespace NINA.Sequencer.Serialization {
             return JsonConvert.DeserializeObject<ISequenceContainer>(sequenceJSON, settings);
         }
 
+    }
+
+    internal class SequenceContractResolver : DefaultContractResolver {
+
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization) {
+            JsonProperty property = base.CreateProperty(member, memberSerialization);
+
+            if (member.DeclaringType == typeof(SequenceContainer) && IsLinkedTemplateRuntimeState(property.UnderlyingName)) {
+                Predicate<object> shouldSerialize = property.ShouldSerialize;
+                property.ShouldSerialize = instance =>
+                    instance is not LinkedTemplateContainer && (shouldSerialize == null || shouldSerialize(instance));
+            }
+
+            if (member.DeclaringType == typeof(LinkedTemplateContainer)
+                && (property.UnderlyingName == nameof(LinkedTemplateContainer.LinkState)
+                    || property.UnderlyingName == nameof(LinkedTemplateContainer.IsExpanded))) {
+                property.ShouldSerialize = _ => false;
+            }
+
+            return property;
+        }
+
+        private static bool IsLinkedTemplateRuntimeState(string propertyName) {
+            return propertyName == nameof(SequenceContainer.Items)
+                || propertyName == nameof(SequenceContainer.Conditions)
+                || propertyName == nameof(SequenceContainer.Triggers)
+                || propertyName == nameof(SequenceContainer.IsExpanded);
+        }
     }
 }
