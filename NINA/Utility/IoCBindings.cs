@@ -100,8 +100,7 @@ namespace NINA.Utility {
                 services.AddSingleton<IMessageBroker, MessageBroker>();
 
                 services.AddSingleton<ISymbolBroker, SymbolBroker>();
-                services.AddSingleton<TemplateLinkResolver>();
-                services.AddSingleton<ITemplateLinkResolver>(f => f.GetService<TemplateLinkResolver>());
+                services.AddSingleton<ITemplateLinkResolver, TemplateLinkResolver>();
 
                 services.AddTransient<IUsbDeviceWatcher, UsbDeviceWatcher>();
 
