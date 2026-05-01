@@ -92,6 +92,7 @@ This allows you to safely return to a stable release if needed.
   - Plugins that are not updated continue to function normally, but their sequence items will not offer expression support.
 
 - **Sequencer**
+    - Added a **Conditional Instruction Set** container that evaluates a sequencer expression when reached and runs or skips its contained instructions based on the result.
     - Added a new **Trigger On Unsafe** safety monitor trigger. It can run configured instructions when the safety monitor reports unsafe or disconnects after it has been connected, then wait until the safety monitor reports safe again before running follow-up instructions.
     - When triggered, the currently running instruction is interrupted and reset so safety handling can take over immediately.
     - Added a new **Custom Trigger** that uses an existing trigger as its trigger source and runs user-configured instructions when that source would normally fire.

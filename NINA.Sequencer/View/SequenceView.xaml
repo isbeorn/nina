@@ -17,6 +17,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA.View.Sequencer"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -177,6 +178,13 @@
                                                             FontStyle="Italic"
                                                             Text="{ns:Loc Lbl_SequenceContainer_ParallelContainer_Description}" />
                                                     </local:SequenceContainerView.SequenceContainerContent>
+                                                </local:SequenceContainerView>
+                                            </DataTemplate>
+                                            <DataTemplate DataType="{x:Type cont:ConditionalContainer}">
+                                                <local:SequenceContainerView>
+                                                    <local:SequenceContainerView.HeaderContent>
+                                                        <logic:ExprControl Exp="{Binding Path=PredicateExpression, Mode=TwoWay}" Label="Expression:" />
+                                                    </local:SequenceContainerView.HeaderContent>
                                                 </local:SequenceContainerView>
                                             </DataTemplate>
                                             <DataTemplate DataType="{x:Type cont:DeepSkyObjectContainer}">

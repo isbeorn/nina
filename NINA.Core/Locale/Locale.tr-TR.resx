@@ -4298,6 +4298,15 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
     <value>Derin Uzay Objesi Yönerge Seti</value>
   </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
+    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
+    <value>Conditional Instruction Set requires an expression.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
+    <value>Conditional Instruction Set</value>
+  </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Bu yönerge setindeki tüm yönergeler paralel olarak çalıştırılır. Bu yönerge seti, tüm yönergeler tamamlanıncaya kadar herhangi bir koşulu veya tetikleyiciyi değerlendirmeyecektir.</value>
   </data>

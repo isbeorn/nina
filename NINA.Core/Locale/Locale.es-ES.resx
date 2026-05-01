@@ -4298,6 +4298,15 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
     <value>Conjunto de Instrucciones para Objeto del Cielo Profundo</value>
   </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
+    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
+    <value>Conditional Instruction Set requires an expression.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
+    <value>Conditional Instruction Set</value>
+  </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Todas las instrucciones de este conjunto de instrucciones se ejecutan en paralelo. Este conjunto de instrucciones no evaluará ninguna condición ni activador hasta que se terminen todas las instrucciones.</value>
   </data>
@@ -4616,7 +4625,7 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
     <value>Plantillas</value>
   </data>
   <data name="LblLinkedTemplates" xml:space="preserve">
-    <value>Linked Templates</value>
+    <value>Plantillas vinculadas</value>
   </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>Plantillas por defecto</value>
@@ -4625,10 +4634,10 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
     <value>Arrastra aquí el conjunto de instrucciones de secuencia desde la secuencia para crear una nueva plantilla</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
-    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+    <value>Mantenga pulsado Ctrl mientras arrastra una plantilla para añadirla como enlazada en lugar de copiada.</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
-    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
+    <value>Una plantilla vinculada mantiene una conexión en vivo con la plantilla de origen. Su contenido se muestra en la secuencia como una vista previa de sólo lectura y se actualiza automáticamente cuando cambia la plantilla. Usa Editar Plantilla en la plantilla vinculada para actualizar la plantilla de origen. Utiliza un arrastre normal cuando desees una copia independiente.</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>¿Sobrescribir plantilla?</value>
@@ -4988,58 +4997,58 @@ Es mejor utilizarlo junto con otra condición de bucle para no terminar en un bu
     <value>Guardar el conjunto de instrucciones actual y todo su contenido como una plantilla para su reutilización</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
-    <value>Linked Template</value>
+    <value>Plantilla vinculada</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
-    <value>Linked Template: {0}</value>
+    <value>Plantilla vinculada: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
-    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+    <value>Añade una conexión activa a una plantilla de secuencia en lugar de copiarla. El contenido de la plantilla actual se muestra dentro de este contenedor para que pueda inspeccionarse en la secuencia, pero es de solo lectura hasta que se active la opción «Editar Plantilla». Cuando la plantilla de origen cambia, este contenedor se actualiza automáticamente a la última versión. Durante la ejecución, N.I.N.A. espera a que las plantillas hayan terminado de cargarse y, a continuación, ejecuta el contenido de la plantilla actual. Si la plantilla vinculada se basa en un contenedor de destino, la plantilla sigue almacenando únicamente la estructura de secuencia reutilizable; Arrastra un destino sobre la plantilla vinculada para elegir el destino para este uso, y N.I.N.A. volverá a aplicar ese destino cada vez que se actualice la plantilla. Utiliza esto cuando varias secuencias deban seguir la misma plantilla; utiliza una arrastre de plantilla normal cuando desees una copia independiente. Añade una desde el menú "Plantillas vinculadas", o mantén pulsada la tecla Ctrl mientras arrastras una plantilla en la secuencia para añadirla como vinculada.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
-    <value>Linked template preview</value>
+    <value>Vista previa de plantilla vinculada</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
-    <value>Editing linked template</value>
+    <value>Editando plantilla vinculada</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
-    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+    <value>Vista previa de solo lectura de "{0}". Utilice "Editar plantilla" para cambiar la plantilla de origen.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
-    <value>Editing the source template. Saving updates the template for every linked use.</value>
+    <value>Editando la plantilla de origen. Guardar actualiza la plantilla para cada uso enlazado.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
-    <value>Waiting for template "{0}" to finish loading.</value>
+    <value>Esperando a la plantilla "{0}" para terminar de cargar.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
-    <value>Template "{0}" could not be found.</value>
+    <value>No se pudo encontrar la plantilla "{0}".</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
-    <value>This linked template does not have a valid source template.</value>
+    <value>Esta plantilla vinculada no tiene una plantilla de origen válida.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
-    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+    <value>Las plantillas por defecto no se pueden editar directamente. Guarda primero la plantilla como una plantilla de usuario.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
-    <value>Edit Template</value>
+    <value>Editar Plantilla</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
-    <value>Save Template</value>
+    <value>Guardar plantilla</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
-    <value>Cancel Template Editing</value>
+    <value>Cancelar edición de plantilla</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
-    <value>Target: {0}</value>
+    <value>Objetivo: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
-    <value>No target selected. Drop a target here or enter target details below.</value>
+    <value>No se ha seleccionado ningún objetivo. Mueve un objetivo aquí o introduce los detalles a continuación.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
-    <value>Use this target with the linked template</value>
+    <value>Usar este objetivo con la plantilla vinculada</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
-    <value>Select a target for this linked template before running the sequence.</value>
+    <value>Seleccione un objetivo para esta plantilla vinculada antes de ejecutar la secuencia.</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>Monitor de seguridad no está conectado</value>

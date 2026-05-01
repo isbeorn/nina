@@ -4300,6 +4300,15 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
     <value>Zestaw instrukcji dla obiektów DS</value>
   </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
+    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
+    <value>Conditional Instruction Set requires an expression.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
+    <value>Conditional Instruction Set</value>
+  </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Wszystkie instrukcje w tym zestawie są wykonywane równolegle. Żadne warunki ani wyzwalacze nie są weryfikowane, dopóki wszystkie instrukcje nie zostaną wypełnione.</value>
   </data>
