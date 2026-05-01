@@ -4304,6 +4304,15 @@ No caso de ser necessário efectuar o aquecimento de uma forma mais prolongada, 
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
     <value>Conjunto de Instruções de Objetos do Céu Profundo</value>
   </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
+    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
+    <value>Conditional Instruction Set requires an expression.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
+    <value>Conditional Instruction Set</value>
+  </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Todas as instruções deste conjunto de instruções são executadas em paralelo. Esse conjunto de instruções não avaliará nenhuma condição ou acção até que todas as instruções sejam finalizadas.</value>
   </data>
