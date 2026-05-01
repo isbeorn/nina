@@ -3337,10 +3337,10 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
     <value>Tranzit Jih</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
-    <value>North</value>
+    <value>Sever</value>
   </data>
   <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
+    <value>Jih</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Čas přechodu</value>
@@ -4303,6 +4303,15 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
     <value>Sada instrukcí pro DSO</value>
   </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
+    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
+    <value>Conditional Instruction Set requires an expression.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
+    <value>Conditional Instruction Set</value>
+  </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Všechny pokyny v této instrukční sadě jsou spuštěny paralelně. Tato instrukční sada nevyhodnotí žádné podmínky ani spouštěče události, dokud nebudou dokončeny všechny pokyny.</value>
   </data>
@@ -4538,7 +4547,7 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
     <value>Resume Tracking and Flip</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>Stabilizace</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>Kamera nemá chlazení proto nemůže nastavit teplotu</value>
@@ -4622,7 +4631,7 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
     <value>Šablony</value>
   </data>
   <data name="LblLinkedTemplates" xml:space="preserve">
-    <value>Linked Templates</value>
+    <value>Propojené šablony</value>
   </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>Výchozí Šablony</value>
@@ -4631,10 +4640,10 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
     <value>Přetáhněte Sadu Pokynů ze Sekvence pro vytvoření nové Šablony</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
-    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+    <value>Při přetahování šablony podržte klávesu Ctrl, aby se šablona přidala jako odkaz namísto kopie.</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
-    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
+    <value>Propojená šablona udržuje živé propojení se zdrojovou šablonou. Její obsah se v sekvenci zobrazuje jako náhled pouze pro čtení a automaticky se aktualizuje, jakmile dojde ke změně zdrojové šablony. Chcete-li aktualizovat zdrojovou šablonu, použijte u propojené šablony funkci Upravit šablonu. Pokud chcete vytvořit samostatnou kopii, použijte běžné vložení.</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>Přepsat Šablonu?</value>
@@ -4994,58 +5003,58 @@ Použijte ve spojení s jinou podmínkou cyklu, kdy bezpečnost hlásí bezpečn
     <value>Uloží aktuální instrukční sadu a veškerý obsah jako šablonu pro opětovné použití</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
-    <value>Linked Template</value>
+    <value>Propojená šablona</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
-    <value>Linked Template: {0}</value>
+    <value>Odkaz na šablonu: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
-    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+    <value>Přidá živé propojení se šablonou sekvence namísto jejího kopírování. Aktuální obsah šablony se zobrazí uvnitř tohoto kontejneru, takže jej lze v sekvenci prohlížet, ale je pouze pro čtení, dokud není povolena funkce Upravit šablonu. Jakmile se zdrojová šablona změní, tento kontejner se automaticky aktualizuje na nejnovější verzi. Během provádění N.I.N.A. počká, až se šablony dokončí načítání, a poté provede aktuální obsah šablony. Pokud je propojená šablona založena na cílovém kontejneru, šablona stále ukládá pouze strukturu sekvence, kterou lze znovu použít; přetáhněte cíl na propojenou šablonu, abyste vybrali cíl pro toto použití, a N.I.N.A. tento cíl znovu použije při každé aktualizaci šablony. Tuto funkci použijte, pokud má několik sekvencí následovat stejnou šablonu; pokud chcete nezávislou kopii, použijte normální přetažení šablony. Přidejte ji z nabídky Propojené šablony nebo podržte klávesu Ctrl při přetažení šablony do sekvence, aby se šablona připojila.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
-    <value>Linked template preview</value>
+    <value>Náhled propojené šablony</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
-    <value>Editing linked template</value>
+    <value>Úprava propojené šablony</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
-    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+    <value>Náhled souboru „{0}“ pouze pro čtení. Chcete-li změnit zdrojovou šablonu, použijte funkci Upravit šablonu.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
-    <value>Editing the source template. Saving updates the template for every linked use.</value>
+    <value>Úprava zdrojové šablony. Uložením se šablona aktualizuje ve všech propojených instancích.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
-    <value>Waiting for template "{0}" to finish loading.</value>
+    <value>Čekám na dokončení načítání šablony „{0}“.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
-    <value>Template "{0}" could not be found.</value>
+    <value>Šablonu „{0}“ se nepodařilo najít.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
-    <value>This linked template does not have a valid source template.</value>
+    <value>Tato propojená šablona nemá platnou zdrojovou šablonu.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
-    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+    <value>Výchozí šablony nelze upravovat přímo. Nejprve šablonu uložte jako uživatelskou šablonu.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
-    <value>Edit Template</value>
+    <value>Upravit šablonu</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
-    <value>Save Template</value>
+    <value>Uložit šablonu</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
-    <value>Cancel Template Editing</value>
+    <value>Zrušit úpravy šablony</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
-    <value>Target: {0}</value>
+    <value>Cíl: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
-    <value>No target selected. Drop a target here or enter target details below.</value>
+    <value>Není vybrán žádný cíl. Umístěte sem cíl nebo zadejte podrobnosti o cíli níže.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
-    <value>Use this target with the linked template</value>
+    <value>Tento cíl použijte spolu s připojenou šablonou</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
-    <value>Select a target for this linked template before running the sequence.</value>
+    <value>Před spuštěním sekvence vyberte cíl pro tuto propojenou šablonu.</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>Bezpečnost nepřipojena</value>
@@ -6619,7 +6628,7 @@ Toto se vyhodnotí PO nastavení "Zaparkovat montáž před pohybem štěrbiny".
     <value>Cílový Výkon Ohřívače</value>
   </data>
   <data name="LblColoredContainerBorders" xml:space="preserve">
-    <value>Colored Container Borders</value>
+    <value>Barevné Ohraničení Kontejnerů</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Hardwarová Akcelerace</value>
@@ -8005,10 +8014,10 @@ To se hodí v případě, že vestavěný spouštěč má sice požadované nač
     <value>Zde zadejte příkazy, které se mají spustit při aktivaci vybraného spouštěcího zdroje.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
-    <value>ADD TRIGGER SOURCE</value>
+    <value>PŘIDAT ZDROJ SPOUŠTĚČE</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
-    <value>ADD CUSTOM INSTRUCTIONS</value>
+    <value>PŘIDAT VLASTNÍ POKYNY</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
     <value>Přidejte zdroj spouštěče.</value>
