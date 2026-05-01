@@ -163,6 +163,7 @@
                             Background="{StaticResource SecondaryBackgroundBrush}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
@@ -179,7 +180,12 @@
                                 IsEnabled="{Binding Status, Converter={StaticResource StatusToEnabledConverter}}"
                                 Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                                 TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}" />
-                            <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
+                            <ContentPresenter
+                                Grid.Column="1"
+                                Margin="5,0,10,0"
+                                VerticalAlignment="Center"
+                                Content="{Binding HeaderContent, ElementName=UC}" />
+                            <Border Grid.Column="2" Background="{StaticResource SecondaryBackgroundBrush}">
                                 <ContentPresenter
                                     Margin="2,0,10,0"
                                     HorizontalAlignment="Right"
@@ -189,7 +195,7 @@
                             </Border>
                             <Border
                                 x:Name="ButtonCommands"
-                                Grid.Column="2"
+                                Grid.Column="3"
                                 HorizontalAlignment="Stretch"
                                 Background="{StaticResource SecondaryBackgroundBrush}">
                                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">

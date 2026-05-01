@@ -35,6 +35,7 @@ using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.Sequencer.Logic;
@@ -82,6 +83,7 @@ namespace NINA.Test.Sequencer {
             [nameof(AutofocusAfterTemperatureChangeTrigger)] = () => new AutofocusAfterTemperatureChangeTrigger(CreateProfileService(), CreateImageHistory(), CreateCameraMediator(), CreateFilterWheelMediator(), CreateFocuserMediator(), CreateAutoFocusVMFactory(), CreateSafetyMonitorMediator()),
             [nameof(AutofocusAfterTimeTrigger)] = () => new AutofocusAfterTimeTrigger(CreateProfileService(), CreateImageHistory(), CreateCameraMediator(), CreateFilterWheelMediator(), CreateFocuserMediator(), CreateAutoFocusVMFactory(), CreateSafetyMonitorMediator()),
             [nameof(CenterAfterDriftTrigger)] = () => new CenterAfterDriftTrigger(CreateProfileService(), CreateTelescopeMediator(), CreateFilterWheelMediator(), CreateGuiderMediator(), CreateImagingMediator(), CreateCameraMediator(), CreateDomeMediator(), CreateDomeFollower(), CreateImageSaveMediator(), CreateApplicationStatusMediator(), CreateSafetyMonitorMediator()),
+            [nameof(ConditionalContainer)] = () => new ConditionalContainer(),
             [nameof(CoolCamera)] = () => new CoolCamera(CreateCameraMediator()),
             [nameof(CoordinatesInstruction)] = () => new CoordinatesInstruction(),
             [nameof(DitherAfterExposures)] = () => new DitherAfterExposures(CreateGuiderMediator(), CreateImageHistory(), CreateProfileService(), CreateSafetyMonitorMediator()),
