@@ -14,7 +14,9 @@
 
 using FluentAssertions;
 using Microsoft.Xaml.Behaviors;
+using NINA.CustomControlLibrary;
 using NINA.Sequencer.Behaviors;
+using NINA.Sequencer.Container;
 using NUnit.Framework;
 using System;
 using System.Reflection;
@@ -31,14 +33,41 @@ namespace NINA.Test.Sequencer.Behaviors {
 
         [Test]
         [Apartment(ApartmentState.STA)]
-        public void ApplyPreviewState_ReadOnlySuppressesOnlyMaterializedChildHitTesting() {
+        public void ApplyPreviewState_ReadOnlyKeepsMaterializedContainersExpandableButSuppressesEdits() {
             LinkedTemplatePreviewBehavior sut = new LinkedTemplatePreviewBehavior();
             TreeView treeView = new TreeView {
                 Width = 200,
                 Height = 200
             };
             TreeViewItem linkedTemplateItem = new TreeViewItem();
-            linkedTemplateItem.Items.Add("Materialized template");
+            TreeViewItem materializedContainer = new TreeViewItem {
+                DataContext = new SequentialContainer()
+            };
+            TreeViewItem materializedInstruction = new TreeViewItem {
+                DataContext = new object(),
+                Header = "Instruction"
+            };
+            Button editButton = new Button();
+            TextBox editableName = new TextBox();
+            Border dropSurface = new Border();
+            DragDropBehavior dragDropBehavior = new DragDropBehavior(new Grid());
+            DragOverBehavior dragOverBehavior = new DragOverBehavior(new Grid());
+            DropIntoBehavior dropIntoBehavior = new DropIntoBehavior();
+            Interaction.GetBehaviors(dropSurface).Add(dragDropBehavior);
+            Interaction.GetBehaviors(dropSurface).Add(dragOverBehavior);
+            Interaction.GetBehaviors(dropSurface).Add(dropIntoBehavior);
+            materializedContainer.Header = new DetachingExpander {
+                Header = new StackPanel {
+                    Children = {
+                        editableName,
+                        editButton
+                    }
+                },
+                Content = dropSurface,
+                IsExpanded = true
+            };
+            linkedTemplateItem.Items.Add(materializedContainer);
+            linkedTemplateItem.Items.Add(materializedInstruction);
             linkedTemplateItem.IsExpanded = true;
             treeView.Items.Add(linkedTemplateItem);
             treeView.Measure(new Size(200, 200));
@@ -46,28 +75,78 @@ namespace NINA.Test.Sequencer.Behaviors {
             treeView.UpdateLayout();
             linkedTemplateItem.UpdateLayout();
 
-            TreeViewItem materializedChild = linkedTemplateItem.ItemContainerGenerator.ContainerFromIndex(0) as TreeViewItem;
-            materializedChild.Should().NotBeNull();
-            DragDropBehavior dragDropBehavior = new DragDropBehavior(new Grid());
-            DropIntoBehavior dropIntoBehavior = new DropIntoBehavior();
-            Interaction.GetBehaviors(materializedChild).Add(dragDropBehavior);
-            Interaction.GetBehaviors(materializedChild).Add(dropIntoBehavior);
             SetPrivateField(sut, "linkedTemplateTreeViewItem", linkedTemplateItem);
 
             InvokePrivate(sut, "ApplyPreviewState");
 
-            materializedChild.IsHitTestVisible.Should().BeFalse();
-            materializedChild.IsEnabled.Should().BeTrue();
-            materializedChild.Opacity.Should().BeApproximately(0.55d, 0.001d);
-            dragDropBehavior.IsEnabled.Should().BeTrue();
+            materializedContainer.IsHitTestVisible.Should().BeTrue();
+            materializedContainer.IsEnabled.Should().BeTrue();
+            materializedContainer.Opacity.Should().BeApproximately(0.75d, 0.001d);
+            materializedInstruction.IsHitTestVisible.Should().BeFalse();
+            editableName.IsHitTestVisible.Should().BeFalse();
+            editButton.IsHitTestVisible.Should().BeFalse();
+            dragDropBehavior.IsEnabled.Should().BeFalse();
+            dragOverBehavior.Enabled.Should().BeFalse();
+            dropIntoBehavior.IsEnabled.Should().BeFalse();
 
             sut.IsEditing = true;
             InvokePrivate(sut, "ApplyPreviewState");
 
-            materializedChild.IsHitTestVisible.Should().BeTrue();
-            materializedChild.IsEnabled.Should().BeTrue();
-            materializedChild.Opacity.Should().Be(1d);
+            materializedContainer.IsHitTestVisible.Should().BeTrue();
+            materializedContainer.IsEnabled.Should().BeTrue();
+            materializedContainer.Opacity.Should().Be(1d);
+            materializedInstruction.IsHitTestVisible.Should().BeTrue();
+            editableName.IsHitTestVisible.Should().BeTrue();
+            editButton.IsHitTestVisible.Should().BeTrue();
             dragDropBehavior.IsEnabled.Should().BeTrue();
+            dragOverBehavior.Enabled.Should().BeTrue();
+            dropIntoBehavior.IsEnabled.Should().BeTrue();
+        }
+
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void ApplyPreviewState_NestedReadOnlyLinkedTemplatesDoNotStackOpacity() {
+            LinkedTemplatePreviewBehavior outerBehavior = new LinkedTemplatePreviewBehavior();
+            LinkedTemplatePreviewBehavior nestedBehavior = new LinkedTemplatePreviewBehavior();
+            TreeView treeView = new TreeView {
+                Width = 300,
+                Height = 300
+            };
+            TreeViewItem outerLinkedTemplate = new TreeViewItem {
+                DataContext = new LinkedTemplateContainer()
+            };
+            TreeViewItem outerMaterializedContainer = new TreeViewItem {
+                DataContext = new SequentialContainer()
+            };
+            TreeViewItem nestedLinkedTemplate = new TreeViewItem {
+                DataContext = new LinkedTemplateContainer()
+            };
+            TreeViewItem nestedMaterializedContainer = new TreeViewItem {
+                DataContext = new SequentialContainer()
+            };
+            nestedLinkedTemplate.Items.Add(nestedMaterializedContainer);
+            outerMaterializedContainer.Items.Add(nestedLinkedTemplate);
+            outerLinkedTemplate.Items.Add(outerMaterializedContainer);
+            outerLinkedTemplate.IsExpanded = true;
+            outerMaterializedContainer.IsExpanded = true;
+            nestedLinkedTemplate.IsExpanded = true;
+            treeView.Items.Add(outerLinkedTemplate);
+            treeView.Measure(new Size(300, 300));
+            treeView.Arrange(new Rect(0, 0, 300, 300));
+            treeView.UpdateLayout();
+            outerLinkedTemplate.UpdateLayout();
+            outerMaterializedContainer.UpdateLayout();
+            nestedLinkedTemplate.UpdateLayout();
+
+            SetPrivateField(outerBehavior, "linkedTemplateTreeViewItem", outerLinkedTemplate);
+            SetPrivateField(nestedBehavior, "linkedTemplateTreeViewItem", nestedLinkedTemplate);
+
+            InvokePrivate(outerBehavior, "ApplyPreviewState");
+            InvokePrivate(nestedBehavior, "ApplyPreviewState");
+
+            outerMaterializedContainer.Opacity.Should().BeApproximately(0.75d, 0.001d);
+            nestedLinkedTemplate.Opacity.Should().Be(1d);
+            nestedMaterializedContainer.Opacity.Should().Be(1d);
         }
 
         [Test]

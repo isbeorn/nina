@@ -47,6 +47,10 @@ namespace NINA.Test.Sequencer.Behaviors {
             sut.CanDropInto(typeof(string)).Should().BeFalse();
             sut.CanDropInto(null).Should().BeFalse();
 
+            sut.IsEnabled = false;
+            sut.CanDropInto(typeof(UnknownSequenceItem)).Should().BeFalse();
+            sut.IsEnabled = true;
+
             target.IsEnabled = false;
 
             sut.CanDropInto(typeof(UnknownSequenceItem)).Should().BeFalse();

@@ -33,6 +33,8 @@ namespace NINA.Sequencer.Behaviors {
         public static readonly DependencyProperty AllowedDragDropTypesProperty = DependencyProperty.Register(nameof(AllowedDragDropTypesString),
             typeof(string), typeof(DropIntoBehavior));
 
+        public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register(nameof(IsEnabled), typeof(bool), typeof(DropIntoBehavior), new PropertyMetadata(true));
+
         public DropIntoBehavior() {
             AllowedDragDropTypesString = string.Empty;
         }
@@ -62,6 +64,11 @@ namespace NINA.Sequencer.Behaviors {
             set => SetValue(OnDropCommandProperty, value);
         }
 
+        public bool IsEnabled {
+            get => (bool)GetValue(IsEnabledProperty);
+            set => SetValue(IsEnabledProperty, value);
+        }
+
         protected override void OnAttached() {
             base.OnAttached();
             //Debug.WriteLine("++ DropIntoBehavior attached to " + AssociatedObject.GetHashCode());
@@ -73,6 +80,7 @@ namespace NINA.Sequencer.Behaviors {
         }
 
         public bool CanDropInto(Type type) {
+            if (!IsEnabled) { return false; }
             if (type == null) { return false; }
             if (AssociatedObject?.IsEnabled != true) { return false; }
             if (!AllowedDragDropTypes.Any()) return true;
@@ -80,6 +88,7 @@ namespace NINA.Sequencer.Behaviors {
         }
 
         public void ExecuteDropInto(DropIntoParameters parameter) {
+            if (!IsEnabled) { return; }
             if (!CanDropInto(parameter?.Source?.GetType())) return;
             if (AssociatedObject == null) return;
             if (!AssociatedObject.IsEnabled) { return; }

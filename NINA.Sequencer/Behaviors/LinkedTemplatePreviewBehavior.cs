@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Microsoft.Xaml.Behaviors;
+using NINA.Sequencer.Container;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -24,7 +25,7 @@ using System.Windows.Threading;
 namespace NINA.Sequencer.Behaviors {
 
     public class LinkedTemplatePreviewBehavior : Behavior<FrameworkElement> {
-        private const double ReadOnlyOpacity = 0.55d;
+        private const double ReadOnlyOpacity = 0.75d;
 
         public static readonly DependencyProperty IsEditingProperty = DependencyProperty.Register(
             nameof(IsEditing),
@@ -32,7 +33,8 @@ namespace NINA.Sequencer.Behaviors {
             typeof(LinkedTemplatePreviewBehavior),
             new PropertyMetadata(false, IsEditingChanged));
 
-        private readonly List<ChildPreviewState> styledChildren = new List<ChildPreviewState>();
+        private readonly List<PreviewState> previewStates = new List<PreviewState>();
+        private readonly List<ItemContainerGenerator> observedDescendantGenerators = new List<ItemContainerGenerator>();
         private TreeViewItem linkedTemplateTreeViewItem;
 
         public bool IsEditing {
@@ -115,6 +117,7 @@ namespace NINA.Sequencer.Behaviors {
 
         private void DetachFromTreeViewItem() {
             RestoreStyledChildren();
+            DetachFromDescendantGenerators();
             if (linkedTemplateTreeViewItem == null) {
                 return;
             }
@@ -159,8 +162,10 @@ namespace NINA.Sequencer.Behaviors {
             }
 
             RestoreStyledChildren();
+            DetachFromDescendantGenerators();
 
             bool isEditing = IsEditing;
+            bool applyReadOnlyOpacity = !isEditing && !HasReadOnlyLinkedTemplateAncestor();
             for (int i = 0; i < linkedTemplateTreeViewItem.Items.Count; i++) {
                 TreeViewItem child = linkedTemplateTreeViewItem.ItemContainerGenerator.ContainerFromIndex(i) as TreeViewItem;
                 if (child == null) {
@@ -171,20 +176,143 @@ namespace NINA.Sequencer.Behaviors {
                     continue;
                 }
 
-                ChildPreviewState state = new ChildPreviewState(child, child.IsHitTestVisible, child.Opacity);
-                styledChildren.Add(state);
-                child.IsHitTestVisible = isEditing;
-                child.Opacity = isEditing ? 1d : ReadOnlyOpacity;
+                bool allowContainerExpansion = IsSequenceContainerTreeViewItem(child);
+                StoreHitTestState(child);
+                StoreOpacityState(child);
+                child.IsHitTestVisible = isEditing || allowContainerExpansion;
+                child.Opacity = applyReadOnlyOpacity ? ReadOnlyOpacity : 1d;
+
+                if (!isEditing && allowContainerExpansion) {
+                    ApplyReadOnlyContainerPreviewState(child);
+                }
             }
         }
 
         private void RestoreStyledChildren() {
-            foreach (ChildPreviewState state in styledChildren) {
-                state.Child.IsHitTestVisible = state.IsHitTestVisible;
-                state.Child.Opacity = state.Opacity;
+            foreach (PreviewState state in previewStates) {
+                state.Restore();
             }
 
-            styledChildren.Clear();
+            previewStates.Clear();
+        }
+
+        private void ApplyReadOnlyContainerPreviewState(TreeViewItem containerTreeViewItem) {
+            foreach (DependencyObject current in EnumerateSelfAndDescendants(containerTreeViewItem)) {
+                if (current is TreeViewItem treeViewItem) {
+                    ObserveDescendantGenerator(treeViewItem);
+                    if (!ReferenceEquals(treeViewItem, containerTreeViewItem)) {
+                        StoreHitTestState(treeViewItem);
+                        bool allowContainerExpansion = IsSequenceContainerTreeViewItem(treeViewItem);
+                        treeViewItem.IsHitTestVisible = allowContainerExpansion;
+                    }
+                }
+
+                if (current is FrameworkElement frameworkElement) {
+                    DisablePreviewBehaviors(frameworkElement);
+                    if (ShouldSuppressHitTesting(frameworkElement)) {
+                        StoreHitTestState(frameworkElement);
+                        frameworkElement.IsHitTestVisible = false;
+                    }
+                }
+            }
+        }
+
+        private void DisablePreviewBehaviors(FrameworkElement frameworkElement) {
+            foreach (Behavior behavior in Interaction.GetBehaviors(frameworkElement)) {
+                if (behavior is DragDropBehavior dragDropBehavior) {
+                    bool isEnabled = dragDropBehavior.IsEnabled;
+                    previewStates.Add(new PreviewState(() => dragDropBehavior.IsEnabled = isEnabled));
+                    dragDropBehavior.IsEnabled = false;
+                } else if (behavior is DragOverBehavior dragOverBehavior) {
+                    bool isEnabled = dragOverBehavior.Enabled;
+                    previewStates.Add(new PreviewState(() => dragOverBehavior.Enabled = isEnabled));
+                    dragOverBehavior.Enabled = false;
+                } else if (behavior is DropIntoBehavior dropIntoBehavior) {
+                    bool isEnabled = dropIntoBehavior.IsEnabled;
+                    previewStates.Add(new PreviewState(() => dropIntoBehavior.IsEnabled = isEnabled));
+                    dropIntoBehavior.IsEnabled = false;
+                }
+            }
+        }
+
+        private void StoreHitTestState(UIElement element) {
+            bool isHitTestVisible = element.IsHitTestVisible;
+            previewStates.Add(new PreviewState(() => element.IsHitTestVisible = isHitTestVisible));
+        }
+
+        private void StoreOpacityState(UIElement element) {
+            double opacity = element.Opacity;
+            previewStates.Add(new PreviewState(() => element.Opacity = opacity));
+        }
+
+        private static bool IsSequenceContainerTreeViewItem(TreeViewItem treeViewItem) {
+            return treeViewItem?.DataContext is ISequenceContainer || treeViewItem?.Header is ISequenceContainer;
+        }
+
+        private bool HasReadOnlyLinkedTemplateAncestor() {
+            DependencyObject current = linkedTemplateTreeViewItem;
+            while (current != null) {
+                current = VisualTreeHelper.GetParent(current);
+                if (current is TreeViewItem treeViewItem
+                    && TryGetLinkedTemplateContainer(treeViewItem, out LinkedTemplateContainer linkedTemplateContainer)
+                    && !linkedTemplateContainer.IsEditing) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool TryGetLinkedTemplateContainer(TreeViewItem treeViewItem, out LinkedTemplateContainer linkedTemplateContainer) {
+            linkedTemplateContainer = treeViewItem?.DataContext as LinkedTemplateContainer
+                ?? treeViewItem?.Header as LinkedTemplateContainer;
+            return linkedTemplateContainer != null;
+        }
+
+        private static bool ShouldSuppressHitTesting(FrameworkElement element) {
+            return element is TextBoxBase
+                || element is Selector
+                || element is RangeBase
+                || (element is ButtonBase && !IsExpanderHeaderToggle(element));
+        }
+
+        private static bool IsExpanderHeaderToggle(FrameworkElement element) {
+            return element is ToggleButton toggleButton && toggleButton.TemplatedParent is Expander;
+        }
+
+        private void ObserveDescendantGenerator(TreeViewItem treeViewItem) {
+            ItemContainerGenerator generator = treeViewItem?.ItemContainerGenerator;
+            if (generator == null || ReferenceEquals(treeViewItem, linkedTemplateTreeViewItem) || observedDescendantGenerators.Contains(generator)) {
+                return;
+            }
+
+            generator.StatusChanged += ItemContainerGenerator_StatusChanged;
+            generator.ItemsChanged += ItemContainerGenerator_ItemsChanged;
+            observedDescendantGenerators.Add(generator);
+        }
+
+        private void DetachFromDescendantGenerators() {
+            foreach (ItemContainerGenerator generator in observedDescendantGenerators) {
+                generator.StatusChanged -= ItemContainerGenerator_StatusChanged;
+                generator.ItemsChanged -= ItemContainerGenerator_ItemsChanged;
+            }
+
+            observedDescendantGenerators.Clear();
+        }
+
+        private static IEnumerable<DependencyObject> EnumerateSelfAndDescendants(DependencyObject root) {
+            if (root == null) {
+                yield break;
+            }
+
+            yield return root;
+
+            int childCount = VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < childCount; i++) {
+                foreach (DependencyObject child in EnumerateSelfAndDescendants(VisualTreeHelper.GetChild(root, i))) {
+                    yield return child;
+                }
+            }
         }
 
         private static T FindAncestor<T>(DependencyObject current) where T : DependencyObject {
@@ -199,16 +327,16 @@ namespace NINA.Sequencer.Behaviors {
             return null;
         }
 
-        private sealed class ChildPreviewState {
-            public ChildPreviewState(TreeViewItem child, bool isHitTestVisible, double opacity) {
-                Child = child;
-                IsHitTestVisible = isHitTestVisible;
-                Opacity = opacity;
+        private sealed class PreviewState {
+            private readonly Action restore;
+
+            public PreviewState(Action restore) {
+                this.restore = restore;
             }
 
-            public TreeViewItem Child { get; }
-            public bool IsHitTestVisible { get; }
-            public double Opacity { get; }
+            public void Restore() {
+                restore();
+            }
         }
     }
 }
