@@ -437,6 +437,10 @@ namespace NINA.Test.Sequencer.Logic {
 
             bracedExpression.DefaultString.Should().Be("{Auto}");
 
+            var noDefaultExpression = new Expression("", _context.Object);
+
+            noDefaultExpression.DefaultString.Should().Be("--");
+
             var invalidExpression = new Expression("notDefined", _context.Object);
             invalidExpression.Default = 12;
             invalidExpression.DefaultString = "Fallback";

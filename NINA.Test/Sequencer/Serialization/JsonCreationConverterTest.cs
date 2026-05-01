@@ -250,6 +250,30 @@ namespace NINA.Test.Sequencer.Serialization {
         }
 
         /// <summary>
+        /// Verifies the Sequence Json Converter Round Trips Conditional Container Expression Through Factory Converters scenario for the sequencer behavior under test.
+        /// </summary>
+        [Test]
+        public void SequenceJsonConverter_RoundTripsConditionalContainerExpressionThroughFactoryConverters() {
+            TestSequencerFactory factory = new TestSequencerFactory();
+            factory.ContainersByType[typeof(ConditionalContainer)] = new ConditionalContainer();
+            SequenceJsonConverter sut = new SequenceJsonConverter(factory);
+            ConditionalContainer source = new ConditionalContainer {
+                Name = "Renamed Conditional",
+                IsExpanded = false
+            };
+            source.PredicateExpression.Definition = "1 + 1";
+
+            string json = sut.Serialize(source);
+            ISequenceContainer result = sut.Deserialize(json, sourcePath: @"C:\sequence.template.json");
+
+            json.Should().Contain("$type").And.Contain(nameof(ConditionalContainer)).And.Contain(nameof(ConditionalContainer.PredicateDefinition));
+            ConditionalContainer conditional = result.Should().BeOfType<ConditionalContainer>().Subject;
+            conditional.Name.Should().Be("Renamed Conditional");
+            conditional.IsExpanded.Should().BeFalse();
+            conditional.PredicateExpression.Definition.Should().Be("1 + 1");
+        }
+
+        /// <summary>
         /// Verifies the Sequence Condition Creation Converter Creates Registered Condition Or Unknown Fallbacks scenario for the sequencer behavior under test.
         /// </summary>
         [Test]

@@ -36,7 +36,8 @@ namespace NINA.View.Sequencer.Converter {
                 throw new ArgumentException("Invalid Type for converter - Must be ISequenceContainer");
             }
 
-            if (container.Strategy.GetType() == typeof(ParallelStrategy)) {
+            if (container.Strategy.GetType() == typeof(ParallelStrategy)
+                || container.Strategy.GetType() == typeof(ConditionalStrategy)) {
                 return Visibility.Collapsed;
             } else {
                 return Visibility.Visible;

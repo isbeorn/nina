@@ -42,6 +42,17 @@ namespace NINA.Test.Sequencer.View.Converter {
         }
 
         [Test]
+        public void Convert_ConditionalStrategy_Collapsed() {
+            var container = new Mock<ISequenceContainer>();
+            container.Setup(x => x.Strategy).Returns(new ConditionalStrategy());
+
+            var sut = new StrategyEvaluatesConditionsAndTriggersToVisibilityConverter();
+            var conversion = sut.Convert(container.Object, default, default, default);
+
+            conversion.Should().Be(Visibility.Collapsed);
+        }
+
+        [Test]
         public void Convert_OtherStrategy_Collapsed() {
             var container = new Mock<ISequenceContainer>();
             container.Setup(x => x.Strategy).Returns(new Mock<IExecutionStrategy>().Object);

@@ -59,6 +59,14 @@ namespace NINA.View.Sequencer {
             set => SetValue(SequenceContainerContentProperty, value);
         }
 
+        public static readonly DependencyProperty HeaderContentProperty =
+            DependencyProperty.Register(nameof(HeaderContent), typeof(object), typeof(SequenceContainerView));
+
+        public object HeaderContent {
+            get => (object)GetValue(HeaderContentProperty);
+            set => SetValue(HeaderContentProperty, value);
+        }
+
         public static readonly DependencyProperty ShowDetailsProperty =
             DependencyProperty.Register(nameof(ShowDetails), typeof(bool), typeof(SequenceContainerView), new PropertyMetadata(true));
 

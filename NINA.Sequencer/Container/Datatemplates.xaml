@@ -15,6 +15,7 @@
     xmlns:converter="clr-namespace:NINA.View.Sequencer.Converter"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA.Sequencer.Container"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
@@ -275,6 +276,14 @@
                     FontStyle="Italic"
                     Text="{ns:Loc Lbl_SequenceContainer_ParallelContainer_Description}" />
             </view:HierarchicalSequenceContainerView.SequenceContainerContent>
+        </view:HierarchicalSequenceContainerView>
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate DataType="{x:Type local:ConditionalContainer}" ItemsSource="{Binding Items}">
+        <view:HierarchicalSequenceContainerView>
+            <view:HierarchicalSequenceContainerView.HeaderContent>
+                <logic:ExprControl Exp="{Binding Path=PredicateExpression, Mode=TwoWay}" Label="Expression:" />
+            </view:HierarchicalSequenceContainerView.HeaderContent>
         </view:HierarchicalSequenceContainerView>
     </HierarchicalDataTemplate>
 

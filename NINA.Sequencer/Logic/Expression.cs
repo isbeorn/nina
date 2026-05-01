@@ -109,6 +109,8 @@ namespace NINA.Sequencer.Logic {
                         } else {
                             return "{" + field + "}";
                         }
+                    } else if (double.IsNaN(Default)) {
+                        return "--";
                     } else {
                         return "{" + Default.ToString(CultureInfo.InvariantCulture) + "}";
                     }
@@ -262,7 +264,16 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        public bool ForceAnnotated { get; set; } = false;
+        public bool ForceAnnotated {
+            get => field;
+            set {
+                if (value != field) {
+                    field = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsAnnotated));
+                }
+            }
+        } = false;
         public bool GlobalVolatile { get; set; } = false;
         public bool HasError => !string.IsNullOrEmpty(Error);
         public SolidColorBrush InfoButtonColor {
