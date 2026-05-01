@@ -4306,6 +4306,15 @@ Dans le cas où une durée plus longue est requise, une durée peut être spéci
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
     <value>Instructions pour Objet du ciel profond</value>
   </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
+    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
+    <value>Conditional Instruction Set requires an expression.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
+    <value>Conditional Instruction Set</value>
+  </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Toutes les instructions de ce jeu d'instructions sont exécutées en parallèle. Ce jeu d'instructions n'évalue aucune condition ni aucun déclencheur tant que toutes les instructions ne sont pas terminées.</value>
   </data>
