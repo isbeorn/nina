@@ -4299,13 +4299,13 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
     <value>Conjunto de Instrucciones para Objeto del Cielo Profundo</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
-    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+    <value>Comprueba esta expresión del secuenciador cuando se alcanza el conjunto de instrucciones. Si es verdadera, las instrucciones que contiene se ejecutarán una vez. Si es falsa, se omiten.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>El conjunto de Instrucción Condicionales requiere una expresión.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>Conjunto de Instrucciones Condicionales</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Todas las instrucciones de este conjunto de instrucciones se ejecutan en paralelo. Este conjunto de instrucciones no evaluará ninguna condición ni activador hasta que se terminen todas las instrucciones.</value>
