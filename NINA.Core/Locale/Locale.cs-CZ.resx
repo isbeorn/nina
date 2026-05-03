@@ -4304,13 +4304,13 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
     <value>Sada instrukcí pro DSO</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
-    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+    <value>Zkontroluje tento sekvenční výraz při dosažení daného příkazového bloku. Je-li hodnota pravdivá, příkazy v něm obsažené se provedou jednou. Je-li hodnota nepravdivá, jsou přeskočeny.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>Sada podmíněných příkazů vyžaduje výraz.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>Sada podmíněných příkazů</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Všechny pokyny v této instrukční sadě jsou spuštěny paralelně. Tato instrukční sada nevyhodnotí žádné podmínky ani spouštěče události, dokud nebudou dokončeny všechny pokyny.</value>

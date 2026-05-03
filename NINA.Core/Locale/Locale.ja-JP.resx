@@ -4287,13 +4287,13 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Deep Sky Object Instruction Set</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
-    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+    <value>命令セットに到達したとき、このシーケンサー式が検査されます。真の場合は、内部の命令が一度実行され、偽の場合は、スキップされます。</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>条件命令セットには式が必要です。</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>条件命令セット</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>この命令セット内のすべての命令は並列に実行されます。すべての命令が終了するまで、この命令セットはどの条件やトリガーも評価しません。</value>
