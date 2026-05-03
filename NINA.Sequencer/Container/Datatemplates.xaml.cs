@@ -25,8 +25,25 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace NINA.Sequencer.Container {
+
+    public class LinkedTemplateFallbackVisibilityConverter : IMultiValueConverter {
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+            object linkedTemplate = values?.Length > 0 ? values[0] : null;
+            TreeViewItem treeViewItem = values?.Length > 1 ? values[1] as TreeViewItem : null;
+            bool isOwnTreeViewItem = treeViewItem != null
+                && (ReferenceEquals(treeViewItem.DataContext, linkedTemplate) || ReferenceEquals(treeViewItem.Header, linkedTemplate));
+
+            return isOwnTreeViewItem ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+    }
 
     [Export(typeof(ResourceDictionary))]
     public partial class Datatemplates {
