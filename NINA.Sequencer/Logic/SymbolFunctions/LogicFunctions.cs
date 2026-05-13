@@ -10,6 +10,27 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
         private readonly ISymbolBroker symbolBroker;
         private readonly List<SymbolFunction> _all;
 
+        private static bool AreEqual(object left, object right) {
+            if (left == null || right == null) {
+                return left == null && right == null;
+            }
+
+            if (IsNumeric(left) && IsNumeric(right)) {
+                return Convert.ToDouble(left, CultureInfo.InvariantCulture).Equals(Convert.ToDouble(right, CultureInfo.InvariantCulture));
+            }
+
+            return Equals(left, right);
+        }
+
+        private static bool IsNumeric(object value) {
+            return value is byte or sbyte
+                or short or ushort
+                or int or uint
+                or long or ulong
+                or float or double
+                or decimal;
+        }
+
         public LogicFunctions(ISymbolBroker symbolBroker) {
             this.symbolBroker = symbolBroker;
 
@@ -22,7 +43,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     implementation: args => {
                         var value = args.Parameters[0].Evaluate();
                         for (int i = 1; i < args.Parameters.Length; i++) {
-                            if (Equals(value, args.Parameters[i].Evaluate()))
+                            if (AreEqual(value, args.Parameters[i].Evaluate()))
                                 return true;
                         }
                         return false;

@@ -60,10 +60,13 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_String_StrAtPos_Description"],
                     usageExample: "StrAtPos(\"hello\", 1)",
                     implementation: args => {
-                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                        var idxObj = args.Parameters[1].Evaluate();
-                        if (idxObj is int idx && idx >= 0 && idx < s.Length)
-                            return s[idx].ToString();
+                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture) ?? string.Empty;
+                        try {
+                            int idx = Convert.ToInt32(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                            if (idx >= 0 && idx < s.Length)
+                                return s[idx].ToString();
+                        } catch {
+                        }
                         return string.Empty;
                     },
                     minArgs: 2,

@@ -144,6 +144,22 @@ namespace NINA.Test.Sequencer.Logic {
             Evaluate("Not(1 < 2)").Value.Should().Be(0);
         }
 
+        [Test]
+        public void LogicIn_MatchesShortSymbolAgainstIntegerLiteral() {
+            ISymbolProvider provider = broker.RegisterSymbolProvider("Test");
+            provider.AddOrUpdateSymbol("ShortValue", (short)2);
+
+            Evaluate("In(Test_ShortValue, 1, 2, 3)").Value.Should().Be(1);
+        }
+
+        [Test]
+        public void StringAtPos_UsesShortSymbolAsIndex() {
+            ISymbolProvider provider = broker.RegisterSymbolProvider("Test");
+            provider.AddOrUpdateSymbol("ShortIndex", (short)1);
+
+            Evaluate("StrAtPos(\"hello\", Test_ShortIndex)").StringValue.Should().Be("e");
+        }
+
         /// <summary>
         /// Verifies the Time And Utility Functions Evaluate Expected Results scenario for the sequencer behavior under test.
         /// </summary>
