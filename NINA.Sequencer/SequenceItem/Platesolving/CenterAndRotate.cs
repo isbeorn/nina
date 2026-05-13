@@ -13,32 +13,24 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
-using NINA.Core.Model;
-using NINA.PlateSolving;
-using NINA.Profile.Interfaces;
-using NINA.Sequencer.Container;
-using NINA.Sequencer.Utility;
-using NINA.Sequencer.Validations;
-using NINA.Core.Utility;
 using NINA.Astrometry;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.Model.Equipment;
+using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
 using NINA.Core.Utility.WindowService;
-using NINA.ViewModel;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Model;
+using NINA.PlateSolving;
+using NINA.PlateSolving.Interfaces;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer.Logic;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Locale;
-using NINA.Equipment.Model;
-using NINA.Core.Model.Equipment;
-using NINA.Core.Utility.Notification;
-using NINA.PlateSolving.Interfaces;
-using NINA.Equipment.Interfaces;
-using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Platesolving {
 
