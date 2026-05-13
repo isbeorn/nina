@@ -163,6 +163,67 @@ namespace NINA.Test.Sequencer.Behaviors {
             sut.Detach();
         }
 
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void FallbackVisibility_RemainsVisibleOutsideTreeViewHosts() {
+            LinkedTemplateFallbackVisibilityBehavior sut = new LinkedTemplateFallbackVisibilityBehavior();
+            LinkedTemplateContainer linkedTemplate = new LinkedTemplateContainer();
+            ItemsControl fallbackHost = new ItemsControl {
+                DataContext = linkedTemplate,
+                Visibility = Visibility.Collapsed
+            };
+            Border nonTreeHost = new Border {
+                Child = fallbackHost
+            };
+
+            sut.Attach(fallbackHost);
+
+            InvokePrivate(sut, "UpdateFallbackVisibility");
+
+            fallbackHost.Visibility.Should().Be(Visibility.Visible);
+            nonTreeHost.Child.Should().BeSameAs(fallbackHost);
+            sut.Detach();
+        }
+
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void FallbackVisibility_HidesWhenTreeViewParentAppearsAfterInitialCheck() {
+            LinkedTemplateFallbackVisibilityBehavior sut = new LinkedTemplateFallbackVisibilityBehavior();
+            LinkedTemplateContainer linkedTemplate = new LinkedTemplateContainer();
+            ItemsControl fallbackHost = new ItemsControl {
+                DataContext = linkedTemplate,
+                Visibility = Visibility.Visible
+            };
+            TreeView treeView = new TreeView {
+                Width = 200,
+                Height = 200
+            };
+
+            sut.Attach(fallbackHost);
+            InvokePrivate(sut, "UpdateFallbackVisibility");
+            fallbackHost.Visibility.Should().Be(Visibility.Visible);
+
+            Border header = new Border {
+                Child = fallbackHost
+            };
+            TreeViewItem linkedTemplateItem = new TreeViewItem {
+                DataContext = linkedTemplate,
+                Header = header,
+                IsExpanded = true
+            };
+            treeView.Items.Add(linkedTemplateItem);
+            treeView.Measure(new Size(200, 200));
+            treeView.Arrange(new Rect(0, 0, 200, 200));
+            treeView.UpdateLayout();
+            linkedTemplateItem.UpdateLayout();
+            DrainDispatcher();
+
+            InvokePrivate(sut, "UpdateFallbackVisibility");
+
+            fallbackHost.Visibility.Should().Be(Visibility.Collapsed);
+            sut.Detach();
+        }
+
         private static void SetPrivateField(object target, string fieldName, object value) {
             FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             field.Should().NotBeNull();

@@ -23,8 +23,6 @@
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View.Sequencer"
     xmlns:wpfbehaviors="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base">
-    <local:LinkedTemplateFallbackVisibilityConverter x:Key="LinkedTemplateFallbackVisibilityConverter" />
-
     <Style x:Key="DSOHeaderExpanderStyle" TargetType="ToggleButton">
         <Setter Property="Template">
             <Setter.Value>
@@ -652,16 +650,12 @@
                             Grid.Row="2"
                             Margin="20,6,0,0"
                             Focusable="False"
-                            ItemsSource="{Binding Items}">
+                            ItemsSource="{Binding Items}"
+                            Visibility="Collapsed">
                             <i:Interaction.Behaviors>
+                                <behaviors:LinkedTemplateFallbackVisibilityBehavior />
                                 <behaviors:LinkedTemplateFallbackPreviewBehavior IsEditing="{Binding IsEditing}" />
                             </i:Interaction.Behaviors>
-                            <ItemsControl.Visibility>
-                                <MultiBinding Converter="{StaticResource LinkedTemplateFallbackVisibilityConverter}">
-                                    <Binding />
-                                    <Binding RelativeSource="{RelativeSource AncestorType={x:Type TreeViewItem}}" />
-                                </MultiBinding>
-                            </ItemsControl.Visibility>
                             <ItemsControl.Resources>
                                 <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
                                     <view:SequenceBlockView />
