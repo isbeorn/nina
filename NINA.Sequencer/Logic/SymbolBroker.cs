@@ -118,6 +118,10 @@ namespace NINA.Sequencer.Logic {
         /// </summary>
         internal static SymbolBroker Instance { get; private set; }
 
+        public event EventHandler<SymbolChangedEventArgs> SymbolAdded;
+        public event EventHandler<SymbolChangedEventArgs> SymbolUpdated;
+        public event EventHandler<SymbolChangedEventArgs> SymbolRemoved;
+
         public SymbolBroker(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
                                                                                             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
             IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator) : base(profileService) {
@@ -199,43 +203,71 @@ namespace NINA.Sequencer.Logic {
         }
 
         private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values, SymbolType type) {
+            List<SymbolChangedEventArgs> changes = new List<SymbolChangedEventArgs>();
             lock (_brokerStateLock) {
-                if (!_providers.Contains(source)) {
-                    _providers.Add(source);
-                }
+                AddOrUpdateSymbolCore(source, token, value, values, type, changes);
+            }
+            PublishSymbolChanges(changes);
+        }
 
-                if (!_dataSymbols.TryGetValue(token, out IList<Symbol> list)) {
-                    list = new List<Symbol>();
-                    _dataSymbols[token] = list;
+        private void AddOrUpdateSymbolCore(string source, string token, object value, Symbol[] values, SymbolType type, IList<SymbolChangedEventArgs> changes) {
+            if (!_providers.Contains(source)) {
+                _providers.Add(source);
+            }
+
+            if (!_dataSymbols.TryGetValue(token, out IList<Symbol> list)) {
+                list = new List<Symbol>();
+                _dataSymbols[token] = list;
+                Symbol sym = new Symbol(token, value, source, values, type);
+                if (type == SymbolType.SYMBOL_HIDDEN) {
+                    AddHiddenSymbol(source, sym);
+                }
+                list.Add(sym);
+                changes.Add(new SymbolChangedEventArgs(SymbolChangeKind.Added, CopySymbol(sym), null, value));
+            } else {
+                bool found = false;
+                for (int idx = 0; idx < list.Count; idx++) {
+                    Symbol s = list[idx];
+                    if (s.Category == source) {
+                        if (!Equals(s.Value, value)) {
+                            object oldValue = s.Value;
+                            s.Value = value;
+                            changes.Add(new SymbolChangedEventArgs(SymbolChangeKind.Updated, CopySymbol(s), oldValue, value));
+                        }
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
                     Symbol sym = new Symbol(token, value, source, values, type);
                     if (type == SymbolType.SYMBOL_HIDDEN) {
                         AddHiddenSymbol(source, sym);
                     }
                     list.Add(sym);
-                } else {
-                    bool found = false;
-                    for (int idx = 0; idx < list.Count; idx++) {
-                        Symbol s = list[idx];
-                        if (s.Category == source) {
-                            s.Value = value;
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        Symbol sym = new Symbol(token, value, source, values, type);
-                        if (type == SymbolType.SYMBOL_HIDDEN) {
-                            AddHiddenSymbol(source, sym);
-                        }
-                        list.Add(sym);
-                    }
+                    changes.Add(new SymbolChangedEventArgs(SymbolChangeKind.Added, CopySymbol(sym), null, value));
                 }
+            }
 
-                // Defined constants...
-                if (values != null) {
-                    foreach (Symbol d in values) {
-                        AddOrUpdateSymbol(source, d.Key, d.Value, null, SymbolType.SYMBOL_CONSTANT);
-                    }
+            // Defined constants...
+            if (values != null) {
+                foreach (Symbol d in values) {
+                    AddOrUpdateSymbolCore(source, d.Key, d.Value, null, SymbolType.SYMBOL_CONSTANT, changes);
+                }
+            }
+        }
+
+        private void PublishSymbolChanges(IEnumerable<SymbolChangedEventArgs> changes) {
+            foreach (SymbolChangedEventArgs change in changes) {
+                switch (change.ChangeKind) {
+                    case SymbolChangeKind.Added:
+                        SymbolEventPublisher.Publish(SymbolAdded, this, change, nameof(SymbolAdded));
+                        break;
+                    case SymbolChangeKind.Updated:
+                        SymbolEventPublisher.Publish(SymbolUpdated, this, change, nameof(SymbolUpdated));
+                        break;
+                    case SymbolChangeKind.Removed:
+                        SymbolEventPublisher.Publish(SymbolRemoved, this, change, nameof(SymbolRemoved));
+                        break;
                 }
             }
         }
@@ -378,6 +410,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         private void RemoveAllSymbols(string source) {
+            List<SymbolChangedEventArgs> changes = new List<SymbolChangedEventArgs>();
             lock (_brokerStateLock) {
                 int count = 0;
                 var keysToRemove = new List<string>();
@@ -387,6 +420,8 @@ namespace NINA.Sequencer.Logic {
 
                     for (int i = list.Count - 1; i >= 0; i--) {
                         if (list[i].Category == source) {
+                            Symbol removed = list[i];
+                            changes.Add(new SymbolChangedEventArgs(SymbolChangeKind.Removed, CopySymbol(removed), removed.Value, null));
                             list.RemoveAt(i);
                             count++;
                         }
@@ -405,9 +440,12 @@ namespace NINA.Sequencer.Logic {
 
                 Logger.Info($"Removing all symbols from: {source} ({count})");
             }
+            PublishSymbolChanges(changes);
         }
 
         private bool RemoveSymbol(string source, string key) {
+            SymbolChangedEventArgs change = null;
+            bool success;
             lock (_brokerStateLock) {
                 IList<Symbol> list;
 
@@ -417,32 +455,39 @@ namespace NINA.Sequencer.Logic {
 
                 if (list.Count == 1) {
                     if (list[0].Category == source) {
+                        Symbol removed = list[0];
                         if (list[0].Type == SymbolType.SYMBOL_HIDDEN) {
                             RemoveHiddenSymbol(source, key);
                         }
                         _dataSymbols.Remove(key, out _);
-                        return true;
+                        change = new SymbolChangedEventArgs(SymbolChangeKind.Removed, CopySymbol(removed), removed.Value, null);
+                        success = true;
+                    } else {
+                        success = false;
                     }
-                    return false;
-                }
-
-                Symbol toRemove = null;
-                foreach (var sym in list) {
-                    if (sym.Category == source) {
-                        toRemove = sym;
-                        break;
+                } else {
+                    Symbol toRemove = null;
+                    foreach (var sym in list) {
+                        if (sym.Category == source) {
+                            toRemove = sym;
+                            break;
+                        }
                     }
-                }
 
-                if (toRemove != null) {
-                    if (toRemove.Type == SymbolType.SYMBOL_HIDDEN) {
-                        RemoveHiddenSymbol(source, key);
+                    if (toRemove != null) {
+                        if (toRemove.Type == SymbolType.SYMBOL_HIDDEN) {
+                            RemoveHiddenSymbol(source, key);
+                        }
+                        list.Remove(toRemove);
+                        change = new SymbolChangedEventArgs(SymbolChangeKind.Removed, CopySymbol(toRemove), toRemove.Value, null);
                     }
-                    list.Remove(toRemove);
+                    success = true;
                 }
-
-                return true;
             }
+            if (change != null) {
+                PublishSymbolChanges(new[] { change });
+            }
+            return success;
         }
 
         private void RemoveHiddenSymbol(string source, string key) {

@@ -913,6 +913,86 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         [Test]
+        public void SymbolBroker_SymbolEvents_ReportAddUpdateAndRemove() {
+            List<SymbolChangedEventArgs> added = new List<SymbolChangedEventArgs>();
+            List<SymbolChangedEventArgs> updated = new List<SymbolChangedEventArgs>();
+            List<SymbolChangedEventArgs> removed = new List<SymbolChangedEventArgs>();
+            broker.SymbolAdded += (sender, args) => added.Add(args);
+            broker.SymbolUpdated += (sender, args) => updated.Add(args);
+            broker.SymbolRemoved += (sender, args) => removed.Add(args);
+            var provider = broker.RegisterSymbolProvider("Events");
+
+            provider.AddOrUpdateSymbol("Value", 1);
+            provider.AddOrUpdateSymbol("Value", 1);
+            provider.AddOrUpdateSymbol("Value", 2);
+            provider.RemoveSymbol("Value").Should().BeTrue();
+
+            added.Should().ContainSingle();
+            added[0].ChangeKind.Should().Be(SymbolChangeKind.Added);
+            added[0].ProviderName.Should().Be("Events");
+            added[0].Key.Should().Be("Value");
+            added[0].QualifiedKey.Should().Be("Events_Value");
+            added[0].OldValue.Should().BeNull();
+            added[0].NewValue.Should().Be(1);
+
+            updated.Should().ContainSingle();
+            updated[0].ChangeKind.Should().Be(SymbolChangeKind.Updated);
+            updated[0].OldValue.Should().Be(1);
+            updated[0].NewValue.Should().Be(2);
+
+            removed.Should().ContainSingle();
+            removed[0].ChangeKind.Should().Be(SymbolChangeKind.Removed);
+            removed[0].OldValue.Should().Be(2);
+            removed[0].NewValue.Should().BeNull();
+        }
+
+        [Test]
+        public void SymbolProvider_SymbolEvents_AreFilteredToProvider() {
+            var provider1 = broker.RegisterSymbolProvider("ProviderOne");
+            var provider2 = broker.RegisterSymbolProvider("ProviderTwo");
+            List<SymbolChangedEventArgs> added = new List<SymbolChangedEventArgs>();
+            object eventSender = new object();
+            provider1.SymbolAdded += (sender, args) => {
+                eventSender = sender ?? new object();
+                added.Add(args);
+            };
+
+            provider2.AddOrUpdateSymbol("Value", 1);
+            provider1.AddOrUpdateSymbol("Value", 2);
+
+            added.Should().ContainSingle();
+            added[0].ProviderName.Should().Be("ProviderOne");
+            added[0].NewValue.Should().Be(2);
+            eventSender.Should().BeSameAs(provider1);
+        }
+
+        [Test]
+        public void SymbolBroker_SymbolEvents_ContinueAfterSubscriberFailure() {
+            var provider = broker.RegisterSymbolProvider("Events");
+            int delivered = 0;
+            broker.SymbolAdded += (sender, args) => throw new InvalidOperationException("subscriber failed");
+            broker.SymbolAdded += (sender, args) => delivered++;
+
+            Action act = () => provider.AddOrUpdateSymbol("Value", 1);
+
+            act.Should().NotThrow();
+            delivered.Should().Be(1);
+        }
+
+        [Test]
+        public void SymbolProvider_SymbolEvents_ContinueAfterSubscriberFailure() {
+            var provider = broker.RegisterSymbolProvider("Events");
+            int delivered = 0;
+            provider.SymbolAdded += (sender, args) => throw new InvalidOperationException("subscriber failed");
+            provider.SymbolAdded += (sender, args) => delivered++;
+
+            Action act = () => provider.AddOrUpdateSymbol("Value", 1);
+
+            act.Should().NotThrow();
+            delivered.Should().Be(1);
+        }
+
+        [Test]
         public void SymbolBroker_RemoveSymbol_NoProvider_Fails() {
             // Act
             Action act = () => broker.RemoveSymbol(null, "MySymbol");

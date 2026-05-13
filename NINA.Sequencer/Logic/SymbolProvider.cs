@@ -12,6 +12,10 @@ namespace NINA.Sequencer.Logic {
 
         private string name;
         ISymbolBrokerProviderApi  broker;
+        private readonly object eventLock = new object();
+        private EventHandler<SymbolChangedEventArgs> symbolAdded;
+        private EventHandler<SymbolChangedEventArgs> symbolUpdated;
+        private EventHandler<SymbolChangedEventArgs> symbolRemoved;
 
         public static readonly String VALID_SYMBOL = "^[a-zA-Z_][a-zA-Z0-9_]*$";
 
@@ -29,6 +33,85 @@ namespace NINA.Sequencer.Logic {
         }
 
         public string Name => name;
+
+        public event EventHandler<SymbolChangedEventArgs> SymbolAdded {
+            add {
+                lock (eventLock) {
+                    if (symbolAdded == null) {
+                        broker.SymbolAdded += OnBrokerSymbolAdded;
+                    }
+                    symbolAdded += value;
+                }
+            }
+            remove {
+                lock (eventLock) {
+                    symbolAdded -= value;
+                    if (symbolAdded == null) {
+                        broker.SymbolAdded -= OnBrokerSymbolAdded;
+                    }
+                }
+            }
+        }
+
+        public event EventHandler<SymbolChangedEventArgs> SymbolUpdated {
+            add {
+                lock (eventLock) {
+                    if (symbolUpdated == null) {
+                        broker.SymbolUpdated += OnBrokerSymbolUpdated;
+                    }
+                    symbolUpdated += value;
+                }
+            }
+            remove {
+                lock (eventLock) {
+                    symbolUpdated -= value;
+                    if (symbolUpdated == null) {
+                        broker.SymbolUpdated -= OnBrokerSymbolUpdated;
+                    }
+                }
+            }
+        }
+
+        public event EventHandler<SymbolChangedEventArgs> SymbolRemoved {
+            add {
+                lock (eventLock) {
+                    if (symbolRemoved == null) {
+                        broker.SymbolRemoved += OnBrokerSymbolRemoved;
+                    }
+                    symbolRemoved += value;
+                }
+            }
+            remove {
+                lock (eventLock) {
+                    symbolRemoved -= value;
+                    if (symbolRemoved == null) {
+                        broker.SymbolRemoved -= OnBrokerSymbolRemoved;
+                    }
+                }
+            }
+        }
+
+        private bool IsMySymbol(SymbolChangedEventArgs e) {
+            return string.Equals(e.ProviderName, name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void OnBrokerSymbolAdded(object sender, SymbolChangedEventArgs e) {
+            if (IsMySymbol(e)) {
+                SymbolEventPublisher.Publish(symbolAdded, this, e, nameof(SymbolAdded));
+            }
+        }
+
+        private void OnBrokerSymbolUpdated(object sender, SymbolChangedEventArgs e) {
+            if (IsMySymbol(e)) {
+                SymbolEventPublisher.Publish(symbolUpdated, this, e, nameof(SymbolUpdated));
+            }
+        }
+
+        private void OnBrokerSymbolRemoved(object sender, SymbolChangedEventArgs e) {
+            if (IsMySymbol(e)) {
+                SymbolEventPublisher.Publish(symbolRemoved, this, e, nameof(SymbolRemoved));
+            }
+        }
 
         public string GetProviderName() {
             return Name;

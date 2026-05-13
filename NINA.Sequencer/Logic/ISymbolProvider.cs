@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 namespace NINA.Sequencer.Logic
 {
     public interface ISymbolProvider {
+        event EventHandler<SymbolChangedEventArgs> SymbolAdded;
+
+        event EventHandler<SymbolChangedEventArgs> SymbolUpdated;
+
+        event EventHandler<SymbolChangedEventArgs> SymbolRemoved;
+
         public void AddOrUpdateSymbol(string token, object value);
 
         public void AddOrUpdateSymbol(string token, object value, Symbol[] values);
