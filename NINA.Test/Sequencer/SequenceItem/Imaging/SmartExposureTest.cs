@@ -20,6 +20,7 @@ using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Equipment.Equipment.MyGuider;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Sequencer.Trigger.Guider;
@@ -27,6 +28,7 @@ using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.Model;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace NINA.Test.Sequencer.SequenceItem.Imaging {
@@ -151,6 +153,25 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
 
             valid.Should().BeFalse();
             sut.Issues.Should().NotBeEmpty();
+        }
+
+        [Test]
+        public void ExposureTimeDefinition_TimeOnlyBrokerSymbol_EvaluatesOnSmartExposureChildItem() {
+            SmartExposure sut = CreateSut();
+            TimeOnly timeOnly = new TimeOnly(0, 1, 30);
+            Mock<ISymbolBroker> symbolBrokerMock = new Mock<ISymbolBroker>();
+
+            object timeOnlyValue = timeOnly;
+            symbolBrokerMock
+                .Setup(x => x.TryGetValue("TemporalTest_TimeOnly", out timeOnlyValue))
+                .Returns(true);
+
+            sut.GetTakeExposure().SymbolBroker = symbolBrokerMock.Object;
+            sut.GetTakeExposure().ExposureTimeExpression.SymbolBroker = symbolBrokerMock.Object;
+            sut.GetTakeExposure().ExposureTimeDefinition = "TemporalTest_TimeOnly";
+
+            sut.GetTakeExposure().ExposureTime.Should().Be(90);
+            sut.Validate().Should().BeTrue();
         }
 
         private SmartExposure CreateSut() {

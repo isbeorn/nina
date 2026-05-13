@@ -1484,6 +1484,7 @@
                     VirtualizingPanel.IsVirtualizing="True"
                     VirtualizingPanel.IsVirtualizingWhenGrouping="True">
                     <ListBox.Resources>
+                        <converter:SymbolValueDisplayConverter x:Key="SymbolValueDisplayConverter" />
                         <converter:SymbolToTooltipConverter x:Key="SymbolToTooltipConverter" />
                     </ListBox.Resources>
                     <ItemsControl.GroupStyle>
@@ -1508,7 +1509,7 @@
                                     Grid.Column="1"
                                     Margin="15,0,0,0"
                                     MouseDown="TextBlock_MouseDown"
-                                    Text="{Binding ValueName, StringFormat={}{0:0.######}}">
+                                    Text="{Binding ValueName, Converter={StaticResource SymbolValueDisplayConverter}, StringFormat={}{0:0.######}}">
                                     <TextBlock.ToolTip>
                                         <MultiBinding Converter="{StaticResource SymbolToTooltipConverter}">
                                             <Binding />

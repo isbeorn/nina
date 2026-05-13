@@ -129,6 +129,19 @@ namespace NINA.Test.Sequencer.Logic {
             sut.Convert(new object[] { falsehood }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be("{False}");
         }
 
+        [Test]
+        public void SymbolValueDisplayConverter_FormatsTemporalValuesForSymbolUiDisplay() {
+            SymbolValueDisplayConverter sut = new SymbolValueDisplayConverter();
+            DateTime dateTime = new DateTime(2026, 5, 12, 12, 34, 56, DateTimeKind.Utc);
+
+            sut.Convert(dateTime, typeof(string), null, CultureInfo.GetCultureInfo("de-DE")).Should().Be("2026-05-12 12:34:56");
+            sut.Convert(new DateTimeOffset(dateTime), typeof(string), null, CultureInfo.GetCultureInfo("de-DE")).Should().Be("2026-05-12 12:34:56");
+            sut.Convert(new DateOnly(2026, 5, 12), typeof(string), null, CultureInfo.GetCultureInfo("de-DE")).Should().Be("2026-05-12");
+            sut.Convert(new TimeOnly(12, 34, 56), typeof(string), null, CultureInfo.GetCultureInfo("de-DE")).Should().Be("12:34:56");
+            sut.Convert(12.5d, typeof(string), null, CultureInfo.InvariantCulture).Should().Be(12.5d);
+            sut.Convert("CoverOpen", typeof(string), null, CultureInfo.InvariantCulture).Should().Be("CoverOpen");
+        }
+
         /// <summary>
         /// Verifies the Distinct Color Palette Generates Frozen Distinct Brushes For Dark And Light Base Colors scenario for the sequencer behavior under test.
         /// </summary>

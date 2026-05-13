@@ -21,6 +21,7 @@ namespace NINA.Sequencer.Logic {
         private static readonly int ONE_YEAR = 365 * 24 * 60 * 60;
 
         private NCalc.Expression _cachedNCalcExpression = null;
+        private bool isEvaluating;
 
         // Parameters are NCalc Parameters used in the call to NCalc.Evaluate()
         private Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -519,191 +520,213 @@ namespace NINA.Sequencer.Logic {
         public void Evaluate(bool ignoreRoot) {
             // It's possible that this gets called from multiple threads (e.g., UI thread, Sequencer thread, and Validate thread)
             lock (this) {
-                if (!IsExpression && Error == null) {
-                    // If there was an error, we still want to validate (it might have failed range validation, for example)
-                    return;
-                }
-                if (Definition.Length == 0) {
-                    IsExpression = false;
-                    RaisePropertyChanged(nameof(Value));
-                    RaisePropertyChanged(nameof(ValueString));
-                    RaisePropertyChanged(nameof(StringValue));
-                    RaisePropertyChanged(nameof(IsExpression));
-                    return;
-                }
-                if (Context == null) return;
-                if (!ignoreRoot && !UserSymbol.IsAttachedToRoot(Context)) {
+                if (isEvaluating) {
                     return;
                 }
 
-                if (Volatile || GlobalVolatile) {
-                    IList<string> volatiles = new List<string>();
-                    foreach (KeyValuePair<string, UserSymbol> kvp in Resolved) {
-                        if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
-                            volatiles.Add(kvp.Key);
-                        }
-                    }
-                    foreach (string key in volatiles) {
-                        resolved.Remove(key);
-                        parameters.Remove(key);
-                    }
-                }
-
-                Volatile = GlobalVolatile;
-
-                //ImageVolatile = false;
-
-                StringValue = null;
-
-                if (Parameters.Count < Resolved.Count) {
-                    parameters.Clear();
-                    resolved.Clear();
-                }
-
-                if (SymbolBroker == null && Context != null) {
-                    SymbolBroker = Context.SymbolBroker;
-                }
-                if (SymbolBroker == null && Symbol != null) {
-                    SymbolBroker = Symbol.SymbolBroker;
-                }
-
-                // First, validate References
-                foreach (string sRef in References) {
-                    UserSymbol sym;
-                    string symReference = sRef;
-                    // Remember if we have any image data
-                    //if (!ImageVolatile && symReference.StartsWith("Image_")) {
-                    //    ImageVolatile = true;
-                    //}
-                    bool found = Resolved.TryGetValue(symReference, out sym);
-                    if (!found || sym == null) {
-                        // !found -> couldn't find it; sym == null -> it's a DataSymbol
-                        if (!found) {
-                            sym = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
-                        }
-                        if (sym != null) {
-                            // Link Expression to the Symbol
-                            Resolve(symReference, sym);
-                            sym.AddConsumer(this);
-                        } else if (SymbolBroker != null) {
-                            found = false;
-                            // Try SymbolBroker
-                            object val = null;
-                            if (!found && SymbolBroker.TryGetValue(symReference, out val)) {
-                                // We don't want these resolved, just added to Parameters
-                                resolved.Remove(symReference);
-                                resolved.Add(symReference, null);
-                                parameters.Remove(symReference);
-                                AddParameter(symReference, val);
-                                Volatile = true;
-                            } else if (val is AmbiguousSymbol a) {
-                                StringBuilder sb = new StringBuilder("'" + a.Key + "' " + Loc.Instance["LblIsAmbiguous"]);
-                                Symbol[] symbols = a.Symbols;
-                                for (int i = 0; i < symbols.Length; i++) {
-                                    sb.Append(" " + symbols[i].Category + '_' + symReference);
-                                    if (i < symbols.Length - 1) {
-                                        sb.Append("; ");
-                                    }
-                                }
-                                Error = sb.ToString();
-                                return;
-                            }
-                        } else if (Context != null && Context.Parent is not IImmutableContainer) {
-                           // This is fine if we're in a SmartExposure, TakeManyExposures, etc.
-                           Logger.Warning("SymbolBroker not found in " + Context.Name);
-                        }
-                    }
-                }
-
-                NCalc.Expression e;
-                if (_cachedNCalcExpression != null) {
-                    e = _cachedNCalcExpression;
-                } else {
-                    e = new NCalc.Expression(Definition, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
-                    e.EvaluateFunction += ExtensionFunction;
-                    _cachedNCalcExpression = e;
-                }
-                e.Parameters = parameters;
-
-                if (e.HasErrors()) {
-                    Error = Loc.Instance["LblSyntaxError"];
-                    return;
-                }
-
-                Error = null;
+                isEvaluating = true;
                 try {
-                    if (Parameters.Count != References.Count) {
-                        foreach (string r in References) {
-                            string symReference = r;
-                            if (!Parameters.ContainsKey(symReference)) {
-                                // Not defined or evaluated
-                                UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
-                                if (s is Variable sv && !sv.Executed) {
-                                    AddError(Loc.Instance["LblNotEvaluated"] + ": " + r);
-                                    //                           } else if (r.StartsWith("_")) {
-                                    //                               AddError("Reference: " + r);
-                                } else {
-                                    //                                if (r.StartsWith('$') && ext && validateOnly) {
-                                    //                                    AddError("External: " + symReference);
-                                    //                                } else {
-                                    AddError(Loc.Instance["LblUndefined"] + ": " + r);
-                                    //                                }
-                                }
-                            }
-                        }
-                        RaisePropertyChanged(nameof(Error));
+                    if (!IsExpression && Error == null) {
+                        // If there was an error, we still want to validate (it might have failed range validation, for example)
+                        return;
+                    }
+                    if (Definition.Length == 0) {
+                        IsExpression = false;
+                        RaisePropertyChanged(nameof(Value));
                         RaisePropertyChanged(nameof(ValueString));
                         RaisePropertyChanged(nameof(StringValue));
-                        RaisePropertyChanged(nameof(Value));
-                    } else {
-                        Error = null;
-                        object eval = e.Evaluate();
-                        // We got an actual value
-                        if (eval is Boolean b) {
-                            Value = b ? 1 : 0;
-                        } else {
-                            try {
-                                Value = Convert.ToDouble(eval, CultureInfo.InvariantCulture);
-                                // Validate numeric values
-                                if (Range != null) {
-                                    CheckRange(Value);
-                                }
-                            } catch (Exception) {
-                                string str = eval as string;
-                                if (STRING_VALUES_ALLOWED) {
-                                    if (str != null) {
-                                        StringValue = str;
-                                        Value = double.NegativeInfinity;
-                                    } else {
-                                        Error = Loc.Instance["LblSyntaxError"];
-                                    }
-                                } else {
-                                    // This can't happen as we allow strings.  Don't localize.  But don't delete the if just in case...
-                                    Error = (str != null) ? "Strings are now allowed as values" : Loc.Instance["LblSyntaxError"];
-                                }
-                            }
-                        }
-                        RaisePropertyChanged(nameof(Error));
-                        RaisePropertyChanged(nameof(StringValue));
-                        RaisePropertyChanged(nameof(ValueString));
-                        RaisePropertyChanged(nameof(Value));
+                        RaisePropertyChanged(nameof(IsExpression));
+                        return;
+                    }
+                    if (Context == null) return;
+                    if (!ignoreRoot && !UserSymbol.IsAttachedToRoot(Context)) {
+                        return;
                     }
 
-                } catch (NCalc.Exceptions.NCalcParameterNotDefinedException ex) {
-                    Error = Loc.Instance["LblUndefined"] + ": " + ex.ParameterName;
-                } catch (NCalc.Exceptions.NCalcEvaluationException ex) {
-                    Error = ex.Message;
-                    return;
-                } catch (NCalc.Exceptions.NCalcParserException) {
-                    Error = Loc.Instance["LblSyntaxError"];
-                    return;
-                } catch (Exception ex) {
-                    Error = Loc.Instance["LblError"] + ": " + ex.Message;
-                    Logger.Error("Exception evaluating " + Definition + ": " + ex.Message);
-                }
-                Dirty = false;
+                    if (Volatile || GlobalVolatile) {
+                        IList<string> volatiles = new List<string>();
+                        foreach (KeyValuePair<string, UserSymbol> kvp in Resolved) {
+                            if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
+                                volatiles.Add(kvp.Key);
+                            }
+                        }
+                        foreach (string key in volatiles) {
+                            resolved.Remove(key);
+                            parameters.Remove(key);
+                        }
+                    }
 
+                    Volatile = GlobalVolatile;
+
+                    //ImageVolatile = false;
+
+                    StringValue = null;
+
+                    if (Parameters.Count < Resolved.Count) {
+                        parameters.Clear();
+                        resolved.Clear();
+                    }
+
+                    if (SymbolBroker == null && Context != null) {
+                        SymbolBroker = Context.SymbolBroker;
+                    }
+                    if (SymbolBroker == null && Symbol != null) {
+                        SymbolBroker = Symbol.SymbolBroker;
+                    }
+
+                    // First, validate References
+                    foreach (string sRef in References) {
+                        UserSymbol sym;
+                        string symReference = sRef;
+                        // Remember if we have any image data
+                        //if (!ImageVolatile && symReference.StartsWith("Image_")) {
+                        //    ImageVolatile = true;
+                        //}
+                        bool found = Resolved.TryGetValue(symReference, out sym);
+                        if (!found || sym == null) {
+                            // !found -> couldn't find it; sym == null -> it's a DataSymbol
+                            if (!found) {
+                                sym = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
+                            }
+                            if (sym != null) {
+                                // Link Expression to the Symbol
+                                Resolve(symReference, sym);
+                                sym.AddConsumer(this);
+                            } else if (SymbolBroker != null) {
+                                found = false;
+                                // Try SymbolBroker
+                                object val = null;
+                                if (!found && SymbolBroker.TryGetValue(symReference, out val)) {
+                                    // We don't want these resolved, just added to Parameters
+                                    resolved.Remove(symReference);
+                                    resolved.Add(symReference, null);
+                                    parameters.Remove(symReference);
+                                    AddParameter(symReference, ToExpressionParameterValue(val));
+                                    Volatile = true;
+                                } else if (val is AmbiguousSymbol a) {
+                                    StringBuilder sb = new StringBuilder("'" + a.Key + "' " + Loc.Instance["LblIsAmbiguous"]);
+                                    Symbol[] symbols = a.Symbols;
+                                    for (int i = 0; i < symbols.Length; i++) {
+                                        sb.Append(" " + symbols[i].Category + '_' + symReference);
+                                        if (i < symbols.Length - 1) {
+                                            sb.Append("; ");
+                                        }
+                                    }
+                                    Error = sb.ToString();
+                                    return;
+                                }
+                            } else if (Context != null && Context.Parent is not IImmutableContainer) {
+                                // This is fine if we're in a SmartExposure, TakeManyExposures, etc.
+                                Logger.Warning("SymbolBroker not found in " + Context.Name);
+                            }
+                        }
+                    }
+
+                    NCalc.Expression e;
+                    if (_cachedNCalcExpression != null) {
+                        e = _cachedNCalcExpression;
+                    } else {
+                        e = new NCalc.Expression(Definition, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
+                        e.EvaluateFunction += ExtensionFunction;
+                        _cachedNCalcExpression = e;
+                    }
+                    e.Parameters = parameters;
+
+                    if (e.HasErrors()) {
+                        Error = Loc.Instance["LblSyntaxError"];
+                        return;
+                    }
+
+                    Error = null;
+                    try {
+                        if (Parameters.Count != References.Count) {
+                            foreach (string r in References) {
+                                string symReference = r;
+                                if (!Parameters.ContainsKey(symReference)) {
+                                    // Not defined or evaluated
+                                    UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
+                                    if (s is Variable sv && !sv.Executed) {
+                                        AddError(Loc.Instance["LblNotEvaluated"] + ": " + r);
+                                        //                           } else if (r.StartsWith("_")) {
+                                        //                               AddError("Reference: " + r);
+                                    } else {
+                                        //                                if (r.StartsWith('$') && ext && validateOnly) {
+                                        //                                    AddError("External: " + symReference);
+                                        //                                } else {
+                                        AddError(Loc.Instance["LblUndefined"] + ": " + r);
+                                        //                                }
+                                    }
+                                }
+                            }
+                            RaisePropertyChanged(nameof(Error));
+                            RaisePropertyChanged(nameof(ValueString));
+                            RaisePropertyChanged(nameof(StringValue));
+                            RaisePropertyChanged(nameof(Value));
+                        } else {
+                            Error = null;
+                            object eval = e.Evaluate();
+                            // We got an actual value
+                            if (eval is Boolean b) {
+                                Value = b ? 1 : 0;
+                            } else {
+                                try {
+                                    Value = Convert.ToDouble(eval, CultureInfo.InvariantCulture);
+                                    // Validate numeric values
+                                    if (Range != null) {
+                                        CheckRange(Value);
+                                    }
+                                } catch (Exception) {
+                                    string str = eval as string;
+                                    if (STRING_VALUES_ALLOWED) {
+                                        if (str != null) {
+                                            StringValue = str;
+                                            Value = double.NegativeInfinity;
+                                        } else {
+                                            Error = Loc.Instance["LblSyntaxError"];
+                                        }
+                                    } else {
+                                        // This can't happen as we allow strings.  Don't localize.  But don't delete the if just in case...
+                                        Error = (str != null) ? "Strings are now allowed as values" : Loc.Instance["LblSyntaxError"];
+                                    }
+                                }
+                            }
+                            RaisePropertyChanged(nameof(Error));
+                            RaisePropertyChanged(nameof(StringValue));
+                            RaisePropertyChanged(nameof(ValueString));
+                            RaisePropertyChanged(nameof(Value));
+                        }
+
+                    } catch (NCalc.Exceptions.NCalcParameterNotDefinedException ex) {
+                        Error = Loc.Instance["LblUndefined"] + ": " + ex.ParameterName;
+                    } catch (NCalc.Exceptions.NCalcEvaluationException ex) {
+                        Error = ex.Message;
+                        return;
+                    } catch (NCalc.Exceptions.NCalcParserException) {
+                        Error = Loc.Instance["LblSyntaxError"];
+                        return;
+                    } catch (Exception ex) {
+                        Error = Loc.Instance["LblError"] + ": " + ex.Message;
+                        Logger.Error("Exception evaluating " + Definition + ": " + ex.Message);
+                    }
+                    Dirty = false;
+                } finally {
+                    isEvaluating = false;
+                }
             }
+        }
+
+        private static object ToExpressionParameterValue(object value) {
+            if (value is DateTime dateTime) {
+                return CoreUtil.ToUnixSeconds(dateTime);
+            } else if (value is DateTimeOffset dateTimeOffset) {
+                return dateTimeOffset.ToUnixTimeSeconds();
+            } else if (value is DateOnly dateOnly) {
+                return CoreUtil.ToUnixSeconds(dateOnly.ToDateTime(TimeOnly.MinValue));
+            } else if (value is TimeOnly timeOnly) {
+                return timeOnly.ToTimeSpan().TotalSeconds;
+            }
+
+            return value;
         }
 
         private static HashSet<string> LoggedOnce = new HashSet<string>();

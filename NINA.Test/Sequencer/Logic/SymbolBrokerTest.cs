@@ -17,6 +17,8 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
 using System;
 using System.Collections.Concurrent;
@@ -124,6 +126,31 @@ namespace NINA.Test.Sequencer.Logic {
             ValidateSymbol(key: "NINA_SunAltitude", expectedSuccess: true);
             ValidateSymbol(key: "NINA_MoonIllumination", expectedSuccess: true);
             ValidateSymbol(key: "NINA_MoonAltitude", expectedSuccess: true);
+        }
+
+        [Test]
+        public void Expression_Evaluate_TimeOnlyBrokerSymbol_ShouldUseSecondsSinceMidnight() {
+            // Arrange
+            TimeOnly timeOnly = new TimeOnly(12, 34, 56);
+            ISymbolProvider provider = broker.RegisterSymbolProvider("TemporalTest");
+            provider.AddOrUpdateSymbol("TimeOnly", timeOnly);
+
+            Mock<ISequenceEntity> context = new Mock<ISequenceEntity>();
+            context.SetupGet(x => x.SymbolBroker).Returns(broker);
+            context.SetupGet(x => x.Parent).Returns((ISequenceContainer)null);
+            context.SetupGet(x => x.Name).Returns("SymbolBroker Test Context");
+
+            Expression expr = new Expression("TemporalTest_TimeOnly + 30", context.Object) {
+                SymbolBroker = broker,
+                IsExpression = true
+            };
+
+            // Act
+            expr.Evaluate(ignoreRoot: true);
+
+            // Assert
+            expr.Error.Should().BeNull();
+            expr.Value.Should().Be(timeOnly.ToTimeSpan().TotalSeconds + 30);
         }
 
         [Test]

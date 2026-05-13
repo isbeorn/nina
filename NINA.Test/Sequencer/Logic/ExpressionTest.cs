@@ -3,6 +3,7 @@ using MdXaml.Plugins;
 using Moq;
 using NCalc.Handlers;
 using NINA.Core.Locale;
+using NINA.Core.Utility;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
@@ -144,6 +145,105 @@ namespace NINA.Test.Sequencer.Logic {
             expr.Value.Should().Be(11.0);
             expr.Parameters.Keys.Should().Contain(new[] { "a", "b" });
             expr.Volatile.Should().BeTrue("values came from SymbolBroker");
+        }
+
+        [Test]
+        public void Expression_Evaluate_DateTimeSymbolBrokerParameter_ShouldUseUnixSeconds() {
+            // arrange
+            DateTime eventTime = new DateTime(2026, 5, 12, 12, 34, 56, DateTimeKind.Utc);
+            double expectedUnixSeconds = CoreUtil.ToUnixSeconds(eventTime);
+            var expr = CreateExpression("eventTime + 60");
+
+            object eventTimeValue = eventTime;
+            _symbolBroker
+                .Setup(b => b.TryGetValue("eventTime", out eventTimeValue))
+                .Returns(true);
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().BeNull();
+            expr.Value.Should().Be(expectedUnixSeconds + 60);
+            expr.Parameters["eventTime"].Should().Be(expectedUnixSeconds);
+            expr.Volatile.Should().BeTrue("values came from SymbolBroker");
+        }
+
+        [Test]
+        public void Expression_Evaluate_DateOnlySymbolBrokerParameter_ShouldUseUnixSecondsAtMidnight() {
+            // arrange
+            DateOnly eventDate = new DateOnly(2026, 5, 12);
+            double expectedUnixSeconds = CoreUtil.ToUnixSeconds(eventDate.ToDateTime(TimeOnly.MinValue));
+            var expr = CreateExpression("eventDate + 86400");
+
+            object eventDateValue = eventDate;
+            _symbolBroker
+                .Setup(b => b.TryGetValue("eventDate", out eventDateValue))
+                .Returns(true);
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().BeNull();
+            expr.Value.Should().Be(expectedUnixSeconds + 86400);
+            expr.Parameters["eventDate"].Should().Be(expectedUnixSeconds);
+            expr.Volatile.Should().BeTrue("values came from SymbolBroker");
+        }
+
+        [Test]
+        public void Expression_Evaluate_TimeOnlySymbolBrokerParameter_ShouldUseSecondsSinceMidnight() {
+            // arrange
+            TimeOnly timeOnly = new TimeOnly(12, 34, 56);
+            double expectedSeconds = timeOnly.ToTimeSpan().TotalSeconds;
+            var expr = CreateExpression("TimeOnly + 30");
+
+            object timeOnlyValue = timeOnly;
+            _symbolBroker
+                .Setup(b => b.TryGetValue("TimeOnly", out timeOnlyValue))
+                .Returns(true);
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().BeNull();
+            expr.Value.Should().Be(expectedSeconds + 30);
+            expr.Parameters["TimeOnly"].Should().Be(expectedSeconds);
+            expr.Volatile.Should().BeTrue("values came from SymbolBroker");
+        }
+
+        [Test]
+        public void Expression_Evaluate_ReentrantEvaluationDuringValidator_ShouldNotReevaluate() {
+            // arrange
+            int brokerReads = 0;
+
+            _symbolBroker
+                .Setup(b => b.TryGetValue("volatileValue", out It.Ref<object>.IsAny))
+                .Callback((string key, out object value) => {
+                    brokerReads++;
+                    if (brokerReads > 1) {
+                        throw new InvalidOperationException("Expression was reevaluated while already evaluating.");
+                    }
+                    value = brokerReads;
+                })
+                .Returns(true);
+
+            Expression expr = new Expression("", _context.Object) {
+                SymbolBroker = _symbolBroker.Object,
+                IsExpression = true,
+                Type = "int"
+            };
+            expr.Validator = e => e.Evaluate(ignoreRoot: true);
+
+            // act
+            expr.Definition = "volatileValue";
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().BeNull();
+            expr.Value.Should().Be(1);
+            brokerReads.Should().Be(1);
         }
 
         [Test]
