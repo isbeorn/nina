@@ -45,7 +45,6 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
-
     public partial class SolveAndRotate : SequenceItem, IValidatable {
         protected IProfileService profileService;
         protected ITelescopeMediator telescopeMediator;

@@ -12,27 +12,26 @@
 
 #endregion "copyright"
 
-using NINA.Equipment.Equipment.MyRotator;
+using NINA.Astrometry;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.Core.Utility.Extensions;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyRotator;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Profile.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NINA.Astrometry;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Model;
-using NINA.Core.Locale;
-using NINA.Core.MyMessageBox;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.Equipment.Equipment;
-using NINA.Equipment.Interfaces;
-using Nito.AsyncEx;
-using System.Linq;
-using NINA.Core.Utility.Extensions;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
@@ -75,7 +74,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         }
 
         public event EventHandler<RotatorEventArgs> Synced;
+
         public event Func<object, RotatorEventArgs, Task> Moved;
+
         public event Func<object, RotatorEventArgs, Task> MovedMechanical;
 
         public async Task<IList<string>> Rescan() {
@@ -87,8 +88,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
         private void Reverse(object obj) {
             try {
-                if (obj is bool) {
-                    var reverse = (bool)obj;
+                if (obj is bool reverse) {
                     if (Rotator != null && RotatorInfo.Connected) {
                         Logger.Info($"Setting Rotator Reverse flag to {reverse}");
                         Rotator.Reverse = reverse;
@@ -118,7 +118,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     RotatorInfo.Position = Rotator.Position;
                     RotatorInfo.Synced = true;
 
-                    try { Synced?.Invoke(this, new RotatorEventArgs(from, RotatorInfo.Position)); } catch (Exception ex) { Logger.Error(ex); }                    
+                    try { Synced?.Invoke(this, new RotatorEventArgs(from, RotatorInfo.Position)); } catch (Exception ex) { Logger.Error(ex); }
                     BroadcastRotatorInfo();
                 }
             } catch (Exception ex) {
@@ -130,6 +130,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             _moveCts?.Dispose();
             _moveCts = new CancellationTokenSource();
             float pos = float.NaN;
+
             await Task.Run(async () => {
                 try {
                     var from = RotatorInfo.Position;
@@ -138,7 +139,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     var adjustedTargetPosition = GetTargetPosition(requestedPosition);
                     if (Math.Abs(adjustedTargetPosition - requestedPosition) > 0.1) {
                         Logger.Info($"Adjusted rotator target to {adjustedTargetPosition}");
-                        Notification.ShowInformation(String.Format(Loc.Instance["LblRotatorRangeAdjusted"], adjustedTargetPosition));
+                        Notification.ShowInformation(string.Format(Loc.Instance["LblRotatorRangeAdjusted"], adjustedTargetPosition));
                     }
 
                     applicationStatusMediator.StatusUpdate(
@@ -173,6 +174,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     );
                 }
             });
+
             return pos;
         }
 
@@ -184,6 +186,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             _moveCts?.Dispose();
             _moveCts = new CancellationTokenSource();
             float pos = float.NaN;
+
             await Task.Run(async () => {
                 try {
                     var from = RotatorInfo.MechanicalPosition;
@@ -192,7 +195,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     var adjustedTargetPosition = GetTargetMechanicalPosition(requestedPosition);
                     if (Math.Abs(adjustedTargetPosition - requestedPosition) > 0.1) {
                         Logger.Info($"Adjusted rotator mechanical target to {adjustedTargetPosition}");
-                        Notification.ShowInformation(String.Format(Loc.Instance["LblRotatorRangeAdjusted"], adjustedTargetPosition));
+                        Notification.ShowInformation(string.Format(Loc.Instance["LblRotatorRangeAdjusted"], adjustedTargetPosition));
                     }
 
                     applicationStatusMediator.StatusUpdate(
@@ -227,6 +230,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     );
                 }
             });
+
             return pos;
         }
 
@@ -276,7 +280,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             return rotatorValues;
         }
 
-        private DeviceUpdateTimer updateTimer;
+        private readonly DeviceUpdateTimer updateTimer;
         private RotatorInfo rotatorInfo;
 
         public RotatorInfo RotatorInfo {
@@ -306,6 +310,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         }
 
         private IRotator rotator;
+
         public IRotator Rotator {
             get => rotator;
             private set {
@@ -313,8 +318,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 RaisePropertyChanged();
             }
         }
-        private IRotatorMediator rotatorMediator;
-        private IApplicationStatusMediator applicationStatusMediator;
+
+        private readonly IRotatorMediator rotatorMediator;
+        private readonly IApplicationStatusMediator applicationStatusMediator;
 
         public IAsyncCommand ConnectCommand { get; private set; }
         public ICommand CancelConnectCommand { get; private set; }
@@ -330,6 +336,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
         public event Func<object, EventArgs, Task> Connected;
+
         public event Func<object, EventArgs, Task> Disconnected;
 
         public async Task<bool> Connect() {
@@ -490,7 +497,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 throw new Exception("Rotator not synced!");
             }
 
-            // Focuser position should be in [0, 360)
+            // Focuser position should be in [0 .. 360]
             position = AstroUtil.EuclidianModulus(position, 360);
             var offset = Rotator.MechanicalPosition - Rotator.Position;
             var mechanicalPosition = AstroUtil.EuclidianModulus(position + offset, 360);
@@ -529,6 +536,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
             return AstroUtil.EuclidianModulus(targetMechanicalPosition, 360);
         }
+
         public IDevice GetDevice() {
             return Rotator;
         }
