@@ -27,6 +27,7 @@ namespace NINA.Sequencer.Logic {
         bool TryGetSymbol(string key, out Symbol symbol);
         List<Symbol> GetSymbols();
         ISymbolProvider RegisterSymbolProvider(string name);
+        bool IsProviderRegistered(string providerName);
         IList<Symbol> GetHiddenSymbols(string source);
         IReadOnlyCollection<SymbolFunction> GetFunctions();
         void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile);

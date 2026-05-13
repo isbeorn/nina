@@ -910,6 +910,18 @@ namespace NINA.Test.Sequencer.Logic {
         }
 
         [Test]
+        public void SymbolBroker_IsProviderRegistered_ReturnsRegistrationState() {
+            broker.IsProviderRegistered("Camera").Should().BeTrue();
+            broker.IsProviderRegistered("TestProvider").Should().BeFalse();
+
+            broker.RegisterSymbolProvider("TestProvider");
+
+            broker.IsProviderRegistered("TestProvider").Should().BeTrue();
+            broker.IsProviderRegistered("testprovider").Should().BeTrue();
+            broker.IsProviderRegistered(null).Should().BeFalse();
+        }
+
+        [Test]
         public void SymbolBroker_AddOrUpdateSymbol_NoProvider_Fails() {
             // Act
             Action act = () => broker.AddOrUpdateSymbol(null, "MySymbol", 123.45);

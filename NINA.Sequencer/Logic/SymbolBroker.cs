@@ -673,6 +673,16 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+        public bool IsProviderRegistered(string providerName) {
+            if (string.IsNullOrWhiteSpace(providerName)) {
+                return false;
+            }
+
+            lock (_brokerStateLock) {
+                return _providers.Any(provider => string.Equals(provider, providerName, StringComparison.OrdinalIgnoreCase));
+            }
+        }
+
         public IReadOnlyCollection<ISymbolProvider> GetMyProviders() {
             var callingAssembly = Assembly.GetCallingAssembly();
             var assemblyName = callingAssembly.FullName;
