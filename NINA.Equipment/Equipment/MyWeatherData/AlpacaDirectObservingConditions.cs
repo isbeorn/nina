@@ -124,15 +124,15 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
 
         public double WindSpeed => ((IWeatherData)device).WindSpeed;
 
-        public bool Connected => ((IDevice)device).Connected;
+        public bool Connected => ((IDevice)device)?.Connected ?? false;
 
-        public string Description => ((IDevice)device).Description;
+        public string Description => ((IDevice)device)?.Description ?? string.Empty;
 
-        public string DriverInfo => ((IDevice)device).DriverInfo;
+        public string DriverInfo => ((IDevice)device)?.DriverInfo ?? string.Empty;
 
-        public string DriverVersion => ((IDevice)device).DriverVersion;
+        public string DriverVersion => ((IDevice)device)?.DriverVersion ?? string.Empty;
 
-        public IList<string> SupportedActions => ((IDevice)device).SupportedActions;
+        public IList<string> SupportedActions => ((IDevice)device)?.SupportedActions ?? [];
 
         public void Disconnect() {
             ((IDevice)device).Disconnect();

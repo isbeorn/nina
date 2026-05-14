@@ -114,15 +114,15 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public double Temperature => ((IFocuser)device).Temperature;
 
-        public bool Connected => ((IDevice)device).Connected;
+        public bool Connected => ((IDevice)device)?.Connected ?? false;
 
-        public string Description => ((IDevice)device).Description;
+        public string Description => ((IDevice)device)?.Description ?? string.Empty;
 
-        public string DriverInfo => ((IDevice)device).DriverInfo;
+        public string DriverInfo => ((IDevice)device)?.DriverInfo ?? string.Empty;
 
-        public string DriverVersion => ((IDevice)device).DriverVersion;
+        public string DriverVersion => ((IDevice)device)?.DriverVersion ?? string.Empty;
 
-        public IList<string> SupportedActions => ((IDevice)device).SupportedActions;
+        public IList<string> SupportedActions => ((IDevice)device)?.SupportedActions ?? [];
 
         public Task Move(int position, CancellationToken ct, int waitInMs = 1000) {
             return ((IFocuser)device).Move(position, ct, waitInMs);
