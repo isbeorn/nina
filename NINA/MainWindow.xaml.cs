@@ -105,12 +105,10 @@ namespace NINA {
 
     public class TraceLogToVisibilityConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            if(value is LogLevelEnum e) {
-                return e switch {
-                    LogLevelEnum.TRACE or LogLevelEnum.DEBUG => Visibility.Visible,
-                    _ => Visibility.Collapsed
-                };
+            if(value is LogLevelEnum logLevel && parameter is LogLevelEnum visibleLogLevel) {
+                return logLevel == visibleLogLevel ? Visibility.Visible : Visibility.Collapsed;
             }
+
             return Visibility.Collapsed;
         }
 

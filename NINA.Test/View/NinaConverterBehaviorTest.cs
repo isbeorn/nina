@@ -80,6 +80,25 @@ namespace NINA.Test.View {
         }
 
         /// <summary>
+        /// Verifies the main-window log-level annotation only shows the badge for the selected verbose log level.
+        /// </summary>
+        [Test]
+        public void TraceLogToVisibilityConverter_OnlyShowsRequestedLogLevel() {
+            var converter = new TraceLogToVisibilityConverter();
+
+            converter.Convert(LogLevelEnum.TRACE, typeof(Visibility), LogLevelEnum.TRACE, CultureInfo.InvariantCulture)
+                .Should().Be(Visibility.Visible);
+            converter.Convert(LogLevelEnum.TRACE, typeof(Visibility), LogLevelEnum.DEBUG, CultureInfo.InvariantCulture)
+                .Should().Be(Visibility.Collapsed);
+            converter.Convert(LogLevelEnum.DEBUG, typeof(Visibility), LogLevelEnum.DEBUG, CultureInfo.InvariantCulture)
+                .Should().Be(Visibility.Visible);
+            converter.Convert(LogLevelEnum.DEBUG, typeof(Visibility), LogLevelEnum.TRACE, CultureInfo.InvariantCulture)
+                .Should().Be(Visibility.Collapsed);
+            converter.Convert(LogLevelEnum.INFO, typeof(Visibility), LogLevelEnum.DEBUG, CultureInfo.InvariantCulture)
+                .Should().Be(Visibility.Collapsed);
+        }
+
+        /// <summary>
         /// Verifies plate-solver option visibility hides duplicate blind-solver settings and leaves distinct solver choices visible.
         /// </summary>
         [Test]

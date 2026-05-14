@@ -11,6 +11,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:coreutil="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
     xmlns:equip="clr-namespace:NINA.View.Equipment"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA"
@@ -856,7 +857,7 @@
                 FontWeight="Bold"
                 Foreground="{StaticResource NotificationWarningBrush}"
                 Text="TRACE LOGGING ENABLED"
-                Visibility="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ApplicationSettings.LogLevel, Converter={StaticResource TraceLogToVisibilityConverter}}" />
+                Visibility="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ApplicationSettings.LogLevel, Converter={StaticResource TraceLogToVisibilityConverter}, ConverterParameter={x:Static enum:LogLevelEnum.TRACE}}" />
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="2"
@@ -865,7 +866,7 @@
                 FontWeight="Bold"
                 Foreground="{StaticResource NotificationWarningBrush}"
                 Text="DEBUG LOGGING ENABLED"
-                Visibility="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ApplicationSettings.LogLevel, Converter={StaticResource TraceLogToVisibilityConverter}}" />
+                Visibility="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ApplicationSettings.LogLevel, Converter={StaticResource TraceLogToVisibilityConverter}, ConverterParameter={x:Static enum:LogLevelEnum.DEBUG}}" />
             <ComboBox
                 x:Name="DebugResolutionCombobox"
                 Grid.Row="1"
