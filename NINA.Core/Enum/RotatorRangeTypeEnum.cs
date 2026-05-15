@@ -34,5 +34,8 @@ namespace NINA.Core.Enum {
 
         [TooltipDescription("LblRotatorRangeQuarter", "LblRotatorRangeQuarterTooltip")]
         QUARTER,
+
+        [TooltipDescription("LblRotatorRangeLiteral", "LblRotatorRangeLiteralTooltip")]
+        LITERAL,
     }
 }

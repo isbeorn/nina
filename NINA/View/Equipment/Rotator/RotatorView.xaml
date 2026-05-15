@@ -198,7 +198,10 @@
                         <Border.Style>
                             <Style TargetType="{x:Type Border}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=PART_RotatorRangeTypeList, Path=SelectedItem}" Value="0">
+                                    <DataTrigger Binding="{Binding ElementName=PART_RotatorRangeTypeList, Path=SelectedItem}" Value="{x:Static enum:RotatorRangeTypeEnum.FULL}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_RotatorRangeTypeList, Path=SelectedItem}" Value="{x:Static enum:RotatorRangeTypeEnum.LITERAL}">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
