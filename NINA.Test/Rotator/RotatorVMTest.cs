@@ -13,26 +13,16 @@
 #endregion "copyright"
 
 using Moq;
-using NINA.Equipment.Equipment.MyDome;
-using NINA.Equipment.Equipment.MyRotator;
-using NINA.Equipment.Equipment.MyTelescope;
-using NINA.Profile.Interfaces;
 using NINA.Astrometry;
-using NINA.Equipment.Interfaces.Mediator;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Utility;
-using NINA.Core.Model;
-using NINA.Equipment.Interfaces;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.WPF.Base.ViewModel.Equipment.Rotator;
 using NINA.Core.Enum;
-using NUnit.Framework.Legacy;
+using NINA.Core.Utility;
+using NINA.Equipment.Equipment.MyRotator;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Profile.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.ViewModel.Equipment.Rotator;
 
 namespace NINA.Test.Rotator {
 
@@ -100,6 +90,7 @@ namespace NINA.Test.Rotator {
             }).ReturnsAsync(true);
 
             mockRotatorDeviceChooserVM.SetupGet(x => x.SelectedDevice).Returns(mockRotator.Object);
+            mockRotatorDeviceChooserVM.SetupGet(x => x.Devices).Returns(new List<IDevice>());
 
             var connectionResult = await rotatorVM.Connect();
             Assert.That(connectionResult, Is.True);
@@ -169,8 +160,8 @@ namespace NINA.Test.Rotator {
 
         [Test]
         [TestCase(10.0f, 10.0f)]
-        [TestCase(100.0f, 100.0f)]
-        [TestCase(190.0f, 190.0f)]
+        [TestCase(100.0f, 280.0f)]  // Optimized: reciprocal 280° is closer from 0° than direct 100°
+        [TestCase(190.0f, 10.0f)]   // Optimized: reciprocal 10° is closer from 0° than direct 190°
         [TestCase(280.0f, 280.0f)]
         // Mechanical range is 1-181, and Position range is 6-186
         [TestCase(5.0f, 185.0f, RotatorRangeTypeEnum.HALF, 1.0f)]
@@ -205,9 +196,44 @@ namespace NINA.Test.Rotator {
         }
 
         [Test]
+        [TestCase(10.0f, 10.0f, 0.0f, Description = "LITERAL with offset, exact position")]
+        [TestCase(100.0f, 100.0f, 5.0f, Description = "LITERAL with offset, exact position")]
+        [TestCase(190.0f, 190.0f, -10.0f, Description = "LITERAL with negative offset")]
+        [TestCase(350.0f, 350.0f, 20.0f, Description = "LITERAL near 360° with offset")]
+        public async Task Test_GetPosition_LiteralRange(float requestedPosition, float expectedPosition, float offsetValue) {
+            var sut = await CreateSUT();
+            rangeType = RotatorRangeTypeEnum.LITERAL;
+            rangeStartMechanicalPosition = 0.0f;
+            isSynced = true;
+            mechanicalPosition = 100.0f;
+            offset = offsetValue;
+
+            var result = sut.GetTargetPosition(requestedPosition);
+            Assert.That(result, Is.EqualTo(expectedPosition).Within(0.1));
+        }
+
+        [Test]
+        [TestCase(5.0f, 5.0f, 0.0f, 0.0f, Description = "FULL range, same quadrant optimization")]
+        [TestCase(185.0f, 5.0f, 0.0f, 0.0f, Description = "FULL range, 180° reciprocal optimization")]
+        [TestCase(10.0f, 10.0f, 5.0f, 0.0f, Description = "FULL range with offset, direct")]
+        [TestCase(190.0f, 10.0f, 5.0f, 10.0f, Description = "FULL range with offset, reciprocal optimization")]
+        [TestCase(245.0f, 245.0f, 0.0f, 245.0f, Description = "FULL range, same position")]
+        public async Task Test_GetPosition_FullRange(float requestedPosition, float expectedPosition, float offsetValue, float currentMechanicalPosition) {
+            var sut = await CreateSUT();
+            rangeType = RotatorRangeTypeEnum.FULL;
+            rangeStartMechanicalPosition = 0.0f;
+            isSynced = true;
+            mechanicalPosition = currentMechanicalPosition;
+            offset = offsetValue;
+
+            var result = sut.GetTargetPosition(requestedPosition);
+            Assert.That(result, Is.EqualTo(expectedPosition).Within(0.1));
+        }
+
+        [Test]
         [TestCase(10.0f, 10.0f)]
-        [TestCase(100.0f, 100.0f)]
-        [TestCase(190.0f, 190.0f)]
+        [TestCase(100.0f, 280.0f)]  // Optimized: reciprocal 280° is closer from 0° than direct 100°
+        [TestCase(190.0f, 10.0f)]   // Optimized: reciprocal 10° is closer from 0° than direct 190°
         [TestCase(280.0f, 280.0f)]
         // Mechanical range is 1-181, and Position range is 6-186
         [TestCase(10.0f, 10.0f, RotatorRangeTypeEnum.HALF, 1.0f)]
@@ -236,8 +262,95 @@ namespace NINA.Test.Rotator {
             isSynced = true;
             offset = 5.0f;
 
+            // Update RotatorInfo to reflect the current mechanical position
+            sut.RotatorInfo.MechanicalPosition = mechanicalPosition;
+
             var result = sut.GetTargetMechanicalPosition(requestedPosition);
             Assert.That(result, Is.EqualTo(expectedPosition).Within(0.1));
+        }
+
+        [Test]
+        [TestCase(10.0f, 10.0f, Description = "Exact position requested")]
+        [TestCase(100.0f, 100.0f, Description = "Exact position requested")]
+        [TestCase(190.0f, 190.0f, Description = "Exact position requested, no optimization")]
+        [TestCase(280.0f, 280.0f, Description = "Exact position requested")]
+        [TestCase(0.0f, 0.0f, Description = "Zero position")]
+        [TestCase(359.9f, 359.9f, Description = "Near 360°")]
+        public async Task Test_GetMechanicalPosition_LiteralRange(float requestedPosition, float expectedPosition) {
+            var sut = await CreateSUT();
+            rangeType = RotatorRangeTypeEnum.LITERAL;
+            rangeStartMechanicalPosition = 0.0f;
+            isSynced = true;
+            mechanicalPosition = 100.0f;
+            offset = 0.0f;
+
+            var result = sut.GetTargetMechanicalPosition(requestedPosition);
+            Assert.That(result, Is.EqualTo(expectedPosition).Within(0.1));
+        }
+
+        [Test]
+        [TestCase(10.0f, 10.0f, 0.0f, Description = "Same quadrant, direct movement")]
+        [TestCase(100.0f, 100.0f, 90.0f, Description = "Different quadrant, direct movement")]
+        [TestCase(190.0f, 10.0f, 10.0f, Description = "Optimized via 180° reciprocal (190° from 10° is shorter than 10° from 10°)")]
+        [TestCase(280.0f, 280.0f, 270.0f, Description = "Close to current position")]
+        [TestCase(180.0f, 0.0f, 10.0f, Description = "180° reciprocal optimization (180° away becomes 0°)")]
+        [TestCase(0.0f, 0.0f, 10.0f, Description = "Direct movement (0° is closer than reciprocal 180°)")]
+        [TestCase(270.0f, 90.0f, 100.0f, Description = "Reciprocal when closer (270° from 100° via 90° reciprocal)")]
+        [TestCase(90.0f, 90.0f, 100.0f, Description = "Direct movement (90° is closer than reciprocal 270°)")]
+        public async Task Test_GetMechanicalPosition_FullRange_OptimizesMovement(float requestedPosition, float expectedPosition, float currentMechanicalPosition) {
+            var sut = await CreateSUT();
+            rangeType = RotatorRangeTypeEnum.FULL;
+            rangeStartMechanicalPosition = 0.0f;
+            isSynced = true;
+            mechanicalPosition = currentMechanicalPosition;
+            offset = 0.0f;
+
+            // Update RotatorInfo to reflect the current mechanical position
+            sut.RotatorInfo.MechanicalPosition = currentMechanicalPosition;
+
+            var result = sut.GetTargetMechanicalPosition(requestedPosition);
+            Assert.That(result, Is.EqualTo(expectedPosition).Within(0.1));
+        }
+
+        [Test]
+        [TestCase(15.0f, 15.0f, Description = "LITERAL range, exact mechanical movement")]
+        [TestCase(90.9f, 90.9f, Description = "LITERAL range, exact mechanical movement")]
+        [TestCase(195.0f, 195.0f, Description = "LITERAL range, no range mapping")]
+        [TestCase(359.5f, 359.5f, Description = "LITERAL range, near 360°")]
+        public async Task Test_MoveMechanical_LiteralRange(float requestedPosition, float expectedPosition) {
+            var sut = await CreateSUT();
+            rangeType = RotatorRangeTypeEnum.LITERAL;
+            rangeStartMechanicalPosition = 0.0f;
+            isSynced = true;
+            mechanicalPosition = 10.0f;
+            offset = 5.0f;
+
+            var cts = new CancellationTokenSource();
+            var result = await sut.MoveMechanical(requestedPosition, TimeSpan.Zero, cts.Token);
+            Assert.That(result, Is.EqualTo(expectedPosition).Within(0.1));
+            mockRotator.Verify(x => x.MoveAbsoluteMechanical(expectedPosition, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        [TestCase(15.0f, 15.0f, 10.0f, Description = "FULL range, direct movement")]
+        [TestCase(195.0f, 15.0f, 10.0f, Description = "FULL range, reciprocal optimization (195° becomes 15° from 10°)")]
+        [TestCase(100.0f, 100.0f, 90.0f, Description = "FULL range, close positions")]
+        [TestCase(280.0f, 100.0f, 90.0f, Description = "FULL range, reciprocal optimization (280° becomes 100° from 90°)")]
+        public async Task Test_MoveMechanical_FullRange(float requestedPosition, float expectedPosition, float currentMechanicalPosition) {
+            var sut = await CreateSUT();
+            rangeType = RotatorRangeTypeEnum.FULL;
+            rangeStartMechanicalPosition = 0.0f;
+            isSynced = true;
+            mechanicalPosition = currentMechanicalPosition;
+            offset = 5.0f;
+
+            // Update RotatorInfo to reflect the current mechanical position
+            sut.RotatorInfo.MechanicalPosition = currentMechanicalPosition;
+
+            var cts = new CancellationTokenSource();
+            var result = await sut.MoveMechanical(requestedPosition, TimeSpan.Zero, cts.Token);
+            Assert.That(result, Is.EqualTo(expectedPosition).Within(0.1));
+            mockRotator.Verify(x => x.MoveAbsoluteMechanical(expectedPosition, It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
