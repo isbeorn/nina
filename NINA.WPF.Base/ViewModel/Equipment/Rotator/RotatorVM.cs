@@ -506,34 +506,85 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         }
 
         public float GetTargetMechanicalPosition(float position) {
-            // Focuser position should be in [0, 360)
+            // Focuser position should be in [0 .. 360]
             position = AstroUtil.EuclidianModulus(position, 360);
             var rangeType = profileService.ActiveProfile.RotatorSettings.RangeType;
             var rangeStart = profileService.ActiveProfile.RotatorSettings.RangeStartMechanicalPosition;
             float rangeStartDistance = AstroUtil.EuclidianModulus(position - rangeStart + 360, 360);
             float targetMechanicalPosition;
-            if (rangeType == Core.Enum.RotatorRangeTypeEnum.FULL) {
-                targetMechanicalPosition = position;
-            } else if (rangeType == Core.Enum.RotatorRangeTypeEnum.HALF) {
-                if (rangeStartDistance < 180.0) {
+
+            // Determine the target mechanical position based on the configured rotator range type.
+            // This switch statement handles different rotation strategies to optimize rotator movement:
+            //
+            // - LITERAL: Uses the exact requested angle without any adjustments. The rotator will
+            //   always move to the requested mechanical angle.
+            //
+            // - FULL: Optimizes rotator movement by considering the 180-degree reciprocal angle. Since a
+            //   full-range rotator can achieve any sky position angle from two mechanical angles
+            //   (angle or angle + 180°), this chooses whichever angle results in the shortest
+            //   rotational movement from the rotator's current mechanical angle.
+            //
+            // - HALF: Maps angles into a 180-degree range starting from the configured range start.
+            //   If the requested angle falls within the first 180° from the range start, it uses
+            //   the angle as-is; otherwise, it adds 180° to bring it into the valid range.
+            //
+            // - QUARTER: Maps angles into a 90-degree range starting from the configured range start.
+            //   Based on which 90° quadrant the angle falls into relative to the range start, it
+            //   applies the appropriate offset (0°, 90°, 180°, or 270°) to bring the angle into
+            //   the valid mechanical range.
+            //
+            // Variables used:
+            // - position: The desired mechanical angle in degrees
+            // - rangeStartDistance: The angular distance from the range start angle to the target angle
+            // - targetMechanicalPosition: The calculated mechanical angle the rotator should move to
+            switch (rangeType) {
+                case Core.Enum.RotatorRangeTypeEnum.LITERAL:
                     targetMechanicalPosition = position;
-                } else {
-                    targetMechanicalPosition = position + 180;
-                }
-            } else if (rangeType == Core.Enum.RotatorRangeTypeEnum.QUARTER) {
-                if (rangeStartDistance < 90.0) {
-                    targetMechanicalPosition = position;
-                } else if (rangeStartDistance < 180.0) {
-                    targetMechanicalPosition = position + 270;
-                } else if (rangeStartDistance < 270.0) {
-                    targetMechanicalPosition = position + 180;
-                } else {
-                    targetMechanicalPosition = position + 90;
-                }
-            } else {
-                throw new NotImplementedException();
+                    break;
+
+                case Core.Enum.RotatorRangeTypeEnum.FULL:
+                    var currentPosition = Rotator.MechanicalPosition;
+                    var reciprocal = AstroUtil.EuclidianModulus(position + 180, 360);
+
+                    // Calculate angular distance to direct position
+                    var directDistance = Math.Abs(AstroUtil.EuclidianModulus(position - currentPosition + 180, 360) - 180);
+
+                    // Calculate angular distance to reciprocal position
+                    var reciprocalDistance = Math.Abs(AstroUtil.EuclidianModulus(reciprocal - currentPosition + 180, 360) - 180);
+
+                    if (directDistance <= reciprocalDistance) {
+                        targetMechanicalPosition = position;
+                    } else {
+                        targetMechanicalPosition = reciprocal;
+                    }
+
+                    break;
+
+                case Core.Enum.RotatorRangeTypeEnum.HALF:
+                    if (rangeStartDistance < 180.0) {
+                        targetMechanicalPosition = position;
+                    } else {
+                        targetMechanicalPosition = position + 180;
+                    }
+                    break;
+
+                case Core.Enum.RotatorRangeTypeEnum.QUARTER:
+                    if (rangeStartDistance < 90.0) {
+                        targetMechanicalPosition = position;
+                    } else if (rangeStartDistance < 180.0) {
+                        targetMechanicalPosition = position + 270;
+                    } else if (rangeStartDistance < 270.0) {
+                        targetMechanicalPosition = position + 180;
+                    } else {
+                        targetMechanicalPosition = position + 90;
+                    }
+                    break;
+
+                default:
+                    throw new NotImplementedException();
             }
 
+            // Ensure the target mechanical angle is within [0 .. 360]
             return AstroUtil.EuclidianModulus(targetMechanicalPosition, 360);
         }
 
