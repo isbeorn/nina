@@ -61,6 +61,7 @@ This allows you to safely return to a stable release if needed.
   - This change only affects mount drivers that previously started tracking immediately upon unparking; drivers that did not exhibit this behavior are unaffected.
   - Preventing automatic tracking on unpark avoids unexpected mount movement and reduces the risk of pier collisions or other unintended motion, while ensuring consistent and predictable behavior across drivers.
 - `Wait Until Safe` instruction no longer requires a safety monitor to be connected. A disconnected safety monitor is treated as unsafe, as it could be disconnected due to communication failures.
+- `Full` mechanical range behavior for rotators is now applied in all cases of commanded rotation, including rotations initiated from outside a sequence.
 
 ## Features
 
@@ -118,6 +119,8 @@ This allows you to safely return to a stable release if needed.
   - While connecting the app will wait for the filter wheel homing to finish before proceeding
 - **Moravian Instruments Cameras and Integrated Filter Wheels**
   - Added native drivers for Moravian Instruments cameras and integrated filter wheels
+- **Rotators**
+  - Added `Literal` mechanical range mode where the commanded angle is applied exactly as specified, without any automatic adjustments or optimizations.
 
 ### **User Interface & Usability**
 - **Sequencer**
