@@ -409,17 +409,20 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        private void RemoveAllSymbols(string source) {
+        private void RemoveAllSymbols(string source, params string[] keysToKeep) {
             List<SymbolChangedEventArgs> changes = new List<SymbolChangedEventArgs>();
             lock (_brokerStateLock) {
                 int count = 0;
                 var keysToRemove = new List<string>();
+                HashSet<string> keysToKeepSet = keysToKeep?.Length > 0
+                    ? new HashSet<string>(keysToKeep, StringComparer.OrdinalIgnoreCase)
+                    : null;
 
                 foreach (var kvp in _dataSymbols) {
                     var list = kvp.Value;
 
                     for (int i = list.Count - 1; i >= 0; i--) {
-                        if (list[i].Category == source) {
+                        if (list[i].Category == source && keysToKeepSet?.Contains(list[i].Key) != true) {
                             Symbol removed = list[i];
                             changes.Add(new SymbolChangedEventArgs(SymbolChangeKind.Removed, CopySymbol(removed), removed.Value, null));
                             list.RemoveAt(i);
@@ -436,7 +439,19 @@ namespace NINA.Sequencer.Logic {
                     _dataSymbols.Remove(key, out _);
                 }
 
-                _hiddenSymbols.Remove(source, out _);
+                if (keysToKeepSet == null) {
+                    _hiddenSymbols.Remove(source, out _);
+                } else if (_hiddenSymbols.TryGetValue(source, out IList<Symbol> hiddenSymbols)) {
+                    for (int i = hiddenSymbols.Count - 1; i >= 0; i--) {
+                        if (!keysToKeepSet.Contains(hiddenSymbols[i].Key)) {
+                            hiddenSymbols.RemoveAt(i);
+                        }
+                    }
+
+                    if (hiddenSymbols.Count == 0) {
+                        _hiddenSymbols.Remove(source, out _);
+                    }
+                }
 
                 Logger.Info($"Removing all symbols from: {source} ({count})");
             }
@@ -802,7 +817,7 @@ namespace NINA.Sequencer.Logic {
                 }
             } else {
                 RemoveAllSymbols("Gauge");
-                RemoveAllSymbols("Switch");
+                RemoveAllSymbols(source: "Switch", keysToKeep: "Connected");
             }
         }
 
@@ -821,7 +836,7 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
             } else {
-                RemoveAllSymbols("Weather");
+                RemoveAllSymbols(source: "Weather", keysToKeep: "Connected");
             }
         }
 

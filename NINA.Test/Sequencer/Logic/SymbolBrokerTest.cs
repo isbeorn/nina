@@ -387,6 +387,7 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
+            ValidateSymbol(key: "Switch_Connected", expectedSuccess: true, expectedValue: false);
             ValidateSymbol(key: "Gauge_TestSwitch1", expectedSuccess: false);
             ValidateSymbol(key: "Gauge_TestSwitch2", expectedSuccess: false);
             ValidateSymbol(key: "Switch_TestSwitch3", expectedSuccess: false);
@@ -560,6 +561,7 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
+            ValidateSymbol(key: "Weather_Connected", expectedSuccess: true, expectedValue: false);
             ValidateSymbol(key: "Weather_Temperature", expectedSuccess: false);
             ValidateSymbol(key: "Weather_AveragePeriod", expectedSuccess: false);
             ValidateSymbol(key: "Weather_CloudCover", expectedSuccess: false);
