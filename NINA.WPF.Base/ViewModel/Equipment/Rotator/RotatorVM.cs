@@ -497,7 +497,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 throw new Exception("Rotator not synced!");
             }
 
-            // Focuser position should be in [0 .. 360]
+            // Rotator position should be in [0 .. 360]
             position = AstroUtil.EuclidianModulus(position, 360);
             var offset = Rotator.MechanicalPosition - Rotator.Position;
             var mechanicalPosition = AstroUtil.EuclidianModulus(position + offset, 360);
@@ -506,7 +506,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         }
 
         public float GetTargetMechanicalPosition(float position) {
-            // Focuser position should be in [0 .. 360]
+            // Rotator position should be in [0 .. 360]
             position = AstroUtil.EuclidianModulus(position, 360);
             var rangeType = profileService.ActiveProfile.RotatorSettings.RangeType;
             var rangeStart = profileService.ActiveProfile.RotatorSettings.RangeStartMechanicalPosition;
