@@ -5518,7 +5518,7 @@ Un nombre plus restreint aidera à répondre plus rapidement à un changement de
     <value>Déplace le rotateur à l'angle mécanique spécifié</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotation par angle mécanique</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Méridien</value>
