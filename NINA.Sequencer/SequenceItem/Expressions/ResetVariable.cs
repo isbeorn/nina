@@ -87,13 +87,16 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             if (sym == null || !(sym is Variable)) {
                 throw new SequenceEntityFailedException("The symbol isn't found or isn't a Variable");
             } else if (Expr.Error != null && !Expression.JustWarnings(Expr.Error)) {
+                LogAbortedCommit(sym, "expression error");
                 throw new SequenceEntityFailedException("The value of the expression '" + Expr.Definition + "' was invalid");
             }
             Variable sv = sym as Variable;
             if (sv == null || sv.Executed == false) {
+                LogAbortedCommit(sym, "target variable was not executed");
                 throw new SequenceEntityFailedException("The Variable definition has not been executed");
             }
             if (!Expr.HasEvaluatedResult) {
+                LogAbortedCommit(sym, "expression produced no valid result");
                 throw new SequenceEntityFailedException("The value of the expression '" + Expr.Definition + "' did not produce a valid result");
             }
 
@@ -112,6 +115,22 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             UserSymbol.SymbolDirty(sym);
 
             return Task.CompletedTask;
+        }
+
+        private void LogAbortedCommit(UserSymbol sym, string reason) {
+            Logger.Warning(
+                "SetVariable aborted: Reason=" + reason +
+                ", Variable=" + Variable +
+                ", Expr='" + Expr?.Definition + "'" +
+                ", ExprError=" + (Expr?.Error ?? "<null>") +
+                ", ExprValue=" + (Expr != null ? Expr.Value.ToString(CultureInfo.InvariantCulture) : "<null>") +
+                ", ExprStringValue=" + (Expr?.StringValue ?? "<null>") +
+                ", ExprValueString=" + (Expr?.ValueString ?? "<null>") +
+                ", ExprContext='" + (Expr?.Context?.Name ?? "<null>") + "'" +
+                ", ExprContextAttached=" + (Expr?.Context != null ? (UserSymbol.IsAttachedToRoot(Expr.Context) ? "true" : "false") : "<null>") +
+                ", Parent='" + (Parent?.Name ?? "<null>") + "'" +
+                ", TargetOldDefinition='" + (sym?.Expr?.Definition ?? "<null>") + "'" +
+                ", TargetExecuted=" + (sym is Variable v ? (v.Executed ? "true" : "false") : "<null>"));
         }
 
         private bool IsAttachedToRoot() {

@@ -255,6 +255,24 @@ namespace NINA.Sequencer.Logic {
             LoggedOnce.Add(message);
         }
 
+        private static string SymbolLogDetails(string label, UserSymbol sym) {
+            if (sym == null) {
+                return label + "=<null>";
+            }
+
+            return label + ": " +
+                "Identifier=" + sym.Identifier +
+                ", " + label + "Type=" + sym.GetType().Name +
+                ", " + label + "Parent='" + (sym.Parent?.Name ?? "<null>") + "'" +
+                ", " + label + "SParent='" + (sym.SParent()?.Name ?? "<null>") + "'" +
+                ", " + label + "Attached=" + (IsAttachedToRoot(sym) ? "true" : "false") +
+                ", " + label + "ExprDefinition='" + (sym.Expr?.Definition ?? "<null>") + "'" +
+                ", " + label + "ExprError=" + (sym.Expr?.Error ?? "<null>") +
+                ", " + label + "ExprValueString='" + (sym.Expr?.ValueString ?? "<null>") + "'" +
+                ", " + label + "Executed=" + (sym is Variable v ? (v.Executed ? "true" : "false") : "<n/a>") +
+                ", " + label + "Consumers=" + sym.Consumers.Count;
+        }
+
         public static void ShowSymbols(object sender) {
             TextBox tb = (TextBox)sender;
             BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
@@ -409,7 +427,7 @@ namespace NINA.Sequencer.Logic {
                                     return;
                                 }
 
-                                Logger.Warning("New Symbol for Global Variable: " + Identifier);
+                                Logger.Warning("Replacing global symbol: " + SymbolLogDetails("Existing", gv) + "; " + SymbolLogDetails("New", this));
                                 SymbolDirty(gv);
                                 gv.Consumers.Clear();
                                 cached.TryUpdate(Identifier, this, gv);
