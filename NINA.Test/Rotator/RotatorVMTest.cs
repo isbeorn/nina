@@ -232,8 +232,8 @@ namespace NINA.Test.Rotator {
 
         [Test]
         [TestCase(10.0f, 10.0f)]
-        [TestCase(100.0f, 280.0f)]  // Optimized: reciprocal 280° is closer from 0° than direct 100°
-        [TestCase(190.0f, 10.0f)]   // Optimized: reciprocal 10° is closer from 0° than direct 190°
+        [TestCase(100.0f, 100.0f)]
+        [TestCase(190.0f, 190.0f)]
         [TestCase(280.0f, 280.0f)]
         // Mechanical range is 1-181, and Position range is 6-186
         [TestCase(10.0f, 10.0f, RotatorRangeTypeEnum.HALF, 1.0f)]
@@ -289,15 +289,15 @@ namespace NINA.Test.Rotator {
         }
 
         [Test]
-        [TestCase(10.0f, 10.0f, 0.0f, Description = "Same quadrant, direct movement")]
-        [TestCase(100.0f, 100.0f, 90.0f, Description = "Different quadrant, direct movement")]
-        [TestCase(190.0f, 10.0f, 10.0f, Description = "Optimized via 180° reciprocal (190° from 10° is shorter than 10° from 10°)")]
-        [TestCase(280.0f, 280.0f, 270.0f, Description = "Close to current position")]
-        [TestCase(180.0f, 0.0f, 10.0f, Description = "180° reciprocal optimization (180° away becomes 0°)")]
-        [TestCase(0.0f, 0.0f, 10.0f, Description = "Direct movement (0° is closer than reciprocal 180°)")]
-        [TestCase(270.0f, 90.0f, 100.0f, Description = "Reciprocal when closer (270° from 100° via 90° reciprocal)")]
-        [TestCase(90.0f, 90.0f, 100.0f, Description = "Direct movement (90° is closer than reciprocal 270°)")]
-        public async Task Test_GetMechanicalPosition_FullRange_OptimizesMovement(float requestedPosition, float expectedPosition, float currentMechanicalPosition) {
+        [TestCase(10.0f, 10.0f, 0.0f, Description = "FULL range, position returned unchanged")]
+        [TestCase(100.0f, 100.0f, 90.0f, Description = "FULL range, position returned unchanged")]
+        [TestCase(190.0f, 190.0f, 10.0f, Description = "FULL range, position returned unchanged")]
+        [TestCase(280.0f, 280.0f, 270.0f, Description = "FULL range, position returned unchanged")]
+        [TestCase(180.0f, 180.0f, 10.0f, Description = "FULL range, position returned unchanged")]
+        [TestCase(0.0f, 0.0f, 10.0f, Description = "FULL range, position returned unchanged")]
+        [TestCase(270.0f, 270.0f, 100.0f, Description = "FULL range, position returned unchanged")]
+        [TestCase(90.0f, 90.0f, 100.0f, Description = "FULL range, position returned unchanged")]
+        public async Task Test_GetMechanicalPosition_FullRange_NoRangeAdjustment(float requestedPosition, float expectedPosition, float currentMechanicalPosition) {
             var sut = await CreateSUT();
             rangeType = RotatorRangeTypeEnum.FULL;
             rangeStartMechanicalPosition = 0.0f;
@@ -333,9 +333,9 @@ namespace NINA.Test.Rotator {
 
         [Test]
         [TestCase(15.0f, 15.0f, 10.0f, Description = "FULL range, direct movement")]
-        [TestCase(195.0f, 15.0f, 10.0f, Description = "FULL range, reciprocal optimization (195° becomes 15° from 10°)")]
+        [TestCase(195.0f, 195.0f, 10.0f, Description = "FULL range, no range adjustment")]
         [TestCase(100.0f, 100.0f, 90.0f, Description = "FULL range, close positions")]
-        [TestCase(280.0f, 100.0f, 90.0f, Description = "FULL range, reciprocal optimization (280° becomes 100° from 90°)")]
+        [TestCase(280.0f, 280.0f, 90.0f, Description = "FULL range, no range adjustment")]
         public async Task Test_MoveMechanical_FullRange(float requestedPosition, float expectedPosition, float currentMechanicalPosition) {
             var sut = await CreateSUT();
             rangeType = RotatorRangeTypeEnum.FULL;
