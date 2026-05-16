@@ -5519,7 +5519,7 @@ Per condizoini che cambiano rapidamente, una dimensione del campione più piccol
     <value>Muovi il rotatore all'angolo meccanico specificato</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotate by mechanical angle</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridiano</value>
