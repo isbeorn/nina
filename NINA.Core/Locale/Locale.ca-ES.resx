@@ -5512,7 +5512,7 @@ Per a condicions de canvi sobtat, una mida de mostra més petita ajudarà a resp
     <value>Mou el rotador a l’angle mecànic especificat</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotar l'angle mecànic</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridià</value>
