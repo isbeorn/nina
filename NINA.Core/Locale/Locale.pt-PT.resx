@@ -5514,7 +5514,7 @@ Para mudar rapidamente as condições, uma amostra menor ajudará a responder ma
     <value>Move o rotador para o angulo mecânico definido</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rodar por ângulo mecânico</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridiano</value>
