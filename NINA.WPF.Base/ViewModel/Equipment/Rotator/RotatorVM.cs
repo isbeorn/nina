@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.MyMessageBox;
@@ -491,22 +492,118 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             rotatorMediator.Broadcast(GetDeviceInfo());
         }
 
+        /// <summary>
+        /// Converts a sky position angle to the optimal mechanical target position the rotator should move to.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The sky position angle and the rotator's mechanical angle are related by a fixed offset
+        /// established when the rotator was synced. This method uses that offset to derive the
+        /// mechanical angle that corresponds to the requested sky angle.
+        /// </para>
+        /// <para>
+        /// When the active profile's <see cref="RotatorRangeTypeEnum.FULL"/> range type is configured,
+        /// the method additionally considers the 180-degree reciprocal mechanical angle and selects
+        /// whichever of the two results in the shortest rotational movement from the rotator's current
+        /// mechanical position.
+        /// </para>
+        /// </remarks>
+        /// <param name="position">
+        /// The desired sky position angle, in degrees. The value is normalized to the range [0, 360).
+        /// </param>
+        /// <returns>
+        /// The optimal mechanical position angle, in degrees in the range [0, 360), that the rotator
+        /// should move to in order to reach the requested sky position angle.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// Thrown when the rotator has not been synced. Sync must be performed before calling this method.
+        /// </exception>
         public float GetTargetPosition(float position) {
             if (!Rotator.Synced) {
                 // This indicates a code bug from the caller, so this message is not localized
                 throw new Exception("Rotator not synced!");
             }
 
-            // Rotator position should be in [0 .. 360]
-            position = AstroUtil.EuclidianModulus(position, 360);
-            var offset = Rotator.MechanicalPosition - Rotator.Position;
-            var mechanicalPosition = AstroUtil.EuclidianModulus(position + offset, 360);
-            var targetMechanicalPosition = GetTargetMechanicalPosition(mechanicalPosition);
+            // Ensure the desired position is in the range of [0 .. 360]
+            var newSkyPosition = AstroUtil.EuclidianModulus(position, 360);
+
+            var currentMechanicalPosition = Rotator.MechanicalPosition;
+            var currentSkyPosition = Rotator.Position;
+            var offset = currentMechanicalPosition - currentSkyPosition;
+
+            var newMechanicalPosition = AstroUtil.EuclidianModulus(newSkyPosition + offset, 360);
+            var targetMechanicalPosition = GetTargetMechanicalPosition(newMechanicalPosition);
+
+            // When FULL range is configured, a given sky position angle can be reached from two mechanical
+            // angles that are 180° apart. Both are mechanically equivalent, so prefer the one that requires
+            // the least rotational travel from the current mechanical position.
+            if (profileService.ActiveProfile.RotatorSettings.RangeType == RotatorRangeTypeEnum.FULL) {
+                var reciprocalPosition = AstroUtil.EuclidianModulus(targetMechanicalPosition + 180, 360);
+
+                var directDistance = Math.Abs(AstroUtil.EuclidianModulus(targetMechanicalPosition - currentMechanicalPosition + 180, 360) - 180);
+                var reciprocalDistance = Math.Abs(AstroUtil.EuclidianModulus(reciprocalPosition - currentMechanicalPosition + 180, 360) - 180);
+
+                if (reciprocalDistance < directDistance) {
+                    targetMechanicalPosition = reciprocalPosition;
+                }
+            }
+
             return AstroUtil.EuclidianModulus(targetMechanicalPosition - offset + 360, 360);
         }
 
+        /// <summary>
+        /// Calculates the target mechanical rotator position for a given desired angle, taking into
+        /// account the configured rotation range type and range start position from the active profile.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The input <paramref name="position"/> is first normalized to the range [0, 360) using a
+        /// Euclidean modulus. The configured <see cref="RotatorRangeTypeEnum"/> then determines how
+        /// the mechanical position is computed:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <term><see cref="RotatorRangeTypeEnum.LITERAL"/></term>
+        ///     <description>
+        ///       The normalized input angle is used directly as the mechanical position without any adjustment.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <term><see cref="RotatorRangeTypeEnum.HALF"/></term>
+        ///     <description>
+        ///       Maps angles into a 180° range beginning at the configured range start position.
+        ///       If the angular distance from the range start to <paramref name="position"/> is less
+        ///       than 180°, the position is used as-is; otherwise 180° is added to bring it into the
+        ///       valid half-range.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <term><see cref="RotatorRangeTypeEnum.QUARTER"/></term>
+        ///     <description>
+        ///       Maps angles into a 90° range beginning at the configured range start position.
+        ///       The angular distance from the range start is used to determine which 90° quadrant
+        ///       the position falls into, and the appropriate offset (0°, 90°, 180°, or 270°) is
+        ///       applied to bring the angle into the valid quarter-range.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// <para>
+        /// The returned value is always normalized to [0, 360) via a final Euclidean modulus operation.
+        /// </para>
+        /// </remarks>
+        /// <param name="position">
+        /// The desired mechanical rotator angle, in degrees. Values outside [0, 360) are accepted and
+        /// will be normalized automatically.
+        /// </param>
+        /// <returns>
+        /// The calculated target mechanical position in degrees, normalized to the range [0, 360).
+        /// </returns>
+        /// <exception cref="NotImplementedException">
+        /// Thrown when the active profile specifies a <see cref="RotatorRangeTypeEnum"/> value that is
+        /// not handled by this method.
+        /// </exception>
         public float GetTargetMechanicalPosition(float position) {
-            // Rotator position should be in [0 .. 360]
+            // Rotator position should be [0 .. 360]
             position = AstroUtil.EuclidianModulus(position, 360);
             var rangeType = profileService.ActiveProfile.RotatorSettings.RangeType;
             var rangeStart = profileService.ActiveProfile.RotatorSettings.RangeStartMechanicalPosition;
@@ -518,11 +615,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             //
             // - LITERAL: Uses the exact requested angle without any adjustments. The rotator will
             //   always move to the requested mechanical angle.
-            //
-            // - FULL: Optimizes rotator movement by considering the 180-degree reciprocal angle. Since a
-            //   full-range rotator can achieve any sky position angle from two mechanical angles
-            //   (angle or angle + 180°), this chooses whichever angle results in the shortest
-            //   rotational movement from the rotator's current mechanical angle.
             //
             // - HALF: Maps angles into a 180-degree range starting from the configured range start.
             //   If the requested angle falls within the first 180° from the range start, it uses
@@ -538,29 +630,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             // - rangeStartDistance: The angular distance from the range start angle to the target angle
             // - targetMechanicalPosition: The calculated mechanical angle the rotator should move to
             switch (rangeType) {
-                case Core.Enum.RotatorRangeTypeEnum.LITERAL:
+                case RotatorRangeTypeEnum.FULL:
+                case RotatorRangeTypeEnum.LITERAL:
                     targetMechanicalPosition = position;
                     break;
 
-                case Core.Enum.RotatorRangeTypeEnum.FULL:
-                    var currentPosition = Rotator.MechanicalPosition;
-                    var reciprocal = AstroUtil.EuclidianModulus(position + 180, 360);
-
-                    // Calculate angular distance to direct position
-                    var directDistance = Math.Abs(AstroUtil.EuclidianModulus(position - currentPosition + 180, 360) - 180);
-
-                    // Calculate angular distance to reciprocal position
-                    var reciprocalDistance = Math.Abs(AstroUtil.EuclidianModulus(reciprocal - currentPosition + 180, 360) - 180);
-
-                    if (directDistance <= reciprocalDistance) {
-                        targetMechanicalPosition = position;
-                    } else {
-                        targetMechanicalPosition = reciprocal;
-                    }
-
-                    break;
-
-                case Core.Enum.RotatorRangeTypeEnum.HALF:
+                case RotatorRangeTypeEnum.HALF:
                     if (rangeStartDistance < 180.0) {
                         targetMechanicalPosition = position;
                     } else {
@@ -568,7 +643,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     }
                     break;
 
-                case Core.Enum.RotatorRangeTypeEnum.QUARTER:
+                case RotatorRangeTypeEnum.QUARTER:
                     if (rangeStartDistance < 90.0) {
                         targetMechanicalPosition = position;
                     } else if (rangeStartDistance < 180.0) {
