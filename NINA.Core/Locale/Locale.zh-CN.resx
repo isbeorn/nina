@@ -5512,7 +5512,7 @@
     <value>将旋转器转到指定的机械角度</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>旋转到指定角度</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>中天</value>
