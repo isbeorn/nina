@@ -108,7 +108,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
             // Find Symbol, make sure it's valid
             UserSymbol sym = UserSymbol.FindSymbol(Variable, Parent);
-            if (sym == null || !(sym is Variable) && !Expression.JustWarnings(Expr.Error)) {
+            if (sym == null || !(sym is Variable)) {
                 throw new SequenceEntityFailedException("The symbol isn't found or isn't a Variable");
             } else if (Expr.Error != null) {
                 throw new SequenceEntityFailedException("The value of the expression '" + Expr.Definition + "' was invalid");
@@ -116,6 +116,9 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             Variable sv = sym as Variable;
             if (sv == null || sv.Executed == false) {
                 throw new SequenceEntityFailedException("The Variable definition has not been executed");
+            }
+            if (!Expr.HasEvaluatedResult) {
+                throw new SequenceEntityFailedException("The value of the expression '" + Expr.Definition + "' did not produce a valid result");
             }
 
             string oldDefinition = sym.Expr.Definition;

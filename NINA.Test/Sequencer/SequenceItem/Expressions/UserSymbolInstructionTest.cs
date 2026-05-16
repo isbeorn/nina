@@ -310,6 +310,26 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
             variable.Expr.Definition.Should().Be("'Ha'");
         }
 
+        [Test]
+        public async Task ResetVariable_Execute_DoesNotOverwriteTargetWhenExpressionProducesNoResult() {
+            SequenceRootContainer root = CreateRoot();
+            Variable variable = CreateVariable("target", "1", root);
+            await variable.Execute(default, CancellationToken.None);
+            ResetVariable sut = new ResetVariable {
+                SymbolBroker = symbolBrokerMock.Object,
+                Variable = "target"
+            };
+            root.Add(sut);
+            sut.Expr = CreateExpression("False", null);
+
+            Func<Task> act = () => sut.Execute(default, CancellationToken.None);
+
+            await act.Should().ThrowAsync<SequenceEntityFailedException>()
+                .WithMessage("*did not produce a valid result*");
+            variable.Expr.Definition.Should().Be("1");
+            variable.Expr.Value.Should().Be(1);
+        }
+
         /// <summary>
         /// Verifies the Reset Variable Validate Rejects Constant Targets And Missing Targets scenario for the sequencer behavior under test.
         /// </summary>
@@ -388,6 +408,25 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
             DateTime expectedTime = providerTime.AddMinutes(15);
             long expectedUnixTime = ((DateTimeOffset)expectedTime).ToUnixTimeSeconds();
             variable.Expr.Definition.Should().Be(expectedUnixTime.ToString());
+        }
+
+        [Test]
+        public async Task ResetVariableToDate_Execute_DoesNotOverwriteTargetWhenExpressionProducesNoResult() {
+            SequenceRootContainer root = CreateRoot();
+            Variable variable = CreateVariable("targetTime", "0", root);
+            await variable.Execute(default, CancellationToken.None);
+            ResetVariableToDate sut = new ResetVariableToDate(new List<IDateTimeProvider>()) {
+                Variable = "targetTime"
+            };
+            root.Add(sut);
+            sut.Expr = CreateExpression("Now()", null);
+
+            Func<Task> act = () => sut.Execute(default, CancellationToken.None);
+
+            await act.Should().ThrowAsync<SequenceEntityFailedException>()
+                .WithMessage("*did not produce a valid result*");
+            variable.Expr.Definition.Should().Be("0");
+            variable.Expr.Value.Should().Be(0);
         }
 
         /// <summary>

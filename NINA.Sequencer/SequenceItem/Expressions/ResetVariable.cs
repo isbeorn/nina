@@ -93,6 +93,9 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             if (sv == null || sv.Executed == false) {
                 throw new SequenceEntityFailedException("The Variable definition has not been executed");
             }
+            if (!Expr.HasEvaluatedResult) {
+                throw new SequenceEntityFailedException("The value of the expression '" + Expr.Definition + "' did not produce a valid result");
+            }
 
             string oldDefinition = sym.Expr.Definition;
 

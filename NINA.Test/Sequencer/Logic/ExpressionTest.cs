@@ -7,6 +7,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.SequenceItem.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -268,6 +269,38 @@ namespace NINA.Test.Sequencer.Logic {
             expr.Error.Should().NotBeNullOrEmpty();
             expr.Error.Should().Contain(Loc.Instance["LblUndefined"]);
             expr.Error.Should().Contain("b");
+        }
+
+        [Test]
+        public void Expression_Evaluate_ExecutedVariableWithoutResult_ShouldReportInvalidValueNotUndefined() {
+            // arrange
+            SequenceRootContainer root = new SequenceRootContainer {
+                SymbolBroker = _symbolBroker.Object
+            };
+            Variable variable = new Variable {
+                SymbolBroker = _symbolBroker.Object,
+                Expr = new Expression("", root) {
+                    SymbolBroker = _symbolBroker.Object
+                },
+                OriginalExpr = new Expression("1", root) {
+                    SymbolBroker = _symbolBroker.Object
+                },
+                Executed = true
+            };
+            root.Add(variable);
+            variable.Identifier = "target";
+
+            Expression expr = new Expression("target + 1", variable) {
+                SymbolBroker = _symbolBroker.Object,
+                IsExpression = true
+            };
+
+            // act
+            expr.Evaluate(ignoreRoot: true);
+
+            // assert
+            expr.Error.Should().Be("Invalid value: target");
+            expr.Error.Should().NotContain(Loc.Instance["LblUndefined"]);
         }
 
         [Test]

@@ -174,8 +174,14 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             Expr.Definition = OriginalExpr.Definition;
-            Executed = true;
             Expr.Evaluate();
+            if (Expr.Error != null && !Expression.JustWarnings(Expr.Error)) {
+                throw new SequenceEntityFailedException("The value of the expression '" + Expr.Definition + "' was invalid");
+            }
+            if (!Expr.HasEvaluatedResult) {
+                throw new SequenceEntityFailedException("The value of the expression '" + Expr.Definition + "' did not produce a valid result");
+            }
+            Executed = true;
 
             if (this is GlobalVariable) {
                 // Find the one in Globals and set it

@@ -1,8 +1,11 @@
 using FluentAssertions;
 using Moq;
+using NINA.Core.Model;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Expressions;
+using System;
+using System.Threading;
 
 namespace NINA.Test.Sequencer.Logic {
     [TestFixture]
@@ -62,6 +65,17 @@ namespace NINA.Test.Sequencer.Logic {
             // Assert: expression IS re-evaluated (definition "5" → 5.0)
             variable.Expr.Value.Should().Be(5.0,
                 "Validate() must re-evaluate the expression of an un-executed Variable");
+        }
+
+        [Test]
+        public async Task Variable_Execute_InvalidExpression_DoesNotMarkVariableExecuted() {
+            var variable = CreateAttachedVariable("myVar", "missingSymbol");
+
+            Func<Task> act = () => variable.Execute(default, CancellationToken.None);
+
+            await act.Should().ThrowAsync<SequenceEntityFailedException>()
+                .WithMessage("*was invalid*");
+            variable.Executed.Should().BeFalse();
         }
     }
 }

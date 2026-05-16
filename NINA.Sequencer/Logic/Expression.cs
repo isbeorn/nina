@@ -292,7 +292,13 @@ namespace NINA.Sequencer.Logic {
 
         public bool IsExpression { get; set; } = false;
         public bool IsSyntaxError { get; set; } = false;
-        public IReadOnlyDictionary<string, object> Parameters => parameters.AsReadOnly();
+        public IReadOnlyDictionary<string, object> Parameters {
+            get {
+                lock (this) {
+                    return new Dictionary<string, object>(parameters);
+                }
+            }
+        }
         /// <summary>
         /// Specifies the allowed numeric range for this expression.
         /// 
@@ -325,13 +331,32 @@ namespace NINA.Sequencer.Logic {
         /// </summary>
         public double[]? Range { get; set; }
 
-        public IReadOnlyCollection<string> References => references;
-        public IReadOnlyDictionary<string, UserSymbol> Resolved => resolved.AsReadOnly();
+        public IReadOnlyCollection<string> References {
+            get {
+                lock (this) {
+                    return references.ToArray();
+                }
+            }
+        }
+        public IReadOnlyDictionary<string, UserSymbol> Resolved {
+            get {
+                lock (this) {
+                    return new Dictionary<string, UserSymbol>(resolved);
+                }
+            }
+        }
         public string StringValue { get; set; }
         public UserSymbol Symbol { get; set; } = null;
         public ISymbolBroker SymbolBroker { get; set; }
         public string Type { get; set; } = "double";
         public Action<Expression> Validator { get; set; }
+        public bool HasEvaluatedResult {
+            get {
+                lock (this) {
+                    return StringValue != null || !double.IsNaN(Value);
+                }
+            }
+        }
         public virtual double Value {
             get {
                 if (double.IsNaN(field) && !double.IsNaN(Default)) {
@@ -478,8 +503,8 @@ namespace NINA.Sequencer.Logic {
         private void Resolve(string reference, UserSymbol sym) {
             parameters.Remove(reference);
             resolved.Remove(reference);
+            resolved.Add(reference, sym);
             if (sym.Expr.Error == null) {
-                resolved.Add(reference, sym);
                 if (sym.Expr.Value == double.NegativeInfinity) {
                     AddParameter(reference, sym.Expr.StringValue);
                 } else
@@ -647,6 +672,10 @@ namespace NINA.Sequencer.Logic {
                                     UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                                     if (s is Variable sv && !sv.Executed) {
                                         AddError(Loc.Instance["LblNotEvaluated"] + ": " + r);
+                                    } else if (s != null && s.Expr?.Error != null) {
+                                        AddError(s.Expr.Error + ": " + r);
+                                    } else if (s is Variable svInvalid && !svInvalid.Expr.HasEvaluatedResult) {
+                                        AddError("Invalid value: " + r);
                                         //                           } else if (r.StartsWith("_")) {
                                         //                               AddError("Reference: " + r);
                                     } else {
@@ -737,23 +766,29 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void ReferenceRemoved(UserSymbol sym) {
-            // A definition we use was removed
-            string identifier = sym.Identifier;
-            parameters.Remove(identifier);
-            resolved.Remove(identifier);
-            Evaluate();
+            lock (this) {
+                // A definition we use was removed
+                string identifier = sym.Identifier;
+                parameters.Remove(identifier);
+                resolved.Remove(identifier);
+                Evaluate();
+            }
         }
 
         public void Refresh() {
-            parameters.Clear();
-            resolved.Clear();
-            Evaluate();
+            lock (this) {
+                parameters.Clear();
+                resolved.Clear();
+                Evaluate();
+            }
         }
 
         public void RemoveParameter(string identifier) {
-            parameters.Remove(identifier);
-            resolved.Remove(identifier);
-            Evaluate();
+            lock (this) {
+                parameters.Remove(identifier);
+                resolved.Remove(identifier);
+                Evaluate();
+            }
         }
 
         public override string ToString() {
