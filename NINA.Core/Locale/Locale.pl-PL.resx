@@ -5511,7 +5511,7 @@ Sekwencja może być zaplanowana od podstaw przy użyciu drobnych instrukcji, wy
     <value>Przekręca rotator do określonego kąta mechanicznego</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Obróć o kąt</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridian</value>
