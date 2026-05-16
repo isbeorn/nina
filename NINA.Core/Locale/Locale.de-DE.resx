@@ -5516,7 +5516,7 @@ Andererseits hilft bei sich schnell ändernden atmosphärischen Bedingungen ein 
     <value>Dreht den Rotator zum angegebenen Drehwinkel</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Drehen um Winkel</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridian</value>

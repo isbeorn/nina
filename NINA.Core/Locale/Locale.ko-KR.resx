@@ -5521,7 +5521,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>회전 장치의 지정된 기계 각도로 이동합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>기계적 각도의 회전</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>자오선</value>

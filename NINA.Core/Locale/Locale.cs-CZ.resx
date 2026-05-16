@@ -5515,7 +5515,7 @@ Menší číslo pomůže rychleji reagovat na změnu ohniska, například u tepl
     <value>Přesune rotátor do zadaného mechanického úhlu</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Otočit o mechanický úhel</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Poledník</value>

@@ -5507,7 +5507,7 @@ Et mindre antall gjør triggeren raskere til å reagere når fokusavstand faktis
     <value>Roterer kamera til angitt vinkel</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Roter til vinkel</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridian</value>

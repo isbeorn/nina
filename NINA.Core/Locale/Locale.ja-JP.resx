@@ -5495,7 +5495,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>回転装置を、指定された機械的角度に移動します</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>機械的角度で回転</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>子午線</value>

@@ -5514,7 +5514,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Перемещает вращатель в указанный механический угол</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Повернуть на механический угол</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Меридиан</value>
