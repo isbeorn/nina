@@ -5510,7 +5510,7 @@ Hızla değişen koşullar için, daha küçük bir örnek boyutu, örneğin hı
     <value>Döndürücüyü belirtilen mekanik açıya hareket ettirir</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Mekanik aciyla döndür</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridyen</value>
