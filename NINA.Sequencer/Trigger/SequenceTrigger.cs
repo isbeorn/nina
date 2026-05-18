@@ -94,6 +94,15 @@ namespace NINA.Sequencer.Trigger {
         [JsonProperty]
         public ISequenceContainer Parent { get; set; }
 
+        /// <summary>
+        /// Json.NET convention hook for <see cref="Parent"/>. Some trigger parents are runtime
+        /// adapter containers that exist only to support nested trigger behavior and must not be
+        /// persisted as sequence JSON.
+        /// </summary>
+        public bool ShouldSerializeParent() {
+            return Parent is not IRuntimeOnlySequenceTriggerParent;
+        }
+
         [JsonProperty]
         public SequentialContainer TriggerRunner { get; protected set; }
 
@@ -235,5 +244,12 @@ namespace NINA.Sequencer.Trigger {
         public bool AskHasChanged(string name) {
             return false;
         }
+    }
+
+    /// <summary>
+    /// Marks a trigger parent as runtime-only so <see cref="SequenceTrigger.ShouldSerializeParent"/>
+    /// can keep implementation-detail containers out of persisted sequence and template JSON.
+    /// </summary>
+    internal interface IRuntimeOnlySequenceTriggerParent {
     }
 }

@@ -264,7 +264,11 @@ namespace NINA.Sequencer.Trigger.Utility {
             Validate();
         }
 
-        private sealed class TriggerSourceParent : SequentialContainer {
+        /// <summary>
+        /// Runtime-only parent for the nested trigger source. It gives the source trigger normal
+        /// detach/remove behavior without writing this synthetic container into saved templates.
+        /// </summary>
+        private sealed class TriggerSourceParent : SequentialContainer, IRuntimeOnlySequenceTriggerParent {
             private readonly CustomTrigger owner;
 
             public TriggerSourceParent(CustomTrigger owner) {

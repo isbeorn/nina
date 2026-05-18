@@ -17,9 +17,11 @@ using Moq;
 using NINA.Core.Enum;
 using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.DragDrop;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Serialization;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Trigger.Utility;
 using NINA.Sequencer.Validations;
@@ -294,6 +296,46 @@ namespace NINA.Test.Sequencer.Trigger.Utility {
 
             sut.TriggerSource.Should().BeNull();
             source.Parent.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Verifies custom trigger templates do not persist the runtime-only source parent container.
+        /// </summary>
+        [Test]
+        public void SequenceJsonConverter_RoundTripsWithoutSerializingTriggerSourceRuntimeParent() {
+            ISequencerFactory factory = CreateSerializationFactory();
+            SequenceJsonConverter converter = new SequenceJsonConverter(factory);
+            SequentialContainer container = new SequentialContainer() {
+                Name = "Template"
+            };
+            sut.TriggerSource = new TestTrigger();
+            sut.TriggerRunner.Add(new TestInstruction());
+            container.Add(sut);
+
+            string json = converter.Serialize(container);
+
+            json.Should().Contain(nameof(CustomTrigger));
+            json.Should().Contain(nameof(TestTrigger));
+            json.Should().NotContain("TriggerSourceParent");
+
+            ISequenceContainer result = converter.Deserialize(json, @"C:\Templates\Custom.template.json");
+            ISequenceTrigger roundTrippedTrigger = ((ITriggerable)result).GetTriggersSnapshot().Should().ContainSingle().Which;
+            CustomTrigger roundTripped = roundTrippedTrigger.Should().BeOfType<CustomTrigger>().Subject;
+            roundTripped.TriggerSource.Should().BeOfType<TestTrigger>();
+            roundTripped.TriggerSource.Parent.Should().NotBeNull();
+            roundTripped.TriggerSource.Parent.GetType().Name.Should().Be("TriggerSourceParent");
+            roundTripped.TriggerRunner.GetItemsSnapshot().Should().ContainSingle()
+                .Which.Should().BeOfType<TestInstruction>();
+        }
+
+        private ISequencerFactory CreateSerializationFactory() {
+            Mock<ISequencerFactory> factoryMock = new Mock<ISequencerFactory>();
+            factoryMock.SetupGet(x => x.Upgraders).Returns(new List<ISequenceEntityUpgrader>());
+            factoryMock.Setup(x => x.GetContainer<SequentialContainer>()).Returns(() => new SequentialContainer());
+            factoryMock.Setup(x => x.GetItem<TestInstruction>()).Returns(() => new TestInstruction());
+            factoryMock.Setup(x => x.GetTrigger<CustomTrigger>()).Returns(() => new CustomTrigger(resourceDictionaryMock.Object));
+            factoryMock.Setup(x => x.GetTrigger<TestTrigger>()).Returns(() => new TestTrigger());
+            return factoryMock.Object;
         }
 
         private sealed class TestTrigger : SequenceTrigger, IValidatable {
