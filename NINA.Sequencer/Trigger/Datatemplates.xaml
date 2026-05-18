@@ -669,6 +669,99 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="SequencerTriggerInstructionSectionHeaderToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="Head" Background="{StaticResource SecondaryBackgroundBrush}">
+                        <Grid MinHeight="30" UseLayoutRounding="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path
+                                x:Name="iconarrow"
+                                Grid.Column="0"
+                                Width="10"
+                                Height="10"
+                                Margin="10,0,10,0"
+                                Data="{StaticResource ArrowRightSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+
+                            <ContentPresenter
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                RecognizesAccessKey="True"
+                                UseLayoutRounding="True" />
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="iconarrow" Property="Data" Value="{StaticResource ArrowDownSVG}" />
+                            <Setter TargetName="iconarrow" Property="Margin" Value="5,0,10,0" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Head" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="SequencerTriggerInstructionSectionExpanderStyle" TargetType="{x:Type ninactrl:DetachingExpander}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ninactrl:DetachingExpander}">
+                    <DockPanel Focusable="False" UseLayoutRounding="True">
+                        <ToggleButton
+                            x:Name="HeaderSite"
+                            MinWidth="0"
+                            MinHeight="0"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Content="{TemplateBinding Header}"
+                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                            ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
+                            DockPanel.Dock="Top"
+                            FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}"
+                            FontFamily="{TemplateBinding FontFamily}"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontStretch="{TemplateBinding FontStretch}"
+                            FontStyle="{TemplateBinding FontStyle}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            Foreground="{TemplateBinding Foreground}"
+                            IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                            Style="{StaticResource SequencerTriggerInstructionSectionHeaderToggleButtonStyle}" />
+
+                        <ContentPresenter
+                            x:Name="ExpandSite"
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Focusable="false" />
+                    </DockPanel>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="true">
+                            <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsExpanded" Value="False">
+                            <Setter TargetName="ExpandSite" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <Style x:Key="SequencerTriggerInstructionSectionHostStyle" TargetType="HeaderedContentControl">
         <Setter Property="Margin" Value="5,0,0,0" />
         <Setter Property="Template">
@@ -679,46 +772,53 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Background="{StaticResource SecondaryBackgroundBrush}">
-                                <Grid MinHeight="30">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <ContentPresenter
-                                        Margin="10,5,10,5"
-                                        VerticalAlignment="Center"
-                                        ContentSource="Header"
-                                        RecognizesAccessKey="True" />
-                                    <ContentPresenter
-                                        Grid.Column="1"
-                                        Margin="10,0,10,0"
-                                        VerticalAlignment="Center"
-                                        Content="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
-                                        Style="{StaticResource ProgressPresenter}" />
-                                </Grid>
-                            </Border>
-                            <Border
-                                Grid.Row="1"
-                                Background="{StaticResource BackgroundBrush}"
-                                BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                                BorderThickness="10,0,0,0">
-                                <ContentPresenter
-                                    x:Name="InstructionSectionContentPresenter"
-                                    Margin="0,0,0,0"
-                                    ContentSource="Content" />
-                            </Border>
+                            <ninactrl:DetachingExpander
+                                x:Name="InstructionSectionExpander"
+                                Grid.Row="0"
+                                IsExpanded="{Binding Tag.IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SequencerTriggerInstructionSectionExpanderStyle}">
+                                <ninactrl:DetachingExpander.Header>
+                                    <Grid MinHeight="30">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ContentPresenter
+                                            Margin="10,5,10,5"
+                                            VerticalAlignment="Center"
+                                            ContentSource="Header"
+                                            RecognizesAccessKey="True" />
+                                        <ContentPresenter
+                                            Grid.Column="1"
+                                            Margin="10,0,10,0"
+                                            VerticalAlignment="Center"
+                                            Content="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                            Style="{StaticResource ProgressPresenter}" />
+                                    </Grid>
+                                </ninactrl:DetachingExpander.Header>
+                                <ninactrl:DetachingExpander.Content>
+                                    <Border
+                                        x:Name="InstructionSectionContentBorder"
+                                        Background="{StaticResource BackgroundBrush}"
+                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                        BorderThickness="10,0,0,0">
+                                        <ContentPresenter
+                                            x:Name="InstructionSectionContentPresenter"
+                                            Margin="0,0,0,0"
+                                            ContentSource="Content" />
+                                    </Border>
+                                </ninactrl:DetachingExpander.Content>
+                            </ninactrl:DetachingExpander>
                             <Border
                                 x:Name="InstructionSectionBottomBorder"
-                                Grid.Row="2"
+                                Grid.Row="1"
                                 Margin="0,0,0,5"
                                 BorderBrush="{StaticResource SecondaryBackgroundBrush}"
                                 BorderThickness="10,0,0,15" />
                             <Rectangle
                                 x:Name="InstructionSectionBottomCapLine"
-                                Grid.Row="2"
+                                Grid.Row="1"
                                 Width="40"
                                 Height="2"
                                 HorizontalAlignment="Left"
@@ -729,10 +829,14 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Content" Value="{x:Null}">
-                            <Setter TargetName="InstructionSectionContentPresenter" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="InstructionSectionContentBorder" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="InstructionSectionBottomBorder" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="InstructionSectionBottomCapLine" Property="Visibility" Value="Collapsed" />
                         </Trigger>
+                        <DataTrigger Binding="{Binding IsExpanded, ElementName=InstructionSectionExpander}" Value="False">
+                            <Setter TargetName="InstructionSectionBottomBorder" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="InstructionSectionBottomCapLine" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
