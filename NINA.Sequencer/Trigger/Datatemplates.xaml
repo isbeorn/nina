@@ -812,6 +812,27 @@
                                         <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
                                             <view:SequenceBlockView />
                                         </DataTemplate>
+                                        <HierarchicalDataTemplate DataType="{x:Type cont:ParallelContainer}" ItemsSource="{Binding Items}">
+                                            <view:HierarchicalSequenceContainerView>
+                                                <view:HierarchicalSequenceContainerView.SequenceContainerContent>
+                                                    <TextBlock
+                                                        Margin="5,5,0,0"
+                                                        VerticalAlignment="Center"
+                                                        FontStyle="Italic"
+                                                        Text="{ns:Loc Lbl_SequenceContainer_ParallelContainer_Description}" />
+                                                </view:HierarchicalSequenceContainerView.SequenceContainerContent>
+                                            </view:HierarchicalSequenceContainerView>
+                                        </HierarchicalDataTemplate>
+                                        <HierarchicalDataTemplate DataType="{x:Type cont:ConditionalContainer}" ItemsSource="{Binding Items}">
+                                            <view:HierarchicalSequenceContainerView>
+                                                <view:HierarchicalSequenceContainerView.HeaderContent>
+                                                    <logic:ExprControl Exp="{Binding Path=PredicateExpression, Mode=TwoWay}" Label="Expression:" />
+                                                </view:HierarchicalSequenceContainerView.HeaderContent>
+                                            </view:HierarchicalSequenceContainerView>
+                                        </HierarchicalDataTemplate>
+                                        <HierarchicalDataTemplate DataType="{x:Type cont:SequenceContainer}" ItemsSource="{Binding Items}">
+                                            <view:HierarchicalSequenceContainerView />
+                                        </HierarchicalDataTemplate>
                                     </ResourceDictionary>
                                 </TreeView.Resources>
                             </TreeView>
