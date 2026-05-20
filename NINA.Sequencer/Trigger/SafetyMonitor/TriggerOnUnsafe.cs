@@ -34,6 +34,16 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
         private bool shouldTrigger;
         private bool triggerIsRunning;
         private bool hasSeenConnected;
+        private TriggerExecutionPhase triggerExecutionPhase = TriggerExecutionPhase.None;
+        private CancellationTokenSource afterWaitForSafeCancellation;
+        private bool restartAfterWaitForSafe;
+
+        private enum TriggerExecutionPhase {
+            None,
+            BeforeWaitForSafe,
+            WaitUntilSafe,
+            AfterWaitForSafe
+        }
 
         [ImportingConstructor]
         public TriggerOnUnsafe(ISafetyMonitorMediator safetyMonitorMediator, IApplicationResourceDictionary resourceDictionary) {
@@ -144,7 +154,7 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
                 await ConfigureTriggerRunner();
 
                 Logger.Info("Unsafe conditions detected, running Trigger On Unsafe");
-                await TriggerRunner.Run(progress, token);
+                await RunTriggerRunnerGuarded(progress, token);
             } finally {
                 lock (triggerLock) {
                     if (!ReferenceEquals(TriggerRunner.Parent, originalTriggerRunnerParent)) {
@@ -158,6 +168,9 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
                     AfterWaitForSafe.ResetProgress();
 
                     triggerIsRunning = false;
+                    triggerExecutionPhase = TriggerExecutionPhase.None;
+                    afterWaitForSafeCancellation = null;
+                    restartAfterWaitForSafe = false;
                     shouldTrigger = IsUnsafe();
                 }
 
@@ -184,6 +197,117 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
             TriggerRunner.Add(BeforeWaitForSafe);
             TriggerRunner.Add(WaitUntilSafe);
             TriggerRunner.Add(AfterWaitForSafe);
+        }
+
+        private async Task RunTriggerRunnerGuarded(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            while (true) {
+                ResetTriggerRunnerSteps();
+                ClearAfterWaitForSafeRestart();
+
+                await RunTriggerRunnerStep(BeforeWaitForSafe, TriggerExecutionPhase.BeforeWaitForSafe, progress, token);
+                await RunTriggerRunnerStep(WaitUntilSafe, TriggerExecutionPhase.WaitUntilSafe, progress, token);
+
+                bool afterWaitForSafeCompleted = await RunAfterWaitForSafeGuarded(progress, token);
+                if (afterWaitForSafeCompleted && !ConsumeAfterWaitForSafeRestart() && !IsUnsafe()) {
+                    return;
+                }
+
+                Logger.Info("Unsafe conditions detected while running Trigger On Unsafe after-safety instructions, restarting Trigger On Unsafe");
+            }
+        }
+
+        private void ResetTriggerRunnerSteps() {
+            BeforeWaitForSafe.ResetProgress();
+            WaitUntilSafe.ResetProgress();
+            AfterWaitForSafe.ResetProgress();
+        }
+
+        private async Task RunTriggerRunnerStep(ISequenceItem item, TriggerExecutionPhase phase, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            SetTriggerExecutionPhase(phase);
+            try {
+                await item.Run(progress, token);
+            } finally {
+                ClearTriggerExecutionPhase(phase);
+            }
+        }
+
+        private async Task<bool> RunAfterWaitForSafeGuarded(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            using (var guardCts = CancellationTokenSource.CreateLinkedTokenSource(token)) {
+                SetAfterWaitForSafeGuard(guardCts);
+                try {
+                    if (IsUnsafe()) {
+                        RequestAfterWaitForSafeRestart();
+                        return false;
+                    }
+
+                    await AfterWaitForSafe.Run(progress, guardCts.Token);
+
+                    if (IsUnsafe()) {
+                        RequestAfterWaitForSafeRestart();
+                        return false;
+                    }
+
+                    return true;
+                } catch (OperationCanceledException) when (!token.IsCancellationRequested && ConsumeAfterWaitForSafeRestart()) {
+                    return false;
+                } finally {
+                    ClearAfterWaitForSafeGuard(guardCts);
+                }
+            }
+        }
+
+        private void SetTriggerExecutionPhase(TriggerExecutionPhase phase) {
+            lock (triggerLock) {
+                triggerExecutionPhase = phase;
+            }
+        }
+
+        private void ClearTriggerExecutionPhase(TriggerExecutionPhase phase) {
+            lock (triggerLock) {
+                if (triggerExecutionPhase == phase) {
+                    triggerExecutionPhase = TriggerExecutionPhase.None;
+                }
+            }
+        }
+
+        private void SetAfterWaitForSafeGuard(CancellationTokenSource cancellationTokenSource) {
+            lock (triggerLock) {
+                triggerExecutionPhase = TriggerExecutionPhase.AfterWaitForSafe;
+                afterWaitForSafeCancellation = cancellationTokenSource;
+            }
+        }
+
+        private void ClearAfterWaitForSafeGuard(CancellationTokenSource cancellationTokenSource) {
+            lock (triggerLock) {
+                if (ReferenceEquals(afterWaitForSafeCancellation, cancellationTokenSource)) {
+                    afterWaitForSafeCancellation = null;
+                }
+
+                if (triggerExecutionPhase == TriggerExecutionPhase.AfterWaitForSafe) {
+                    triggerExecutionPhase = TriggerExecutionPhase.None;
+                }
+            }
+        }
+
+        private void RequestAfterWaitForSafeRestart() {
+            lock (triggerLock) {
+                shouldTrigger = true;
+                restartAfterWaitForSafe = true;
+            }
+        }
+
+        private void ClearAfterWaitForSafeRestart() {
+            lock (triggerLock) {
+                restartAfterWaitForSafe = false;
+            }
+        }
+
+        private bool ConsumeAfterWaitForSafeRestart() {
+            lock (triggerLock) {
+                bool restart = restartAfterWaitForSafe;
+                restartAfterWaitForSafe = false;
+                return restart;
+            }
         }
 
         public override void AfterParentChanged() {
@@ -255,12 +379,22 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
                 return;
             }
 
+            CancellationTokenSource afterWaitForSafeCancellationToCancel = null;
             bool shouldSkipRunningItems;
             lock (triggerLock) {
                 bool wasAlreadyQueued = shouldTrigger;
                 shouldTrigger = true;
+                if (triggerIsRunning && triggerExecutionPhase == TriggerExecutionPhase.AfterWaitForSafe) {
+                    restartAfterWaitForSafe = true;
+                    afterWaitForSafeCancellationToCancel = afterWaitForSafeCancellation;
+                }
+
                 shouldSkipRunningItems = !wasAlreadyQueued && !triggerIsRunning;
             }
+
+            try {
+                afterWaitForSafeCancellationToCancel?.Cancel();
+            } catch { }
 
             if (shouldSkipRunningItems) {
                 ItemUtility.GetRootContainer(Parent)?.InterruptAndResetCurrentRunningItems();

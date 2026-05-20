@@ -227,6 +227,39 @@ namespace NINA.Test.Sequencer.Trigger.SafetyMonitor {
         }
 
         /// <summary>
+        /// Verifies becoming unsafe while after-safety instructions are running cancels those instructions and restarts the unsafe trigger flow.
+        /// </summary>
+        [Test]
+        public async Task Execute_WhenUnsafeDuringAfterWaitForSafe_RestartsUnsafeTriggerFlow() {
+            safetyMonitorInfo.Connected = true;
+            safetyMonitorInfo.IsSafe = true;
+            sut.WaitUntilSafe.WaitInterval = TimeSpan.FromMilliseconds(10);
+            SequenceRootContainer root = new SequenceRootContainer() {
+                Status = SequenceEntityStatus.RUNNING
+            };
+            CountingInstruction beforeInstruction = new CountingInstruction();
+            RestartingAfterInstruction afterInstruction = new RestartingAfterInstruction();
+            sut.BeforeWaitForSafe.Add(beforeInstruction);
+            sut.AfterWaitForSafe.Add(afterInstruction);
+            root.Add(sut);
+
+            Task runTask = sut.Run(root, Mock.Of<IProgress<ApplicationStatus>>(), CancellationToken.None);
+            await afterInstruction.FirstRunStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+            safetyMonitorInfo.IsSafe = false;
+            safetyMonitorMediatorMock.Raise(x => x.IsSafeChanged += null, safetyMonitorMediatorMock.Object, new IsSafeEventArgs(false));
+            await afterInstruction.FirstRunCanceled.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+            safetyMonitorInfo.IsSafe = true;
+            await afterInstruction.SecondRunStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            await runTask.WaitAsync(TimeSpan.FromSeconds(5));
+
+            beforeInstruction.ExecuteCount.Should().Be(2);
+            afterInstruction.ExecuteCount.Should().Be(2);
+            sut.Status.Should().Be(SequenceEntityStatus.FINISHED);
+        }
+
+        /// <summary>
         /// Verifies runtime execution uses an isolated context so before/after instruction sets do not evaluate sibling triggers on the live parent container.
         /// </summary>
         [Test]
@@ -378,6 +411,47 @@ namespace NINA.Test.Sequencer.Trigger.SafetyMonitor {
                 ExecuteCount++;
                 ExecuteAction?.Invoke();
                 return Task.CompletedTask;
+            }
+        }
+
+        private sealed class CountingInstruction : NINA.Sequencer.SequenceItem.SequenceItem {
+            public int ExecuteCount { get; private set; }
+
+            public override object Clone() {
+                return new CountingInstruction();
+            }
+
+            public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+                ExecuteCount++;
+                return Task.CompletedTask;
+            }
+        }
+
+        private sealed class RestartingAfterInstruction : NINA.Sequencer.SequenceItem.SequenceItem {
+            public int ExecuteCount { get; private set; }
+            public TaskCompletionSource<bool> FirstRunStarted { get; } = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            public TaskCompletionSource<bool> FirstRunCanceled { get; } = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            public TaskCompletionSource<bool> SecondRunStarted { get; } = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            public override object Clone() {
+                return new RestartingAfterInstruction();
+            }
+
+            public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+                ExecuteCount++;
+                if (ExecuteCount == 1) {
+                    FirstRunStarted.TrySetResult(true);
+                    try {
+                        await Task.Delay(TimeSpan.FromMinutes(1), token);
+                    } catch (OperationCanceledException) when (token.IsCancellationRequested) {
+                        FirstRunCanceled.TrySetResult(true);
+                        throw;
+                    }
+
+                    return;
+                }
+
+                SecondRunStarted.TrySetResult(true);
             }
         }
     }
