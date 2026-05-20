@@ -128,7 +128,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 return (short)(bin & 0x0F);
             }
             set {
-                int binValue = value;
+                int maxBin = MaxBinX > 0 ? MaxBinX : 1;
+                int binValue = Math.Max(1, Math.Min(maxBin, (int)value));
                 if (binValue > 1 && BinAverageEnabled) {
                     binValue |= 0x80;
                 }
@@ -196,10 +197,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 var currentFanSpeed = FanSpeed;
                 var targetFanSpeed = Math.Max(0, Math.Min(MaxFanSpeed, value));
                 if (currentFanSpeed != targetFanSpeed) {
-                    if (sdk.put_Option(ToupTekAlikeOption.OPTION_FAN, value)) {
+                    if (sdk.put_Option(ToupTekAlikeOption.OPTION_FAN, targetFanSpeed)) {
                         RaisePropertyChanged();
                     } else {
-                        Logger.Error($"{Category} - Could not set Fan to {value}");
+                        Logger.Error($"{Category} - Could not set Fan to {targetFanSpeed}");
                     }
                 }
             }
@@ -445,7 +446,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        public IList<string> ReadoutModes { get; private set; }
+        public IList<string> ReadoutModes { get; private set; } = new List<string>();
 
         public short ReadoutMode {
             get {
@@ -576,14 +577,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public Task<bool> Connect(CancellationToken ct) {
             return Task<bool>.Run(() => {
-                var success = false;
                 try {
                     SupportedActions.Clear();
                     imageReadyTCS?.TrySetCanceled();
                     imageReadyTCS = null;
 
-                    sdk = sdk.Open(this.internalId);
-                    success = true;
+                    var openedSdk = sdk.Open(this.internalId);
+                    sdk = openedSdk ?? throw new Exception($"{Category} - Could not open camera");
                     var profile = profileService.ActiveProfile.CameraSettings;
 
                     /* Use maximum bit depth */
@@ -602,6 +602,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                     ReadOutBinning();
                     SupportedActions.Add(ToupTekActions.BinAverage);
+                    if (MaxFanSpeed > 0) {
+                        SupportedActions.Add(ToupTekActions.FanSpeed);
+                    }
 
                     sdk.get_Size(out var width, out var height);
                     this.CameraXSize = width;
@@ -613,7 +616,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         CanSetTemperature = true;
                         sdk.get_Option(ToupTekAlikeOption.OPTION_TECTARGET, out var target);
                         if (target >= -280 && target <= 100) {
-                            TemperatureSetPoint = target;
+                            TemperatureSetPoint = target / 10.0;
                         } else {
                             TemperatureSetPoint = 20;
                         }
@@ -706,11 +709,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                     Connected = true;
                     RaiseAllPropertiesChanged();
+                    return true;
                 } catch (Exception ex) {
+                    Connected = false;
+                    try { sdk?.Close(); } catch { }
                     Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
-                return success;
+                return false;
             });
         }
 
@@ -970,10 +976,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public void SetBinning(short x, short y) {
-            if (x <= MaxBinX) {
-                BinX = x;
-                RaisePropertyChanged(nameof(BinY));
-            }
+            BinX = x;
+            RaisePropertyChanged(nameof(BinY));
         }
 
         public void SetupDialog() {
