@@ -367,7 +367,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             exposureTaskTime = sequence.ExposureTime;
             lastExposureStartTime = DateTime.UtcNow;
 
-            var useShutter = (sequence.IsLightSequence() && HasShutter);
+            var useShutter = ((sequence.IsLightSequence() || sequence.IsFlatSequence()) && HasShutter);
 
             if (sdk is IMoravianComputerTimingExposure computerTimingExposure) {
                 exposureTaskCts = new CancellationTokenSource();
