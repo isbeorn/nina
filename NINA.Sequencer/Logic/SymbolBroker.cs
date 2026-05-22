@@ -15,6 +15,7 @@
 using Namotion.Reflection;
 using NCalc.Handlers;
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
@@ -38,11 +39,13 @@ using NINA.WPF.Base.ViewModel;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -98,6 +101,7 @@ namespace NINA.Sequencer.Logic {
         private IImagingMediator _imagingMediator;
         private IGuiderMediator _guiderMediator;
         private ConcurrentDictionary<string, IList<Symbol>> _hiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
+        private long _imageSymbolVersion;
 
         private readonly ConcurrentDictionary<string, string> _providerOwnership = new ConcurrentDictionary<string, string>();
 
@@ -729,12 +733,15 @@ namespace NINA.Sequencer.Logic {
         public void SetImageSymbols(object sender, ImagePreparedEventArgs e) {
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
 
-            IStarDetectionAnalysis analysis = e.RenderedImage.RawImageData.StarDetectionAnalysis;
+            var imageData = e.RenderedImage.RawImageData;
+            var imageSymbolVersion = Interlocked.Increment(ref _imageSymbolVersion);
+
+            IStarDetectionAnalysis analysis = imageData.StarDetectionAnalysis;
             if (double.IsNaN(analysis.HFR)) {
                 analysis.HFR = 0;
             }
 
-            var imageMetaData = e.RenderedImage.RawImageData.MetaData;
+            var imageMetaData = imageData.MetaData;
 
             double rms = 0;
             RMS recordedRMS = imageMetaData.Image.RecordedRMS;
@@ -742,9 +749,11 @@ namespace NINA.Sequencer.Logic {
                 rms = recordedRMS.Total;
             }
 
-            AddOrUpdateSymbol("Image", "HFR", Math.Round(analysis.HFR, 3));
-            AddOrUpdateSymbol("Image", "FWHM", Math.Round(analysis.FWHM, 3));
-            AddOrUpdateSymbol("Image", "Eccentricity", Math.Round(analysis.Eccentricity, 3));
+            var arcsecPerPixel = GetArcsecPerPixel();
+            AddOrUpdateStarMeasurementSymbols("HFR", analysis, "HFR", "HFRUnit", StarMeasurementUnit.Pixels, arcsecPerPixel);
+            AddOrUpdateStarMeasurementSymbols("HFRStDev", analysis, "HFRStDev", "HFRStDevUnit", StarMeasurementUnit.Pixels, arcsecPerPixel);
+            AddOrUpdateStarMeasurementSymbols("FWHM", analysis, "FWHM", "FWHMUnit", StarMeasurementUnit.Arcseconds, arcsecPerPixel);
+            AddOrUpdateStarDetectionAnalysisSymbol("Eccentricity", analysis, "Eccentricity");
             AddOrUpdateSymbol("Image", "StarCount", analysis.DetectedStars);
             AddOrUpdateSymbol("Image", "ImageId", imageMetaData.Image.Id);
             AddOrUpdateSymbol("Image", "ExposureTime", imageMetaData.Image.ExposureTime);
@@ -752,6 +761,148 @@ namespace NINA.Sequencer.Logic {
             AddOrUpdateSymbol("Image", "Gain", imageMetaData.Camera.Gain);
             AddOrUpdateSymbol("Image", "Offset", imageMetaData.Camera.Offset);
             AddOrUpdateSymbol("Image", "ImageType", imageMetaData.Image.ImageType);
+
+            if (imageData.Statistics != null) {
+                QueueSetImageStatisticsSymbols(imageData, imageSymbolVersion);
+            }
+        }
+
+        private void AddOrUpdateStarMeasurementSymbols(
+            string symbol,
+            IStarDetectionAnalysis analysis,
+            string propertyName,
+            string unitPropertyName,
+            StarMeasurementUnit fallbackUnit,
+            double arcsecPerPixel) {
+            if (!TryGetStarDetectionAnalysisDouble(analysis, propertyName, out var value)) {
+                return;
+            }
+
+            var unit = GetStarDetectionAnalysisUnit(analysis, unitPropertyName, fallbackUnit);
+            AddOrUpdateSymbol("Image", symbol, Math.Round(value, 3));
+            AddOrUpdateConvertedStarMeasurementSymbol(symbol + "Pixels", value, unit, StarMeasurementUnit.Pixels, arcsecPerPixel);
+            AddOrUpdateConvertedStarMeasurementSymbol(symbol + "Arcseconds", value, unit, StarMeasurementUnit.Arcseconds, arcsecPerPixel);
+        }
+
+        private void AddOrUpdateConvertedStarMeasurementSymbol(
+            string symbol,
+            double value,
+            StarMeasurementUnit sourceUnit,
+            StarMeasurementUnit targetUnit,
+            double arcsecPerPixel) {
+            var convertedValue = StarMeasurementUnitConverter.TryConvert(value, sourceUnit, targetUnit, arcsecPerPixel, out var result)
+                ? Math.Round(result, 3)
+                : double.NaN;
+
+            AddOrUpdateSymbol("Image", symbol, convertedValue, SymbolType.SYMBOL_HIDDEN);
+        }
+
+        private void AddOrUpdateStarDetectionAnalysisSymbol(string symbol, IStarDetectionAnalysis analysis, string propertyName) {
+            if (TryGetStarDetectionAnalysisDouble(analysis, propertyName, out var value)) {
+                AddOrUpdateSymbol("Image", symbol, Math.Round(value, 3));
+            }
+        }
+
+        private static bool TryGetStarDetectionAnalysisDouble(IStarDetectionAnalysis analysis, string propertyName, out double value) {
+            value = double.NaN;
+            if (analysis == null) {
+                return false;
+            }
+
+            var property = TypeDescriptor.GetProperties(analysis).Find(propertyName, false);
+            if (property == null) {
+                return false;
+            }
+
+            try {
+                var rawValue = property.GetValue(analysis);
+                if (rawValue == null) {
+                    return false;
+                }
+
+                value = Convert.ToDouble(rawValue, CultureInfo.InvariantCulture);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
+        private static StarMeasurementUnit GetStarDetectionAnalysisUnit(IStarDetectionAnalysis analysis, string propertyName, StarMeasurementUnit fallbackUnit) {
+            var property = TypeDescriptor.GetProperties(analysis).Find(propertyName, false);
+            if (property == null) {
+                return fallbackUnit;
+            }
+
+            try {
+                var rawValue = property.GetValue(analysis);
+                return TryGetStarMeasurementUnit(rawValue, out var unit)
+                    ? unit
+                    : fallbackUnit;
+            } catch {
+                return fallbackUnit;
+            }
+        }
+
+        private static bool TryGetStarMeasurementUnit(object value, out StarMeasurementUnit result) {
+            result = default;
+            switch (value) {
+                case StarMeasurementUnit starMeasurementUnit:
+                    result = starMeasurementUnit;
+                    return true;
+                case string stringValue:
+                    return Enum.TryParse(stringValue, ignoreCase: true, out result);
+                case int intValue when Enum.IsDefined(typeof(StarMeasurementUnit), intValue):
+                    result = (StarMeasurementUnit)intValue;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private double GetArcsecPerPixel() {
+            var pixelSize = _profileService.ActiveProfile?.CameraSettings?.PixelSize ?? double.NaN;
+            var focalLength = _profileService.ActiveProfile?.TelescopeSettings?.FocalLength ?? double.NaN;
+
+            if (double.IsNaN(pixelSize) || double.IsNaN(focalLength) || pixelSize <= 0 || focalLength <= 0) {
+                return double.NaN;
+            }
+
+            return AstroUtil.ArcsecPerPixel(pixelSize, focalLength);
+        }
+
+        private void QueueSetImageStatisticsSymbols(IImageData imageData, long imageSymbolVersion) {
+            _ = Task.Run(async () => {
+                try {
+                    await SetImageStatisticsSymbolsAsync(imageData, imageSymbolVersion).ConfigureAwait(false);
+                } catch (Exception ex) {
+                    Logger.Error("Failed to update image statistics symbols", ex);
+                }
+            });
+        }
+
+        internal async Task SetImageStatisticsSymbolsAsync(IImageData imageData, long imageSymbolVersion) {
+            var statistics = await imageData.Statistics.Task.ConfigureAwait(false);
+            AddOrUpdateImageStatisticsSymbols(statistics, imageSymbolVersion);
+        }
+
+        private void AddOrUpdateImageStatisticsSymbols(IImageStatistics statistics, long imageSymbolVersion) {
+            List<SymbolChangedEventArgs> changes = new List<SymbolChangedEventArgs>();
+            lock (_brokerStateLock) {
+                if (imageSymbolVersion != Interlocked.Read(ref _imageSymbolVersion)) {
+                    return;
+                }
+
+                AddOrUpdateSymbolCore("Image", "Mean", statistics.Mean, null, SymbolType.SYMBOL_NORMAL, changes);
+                AddOrUpdateSymbolCore("Image", "Median", statistics.Median, null, SymbolType.SYMBOL_NORMAL, changes);
+                AddOrUpdateSymbolCore("Image", "StDev", statistics.StDev, null, SymbolType.SYMBOL_NORMAL, changes);
+                AddOrUpdateSymbolCore("Image", "MAD", statistics.MedianAbsoluteDeviation, null, SymbolType.SYMBOL_NORMAL, changes);
+                AddOrUpdateSymbolCore("Image", "Min", statistics.Min, null, SymbolType.SYMBOL_NORMAL, changes);
+                AddOrUpdateSymbolCore("Image", "Max", statistics.Max, null, SymbolType.SYMBOL_NORMAL, changes);
+                AddOrUpdateSymbolCore("Image", "MinOccurrences", statistics.MinOccurrences, null, SymbolType.SYMBOL_NORMAL, changes);
+                AddOrUpdateSymbolCore("Image", "MaxOccurrences", statistics.MaxOccurrences, null, SymbolType.SYMBOL_NORMAL, changes);
+            }
+
+            PublishSymbolChanges(changes);
         }
 
         public bool TryGetSymbol(string key, out Symbol symbol) {

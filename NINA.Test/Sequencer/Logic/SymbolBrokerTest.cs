@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Moq;
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using NINA.Core.Model.Equipment;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyDome;
@@ -25,6 +26,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using FilterWheelInfo = NINA.Equipment.Equipment.MyFilterWheel.FilterWheelInfo;
 
 namespace NINA.Test.Sequencer.Logic {
@@ -789,6 +792,9 @@ namespace NINA.Test.Sequencer.Logic {
         public void SymbolBroker_SetImageSymbols_AdditionalFields_HasSymbols() {
             // Arrange            
             var renderedImageMock = new Mock<IRenderedImage>();
+            var arcsecPerPixel = AstroUtil.ArcsecPerPixel(3.76, 952);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.CameraSettings.PixelSize).Returns(3.76);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.TelescopeSettings.FocalLength).Returns(952);
 
             renderedImageMock.SetupGet(x => x.RawImageData.MetaData).Returns(new ImageMetaData() {
                 Image = new ImageParameter() {
@@ -811,6 +817,10 @@ namespace NINA.Test.Sequencer.Logic {
             starDetectionMock.SetupGet(x => x.HFR).Returns(2.5);
             starDetectionMock.SetupGet(x => x.Eccentricity).Returns(3.5);
             starDetectionMock.SetupGet(x => x.FWHM).Returns(4.5);
+            starDetectionMock.SetupGet(x => x.HFRStDev).Returns(1.5);
+            starDetectionMock.SetupGet(x => x.HFRUnit).Returns(StarMeasurementUnit.Pixels);
+            starDetectionMock.SetupGet(x => x.FWHMUnit).Returns(StarMeasurementUnit.Pixels);
+            starDetectionMock.SetupGet(x => x.HFRStDevUnit).Returns(StarMeasurementUnit.Pixels);
 
             var args = new ImagePreparedEventArgs {
                 RenderedImage = renderedImageMock.Object,
@@ -831,6 +841,192 @@ namespace NINA.Test.Sequencer.Logic {
             ValidateSymbol(key: "Image_StarCount", expectedSuccess: true, expectedValue: 2222);
             ValidateSymbol(key: "Image_Eccentricity", expectedSuccess: true, expectedValue: 3.5);
             ValidateSymbol(key: "Image_FWHM", expectedSuccess: true, expectedValue: 4.5);
+            ValidateSymbol(key: "Image_FWHMUnit", expectedSuccess: false);
+            ValidateSymbol(key: "Image_FWHMPixels", expectedSuccess: true, expectedValue: 4.5, isHidden: true);
+            ValidateSymbol(key: "Image_FWHMArcseconds", expectedSuccess: true, expectedValue: Math.Round(4.5 * arcsecPerPixel, 3), isHidden: true);
+            ValidateSymbol(key: "Image_HFRStDev", expectedSuccess: true, expectedValue: 1.5);
+            ValidateSymbol(key: "Image_HFRStDevUnit", expectedSuccess: false);
+            ValidateSymbol(key: "Image_HFRStDevPixels", expectedSuccess: true, expectedValue: 1.5, isHidden: true);
+            ValidateSymbol(key: "Image_HFRStDevArcseconds", expectedSuccess: true, expectedValue: Math.Round(1.5 * arcsecPerPixel, 3), isHidden: true);
+            ValidateSymbol(key: "Image_HFRUnit", expectedSuccess: false);
+            ValidateSymbol(key: "Image_HFRPixels", expectedSuccess: true, expectedValue: 2.5, isHidden: true);
+            ValidateSymbol(key: "Image_HFRArcseconds", expectedSuccess: true, expectedValue: Math.Round(2.5 * arcsecPerPixel, 3), isHidden: true);
+        }
+
+        [Test]
+        public void SymbolBroker_SetImageSymbols_LegacyAnalysisConcreteOptionalFields_HasSymbols() {
+            // Arrange
+            var renderedImageMock = new Mock<IRenderedImage>();
+            var arcsecPerPixel = AstroUtil.ArcsecPerPixel(3.76, 952);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.CameraSettings.PixelSize).Returns(3.76);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.TelescopeSettings.FocalLength).Returns(952);
+
+            renderedImageMock.SetupGet(x => x.RawImageData.MetaData).Returns(new ImageMetaData() {
+                Image = new ImageParameter() {
+                    Id = 10,
+                    ExposureTime = 120.5,
+                    ImageType = "LIGHT"
+                },
+                Camera = new CameraParameter() {
+                    Gain = 139,
+                    Offset = 25
+                }
+            });
+
+            renderedImageMock.SetupGet(x => x.RawImageData.StarDetectionAnalysis).Returns(new LegacyStarDetectionAnalysis {
+                DetectedStars = 2222,
+                HFR = 2.5,
+                FWHM = 4.5f,
+                Eccentricity = 0.42m,
+                HFRStDev = 1.5
+            });
+
+            var args = new ImagePreparedEventArgs {
+                RenderedImage = renderedImageMock.Object,
+                Parameters = new Core.Utility.PrepareImageParameters(true, true)
+            };
+
+            // Act
+            broker.SetImageSymbols(this, args);
+
+            // Assert
+            ValidateSymbol(key: "Image_HFR", expectedSuccess: true, expectedValue: 2.5);
+            ValidateSymbol(key: "Image_FWHM", expectedSuccess: true, expectedValue: 4.5);
+            ValidateSymbol(key: "Image_FWHMUnit", expectedSuccess: false);
+            ValidateSymbol(key: "Image_FWHMPixels", expectedSuccess: true, expectedValue: Math.Round(4.5 / arcsecPerPixel, 3), isHidden: true);
+            ValidateSymbol(key: "Image_FWHMArcseconds", expectedSuccess: true, expectedValue: 4.5, isHidden: true);
+            ValidateSymbol(key: "Image_Eccentricity", expectedSuccess: true, expectedValue: 0.42);
+            ValidateSymbol(key: "Image_HFRStDev", expectedSuccess: true, expectedValue: 1.5);
+            ValidateSymbol(key: "Image_HFRStDevUnit", expectedSuccess: false);
+            ValidateSymbol(key: "Image_HFRStDevPixels", expectedSuccess: true, expectedValue: 1.5, isHidden: true);
+            ValidateSymbol(key: "Image_HFRStDevArcseconds", expectedSuccess: true, expectedValue: Math.Round(1.5 * arcsecPerPixel, 3), isHidden: true);
+            ValidateSymbol(key: "Image_HFRUnit", expectedSuccess: false);
+            ValidateSymbol(key: "Image_HFRPixels", expectedSuccess: true, expectedValue: 2.5, isHidden: true);
+            ValidateSymbol(key: "Image_HFRArcseconds", expectedSuccess: true, expectedValue: Math.Round(2.5 * arcsecPerPixel, 3), isHidden: true);
+            ValidateSymbol(key: "Image_StarCount", expectedSuccess: true, expectedValue: 2222);
+        }
+
+        [Test]
+        public async Task SymbolBroker_SetImageStatisticsSymbols_HasSymbols() {
+            // Arrange
+            var imageDataMock = new Mock<IImageData>();
+            var imageStatisticsMock = new Mock<IImageStatistics>();
+            imageStatisticsMock.SetupGet(x => x.Mean).Returns(123.45);
+            imageStatisticsMock.SetupGet(x => x.Median).Returns(122.5);
+            imageStatisticsMock.SetupGet(x => x.StDev).Returns(6.75);
+            imageStatisticsMock.SetupGet(x => x.MedianAbsoluteDeviation).Returns(4.25);
+            imageStatisticsMock.SetupGet(x => x.Min).Returns(10);
+            imageStatisticsMock.SetupGet(x => x.Max).Returns(65000);
+            imageStatisticsMock.SetupGet(x => x.MinOccurrences).Returns(11);
+            imageStatisticsMock.SetupGet(x => x.MaxOccurrences).Returns(22);
+            imageDataMock
+                .SetupGet(x => x.Statistics)
+                .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(() => Task.FromResult(imageStatisticsMock.Object)));
+
+            // Act
+            await broker.SetImageStatisticsSymbolsAsync(imageDataMock.Object, 0);
+
+            // Assert
+            ValidateSymbol(key: "Image_Mean", expectedSuccess: true, expectedValue: 123.45);
+            ValidateSymbol(key: "Image_Median", expectedSuccess: true, expectedValue: 122.5);
+            ValidateSymbol(key: "Image_StDev", expectedSuccess: true, expectedValue: 6.75);
+            ValidateSymbol(key: "Image_MAD", expectedSuccess: true, expectedValue: 4.25);
+            ValidateSymbol(key: "Image_Min", expectedSuccess: true, expectedValue: 10);
+            ValidateSymbol(key: "Image_Max", expectedSuccess: true, expectedValue: 65000);
+            ValidateSymbol(key: "Image_MinOccurrences", expectedSuccess: true, expectedValue: 11);
+            ValidateSymbol(key: "Image_MaxOccurrences", expectedSuccess: true, expectedValue: 22);
+        }
+
+        [Test]
+        public async Task SymbolBroker_SetImageStatisticsSymbols_StaleImageVersion_DoesNotUpdateSymbols() {
+            // Arrange
+            var imageDataMock = new Mock<IImageData>();
+            var imageStatisticsMock = new Mock<IImageStatistics>();
+            imageStatisticsMock.SetupGet(x => x.Mean).Returns(123.45);
+            imageDataMock
+                .SetupGet(x => x.Statistics)
+                .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(() => Task.FromResult(imageStatisticsMock.Object)));
+
+            // Act
+            await broker.SetImageStatisticsSymbolsAsync(imageDataMock.Object, -1);
+
+            // Assert
+            ValidateSymbol(key: "Image_Mean", expectedSuccess: false);
+        }
+
+        [Test]
+        public void SymbolBroker_SetImageSymbols_DoesNotWaitForImageStatistics() {
+            // Arrange
+            var imageDataMock = new Mock<IImageData>();
+            imageDataMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData() {
+                Image = new ImageParameter() {
+                    Id = 10,
+                    ExposureTime = 120.5,
+                    ImageType = "DARK"
+                },
+                Camera = new CameraParameter() {
+                    Gain = 139,
+                    Offset = 25
+                }
+            });
+
+            var starDetectionMock = new Mock<IStarDetectionAnalysis>();
+            imageDataMock.SetupGet(x => x.StarDetectionAnalysis).Returns(starDetectionMock.Object);
+            starDetectionMock.SetupGet(x => x.DetectedStars).Returns(2222);
+            starDetectionMock.SetupGet(x => x.HFR).Returns(2.5);
+
+            var imageStatisticsMock = new Mock<IImageStatistics>();
+            imageStatisticsMock.SetupGet(x => x.Mean).Returns(123.45);
+            var statisticsCompletion = new TaskCompletionSource<IImageStatistics>(TaskCreationOptions.RunContinuationsAsynchronously);
+            imageDataMock
+                .SetupGet(x => x.Statistics)
+                .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => await statisticsCompletion.Task));
+
+            var renderedImageMock = new Mock<IRenderedImage>();
+            renderedImageMock.SetupGet(x => x.RawImageData).Returns(imageDataMock.Object);
+
+            var args = new ImagePreparedEventArgs {
+                RenderedImage = renderedImageMock.Object,
+                Parameters = new Core.Utility.PrepareImageParameters(true, true)
+            };
+
+            // Act
+            var setImageSymbolsTask = Task.Run(() => broker.SetImageSymbols(this, args));
+
+            try {
+                // Assert
+                setImageSymbolsTask.Wait(TimeSpan.FromSeconds(5)).Should().BeTrue("image statistics must not hold up ImagePrepared handling");
+                ValidateSymbol(key: "Image_ImageId", expectedSuccess: true, expectedValue: 10);
+                ValidateSymbol(key: "Image_Mean", expectedSuccess: false);
+            } finally {
+                statisticsCompletion.TrySetResult(imageStatisticsMock.Object);
+            }
+
+            SpinWait.SpinUntil(() => broker.TryGetValue("Image_Mean", out _), TimeSpan.FromSeconds(5)).Should().BeTrue();
+        }
+
+        private class LegacyStarDetectionAnalysis : IStarDetectionAnalysis {
+            public double HFR { get; set; }
+            public float FWHM { get; set; }
+            public decimal Eccentricity { get; set; }
+            public double HFRStDev { get; set; }
+            public int DetectedStars { get; set; }
+            public List<NINA.Image.ImageAnalysis.DetectedStar> StarList { get; set; } = new List<NINA.Image.ImageAnalysis.DetectedStar>();
+
+            double IStarDetectionAnalysis.FWHM {
+                get => throw new InvalidOperationException("Legacy FWHM is only available as a concrete property.");
+                set => throw new InvalidOperationException("Legacy FWHM is only available as a concrete property.");
+            }
+
+            double IStarDetectionAnalysis.Eccentricity {
+                get => throw new InvalidOperationException("Legacy eccentricity is only available as a concrete property.");
+                set => throw new InvalidOperationException("Legacy eccentricity is only available as a concrete property.");
+            }
+
+            public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged {
+                add { }
+                remove { }
+            }
         }
 
         [Test]
