@@ -367,7 +367,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             exposureTaskTime = sequence.ExposureTime;
             lastExposureStartTime = DateTime.UtcNow;
 
-            var useShutter = ((sequence.IsLightSequence() || sequence.IsFlatSequence()) && HasShutter);
+            var useShutter = ShouldUseShutter(sequence);
 
             if (sdk is IMoravianComputerTimingExposure computerTimingExposure) {
                 exposureTaskCts = new CancellationTokenSource();
@@ -699,7 +699,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             exposureTaskTime = sequence.ExposureTime;
             lastExposureStartTime = DateTime.UtcNow;
 
-            var useShutter = (sequence.IsLightSequence() && HasShutter);
+            var useShutter = ShouldUseShutter(sequence);
 
             if (sdk is IMoravianComputerTimingExposure computerTimingExposure) {
                 throw new InvalidOperationException($"{Category} - Live view not supported for {DisplayName}");
@@ -719,6 +719,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public void StopLiveView() {
             AbortExposure();
             LiveViewEnabled = false;
+        }
+
+        private bool ShouldUseShutter(CaptureSequence sequence) {
+            return HasShutter && (sequence.IsLightSequence() || sequence.IsFlatSequence());
         }
 
         public bool HasFilterWheel() {
