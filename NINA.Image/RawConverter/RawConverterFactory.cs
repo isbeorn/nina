@@ -14,22 +14,21 @@
 
 using NINA.Core.Enum;
 using NINA.Image.Interfaces;
+using System;
 
 namespace NINA.Image.RawConverter {
 
     public class RawConverterFactory {
 
-        public static IRawConverter CreateInstance(RawConverterEnum converter, IImageDataFactory imageDataFactory) {
-            switch (converter) {
-                case RawConverterEnum.DCRAW:
-                    return new DCRaw(imageDataFactory);
-
-                case RawConverterEnum.FREEIMAGE:
-                    return new FreeImageConverter(imageDataFactory);
-
-                default:
-                    return new FreeImageConverter(imageDataFactory);
-            }
+        public static IRawConverter CreateInstance(IImageDataFactory imageDataFactory) {
+            return new LibRawConverter(imageDataFactory);
         }
+
+#pragma warning disable CS0618
+        [Obsolete("RAW converter selection is obsolete. Use CreateInstance(IImageDataFactory).")]
+        public static IRawConverter CreateInstance(RawConverterEnum converter, IImageDataFactory imageDataFactory) {
+            return CreateInstance(imageDataFactory);
+        }
+#pragma warning restore CS0618
     }
 }

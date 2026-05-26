@@ -637,9 +637,9 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="FreeImage.Standard         " />
-                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="http://freeimage.sourceforge.net       " RequestNavigate="Hyperlink_RequestNavigate">http://freeimage.sourceforge.net</Hyperlink></TextBlock>
-                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="http://freeimage.sourceforge.net/freeimage-license.txt" RequestNavigate="Hyperlink_RequestNavigate">FreeImage Public License - Version 1.0</Hyperlink></TextBlock>
+                    <TextBlock Text="LibRaw                 " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.libraw.org" RequestNavigate="Hyperlink_RequestNavigate">https://www.libraw.org</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/license/CDDL-1.0" RequestNavigate="Hyperlink_RequestNavigate">Common Development and Distribution License 1.0</Hyperlink></TextBlock>
                 </Grid>
                 <Grid Margin="5,5,5,0">
                     <Grid.ColumnDefinitions>

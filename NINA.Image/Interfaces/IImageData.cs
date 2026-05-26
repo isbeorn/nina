@@ -58,6 +58,11 @@ namespace NINA.Image.Interfaces {
 
         BaseImageData CreateBaseImageData(IImageArray imageArray, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData);
 
+        Task<IImageData> CreateFromFile(string path, int bitDepth, bool isBayered, CancellationToken ct = default);
+
+#pragma warning disable CS0618
+        [Obsolete("RAW converter selection is obsolete. Use CreateFromFile without the rawConverter argument.")]
         Task<IImageData> CreateFromFile(string path, int bitDepth, bool isBayered, RawConverterEnum rawConverter, CancellationToken ct = default);
+#pragma warning restore CS0618
     }
 }

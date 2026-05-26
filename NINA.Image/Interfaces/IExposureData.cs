@@ -35,7 +35,12 @@ namespace NINA.Image.Interfaces {
 
         Flipped2DExposureData CreateFlipped2DExposureData(Array flipped2DArray, int bitDepth, bool isBayered, ImageMetaData metaData);
 
+        RAWExposureData CreateRAWExposureData(byte[] rawBytes, string rawType, int bitDepth, ImageMetaData metaData);
+
+#pragma warning disable CS0618
+        [Obsolete("RAW converter selection is obsolete. Use CreateRAWExposureData without the converter argument.")]
         RAWExposureData CreateRAWExposureData(RawConverterEnum converter, byte[] rawBytes, string rawType, int bitDepth, ImageMetaData metaData);
+#pragma warning restore CS0618
 
         ImageArrayExposureData CreateImageArrayExposureData(ushort[] input, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData);
 

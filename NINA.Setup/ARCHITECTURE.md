@@ -30,7 +30,7 @@ From the code, the MSI is responsible for:
 
 - core project outputs through project references
 - native SDK/runtime folders under `External/x64/*`
-- utility files such as `Utility/DCRaw` and `Utility/ExifTool`
+- utility files such as `Utility/ExifTool`
 - database initialization and migration scripts
 - localization folders
 - sequencer example templates

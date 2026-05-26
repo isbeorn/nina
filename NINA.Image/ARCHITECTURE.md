@@ -20,7 +20,7 @@ Build shape from `NINA.Image.csproj`:
 - `FileFormat/`
   File readers/writers for `FITS` and `XISF`, plus `FileSaveInfo`
 - `RawConverter/`
-  RAW conversion backends (`DCRaw`, `FreeImageConverter`) and `RawConverterFactory`
+  RAW conversion backend (`LibRawConverter`) and `RawConverterFactory`
 - `Interfaces/`
   Image abstractions such as `IImageData`, `IRenderedImage`, `IExposureData`, `IRawConverter`
 
@@ -49,7 +49,7 @@ The data flow is explicit in the code:
 - `FileFormat/XISF/XISF.cs`
   XISF loader/writer with checksum, compression, and attachment handling.
 - `RawConverter/RawConverterFactory.cs`
-  Selects either the `DCRaw` or `FreeImage` converter based on settings.
+  Creates the LibRaw converter. Legacy profile settings are retained only for migration compatibility.
 
 ## File Formats And Native Dependencies
 
@@ -59,13 +59,12 @@ The project is responsible for the code that understands supported image formats
 - XISF (`.xisf`)
 - TIFF (`.tif`, `.tiff`)
 - common WIC-backed bitmap formats such as GIF, JPEG, and PNG
-- supported RAW DSLR formats through the configured RAW converter (`.cr2`, `.cr3`, `.nef`, `.raf`, `.raw`, `.pef`, `.dng`, `.arw`, `.orf`, `.rw2`)
+- supported RAW DSLR formats through LibRaw (`.cr2`, `.cr3`, `.nef`, `.raf`, `.raw`, `.pef`, `.dng`, `.arw`, `.orf`, `.rw2`)
 
 The executable project ships the runtime files such as:
 
 - CFITSIO native DLLs used by FITS loading
-- `dcraw.exe`
-- `FreeImage.dll`
+- `libraw_0_22_1.dll`
 
 The boundary is:
 

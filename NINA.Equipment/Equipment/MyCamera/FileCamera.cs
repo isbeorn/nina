@@ -370,7 +370,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 while (true) {
                     tries++;
                     try {
-                        var image = await imageDataFactory.CreateFromFile(path, BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter, token);
+                        var image = await imageDataFactory.CreateFromFile(path, BitDepth, IsBayered, token);
                         return exposureDataFactory.CreateCachedExposureData(image);
                     } catch (Exception ex) {
                         if (tries > 3) {

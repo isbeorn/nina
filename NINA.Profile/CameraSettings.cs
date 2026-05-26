@@ -37,7 +37,9 @@ namespace NINA.Profile {
             serialPort = "COM1";
             bitDepth = 16;
             bayerPattern = BayerPatternEnum.Auto;
-            rawConverter = RawConverterEnum.FREEIMAGE;
+#pragma warning disable CS0618
+            rawConverter = RawConverterEnum.LIBRAW;
+#pragma warning restore CS0618
             minFlatExposureTime = 0.2;
             maxFlatExposureTime = 20;
             fileCameraFolder = string.Empty;
@@ -172,18 +174,27 @@ namespace NINA.Profile {
             }
         }
 
+#pragma warning disable CS0618
         private RawConverterEnum rawConverter;
 
         [DataMember]
+        [Obsolete("RAW converter selection is obsolete. LibRaw is always used.")]
         public RawConverterEnum RawConverter {
             get => rawConverter;
             set {
-                if (rawConverter != value) {
-                    rawConverter = value;
+                var normalizedValue = NormalizeRawConverter(value);
+                if (rawConverter != normalizedValue) {
+                    rawConverter = normalizedValue;
                     RaisePropertyChanged();
                 }
             }
         }
+
+        [Obsolete("RAW converter selection is obsolete. LibRaw is always used.")]
+        private static RawConverterEnum NormalizeRawConverter(RawConverterEnum rawConverter) {
+            return rawConverter == RawConverterEnum.LIBRAW ? rawConverter : RawConverterEnum.LIBRAW;
+        }
+#pragma warning restore CS0618
 
         private double minFlatExposureTime;
 

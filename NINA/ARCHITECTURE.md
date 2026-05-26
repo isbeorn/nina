@@ -39,7 +39,7 @@ In practice, `NINA` is the composition root for the whole application even thoug
 - `Sequencer/Examples/`
   Ships built-in sequence template JSON files.
 - `External/` and `Utility/`
-  Ship native DLLs and helper executables such as `dcraw.exe` and `exiftool.exe` that other projects call at runtime.
+  Ship native DLLs and helper executables such as `exiftool.exe` that other projects call at runtime.
 
 ## Dependency Position
 

@@ -28,7 +28,6 @@ using NINA.Image.ImageData;
 using NINA.Core.Enum;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Core.Model.Equipment;
-using NINA.Image.RawConverter;
 using NINA.Image.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Equipment.Interfaces;
@@ -648,7 +647,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 var metaData = new ImageMetaData();
                 metaData.FromCamera(this);
                 return exposureDataFactory.CreateRAWExposureData(
-                    converter: profileService.ActiveProfile.CameraSettings.RawConverter,
                     rawBytes: rawImageData,
                     rawType: "nef",
                     bitDepth: this.BitDepth,

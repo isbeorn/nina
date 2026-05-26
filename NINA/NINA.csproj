@@ -232,9 +232,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\plugin.png" />
-    <Content Include="Utility\DCRaw\dcraw.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Utility\ExifTool\exiftool.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -284,7 +281,7 @@
     <Content Include="External\x64\FLI\libfli.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\FreeImage\FreeImage.dll">
+    <Content Include="External\x64\Libraw\libraw_0_22_1.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\FTDI\ftd2xx.dll">
