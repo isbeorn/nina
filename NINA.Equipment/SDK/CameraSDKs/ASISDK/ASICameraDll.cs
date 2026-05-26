@@ -217,6 +217,9 @@ namespace ZWOptical.ASISDK {
         [DllImport(DLLNAME, EntryPoint = "ASIGetCameraProperty", CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetCameraProperty(out ASI_CAMERA_INFO pASICameraInfo, int iCameraIndex);
 
+        [DllImport(DLLNAME, EntryPoint = "ASIGetCameraPropertyByID", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetCameraPropertyByID(int iCameraID, out ASI_CAMERA_INFO pASICameraInfo);
+
         [DllImport(DLLNAME, EntryPoint = "ASIOpenCamera", CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIOpenCamera(int iCameraID);
 
@@ -299,6 +302,13 @@ namespace ZWOptical.ASISDK {
         public static ASI_CAMERA_INFO GetCameraProperties(int cameraIndex) {
             ASI_CAMERA_INFO result;
             CheckReturn(ASIGetCameraProperty(out result, cameraIndex), MethodBase.GetCurrentMethod(), cameraIndex);
+            return result;
+        }
+
+        [SecurityCritical]
+        public static ASI_CAMERA_INFO GetCameraPropertiesByCameraId(int cameraId) {
+            ASI_CAMERA_INFO result;
+            CheckReturn(ASIGetCameraPropertyByID(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
             return result;
         }
 

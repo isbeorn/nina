@@ -67,7 +67,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private ASICameraDll.ASI_CAMERA_INFO _info;
 
         private void RefreshCameraInfoCache() {
-            _info = ASICameraDll.GetCameraProperties(_cameraId);
+            _info = ASICameraDll.GetCameraPropertiesByCameraId(_cameraId);
         }
 
         private string _cachedName;
