@@ -182,17 +182,11 @@ namespace NINA.Profile {
         public RawConverterEnum RawConverter {
             get => rawConverter;
             set {
-                var normalizedValue = NormalizeRawConverter(value);
-                if (rawConverter != normalizedValue) {
-                    rawConverter = normalizedValue;
+                if (rawConverter != value) {
+                    rawConverter = value;
                     RaisePropertyChanged();
                 }
             }
-        }
-
-        [Obsolete("RAW converter selection is obsolete. LibRaw is always used.")]
-        private static RawConverterEnum NormalizeRawConverter(RawConverterEnum rawConverter) {
-            return rawConverter == RawConverterEnum.LIBRAW ? rawConverter : RawConverterEnum.LIBRAW;
         }
 #pragma warning restore CS0618
 

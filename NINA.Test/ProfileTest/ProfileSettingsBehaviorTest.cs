@@ -82,22 +82,6 @@ namespace NINA.Test.ProfileTest {
         }
 
         /// <summary>
-        /// Verifies backward compatibility for RAW converter values stored by profiles created before LibRaw became the only converter.
-        /// </summary>
-        [Test]
-        public void CameraSettings_RawConverter_MigratesLegacyConvertersToLibRaw() {
-            CameraSettings settings = new CameraSettings();
-
-#pragma warning disable CS0618
-            settings.RawConverter = RawConverterEnum.DCRAW;
-            settings.RawConverter.Should().Be(RawConverterEnum.LIBRAW);
-
-            settings.RawConverter = RawConverterEnum.FREEIMAGE;
-            settings.RawConverter.Should().Be(RawConverterEnum.LIBRAW);
-#pragma warning restore CS0618
-        }
-
-        /// <summary>
         /// Verifies autofocus bounds that protect the UI and autofocus routine from nonsensical persisted values.
         /// </summary>
         [Test]
