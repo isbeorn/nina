@@ -7351,4 +7351,7 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque√
   <data name="LblTransitTime" xml:space="preserve">
     <value>Tiempo de tr√°nsito</value>
   </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>No se ha podido guardar la imagen. Es posible que el destino no tenga espacio libre en disco.</value>
+  </data>
 </root>

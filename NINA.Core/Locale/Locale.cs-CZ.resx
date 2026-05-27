@@ -7357,4 +7357,7 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
   <data name="LblTransitTime" xml:space="preserve">
     <value>Čas přechodu</value>
   </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
+  </data>
 </root>

@@ -7351,4 +7351,7 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
   <data name="LblTransitTime" xml:space="preserve">
     <value>Transit time</value>
   </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
+  </data>
 </root>

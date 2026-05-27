@@ -24,6 +24,8 @@ using NINA.WPF.Base.ViewModel;
 using Nito.AsyncEx;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,6 +33,8 @@ namespace NINA.ViewModel {
 
     public class ImageSaveController : BaseVM, IImageSaveController {
         private IImageSaveMediator imageSaveMediator;
+        private static readonly TimeSpan DiskFullNotificationThrottle = TimeSpan.FromMinutes(5);
+        private DateTime lastDiskFullNotificationUtc = DateTime.MinValue;
         private Task worker;
         private CancellationTokenSource workerCTS;
 
@@ -61,8 +65,11 @@ namespace NINA.ViewModel {
         private async Task DoWork() {
             while (!workerCTS.IsCancellationRequested) {
                 CancellationTokenSource writeTimeoutCts = null;
+                PrepareSaveItem item = null;
+                string stage = "dequeue";
+                string filePath = null;
                 try {
-                    var item = await queue.DequeueAsync(workerCTS.Token);
+                    item = await queue.DequeueAsync(workerCTS.Token);
                     var swTotal = Stopwatch.StartNew();
                     var sw = Stopwatch.StartNew();
 
@@ -73,6 +80,8 @@ namespace NINA.ViewModel {
                     writeTimeoutCts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
                     applicationStatusMediator.StatusUpdate(new ApplicationStatus() { Source = Loc.Instance["LblSave"], Status = Loc.Instance["LblSavingImage"] });
 
+                    filePath = profileService.ActiveProfile.ImageFileSettings.FilePath;
+                    stage = "BeforeImageSaved";
                     await (BeforeImageSaved?.InvokeAsync(this, new BeforeImageSavedEventArgs(item.Data, item.PrepareTask)) ?? Task.CompletedTask);
 
                     var beforeSaveTime = sw.Elapsed;
@@ -80,8 +89,10 @@ namespace NINA.ViewModel {
                     sw = Stopwatch.StartNew();
 
                     writeTimeoutCts.Token.ThrowIfCancellationRequested();
+                    stage = "prepare image";
                     var preparedData = await item.PrepareTask;
                     var beforeFinalizeArgs = new BeforeFinalizeImageSavedEventArgs(preparedData);                    
+                    stage = "BeforeFinalizeImageSaved";
                     await (BeforeFinalizeImageSaved?.InvokeAsync(this, beforeFinalizeArgs) ?? Task.CompletedTask);
 
                     var beforeFinalizeImageSaveTime = sw.Elapsed;
@@ -90,6 +101,7 @@ namespace NINA.ViewModel {
                     var customPatterns = beforeFinalizeArgs.Patterns;
                     var patternTemplate = profileService.ActiveProfile.ImageFileSettings.GetFilePattern(item.Data.MetaData.Image.ImageType);
 
+                    stage = "save to disk";
                     string path = await Retry.Do(() => item.Data.SaveToDisk(new FileSaveInfo(profileService) { FilePattern = patternTemplate }, writeTimeoutCts.Token, false, customPatterns), TimeSpan.FromSeconds(1), 3);
 
                     var finalizeSaveTime = sw.Elapsed;
@@ -124,18 +136,50 @@ namespace NINA.ViewModel {
                             Logger.Error("ImageSaved event ran into an error", t.Exception);
                         }
                     });
+                } catch (Exception ex) when (writeTimeoutCts?.IsCancellationRequested == true && !workerCTS.IsCancellationRequested) {
+                    // Retry aggregates canceled attempts, so the timeout can also arrive wrapped.
+                    Logger.Error($"Saving image {item?.Data.MetaData.Image.Id} to {filePath} timed out during {stage}", ex);
+                    Notification.ShowError(Loc.Instance["LblSaveFileFailed"] + Environment.NewLine + filePath);
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
-                    Logger.Error(ex);
-                    Notification.ShowError(ex.Message);
-                } finally {
-                    if (writeTimeoutCts?.IsCancellationRequested == true) {
-                        Notification.ShowError(Loc.Instance["LblSaveFileFailed"]);
-                        Logger.Error("Writing file timed out");
+                    Logger.Error($"Saving image {item?.Data.MetaData.Image.Id} to {filePath} failed during {stage}", ex);
+                    if (ShouldShowFailureNotification(ex)) {
+                        var message = Loc.Instance[IsDiskFullException(ex) ? "LblSaveFileFailedDiskFull" : "LblSaveFileFailed"];
+                        Notification.ShowError(message + Environment.NewLine + filePath + Environment.NewLine + ex.Message);
                     }
+                } finally {
+                    writeTimeoutCts?.Dispose();
                     applicationStatusMediator.StatusUpdate(new ApplicationStatus() { Source = Loc.Instance["LblSave"], Status = string.Empty });
                 }
             }
+        }
+
+        private bool ShouldShowFailureNotification(Exception exception) {
+            if (!IsDiskFullException(exception)) {
+                return true;
+            }
+            var now = DateTime.UtcNow;
+            if (now - lastDiskFullNotificationUtc < DiskFullNotificationThrottle) {
+                return false;
+            }
+            lastDiskFullNotificationUtc = now;
+            return true;
+        }
+
+        private static bool IsDiskFullException(Exception exception) {
+            if (exception == null) {
+                return false;
+            }
+            if (exception is IOException ioException) {
+                var error = ioException.HResult & 0xffff;
+                if (error == 0x70 || error == 0x27) {
+                    return true;
+                }
+            }
+            if (exception is AggregateException aggregate) {
+                return aggregate.InnerExceptions.Any(IsDiskFullException);
+            }
+            return IsDiskFullException(exception.InnerException);
         }
 
         public void Shutdown() {

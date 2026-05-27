@@ -7353,4 +7353,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   <data name="LblTransitTime" xml:space="preserve">
     <value>Transit time</value>
   </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
+  </data>
 </root>

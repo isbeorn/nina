@@ -7355,4 +7355,7 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
   <data name="LblTransitTime" xml:space="preserve">
     <value>Temps de transició</value>
   </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
+  </data>
 </root>
