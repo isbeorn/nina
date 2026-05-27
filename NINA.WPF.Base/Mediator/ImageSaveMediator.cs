@@ -57,6 +57,11 @@ namespace NINA.WPF.Base.Mediator {
             remove { this.handler.ImageSaved -= value; }
         }
 
+        public event Func<object, ImageSaveFailedEventArgs, Task> ImageSaveFailed {
+            add { this.handler.ImageSaveFailed += value; }
+            remove { this.handler.ImageSaveFailed -= value; }
+        }
+
         public void Shutdown() {
             this.handler?.Shutdown();
         }
@@ -93,6 +98,11 @@ namespace NINA.WPF.Base.Mediator {
 
         public void OnImageSaved(ImageSavedEventArgs e) {
             ImageSaved?.Invoke(this, e);
+        }
+
+        public event Func<object, ImageSaveFailedEventArgs, Task> ImageSaveFailed {
+            add { }
+            remove { }
         }
 
         public void Shutdown() {

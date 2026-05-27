@@ -47,6 +47,7 @@ namespace NINA.Test.Mediator {
             Func<object, BeforeImageSavedEventArgs, Task> beforeImageSaved = (_, _) => Task.CompletedTask;
             Func<object, BeforeFinalizeImageSavedEventArgs, Task> beforeFinalizeImageSaved = (_, _) => Task.CompletedTask;
             EventHandler<ImageSavedEventArgs> imageSaved = (_, _) => { };
+            Func<object, ImageSaveFailedEventArgs, Task> imageSaveFailed = (_, _) => Task.CompletedTask;
 
             controller.SetupAdd(x => x.BeforeImageSaved += beforeImageSaved).Verifiable();
             controller.SetupRemove(x => x.BeforeImageSaved -= beforeImageSaved).Verifiable();
@@ -54,6 +55,8 @@ namespace NINA.Test.Mediator {
             controller.SetupRemove(x => x.BeforeFinalizeImageSaved -= beforeFinalizeImageSaved).Verifiable();
             controller.SetupAdd(x => x.ImageSaved += imageSaved).Verifiable();
             controller.SetupRemove(x => x.ImageSaved -= imageSaved).Verifiable();
+            controller.SetupAdd(x => x.ImageSaveFailed += imageSaveFailed).Verifiable();
+            controller.SetupRemove(x => x.ImageSaveFailed -= imageSaveFailed).Verifiable();
 
             mediator.RegisterHandler(controller.Object);
             mediator.BeforeImageSaved += beforeImageSaved;
@@ -62,6 +65,8 @@ namespace NINA.Test.Mediator {
             mediator.BeforeFinalizeImageSaved -= beforeFinalizeImageSaved;
             mediator.ImageSaved += imageSaved;
             mediator.ImageSaved -= imageSaved;
+            mediator.ImageSaveFailed += imageSaveFailed;
+            mediator.ImageSaveFailed -= imageSaveFailed;
 
             controller.Verify();
         }

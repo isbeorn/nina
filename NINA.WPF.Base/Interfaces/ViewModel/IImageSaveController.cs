@@ -32,5 +32,7 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         event Func<object, BeforeFinalizeImageSavedEventArgs, Task> BeforeFinalizeImageSaved;
 
         event EventHandler<ImageSavedEventArgs> ImageSaved;
+
+        event Func<object, ImageSaveFailedEventArgs, Task> ImageSaveFailed;
     }
 }

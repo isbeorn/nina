@@ -43,6 +43,7 @@ namespace NINA.ViewModel.Sequencer {
         private ISequenceMediator sequenceMediator;
         private ISequencerFactory factory;
         private ISimpleSequenceVM simpleSequenceVM;
+        private readonly IImageSaveMediator imageSaveMediator;
 
         /// <summary>
         /// Backwards compatible ContentId due to sequencer replacement
@@ -60,6 +61,7 @@ namespace NINA.ViewModel.Sequencer {
                 IPlanetariumFactory planetariumFactory,
                 IFramingAssistantVM framingAssistantVM,
                 IApplicationMediator applicationMediator,
+                IImageSaveMediator imageSaveMediator,
                 ISymbolBroker symbolBroker,
                 ITemplateLinkResolver templateLinkResolver) : base(profileService) {
             Title = Loc.Instance["LblSequence"];
@@ -70,6 +72,8 @@ namespace NINA.ViewModel.Sequencer {
             //this.sequence2VM = sequence2VM;
             this.sequenceMediator = sequenceMediator;
             this.sequenceMediator.RegisterSequenceNavigation(this);
+            this.imageSaveMediator = imageSaveMediator;
+            this.imageSaveMediator.ImageSaveFailed += ImageSaveMediator_ImageSaveFailed;
 
             AddTargetCommand = new RelayCommand((object o) => {
                 simpleSequenceVM.AddTargetCommand.Execute(o);
@@ -162,6 +166,29 @@ namespace NINA.ViewModel.Sequencer {
 
         public void SwitchToOverview() {
             ActiveSequencerVM = this;
+        }
+
+        private Task ImageSaveMediator_ImageSaveFailed(object sender, ImageSaveFailedEventArgs e) {
+            var runningSequencer = GetRunningSequencer();
+            if (runningSequencer?.MainContainer == null) {
+                return Task.CompletedTask;
+            }
+
+            return runningSequencer.MainContainer.RaiseFailureEvent(
+                runningSequencer.MainContainer,
+                new ImageSaveFailedException(e));
+        }
+
+        private ISequencer GetRunningSequencer() {
+            if (sequence2VM?.IsRunning == true) {
+                return sequence2VM.Sequencer;
+            }
+
+            if (simpleSequenceVM is SimpleSequenceVM simpleSequence && simpleSequence.IsRunning) {
+                return simpleSequence.Sequencer;
+            }
+
+            return null;
         }
 
         public void AddSimpleTarget(IDeepSkyObject deepSkyObject) {

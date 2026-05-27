@@ -35,6 +35,7 @@ This allows you to safely return to a stable release if needed.
 - Manual rotator moves now clean up their moving state correctly when the rotation prompt is cancelled.
 - Fixed an issue where custom popout windows and message boxes could briefly render incorrectly when opened.
 - Firmware version is now correctly displayed for certain QHY camera models.
+- Image save failures in the asynchronous save queue now raise a persistent notification and are forwarded into the active sequence failure event stream.
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**

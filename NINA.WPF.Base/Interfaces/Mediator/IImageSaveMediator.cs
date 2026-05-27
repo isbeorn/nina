@@ -17,13 +17,15 @@ using NINA.Core.Interfaces;
 using NINA.Core.Model;
 using NINA.Image.ImageData;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using NINA.Image.Interfaces;
 using NINA.WPF.Base.Interfaces.ViewModel;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace NINA.WPF.Base.Interfaces.Mediator {
 
@@ -48,9 +50,18 @@ namespace NINA.WPF.Base.Interfaces.Mediator {
         /// <param name="e"></param>
 
         event EventHandler<ImageSavedEventArgs> ImageSaved;
+        event Func<object, ImageSaveFailedEventArgs, Task> ImageSaveFailed;
 
 
         void Shutdown();
+    }
+
+    public enum ImageSaveFailureStage {
+        Unknown,
+        BeforeImageSaved,
+        PrepareImage,
+        BeforeFinalizeImageSaved,
+        SaveToDisk
     }
 
     public class BeforeFinalizeImageSavedEventArgs {
@@ -90,5 +101,66 @@ namespace NINA.WPF.Base.Interfaces.Mediator {
         public bool IsBayered { get; set; }
         public double Duration { get; set; }
         public string Filter { get; set; }
+    }
+
+    public class ImageSaveFailedEventArgs : EventArgs {
+        private const int ErrorDiskFull = 0x70;
+        private const int ErrorHandleDiskFull = 0x27;
+
+        public ImageSaveFailedEventArgs(IImageData image, string filePath, string filePattern, ImageSaveFailureStage failureStage, Exception exception) {
+            Image = image;
+            FilePath = filePath;
+            FilePattern = filePattern;
+            FailureStage = failureStage;
+            Exception = exception;
+        }
+
+        public IImageData Image { get; }
+        public ImageMetaData MetaData => Image?.MetaData;
+        public string FilePath { get; }
+        public string FilePattern { get; }
+        public ImageSaveFailureStage FailureStage { get; }
+        public Exception Exception { get; }
+        public bool IsDiskFull => IsDiskFullException(Exception);
+
+        private static bool IsDiskFullException(Exception exception) {
+            if (exception == null) {
+                return false;
+            }
+
+            if (exception is IOException ioException) {
+                var win32Error = ioException.HResult & 0xffff;
+                if (win32Error == ErrorDiskFull || win32Error == ErrorHandleDiskFull) {
+                    return true;
+                }
+            }
+
+            if (exception is AggregateException aggregateException) {
+                return aggregateException.InnerExceptions.Any(IsDiskFullException);
+            }
+
+            return IsDiskFullException(exception.InnerException);
+        }
+    }
+
+    public class ImageSaveFailedException : Exception {
+
+        public ImageSaveFailedException(ImageSaveFailedEventArgs failure)
+            : base(CreateMessage(failure), failure?.Exception) {
+            Failure = failure;
+        }
+
+        public ImageSaveFailedEventArgs Failure { get; }
+
+        private static string CreateMessage(ImageSaveFailedEventArgs failure) {
+            if (failure == null) {
+                return "Image save failed";
+            }
+
+            var imageId = failure.MetaData?.Image?.Id;
+            var imageInfo = imageId.HasValue ? $" for image {imageId}" : string.Empty;
+            var pathInfo = string.IsNullOrWhiteSpace(failure.FilePath) ? string.Empty : $" at {failure.FilePath}";
+            return $"Image save failed{imageInfo}{pathInfo}: {failure.Exception?.Message}";
+        }
     }
 }

@@ -30,9 +30,11 @@ using System.Threading.Tasks;
 namespace NINA.ViewModel {
 
     public class ImageSaveController : BaseVM, IImageSaveController {
+        private static readonly TimeSpan DiskFullNotificationThrottle = TimeSpan.FromMinutes(5);
         private IImageSaveMediator imageSaveMediator;
         private Task worker;
         private CancellationTokenSource workerCTS;
+        private DateTime lastDiskFullNotificationUtc = DateTime.MinValue;
 
         public ImageSaveController(IProfileService profileService, IImageSaveMediator imageSaveMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             this.imageSaveMediator = imageSaveMediator;
@@ -51,6 +53,7 @@ namespace NINA.ViewModel {
         public event Func<object, BeforeImageSavedEventArgs, Task> BeforeImageSaved;
         public event Func<object, BeforeFinalizeImageSavedEventArgs, Task> BeforeFinalizeImageSaved;
         public event EventHandler<ImageSavedEventArgs> ImageSaved;
+        public event Func<object, ImageSaveFailedEventArgs, Task> ImageSaveFailed;
 
         public Task Enqueue(IImageData imageData, Task<IRenderedImage> prepareTask, IProgress<ApplicationStatus> progress, CancellationToken token) {
             var mergedCts = CancellationTokenSource.CreateLinkedTokenSource(token, workerCTS.Token);
@@ -61,8 +64,11 @@ namespace NINA.ViewModel {
         private async Task DoWork() {
             while (!workerCTS.IsCancellationRequested) {
                 CancellationTokenSource writeTimeoutCts = null;
+                PrepareSaveItem item = null;
+                string patternTemplate = null;
+                ImageSaveFailureStage failureStage = ImageSaveFailureStage.Unknown;
                 try {
-                    var item = await queue.DequeueAsync(workerCTS.Token);
+                    item = await queue.DequeueAsync(workerCTS.Token);
                     var swTotal = Stopwatch.StartNew();
                     var sw = Stopwatch.StartNew();
 
@@ -73,6 +79,7 @@ namespace NINA.ViewModel {
                     writeTimeoutCts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
                     applicationStatusMediator.StatusUpdate(new ApplicationStatus() { Source = Loc.Instance["LblSave"], Status = Loc.Instance["LblSavingImage"] });
 
+                    failureStage = ImageSaveFailureStage.BeforeImageSaved;
                     await (BeforeImageSaved?.InvokeAsync(this, new BeforeImageSavedEventArgs(item.Data, item.PrepareTask)) ?? Task.CompletedTask);
 
                     var beforeSaveTime = sw.Elapsed;
@@ -80,16 +87,19 @@ namespace NINA.ViewModel {
                     sw = Stopwatch.StartNew();
 
                     writeTimeoutCts.Token.ThrowIfCancellationRequested();
+                    failureStage = ImageSaveFailureStage.PrepareImage;
                     var preparedData = await item.PrepareTask;
                     var beforeFinalizeArgs = new BeforeFinalizeImageSavedEventArgs(preparedData);                    
+                    failureStage = ImageSaveFailureStage.BeforeFinalizeImageSaved;
                     await (BeforeFinalizeImageSaved?.InvokeAsync(this, beforeFinalizeArgs) ?? Task.CompletedTask);
 
                     var beforeFinalizeImageSaveTime = sw.Elapsed;
                     sw = Stopwatch.StartNew();
 
                     var customPatterns = beforeFinalizeArgs.Patterns;
-                    var patternTemplate = profileService.ActiveProfile.ImageFileSettings.GetFilePattern(item.Data.MetaData.Image.ImageType);
+                    patternTemplate = profileService.ActiveProfile.ImageFileSettings.GetFilePattern(item.Data.MetaData.Image.ImageType);
 
+                    failureStage = ImageSaveFailureStage.SaveToDisk;
                     string path = await Retry.Do(() => item.Data.SaveToDisk(new FileSaveInfo(profileService) { FilePattern = patternTemplate }, writeTimeoutCts.Token, false, customPatterns), TimeSpan.FromSeconds(1), 3);
 
                     var finalizeSaveTime = sw.Elapsed;
@@ -124,10 +134,21 @@ namespace NINA.ViewModel {
                             Logger.Error("ImageSaved event ran into an error", t.Exception);
                         }
                     });
-                } catch (OperationCanceledException) {
+                } catch (OperationCanceledException ex) {
+                    if (writeTimeoutCts?.IsCancellationRequested == true && item != null && !workerCTS.IsCancellationRequested) {
+                        await ReportImageSaveFailed(CreateImageSaveFailedEventArgs(item, patternTemplate, ImageSaveFailureStage.SaveToDisk, ex));
+                    }
                 } catch (Exception ex) {
                     Logger.Error(ex);
-                    Notification.ShowError(ex.Message);
+                    if (item != null) {
+                        var args = CreateImageSaveFailedEventArgs(item, patternTemplate, failureStage, ex);
+                        await ReportImageSaveFailed(args);
+                        if (ShouldShowFailureNotification(args)) {
+                            Notification.ShowError(GetFailureNotificationMessage(args));
+                        }
+                    } else {
+                        Notification.ShowError(ex.Message);
+                    }
                 } finally {
                     if (writeTimeoutCts?.IsCancellationRequested == true) {
                         Notification.ShowError(Loc.Instance["LblSaveFileFailed"]);
@@ -136,6 +157,44 @@ namespace NINA.ViewModel {
                     applicationStatusMediator.StatusUpdate(new ApplicationStatus() { Source = Loc.Instance["LblSave"], Status = string.Empty });
                 }
             }
+        }
+
+        private ImageSaveFailedEventArgs CreateImageSaveFailedEventArgs(PrepareSaveItem item, string filePattern, ImageSaveFailureStage failureStage, Exception exception) {
+            return new ImageSaveFailedEventArgs(item.Data, profileService.ActiveProfile.ImageFileSettings.FilePath, filePattern, failureStage, exception);
+        }
+
+        private async Task ReportImageSaveFailed(ImageSaveFailedEventArgs args) {
+            try {
+                await (ImageSaveFailed?.InvokeAsync(this, args) ?? Task.CompletedTask);
+            } catch (Exception ex) {
+                Logger.Error("ImageSaveFailed event ran into an error", ex);
+            }
+        }
+
+        private bool ShouldShowFailureNotification(ImageSaveFailedEventArgs args) {
+            if (!args.IsDiskFull) {
+                return true;
+            }
+
+            var now = DateTime.UtcNow;
+            if (now - lastDiskFullNotificationUtc < DiskFullNotificationThrottle) {
+                return false;
+            }
+
+            lastDiskFullNotificationUtc = now;
+            return true;
+        }
+
+        private string GetFailureNotificationMessage(ImageSaveFailedEventArgs args) {
+            var message = args.IsDiskFull
+                ? Loc.Instance["LblSaveFileFailedDiskFull"]
+                : Loc.Instance["LblSaveFileFailed"];
+
+            if (string.IsNullOrWhiteSpace(args.Exception?.Message)) {
+                return message;
+            }
+
+            return message + Environment.NewLine + args.Exception.Message;
         }
 
         public void Shutdown() {
