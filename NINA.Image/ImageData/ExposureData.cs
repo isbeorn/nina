@@ -306,9 +306,16 @@ namespace NINA.Image.ImageData {
             return new Flipped2DExposureData(flipped2DArray, bitDepth, isBayered, metaData, imageDataFactory, profileService.ActiveProfile.CameraSettings.ASCOMCreate32BitData);
         }
 
-        public RAWExposureData CreateRAWExposureData(RawConverterEnum converter, byte[] rawBytes, string rawType, int bitDepth, ImageMetaData metaData) {
-            return new RAWExposureData(RawConverterFactory.CreateInstance(converter, imageDataFactory), rawBytes, rawType, bitDepth, metaData, imageDataFactory);
+        public RAWExposureData CreateRAWExposureData(byte[] rawBytes, string rawType, int bitDepth, ImageMetaData metaData) {
+            return new RAWExposureData(RawConverterFactory.CreateInstance(imageDataFactory), rawBytes, rawType, bitDepth, metaData, imageDataFactory);
         }
+
+#pragma warning disable CS0618
+        [Obsolete("RAW converter selection is obsolete. Use CreateRAWExposureData without the converter argument.")]
+        public RAWExposureData CreateRAWExposureData(RawConverterEnum converter, byte[] rawBytes, string rawType, int bitDepth, ImageMetaData metaData) {
+            return CreateRAWExposureData(rawBytes, rawType, bitDepth, metaData);
+        }
+#pragma warning restore CS0618
 
         public ImageArrayExposureData CreateImageArrayExposureData(ushort[] input, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData) {
             return new ImageArrayExposureData(input, width, height, bitDepth, isBayered, metaData, imageDataFactory);

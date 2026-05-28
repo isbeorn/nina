@@ -14,7 +14,6 @@ using NINA.Core.Interfaces;
 using NINA.Image.ImageAnalysis;
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
-using NINA.Image.RawConverter;
 using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;

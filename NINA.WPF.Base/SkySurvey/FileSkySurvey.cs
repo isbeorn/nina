@@ -12,7 +12,7 @@
 
 #endregion "copyright"
 
-using NINA.Core.Enum;
+
 using NINA.Image.ImageData;
 using NINA.Astrometry;
 using System;
@@ -43,7 +43,7 @@ namespace NINA.WPF.Base.SkySurvey {
             dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2;*.cr3;*.nef;*.raw;*.raf;*.pef;*.dng;*.arw;*.orf;*.rw2;*.fit;*.fts;*.fits;*.fit.fz;*.fits.fz;*.xisf|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.cr3;*.nef;*.raw;*.raf;*.pef;*.dng;*.arw;*.orf;*.rw2|XISF Files|*.xisf|FITS Files|*.fit;*.fits;*.fit.fz;*.fits.fz";
 
             if (dialog.ShowDialog() == true) {
-                var arr = await imageDataFactory.CreateFromFile(dialog.FileName, 16, false, RawConverterEnum.FREEIMAGE, ct);
+                var arr = await imageDataFactory.CreateFromFile(dialog.FileName, 16, false, ct);
                 var renderedImage = arr.RenderImage();
                 renderedImage = await renderedImage.Stretch(factor: 0.2, blackClipping: -2.8, unlinked: false);
 

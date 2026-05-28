@@ -39,7 +39,7 @@ namespace NINA.Image {
                 var filePath = GetFilePath();
                 Logger.Info($"Reloading image from {filePath}");
                 if (File.Exists(filePath)) {
-                    return await imageDataFactory.CreateFromFile(filePath, (int)profileService.ActiveProfile.CameraSettings.BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
+                    return await imageDataFactory.CreateFromFile(filePath, (int)profileService.ActiveProfile.CameraSettings.BitDepth, IsBayered);
                 } else {
                     Logger.Info($"Unable to reload image as the file does not exist at {filePath}");
                     Notification.ShowError(String.Format(Loc.Instance["LblFileNotExist"], filePath));

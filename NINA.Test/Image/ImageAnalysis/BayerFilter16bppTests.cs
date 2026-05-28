@@ -615,7 +615,6 @@ namespace NINA.Test.Image.ImageAnalysis {
                     path: filePath,
                     bitDepth: 16,
                     isBayered: true,
-                    rawConverter: RawConverterEnum.DCRAW,
                     ct: cts.Token);
 
                 Assert.That(loaded.Properties.Width, Is.EqualTo(width), "Loaded width mismatch.");

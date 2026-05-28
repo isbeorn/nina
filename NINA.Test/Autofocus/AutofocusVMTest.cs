@@ -23,7 +23,6 @@ using NINA.Image.FileFormat.XISF;
 using NINA.Image.ImageAnalysis;
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
-using NINA.Image.RawConverter;
 using NINA.PlateSolving.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;

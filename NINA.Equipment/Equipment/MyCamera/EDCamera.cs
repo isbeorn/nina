@@ -29,7 +29,7 @@ using System.Windows.Media.Imaging;
 using NINA.Core.Locale;
 using NINA.Core.Model.Equipment;
 using NINA.Core.MyMessageBox;
-using NINA.Image.RawConverter;
+
 using NINA.Equipment.Exceptions;
 using NINA.Equipment.Model;
 using NINA.Image.Interfaces;
@@ -565,7 +565,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         var metaData = new ImageMetaData();
                         metaData.FromCamera(this);
                         return this.exposureDataFactory.CreateRAWExposureData(
-                            converter: profileService.ActiveProfile.CameraSettings.RawConverter,
                             rawBytes: rawImageData,
                             rawType: GetFileType(directoryItemInfo),
                             bitDepth: BitDepth,

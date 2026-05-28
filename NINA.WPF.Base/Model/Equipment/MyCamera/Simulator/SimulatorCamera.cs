@@ -28,7 +28,7 @@ using NINA.Equipment.Model;
 using NINA.Equipment.Utility;
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
-using NINA.Image.RawConverter;
+
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.SkySurvey;
 using System;
@@ -419,7 +419,7 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
                     //    byte[] rawBytes = Settings.ImageSettings.RAWImageStream.ToArray();
                     //    Settings.ImageSettings.RAWImageStream.Position = 0;
                     //    return exposureDataFactory.CreateRAWExposureData(
-                    //        converter: profileService.ActiveProfile.CameraSettings.RawConverter,
+
                     //        rawBytes: rawBytes,
                     //        rawType: Settings.ImageSettings.RawType,
                     //        bitDepth: this.BitDepth,
@@ -537,7 +537,7 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
         private async Task LoadImage(string path) {
             if(File.Exists(path)) { 
-                var rawData = await imageDataFactory.CreateFromFile(path, BitDepth, Settings.ImageSettings.IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
+                var rawData = await imageDataFactory.CreateFromFile(path, BitDepth, Settings.ImageSettings.IsBayered);
                 // Check if we need to crop the image
                 if (_enabledSubSampleDuringImaging && SubSampleWidth != rawData.Properties.Width && SubSampleHeight != rawData.Properties.Height) {
                     var roiImage = ExtractROI(rawData.Data.FlatArray, rawData.Properties.Width);

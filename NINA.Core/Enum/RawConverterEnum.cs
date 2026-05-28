@@ -13,17 +13,24 @@
 #endregion "copyright"
 
 using NINA.Core.Utility;
+using System;
 using System.ComponentModel;
 
 namespace NINA.Core.Enum {
 
+    [Obsolete("RAW converter selection is obsolete. LibRaw is always used.")]
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum RawConverterEnum {
 
-        [Description("LblDCRaw")]
-        DCRAW,
+        [Description("LblLibRaw")]
+        LIBRAW = 0,
 
+        [Obsolete("LibRaw is the only RAW converter. This value is retained for profile migration.")]
+        [Description("LblDCRaw")]
+        DCRAW = 1,
+
+        [Obsolete("LibRaw is the only RAW converter. This value is retained for profile migration.")]
         [Description("LblFreeImage")]
-        FREEIMAGE
+        FREEIMAGE = 2
     }
 }

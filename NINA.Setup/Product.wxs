@@ -60,7 +60,7 @@
       <ComponentGroupRef Id="External_x64_Cfitsio_files" />
       <ComponentGroupRef Id="External_x64_QHYCCD_files" />
       <ComponentGroupRef Id="External_x64_FLI_files" />
-      <ComponentGroupRef Id="External_x64_FreeImage_files" />
+      <ComponentGroupRef Id="External_x64_Libraw_files" />
       <ComponentGroupRef Id="External_x64_Canon_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0001_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0002_files" />
@@ -109,7 +109,6 @@
       <ComponentGroupRef Id="External_x64_ASTPAN_files" />
       <ComponentGroupRef Id="External_x64_OGMA_files" />
       <ComponentGroupRef Id="External_x64_Oasis_files" />
-      <ComponentGroupRef Id="Utility_DCRaw_files" />
       <ComponentGroupRef Id="External_JPLEPH_files" />
       <ComponentGroupRef Id="Database_Initial_files" />
       <ComponentGroupRef Id="Database_Migration_files" />
@@ -191,7 +190,7 @@
               <Directory Id="External_x64_QHYCCD" Name="QHYCCD" />
               <Directory Id="External_x64_Canon" Name="Canon" />
               <Directory Id="External_x64_FLI" Name="FLI" />
-              <Directory Id="External_x64_FreeImage" Name="FreeImage" />
+              <Directory Id="External_x64_Libraw" Name="Libraw" />
               <Directory Id="External_x64_Nikon" Name="Nikon">
                 <Directory Id="External_x64_Nikon_Type0001" Name="Type0001" />
                 <Directory Id="External_x64_Nikon_Type0002" Name="Type0002" />
@@ -246,7 +245,6 @@
             </Directory>
           </Directory>
           <Directory Id="Utility" Name="Utility">
-            <Directory Id="Utility_DCRaw" Name="DCRaw" />
             <Directory Id="Utility_ColorSchema" Name="ColorSchema" />
             <Directory Id="Utility_ExifTool" Name="ExifTool" />
           </Directory>
@@ -442,12 +440,6 @@
       </Component>
       <Component Id="Fastenshtein.dll" Guid="3A028268-64BC-4C7E-9895-56BEC5BA259C" Bitness="$(var.Win64)">
         <File Id="Fastenshtein.dll" Name="Fastenshtein.dll" Source="$(var.NINA_TargetDir)Fastenshtein.dll" />
-      </Component>
-      <Component Id="FreeImage.dll" Guid="73504596-bbcd-454b-bf8c-492f0c906a1e">
-        <File Id="FreeImage.dll" Name="FreeImage.dll" Source="$(var.NINA_TargetDir)FreeImage.dll" />
-      </Component>
-      <Component Id="FreeImage.Standard.dll" Guid="8b23baea-54b1-4f91-b813-c646f3fb70e8">
-        <File Id="FreeImage.Standard.dll" Name="FreeImage.Standard.dll" Source="$(var.NINA_TargetDir)FreeImage.Standard.dll" />
       </Component>
       <Component Id="Google.Protobuf.dll" Guid="48efb59c-8605-4a27-b22c-6dc5eef42339" Bitness="$(var.Win64)">
         <File Id="Google.Protobuf.dll" Name="Google.Protobuf.dll" Source="$(var.NINA_TargetDir)Google.Protobuf.dll" />
@@ -1739,13 +1731,6 @@
   </Fragment>
 
   <Fragment>
-    <ComponentGroup Id="Utility_DCRaw_files" Directory="Utility_DCRaw">
-      <Component Id="Utility_DCRaw_dcraw.exe" Guid="2071a04b-5394-4b2b-b02f-bd57a5b1a294" Bitness="$(var.Win64)">
-        <File Id="Utility_DCRaw_dcraw.exe" Name="dcraw.exe" Source="$(var.NINA_TargetDir)Utility\DCRaw\dcraw.exe" />
-      </Component>
-    </ComponentGroup>
-  </Fragment>
-  <Fragment>
     <ComponentGroup Id="External_JPLEPH_files" Directory="External">
       <Component Id="JPLEPH" Guid="3D939C40-47D8-4BF2-8C93-5324FAD7CD08" Bitness="$(var.Win64)">
         <File Id="JPLEPH" Name="JPLEPH" Source="$(var.NINA_TargetDir)External\JPLEPH" DefaultVersion="1.0.0.0" DefaultLanguage="0" />
@@ -1868,9 +1853,9 @@
   </Fragment>
 
   <Fragment>
-    <ComponentGroup Id="External_x64_FreeImage_files" Directory="External_x64_FreeImage">
-      <Component Id="External_x64_FreeImage_FreeImage.dll" Guid="8baf48c2-ac6b-4740-a1c9-023e68e14a60" Bitness="$(var.Win64)">
-        <File Id="External_x64_FreeImage_FreeImage.dll" Name="FreeImage.dll" Source="$(var.NINA_TargetDir)External\x64\FreeImage\FreeImage.dll" />
+    <ComponentGroup Id="External_x64_Libraw_files" Directory="External_x64_Libraw">
+      <Component Id="External_x64_Libraw_libraw_0_22_1.dll" Guid="fbedc684-5645-4776-94e1-0ed5efd051c5" Bitness="$(var.Win64)">
+        <File Id="External_x64_Libraw_libraw_0_22_1.dll" Name="libraw_0_22_1.dll" Source="$(var.NINA_TargetDir)External\x64\Libraw\libraw_0_22_1.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

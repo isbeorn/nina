@@ -725,8 +725,15 @@ namespace NINA.Image.ImageData {
             return new BaseImageData(imageArray, width, height, bitDepth, isBayered, metaData, this.profileService, this.starDetectionSelector.GetBehavior(), this.starAnnotatorSelector.GetBehavior());
         }
 
-        public Task<IImageData> CreateFromFile(string path, int bitDepth, bool isBayered, RawConverterEnum rawConverter, CancellationToken ct = default) {
-            return BaseImageData.FromFile(path, bitDepth, isBayered, RawConverterFactory.CreateInstance(rawConverter, this), this, ct);
+        public Task<IImageData> CreateFromFile(string path, int bitDepth, bool isBayered, CancellationToken ct = default) {
+            return BaseImageData.FromFile(path, bitDepth, isBayered, RawConverterFactory.CreateInstance(this), this, ct);
         }
+
+#pragma warning disable CS0618
+        [Obsolete("RAW converter selection is obsolete. Use CreateFromFile without the rawConverter argument.")]
+        public Task<IImageData> CreateFromFile(string path, int bitDepth, bool isBayered, RawConverterEnum rawConverter, CancellationToken ct = default) {
+            return CreateFromFile(path, bitDepth, isBayered, ct);
+        }
+#pragma warning restore CS0618
     }
 }

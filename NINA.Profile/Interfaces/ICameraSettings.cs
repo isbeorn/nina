@@ -14,6 +14,7 @@
 
 using NINA.Core.Enum;
 using NINA.Core.Model.Equipment;
+using System;
 
 namespace NINA.Profile.Interfaces {
 
@@ -23,7 +24,10 @@ namespace NINA.Profile.Interfaces {
         string Id { get; set; }
         string LastDeviceName { get; set; }
         double PixelSize { get; set; }
+#pragma warning disable CS0618
+        [Obsolete("RAW converter selection is obsolete. LibRaw is always used.")]
         RawConverterEnum RawConverter { get; set; }
+#pragma warning restore CS0618
         string SerialPort { get; set; }
         double MinFlatExposureTime { get; set; }
         double MaxFlatExposureTime { get; set; }
