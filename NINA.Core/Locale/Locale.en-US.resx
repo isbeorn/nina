@@ -1030,6 +1030,9 @@ when the lines are not aligned there is some polar alignment error</value>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>Debayered HFR</value>
   </data>
@@ -2623,7 +2626,7 @@ Calculated HFR: {2}
     <value>Raw converter</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Specifies which tool should be used for DSLR raw file conversion</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Read noise in e−</value>
@@ -6103,6 +6106,9 @@ Once successfully solved, the rotation will be set for framing.</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Failed to save image</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Get coordinates from the current scope position</value>
