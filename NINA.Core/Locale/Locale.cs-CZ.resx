@@ -1023,6 +1023,9 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>Bayerova maska HFR</value>
   </data>
@@ -2617,7 +2620,7 @@ Klient odpojen od synchronizované služby PHD2.
     <value>Raw konvertor</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Určí, který nástroj má být použit pro převod souborů DSLR raw</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Čtecí šum v e</value>
@@ -6097,6 +6100,9 @@ Po úspěšném vyřešení se nastaví úhel natočení snímku.</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Obrázek se nepodařilo uložit</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Získá souřadnice z aktuální pozice dalekohledu</value>
