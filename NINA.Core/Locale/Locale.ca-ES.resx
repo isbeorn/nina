@@ -1026,6 +1026,9 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>HFR Debaieritzat</value>
   </data>
@@ -2618,7 +2621,7 @@ HFR calculat: {2}    </value>
     <value>Convertidor fitxers Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Especifica quina eina s'ha d'utilitzar per a la conversió de fitxers en format DSLR</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Soroll de lectura en e</value>
@@ -6094,6 +6097,9 @@ Un cop resolt amb èxit, s'establirà la rotació per enquadrar.</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>No s'ha pogut desar la imatge</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Obté coordenades de la posició actual del telescopi</value>
