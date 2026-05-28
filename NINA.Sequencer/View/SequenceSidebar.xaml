@@ -987,7 +987,7 @@
 
                     <i:Interaction.Behaviors>
                         <behaviors:DragOverBehavior DragOverCenterText="{ns:Loc LblDragOver_AddTemplate}" DragOverDisplayAnchor="Left" />
-                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.SequenceContainer" OnDropCommand="AddTemplateCommand" />
+                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer" OnDropCommand="AddTemplateCommand" />
                     </i:Interaction.Behaviors>
                 </Grid>
             </util:DeferredContent.Content>
