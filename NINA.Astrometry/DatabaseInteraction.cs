@@ -49,6 +49,12 @@ namespace NINA.Astrometry {
             return new NINADbContext(connectionString);
         }
 
+        private static void ConfigureReadOnlyQuery(NINADbContext context) {
+            context.Configuration.AutoDetectChangesEnabled = false;
+            context.Configuration.LazyLoadingEnabled = false;
+            context.Configuration.ProxyCreationEnabled = false;
+        }
+
         public async Task<ICollection<string>> GetConstellations(CancellationToken token) {
             try {
                 using (var context = new NINADbContext(connectionString)) {
@@ -99,7 +105,8 @@ namespace NINA.Astrometry {
             var brightStars = new List<FocusTarget>();
             try {
                 using (var context = new NINADbContext(connectionString)) {
-                    var rows = await context.BrightStarsSet.ToListAsync();
+                    ConfigureReadOnlyQuery(context);
+                    var rows = await context.BrightStarsSet.AsNoTracking().ToListAsync();
 
                     foreach (var row in rows) {
                         var brightStar = new FocusTarget(row.name);
@@ -154,10 +161,11 @@ namespace NINA.Astrometry {
             var constellations = new List<Constellation>();
             try {
                 using (var context = new NINADbContext(connectionString)) {
-                    var starlist = await context.ConstellationStarSet.ToListAsync(token);
+                    ConfigureReadOnlyQuery(context);
+                    var starlist = await context.ConstellationStarSet.AsNoTracking().ToListAsync(token);
                     starList = starlist.Select(x => new Star(x.id, x.name, new Coordinates(x.ra, x.dec, Epoch.J2000, Coordinates.RAType.Degrees), x.mag)).ToList();
 
-                    var rows = await context.ConstellationSet.OrderBy(x => x.constellationid).ToListAsync(token);
+                    var rows = await context.ConstellationSet.AsNoTracking().OrderBy(x => x.constellationid).ToListAsync(token);
 
                     foreach (var row in rows) {
                         var constId = row.constellationid;
@@ -209,7 +217,8 @@ namespace NINA.Astrometry {
             var constellationBoundaries = new List<ConstellationBoundary>();
             try {
                 using (var context = new NINADbContext(connectionString)) {
-                    var rows = await context.ConstellationBoundariesSet.OrderBy(x => x.constellation).ThenBy(x => x.position).ToListAsync(token);
+                    ConfigureReadOnlyQuery(context);
+                    var rows = await context.ConstellationBoundariesSet.AsNoTracking().OrderBy(x => x.constellation).ThenBy(x => x.position).ToListAsync(token);
 
                     ConstellationBoundary boundary = null;
                     var prevName = string.Empty;
@@ -276,7 +285,9 @@ namespace NINA.Astrometry {
                 var dsos = new List<DeepSkyObject>();
                 try {
                     using (var context = new NINADbContext(connectionString)) {
-                        var query = from dso in context.DsoDetailSet
+                        ConfigureReadOnlyQuery(context);
+
+                        var query = from dso in context.DsoDetailSet.AsNoTracking()
                                     select new {
                                         dso.id,
                                         dso.ra,
@@ -291,7 +302,8 @@ namespace NINA.Astrometry {
                                     };
 
                         if (!string.IsNullOrEmpty(searchParams.Constellation)) {
-                            query = query.Where(x => x.constellation.ToLower() == searchParams.Constellation.ToLower());
+                            var constellation = searchParams.Constellation.Trim().ToUpperInvariant();
+                            query = query.Where(x => x.constellation == constellation);
                         }
 
                         if (searchParams.RightAscension.From != null && (searchParams.RightAscension.Thru == null || searchParams.RightAscension.Thru > searchParams.RightAscension.From)) {
@@ -373,20 +385,50 @@ namespace NINA.Astrometry {
                             query = query.Take(searchParams.Limit.Value);
                         }
 
-                        var dsosTask = query.ToListAsync(token);
+                        var rows = await (from q in query
+                                          join cat in context.CatalogueNrSet.AsNoTracking() on q.id equals cat.dsodetailid into catalogues
+                                          from cat in catalogues.DefaultIfEmpty()
+                                          select new {
+                                              q.id,
+                                              q.ra,
+                                              q.dec,
+                                              q.dsotype,
+                                              q.magnitude,
+                                              q.sizemin,
+                                              q.sizemax,
+                                              q.constellation,
+                                              q.surfacebrightness,
+                                              q.positionangle,
+                                              designation = cat == null ? null : cat.catalogue == "NAME" ? cat.designation : cat.catalogue + " " + cat.designation
+                                          }).ToListAsync(token);
 
-                        var catalogueTask = (from q in query
-                                             join cat in context.CatalogueNrSet on q.id equals cat.dsodetailid
-                                             select new { cat.dsodetailid, designation = cat.catalogue == "NAME" ? cat.designation : cat.catalogue + " " + cat.designation })
-                                             .GroupBy(x => x.dsodetailid)
-                                             .ToDictionaryAsync(x => x.Key, x => x.ToList(), token);
+                        var groupedRows = rows.GroupBy(x => x.id);
+                        if (searchParams.SearchOrder.Direction == "ASC") {
+                            groupedRows = searchParams.SearchOrder.Field switch {
+                                "ra" => groupedRows.OrderBy(x => x.First().ra),
+                                "dec" => groupedRows.OrderBy(x => x.First().dec),
+                                "dsotype" => groupedRows.OrderBy(x => x.First().dsotype),
+                                "magnitude" => groupedRows.OrderBy(x => x.First().magnitude),
+                                "surfacebrightness" => groupedRows.OrderBy(x => x.First().surfacebrightness),
+                                "sizemax" => groupedRows.OrderBy(x => x.First().sizemax),
+                                "constellation" => groupedRows.OrderBy(x => x.First().constellation),
+                                _ => groupedRows.OrderBy(x => x.First().id)
+                            };
+                        } else {
+                            groupedRows = searchParams.SearchOrder.Field switch {
+                                "ra" => groupedRows.OrderByDescending(x => x.First().ra),
+                                "dec" => groupedRows.OrderByDescending(x => x.First().dec),
+                                "dsotype" => groupedRows.OrderByDescending(x => x.First().dsotype),
+                                "magnitude" => groupedRows.OrderByDescending(x => x.First().magnitude),
+                                "surfacebrightness" => groupedRows.OrderByDescending(x => x.First().surfacebrightness),
+                                "sizemax" => groupedRows.OrderByDescending(x => x.First().sizemax),
+                                "constellation" => groupedRows.OrderByDescending(x => x.First().constellation),
+                                _ => groupedRows.OrderByDescending(x => x.First().id)
+                            };
+                        }
 
-                        await Task.WhenAll(dsosTask, catalogueTask);
-
-                        var dsoResult = dsosTask.Result;
-                        var catalogueResult = catalogueTask.Result;
-
-                        foreach (var row in dsoResult) {
+                        foreach (var group in groupedRows) {
+                            var row = group.First();
                             var id = row.id;
                             var coords = new Coordinates(row.ra, row.dec, Epoch.J2000, Coordinates.RAType.Degrees);
                             var dso = new DeepSkyObject(row.id, coords, imageFactory, horizon);
@@ -401,15 +443,22 @@ namespace NINA.Astrometry {
                                 dso.Size = row.sizemax;
                             }
 
-                            if(row.sizemin.HasValue) {
+                            if (row.sizemin.HasValue) {
                                 dso.SizeMin = row.sizemin;
                             }
 
-                            if(row.positionangle.HasValue) {
+                            if (row.positionangle.HasValue) {
                                 dso.PositionAngle = Angle.ByDegree(row.positionangle.Value);
                             }
 
-                            dso.AlsoKnownAs = catalogueResult[row.id].Select(x => x.designation).ToList();
+                            dso.AlsoKnownAs = group
+                                .Where(x => !string.IsNullOrEmpty(x.designation))
+                                .Select(x => x.designation)
+                                .ToList();
+
+                            if (dso.AlsoKnownAs.Count == 0) {
+                                dso.AlsoKnownAs.Add(row.id);
+                            }
 
                             dso.Name = GetDisplayAlias(searchParams.ObjectName, dso.AlsoKnownAs);
 
@@ -488,7 +537,8 @@ namespace NINA.Astrometry {
             var hipsSkyMaps = new List<Core.Database.Schema.HipsSkyMaps>();
             try {
                 using (var context = new NINADbContext(connectionString)) {
-                    var rows = await context.HipsSkyMapSet.ToListAsync();
+                    ConfigureReadOnlyQuery(context);
+                    var rows = await context.HipsSkyMapSet.AsNoTracking().ToListAsync();
 
                     foreach (var row in rows) {
                         var hipsSkyMap = new Core.Database.Schema.HipsSkyMaps {

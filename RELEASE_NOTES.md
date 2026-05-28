@@ -51,6 +51,7 @@ This allows you to safely return to a stable release if needed.
 - Debayer algorithm has been optimized to work fast even on older CPUs
 - DSLR RAW conversion now uses LibRaw instead of the legacy DCRaw and FreeImage converters.
 - Sky brightness readings in the Weather device windows have been increased from 2 decimal places to 5 so that measurements obtained in low light conditions are adequately displayed.
+- Improved Sky Atlas search performance.
 - **Autofocus & Star Measurements**
     - The native star detector now measures HFR from a centroid-refined curve of growth instead of using a first-moment approximation
     - Local star background estimation now uses a robust sigma-clipped median to reduce bias from nearby stars and outliers
