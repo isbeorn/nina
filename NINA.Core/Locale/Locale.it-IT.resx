@@ -1030,6 +1030,9 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>HFR Demosaicizzato</value>
   </data>
@@ -2623,7 +2626,7 @@ HFR Calcolato: {2}
     <value>Convertitore Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Specifica quale tool deve essere usato per la conversione dei files raw della DSLR</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Lettura rumore in e</value>
@@ -6101,6 +6104,9 @@ Once successfully solved, the rotation will be set for framing.</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Impossibile salvare l'immagine</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Ottieni le coordinate della posizione corrente dalla montatura</value>
