@@ -1024,6 +1024,9 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>Debayer HFR</value>
   </data>
@@ -2616,7 +2619,7 @@ Forventet HFR: {2}</value>
     <value>RAW-konvertering</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Spesifiserer hvilket verktøy som skal brukes til RAW-konvertering for DSLR</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Utlesingsstøy i e</value>
@@ -6087,6 +6090,9 @@ Se bruksanvisningen for denne innstillingen</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Kunne ikke lagre bilde</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Finn koordinater til gjeldende pekeretning</value>
