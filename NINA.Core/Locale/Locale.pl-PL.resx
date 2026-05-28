@@ -1022,6 +1022,9 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>Debayeruj HFR</value>
   </data>
@@ -2614,7 +2617,7 @@ Obliczone HFR: {2}</value>
     <value>Konwerter RAW</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Określa, które narzędzie powinno być użyte do konwersji plików RAW DSLR</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Odczytaj szum in e</value>
@@ -6090,6 +6093,9 @@ Po pomyślnym obrazowaniu plate solving ustawiona zostanie rotacja kadru.</value
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Nie udało się zapisać obrazu</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Określ współrzędne aktualnej pozycji teleskopu</value>
