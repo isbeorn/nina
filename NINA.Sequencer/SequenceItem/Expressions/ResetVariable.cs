@@ -136,7 +136,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         private bool IsAttachedToRoot() {
             ISequenceContainer p = Parent;
             while (p != null) {
-                if (p is SequenceRootContainer) {
+                if (p is ISequenceRootContainer) {
                     return true;
                 }
                 p = p.Parent;

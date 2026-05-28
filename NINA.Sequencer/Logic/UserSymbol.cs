@@ -149,7 +149,7 @@ namespace NINA.Sequencer.Logic {
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
             while (p != null) {
-                if (p is SequenceRootContainer || (p == GlobalSymbols)) {
+                if (p is ISequenceRootContainer || (p == GlobalSymbols)) {
                     return true;
                 } else {
                     p = p.Parent;
@@ -174,7 +174,7 @@ namespace NINA.Sequencer.Logic {
         protected bool IsAttachedToRoot() {
             ISequenceContainer p = Parent;
             while (p != null) {
-                if (p is SequenceRootContainer) {
+                if (p is ISequenceRootContainer) {
                     return true;
                 }
                 p = p.Parent;
@@ -224,7 +224,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         static public bool IsAttachedToRoot(ISequenceEntity item) {
-            if (item is SequenceRootContainer || item == GlobalSymbols) {
+            if (item is ISequenceRootContainer || item == GlobalSymbols) {
                 return true;
             }
             if (item.Parent == null) return false;

@@ -20,7 +20,9 @@ using NINA.Core.Utility;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.DragDrop;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.SequenceItem.Expressions;
 using NINA.Sequencer.Serialization;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Trigger.Utility;
@@ -32,6 +34,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using SequenceItemBase = NINA.Sequencer.SequenceItem.SequenceItem;
+using SequencerExpression = NINA.Sequencer.Logic.Expression;
 
 namespace NINA.Test.Sequencer.Trigger.Utility {
 
@@ -44,6 +47,8 @@ namespace NINA.Test.Sequencer.Trigger.Utility {
         public void Setup() {
             resourceDictionaryMock = new Mock<IApplicationResourceDictionary>();
             resourceDictionaryMock.Setup(x => x[It.IsAny<string>()]).Returns(new GeometryGroup());
+            UserSymbol.SymbolCache.Clear();
+            UserSymbol.ClearUserSymbols();
 
             sut = new CustomTrigger(resourceDictionaryMock.Object) {
                 Name = "Custom Trigger",
@@ -51,6 +56,12 @@ namespace NINA.Test.Sequencer.Trigger.Utility {
                 Category = "Utility",
                 Icon = new GeometryGroup()
             };
+        }
+
+        [TearDown]
+        public void TearDown() {
+            UserSymbol.SymbolCache.Clear();
+            UserSymbol.ClearUserSymbols();
         }
 
         /// <summary>
@@ -233,6 +244,34 @@ namespace NINA.Test.Sequencer.Trigger.Utility {
         }
 
         /// <summary>
+        /// Verifies variables defined inside custom trigger instructions are scoped to the trigger runner and can be consumed by later instructions.
+        /// </summary>
+        [Test]
+        public async Task Execute_AllowsScopedVariablesInCustomInstructions() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer context = new SequentialContainer();
+            Variable variable = CreateVariable("triggerValue", "40 + 2");
+            ResetVariable reset = CreateResetVariable("triggerValue", "84");
+            ExpressionInstruction consumer = new ExpressionInstruction("triggerValue + 1");
+
+            root.Add(context);
+            sut.AttachNewParent(context);
+            sut.TriggerRunner.Add(variable);
+            sut.TriggerRunner.Add(reset);
+            sut.TriggerRunner.Add(consumer);
+
+            await sut.Execute(context, Mock.Of<IProgress<ApplicationStatus>>(), CancellationToken.None);
+
+            variable.Status.Should().Be(SequenceEntityStatus.FINISHED);
+            variable.Executed.Should().BeTrue();
+            variable.Expr.Definition.Should().Be("84");
+            reset.Status.Should().Be(SequenceEntityStatus.FINISHED);
+            consumer.Status.Should().Be(SequenceEntityStatus.FINISHED);
+            consumer.Value.Should().Be(85);
+            UserSymbol.FindSymbol("triggerValue", consumer.Parent).Should().BeSameAs(variable);
+        }
+
+        /// <summary>
         /// Verifies validation reports missing configuration and passes once a trigger source and instruction exist.
         /// </summary>
         [Test]
@@ -338,6 +377,23 @@ namespace NINA.Test.Sequencer.Trigger.Utility {
             return factoryMock.Object;
         }
 
+        private static Variable CreateVariable(string identifier, string definition) {
+            Variable variable = new Variable {
+                Identifier = identifier,
+                Expr = new SequencerExpression("", null),
+                OriginalExpr = new SequencerExpression(definition, null)
+            };
+
+            return variable;
+        }
+
+        private static ResetVariable CreateResetVariable(string variable, string definition) {
+            return new ResetVariable {
+                Variable = variable,
+                Expr = new SequencerExpression(definition, null)
+            };
+        }
+
         private sealed class TestTrigger : SequenceTrigger, IValidatable {
             public bool ShouldTriggerResult { get; set; }
             public bool ShouldTriggerAfterResult { get; set; }
@@ -412,6 +468,30 @@ namespace NINA.Test.Sequencer.Trigger.Utility {
 
             public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
                 ExecuteCount++;
+                return Task.CompletedTask;
+            }
+        }
+
+        private sealed class ExpressionInstruction : SequenceItemBase {
+            private readonly SequencerExpression expression;
+
+            public ExpressionInstruction(string definition) {
+                expression = new SequencerExpression(definition, this);
+            }
+
+            public double Value => expression.Value;
+
+            public override object Clone() {
+                return new ExpressionInstruction(expression.Definition);
+            }
+
+            public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+                expression.Evaluate();
+
+                if (!expression.HasEvaluatedResult) {
+                    throw new SequenceEntityFailedException("Expression did not produce a valid result");
+                }
+
                 return Task.CompletedTask;
             }
         }
