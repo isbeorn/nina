@@ -2610,7 +2610,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Rawコンバーター</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>DSLRのRAWファイルはLibRawで変換されます。</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>e値による読み込みノイズ</value>
