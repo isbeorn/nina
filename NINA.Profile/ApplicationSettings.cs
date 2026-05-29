@@ -47,7 +47,21 @@ namespace NINA.Profile {
                 SelectedPluggableBehaviors = new AsyncObservableCollection<KeyValuePair<string, string>>();
             }
             SelectedPluggableBehaviorsLookup = SelectedPluggableBehaviors.ToList().ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            if (deviceConnectionOrder == null || deviceConnectionOrder.Count == 0) {
+                deviceConnectionOrder = new AsyncObservableCollection<string>(AllDevices);
+            } else {
+                // Append any devices not yet in the saved list (forward compatibility)
+                foreach (var device in AllDevices) {
+                    if (!deviceConnectionOrder.Contains(device)) {
+                        deviceConnectionOrder.Add(device);
+                    }
+                }
+            }
         }
+
+        private static readonly IReadOnlyList<string> AllDevices = new List<string> {
+            "Switch", "Camera", "Filter Wheel", "Focuser", "Rotator", "Mount", "Guider", "Flat Panel", "Weather", "Dome", "Safety Monitor"
+        }.AsReadOnly();
 
         protected override void SetDefaultValues() {
             language = new CultureInfo("en-GB");
@@ -61,6 +75,7 @@ namespace NINA.Profile {
             notificationCorner = NotificationCorner.BottomRight;
             notificationWorkArea = NotificationWorkArea.PrimaryScreen;
             coloredContainerBorders = true;
+            deviceConnectionOrder = new AsyncObservableCollection<string>(AllDevices);
         }
 
         [DataMember]
@@ -210,6 +225,19 @@ namespace NINA.Profile {
             set {
                 if (coloredContainerBorders != value) {
                     coloredContainerBorders = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private AsyncObservableCollection<string> deviceConnectionOrder;
+
+        [DataMember]
+        public AsyncObservableCollection<string> DeviceConnectionOrder {
+            get => deviceConnectionOrder;
+            set {
+                if (deviceConnectionOrder != value) {
+                    deviceConnectionOrder = value;
                     RaisePropertyChanged();
                 }
             }

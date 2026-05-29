@@ -39,6 +39,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <GroupBox DataContext="{Binding CameraSettings}">
                 <GroupBox.Header>
@@ -1256,6 +1257,48 @@
                     </Grid>
 
                 </StackPanel>
+            </GroupBox>
+            <GroupBox
+                Grid.Row="5"
+                Grid.ColumnSpan="2"
+                ToolTip="{ns:Loc LblDeviceConnectionOrderTooltip}">
+                <GroupBox.Header>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Text="{ns:Loc LblDeviceConnectionOrder}" />
+                </GroupBox.Header>
+                <ItemsControl ItemsSource="{Binding ApplicationSettings.DeviceConnectionOrder}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding}" />
+                                <Button
+                                    Grid.Column="1"
+                                    Width="25"
+                                    Margin="4,0,2,0"
+                                    Command="{Binding Data.MoveDeviceConnectionOrderUpCommand, Source={StaticResource proxy}}"
+                                    CommandParameter="{Binding}"
+                                    Content="▲" />
+                                <Button
+                                    Grid.Column="2"
+                                    Width="25"
+                                    Margin="2,0,4,0"
+                                    Command="{Binding Data.MoveDeviceConnectionOrderDownCommand, Source={StaticResource proxy}}"
+                                    CommandParameter="{Binding}"
+                                    Content="▼" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </GroupBox>
         </Grid>
     </ScrollViewer>

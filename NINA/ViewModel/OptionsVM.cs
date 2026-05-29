@@ -856,5 +856,25 @@ namespace NINA.ViewModel {
         public IPluggableBehaviorSelector<IStarDetection> PluggableStarDetection { get; private set; }
         public IPluggableBehaviorSelector<IStarAnnotator> PluggableStarAnnotator { get; private set; }
         public IPluggableBehaviorSelector<IAutoFocusVMFactory> PluggableAutoFocusVMFactory { get; private set; }
+
+        [RelayCommand]
+        private void MoveDeviceConnectionOrderUp(string device) {
+            var order = profileService.ActiveProfile.ApplicationSettings.DeviceConnectionOrder;
+            var idx = order.IndexOf(device);
+            if (idx > 0) {
+                order.RemoveAt(idx);
+                order.Insert(idx - 1, device);
+            }
+        }
+
+        [RelayCommand]
+        private void MoveDeviceConnectionOrderDown(string device) {
+            var order = profileService.ActiveProfile.ApplicationSettings.DeviceConnectionOrder;
+            var idx = order.IndexOf(device);
+            if (idx >= 0 && idx < order.Count - 1) {
+                order.RemoveAt(idx);
+                order.Insert(idx + 1, device);
+            }
+        }
     }
 }

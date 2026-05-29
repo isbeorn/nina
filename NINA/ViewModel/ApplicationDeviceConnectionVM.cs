@@ -22,6 +22,7 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.ViewModel;
 using Nito.AsyncEx;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -114,93 +115,17 @@ namespace NINA.ViewModel {
                 var diag = MyMessageBox.Show(Loc.Instance["LblConnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag == MessageBoxResult.OK) {
                     return await Task<bool>.Run(async () => {
-                        try {
-                            if (!cameraMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to camera");
-                                await Task.Run(cameraMediator.Connect);
+                        var order = profileService.ActiveProfile.ApplicationSettings.DeviceConnectionOrder.ToList();
+                        foreach (var device in order) {
+                            try {
+                                var pair = GetMediatorConnectPair(device);
+                                if (pair != null && !pair.Value.isConnected()) {
+                                    Logger.Debug($"Connecting to {device}");
+                                    await Task.Run(pair.Value.connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
                             }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                        try {
-                            if (!filterWheelMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to Filter Wheel");
-                                await Task.Run(filterWheelMediator.Connect);
-                            }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                        try {
-                            if (!telescopeMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to Telescope");
-                                await Task.Run(telescopeMediator.Connect);
-                            }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                        try {
-                            if (!focuserMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to Focuser");
-                                await Task.Run(focuserMediator.Connect);
-                            }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                        try {
-                            if (!rotatorMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to Rotator");
-                                await Task.Run(rotatorMediator.Connect);
-                            }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                        try {
-                            if (!guiderMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to Guider");
-                                await Task.Run(guiderMediator.Connect);
-                            }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                        try {
-                            if (!flatDeviceMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to Flat Device");
-                                await Task.Run(flatDeviceMediator.Connect);
-                            }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                        try {
-                            if (!weatherDataMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to Weather Data");
-                                await Task.Run(weatherDataMediator.Connect);
-                            }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                        try {
-                            if (!switchMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to Switch");
-                                await Task.Run(switchMediator.Connect);
-                            }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                        try {
-                            if (!domeMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to Dome");
-                                await Task.Run(domeMediator.Connect);
-                            }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                        try {
-                            if (!safetyMonitorMediator.GetInfo().Connected) {
-                                Logger.Debug("Connecting to Safety Monitor");
-                                await Task.Run(safetyMonitorMediator.Connect);
-                            }
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
                         }
                         return true;
                     });
@@ -217,6 +142,23 @@ namespace NINA.ViewModel {
                 }
                 return false;
             }, (object o) => Initialized);
+        }
+
+        private (Func<bool> isConnected, Func<Task> connect)? GetMediatorConnectPair(string device) {
+            return device switch {
+                "Camera" => (() => cameraMediator.GetInfo().Connected, cameraMediator.Connect),
+                "Filter Wheel" => (() => filterWheelMediator.GetInfo().Connected, filterWheelMediator.Connect),
+                "Mount" => (() => telescopeMediator.GetInfo().Connected, telescopeMediator.Connect),
+                "Focuser" => (() => focuserMediator.GetInfo().Connected, focuserMediator.Connect),
+                "Rotator" => (() => rotatorMediator.GetInfo().Connected, rotatorMediator.Connect),
+                "Guider" => (() => guiderMediator.GetInfo().Connected, guiderMediator.Connect),
+                "Flat Panel" => (() => flatDeviceMediator.GetInfo().Connected, flatDeviceMediator.Connect),
+                "Weather" => (() => weatherDataMediator.GetInfo().Connected, weatherDataMediator.Connect),
+                "Switch" => (() => switchMediator.GetInfo().Connected, switchMediator.Connect),
+                "Dome" => (() => domeMediator.GetInfo().Connected, domeMediator.Connect),
+                "Safety Monitor" => (() => safetyMonitorMediator.GetInfo().Connected, safetyMonitorMediator.Connect),
+                _ => null
+            };
         }
 
         private async Task Device_Connected(object arg1, EventArgs arg2) {

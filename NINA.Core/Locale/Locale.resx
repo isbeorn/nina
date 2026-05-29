@@ -1096,6 +1096,12 @@ when the lines are not aligned there is some Polar Alignment error</value>
   <data name="LblDetectedStars" xml:space="preserve">
     <value>Detected Stars</value>
   </data>
+  <data name="LblDeviceConnectionOrder" xml:space="preserve">
+    <value>Device Connection Order</value>
+  </data>
+  <data name="LblDeviceConnectionOrderTooltip" xml:space="preserve">
+    <value>Configure the order in which devices connect when 'Connect All' is used. Use the arrow buttons to reorder.</value>
+  </data>
   <data name="LblDevicePollingInterval" xml:space="preserve">
     <value>Device polling interval</value>
   </data>
