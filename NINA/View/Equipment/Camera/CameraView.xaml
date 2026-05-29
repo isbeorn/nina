@@ -361,6 +361,7 @@
                                     Generic="{StaticResource Default}"
                                     LegacySbig="{StaticResource Default}"
                                     Moravian="{StaticResource Moravian}"
+                                    Nikon="{StaticResource Default}"
                                     Postfix="{x:Static wpfutil:DataTemplatePostfix.CameraDetails}"
                                     QhyCcd="{StaticResource QhyCcd}"
                                     SVBony="{StaticResource Default}"
@@ -690,6 +691,49 @@
                                             FontStyle="Italic"
                                             Text="{ns:Loc LblMirrorLockupDelayTooltip}"
                                             TextAlignment="Right" />
+                                        <DockPanel Margin="0,6,0,0">
+                                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveNativeCameraRaw}">
+                                                <TextBlock.ToolTip>
+                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                        <TextBlock Text="{ns:Loc LblSaveNativeCameraRawTooltip}" />
+                                                    </ToolTip>
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                            <CheckBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                IsChecked="{Binding DataContext.ActiveProfile.CameraSettings.SaveNativeCameraRaw, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Mode=TwoWay}">
+                                                <CheckBox.ToolTip>
+                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                        <TextBlock Text="{ns:Loc LblSaveNativeCameraRawTooltip}" />
+                                                    </ToolTip>
+                                                </CheckBox.ToolTip>
+                                            </CheckBox>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+
+                                <DataTemplate x:Key="Nikon">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel Margin="0,0,0,6">
+                                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveNativeCameraRaw}">
+                                                <TextBlock.ToolTip>
+                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                        <TextBlock Text="{ns:Loc LblSaveNativeCameraRawTooltip}" />
+                                                    </ToolTip>
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                            <CheckBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                IsChecked="{Binding DataContext.ActiveProfile.CameraSettings.SaveNativeCameraRaw, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Mode=TwoWay}">
+                                                <CheckBox.ToolTip>
+                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                        <TextBlock Text="{ns:Loc LblSaveNativeCameraRawTooltip}" />
+                                                    </ToolTip>
+                                                </CheckBox.ToolTip>
+                                            </CheckBox>
+                                        </DockPanel>
                                     </StackPanel>
                                 </DataTemplate>
 
@@ -1003,6 +1047,7 @@
                                     Generic="{StaticResource Generic}"
                                     LegacySbig="{StaticResource LegacySbig}"
                                     Moravian="{StaticResource Moravian2}"
+                                    Nikon="{StaticResource Nikon}"
                                     Postfix="{x:Static wpfutil:DataTemplatePostfix.CameraSettings}"
                                     QhyCcd="{StaticResource QhyCcd}"
                                     SVBony="{StaticResource SVBony}"

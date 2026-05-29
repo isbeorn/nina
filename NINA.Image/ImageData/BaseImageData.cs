@@ -326,7 +326,7 @@ namespace NINA.Image.ImageData {
             var pattern = fileSaveInfo.FilePattern;
             string actualPath = string.Empty;
             try {
-                if (pattern.Contains(ImagePatternKeys.SensorTemp) && double.IsNaN(MetaData.Camera.Temperature) && !string.IsNullOrEmpty(Data.RAWType)) {
+                if (pattern.Contains(ImagePatternKeys.SensorTemp) && double.IsNaN(MetaData.Camera.Temperature) && ShouldSaveNativeRaw(fileSaveInfo, forceFileType)) {
                     // For DSLRs we need to retrieve the temperature after the file is written. Hence we replace the pattern with this special placeholder
                     pattern = pattern.Replace(ImagePatternKeys.SensorTemp, "$$DSLR_SENSORTEMP$$");
                 }
@@ -385,7 +385,7 @@ namespace NINA.Image.ImageData {
                 string path = string.Empty;
                 fileSaveInfo.FilePath = Path.Combine(fileSaveInfo.FilePath, fileName);
 
-                if (!forceFileType && Data.RAWData != null) {
+                if (ShouldSaveNativeRaw(fileSaveInfo, forceFileType)) {
                     fileSaveInfo.FileType = FileTypeEnum.RAW;
                     path = SaveRAW(fileSaveInfo.FilePath);
                 } else {
@@ -407,6 +407,13 @@ namespace NINA.Image.ImageData {
 
                 return path;
             }, cancelToken);
+        }
+
+        private bool ShouldSaveNativeRaw(FileSaveInfo fileSaveInfo, bool forceFileType) {
+            return !forceFileType
+                && fileSaveInfo.SaveNativeCameraRaw
+                && Data.RAWData != null
+                && !string.IsNullOrWhiteSpace(Data.RAWType);
         }
 
         private string SaveRAW(string path) {

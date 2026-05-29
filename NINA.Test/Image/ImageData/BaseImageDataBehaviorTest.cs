@@ -63,10 +63,10 @@ namespace NINA.Test.Image.ImageData {
         }
 
         /// <summary>
-        /// Verifies raw saves prefer original RAW bytes unless the caller explicitly forces the requested file type.
+        /// Verifies raw saves prefer original RAW bytes while the native camera RAW option is enabled.
         /// </summary>
         [Test]
-        public async Task SaveToDisk_RawDataUsesOriginalBytesUnlessFileTypeIsForced() {
+        public async Task SaveToDisk_RawDataUsesOriginalBytesWhenNativeRawSaveIsEnabled() {
             string directory = Path.Combine(TestContext.CurrentContext.WorkDirectory, "BaseImageDataSaveTest", Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(directory);
 
@@ -76,7 +76,8 @@ namespace NINA.Test.Image.ImageData {
                 var saveInfo = new FileSaveInfo {
                     FilePath = directory,
                     FilePattern = "raw-frame",
-                    FileType = NINA.Core.Enum.FileTypeEnum.TIFF
+                    FileType = FileTypeEnum.XISF,
+                    SaveNativeCameraRaw = true
                 };
 
                 string savedPath = await imageData.SaveToDisk(saveInfo, CancellationToken.None, forceFileType: false);
@@ -86,6 +87,50 @@ namespace NINA.Test.Image.ImageData {
             } finally {
                 Directory.Delete(directory, recursive: true);
             }
+        }
+
+        /// <summary>
+        /// Verifies raw-capable camera data is saved in the selected file format when native RAW saving is disabled.
+        /// </summary>
+        [Test]
+        public async Task SaveToDisk_RawDataUsesRequestedFileTypeWhenNativeRawSaveIsDisabled() {
+            string directory = Path.Combine(TestContext.CurrentContext.WorkDirectory, "BaseImageDataSaveTest", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+
+            try {
+                var imageArray = new ImageArray(new ushort[] { 1, 2, 3, 4 }, rawData: new byte[] { 10, 20, 30 }, rawType: "cr2");
+                BaseImageData imageData = CreateImageData(CreateMetadata(), hfr: double.NaN, detectedStars: -1, imageArray);
+                var saveInfo = new FileSaveInfo {
+                    FilePath = directory,
+                    FilePattern = "converted-frame",
+                    FileType = FileTypeEnum.XISF,
+                    SaveNativeCameraRaw = false
+                };
+
+                string savedPath = await imageData.SaveToDisk(saveInfo, CancellationToken.None, forceFileType: false);
+
+                Path.GetExtension(savedPath).Should().Be(".xisf");
+                File.Exists(savedPath).Should().BeTrue();
+                File.ReadAllBytes(savedPath).Should().NotEqual(new byte[] { 10, 20, 30 });
+            } finally {
+                Directory.Delete(directory, recursive: true);
+            }
+        }
+
+        /// <summary>
+        /// Verifies FileSaveInfo carries the camera-scoped native RAW save preference into the image save layer.
+        /// </summary>
+        [Test]
+        public void FileSaveInfo_CopiesNativeRawSaveSettingFromActiveProfile() {
+            var profile = new NINA.Profile.Profile();
+            profile.CameraSettings.SaveNativeCameraRaw = false;
+
+            var profileService = new Mock<IProfileService>();
+            profileService.SetupGet(x => x.ActiveProfile).Returns(profile);
+
+            var saveInfo = new FileSaveInfo(profileService.Object);
+
+            saveInfo.SaveNativeCameraRaw.Should().BeFalse();
         }
 
         /// <summary>
