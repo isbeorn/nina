@@ -629,7 +629,7 @@ namespace NINA.Image.ImageData {
                 using (var ms = new MemoryStream()) {
                     await fs.CopyToAsync(ms);
                     var rawType = Path.GetExtension(path).ToLower().Substring(1);
-                    var data = await rawConverter.Convert(s: ms, bitDepth: bitDepth, rawType: rawType, metaData: new ImageMetaData(), token: ct);
+                    var data = await rawConverter.Convert(s: ms, bitDepth: bitDepth, bitScaling: false, rawType: rawType, metaData: new ImageMetaData(), token: ct);
                     return data;
                 }
             }

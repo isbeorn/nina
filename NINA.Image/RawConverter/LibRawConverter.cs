@@ -54,6 +54,7 @@ namespace NINA.Image.RawConverter {
         public Task<IImageData> Convert(
             MemoryStream s,
             int bitDepth,
+            bool bitScaling,
             string rawType,
             ImageMetaData metaData,
             CancellationToken token = default) {
@@ -80,7 +81,7 @@ namespace NINA.Image.RawConverter {
 
                         token.ThrowIfCancellationRequested();
 
-                        return CreateImageData(processor, rawBytes, rawType, bitDepth, metaData);
+                        return CreateImageData(processor, rawBytes, rawType, bitDepth, bitScaling, metaData);
                     } finally {
                         if (processor != IntPtr.Zero) {
                             LibRawNative.Close(processor);
@@ -105,15 +106,19 @@ namespace NINA.Image.RawConverter {
             }
         }
 
-        private IImageData CreateImageData(IntPtr processor, byte[] rawBytes, string rawType, int bitDepth, ImageMetaData metaData) {
+        private IImageData CreateImageData(IntPtr processor, byte[] rawBytes, string rawType, int bitDepth, bool bitScaling, ImageMetaData metaData) {
             var sizes = Marshal.PtrToStructure<LibRawImageSizes>(IntPtr.Add(processor, ImageSizesOffset));
             var frame = GetActiveFrame(sizes);
 
             var rawImage = ReadRawDataPointer(processor, RawImageOffset);
             if (rawImage != IntPtr.Zero) {
-                var pixels = CopyUshortFrame(rawImage, frame);
+                var copiedFrame = CopyUshortFrame(rawImage, frame, bitDepth, bitScaling);
+                if (copiedFrame.EffectiveBitDepth != bitDepth) {
+                    Logger.Warning($"LibRaw RAW bit depth setting {bitDepth} adjusted to {copiedFrame.EffectiveBitDepth}; maximum unpacked pixel value is {copiedFrame.MaxPixelValue}.");
+                }
+
                 ApplyBayerPatternMetadata(processor, metaData);
-                return CreateImageData(pixels, rawBytes, rawType, frame.Width, frame.Height, bitDepth, metaData);
+                return CreateImageData(copiedFrame.Pixels, rawBytes, rawType, frame.Width, frame.Height, copiedFrame.OutputBitDepth, metaData);
             }
 
             throw new NotSupportedException("LibRaw did not return an unpacked CFA RAW image buffer.");
@@ -216,6 +221,24 @@ namespace NINA.Image.RawConverter {
             return bayerPattern != SensorType.Monochrome;
         }
 
+        private static int NormalizeBitDepth(int configuredBitDepth) {
+            return configuredBitDepth is >= 1 and <= 16 ? configuredBitDepth : 16;
+        }
+
+        private static int GetRequiredBitDepth(ushort value) {
+            var bitDepth = 0;
+            do {
+                bitDepth++;
+                value >>= 1;
+            } while (value > 0);
+
+            return bitDepth;
+        }
+
+        private static ushort GetMaxValueForBitDepth(int bitDepth) {
+            return bitDepth >= 16 ? ushort.MaxValue : (ushort)((1 << bitDepth) - 1);
+        }
+
         private static int FirstPositive(params ushort[] values) {
             foreach (var value in values) {
                 if (value > 0) {
@@ -243,18 +266,51 @@ namespace NINA.Image.RawConverter {
             throw new InvalidOperationException($"{operation} failed: {message}");
         }
 
-        private static unsafe ushort[] CopyUshortFrame(IntPtr image, ActiveFrame frame) {
+        private static unsafe CopiedFrame CopyUshortFrame(IntPtr image, ActiveFrame frame, int bitDepth, bool bitScaling) {
             var pixels = new ushort[frame.Width * frame.Height];
             var source = (ushort*)image.ToPointer();
+            var effectiveBitDepth = NormalizeBitDepth(bitDepth);
+            var maxValueForEffectiveBitDepth = GetMaxValueForBitDepth(effectiveBitDepth);
+            var shift = bitScaling ? 16 - effectiveBitDepth : 0;
+            var writtenPixels = 0;
+            ushort maxPixelValue = 0;
+
             fixed (ushort* destination = pixels) {
                 for (var y = 0; y < frame.Height; y++) {
                     var sourceRow = source + ((frame.Top + y) * frame.RowStride) + frame.Left;
                     var destinationRow = destination + (y * frame.Width);
-                    Buffer.MemoryCopy(sourceRow, destinationRow, frame.Width * sizeof(ushort), frame.Width * sizeof(ushort));
+                    for (var x = 0; x < frame.Width; x++) {
+                        var value = sourceRow[x];
+                        if (value > maxPixelValue) {
+                            maxPixelValue = value;
+                        }
+
+                        // A too-low profile bit depth would shift real high-range RAW values too far left.
+                        // Use the unpacked data as a hard lower bound while copying into managed memory.
+                        if (value > maxValueForEffectiveBitDepth) {
+                            var previousShift = shift;
+                            effectiveBitDepth = GetRequiredBitDepth(value);
+                            maxValueForEffectiveBitDepth = GetMaxValueForBitDepth(effectiveBitDepth);
+                            shift = bitScaling ? 16 - effectiveBitDepth : 0;
+
+                            if (bitScaling && previousShift > shift) {
+                                ShiftCopiedPixelsRight(destination, writtenPixels, previousShift - shift);
+                            }
+                        }
+
+                        destinationRow[x] = bitScaling && shift > 0 ? (ushort)(value << shift) : value;
+                        writtenPixels++;
+                    }
                 }
             }
 
-            return pixels;
+            return new CopiedFrame(pixels, maxPixelValue, effectiveBitDepth, bitScaling ? 16 : effectiveBitDepth);
+        }
+
+        private static unsafe void ShiftCopiedPixelsRight(ushort* pixels, int length, int shift) {
+            for (var i = 0; i < length; i++) {
+                pixels[i] = (ushort)(pixels[i] >> shift);
+            }
         }
 
         [StructLayout(LayoutKind.Explicit, Size = 184)]
@@ -301,6 +357,20 @@ namespace NINA.Image.RawConverter {
             public int Width { get; }
             public int Height { get; }
             public int RowStride { get; }
+        }
+
+        private readonly struct CopiedFrame {
+            public CopiedFrame(ushort[] pixels, ushort maxPixelValue, int effectiveBitDepth, int outputBitDepth) {
+                Pixels = pixels;
+                MaxPixelValue = maxPixelValue;
+                EffectiveBitDepth = effectiveBitDepth;
+                OutputBitDepth = outputBitDepth;
+            }
+
+            public ushort[] Pixels { get; }
+            public ushort MaxPixelValue { get; }
+            public int EffectiveBitDepth { get; }
+            public int OutputBitDepth { get; }
         }
 
         private static class LibRawNative {

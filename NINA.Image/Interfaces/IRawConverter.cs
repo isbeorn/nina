@@ -14,6 +14,7 @@
 
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,9 +23,20 @@ namespace NINA.Image.Interfaces {
 
     public interface IRawConverter {
 
+        [Obsolete("Use Convert with the bitScaling parameter.")]
         Task<IImageData> Convert(
             MemoryStream s,
             int bitDepth,
+            string rawType,
+            ImageMetaData metaData,
+            CancellationToken token = default) {
+            return Convert(s, bitDepth, bitScaling: false, rawType, metaData, token);
+        }
+
+        Task<IImageData> Convert(
+            MemoryStream s,
+            int bitDepth,
+            bool bitScaling,
             string rawType,
             ImageMetaData metaData,
             CancellationToken token = default);

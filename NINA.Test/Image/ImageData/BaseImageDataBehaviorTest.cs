@@ -47,6 +47,78 @@ namespace NINA.Test.Image.ImageData {
         }
 
         /// <summary>
+        /// Verifies raw file loading does not inherit the camera bit-scaling preference.
+        /// </summary>
+        [Test]
+        public async Task FromFile_RawFilePassesBitScalingFalseToRawConverter() {
+            string directory = Path.Combine(TestContext.CurrentContext.WorkDirectory, "BaseImageDataBehaviorTest", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+
+            try {
+                string rawPath = Path.Combine(directory, "raw.DNG");
+                File.WriteAllBytes(rawPath, new byte[] { 10, 20, 30 });
+
+                bool? capturedBitScaling = null;
+                var expectedImageData = Mock.Of<IImageData>();
+                var rawConverter = new Mock<IRawConverter>();
+                rawConverter
+                    .Setup(x => x.Convert(
+                        It.IsAny<MemoryStream>(),
+                        12,
+                        It.IsAny<bool>(),
+                        "dng",
+                        It.IsAny<ImageMetaData>(),
+                        It.IsAny<CancellationToken>()))
+                    .Callback<MemoryStream, int, bool, string, ImageMetaData, CancellationToken>(
+                        (_, _, bitScaling, _, _, _) => capturedBitScaling = bitScaling)
+                    .ReturnsAsync(expectedImageData);
+
+                var loaded = await BaseImageData.FromFile(rawPath, 12, isBayered: true, rawConverter.Object, Mock.Of<IImageDataFactory>());
+
+                loaded.Should().BeSameAs(expectedImageData);
+                capturedBitScaling.Should().BeFalse();
+            } finally {
+                Directory.Delete(directory, recursive: true);
+            }
+        }
+
+        /// <summary>
+        /// Verifies the legacy RAWExposureData constructor keeps old callers on unscaled RAW conversion.
+        /// </summary>
+        [Test]
+        public async Task RawExposureData_ObsoleteConstructorPassesBitScalingFalseToRawConverter() {
+            bool? capturedBitScaling = null;
+            var expectedImageData = Mock.Of<IImageData>();
+            var rawConverter = new Mock<IRawConverter>();
+            rawConverter
+                .Setup(x => x.Convert(
+                    It.IsAny<MemoryStream>(),
+                    12,
+                    It.IsAny<bool>(),
+                    "dng",
+                    It.IsAny<ImageMetaData>(),
+                    It.IsAny<CancellationToken>()))
+                .Callback<MemoryStream, int, bool, string, ImageMetaData, CancellationToken>(
+                    (_, _, bitScaling, _, _, _) => capturedBitScaling = bitScaling)
+                .ReturnsAsync(expectedImageData);
+
+#pragma warning disable CS0618
+            var exposureData = new RAWExposureData(
+                rawConverter.Object,
+                new byte[] { 10, 20, 30 },
+                "dng",
+                12,
+                new ImageMetaData(),
+                Mock.Of<IImageDataFactory>());
+#pragma warning restore CS0618
+
+            var imageData = await exposureData.ToImageData();
+
+            imageData.Should().BeSameAs(expectedImageData);
+            capturedBitScaling.Should().BeFalse();
+        }
+
+        /// <summary>
         /// Verifies image filename pattern data combines capture metadata and star analysis values without evaluating DateMinus12 near DateTime.MinValue.
         /// </summary>
         [Test]
