@@ -140,7 +140,11 @@ namespace NINA.Sequencer.SequenceItem.Connect {
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             var errors = new List<Exception>();
 
-            foreach (var device in Devices) {
+            var devicesToConnect = profileService.ActiveProfile.ApplicationSettings.UseCustomDeviceConnectionOrder
+                ? (IEnumerable<string>)profileService.ActiveProfile.ApplicationSettings.DeviceConnectionOrder.ToList()
+                : Devices;
+
+            foreach (var device in devicesToConnect) {
                 if (!IsConnected(device)) {
                     var profileId = GetProfileId(device);
                     if (!(profileId == "No_Device" || profileId == "No_Guider")) {
