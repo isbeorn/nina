@@ -1102,6 +1102,12 @@ when the lines are not aligned there is some Polar Alignment error</value>
   <data name="LblDeviceConnectionOrderTooltip" xml:space="preserve">
     <value>Configure the order in which devices connect when 'Connect All' is used. Use the arrow buttons to reorder.</value>
   </data>
+  <data name="LblUseCustomDeviceConnectionOrder" xml:space="preserve">
+    <value>Use Custom Device Connection Order</value>
+  </data>
+  <data name="LblUseCustomDeviceConnectionOrderTooltip" xml:space="preserve">
+    <value>When enabled, 'Connect All' will connect devices in the custom order defined below. When disabled, the default connection order is used.</value>
+  </data>
   <data name="LblDevicePollingInterval" xml:space="preserve">
     <value>Device polling interval</value>
   </data>

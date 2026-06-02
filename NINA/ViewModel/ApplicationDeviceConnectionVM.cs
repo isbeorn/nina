@@ -115,119 +115,212 @@ namespace NINA.ViewModel {
                 var diag = MyMessageBox.Show(Loc.Instance["LblConnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag == MessageBoxResult.OK) {
                     return await Task<bool>.Run(async () => {
-                        var order = profileService.ActiveProfile.ApplicationSettings.DeviceConnectionOrder.ToList();
-                        foreach (var device in order) {
-                            switch (device) {
-                                case "Camera":
-                                    try {
-                                        if (!cameraMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to camera");
-                                            await Task.Run(cameraMediator.Connect);
+                        if (profileService.ActiveProfile.ApplicationSettings.UseCustomDeviceConnectionOrder) {
+                            // Custom order: connect devices in the user-defined sequence
+                            var order = profileService.ActiveProfile.ApplicationSettings.DeviceConnectionOrder.ToList();
+                            foreach (var device in order) {
+                                switch (device) {
+                                    case "Camera":
+                                        try {
+                                            if (!cameraMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to camera");
+                                                await Task.Run(cameraMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
-                                case "Filter Wheel":
-                                    try {
-                                        if (!filterWheelMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to Filter Wheel");
-                                            await Task.Run(filterWheelMediator.Connect);
+                                        break;
+                                    case "Filter Wheel":
+                                        try {
+                                            if (!filterWheelMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to Filter Wheel");
+                                                await Task.Run(filterWheelMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
-                                case "Mount":
-                                    try {
-                                        if (!telescopeMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to Telescope");
-                                            await Task.Run(telescopeMediator.Connect);
+                                        break;
+                                    case "Mount":
+                                        try {
+                                            if (!telescopeMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to Telescope");
+                                                await Task.Run(telescopeMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
-                                case "Focuser":
-                                    try {
-                                        if (!focuserMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to Focuser");
-                                            await Task.Run(focuserMediator.Connect);
+                                        break;
+                                    case "Focuser":
+                                        try {
+                                            if (!focuserMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to Focuser");
+                                                await Task.Run(focuserMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
-                                case "Rotator":
-                                    try {
-                                        if (!rotatorMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to Rotator");
-                                            await Task.Run(rotatorMediator.Connect);
+                                        break;
+                                    case "Rotator":
+                                        try {
+                                            if (!rotatorMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to Rotator");
+                                                await Task.Run(rotatorMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
-                                case "Guider":
-                                    try {
-                                        if (!guiderMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to Guider");
-                                            await Task.Run(guiderMediator.Connect);
+                                        break;
+                                    case "Guider":
+                                        try {
+                                            if (!guiderMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to Guider");
+                                                await Task.Run(guiderMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
-                                case "Flat Panel":
-                                    try {
-                                        if (!flatDeviceMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to Flat Device");
-                                            await Task.Run(flatDeviceMediator.Connect);
+                                        break;
+                                    case "Flat Panel":
+                                        try {
+                                            if (!flatDeviceMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to Flat Device");
+                                                await Task.Run(flatDeviceMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
-                                case "Weather":
-                                    try {
-                                        if (!weatherDataMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to Weather Data");
-                                            await Task.Run(weatherDataMediator.Connect);
+                                        break;
+                                    case "Weather":
+                                        try {
+                                            if (!weatherDataMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to Weather Data");
+                                                await Task.Run(weatherDataMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
-                                case "Switch":
-                                    try {
-                                        if (!switchMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to Switch");
-                                            await Task.Run(switchMediator.Connect);
+                                        break;
+                                    case "Switch":
+                                        try {
+                                            if (!switchMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to Switch");
+                                                await Task.Run(switchMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
-                                case "Dome":
-                                    try {
-                                        if (!domeMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to Dome");
-                                            await Task.Run(domeMediator.Connect);
+                                        break;
+                                    case "Dome":
+                                        try {
+                                            if (!domeMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to Dome");
+                                                await Task.Run(domeMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
-                                case "Safety Monitor":
-                                    try {
-                                        if (!safetyMonitorMediator.GetInfo().Connected) {
-                                            Logger.Debug("Connecting to Safety Monitor");
-                                            await Task.Run(safetyMonitorMediator.Connect);
+                                        break;
+                                    case "Safety Monitor":
+                                        try {
+                                            if (!safetyMonitorMediator.GetInfo().Connected) {
+                                                Logger.Debug("Connecting to Safety Monitor");
+                                                await Task.Run(safetyMonitorMediator.Connect);
+                                            }
+                                        } catch (Exception ex) {
+                                            Logger.Error(ex);
                                         }
-                                    } catch (Exception ex) {
-                                        Logger.Error(ex);
-                                    }
-                                    break;
+                                        break;
+                                }
+                            }
+                        } else {
+                            // Default order: original hardcoded connection sequence
+                            try {
+                                if (!cameraMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to camera");
+                                    await Task.Run(cameraMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
+                            }
+                            try {
+                                if (!filterWheelMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to Filter Wheel");
+                                    await Task.Run(filterWheelMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
+                            }
+                            try {
+                                if (!telescopeMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to Telescope");
+                                    await Task.Run(telescopeMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
+                            }
+                            try {
+                                if (!focuserMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to Focuser");
+                                    await Task.Run(focuserMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
+                            }
+                            try {
+                                if (!rotatorMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to Rotator");
+                                    await Task.Run(rotatorMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
+                            }
+                            try {
+                                if (!guiderMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to Guider");
+                                    await Task.Run(guiderMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
+                            }
+                            try {
+                                if (!flatDeviceMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to Flat Device");
+                                    await Task.Run(flatDeviceMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
+                            }
+                            try {
+                                if (!weatherDataMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to Weather Data");
+                                    await Task.Run(weatherDataMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
+                            }
+                            try {
+                                if (!switchMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to Switch");
+                                    await Task.Run(switchMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
+                            }
+                            try {
+                                if (!domeMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to Dome");
+                                    await Task.Run(domeMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
+                            }
+                            try {
+                                if (!safetyMonitorMediator.GetInfo().Connected) {
+                                    Logger.Debug("Connecting to Safety Monitor");
+                                    await Task.Run(safetyMonitorMediator.Connect);
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error(ex);
                             }
                         }
                         return true;

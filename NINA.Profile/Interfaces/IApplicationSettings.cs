@@ -36,5 +36,6 @@ namespace NINA.Profile.Interfaces {
         NotificationCorner NotificationCorner { get; set; }
         bool ColoredContainerBorders { get; set; }
         AsyncObservableCollection<string> DeviceConnectionOrder { get; set; }
+        bool UseCustomDeviceConnectionOrder { get; set; }
     }
 }

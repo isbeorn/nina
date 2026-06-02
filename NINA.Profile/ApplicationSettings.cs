@@ -76,6 +76,7 @@ namespace NINA.Profile {
             notificationWorkArea = NotificationWorkArea.PrimaryScreen;
             coloredContainerBorders = true;
             deviceConnectionOrder = new AsyncObservableCollection<string>(AllDevices);
+            useCustomDeviceConnectionOrder = false;
         }
 
         [DataMember]
@@ -238,6 +239,19 @@ namespace NINA.Profile {
             set {
                 if (deviceConnectionOrder != value) {
                     deviceConnectionOrder = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool useCustomDeviceConnectionOrder;
+
+        [DataMember]
+        public bool UseCustomDeviceConnectionOrder {
+            get => useCustomDeviceConnectionOrder;
+            set {
+                if (useCustomDeviceConnectionOrder != value) {
+                    useCustomDeviceConnectionOrder = value;
                     RaisePropertyChanged();
                 }
             }
