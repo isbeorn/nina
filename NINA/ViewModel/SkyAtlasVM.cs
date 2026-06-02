@@ -429,16 +429,19 @@ namespace NINA.ViewModel {
                     }
 
                     var cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);                    
-                    var imageFactory = async (SkyObjectBase obj) => {
-                        var cacheSkySurveyImageFactory = new CacheSkySurveyImageFactory(400, 190, cache);
+                    // Keep one renderer per search. Recreating the renderer and forcing a GC for every DSO made
+                    // result materialization and row image loading noticeably more expensive.
+                    var cacheSkySurveyImageFactory = new CacheSkySurveyImageFactory(400, 190, cache);
+                    var imageFactory = (SkyObjectBase obj) => {
                         var image = cacheSkySurveyImageFactory.Render(obj.Coordinates, AstroUtil.ArcsecToDegree(Math.Max((obj.Size ?? 0), 600)), 0);
-                        GC.Collect();
-                        return image;
+                        return Task.FromResult(image);
                     };
                     
+                    var customHorizon = profileService.ActiveProfile.AstrometrySettings.Horizon;
+
                     IEnumerable<DeepSkyObject> result = await db.GetDeepSkyObjects(
                         imageFactory,
-                        profileService.ActiveProfile.AstrometrySettings.Horizon,
+                        customHorizon,
                         searchParams,
                         _searchTokenSource.Token
                     );
@@ -467,37 +470,20 @@ namespace NINA.ViewModel {
                         }
 
                         if (SelectedMinimumAltitudeDegrees == ALTITUDEABOVEHORIZONFILTER) {
+                            // Do not read dso.Altitudes/dso.Horizon here. Those properties populate the full
+                            // altitude chart for every candidate, while this filter only needs the selected window.
+                            var siderealTimeAtReferenceDate = AstroUtil.GetLocalSiderealTime(NighttimeData.ReferenceDate, longitude);
                             filterFunction = (dso) => {
-                                var altitudesBetweenDates = dso.Altitudes
-                                    .Where((y) => { return y.X >= DateTimeAxis.ToDouble(fromDate) && y.X <= DateTimeAxis.ToDouble(throughDate); })
-                                    .ToList();
-
-                                if (minimumDuration == double.MaxValue) {
-                                    return altitudesBetweenDates.All(item => item.Y > (dso.Horizon.Count > 0 ? dso.Horizon.First(h => h.X == item.X).Y : 0));
-                                }
-
-                                if (altitudesBetweenDates.Count > 1) {                                    
-                                    var duration = TimeSpan.Zero;
-                                    var firstAboveHorizon = altitudesBetweenDates.First();                                    
-
-                                    for(var i = 0; i < altitudesBetweenDates.Count; i++) {
-                                        var item = altitudesBetweenDates[i];
-                                        if (item.Y < (dso.Horizon.Count > 0 ? dso.Horizon.First(h => h.X == item.X).Y : 0)) {
-                                            // current point is below the horizon. Reset duration and set current item to be first item
-                                            duration = TimeSpan.Zero;
-                                            firstAboveHorizon = item;
-                                            continue;
-                                        } else {
-                                            // current point is above the horizon. Add the accumulated duration since the first point
-                                            duration = TimeSpan.FromDays(item.X - firstAboveHorizon.X);
-                                            if(duration > TimeSpan.FromHours(minimumDuration)) {
-                                                // The duration exceeds the minimum desired duration. break out and return success
-                                                return true;
-                                            }
-                                        }
-                                    }
-                                }
-                                return false;                               
+                                return IsAboveHorizonForDuration(
+                                    dso,
+                                    NighttimeData.ReferenceDate,
+                                    fromDate,
+                                    throughDate,
+                                    latitude,
+                                    siderealTimeAtReferenceDate,
+                                    customHorizon,
+                                    minimumDuration,
+                                    _searchTokenSource.Token);
                             };
                         } else {
                             filterFunction = (x) => {
@@ -535,11 +521,8 @@ namespace NINA.ViewModel {
 
                         var transitTimes = new ConcurrentDictionary<DeepSkyObject, DateTime>();
 
-                        TimeSpan siderealDay = TimeSpan.FromHours(23.9344696);
-                        TimeSpan halfSiderealDay = TimeSpan.FromTicks(siderealDay.Ticks / 2);
-
+                        // LST is fixed for the reference date/site, so compute it once before the parallel pass.
                         double lstRef = AstroUtil.GetLocalSiderealTime(NighttimeData.ReferenceDate, longitude);
-                        Angle lstRefAngle = Angle.ByHours(lstRef);
 
                         Parallel.ForEach(resultList, dso => {
 
@@ -548,7 +531,6 @@ namespace NINA.ViewModel {
                                 return;
                             }
 
-                            double lstRef = AstroUtil.GetLocalSiderealTime(NighttimeData.ReferenceDate, longitude);
                             double ra = coords.RA; // in hours
 
                             // time to next hour angle H = 0 (upper culmination) - must be within next 24 hrs
@@ -620,6 +602,102 @@ namespace NINA.ViewModel {
         }
 
         private const double ALTITUDEABOVEHORIZONFILTER = 999;
+        private const double ALTITUDE_SAMPLE_HOURS = 0.1;
+        private const int ALTITUDE_SAMPLE_COUNT = 240;
+
+        // Keep the above-horizon filter aligned with the chart's 0.1h sampling grid without
+        // populating SkyObjectBase.Altitudes/Horizon for every search result.
+        internal static bool IsAboveHorizonForDuration(
+            DeepSkyObject dso,
+            DateTime referenceDate,
+            DateTime fromDate,
+            DateTime throughDate,
+            double latitude,
+            double siderealTimeAtReferenceDate,
+            CustomHorizon customHorizon,
+            double minimumDuration,
+            CancellationToken token) {
+            // Without coordinates there is no RA/Dec to sample, so the candidate cannot pass.
+            var coords = dso.Coordinates;
+            if (coords == null) {
+                return false;
+            }
+
+            // Translate the selected time window into sample indexes on the same 24h/0.1h grid
+            // used by DSO altitude charts, then clamp it to the reference day.
+            var firstSample = Math.Max(0, (int)Math.Ceiling(((fromDate - referenceDate).TotalHours / ALTITUDE_SAMPLE_HOURS) - 1e-9));
+            var lastSample = Math.Min(ALTITUDE_SAMPLE_COUNT - 1, (int)Math.Floor(((throughDate - referenceDate).TotalHours / ALTITUDE_SAMPLE_HOURS) + 1e-9));
+            if (firstSample > lastSample) {
+                // An empty clamped window only satisfies the "entire interval" sentinel case,
+                // matching the previous behavior where All() over an empty sequence returned true.
+                return minimumDuration == double.MaxValue;
+            }
+
+            // Convert RA to the hour angle at the reference date once. Each following sample is
+            // just a fixed 0.1h step from that reference hour angle.
+            var hourAngleAtReferenceDate = AstroUtil.GetHourAngle(siderealTimeAtReferenceDate, coords.RA);
+            if (minimumDuration == double.MaxValue) {
+                // "Full selected interval" mode: every sampled point in the selected window must
+                // remain above the configured horizon.
+                for (var sample = firstSample; sample <= lastSample; sample++) {
+                    token.ThrowIfCancellationRequested();
+                    var (altitude, horizonAltitude) = GetAltitudeAndHorizonAltitudeAtSample(coords, latitude, customHorizon, hourAngleAtReferenceDate, sample);
+                    if (altitude <= horizonAltitude) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            if (firstSample == lastSample) {
+                // A duration requires at least two samples to establish elapsed time.
+                return false;
+            }
+
+            // Duration mode: scan for one continuous run above the horizon that exceeds the
+            // requested minimum duration.
+            var requiredDuration = TimeSpan.FromHours(minimumDuration);
+            var firstAboveHorizon = referenceDate.AddHours(firstSample * ALTITUDE_SAMPLE_HOURS);
+            for (var sample = firstSample; sample <= lastSample; sample++) {
+                token.ThrowIfCancellationRequested();
+                var sampleTime = referenceDate.AddHours(sample * ALTITUDE_SAMPLE_HOURS);
+                var (altitude, horizonAltitude) = GetAltitudeAndHorizonAltitudeAtSample(coords, latitude, customHorizon, hourAngleAtReferenceDate, sample);
+
+                if (altitude < horizonAltitude) {
+                    // Falling below the horizon breaks the current run; use this sample as the
+                    // reset point for the next above-horizon candidate duration.
+                    firstAboveHorizon = sampleTime;
+                    continue;
+                }
+
+                if (sampleTime - firstAboveHorizon > requiredDuration) {
+                    return true;
+                }
+            }
+
+            // No continuous above-horizon run was long enough.
+            return false;
+        }
+
+        private static (double Altitude, double HorizonAltitude) GetAltitudeAndHorizonAltitudeAtSample(
+            Coordinates coords,
+            double latitude,
+            CustomHorizon customHorizon,
+            double hourAngleAtReferenceDate,
+            int sample) {
+            var hourAngle = hourAngleAtReferenceDate + (sample * ALTITUDE_SAMPLE_HOURS);
+            var hourAngleDegrees = AstroUtil.HoursToDegrees(hourAngle);
+            var altitude = AstroUtil.GetAltitude(hourAngleDegrees, latitude, coords.Dec);
+            var horizonAltitude = 0d;
+
+            if (customHorizon != null) {
+                var azimuth = AstroUtil.GetAzimuth(hourAngleDegrees, altitude, latitude, coords.Dec);
+                horizonAltitude = customHorizon.GetAltitude(azimuth);
+            }
+
+            return (altitude, horizonAltitude);
+        }
 
         private void InitializeElevationFilters() {
             AltitudeTimesFrom = new AsyncObservableCollection<KeyValuePair<DateTime, string>>();

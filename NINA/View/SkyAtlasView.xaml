@@ -599,11 +599,17 @@
 
             <DataGrid
                 AutoGenerateColumns="False"
+                EnableColumnVirtualization="True"
+                EnableRowVirtualization="True"
                 HeadersVisibility="Column"
                 HorizontalScrollBarVisibility="Disabled"
                 ItemsSource="{Binding ItemPage, IsAsync=True}"
                 SelectedItem="{Binding SelectedItem}"
-                SelectionMode="Single">
+                SelectionMode="Single"
+                ScrollViewer.CanContentScroll="True"
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.ScrollUnit="Pixel"
+                VirtualizingPanel.VirtualizationMode="Recycling">
                 <DataGrid.Resources>
                     <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                         <Setter Property="Visibility" Value="Collapsed" />
