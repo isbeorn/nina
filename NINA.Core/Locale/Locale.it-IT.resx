@@ -1295,7 +1295,7 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
     <value>Abilita la rimappatura dei bit bit</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Abilitato</value>
@@ -2771,6 +2771,12 @@ HFR Calcolato: {2}
   </data>
   <data name="LblSaveImageAsDSLRNote" xml:space="preserve">
     <value>Quest'impostazione per le DSLR viene ignorato quando si usano i driver nativi. Verranno salvati in formato RAW!</value>
+  </data>
+  <data name="LblSaveNativeCameraRaw" xml:space="preserve">
+    <value>Save native camera RAW</value>
+  </data>
+  <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
+    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Salva il profilo selezionato e non chiedere più la prossima volta.</value>
