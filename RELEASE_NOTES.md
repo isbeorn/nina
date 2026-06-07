@@ -50,6 +50,7 @@ This allows you to safely return to a stable release if needed.
 - The manual focuser step buttons now use configurable multipliers. Users can adjust the small step (default 0.5x) and large step (default 5.0x) multipliers in Options > Imaging > Autofocus.
 - Debayer algorithm has been optimized to work fast even on older CPUs
 - DSLR RAW conversion now uses LibRaw instead of the legacy DCRaw and FreeImage converters.
+- Native Nikon and Canon camera drivers can now be configured to use the file format selection, such as FITS or XISF, instead of always saving native camera RAW files.
 - Sky brightness readings in the Weather device windows have been increased from 2 decimal places to 5 so that measurements obtained in low light conditions are adequately displayed.
 - Improved Sky Atlas search performance.
 - **Autofocus & Star Measurements**

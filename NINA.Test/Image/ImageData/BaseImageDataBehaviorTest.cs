@@ -47,6 +47,78 @@ namespace NINA.Test.Image.ImageData {
         }
 
         /// <summary>
+        /// Verifies raw file loading does not inherit the camera bit-scaling preference.
+        /// </summary>
+        [Test]
+        public async Task FromFile_RawFilePassesBitScalingFalseToRawConverter() {
+            string directory = Path.Combine(TestContext.CurrentContext.WorkDirectory, "BaseImageDataBehaviorTest", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+
+            try {
+                string rawPath = Path.Combine(directory, "raw.DNG");
+                File.WriteAllBytes(rawPath, new byte[] { 10, 20, 30 });
+
+                bool? capturedBitScaling = null;
+                var expectedImageData = Mock.Of<IImageData>();
+                var rawConverter = new Mock<IRawConverter>();
+                rawConverter
+                    .Setup(x => x.Convert(
+                        It.IsAny<MemoryStream>(),
+                        12,
+                        It.IsAny<bool>(),
+                        "dng",
+                        It.IsAny<ImageMetaData>(),
+                        It.IsAny<CancellationToken>()))
+                    .Callback<MemoryStream, int, bool, string, ImageMetaData, CancellationToken>(
+                        (_, _, bitScaling, _, _, _) => capturedBitScaling = bitScaling)
+                    .ReturnsAsync(expectedImageData);
+
+                var loaded = await BaseImageData.FromFile(rawPath, 12, isBayered: true, rawConverter.Object, Mock.Of<IImageDataFactory>());
+
+                loaded.Should().BeSameAs(expectedImageData);
+                capturedBitScaling.Should().BeFalse();
+            } finally {
+                Directory.Delete(directory, recursive: true);
+            }
+        }
+
+        /// <summary>
+        /// Verifies the legacy RAWExposureData constructor keeps old callers on unscaled RAW conversion.
+        /// </summary>
+        [Test]
+        public async Task RawExposureData_ObsoleteConstructorPassesBitScalingFalseToRawConverter() {
+            bool? capturedBitScaling = null;
+            var expectedImageData = Mock.Of<IImageData>();
+            var rawConverter = new Mock<IRawConverter>();
+            rawConverter
+                .Setup(x => x.Convert(
+                    It.IsAny<MemoryStream>(),
+                    12,
+                    It.IsAny<bool>(),
+                    "dng",
+                    It.IsAny<ImageMetaData>(),
+                    It.IsAny<CancellationToken>()))
+                .Callback<MemoryStream, int, bool, string, ImageMetaData, CancellationToken>(
+                    (_, _, bitScaling, _, _, _) => capturedBitScaling = bitScaling)
+                .ReturnsAsync(expectedImageData);
+
+#pragma warning disable CS0618
+            var exposureData = new RAWExposureData(
+                rawConverter.Object,
+                new byte[] { 10, 20, 30 },
+                "dng",
+                12,
+                new ImageMetaData(),
+                Mock.Of<IImageDataFactory>());
+#pragma warning restore CS0618
+
+            var imageData = await exposureData.ToImageData();
+
+            imageData.Should().BeSameAs(expectedImageData);
+            capturedBitScaling.Should().BeFalse();
+        }
+
+        /// <summary>
         /// Verifies image filename pattern data combines capture metadata and star analysis values without evaluating DateMinus12 near DateTime.MinValue.
         /// </summary>
         [Test]
@@ -63,10 +135,10 @@ namespace NINA.Test.Image.ImageData {
         }
 
         /// <summary>
-        /// Verifies raw saves prefer original RAW bytes unless the caller explicitly forces the requested file type.
+        /// Verifies raw saves prefer original RAW bytes while the native camera RAW option is enabled.
         /// </summary>
         [Test]
-        public async Task SaveToDisk_RawDataUsesOriginalBytesUnlessFileTypeIsForced() {
+        public async Task SaveToDisk_RawDataUsesOriginalBytesWhenNativeRawSaveIsEnabled() {
             string directory = Path.Combine(TestContext.CurrentContext.WorkDirectory, "BaseImageDataSaveTest", Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(directory);
 
@@ -76,7 +148,8 @@ namespace NINA.Test.Image.ImageData {
                 var saveInfo = new FileSaveInfo {
                     FilePath = directory,
                     FilePattern = "raw-frame",
-                    FileType = NINA.Core.Enum.FileTypeEnum.TIFF
+                    FileType = FileTypeEnum.XISF,
+                    SaveNativeCameraRaw = true
                 };
 
                 string savedPath = await imageData.SaveToDisk(saveInfo, CancellationToken.None, forceFileType: false);
@@ -86,6 +159,50 @@ namespace NINA.Test.Image.ImageData {
             } finally {
                 Directory.Delete(directory, recursive: true);
             }
+        }
+
+        /// <summary>
+        /// Verifies raw-capable camera data is saved in the selected file format when native RAW saving is disabled.
+        /// </summary>
+        [Test]
+        public async Task SaveToDisk_RawDataUsesRequestedFileTypeWhenNativeRawSaveIsDisabled() {
+            string directory = Path.Combine(TestContext.CurrentContext.WorkDirectory, "BaseImageDataSaveTest", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+
+            try {
+                var imageArray = new ImageArray(new ushort[] { 1, 2, 3, 4 }, rawData: new byte[] { 10, 20, 30 }, rawType: "cr2");
+                BaseImageData imageData = CreateImageData(CreateMetadata(), hfr: double.NaN, detectedStars: -1, imageArray);
+                var saveInfo = new FileSaveInfo {
+                    FilePath = directory,
+                    FilePattern = "converted-frame",
+                    FileType = FileTypeEnum.XISF,
+                    SaveNativeCameraRaw = false
+                };
+
+                string savedPath = await imageData.SaveToDisk(saveInfo, CancellationToken.None, forceFileType: false);
+
+                Path.GetExtension(savedPath).Should().Be(".xisf");
+                File.Exists(savedPath).Should().BeTrue();
+                File.ReadAllBytes(savedPath).Should().NotEqual(new byte[] { 10, 20, 30 });
+            } finally {
+                Directory.Delete(directory, recursive: true);
+            }
+        }
+
+        /// <summary>
+        /// Verifies FileSaveInfo carries the camera-scoped native RAW save preference into the image save layer.
+        /// </summary>
+        [Test]
+        public void FileSaveInfo_CopiesNativeRawSaveSettingFromActiveProfile() {
+            var profile = new NINA.Profile.Profile();
+            profile.CameraSettings.SaveNativeCameraRaw = false;
+
+            var profileService = new Mock<IProfileService>();
+            profileService.SetupGet(x => x.ActiveProfile).Returns(profile);
+
+            var saveInfo = new FileSaveInfo(profileService.Object);
+
+            saveInfo.SaveNativeCameraRaw.Should().BeFalse();
         }
 
         /// <summary>

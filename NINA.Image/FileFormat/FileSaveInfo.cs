@@ -29,19 +29,22 @@ namespace NINA.Image.FileFormat {
         public FITSCompressionTypeEnum FITSCompressionType { get; set; } = FITSCompressionTypeEnum.NONE;
         public bool FITSAddFzExtension { get; set; } = false;
         public bool FITSUseLegacyWriter { get; set; } = true;
+        public bool SaveNativeCameraRaw { get; set; } = true;
 
         public FileSaveInfo(IProfileService profileService = null) {
             if (profileService != null) {
-                FilePath = profileService.ActiveProfile.ImageFileSettings.FilePath;
-                FilePattern = profileService.ActiveProfile.ImageFileSettings.FilePattern;
-                FileType = profileService.ActiveProfile.ImageFileSettings.FileType;
-                TIFFCompressionType = profileService.ActiveProfile.ImageFileSettings.TIFFCompressionType;
-                XISFCompressionType = profileService.ActiveProfile.ImageFileSettings.XISFCompressionType;
-                XISFByteShuffling = profileService.ActiveProfile.ImageFileSettings.XISFByteShuffling;
-                XISFChecksumType = profileService.ActiveProfile.ImageFileSettings.XISFChecksumType;
-                FITSCompressionType = profileService.ActiveProfile.ImageFileSettings.FITSCompressionType;
-                FITSAddFzExtension = profileService.ActiveProfile.ImageFileSettings.FITSAddFzExtension;
-                FITSUseLegacyWriter = profileService.ActiveProfile.ImageFileSettings.FITSUseLegacyWriter;
+                var profile = profileService.ActiveProfile;
+                FilePath = profile.ImageFileSettings.FilePath;
+                FilePattern = profile.ImageFileSettings.FilePattern;
+                FileType = profile.ImageFileSettings.FileType;
+                TIFFCompressionType = profile.ImageFileSettings.TIFFCompressionType;
+                XISFCompressionType = profile.ImageFileSettings.XISFCompressionType;
+                XISFByteShuffling = profile.ImageFileSettings.XISFByteShuffling;
+                XISFChecksumType = profile.ImageFileSettings.XISFChecksumType;
+                FITSCompressionType = profile.ImageFileSettings.FITSCompressionType;
+                FITSAddFzExtension = profile.ImageFileSettings.FITSAddFzExtension;
+                FITSUseLegacyWriter = profile.ImageFileSettings.FITSUseLegacyWriter;
+                SaveNativeCameraRaw = profile.CameraSettings?.SaveNativeCameraRaw ?? true;
             }
         }
 

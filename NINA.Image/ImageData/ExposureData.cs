@@ -84,6 +84,7 @@ namespace NINA.Image.ImageData {
             Create32BitData = create32BitData;
         }
 
+
         public override async Task<IImageData> ToImageData(IProgress<ApplicationStatus> progress = default, CancellationToken cancelToken = default) {
             switch(flatArray) {
                 case int[] integers:
@@ -253,7 +254,24 @@ namespace NINA.Image.ImageData {
         private readonly byte[] rawBytes;
         private readonly IRawConverter rawConverter;
         private readonly string rawType;
+        private readonly bool bitScaling;
 
+        public RAWExposureData(
+            IRawConverter rawConverter,
+            byte[] rawBytes,
+            string rawType,
+            int bitDepth,
+            bool bitScaling,
+            ImageMetaData metaData,
+            IImageDataFactory imageDataFactory)
+            : base(bitDepth, metaData, imageDataFactory) {
+            this.rawConverter = rawConverter;
+            this.rawBytes = rawBytes;
+            this.rawType = rawType;
+            this.bitScaling = bitScaling;
+        }
+
+        [Obsolete("Use the constructor with the bitScaling parameter.")]
         public RAWExposureData(
             IRawConverter rawConverter,
             byte[] rawBytes,
@@ -261,10 +279,7 @@ namespace NINA.Image.ImageData {
             int bitDepth,
             ImageMetaData metaData,
             IImageDataFactory imageDataFactory)
-            : base(bitDepth, metaData, imageDataFactory) {
-            this.rawConverter = rawConverter;
-            this.rawBytes = rawBytes;
-            this.rawType = rawType;
+            : this(rawConverter, rawBytes, rawType, bitDepth, bitScaling: false, metaData, imageDataFactory) {
         }
 
         public override async Task<IImageData> ToImageData(IProgress<ApplicationStatus> progress = default, CancellationToken cancelToken = default) {
@@ -275,6 +290,7 @@ namespace NINA.Image.ImageData {
                         s: memoryStream,
                         rawType: this.rawType,
                         bitDepth: this.BitDepth,
+                        bitScaling: this.bitScaling,
                         metaData: this.MetaData,
                         token: cancelToken);
                     return data;
@@ -307,7 +323,7 @@ namespace NINA.Image.ImageData {
         }
 
         public RAWExposureData CreateRAWExposureData(byte[] rawBytes, string rawType, int bitDepth, ImageMetaData metaData) {
-            return new RAWExposureData(RawConverterFactory.CreateInstance(imageDataFactory), rawBytes, rawType, bitDepth, metaData, imageDataFactory);
+            return new RAWExposureData(RawConverterFactory.CreateInstance(imageDataFactory), rawBytes, rawType, bitDepth, profileService.ActiveProfile.CameraSettings.BitScaling, metaData, imageDataFactory);
         }
 
 #pragma warning disable CS0618

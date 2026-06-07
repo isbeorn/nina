@@ -47,7 +47,6 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="30" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="40" />
                     <RowDefinition Height="Auto" />
@@ -64,209 +63,188 @@
                     Grid.ColumnSpan="2"
                     ItemsSource="{Binding DataContext.FileTypes, ElementName=UC}"
                     SelectedItem="{Binding FileType}" />
-                <StackPanel
-                    Grid.Row="1"
-                    Grid.ColumnSpan="3"
-                    Orientation="Horizontal">
-                    <Path
-                        Width="25"
-                        Margin="5"
-                        Data="{StaticResource ExclamationCircledSVG}"
-                        Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform"
-                        UseLayoutRounding="True" />
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveImageAsDSLRNote}" />
-                </StackPanel>
 
-                <GroupBox
-                    Grid.Row="2"
+                <Grid
+                    Grid.Row="1"
                     Grid.Column="0"
-                    Grid.ColumnSpan="3">
-                    <GroupBox.Header>
-                        <TextBlock FontSize="12" Text="{ns:Loc LblFileFormatOptions}" />
-                    </GroupBox.Header>
+                    Grid.ColumnSpan="3"
+                    Margin="0,5,0,0">
 
                     <!--  TIFF  -->
                     <Grid>
-                        <StackPanel>
-                            <StackPanel.Style>
-                                <Style TargetType="StackPanel">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=cbFileTypes}" Value="TIFF">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Style>
-                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                                <TextBlock
-                                    MinWidth="200"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblCompression}" />
-                                <ComboBox
-                                    MinWidth="150"
-                                    Margin="0,0,0,0"
-                                    ItemsSource="{Binding DataContext.TIFFCompressionTypes, ElementName=UC}"
-                                    SelectedItem="{Binding TIFFCompressionType}" />
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel>
-                            <StackPanel.Style>
-                                <Style TargetType="StackPanel">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=cbFileTypes}" Value="FITS">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Style>
-
-                            <!--  FITS  -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock
-                                        MinWidth="100"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblUseCfitsio}">
-                                        <TextBlock.ToolTip>
-                                            <TextBlock Text="{ns:Loc LblUseCfitsioTooltip}" />
-                                        </TextBlock.ToolTip>
-                                    </TextBlock>
-                                    <CheckBox
-                                        Margin="5,0,0,0"
-                                        HorizontalAlignment="Left"
-                                        IsChecked="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanConverter}}">
-                                        <CheckBox.ToolTip>
-                                            <TextBlock Text="{ns:Loc LblUseCfitsioTooltip}" />
-                                        </CheckBox.ToolTip>
-                                    </CheckBox>
-                                </StackPanel>
-
-                                <StackPanel
-                                    Grid.Row="1"
-                                    Margin="0,5,0,0"
-                                    Orientation="Horizontal"
-                                    Visibility="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                                    <TextBlock
-                                        MinWidth="100"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblCompression}" />
-                                    <ComboBox
-                                        MinWidth="100"
-                                        Margin="5,0,0,0"
-                                        ItemsSource="{Binding DataContext.FITSCompressionTypes, ElementName=UC}"
-                                        SelectedItem="{Binding FITSCompressionType}" />
-                                </StackPanel>
-
-                                <StackPanel
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Margin="5,5,0,0"
-                                    Orientation="Horizontal"
-                                    Visibility="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                                    <TextBlock
-                                        MinWidth="100"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblAddFzExtension}" />
-                                    <CheckBox
-                                        Margin="5,0,0,0"
-                                        HorizontalAlignment="Left"
-                                        IsChecked="{Binding FITSAddFzExtension}">
-                                        <CheckBox.ToolTip>
-                                            <TextBlock Text="{ns:Loc LblAddFzExtensionTooltip}" />
-                                        </CheckBox.ToolTip>
-                                    </CheckBox>
-                                </StackPanel>
-                            </Grid>
-                        </StackPanel>
-
-                        <!--  XISF  -->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Grid.Style>
-                                <Style TargetType="Grid">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=cbFileTypes}" Value="XISF">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Style>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    MinWidth="100"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblCompression}" />
-                                <ComboBox
-                                    MinWidth="150"
-                                    Margin="5,0,0,0"
-                                    ItemsSource="{Binding DataContext.XISFCompressionTypes, ElementName=UC}"
-                                    SelectedItem="{Binding XISFCompressionType}" />
-                            </StackPanel>
-
-                            <StackPanel
-                                Grid.Column="1"
-                                Margin="20,0,0,0"
-                                Orientation="Horizontal">
-                                <TextBlock
-                                    MinWidth="100"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblByteShuffling}" />
-                                <CheckBox
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    IsChecked="{Binding XISFByteShuffling}" />
-                            </StackPanel>
-
-                            <StackPanel
-                                Grid.Row="1"
-                                Margin="0,5,0,0"
-                                Orientation="Horizontal">
-                                <TextBlock
-                                    MinWidth="100"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblChecksum}" />
-                                <ComboBox
-                                    MinWidth="150"
-                                    Margin="5,0,0,0"
-                                    ItemsSource="{Binding DataContext.XISFChecksumTypes, ElementName=UC}"
-                                    SelectedItem="{Binding XISFChecksumType}" />
-                            </StackPanel>
-                        </Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=cbFileTypes}" Value="TIFF">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblCompression}" />
+                        <ComboBox
+                            Grid.Column="1"
+                            MinWidth="150"
+                            HorizontalAlignment="Left"
+                            ItemsSource="{Binding DataContext.TIFFCompressionTypes, ElementName=UC}"
+                            SelectedItem="{Binding TIFFCompressionType}" />
                     </Grid>
-                </GroupBox>
+
+                    <!--  FITS  -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=cbFileTypes}" Value="FITS">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblUseCfitsio}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblUseCfitsioTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <CheckBox
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            IsChecked="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanConverter}}">
+                            <CheckBox.ToolTip>
+                                <TextBlock Text="{ns:Loc LblUseCfitsioTooltip}" />
+                            </CheckBox.ToolTip>
+                        </CheckBox>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblCompression}"
+                            Visibility="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                        <ComboBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            MinWidth="100"
+                            Margin="0,5,0,0"
+                            HorizontalAlignment="Left"
+                            ItemsSource="{Binding DataContext.FITSCompressionTypes, ElementName=UC}"
+                            SelectedItem="{Binding FITSCompressionType}"
+                            Visibility="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblAddFzExtension}"
+                            Visibility="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                        <CheckBox
+                            Grid.Row="1"
+                            Grid.Column="4"
+                            Margin="0,5,0,0"
+                            HorizontalAlignment="Left"
+                            IsChecked="{Binding FITSAddFzExtension}"
+                            Visibility="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                            <CheckBox.ToolTip>
+                                <TextBlock Text="{ns:Loc LblAddFzExtensionTooltip}" />
+                            </CheckBox.ToolTip>
+                        </CheckBox>
+                    </Grid>
+
+                    <!--  XISF  -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=cbFileTypes}" Value="XISF">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblCompression}" />
+                        <ComboBox
+                            Grid.Column="1"
+                            MinWidth="150"
+                            HorizontalAlignment="Left"
+                            ItemsSource="{Binding DataContext.XISFCompressionTypes, ElementName=UC}"
+                            SelectedItem="{Binding XISFCompressionType}" />
+
+                        <TextBlock
+                            Grid.Column="3"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblByteShuffling}" />
+                        <CheckBox
+                            Grid.Column="4"
+                            HorizontalAlignment="Left"
+                            IsChecked="{Binding XISFByteShuffling}" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblChecksum}" />
+                        <ComboBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            MinWidth="150"
+                            Margin="0,5,0,0"
+                            HorizontalAlignment="Left"
+                            ItemsSource="{Binding DataContext.XISFChecksumTypes, ElementName=UC}"
+                            SelectedItem="{Binding XISFChecksumType}" />
+                    </Grid>
+                </Grid>
 
                 <TextBlock
-                    Grid.Row="3"
+                    Grid.Row="2"
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     Text="{ns:Loc LblImageFilePath}" />
                 <TextBox
-                    Grid.Row="3"
+                    Grid.Row="2"
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Text="{Binding FilePath}" />
                 <Button
-                    Grid.Row="3"
+                    Grid.Row="2"
                     Grid.Column="2"
                     Width="40"
                     Height="20"
@@ -285,7 +263,7 @@
 
 
                 <Expander
-                    Grid.Row="4"
+                    Grid.Row="3"
                     Grid.ColumnSpan="3"
                     IsExpanded="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternsExpanded, UpdateSourceTrigger=PropertyChanged}">
                     <Expander.Header>
@@ -388,7 +366,7 @@
 
 
 
-                <Grid Grid.Row="5" Grid.ColumnSpan="4">
+                <Grid Grid.Row="4" Grid.ColumnSpan="4">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -469,7 +447,7 @@
                 </Grid>
 
                 <Grid
-                    Grid.Row="6"
+                    Grid.Row="5"
                     Grid.ColumnSpan="3"
                     Margin="0,5,0,0">
                     <Grid.Resources>

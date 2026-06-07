@@ -611,9 +611,11 @@ namespace NINA.ViewModel {
                     var bayerPattern = cameraInfo.SensorType;
                     if (profileService.ActiveProfile.CameraSettings.BayerPattern != BayerPatternEnum.Auto) {
                         bayerPattern = (SensorType)profileService.ActiveProfile.CameraSettings.BayerPattern;
-                    } else if (!cameraInfo.Connected) {
+                    } else {
+                        // Raw decoders can report the Bayer phase at the visible image origin.
+                        // Prefer that concrete pattern over Auto defaults, but ignore placeholder sensor categories.
                         var imageSensorType = data.MetaData?.Camera?.SensorType;
-                        if (imageSensorType.HasValue) {
+                        if (imageSensorType.HasValue && imageSensorType.Value != SensorType.Monochrome && imageSensorType.Value != SensorType.Color) {
                             bayerPattern = imageSensorType.Value;
                         }
                     }
