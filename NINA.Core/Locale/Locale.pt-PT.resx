@@ -1025,6 +1025,9 @@ No caso de ser necessário efectuar a refrigeração de forma mais prolongada, a
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>HFR Debayer</value>
   </data>
@@ -2618,7 +2621,7 @@ HFR Calculado: {2}
     <value>Conversor RAW</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Define que ferramenta deve ser usada para a conversão de ficheiros raw DSLR</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Ruido de leitura em e</value>
@@ -6095,6 +6098,9 @@ Consulte o manual da sua câmara quanto à localização desta opção</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Falha ao guardar a imagem</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Obter coordenadas da posição atual do telescópio</value>

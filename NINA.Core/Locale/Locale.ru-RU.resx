@@ -1023,6 +1023,9 @@ Do you want to continue and lose the changes anyway?</value>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>HFR после дебайеризации</value>
   </data>
@@ -2616,7 +2619,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Конвертер Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Определяет, какой инструмент должен использоваться для преобразования файла RAW данных DSLR</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Шум чтения в е</value>
@@ -6096,6 +6099,9 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Не удалось сохранить изображение</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Получить координаты из текущей позиции телескопа</value>

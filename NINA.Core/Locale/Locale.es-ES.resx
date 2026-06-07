@@ -1021,6 +1021,9 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>HFR Debayerizado</value>
   </data>
@@ -2614,7 +2617,7 @@ HFR calculada: {2}
     <value>Conversor Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Especifica qué herramienta se usará para la conversion de archivos RAW de DSLR</value>
+    <value>Los archivos raw de la DSLR se convierten con LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Read Noise en e</value>
@@ -6091,6 +6094,9 @@ Una vez resuelta, la rotación quedará establecida para el encuadre.</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Error al guardar imagen</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>No se ha podido guardar la imagen. Es posible que el destino no tenga espacio libre en disco.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>¿Obtener las coordenadas a partir de la posición actual del telescopio?</value>

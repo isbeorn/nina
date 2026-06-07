@@ -1022,6 +1022,9 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>Debayeruj HFR</value>
   </data>
@@ -2614,7 +2617,7 @@ Obliczone HFR: {2}</value>
     <value>Konwerter RAW</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Określa, które narzędzie powinno być użyte do konwersji plików RAW DSLR</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Odczytaj szum in e</value>
@@ -6091,6 +6094,9 @@ Po pomyślnym obrazowaniu plate solving ustawiona zostanie rotacja kadru.</value
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Nie udało się zapisać obrazu</value>
   </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
+  </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Określ współrzędne aktualnej pozycji teleskopu</value>
   </data>
@@ -7527,7 +7533,7 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Set current position to sync position?</value>
   </data>
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+    <value>Wybrany focuser Oasis jest niedostępny. Sprawdź połączenie i ponownie przeskanuj urządzenia.</value>
   </data>
   <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
     <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
@@ -7563,7 +7569,7 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
   </data>
   <data name="LblOasisTurboModeTooltip" xml:space="preserve">
-    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port has at least 5V,1A power supply capacity.</value>
+    <value>Włącz tryb turbo, aby zwiększyć moment obrotowy silnika. Może to być przydatne, gdy temperatura otoczenia jest bardzo niska. Upewnij się, że port hosta USB ma co najmniej 5V,1A moc zasilania.</value>
   </data>
   <data name="LblOasisAutorunTooltip" xml:space="preserve">
     <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
@@ -7635,7 +7641,7 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
   </data>
   <data name="LblWarnings" xml:space="preserve">
-    <value>Warning(s): {0}</value>
+    <value>Ostrzeżenie(a): {0}</value>
   </data>
   <data name="LblNoErrors" xml:space="preserve">
     <value>No errors</value>
@@ -7728,7 +7734,7 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Loop While</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
-    <value>Loops while the Expression is not false</value>
+    <value>Pętle warunkowe, gdy wyrażenie nie jest fałszywe</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
     <value>Wait Until</value>
@@ -7737,7 +7743,7 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Waits until the Expression is true</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
-    <value>Random double value between 0.0 and 1.0.</value>
+    <value>Losowa wartość podwójna między 0.0 a 1.0.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
     <value>Current Unix timestamp in seconds.</value>
@@ -7761,19 +7767,19 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
-    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+    <value>Data oraz określone minuty (Unix timestamp).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
-    <value>Datetime plus the specified hours (Unix timestamp).</value>
+    <value>DataCzas plus określone godziny (Unix timestamp).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
-    <value>Seconds elapsed since the given datetime (Unix timestamp).</value>
+    <value>Sekundy, które upłynęły od podanej daty (Unix timestamp).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
     <value>Datetime formatted using the specified .NET format string.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
-    <value>Whether the string starts with the specified prefix.</value>
+    <value>Czy ciąg zaczyna się od określonego prefiksu.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
     <value>Length of the given string, or -1 if the value is not a string.</value>
@@ -7785,19 +7791,19 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Character at the specified zero-based index, or empty if out of bounds.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
-    <value>Whether the string contains the specified substring.</value>
+    <value>Czy ciąg zawiera określony podciąg.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
-    <value>Whether the string ends with the specified suffix.</value>
+    <value>Czy ciąg kończy się określonym przyrostkiem.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
     <value>Substring of the given string; empty if out of range.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
-    <value>Lower-case version of the string (invariant).</value>
+    <value>Ciąg w małych literach (invariant).</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
-    <value>Upper-case version of the string (invariant).</value>
+    <value>Ciąg w wielkich literach (invariant).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
     <value>Absolute value of a number.</value>
@@ -7866,25 +7872,25 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Integral part of a number.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
-    <value>Mathematical modulus (x mod y). Result is in [0, y) for positive y.</value>
+    <value>Matematyczne modulo (x mod y). Wynik w przedziale [0, y) dla dodatniego y.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
-    <value>Value clamped to the inclusive range [min, max].</value>
+    <value>Wartość ograniczona do zamkniętego zakresu [min, max].</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
-    <value>Whether x is between min and max (inclusive).</value>
+    <value>Czy x mieści się w pomiędzy min, a max (włącznie).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
     <value>Conversion from radians to degrees.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
-    <value>Conversion from degrees to radians.</value>
+    <value>Konwersja ze stopni na radiany.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
     <value>Sum of all arguments.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
-    <value>Whether an element is in a set of values.</value>
+    <value>Czy element znajduje się w zestawie wartości.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
     <value>Conditional value based on a condition.</value>
@@ -7893,10 +7899,10 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Conditional value based on multiple conditions, with a default.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
-    <value>Whether a symbol name is defined in the symbol table.</value>
+    <value>Czy nazwa symbolu jest zdefiniowana w tabeli symboli.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
-    <value>Logical negation of a boolean value.</value>
+    <value>Logiczne zaprzeczenie wartości boolowskiej.</value>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
     <value>Click any function to copy it to the clipboard.</value>
