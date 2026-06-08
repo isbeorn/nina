@@ -6,6 +6,8 @@ Adds a user-configurable device connection order to NINA so that "Connect All" c
 
 **Motivation:** Devices such as the SV241 SVBony power switch must connect *before* the devices they power (e.g., cameras). The previous hardcoded order connected cameras first, which fails if they are unpowered at connect time.
 
+**Related PR:** This change is complemented by a sibling connector-plugin PR in the external repository at https://github.com/ikeysolomon/nina.plugin.connector/tree/ReorderingExperiment. That plugin PR updates the connector plugin’s own `ConnectAllEquipment` implementation to honor the same custom device order.
+
 ---
 
 ## Files Changed
@@ -17,17 +19,17 @@ AsyncObservableCollection<string> DeviceConnectionOrder { get; set; }
 ```
 
 ### `NINA.Profile/ApplicationSettings.cs`
-**~30 lines added** — implements the new property:
+**~30 lines added** — implements the new settings:
 - Private `AllDevices` constant list defining the canonical set of 11 device names.
-- `[DataMember]` property `DeviceConnectionOrder` with backing field and `RaisePropertyChanged`.
-- Default initialisation in `SetDefaultValues()` — Switch is placed first so power-switch users get the correct default immediately.
-- Migration logic in `OnDeserialized()` — any device names missing from an existing saved profile are appended, so upgrading users never lose a device from the list.
+- `[DataMember]` properties `DeviceConnectionOrder` and `UseCustomDeviceConnectionOrder`, each with a proper backing field and `RaisePropertyChanged`.
+- Default initialization in `SetDefaultValues()` — Switch is placed first so power-switch users get the correct default immediately.
+- Migration logic in `OnDeserialized()` — if the saved list is missing devices, they are appended so upgrading users do not lose supported device types.
 
 ### `NINA/ViewModel/ApplicationDeviceConnectionVM.cs`
-**Net change: ~90 lines removed, ~25 lines added** — the only modification to this pre-existing file:
+**Net change: ~90 lines removed, ~25 lines added** — the core toolbar Connect All behavior is changed only here:
 - Added `using System.Linq` (needed for `.ToList()`).
-- Replaced the hardcoded 11-block `try/catch` connect sequence inside `ConnectAllDevicesCommand` with a loop over `profileService.ActiveProfile.ApplicationSettings.DeviceConnectionOrder`.
-- Added private helper `GetMediatorConnectPair(string)` that maps a device name to its mediator connect delegates (mirrors the pattern already used in `ConnectAllEquipment.cs` in the sequencer).
+- When `UseCustomDeviceConnectionOrder` is enabled, `ConnectAllDevicesCommand` iterates the saved `DeviceConnectionOrder` list and connects devices in that user-defined sequence.
+- When custom order is disabled, the original hardcoded default connection sequence is preserved exactly.
 - Everything else in the file (disconnect logic, `DisconnectEquipment`, `Shutdown`, USB watcher, `AtLeastOneConnected`, all existing commands) is **untouched**.
 
 ### `NINA/ViewModel/OptionsVM.cs`
@@ -37,10 +39,15 @@ AsyncObservableCollection<string> DeviceConnectionOrder { get; set; }
 
 These manipulate the ordered collection in the active profile. The `OptionsVM` is the `DataContext` for `EquipmentView`, so this is the natural home for these commands.
 
+### `NINA.Sequencer/SequenceItem/Connect/ConnectAllEquipment.cs`
+**~6 lines changed** — this built-in sequencer item now reads `UseCustomDeviceConnectionOrder` and the saved `DeviceConnectionOrder` list when the option is enabled, ensuring the seq-item connect path stays consistent with the toolbar Connect All behavior.
+
 ### `NINA.Core/Locale/Locale.resx`
-**6 lines added** — two new locale entries inserted alphabetically in the `D` section:
+**10 lines added** — four new locale entries inserted alphabetically in the `D` section:
 - `LblDeviceConnectionOrder` = `"Device Connection Order"`
 - `LblDeviceConnectionOrderTooltip` = `"Configure the order in which devices connect when 'Connect All' is used. Use the arrow buttons to reorder."`
+- `LblUseCustomDeviceConnectionOrder` = `"Use Custom Device Connection Order"`
+- `LblUseCustomDeviceConnectionOrderTooltip` = `"When enabled, 'Connect All' will connect devices in the custom order defined below. When disabled, the default connection order is used."`
 
 ### `NINA/View/Options/EquipmentView.xaml`
 **~45 lines added** — appended to the existing Equipment options tab:
@@ -54,8 +61,8 @@ These manipulate the ordered collection in the active profile. The `OptionsVM` i
 
 - `IApplicationDeviceConnectionVM` interface — no new public surface added there.
 - `DisconnectEquipment` — disconnect order is unchanged.
-- All other settings classes, view models, and views.
-- The sequencer `ConnectAllEquipment` item — it already had its own independent ordering; this change does not affect it.
+- All other settings classes, view models, and views not listed above.
+- The external connector plugin repository is not modified in this PR; a sibling PR exists at https://github.com/ikeysolomon/nina.plugin.connector/tree/ReorderingExperiment.
 
 ---
 
