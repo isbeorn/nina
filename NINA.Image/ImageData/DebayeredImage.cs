@@ -88,7 +88,7 @@ namespace NINA.Image.ImageData {
 
         public override IRenderedImage ReRender() {
             var reRenderedImage = base.ReRender();
-            return reRenderedImage.Debayer(saveColorChannels: this.SaveColorChannels, saveLumChannel: this.SaveLumChannel);
+            return reRenderedImage.Debayer(saveColorChannels: this.SaveColorChannels, saveLumChannel: this.SaveLumChannel, bayerPattern: this.BayerPattern);
         }
     }
 }

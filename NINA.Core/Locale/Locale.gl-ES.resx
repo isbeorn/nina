@@ -1031,6 +1031,9 @@ cara atrás; cando as liñas non están aliñadas hai algún erro de aliñación
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>HFR Debayerizado</value>
   </data>
@@ -2624,7 +2627,7 @@ HFR calculado: {2}
     <value>Convetedor Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Especifica que ferramenta se usa para converter arquivos raw DSLR</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Lectura de ruído en electróns</value>
@@ -6105,6 +6108,9 @@ Unha vez resolto con éxito, establecerase a rotación para encadrar.</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Erro ó gardar a imaxe</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Obter as coordenadas a partir da posición actual do telescopio</value>

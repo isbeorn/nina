@@ -1018,6 +1018,9 @@ Do you want to continue and lose the changes anyway?</value>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>デベイヤ処理HFR</value>
   </data>
@@ -2607,7 +2610,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Rawコンバーター</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLRのRawファイル変換に使用するツールを選択</value>
+    <value>DSLRのRAWファイルはLibRawで変換されます。</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>e値による読み込みノイズ</value>
@@ -6074,6 +6077,9 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>画像の保存に失敗しました</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>現在の鏡筒の位置から座標を取得</value>

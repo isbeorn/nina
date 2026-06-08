@@ -1022,6 +1022,9 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>Debayer edilmiş HFR</value>
   </data>
@@ -2615,7 +2618,7 @@ Hesaplanan HFR: {2}
     <value>Raw dönüştürücü</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw dosyası dönüşümü için hangi aracın kullanılacağını belirler</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Gürültüyü e değerinde oku</value>
@@ -6092,6 +6095,9 @@ Görüntü başarılı bir şekilde tanımlandığında, döndürme kadrajlama i
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Fotoğraf kaydedilemedi</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Koordinatları teleskopun mevcut pozisyonundan al</value>

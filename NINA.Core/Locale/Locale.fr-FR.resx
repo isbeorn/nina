@@ -1030,6 +1030,9 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRAW</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>HFR Debayer</value>
   </data>
@@ -2623,7 +2626,7 @@ HFR calculé: {2}</value>
     <value>Conversion Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Spécifie quel outil doit être utilisé pour la conversion de fichier brut DSLR</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Bruit Lecture "é"</value>
@@ -6100,6 +6103,9 @@ Une fois la résolution réussie, la rotation sera définie pour le cadrage.</va
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Échec de la sauvegarde de l'image</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Obtenir des coordonnées à partir de la position actuelle du télescope</value>

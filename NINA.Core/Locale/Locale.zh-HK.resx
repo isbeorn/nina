@@ -1030,6 +1030,9 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>轉色後 HFR</value>
   </data>
@@ -2623,7 +2626,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>RAW 格式轉換器</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>指定應該使用哪個工具進行 DSLR RAW 轉換</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>讀出譟聲 (e)</value>
@@ -6103,6 +6106,9 @@ Once successfully solved, the rotation will be set for framing.</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Failed to save image</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Get coordinates from the current scope position</value>

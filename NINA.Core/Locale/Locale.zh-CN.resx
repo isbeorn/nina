@@ -1029,6 +1029,9 @@
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>转色后 HFR</value>
   </data>
@@ -2618,7 +2621,7 @@
     <value>Raw格式转换器</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>指定应该使用哪个工具进行DSLR RAW转换</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>读出噪声（e）</value>
@@ -6094,6 +6097,9 @@
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>保存图像失败</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>从望远镜获取坐标</value>

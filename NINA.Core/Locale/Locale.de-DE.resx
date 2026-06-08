@@ -1030,6 +1030,9 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
+  <data name="LblLibRaw" xml:space="preserve">
+    <value>LibRaw</value>
+  </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>Debayerte HFR</value>
   </data>
@@ -2623,7 +2626,7 @@ Berechneter HFR: {2}
     <value>Raw Konvertierer</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Gibt an welches Tool zur Raw konvertierung genutzt werden soll</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Ausleserauschen in e</value>
@@ -6095,6 +6098,9 @@ Einmal erfolgreich gelöst, wird die Drehung für das Framing gesetzt.</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
     <value>Fehler beim Speichern des Bildes</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Ermittle Koordinaten der aktuellen Teleskopposition</value>

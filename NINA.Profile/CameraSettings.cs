@@ -45,6 +45,7 @@ namespace NINA.Profile {
             fileCameraFolder = string.Empty;
             fileCameraAlwaysListen = false;
             bitScaling = true;
+            saveNativeCameraRaw = true;
             timeout = 60;
             dewHeaterOn = false;
 
@@ -345,6 +346,19 @@ namespace NINA.Profile {
             set {
                 if (bitScaling != value) {
                     bitScaling = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool saveNativeCameraRaw;
+
+        [DataMember]
+        public bool SaveNativeCameraRaw {
+            get => saveNativeCameraRaw;
+            set {
+                if (saveNativeCameraRaw != value) {
+                    saveNativeCameraRaw = value;
                     RaisePropertyChanged();
                 }
             }
