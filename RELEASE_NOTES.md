@@ -109,7 +109,9 @@ This allows you to safely return to a stable release if needed.
 
 ### **Device Management**
 - **ASCOM Alpaca Direct Drivers**
-    - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
+  - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
+- **ASCOM Camera Drivers**
+  - If an ASCOM camera driver implements them, the driver-provided `LastExposureStartTime` and `LastExposureDuration` properties are used to populate the date-related and exposure duration metadata keywords in images.
 - **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
   - The ToupTek based filter wheels are now available as a native driver.
   - The ToupTek based focusers are now available as a native driver.
@@ -125,7 +127,7 @@ This allows you to safely return to a stable release if needed.
 
 ### **User Interface & Usability**
 - **Sequencer**
-    - Each intstruction container now has a colored border on the left side to better differentiate between them. This can be disabled in Options > Imaging > Sequence > Colored Container Borders
+  - Each intstruction container now has a colored border on the left side to better differentiate between them. This can be disabled in Options > Imaging > Sequence > Colored Container Borders
 - **Sky Atlas Improvements**  
   - Deep sky objects can now be filtered and sorted by their upper transit time
 - **Framing Assistant Improvements** 
