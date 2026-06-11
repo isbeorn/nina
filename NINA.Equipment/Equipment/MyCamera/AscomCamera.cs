@@ -13,30 +13,25 @@
 #endregion "copyright"
 
 using ASCOM;
-using ASCOM.Common.DeviceInterfaces;
 using ASCOM.Com.DriverAccess;
-using NINA.Profile.Interfaces;
+using ASCOM.Common.DeviceInterfaces;
+using NINA.Core.Locale;
+using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Model;
+using NINA.Equipment.Utility;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
+using NINA.Profile.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using SensorType = NINA.Core.Enum.SensorType;
-using NINA.Core.Model.Equipment;
-using NINA.Equipment.Utility;
-using NINA.Core.Locale;
-using NINA.Equipment.Model;
-using NINA.Image.Interfaces;
-using NINA.Image.ImageData;
-using NINA.Equipment.Interfaces;
-using NINA.Core.Enum;
-using ASCOM.Common.Alpaca;
-using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -408,7 +403,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         try {
                             val = device.GainMin;
                         } catch (ASCOM.NotImplementedException) {
-                            _canGetGainMinMax = false;                        
+                            _canGetGainMinMax = false;
                         } catch (ASCOM.InvalidOperationException) {
                             _canGetGainMinMax = false;
                         }
@@ -709,7 +704,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             NumY = newY;
         }
 
-        private IList<int> offsets = new List<int>();
+        private readonly IList<int> offsets = new List<int>();
         private bool offsetValueMode = true;
         private bool canSetOffset = false;
         private DateTime lastExposureEndTime;
@@ -827,7 +822,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         protected override async Task PostConnect() {
             try {
-                if(device.SensorType == ASCOM.Common.DeviceInterfaces.SensorType.Color) {
+                if (device.SensorType == ASCOM.Common.DeviceInterfaces.SensorType.Color) {
                     Disconnect();
                     throw new Exception(Loc.Instance["LblASCOMColorSensorTypeNotSupported"]);
                 }
@@ -840,12 +835,12 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         protected override ICameraV4 GetInstance() {
-            if(!IsAlpacaDevice()) {
+            if (!IsAlpacaDevice()) {
                 return new Camera(this.Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaCamera(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
             }
-            
+
         }
 
         public bool LiveViewEnabled { get => false; set => throw new System.NotImplementedException(); }
