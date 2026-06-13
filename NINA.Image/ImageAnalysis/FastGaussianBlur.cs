@@ -120,7 +120,7 @@ namespace NINA.Image.ImageAnalysis {
                     dest[ti++] = (byte)Math.Floor(val * iar);
                 }
                 for (var j = r + 1; j < w - r; j++) {
-                    val += source[ri++] - dest[li++];
+                    val += source[ri++] - source[li++];
                     dest[ti++] = (byte)Math.Floor(val * iar);
                 }
                 for (var j = w - r; j < w; j++) {
