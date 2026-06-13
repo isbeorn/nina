@@ -12,6 +12,9 @@
 
 #endregion "copyright"
 
+// Uncomment to run this file's exhaustive image-analysis tests instead of reporting them as ignored.
+//#define RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+
 using NINA.Image.ImageAnalysis;
 using NUnit.Framework;
 using System;
@@ -20,7 +23,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 
 using OptimizedCannyEdgeDetector = NINA.Image.ImageAnalysis.CannyEdgeDetector;
 using OptimizedNoBlurCannyEdgeDetector = NINA.Image.ImageAnalysis.NoBlurCannyEdgeDetector;
@@ -30,7 +32,6 @@ namespace NINA.Test.Image.ImageAnalysis {
     // Accord, while the NINA-owned no-blur path is compared against the preserved reference source.
     // Keeping them together makes it clear that they share the same image fixtures and full-frame cases.
     [TestFixture]
-    [Ignore("These tests are exhaustive and take some time to run. Enable if needed.")]
     public partial class CannyEdgeDetectorVariantTests {
         private readonly struct AstroCameraResolutionCase {
             public AstroCameraResolutionCase(int width, int height) {
@@ -58,6 +59,13 @@ namespace NINA.Test.Image.ImageAnalysis {
         private const int DefaultGaussianSize = 5;
         private const string PopularFeatureResolutionKey = "Planetary_1936x1096";
         private const string CustomGaussianResolutionKey = "Planetary_1936x1096";
+        private const string ProofCannyCategory = "CannyEdgeDetectorProof";
+        private const string ExhaustiveCannyCategory = "CannyEdgeDetectorExhaustive";
+        private const string ExhaustiveCannyIgnoreReason = "Disabled because exhaustive Canny coverage is too long for normal test runs. Enable manually when validating Canny optimization changes.";
+        private const int ProofWidth = 257;
+        private const int ProofHeight = 259;
+        private const int ExhaustiveBinaryWidth = 4;
+        private const int ExhaustiveBinaryHeight = 4;
 
         private static IEnumerable<TestCaseData> FormatCoverageCases() {
             foreach (var resolution in AstroCameraResolutions) {
@@ -103,6 +111,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         // This is the production star-detection path: blurred Canny with the normal thresholds.
         // Every listed resolution must match Accord exactly, not just produce similar-looking edges.
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(FormatCoverageCases))]
         public void CannyEdgeDetector_DefaultParameters_CoversSupportedResolutions(string scenarioName, int width, int height, Func<int, int, byte[]> createPixels) {
             byte[] sourcePixels = createPixels(width, height);
@@ -119,6 +131,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(FeatureCoverageCases))]
         public void CannyEdgeDetector_DefaultParameters_MatchesAccordReferenceAcrossFeatures(string scenarioName, int width, int height, Func<int, int, byte[]> createPixels) {
             byte[] sourcePixels = createPixels(width, height);
@@ -136,6 +152,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         // The optimized blur has separate interior and border code paths, so validate a larger kernel
         // size as well. This catches errors that only appear when the Gaussian footprint changes.
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(FixtureCases))]
         public void CannyEdgeDetector_CustomGaussianSize_MatchesAccordReference(string fixtureName, Func<int, int, byte[]> createPixels) {
             int width = AstroCameraResolutions[CustomGaussianResolutionKey].Width;
@@ -157,6 +177,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         // The no-blur variant is NINA-owned code, so the preserved implementation under NINA.Tests
         // is the correct reference behavior for this path rather than Accord.
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(FormatCoverageCases))]
         public void NoBlurCannyEdgeDetector_CoversSupportedResolutions(string scenarioName, int width, int height, Func<int, int, byte[]> createPixels) {
             byte[] sourcePixels = createPixels(width, height);
@@ -173,6 +197,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(FeatureCoverageCases))]
         public void NoBlurCannyEdgeDetector_MatchesPreservedReferenceAcrossFeatures(string scenarioName, int width, int height, Func<int, int, byte[]> createPixels) {
             byte[] sourcePixels = createPixels(width, height);
@@ -346,6 +374,15 @@ namespace NINA.Test.Image.ImageAnalysis {
             public Func<int, int, Rectangle>? CreateRect { get; init; }
         }
 
+        public sealed class HysteresisThresholdScenario {
+            public required string Name { get; init; }
+            public required int Width { get; init; }
+            public required int Height { get; init; }
+            public required byte LowThreshold { get; init; }
+            public required byte HighThreshold { get; init; }
+            public required Func<int, int, byte, byte, byte[]> CreatePixels { get; init; }
+        }
+
         // These values match the production star-detection defaults. Hardening should validate the
         // exact behavior that the application actually runs, not a synthetic threshold pair that no
         // real code path uses.
@@ -354,7 +391,59 @@ namespace NINA.Test.Image.ImageAnalysis {
         private const int PlanetaryRoiWidth = 1937;
         private const int PlanetaryRoiHeight = 1097;
         private const int RandomFeatureScenarioCount = 100;
-        private static readonly IReadOnlyList<int> RuntimeRandomFeatureSeeds = CreateRuntimeRandomFeatureSeeds(RandomFeatureScenarioCount);
+        private static readonly IReadOnlyList<int> RandomFeatureSeeds = CreateDeterministicRandomFeatureSeeds(RandomFeatureScenarioCount);
+        private static readonly IReadOnlyList<(byte LowThreshold, byte HighThreshold)> HysteresisThresholdPairs = new (byte, byte)[] {
+            ((byte)4, (byte)20),
+            ((byte)10, (byte)80),
+            ((byte)40, (byte)80),
+            ((byte)79, (byte)120),
+            ((byte)120, (byte)200),
+            ((byte)200, (byte)240)
+        };
+
+        // Small odd-width proof scenarios are enabled in normal test runs. They still exercise stride
+        // padding, all curated feature families, and all hysteresis fixtures, but avoid the large camera
+        // frame cost of the explicit matrix below.
+        private static IEnumerable<TestCaseData> RepresentativeCuratedProofScenarios() {
+            foreach (DeterministicImageFixtures.ImageFixture fixture in DeterministicImageFixtures.CuratedFeatures) {
+                yield return Scenario(new InputScenario {
+                    Name = $"Proof_{fixture.Name}_{ProofWidth}x{ProofHeight}",
+                    Width = ProofWidth,
+                    Height = ProofHeight,
+                    CreatePixels = fixture.CreateBytes
+                });
+            }
+        }
+
+        private static IEnumerable<TestCaseData> RepresentativeProofScenarios() {
+            foreach (TestCaseData scenario in RepresentativeCuratedProofScenarios()) {
+                yield return scenario;
+            }
+
+            foreach (DeterministicImageFixtures.ThresholdAwareImageFixture fixture in DeterministicImageFixtures.HysteresisFeatures) {
+                yield return Scenario(new InputScenario {
+                    Name = $"Proof_{fixture.Name}_{ProofWidth}x{ProofHeight}",
+                    Width = ProofWidth,
+                    Height = ProofHeight,
+                    CreatePixels = (width, height) => fixture.CreateBytes(width, height, DefaultLowThreshold, DefaultHighThreshold)
+                });
+            }
+        }
+
+        private static IEnumerable<TestCaseData> HysteresisThresholdScenarios() {
+            foreach (DeterministicImageFixtures.ThresholdAwareImageFixture fixture in DeterministicImageFixtures.HysteresisFeatures) {
+                foreach ((byte lowThreshold, byte highThreshold) in HysteresisThresholdPairs) {
+                    yield return new TestCaseData(new HysteresisThresholdScenario {
+                        Name = $"Proof_{fixture.Name}_{lowThreshold}_{highThreshold}_{ProofWidth}x{ProofHeight}",
+                        Width = ProofWidth,
+                        Height = ProofHeight,
+                        LowThreshold = lowThreshold,
+                        HighThreshold = highThreshold,
+                        CreatePixels = fixture.CreateBytes
+                    }).SetName($"Proof_{fixture.Name}_Low{lowThreshold}_High{highThreshold}_{ProofWidth}x{ProofHeight}");
+                }
+            }
+        }
 
         // Keep the heavy black-box parity checks focused on one popular real-world resolution and run
         // the full curated feature family there. This keeps the suite systematic without exploding the matrix.
@@ -379,7 +468,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         private static IEnumerable<TestCaseData> RandomFeatureScenarios() {
-            foreach (int seed in RuntimeRandomFeatureSeeds) {
+            foreach (int seed in RandomFeatureSeeds) {
                 yield return Scenario(new InputScenario {
                     Name = $"RandomFeatureMix_Seed{seed}_Planetary_1936x1096",
                     Width = PlanetaryWidth,
@@ -448,9 +537,77 @@ namespace NINA.Test.Image.ImageAnalysis {
             });
         }
 
+        [Test]
+        [Category(ProofCannyCategory)]
+        [TestCaseSource(nameof(RepresentativeProofScenarios))]
+        public void NoBlurCannyEdgeDetector_RepresentativeProof_MatchesReference(InputScenario scenario) {
+            AssertNoBlurMatchesReference(scenario, "NoBlurProof", DefaultLowThreshold, DefaultHighThreshold);
+        }
+
+        [Test]
+        [Category(ProofCannyCategory)]
+        [TestCaseSource(nameof(RepresentativeProofScenarios))]
+        public void CannyEdgeDetector_RepresentativeProof_MatchesAccordReference(InputScenario scenario) {
+            AssertBlurredMatchesAccordReference(scenario, "BlurredProof", DefaultLowThreshold, DefaultHighThreshold, DefaultGaussianSigma, DefaultGaussianSize);
+        }
+
+        [Test]
+        [Category(ProofCannyCategory)]
+        [TestCaseSource(nameof(RepresentativeCuratedProofScenarios))]
+        public void CannyEdgeDetector_CustomGaussianSize_RepresentativeProof_MatchesAccordReference(InputScenario scenario) {
+            AssertBlurredMatchesAccordReference(scenario, "BlurredCustomGaussianProof", 20, 100, DefaultGaussianSigma, 10);
+        }
+
+        [Test]
+        [Category(ProofCannyCategory)]
+        [TestCaseSource(nameof(HysteresisThresholdScenarios))]
+        public void NoBlurCannyEdgeDetector_HysteresisThresholdMatrix_MatchesReference(HysteresisThresholdScenario scenario) {
+            byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height, scenario.LowThreshold, scenario.HighThreshold);
+            AssertNoBlurMatchesReference(scenario.Name, sourcePixels, scenario.Width, scenario.Height, "NoBlurHysteresisThresholdProof", scenario.LowThreshold, scenario.HighThreshold);
+        }
+
+        [Test]
+        [Category(ProofCannyCategory)]
+        [TestCaseSource(nameof(HysteresisThresholdScenarios))]
+        public void CannyEdgeDetector_HysteresisThresholdMatrix_MatchesAccordReference(HysteresisThresholdScenario scenario) {
+            byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height, scenario.LowThreshold, scenario.HighThreshold);
+            AssertBlurredMatchesAccordReference(scenario.Name, sourcePixels, scenario.Width, scenario.Height, "BlurredHysteresisThresholdProof", scenario.LowThreshold, scenario.HighThreshold, DefaultGaussianSigma, DefaultGaussianSize);
+        }
+
+        [Test]
+        [Category(ProofCannyCategory)]
+        public void NoBlurCannyEdgeDetector_AllFourByFourBinaryInputs_MatchReference() {
+            int caseCount = 1 << (ExhaustiveBinaryWidth * ExhaustiveBinaryHeight);
+
+            for (int mask = 0; mask < caseCount; mask++) {
+                byte[] sourcePixels = CreateBinaryMaskPixels(ExhaustiveBinaryWidth, ExhaustiveBinaryHeight, mask);
+
+                using Bitmap expected = CreateGray8Bitmap(ExhaustiveBinaryWidth, ExhaustiveBinaryHeight, sourcePixels);
+                using Bitmap actual = CreateGray8Bitmap(ExhaustiveBinaryWidth, ExhaustiveBinaryHeight, sourcePixels);
+
+                var reference = new global::NINA.Tests.NoBlurCannyEdgeDetector(DefaultLowThreshold, DefaultHighThreshold);
+                var optimized = new OptimizedNoBlurCannyEdgeDetector(DefaultLowThreshold, DefaultHighThreshold);
+
+                reference.ApplyInPlace(expected);
+                optimized.ApplyInPlace(actual);
+
+                byte[] expectedBytes = ReadBitmapBytes(expected);
+                byte[] actualBytes = ReadBitmapBytes(actual);
+                int mismatchIndex = FindFirstMismatch(expectedBytes, actualBytes);
+
+                if (mismatchIndex >= 0) {
+                    Assert.Fail($"4x4 binary no-blur Canny mismatch for mask 0x{mask:X4} at byte index {mismatchIndex}.");
+                }
+            }
+        }
+
         // This is the black-box no-blur hardening test. It does not know anything about internal
         // stages. It only checks the final bitmap against the preserved reference implementation.
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(FeatureScenarios))]
         public void NoBlurCannyEdgeDetector_MatchesReference(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
@@ -471,6 +628,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         // Same idea, but for the blurred production path. This remains a strict final-output compare
         // against Accord, which is still the most important external behavior contract.
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(FeatureScenarios))]
         public void BlurredCannyEdgeDetector_MatchesAccordReference(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
@@ -497,6 +658,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         // The runtime-random scenes stress combinations of stars, blobs, patches, contours, and squares
         // at center and border positions. Any mismatch writes out the input/reference/actual/diff artifacts.
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(RandomFeatureScenarios))]
         public void NoBlurCannyEdgeDetector_RandomFeatureScenes_MatchReference(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
@@ -520,6 +685,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(RandomFeatureScenarios))]
         public void BlurredCannyEdgeDetector_RandomFeatureScenes_MatchAccordReference(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
@@ -551,6 +720,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         // Partial-rectangle parity deserves its own named test even though the scenario also exists as
         // data, because reviewers often look for this exact behavior by name.
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(PartialRectScenarios))]
         public void NoBlurCannyEdgeDetector_PartialRect_MatchesReference(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
@@ -571,6 +744,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         // Same explicit partial-rectangle parity for the blurred path. This is exactly the sort of
         // thing that can silently drift when rectangle math changes.
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(PartialRectScenarios))]
         public void CannyEdgeDetector_PartialRect_MatchesAccordReference(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
@@ -597,6 +774,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         // Parallel code can be "correct on average" but still nondeterministic between runs. This test
         // exists specifically to catch that class of failure.
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(DeterminismScenarios))]
         public void NoBlurCannyEdgeDetector_RepeatedRuns_AreDeterministic(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
@@ -619,6 +800,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         // Do the same determinism check for the blurred wrapper, because the blur stage and the Canny
         // stage are both parallelized and either one could introduce run-to-run drift.
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveCannyIgnoreReason)]
+#endif
+        [Category(ExhaustiveCannyCategory)]
         [TestCaseSource(nameof(DeterminismScenarios))]
         public void CannyEdgeDetector_RepeatedRuns_AreDeterministic(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
@@ -646,14 +831,68 @@ namespace NINA.Test.Image.ImageAnalysis {
             return new TestCaseData(scenario).SetName(scenario.Name);
         }
 
-        private static IReadOnlyList<int> CreateRuntimeRandomFeatureSeeds(int count) {
-            var seeds = new HashSet<int>();
+        private static IReadOnlyList<int> CreateDeterministicRandomFeatureSeeds(int count) {
+            var seeds = new List<int>(count);
+            uint state = 0xC0FFEEu;
 
             while (seeds.Count < count) {
-                seeds.Add(RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue));
+                state = unchecked(state * 1664525u + 1013904223u);
+                seeds.Add(unchecked((int)state));
             }
 
-            return new List<int>(seeds);
+            return seeds;
+        }
+
+        private static void AssertNoBlurMatchesReference(InputScenario scenario, string resultName, byte lowThreshold, byte highThreshold) {
+            byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
+            AssertNoBlurMatchesReference(scenario.Name, sourcePixels, scenario.Width, scenario.Height, resultName, lowThreshold, highThreshold);
+        }
+
+        private static void AssertNoBlurMatchesReference(string scenarioName, byte[] sourcePixels, int width, int height, string resultName, byte lowThreshold, byte highThreshold) {
+            using Bitmap expected = CreateGray8Bitmap(width, height, sourcePixels);
+            using Bitmap actual = CreateGray8Bitmap(width, height, sourcePixels);
+
+            var reference = new global::NINA.Tests.NoBlurCannyEdgeDetector(lowThreshold, highThreshold);
+            var optimized = new OptimizedNoBlurCannyEdgeDetector(lowThreshold, highThreshold);
+
+            reference.ApplyInPlace(expected);
+            optimized.ApplyInPlace(actual);
+
+            AssertBitmapExact(scenarioName, resultName, sourcePixels, expected, actual);
+        }
+
+        private static void AssertBlurredMatchesAccordReference(InputScenario scenario, string resultName, byte lowThreshold, byte highThreshold, double gaussianSigma, int gaussianSize) {
+            byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
+            AssertBlurredMatchesAccordReference(scenario.Name, sourcePixels, scenario.Width, scenario.Height, resultName, lowThreshold, highThreshold, gaussianSigma, gaussianSize);
+        }
+
+        private static void AssertBlurredMatchesAccordReference(string scenarioName, byte[] sourcePixels, int width, int height, string resultName, byte lowThreshold, byte highThreshold, double gaussianSigma, int gaussianSize) {
+            using Bitmap expected = CreateGray8Bitmap(width, height, sourcePixels);
+            using Bitmap actual = CreateGray8Bitmap(width, height, sourcePixels);
+
+            var reference = new Accord.Imaging.Filters.CannyEdgeDetector(lowThreshold, highThreshold) {
+                GaussianSigma = gaussianSigma,
+                GaussianSize = gaussianSize
+            };
+            var optimized = new OptimizedCannyEdgeDetector(lowThreshold, highThreshold) {
+                GaussianSigma = gaussianSigma,
+                GaussianSize = gaussianSize
+            };
+
+            reference.ApplyInPlace(expected);
+            optimized.ApplyInPlace(actual);
+
+            AssertBitmapExact(scenarioName, resultName, sourcePixels, expected, actual);
+        }
+
+        private static byte[] CreateBinaryMaskPixels(int width, int height, int mask) {
+            byte[] pixels = new byte[width * height];
+
+            for (int i = 0; i < pixels.Length; i++) {
+                pixels[i] = ((mask & (1 << i)) == 0) ? (byte)0 : (byte)255;
+            }
+
+            return pixels;
         }
 
         // Most cases use the full frame, but partial-rectangle scenarios can override that here.

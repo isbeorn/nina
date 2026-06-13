@@ -12,6 +12,9 @@
 
 #endregion "copyright"
 
+// Uncomment to run this file's exhaustive image-analysis tests instead of reporting them as ignored.
+//#define RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+
 using Accord.Imaging;
 using NINA.Image.ImageAnalysis;
 using NUnit.Framework;
@@ -24,7 +27,6 @@ using OptimizedGaussianBlur = NINA.Image.ImageAnalysis.GaussianBlur;
 
 namespace NINA.Test.Image.ImageAnalysis {
     [TestFixture]
-    [Ignore("These tests are exhaustive and take some time to run. Enable if needed.")]
     public class GaussianBlurTests {
         private readonly struct AstroCameraResolutionCase {
             public AstroCameraResolutionCase(int width, int height) {
@@ -53,6 +55,17 @@ namespace NINA.Test.Image.ImageAnalysis {
 
         private const string RepresentativeKernelResolutionKey = "Planetary_1936x1096";
         private const string RepresentativePaddingResolutionKey = "PlanetaryRoi_1937x1097";
+        private const string ProofGaussianCategory = "GaussianBlurProof";
+        private const string ExhaustiveGaussianCategory = "GaussianBlurExhaustive";
+        private const string ExhaustiveGaussianIgnoreReason = "Disabled because exhaustive Gaussian blur coverage is too long for normal test runs. Enable manually when validating Gaussian blur changes.";
+        private const int ProofWidth = 257;
+        private const int ProofHeight = 259;
+
+        private static readonly IReadOnlyList<DeterministicImageFixtures.ImageFixture> ProofFixtures = new[] {
+            DeterministicImageFixtures.SingleImpulseCenter,
+            DeterministicImageFixtures.FeatureMix,
+            DeterministicImageFixtures.Structured
+        };
 
         private static IEnumerable<TestCaseData> FormatCoverageScenarios() {
             foreach (var resolution in AstroCameraResolutions) {
@@ -85,7 +98,78 @@ namespace NINA.Test.Image.ImageAnalysis {
             }
         }
 
+        private static IEnumerable<TestCaseData> ProofScenarios() {
+            foreach (DeterministicImageFixtures.ImageFixture fixture in ProofFixtures) {
+                yield return Scenario(new InputScenario {
+                    Name = $"Proof_{fixture.Name}_{ProofWidth}x{ProofHeight}",
+                    Width = ProofWidth,
+                    Height = ProofHeight,
+                    CreatePixels = fixture.CreateBytes
+                });
+            }
+        }
+
+        private static IEnumerable<TestCaseData> DeterminismProofScenarios() {
+            yield return Scenario(new InputScenario {
+                Name = $"Proof_Determinism_{DeterministicImageFixtures.FeatureMix.Name}_{ProofWidth}x{ProofHeight}",
+                Width = ProofWidth,
+                Height = ProofHeight,
+                CreatePixels = DeterministicImageFixtures.FeatureMix.CreateBytes
+            });
+        }
+
         [Test]
+        [Category(ProofGaussianCategory)]
+        [TestCaseSource(nameof(ProofScenarios))]
+        public void GaussianBlur_DefaultParameters_Proof_MatchesAccordReference(InputScenario scenario) {
+            AssertMatchesAccordReference(scenario, sigma: 1.4, size: 5);
+        }
+
+        [Test]
+        [Category(ProofGaussianCategory)]
+        [TestCaseSource(nameof(ProofScenarios))]
+        public void GaussianBlur_CustomKernel_Proof_MatchesAccordReference(InputScenario scenario) {
+            AssertMatchesAccordReference(scenario, sigma: 2.2, size: 10);
+        }
+
+        [Test]
+        [Category(ProofGaussianCategory)]
+        [TestCaseSource(nameof(ProofScenarios))]
+        public void GaussianBlur_Proof_DoesNotModifySourceImage(InputScenario scenario) {
+            byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
+
+            using UnmanagedImage source = CreateGray8Image(scenario.Width, scenario.Height, sourcePixels);
+            byte[] before = ReadImageBytes(source);
+
+            using UnmanagedImage _ = CreateOptimizedBlur(source, sigma: 1.4, size: 5);
+
+            byte[] after = ReadImageBytes(source);
+            Assert.That(after, Is.EqualTo(before), $"The optimized Gaussian blur should not modify the source image ({scenario.Name}).");
+        }
+
+        [Test]
+        [Category(ProofGaussianCategory)]
+        [TestCaseSource(nameof(DeterminismProofScenarios))]
+        public void GaussianBlur_Proof_RepeatedRuns_AreDeterministic(InputScenario scenario) {
+            byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
+            byte[]? expectedBytes = null;
+
+            for (int iteration = 0; iteration < 3; iteration++) {
+                using UnmanagedImage source = CreateGray8Image(scenario.Width, scenario.Height, sourcePixels);
+                using UnmanagedImage actual = CreateOptimizedBlur(source, sigma: 1.4, size: 5);
+
+                byte[] actualBytes = ReadImageBytes(actual);
+                expectedBytes ??= actualBytes;
+
+                Assert.That(actualBytes, Is.EqualTo(expectedBytes), $"Iteration {iteration} produced a different blurred image ({scenario.Name}).");
+            }
+        }
+
+        [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveGaussianIgnoreReason)]
+#endif
+        [Category(ExhaustiveGaussianCategory)]
         [TestCaseSource(nameof(FormatCoverageScenarios))]
         public void GaussianBlur_DefaultParameters_CoversSupportedResolutions(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
@@ -99,6 +183,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveGaussianIgnoreReason)]
+#endif
+        [Category(ExhaustiveGaussianCategory)]
         [TestCaseSource(nameof(FeatureCoverageScenarios))]
         public void GaussianBlur_DefaultParameters_MatchesAccordReferenceAcrossFeatures(InputScenario scenario) {
             byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
@@ -112,6 +200,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveGaussianIgnoreReason)]
+#endif
+        [Category(ExhaustiveGaussianCategory)]
         [TestCaseSource(nameof(FixtureSource))]
         public void GaussianBlur_CustomKernel_MatchesAccordReference(string fixtureName, Func<int, int, byte[]> createPixels) {
             int width = AstroCameraResolutions[RepresentativeKernelResolutionKey].Width;
@@ -126,6 +218,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveGaussianIgnoreReason)]
+#endif
+        [Category(ExhaustiveGaussianCategory)]
         [TestCaseSource(nameof(FixtureSource))]
         public void GaussianBlur_DoesNotModifySourceImage(string fixtureName, Func<int, int, byte[]> createPixels) {
             int width = AstroCameraResolutions[RepresentativePaddingResolutionKey].Width;
@@ -142,6 +238,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveGaussianIgnoreReason)]
+#endif
+        [Category(ExhaustiveGaussianCategory)]
         [TestCaseSource(nameof(FixtureSource))]
         public void GaussianBlur_RepeatedRuns_AreDeterministic(string fixtureName, Func<int, int, byte[]> createPixels) {
             int width = AstroCameraResolutions[RepresentativePaddingResolutionKey].Width;
@@ -162,6 +262,17 @@ namespace NINA.Test.Image.ImageAnalysis {
 
         private static TestCaseData Scenario(InputScenario scenario) {
             return new TestCaseData(scenario).SetName(scenario.Name);
+        }
+
+        private static void AssertMatchesAccordReference(InputScenario scenario, double sigma, int size) {
+            byte[] sourcePixels = scenario.CreatePixels(scenario.Width, scenario.Height);
+
+            using UnmanagedImage source = CreateGray8Image(scenario.Width, scenario.Height, sourcePixels);
+            using UnmanagedImage expected = CreateReferenceBlur(source, sigma, size);
+            using UnmanagedImage actual = CreateOptimizedBlur(source, sigma, size);
+
+            Assert.That(source.Offset > 0, Is.EqualTo(ShouldHaveStridePadding(scenario.Width)), "Unexpected source stride padding.");
+            AssertBitExactImage(expected, actual);
         }
 
         private static UnmanagedImage CreateGray8Image(int width, int height, byte[] pixels) {

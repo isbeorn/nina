@@ -12,6 +12,9 @@
 
 #endregion "copyright"
 
+// Uncomment to run this file's exhaustive image-analysis tests instead of reporting them as ignored.
+//#define RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+
 using Accord.Imaging;
 using NINA.Core.Enum;
 using NINA.Image.FileFormat;
@@ -70,6 +73,9 @@ namespace NINA.Test.Image.ImageAnalysis {
         private const int RepresentativePatternHeight = 5;
         private const int RepresentativeRawWidth = 4;
         private const int RepresentativeRawHeight = 3;
+        private const string ProofBayerCategory = "BayerFilter16bppProof";
+        private const string ExhaustiveBayerCategory = "BayerFilter16bppExhaustive";
+        private const string ExhaustiveBayerIgnoreReason = "Disabled because exhaustive Bayer 16bpp coverage is too long for normal test runs. Enable manually when validating Bayer filter changes.";
 
         private global::NINA.Test.ImageDataFactoryTestUtility dataFactoryUtility;
 
@@ -90,6 +96,13 @@ namespace NINA.Test.Image.ImageAnalysis {
             CreateInputScenario(DeterministicImageFixtures.DiagonalLine),
             CreateInputScenario(DeterministicImageFixtures.Checkerboard),
             CreateInputScenario(DeterministicImageFixtures.BandingAndHotPixels),
+            CreateInputScenario(DeterministicImageFixtures.Structured)
+        };
+
+        private static readonly IReadOnlyList<InputScenario> ProofInputScenarios = new[] {
+            CreateInputScenario(DeterministicImageFixtures.UniformBlack),
+            CreateInputScenario(DeterministicImageFixtures.SingleImpulseCenter),
+            CreateInputScenario(DeterministicImageFixtures.FeatureMix),
             CreateInputScenario(DeterministicImageFixtures.Structured)
         };
 
@@ -152,7 +165,7 @@ namespace NINA.Test.Image.ImageAnalysis {
 
         private static IEnumerable<TestCaseData> RepresentativeInputScenarioCases() {
             // Use the same deterministic source families for the representative in-memory correctness checks.
-            foreach (InputScenario scenario in FeatureInputScenarios) {
+            foreach (InputScenario scenario in ProofInputScenarios) {
                 yield return Scenario(scenario, scenario.Name);
             }
         }
@@ -160,7 +173,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         private static IEnumerable<TestCaseData> DimensionScenarioCases() {
             // Combine the even/odd dimension matrix with the deterministic source families so padding and
             // border handling are exercised against more than one image structure.
-            foreach (InputScenario scenario in FeatureInputScenarios) {
+            foreach (InputScenario scenario in ProofInputScenarios) {
                 foreach (var dimension in DimensionMatrix()) {
                     yield return new TestCaseData(scenario, dimension.Width, dimension.Height)
                         .SetName($"Dimensions_{scenario.Name}_{dimension.Name}");
@@ -170,7 +183,7 @@ namespace NINA.Test.Image.ImageAnalysis {
 
         private static IEnumerable<TestCaseData> BorderOnlyScenarioCases() {
             // Border-only images are tiny, so include both degenerate uniform inputs and mixed-content fixtures.
-            foreach (InputScenario scenario in FeatureInputScenarios) {
+            foreach (InputScenario scenario in ProofInputScenarios) {
                 foreach (var dimension in BorderOnlyDimensionMatrix()) {
                     yield return new TestCaseData(scenario, dimension.Width, dimension.Height)
                         .SetName($"BorderOnly_{scenario.Name}_{dimension.Name}");
@@ -181,7 +194,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         private static IEnumerable<TestCaseData> BayerPatternScenarioCases() {
             // Run every deterministic source family through the override matrix so pattern placement is
             // checked against flat, structured, and high-frequency inputs alike.
-            foreach (InputScenario scenario in FeatureInputScenarios) {
+            foreach (InputScenario scenario in ProofInputScenarios) {
                 foreach (var testCase in AlternateBayerPatterns()) {
                     yield return new TestCaseData(scenario, testCase.Arguments[0], testCase.Arguments[1])
                         .SetName($"PatternOverride_{scenario.Name}_{testCase.Arguments[0]}");
@@ -204,19 +217,20 @@ namespace NINA.Test.Image.ImageAnalysis {
         private static IEnumerable<TestCaseData> ChannelScenarioCases() {
             // Channel-allocation tests do not need every degenerate input, but they should still prove that
             // the auxiliary arrays stay correct across several structured source families.
-            foreach (InputScenario scenario in FeatureInputScenarios) {
+            foreach (InputScenario scenario in ProofInputScenarios) {
                 yield return Scenario(scenario, $"Channels_{scenario.Name}");
             }
         }
 
         private static IEnumerable<TestCaseData> DeterminismScenarioCases() {
             // Re-run every shared fixture to catch any non-deterministic data-dependent behavior.
-            foreach (InputScenario scenario in FeatureInputScenarios) {
+            foreach (InputScenario scenario in ProofInputScenarios) {
                 yield return Scenario(scenario, $"Determinism_{scenario.Name}");
             }
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(RepresentativeInputScenarioCases))]
         public void Demosaic_ProducesBitExactChannelsAndBuffers(InputScenario scenario) {
             // Reuse the representative demosaic check, but drive it with deterministic source families instead
@@ -231,6 +245,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(DimensionScenarioCases))]
         public void Demosaic_HandlesEvenAndOddDimensions(InputScenario scenario, int width, int height) {
             // Keep the original size matrix, but pair each width/height combination with deterministic
@@ -245,6 +260,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(BayerPatternScenarioCases))]
         public void Demosaic_RespectsBayerPatternOverride(InputScenario scenario, string patternName, int[,] bayerPattern) {
             // Keep the Bayer override matrix, but feed it the reusable deterministic source families so
@@ -260,6 +276,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(BorderOnlyScenarioCases))]
         public void Demosaic_HandlesBorderOnlyDimensions(InputScenario scenario, int width, int height) {
             // Border-only images still have their dedicated path, but now cover both uniform and mixed-content
@@ -274,6 +291,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveBayerIgnoreReason)]
+#endif
+        [Category(ExhaustiveBayerCategory)]
         [TestCaseSource(nameof(RealisticInMemoryScenarioCases))]
         public void Demosaic_HandlesDeterministicInputFamiliesAtRealisticSizes(InputScenario scenario, int width, int height) {
             // Replace the isolated hardening bucket with regular exact-reference coverage that runs the same
@@ -288,6 +309,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(RepresentativeInputScenarioCases))]
         public void RawMapping_NoDemosaicCopiesPixelsIntoPatternedChannels(InputScenario scenario) {
             // The no-demosaic path now uses the same deterministic source families as the demosaic path so
@@ -300,6 +322,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveBayerIgnoreReason)]
+#endif
+        [Category(ExhaustiveBayerCategory)]
         [TestCaseSource(nameof(RealisticInMemoryScenarioCases))]
         public void RawMapping_HandlesDeterministicInputFamiliesAtRealisticSizes(InputScenario scenario, int width, int height) {
             // The straight-through path should also stay exact on the padded and real-sized deterministic inputs.
@@ -311,6 +337,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(DimensionScenarioCases))]
         public void RawMapping_HandlesEvenAndOddDimensions(InputScenario scenario, int width, int height) {
             // Keep the even/odd size matrix, but run each size against deterministic source families instead of
@@ -323,6 +350,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(BayerPatternScenarioCases))]
         public void RawMapping_RespectsBayerPatternOverride(InputScenario scenario, string patternName, int[,] bayerPattern) {
             // Keep the Bayer override matrix for the raw-copy path, but reuse the deterministic source families
@@ -336,6 +364,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(ChannelScenarioCases))]
         public void Demosaic_SaveLumOnly_PopulatesLumArray(InputScenario scenario) {
             // Luminance-only output should remain exact regardless of source structure.
@@ -349,6 +378,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(ChannelScenarioCases))]
         public void Demosaic_SaveColorOnly_PopulatesColorArrays(InputScenario scenario) {
             // Color-only output should remain exact while luminance stays empty across the deterministic families.
@@ -362,6 +392,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(ChannelScenarioCases))]
         public void Demosaic_NoChannelsRequested_LeavesLRGBArraysNull(InputScenario scenario) {
             // When callers do not request auxiliary channels, exact image parity must still hold and the side
@@ -376,6 +407,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(ChannelScenarioCases))]
         public void Apply_DoesNotModifySourceBuffer(InputScenario scenario) {
             // Source immutability should be guaranteed for the reusable deterministic input families, not only
@@ -397,6 +429,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         [TestCaseSource(nameof(DeterminismScenarioCases))]
         public void Demosaic_RepeatedRuns_AreDeterministic(InputScenario scenario) {
             ushort[] sourcePixels = scenario.CreatePixels(HardeningPaddedWidth, HardeningPaddedHeight);
@@ -432,6 +465,7 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
+        [Category(ProofBayerCategory)]
         public void FormatTranslations_MapsGray16ToRgb48() {
             // Verify the filter advertises the 16bpp grayscale input translation.
             // This mapping drives BaseFilter.Apply to allocate the correct destination format.
@@ -440,7 +474,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
-        [Explicit("Large file-backed integration coverage. Run on demand.")]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveBayerIgnoreReason)]
+#endif
+        [Category(ExhaustiveBayerCategory)]
         [Category("BayerFilter16bppRealWorldFormats")]
         [Ignore("File-backed Bayer format coverage is intentionally opt-in because it exercises slow integration paths.")]
         [NonParallelizable]
@@ -462,7 +499,10 @@ namespace NINA.Test.Image.ImageAnalysis {
         }
 
         [Test]
-        [Explicit("Large file-backed integration coverage. Run on demand.")]
+#if !RUN_EXHAUSTIVE_IMAGE_ANALYSIS_TESTS
+        [Ignore(ExhaustiveBayerIgnoreReason)]
+#endif
+        [Category(ExhaustiveBayerCategory)]
         [Category("BayerFilter16bppRealWorldFormats")]
         [Ignore("Large real-world Bayer resolution coverage is intentionally opt-in because it is exhaustive and slow.")]
         [NonParallelizable]
