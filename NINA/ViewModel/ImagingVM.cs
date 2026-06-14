@@ -175,7 +175,9 @@ namespace NINA.ViewModel {
             }
             metaData.Image.Binning = sequence.Binning.Name;
             metaData.Image.ExposureNumber = sequence.ProgressExposureCount;
-            metaData.Image.ExposureTime = sequence.ExposureTime;
+            if (!double.IsFinite(metaData.Image.ExposureTime) || metaData.Image.ExposureTime < 0) {
+                metaData.Image.ExposureTime = sequence.ExposureTime;
+            }
             metaData.Image.ImageType = sequence.ImageType;
             metaData.Image.RecordedRMS = rms;
             metaData.Target.Name = targetName;

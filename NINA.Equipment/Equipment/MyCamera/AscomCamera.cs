@@ -61,7 +61,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             CanSetGain = true;
             CanGetGain = true;
             _canGetGainMinMax = true;
-            _hasLastExposureInfo = true;
+            _hasLastExposureDuration = true;
+            _hasLastExposureStartTime = true;
             var maxBinX = MaxBinX;
             var maxBinY = MaxBinY;
             var canAsymmetricBin = CanAsymmetricBin;
@@ -460,18 +461,21 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public bool IsPulseGuiding => GetProperty(nameof(Camera.IsPulseGuiding), false);
 
-        private bool _hasLastExposureInfo;
+        private bool _hasLastExposureDuration;
+        private bool _hasLastExposureStartTime;
 
         public double LastExposureDuration {
             get {
                 double val = -1;
                 try {
-                    if (ShouldBeConnected && _hasLastExposureInfo) {
+                    if (ShouldBeConnected && _hasLastExposureDuration) {
                         val = device.LastExposureDuration;
                     }
                 } catch (ASCOM.InvalidOperationException) {
                 } catch (ASCOM.NotImplementedException) {
-                    _hasLastExposureInfo = false;
+                    _hasLastExposureDuration = false;
+                } catch (Exception ex) {
+                    Logger.Debug("Driver exposure duration is unavailable: " + ex.Message);
                 }
                 return val;
             }
@@ -481,12 +485,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
             get {
                 string val = string.Empty;
                 try {
-                    if (ShouldBeConnected && _hasLastExposureInfo) {
+                    if (ShouldBeConnected && _hasLastExposureStartTime) {
                         val = device.LastExposureStartTime;
                     }
                 } catch (ASCOM.InvalidOperationException) {
                 } catch (ASCOM.NotImplementedException) {
-                    _hasLastExposureInfo = false;
+                    _hasLastExposureStartTime = false;
+                } catch (Exception ex) {
+                    Logger.Debug("Driver exposure start time is unavailable: " + ex.Message);
                 }
                 return val;
             }
@@ -642,7 +648,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                         var metaData = new ImageMetaData();
                         metaData.FromCamera(this);
-                        metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
+                        ApplyExposureTimes(metaData);
 
                         return exposureDataFactory.CreateFlipped2DExposureData(
                             flipped2DArray: (Array)ImageArray,
@@ -657,6 +663,26 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     return null;
                 });
             }
+        }
+
+        private void ApplyExposureTimes(ImageMetaData metaData) {
+            var start = lastExposureStartTime;
+            var end = lastExposureEndTime;
+            var observedDuration = end - start;
+            if (DateTime.TryParse(LastExposureStartTime, CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var driverStart)
+                && driverStart != DateTime.MinValue && driverStart != DateTime.MaxValue) {
+                start = driverStart;
+                end = observedDuration >= TimeSpan.Zero && observedDuration <= DateTime.MaxValue - start
+                    ? start + observedDuration : DateTime.MinValue;
+            }
+
+            var duration = LastExposureDuration;
+            if (double.IsFinite(duration) && duration >= 0 && duration < (DateTime.MaxValue - start).TotalSeconds) {
+                end = start.AddSeconds(duration);
+                metaData.Image.ExposureTime = duration;
+            }
+            metaData.Image.SetExposureTimes(start, end);
         }
 
         public void StartExposure(CaptureSequence sequence) {
