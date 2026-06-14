@@ -888,7 +888,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 BroadcastCameraInfo();
                 if (output != null) {
                     output.MetaData.FromProfile(this.profileService.ActiveProfile);
-                    output.MetaData.Image.ExposureTime = this.exposureTime;
+
+                    if (double.IsNaN(output.MetaData.Image.ExposureTime)) {
+                        output.MetaData.Image.ExposureTime = this.exposureTime;
+                    }
                 }
                 return output;
             } else {

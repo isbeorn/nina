@@ -13,30 +13,25 @@
 #endregion "copyright"
 
 using ASCOM;
-using ASCOM.Common.DeviceInterfaces;
 using ASCOM.Com.DriverAccess;
-using NINA.Profile.Interfaces;
+using ASCOM.Common.DeviceInterfaces;
+using NINA.Core.Locale;
+using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Model;
+using NINA.Equipment.Utility;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
+using NINA.Profile.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using SensorType = NINA.Core.Enum.SensorType;
-using NINA.Core.Model.Equipment;
-using NINA.Equipment.Utility;
-using NINA.Core.Locale;
-using NINA.Equipment.Model;
-using NINA.Image.Interfaces;
-using NINA.Image.ImageData;
-using NINA.Equipment.Interfaces;
-using NINA.Core.Enum;
-using ASCOM.Common.Alpaca;
-using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -59,7 +54,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
             CanSetGain = true;
             CanGetGain = true;
             _canGetGainMinMax = true;
-            _hasLastExposureInfo = true;
             BinningModes = new AsyncObservableCollection<BinningMode>();
             for (short i = 1; i <= MaxBinX; i++) {
                 if (CanAsymmetricBin) {
@@ -90,7 +84,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             } catch (Exception) {
             }
 
-            //Determine Offset Capabilities
+            // Determine Offset Capabilities
             try {
                 //Check if Offset is implemented at all in ICameraV3 Driver
                 _ = device.Offset;
@@ -105,6 +99,32 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 Logger.Trace("Offset is not implemented in this driver");
                 CanSetOffset = false;
             }
+
+            // Determine LastExposure* Capabilities
+            // It seems that most drivers that do not implement these will throw NotImplementedException even when there is not yet an exposure.
+            // This is good, because it lets us know early if the properties are not available for use following an actual exposure being made.
+            // For drivers that do implement these properties but do not yet have an exposure to describe, they *should* throw InvalidOperationException
+            // but some don't and instead return bogus values such as an empty date string. We consider these to be available but they are obviously
+            // non-conformant with the ASCOM spec.
+            try {
+                _ = device.LastExposureDuration;
+                HasLastExposureDuration = true;
+            } catch (ASCOM.NotImplementedException) {
+                Logger.Trace("LastExposureDuration is not implemented in this driver");
+            } catch (ASCOM.InvalidOperationException) {
+                // It's implemented but does not yet have a value, which is expected here.
+                HasLastExposureDuration = true;
+            } catch (Exception) { }
+
+            try {
+                _ = device.LastExposureStartTime;
+                HasLastExposureStartTime = true;
+            } catch (ASCOM.NotImplementedException) {
+                Logger.Trace("LastExposureStartTime is not implemented in this driver");
+            } catch (ASCOM.InvalidOperationException) {
+                // It's implemented but does not yet have a value, which is expected here.
+                HasLastExposureStartTime = true;
+            } catch (Exception) { }
 
             if (CanSetOffset) {
                 try {
@@ -408,7 +428,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         try {
                             val = device.GainMin;
                         } catch (ASCOM.NotImplementedException) {
-                            _canGetGainMinMax = false;                        
+                            _canGetGainMinMax = false;
                         } catch (ASCOM.InvalidOperationException) {
                             _canGetGainMinMax = false;
                         }
@@ -447,33 +467,32 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public bool IsPulseGuiding => GetProperty(nameof(Camera.IsPulseGuiding), false);
 
-        private bool _hasLastExposureInfo;
+        private bool HasLastExposureDuration { get; set; } = false;
+        private bool HasLastExposureStartTime { get; set; } = false;
 
-        public double LastExposureDuration {
+        public double? LastExposureDuration {
             get {
-                double val = -1;
-                try {
-                    if (ShouldBeConnected && _hasLastExposureInfo) {
-                        val = device.LastExposureDuration;
-                    }
-                } catch (ASCOM.InvalidOperationException) {
-                } catch (ASCOM.NotImplementedException) {
-                    _hasLastExposureInfo = false;
+                double? val = null;
+
+                if (ShouldBeConnected && HasLastExposureDuration) {
+                    val = GetProperty<double>(nameof(Camera.LastExposureDuration), double.NaN);
                 }
                 return val;
             }
         }
 
-        public string LastExposureStartTime {
+        public DateTime? LastExposureStartTime {
             get {
-                string val = string.Empty;
-                try {
-                    if (ShouldBeConnected && _hasLastExposureInfo) {
-                        val = device.LastExposureStartTime;
+                DateTime? val = null;
+
+                if (ShouldBeConnected && HasLastExposureStartTime) {
+                    string startTimeStr = GetProperty<string>(nameof(Camera.LastExposureStartTime), null);
+
+                    if (DateTime.TryParse(startTimeStr, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime dt)) {
+                        val = dt;
+                    } else {
+                        Logger.Error($"Unable to parse LastExposureStartTime '{startTimeStr}'");
                     }
-                } catch (ASCOM.InvalidOperationException) {
-                } catch (ASCOM.NotImplementedException) {
-                    _hasLastExposureInfo = false;
                 }
                 return val;
             }
@@ -615,7 +634,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 while (!ImageReady) {
                     await CoreUtil.Wait(TimeSpan.FromMilliseconds(10), token);
                 }
-                lastExposureEndTime = DateTime.UtcNow;
+
+                if (HasLastExposureStartTime && HasLastExposureDuration) {
+                    lastExposureStartTime = (DateTime)LastExposureStartTime;
+                    lastExposureEndTime = lastExposureStartTime + TimeSpan.FromSeconds(LastExposureDuration ?? double.NaN);
+                } else {
+                    lastExposureEndTime = DateTime.UtcNow;
+                }
             }
         }
 
@@ -630,6 +655,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         var metaData = new ImageMetaData();
                         metaData.FromCamera(this);
                         metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
+
+                        if (HasLastExposureDuration) {
+                            metaData.Image.ExposureTime = LastExposureDuration ?? double.NaN;
+                        }
 
                         return exposureDataFactory.CreateFlipped2DExposureData(
                             flipped2DArray: (Array)ImageArray,
@@ -709,7 +738,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             NumY = newY;
         }
 
-        private IList<int> offsets = new List<int>();
+        private readonly IList<int> offsets = new List<int>();
         private bool offsetValueMode = true;
         private bool canSetOffset = false;
         private DateTime lastExposureEndTime;
@@ -827,7 +856,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         protected override async Task PostConnect() {
             try {
-                if(device.SensorType == ASCOM.Common.DeviceInterfaces.SensorType.Color) {
+                if (device.SensorType == ASCOM.Common.DeviceInterfaces.SensorType.Color) {
                     Disconnect();
                     throw new Exception(Loc.Instance["LblASCOMColorSensorTypeNotSupported"]);
                 }
@@ -840,12 +869,12 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         protected override ICameraV4 GetInstance() {
-            if(!IsAlpacaDevice()) {
+            if (!IsAlpacaDevice()) {
                 return new Camera(this.Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaCamera(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
             }
-            
+
         }
 
         public bool LiveViewEnabled { get => false; set => throw new System.NotImplementedException(); }

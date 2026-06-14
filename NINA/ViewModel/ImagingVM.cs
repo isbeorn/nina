@@ -166,16 +166,18 @@ namespace NINA.ViewModel {
                 DateTime midpoint,
                 RMS rms,
                 string targetName) {
-            metaData.Image.Id = this.imageHistoryVM.GetNextImageId();            
-            if(metaData.Image.ExposureStart == DateTime.MinValue) {
+            metaData.Image.Id = this.imageHistoryVM.GetNextImageId();
+            if (metaData.Image.ExposureStart == DateTime.MinValue) {
                 metaData.Image.ExposureStart = start;
             }
             if (metaData.Image.ExposureMidPoint == DateTime.MinValue) {
                 metaData.Image.ExposureMidPoint = midpoint;
             }
+            if (double.IsNaN(metaData.Image.ExposureTime)) {
+                metaData.Image.ExposureTime = sequence.ExposureTime;
+            }
             metaData.Image.Binning = sequence.Binning.Name;
             metaData.Image.ExposureNumber = sequence.ProgressExposureCount;
-            metaData.Image.ExposureTime = sequence.ExposureTime;
             metaData.Image.ImageType = sequence.ImageType;
             metaData.Image.RecordedRMS = rms;
             metaData.Target.Name = targetName;
