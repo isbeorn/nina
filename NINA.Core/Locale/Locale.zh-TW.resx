@@ -1295,7 +1295,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>開啟位擴增</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Moravian, Omegon, RisingCam, SVBony and ToupTek cameras, when using the native driver)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>已啟用</value>
@@ -2771,6 +2771,12 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
   </data>
   <data name="LblSaveImageAsDSLRNote" xml:space="preserve">
     <value>This setting is ignored for DSLRs when using the native driver. The camera's RAW format will be saved instead!</value>
+  </data>
+  <data name="LblSaveNativeCameraRaw" xml:space="preserve">
+    <value>Save native camera RAW</value>
+  </data>
+  <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
+    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>保存選定的設定檔，下次不再詢問</value>

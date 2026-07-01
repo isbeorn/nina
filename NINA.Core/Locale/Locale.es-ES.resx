@@ -1286,7 +1286,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>Habilita escalado de bits</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Guardar imágenes de 8/10/12/14 bits con escalado a 16 bits. (Solo relevante para las cámaras Altair, Moravian, Omegon, RisingCam, SVBony y ToupTek, al usar el controlador nativo)</value>
+    <value>Guarda imágenes de 8, 10, 12 y 14 bits con escalado a 16 bits. Solo es aplicable a los controladores nativos de Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony y ToupTek.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Habilitado</value>
@@ -2762,6 +2762,12 @@ HFR calculada: {2}
   </data>
   <data name="LblSaveImageAsDSLRNote" xml:space="preserve">
     <value>Este ajuste será ignorado en las DSLR cuando se use el controlador nativo. ¡En su lugar se guardará el formato RAW de la cámara!</value>
+  </data>
+  <data name="LblSaveNativeCameraRaw" xml:space="preserve">
+    <value>Guardar el RAW original de la cámara</value>
+  </data>
+  <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
+    <value>Cuando está activado, las imágenes de las cámaras Nikon y Canon se guardan como archivos RAW de la cámara. Cuando está desactivado, las imágenes se guardan según la configuración de Opciones > Imágenes > Ajustes de archivo.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Guardar el perfil seleccionado y no volver a preguntar la próxima vez.</value>
