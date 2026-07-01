@@ -473,7 +473,7 @@ namespace NINA.Sequencer.Container {
                 foreach (ISequenceTrigger trigger in Triggers) {
                     trigger.Status = SequenceEntityStatus.CREATED;
                     if (trigger is SequenceTrigger seqTrigger) {
-                        seqTrigger.TriggerRunner.ResetAll();
+                        seqTrigger.TriggerRunner?.ResetAll();
                     }
                 }
             }

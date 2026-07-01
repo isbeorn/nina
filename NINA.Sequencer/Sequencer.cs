@@ -181,7 +181,7 @@ namespace NINA.Sequencer {
                     if (condition.Status != Core.Enum.SequenceEntityStatus.DISABLED && condition is IValidatable) {
                         var v = condition as IValidatable;
                         v.Validate();
-                        issues.AddRange(v.Issues);
+                        AddValidationIssues(issues, v);
                     }
                 }
             }
@@ -191,7 +191,7 @@ namespace NINA.Sequencer {
                     if (trigger.Status != Core.Enum.SequenceEntityStatus.DISABLED && trigger is IValidatable) {
                         var v = trigger as IValidatable;
                         v.Validate();
-                        issues.AddRange(v.Issues);
+                        AddValidationIssues(issues, v);
                     }
                 }
             }
@@ -200,7 +200,7 @@ namespace NINA.Sequencer {
                 if (item.Status != Core.Enum.SequenceEntityStatus.DISABLED && item is IValidatable) {
                     var v = item as IValidatable;
                     v.Validate();
-                    issues.AddRange(v.Issues);
+                    AddValidationIssues(issues, v);
                 }
 
                 if (item is ISequenceContainer && !(item is IImmutableContainer) && item.Status != Core.Enum.SequenceEntityStatus.DISABLED) {
@@ -209,6 +209,12 @@ namespace NINA.Sequencer {
                 }
             }
             return issues;
+        }
+
+        private static void AddValidationIssues(List<string> issues, IValidatable validatable) {
+            if (validatable.Issues != null) {
+                issues.AddRange(validatable.Issues);
+            }
         }
     }
 }
