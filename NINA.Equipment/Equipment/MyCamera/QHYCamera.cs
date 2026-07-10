@@ -928,25 +928,32 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     Info.CoolerPwmStep = step;
                     Logger.Debug($"QHYCCD: CoolerPwmMin={Info.CoolerPwmMin}, CoolerPwmMax={Info.CoolerPwmMax}, CoolerPwmStep={Info.CoolerPwmStep}");
 
-                    /*
-                     * Initialize cooler's target temperature to 0C
-                     */
                     if (!internalReconnect) {
+                        /*
+                         * Force the TEC off on connect. QHY cameras keep their cooler
+                         * running (firmware automatic temperature control) across a
+                         * disconnect/reconnect, so a session that left the camera cooling
+                         * would come back up still cooling. Turning it off here is the
+                         * intended, safe power-on behaviour.
+                         *
+                         * This must NOT go through the CoolerOn property setter or
+                         * CancelCoolingSync(): Connected is only set to true at the very
+                         * end of this method, and both of those early-return while
+                         * Connected is false. That made the previous force-off a silent
+                         * no-op - the hardware TEC was never actually commanded off, yet
+                         * Info.CoolerOn (default false) made the UI show the cooler as off
+                         * while it kept cooling. Command the hardware directly and set
+                         * Info.CoolerOn without the guard (mirroring Info.CoolerTargetTemp).
+                         */
                         Info.CoolerTargetTemp = 0;
-                    }
-
-                    /*
-                     * Force any TEC cooler to off upon startup
-                     */
-                    if (!internalReconnect) {
-                        CoolerOn = false;
-                        CancelCoolingSync();
+                        Info.CoolerOn = false;
+                        _ = Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_MANULPWM, 0);
 
                         /*
-                         * Start the thread that operates the TEC
-                         * This thread will operate the TEC in accordance with the user turning the cooler on or off
-                         * and program the camera's TEC to cool to the desired temperature. This thread will operate
-                         * for as long as the camera is connected.
+                         * Start the thread that operates the TEC. It maintains the target
+                         * temperature while CoolerOn is true and turns the TEC off when the
+                         * user turns cooling off. It runs for as long as the camera is
+                         * connected.
                          */
                         Logger.Debug("QHYCCD: Starting CoolerWorker task");
                         coolerWorkerCts = new CancellationTokenSource();
