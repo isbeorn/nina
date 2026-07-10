@@ -476,6 +476,16 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                                 Logger.Debug($"QHYCCD: ReadoutMode: Setting readout mode to {mode} ({modeName})");
 
+                                // SetQHYCCDReadMode + InitQHYCCD reinitialize the camera and reset its
+                                // control values (gain, offset, ...) to the new read mode's power-on
+                                // defaults. Capture the currently requested gain/offset here and re-apply
+                                // them after the switch; otherwise the next exposure - the first one taken
+                                // after a read mode change - is digitized with the reset defaults instead
+                                // of the requested values (observed as a wrong-gain/offset first frame
+                                // immediately following a read mode change).
+                                double requestedGain = Info.CurGain;
+                                double requestedOffset = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET);
+
                                 if ((rv = Sdk.SetReadMode(mode)) != QhySdk.QHYCCD_SUCCESS) {
                                     Logger.Error($"QHYCCD: SetQHYCCDReadMode() failed. Returned {rv}");
                                     return;
@@ -487,6 +497,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                                 Sdk.InitCamera();
                                 SetImageResolution();
+
+                                if (CanSetGain && !Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_GAIN, requestedGain)) {
+                                    Logger.Error($"QHYCCD: Failed to restore gain {requestedGain} after read mode change");
+                                }
+                                if (CanSetOffset && !Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, requestedOffset)) {
+                                    Logger.Error($"QHYCCD: Failed to restore offset {requestedOffset} after read mode change");
+                                }
                             }
                         }
                     }
