@@ -211,7 +211,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Width="Auto" Header="">
+                                <GridViewColumn Width="40" Header="">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <ContentControl
