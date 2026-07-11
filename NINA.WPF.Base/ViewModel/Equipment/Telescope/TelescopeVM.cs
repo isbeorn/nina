@@ -1089,16 +1089,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             }
 
             var applied = Telescope.TrackingMode == trackingMode;
-            if (applied) {
-                // Persist the user's explicit choice so it can be re-applied on the next connect.
+            if (applied && trackingMode != TrackingMode.Stopped) {
+                // Only remember an actual tracking rate (Sidereal/Lunar/Solar/King) so it can be
+                // re-applied on the next connect. "Stopped" is a transient action, not a rate
+                // preference, and must never be persisted - otherwise every subsequent connect would
+                // force the mount to stop tracking.
                 profileService.ActiveProfile.TelescopeSettings.TrackingMode = (int)trackingMode;
             }
             return applied;
         }
 
         /// <summary>
-        /// Re-applies the tracking mode the user last selected. The mount power-on state is not trustworthy,
-        /// so the remembered choice is always pushed back to the mount on connect.
+        /// Re-applies the tracking rate the user last selected (Sidereal/Lunar/Solar/King). The mount
+        /// power-on state is not trustworthy, so the remembered rate is pushed back to the mount on connect.
+        /// A persisted "Stopped" or an unsupported/Custom rate is skipped, and a parked mount is left untouched.
         /// </summary>
         private void RestorePersistedTrackingMode() {
             var persisted = profileService.ActiveProfile.TelescopeSettings.TrackingMode;
@@ -1107,6 +1111,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             }
 
             var trackingMode = (TrackingMode)persisted;
+            if (trackingMode == TrackingMode.Stopped) {
+                // A persisted "Stopped" is treated as "no rate preference": the mount is left in its
+                // actual state instead of being forced to stop tracking on every connect.
+                return;
+            }
+
             if (trackingMode == TrackingMode.Custom || !SupportedTrackingModes.Contains(trackingMode)) {
                 Logger.Warning($"Persisted tracking mode '{trackingMode}' is not supported by the mount. Skipping restore.");
                 return;

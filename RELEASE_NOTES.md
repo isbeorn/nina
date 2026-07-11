@@ -37,7 +37,7 @@ This allows you to safely return to a stable release if needed.
 - Firmware version is now correctly displayed for certain QHY camera models.
 - Image save failures in the asynchronous save queue now raise a persistent notification and are forwarded into the active sequence failure event stream.
 - The focuser temperature compensation toggle is now remembered across restarts and re-applied to the device on connect, instead of always reverting to the driver's power-on state.
-- The mount tracking mode selected by the user is now remembered across restarts and re-applied to the mount on connect (skipped while parked), instead of relying on the mount's untrusted power-on state.
+- The mount tracking rate selected by the user (Sidereal/Lunar/Solar/King) is now remembered across restarts and re-applied to the mount on connect (skipped while parked), instead of relying on the mount's untrusted power-on state. Stopping tracking is treated as a transient action and is no longer persisted, so the mount is never forced to stay stopped on subsequent connects.
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
