@@ -36,6 +36,8 @@ This allows you to safely return to a stable release if needed.
 - Fixed an issue where custom popout windows and message boxes could briefly render incorrectly when opened.
 - Firmware version is now correctly displayed for certain QHY camera models.
 - Image save failures in the asynchronous save queue now raise a persistent notification and are forwarded into the active sequence failure event stream.
+- The focuser temperature compensation toggle is now remembered across restarts and re-applied to the device on connect, instead of always reverting to the driver's power-on state.
+- The mount tracking mode selected by the user is now remembered across restarts and re-applied to the mount on connect (skipped while parked), instead of relying on the mount's untrusted power-on state.
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**

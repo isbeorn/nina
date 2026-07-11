@@ -41,5 +41,6 @@ namespace NINA.Profile.Interfaces {
         double RSquaredThreshold { get; set; }
         double ManualStepSmallMultiplier { get; set; }
         double ManualStepLargeMultiplier { get; set; }
+        bool TempComp { get; set; }
     }
 }

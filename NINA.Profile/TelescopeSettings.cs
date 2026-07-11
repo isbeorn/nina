@@ -41,6 +41,7 @@ namespace NINA.Profile {
             noSync = false;
             timeSync = true;
             telescopeLocationSyncDirection = TelescopeLocationSyncDirection.PROMPT;
+            trackingMode = -1;
         }
 
         private string id;
@@ -218,6 +219,18 @@ namespace NINA.Profile {
             set {
                 if(timeSync != value) {
                     timeSync = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int trackingMode;
+        [DataMember]
+        public int TrackingMode {
+            get => trackingMode;
+            set {
+                if (trackingMode != value) {
+                    trackingMode = value;
                     RaisePropertyChanged();
                 }
             }

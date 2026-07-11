@@ -523,6 +523,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             // Supporting custom would require an additional dialog box to input the custom rates. We can add that later if there's demand for it
                             SupportedTrackingModes = new AsyncObservableCollection<TrackingMode>(Telescope.TrackingModes.Where(m => m != TrackingMode.Custom));
 
+                            RestorePersistedTrackingMode();
+
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
                             _ = updateTimer.Run();
 
@@ -1085,7 +1087,37 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 }
             }
 
-            return Telescope.TrackingMode == trackingMode;
+            var applied = Telescope.TrackingMode == trackingMode;
+            if (applied) {
+                // Persist the user's explicit choice so it can be re-applied on the next connect.
+                profileService.ActiveProfile.TelescopeSettings.TrackingMode = (int)trackingMode;
+            }
+            return applied;
+        }
+
+        /// <summary>
+        /// Re-applies the tracking mode the user last selected. The mount power-on state is not trustworthy,
+        /// so the remembered choice is always pushed back to the mount on connect.
+        /// </summary>
+        private void RestorePersistedTrackingMode() {
+            var persisted = profileService.ActiveProfile.TelescopeSettings.TrackingMode;
+            if (persisted < 0) {
+                return;
+            }
+
+            var trackingMode = (TrackingMode)persisted;
+            if (trackingMode == TrackingMode.Custom || !SupportedTrackingModes.Contains(trackingMode)) {
+                Logger.Warning($"Persisted tracking mode '{trackingMode}' is not supported by the mount. Skipping restore.");
+                return;
+            }
+
+            if (TelescopeInfo.AtPark) {
+                Logger.Info($"Mount is parked on connect. Skipping restore of persisted tracking mode '{trackingMode}'.");
+                return;
+            }
+
+            Logger.Info($"Restoring persisted tracking mode '{trackingMode}' on connect");
+            SetTrackingMode(trackingMode);
         }
 
         public bool SetCustomTrackingRate(SiderealShiftTrackingRate rate) {
