@@ -607,7 +607,8 @@
                                     x:Name="TrackingModeComboBox"
                                     Height="30"
                                     Margin="10,0,0,0"
-                                    ItemsSource="{Binding SupportedTrackingModes}">
+                                    ItemsSource="{Binding SupportedTrackingModes}"
+                                    SelectedItem="{Binding SelectedTrackingMode, Mode=TwoWay}">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=., Converter={StaticResource TrackingModeConverter}}" />

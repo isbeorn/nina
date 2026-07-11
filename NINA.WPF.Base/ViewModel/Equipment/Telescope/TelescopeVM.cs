@@ -633,6 +633,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
             telescopeValues.TryGetValue(nameof(TelescopeInfo.TrackingRate), out o);
             TelescopeInfo.TrackingRate = (TrackingRate)(o ?? TrackingRate.STOPPED);
+            RaisePropertyChanged(nameof(SelectedTrackingMode));
 
             telescopeValues.TryGetValue(nameof(TelescopeInfo.TrackingEnabled), out o);
             TelescopeInfo.TrackingEnabled = (bool)(o ?? false);
@@ -1149,6 +1150,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             set {
                 supportedTrackingModes = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// The tracking mode currently reported by the mount, bound to the tracking mode selector in the UI.
+        /// The getter reflects the live device state so the selector is never blank while connected;
+        /// setting it from the UI applies the chosen mode to the mount.
+        /// </summary>
+        public TrackingMode SelectedTrackingMode {
+            get => TelescopeInfo.TrackingMode;
+            set {
+                if (TelescopeInfo?.Connected == true && value != TelescopeInfo.TrackingMode) {
+                    SetTrackingMode(value);
+                }
             }
         }
 

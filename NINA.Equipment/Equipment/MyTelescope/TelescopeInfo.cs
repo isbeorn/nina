@@ -250,6 +250,8 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             }
         }
 
+        public TrackingMode TrackingMode => TrackingRate.TrackingMode;
+
         private bool trackingEnabled;
 
         public bool TrackingEnabled {
