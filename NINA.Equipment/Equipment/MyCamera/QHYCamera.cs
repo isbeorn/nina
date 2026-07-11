@@ -379,6 +379,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             set {
                 if (Connected && CanSetOffset) {
                     if (Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, value)) {
+                        Info.CurOffset = value;
                         RaisePropertyChanged();
                     }
                 }
@@ -476,6 +477,18 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                                 Logger.Debug($"QHYCCD: ReadoutMode: Setting readout mode to {mode} ({modeName})");
 
+                                // SetQHYCCDReadMode + InitQHYCCD reinitialize the camera and reset its
+                                // control values (gain, offset, ...) to the new read mode's power-on
+                                // defaults. Re-apply the last commanded gain/offset after the switch;
+                                // otherwise exposures taken after a read mode change are digitized with
+                                // the reset defaults instead of the requested values (observed as
+                                // wrong-gain/offset frames following a read mode change). Both values are
+                                // read from our own cache (Info.CurGain / Info.CurOffset) rather than the
+                                // hardware, so the correct values are restored even if the hardware is
+                                // already in a reset state at this point.
+                                double requestedGain = Info.CurGain;
+                                int requestedOffset = Info.CurOffset;
+
                                 if ((rv = Sdk.SetReadMode(mode)) != QhySdk.QHYCCD_SUCCESS) {
                                     Logger.Error($"QHYCCD: SetQHYCCDReadMode() failed. Returned {rv}");
                                     return;
@@ -487,6 +500,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                                 Sdk.InitCamera();
                                 SetImageResolution();
+
+                                if (CanSetGain && !Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_GAIN, requestedGain)) {
+                                    Logger.Error($"QHYCCD: Failed to restore gain {requestedGain} after read mode change");
+                                }
+                                if (CanSetOffset && !Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, requestedOffset)) {
+                                    Logger.Error($"QHYCCD: Failed to restore offset {requestedOffset} after read mode change");
+                                }
                             }
                         }
                     }
@@ -911,6 +931,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 Logger.Debug($"QHYCCD: OffMin={Info.OffMin}, OffMax={Info.OffMax}, OffStep={Info.OffStep}");
 
                 QuirkInflatedOffset();
+
+                /*
+                 * Seed the cached offset from the hardware so it can be re-applied
+                 * after a read mode change (which resets control values) even before
+                 * the first explicit offset command of a session.
+                 */
+                Info.CurOffset = (int)Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET);
 
                 /*
                  * Fetch our min and max PWM settings for
