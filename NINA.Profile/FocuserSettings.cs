@@ -53,6 +53,7 @@ namespace NINA.Profile {
             rSquaredThreshold = 0.7;
             manualStepSmallMultiplier = 0.5;
             manualStepLargeMultiplier = 5.0;
+            tempComp = false;
         }
 
         private string id;
@@ -380,6 +381,19 @@ namespace NINA.Profile {
             set {
                 if (manualStepLargeMultiplier != value) {
                     manualStepLargeMultiplier = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool tempComp;
+
+        [DataMember]
+        public bool TempComp {
+            get => tempComp;
+            set {
+                if (tempComp != value) {
+                    tempComp = value;
                     RaisePropertyChanged();
                 }
             }

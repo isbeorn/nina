@@ -523,6 +523,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             // Supporting custom would require an additional dialog box to input the custom rates. We can add that later if there's demand for it
                             SupportedTrackingModes = new AsyncObservableCollection<TrackingMode>(Telescope.TrackingModes.Where(m => m != TrackingMode.Custom));
 
+                            RestorePersistedTrackingMode();
+
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
                             _ = updateTimer.Run();
 
@@ -631,6 +633,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
             telescopeValues.TryGetValue(nameof(TelescopeInfo.TrackingRate), out o);
             TelescopeInfo.TrackingRate = (TrackingRate)(o ?? TrackingRate.STOPPED);
+            RaisePropertyChanged(nameof(SelectedTrackingMode));
 
             telescopeValues.TryGetValue(nameof(TelescopeInfo.TrackingEnabled), out o);
             TelescopeInfo.TrackingEnabled = (bool)(o ?? false);
@@ -1085,7 +1088,47 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 }
             }
 
-            return Telescope.TrackingMode == trackingMode;
+            var applied = Telescope.TrackingMode == trackingMode;
+            if (applied && trackingMode != TrackingMode.Stopped) {
+                // Only remember an actual tracking rate (Sidereal/Lunar/Solar/King) so it can be
+                // re-applied on the next connect. "Stopped" is a transient action, not a rate
+                // preference, and must never be persisted - otherwise every subsequent connect would
+                // force the mount to stop tracking.
+                profileService.ActiveProfile.TelescopeSettings.TrackingMode = (int)trackingMode;
+            }
+            return applied;
+        }
+
+        /// <summary>
+        /// Re-applies the tracking rate the user last selected (Sidereal/Lunar/Solar/King). The mount
+        /// power-on state is not trustworthy, so the remembered rate is pushed back to the mount on connect.
+        /// A persisted "Stopped" or an unsupported/Custom rate is skipped, and a parked mount is left untouched.
+        /// </summary>
+        private void RestorePersistedTrackingMode() {
+            var persisted = profileService.ActiveProfile.TelescopeSettings.TrackingMode;
+            if (persisted < 0) {
+                return;
+            }
+
+            var trackingMode = (TrackingMode)persisted;
+            if (trackingMode == TrackingMode.Stopped) {
+                // A persisted "Stopped" is treated as "no rate preference": the mount is left in its
+                // actual state instead of being forced to stop tracking on every connect.
+                return;
+            }
+
+            if (trackingMode == TrackingMode.Custom || !SupportedTrackingModes.Contains(trackingMode)) {
+                Logger.Warning($"Persisted tracking mode '{trackingMode}' is not supported by the mount. Skipping restore.");
+                return;
+            }
+
+            if (TelescopeInfo.AtPark) {
+                Logger.Info($"Mount is parked on connect. Skipping restore of persisted tracking mode '{trackingMode}'.");
+                return;
+            }
+
+            Logger.Info($"Restoring persisted tracking mode '{trackingMode}' on connect");
+            SetTrackingMode(trackingMode);
         }
 
         public bool SetCustomTrackingRate(SiderealShiftTrackingRate rate) {
@@ -1117,6 +1160,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             set {
                 supportedTrackingModes = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// The tracking mode currently reported by the mount, bound to the tracking mode selector in the UI.
+        /// The getter reflects the live device state so the selector is never blank while connected;
+        /// setting it from the UI applies the chosen mode to the mount.
+        /// </summary>
+        public TrackingMode SelectedTrackingMode {
+            get => TelescopeInfo.TrackingMode;
+            set {
+                if (TelescopeInfo?.Connected == true && value != TelescopeInfo.TrackingMode) {
+                    SetTrackingMode(value);
+                }
             }
         }
 

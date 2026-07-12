@@ -32,5 +32,14 @@ namespace NINA.Profile.Interfaces {
         bool SecondaryReversed { get; set; }
 
         TelescopeLocationSyncDirection TelescopeLocationSyncDirection { get; set; }
+
+        /// <summary>
+        /// Persisted tracking mode chosen by the user, stored as the integer value of
+        /// <see cref="NINA.Equipment.Interfaces.TrackingMode"/>. A value of -1 means no preference has been
+        /// stored yet, in which case the mount tracking mode is left untouched on connect.
+        /// The enum itself lives in NINA.Equipment and cannot be referenced from NINA.Profile without
+        /// introducing a circular dependency, hence the integer representation.
+        /// </summary>
+        int TrackingMode { get; set; }
     }
 }
