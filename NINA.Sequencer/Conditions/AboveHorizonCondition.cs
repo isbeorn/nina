@@ -98,7 +98,8 @@ namespace NINA.Sequencer.Conditions {
 
             if (c.RA != lastRA) {
                 RaExpression.Definition = Math.Round(c.RA, 7).ToString(CultureInfo.InvariantCulture);
-            } else if (c.Dec != lastDec) {
+            }
+            if (c.Dec != lastDec) {
                 DecExpression.Definition = Math.Round(c.Dec, 7).ToString(CultureInfo.InvariantCulture);
             }
 
@@ -127,6 +128,9 @@ namespace NINA.Sequencer.Conditions {
             }
 
             if (Data.Coordinates != null) {
+                Data.Coordinates.PropertyChanged -= Coordinates_PropertyChanged;
+                lastRA = Data.Coordinates.Coordinates.RA;
+                lastDec = Data.Coordinates.Coordinates.Dec;
                 Data.Coordinates.PropertyChanged += Coordinates_PropertyChanged;
             }
             RaExpression.Context = this;

@@ -63,6 +63,52 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
         }
 
         [Test]
+        public void FirstAzimuthComponentEdit_UpdatesAzimuthExpression() {
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true });
+            var sut = new SlewScopeToAltAz(profileServiceMock.Object, telescopeMediatorMock.Object, guiderMediatorMock.Object);
+            sut.Coordinates.Coordinates = new TopocentricCoordinates(
+                Angle.ByDegree(330),
+                Angle.ByDegree(45),
+                Angle.ByDegree(10),
+                Angle.ByDegree(20),
+                0);
+            sut.AltExpression.Definition = "40 + 5";
+            sut.AzExpression.Definition = "330";
+            sut.AfterParentChanged();
+
+            sut.Coordinates.AzDegrees = 45;
+
+            sut.Coordinates.Coordinates.Azimuth.Degree.Should().Be(45);
+            sut.AltExpression.Definition.Should().Be("40 + 5");
+            sut.AzExpression.Definition.Should().Be("45");
+        }
+
+        [Test]
+        public void ReplacingBothCoordinates_UpdatesBothExpressions() {
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true });
+            var sut = new SlewScopeToAltAz(profileServiceMock.Object, telescopeMediatorMock.Object, guiderMediatorMock.Object);
+            sut.Coordinates.Coordinates = new TopocentricCoordinates(
+                Angle.ByDegree(330),
+                Angle.ByDegree(45),
+                Angle.ByDegree(10),
+                Angle.ByDegree(20),
+                0);
+            sut.AltExpression.Definition = "45";
+            sut.AzExpression.Definition = "330";
+            sut.AfterParentChanged();
+
+            sut.Coordinates.Coordinates = new TopocentricCoordinates(
+                Angle.ByDegree(120),
+                Angle.ByDegree(60),
+                Angle.ByDegree(10),
+                Angle.ByDegree(20),
+                0);
+
+            sut.AltExpression.Definition.Should().Be("60");
+            sut.AzExpression.Definition.Should().Be("120");
+        }
+
+        [Test]
         public void Validate_NoIssues() {
             telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true });
 

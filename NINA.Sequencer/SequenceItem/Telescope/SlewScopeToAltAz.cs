@@ -169,7 +169,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
             if (c.Altitude != lastAlt) {
                 AltExpression.Definition = Math.Round(c.Altitude.Degree, 7).ToString(CultureInfo.InvariantCulture);
-            } else if (c.Azimuth != lastAz) {
+            }
+            if (c.Azimuth != lastAz) {
                 AzExpression.Definition = Math.Round(c.Azimuth.Degree, 7).ToString(CultureInfo.InvariantCulture);
             }
 
@@ -181,6 +182,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             AltExpression.Context = this;
             AzExpression.Context = this;
             if (Coordinates != null) {
+                Coordinates.PropertyChanged -= Coordinates_PropertyChanged;
+                lastAlt = Coordinates.Coordinates.Altitude;
+                lastAz = Coordinates.Coordinates.Azimuth;
                 Coordinates.PropertyChanged += Coordinates_PropertyChanged;
             }
             base.AfterParentChanged();

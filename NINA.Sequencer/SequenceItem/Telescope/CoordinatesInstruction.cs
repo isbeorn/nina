@@ -73,6 +73,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
                 coordinates = value;
                 if (coordinates != null) {
+                    lastRA = coordinates.Coordinates?.RA ?? 0;
+                    lastDec = coordinates.Coordinates?.Dec ?? 0;
                     coordinates.PropertyChanged += Coordinates_PropertyChanged;
                 }
 
@@ -167,7 +169,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
             if (c.RA != lastRA) {
                 RaExpression.Definition = Math.Round(c.RA, 7).ToString(CultureInfo.InvariantCulture);
-            } else if (c.Dec != lastDec) {
+            }
+            if (c.Dec != lastDec) {
                 DecExpression.Definition = Math.Round(c.Dec, 7).ToString(CultureInfo.InvariantCulture);
             }
 
