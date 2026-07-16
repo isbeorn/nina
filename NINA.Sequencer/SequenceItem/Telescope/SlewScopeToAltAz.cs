@@ -157,8 +157,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        private Angle lastAlt;
-        private Angle lastAz;
+        private double lastAlt;
+        private double lastAz;
 
         protected void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             // When coordinates change, we change the decimal value
@@ -167,15 +167,15 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
             if (Protect) return;
 
-            if (c.Altitude != lastAlt) {
+            if (c.Altitude.Degree != lastAlt) {
                 AltExpression.Definition = Math.Round(c.Altitude.Degree, 7).ToString(CultureInfo.InvariantCulture);
             }
-            if (c.Azimuth != lastAz) {
+            if (c.Azimuth.Degree != lastAz) {
                 AzExpression.Definition = Math.Round(c.Azimuth.Degree, 7).ToString(CultureInfo.InvariantCulture);
             }
 
-            lastAlt = c.Altitude;
-            lastAz = c.Azimuth;
+            lastAlt = c.Altitude.Degree;
+            lastAz = c.Azimuth.Degree;
         }
 
         public override void AfterParentChanged() {
@@ -183,8 +183,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             AzExpression.Context = this;
             if (Coordinates != null) {
                 Coordinates.PropertyChanged -= Coordinates_PropertyChanged;
-                lastAlt = Coordinates.Coordinates.Altitude;
-                lastAz = Coordinates.Coordinates.Azimuth;
+                lastAlt = Coordinates.Coordinates.Altitude.Degree;
+                lastAz = Coordinates.Coordinates.Azimuth.Degree;
                 Coordinates.PropertyChanged += Coordinates_PropertyChanged;
             }
             base.AfterParentChanged();
