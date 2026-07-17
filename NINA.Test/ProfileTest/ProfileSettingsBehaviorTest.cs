@@ -207,6 +207,19 @@ namespace NINA.Test.ProfileTest {
             roundTripped.FilterWheelFilters[1].AutoFocusFilter.Should().BeFalse();
         }
 
+        [Test]
+        public void SwitchSettings_RoundTrip_PreservesKnownSymbolNames() {
+            SwitchSettings settings = new SwitchSettings {
+                KnownReadonlySwitchSymbols = new List<string> { "InputVoltage", "DewPoint" },
+                KnownWritableSwitchSymbols = new List<string> { "DewHeater", "PowerPort" }
+            };
+
+            SwitchSettings roundTripped = RoundTrip(settings);
+
+            roundTripped.KnownReadonlySwitchSymbols.Should().Equal("InputVoltage", "DewPoint");
+            roundTripped.KnownWritableSwitchSymbols.Should().Equal("DewHeater", "PowerPort");
+        }
+
         /// <summary>
         /// Verifies that sequence settings recover from missing folders and template files during profile deserialization.
         /// </summary>

@@ -12,10 +12,14 @@
 
 #endregion "copyright"
 
+using System.Collections.Generic;
+
 namespace NINA.Profile.Interfaces {
 
     public interface ISwitchSettings : ISettings {
         string Id { get; set; }
         string LastDeviceName { get; set; }
+        List<string> KnownReadonlySwitchSymbols { get; set; }
+        List<string> KnownWritableSwitchSymbols { get; set; }
     }
 }

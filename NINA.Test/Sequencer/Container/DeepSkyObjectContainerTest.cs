@@ -289,10 +289,10 @@ namespace NINA.Test.Sequencer.Container {
         }
 
         /// <summary>
-        /// Verifies the Execute Adds Target Symbols And Removes Them After Execution scenario for the sequencer behavior under test.
+        /// Verifies the Execute Adds Target Symbols And Uninitializes Them After Execution scenario for the sequencer behavior under test.
         /// </summary>
         [Test]
-        public async Task Execute_AddsTargetSymbolsAndRemovesThemAfterExecution() {
+        public async Task Execute_AddsTargetSymbolsAndUninitializesThemAfterExecution() {
             DeepSkyObjectContainer sut = CreateSut();
             sut.Target.TargetName = "M31";
             sut.Target.InputCoordinates.Coordinates = new Coordinates(Angle.ByHours(1.5), Angle.ByDegree(42), Epoch.J2000);
@@ -304,7 +304,11 @@ namespace NINA.Test.Sequencer.Container {
             symbolBrokerMock.As<ISymbolBrokerProviderApi>().Verify(x => x.AddOrUpdateSymbol(symbolProviderMock.Object, "TargetRAJ2000", It.Is<object>(value => value != null && value.GetType() == typeof(double) && Math.Abs((double)value - 1.5) < 0.0001)), Times.Once);
             symbolBrokerMock.As<ISymbolBrokerProviderApi>().Verify(x => x.AddOrUpdateSymbol(symbolProviderMock.Object, "TargetDecJ2000", It.Is<object>(value => value != null && value.GetType() == typeof(double) && Math.Abs((double)value - 42) < 0.0001)), Times.Once);
             symbolBrokerMock.As<ISymbolBrokerProviderApi>().Verify(x => x.AddOrUpdateSymbol(symbolProviderMock.Object, "TargetPositionAngle", 33d), Times.Once);
-            symbolBrokerMock.As<ISymbolBrokerProviderApi>().Verify(x => x.RemoveSymbol(symbolProviderMock.Object, It.IsAny<string>()), Times.Exactly(4));
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>().Verify(x => x.AddOrUpdateSymbol(symbolProviderMock.Object, "TargetName", null), Times.Once);
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>().Verify(x => x.AddOrUpdateSymbol(symbolProviderMock.Object, "TargetRAJ2000", null), Times.Once);
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>().Verify(x => x.AddOrUpdateSymbol(symbolProviderMock.Object, "TargetDecJ2000", null), Times.Once);
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>().Verify(x => x.AddOrUpdateSymbol(symbolProviderMock.Object, "TargetPositionAngle", null), Times.Once);
+            symbolBrokerMock.As<ISymbolBrokerProviderApi>().Verify(x => x.RemoveSymbol(symbolProviderMock.Object, It.IsAny<string>()), Times.Never);
         }
 
         /// <summary>

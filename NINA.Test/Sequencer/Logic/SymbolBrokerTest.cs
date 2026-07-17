@@ -45,6 +45,7 @@ namespace NINA.Test.Sequencer.Logic {
         private Mock<ITelescopeMediator> telescopeMediatorMock;
         private Mock<IGuiderMediator> guiderMediatorMock;
         private Mock<IImagingMediator> imagingMediatorMock;
+        private Mock<ISwitchSettings> switchSettingsMock;
         private SymbolBroker broker;
 
         [SetUp]
@@ -62,10 +63,15 @@ namespace NINA.Test.Sequencer.Logic {
             telescopeMediatorMock = new Mock<ITelescopeMediator>();
             guiderMediatorMock = new Mock<IGuiderMediator>();
             imagingMediatorMock = new Mock<IImagingMediator>();
+            switchSettingsMock = new Mock<ISwitchSettings>();
+            switchSettingsMock.SetupAllProperties();
+            switchSettingsMock.Object.KnownReadonlySwitchSymbols = new List<string>();
+            switchSettingsMock.Object.KnownWritableSwitchSymbols = new List<string>();
 
             profileServiceMock.SetupGet(x => x.ActiveProfile.AstrometrySettings.Latitude).Returns(10);
             profileServiceMock.SetupGet(x => x.ActiveProfile.AstrometrySettings.Longitude).Returns(20);
             profileServiceMock.SetupGet(x => x.ActiveProfile.AstrometrySettings.Elevation).Returns(30);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.SwitchSettings).Returns(switchSettingsMock.Object);
 
             broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
                 flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
@@ -103,6 +109,16 @@ namespace NINA.Test.Sequencer.Logic {
             }
         }
 
+        private void ValidateUninitializedSymbol(string key, bool isHidden = false) {
+            broker.TryGetSymbol(key, out var symbol).Should().BeTrue(key);
+            symbol.Should().NotBeNull();
+            symbol.Value.Should().BeNull(key);
+            symbol.Type.Should().Be(isHidden ? Symbol.SymbolType.SYMBOL_HIDDEN : Symbol.SymbolType.SYMBOL_NORMAL);
+
+            broker.TryGetValue(key, out var value).Should().BeTrue(key);
+            value.Should().BeNull(key);
+        }
+
         [Test]
         public void SymbolBroker_Instance_IsInternalSingletonFallback() {
             typeof(SymbolBroker)
@@ -129,6 +145,26 @@ namespace NINA.Test.Sequencer.Logic {
             ValidateSymbol(key: "NINA_SunAltitude", expectedSuccess: true);
             ValidateSymbol(key: "NINA_MoonIllumination", expectedSuccess: true);
             ValidateSymbol(key: "NINA_MoonAltitude", expectedSuccess: true);
+        }
+
+        [Test]
+        public void SymbolBroker_FixedCoreSymbols_AreRegisteredBeforeTheirProducersRun() {
+            foreach (string key in new[] {
+                "NINA_TargetName", "NINA_TargetRAJ2000", "NINA_TargetDecJ2000", "NINA_TargetPositionAngle",
+                "Image_HFR", "Image_FWHM", "Image_Eccentricity", "Image_StarCount", "Image_Mean",
+                "Mount_Altitude", "Switch_Connected", "Weather_Temperature", "Focuser_Position",
+                "FilterWheel_CurrentFilterIndex", "Dome_ShutterStatus", "Safety_IsSafe", "Camera_Temperature",
+                "FlatPanel_LightOn", "Rotator_Position", "Guider_RMSTotal"
+            }) {
+                ValidateUninitializedSymbol(key);
+            }
+
+            foreach (string key in new[] {
+                "Image_HFRPixels", "Image_HFRArcseconds", "Camera_PixelSize", "Camera_XSize", "Camera_YSize",
+                "Dome_DomeAzimuth", "Dome_DomeAltitude"
+            }) {
+                ValidateUninitializedSymbol(key, isHidden: true);
+            }
         }
 
         [Test]
@@ -195,13 +231,13 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
-            ValidateSymbol(key: "Camera_Temperature", expectedSuccess: false);
-            ValidateSymbol(key: "Camera_TemperatureSetPoint", expectedSuccess: false);
-            ValidateSymbol(key: "Camera_CoolerOn", expectedSuccess: false);
-            ValidateSymbol(key: "Camera_CoolerPower", expectedSuccess: false);
-            ValidateSymbol(key: "Camera_PixelSize", expectedSuccess: false);
-            ValidateSymbol(key: "Camera_XSize", expectedSuccess: false);
-            ValidateSymbol(key: "Camera_YSize", expectedSuccess: false);
+            ValidateUninitializedSymbol("Camera_Temperature");
+            ValidateUninitializedSymbol("Camera_TemperatureSetPoint");
+            ValidateUninitializedSymbol("Camera_CoolerOn");
+            ValidateUninitializedSymbol("Camera_CoolerPower");
+            ValidateUninitializedSymbol("Camera_PixelSize", isHidden: true);
+            ValidateUninitializedSymbol("Camera_XSize", isHidden: true);
+            ValidateUninitializedSymbol("Camera_YSize", isHidden: true);
         }
 
         [Test]
@@ -233,8 +269,8 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
-            ValidateSymbol(key: "Focuser_Position", expectedSuccess: false);
-            ValidateSymbol(key: "Focuser_Temperature", expectedSuccess: false);
+            ValidateUninitializedSymbol("Focuser_Position");
+            ValidateUninitializedSymbol("Focuser_Temperature");
         }
 
         [Test]
@@ -266,8 +302,8 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
-            ValidateSymbol(key: "Rotator_Position", expectedSuccess: false);
-            ValidateSymbol(key: "Rotator_Temperature", expectedSuccess: false);
+            ValidateUninitializedSymbol("Rotator_Position");
+            ValidateUninitializedSymbol("Rotator_MechanicalPosition");
         }
 
         [Test]
@@ -311,10 +347,10 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
-            ValidateSymbol(key: "FilterWheel_CurrentFilterIndex", expectedSuccess: false);
-            ValidateSymbol(key: "Filter_Red", expectedSuccess: false);
-            ValidateSymbol(key: "Filter_Luminance", expectedSuccess: false);
-            ValidateSymbol(key: "Filter_Blue", expectedSuccess: false);
+            ValidateUninitializedSymbol("FilterWheel_CurrentFilterIndex");
+            ValidateUninitializedSymbol("Filter_Red");
+            ValidateUninitializedSymbol("Filter_Luminance");
+            ValidateUninitializedSymbol("Filter_Blue");
         }
 
         [Test]
@@ -353,6 +389,30 @@ namespace NINA.Test.Sequencer.Logic {
             ValidateSymbol(key: "Gauge_TestSwitch2", expectedSuccess: true, expectedValue: 22.2);
             ValidateSymbol(key: "Switch_TestSwitch3", expectedSuccess: true, expectedValue: 42.1);
             ValidateSymbol(key: "Switch_TestSwitch4", expectedSuccess: true, expectedValue: 52.3);
+            switchSettingsMock.Object.KnownReadonlySwitchSymbols.Should().Equal("TestSwitch1", "TestSwitch2");
+            switchSettingsMock.Object.KnownWritableSwitchSymbols.Should().Equal("TestSwitch3", "TestSwitch4");
+        }
+
+        [Test]
+        public void SymbolBroker_StartupAndProfileChange_RestoreRememberedSwitchSymbolsUninitialized() {
+            broker.Dispose();
+            switchSettingsMock.Object.KnownReadonlySwitchSymbols = new List<string> { "RememberedGauge" };
+            switchSettingsMock.Object.KnownWritableSwitchSymbols = new List<string> { "RememberedSwitch" };
+            broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
+                flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
+                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
+
+            ValidateUninitializedSymbol("Gauge_RememberedGauge");
+            ValidateUninitializedSymbol("Switch_RememberedSwitch");
+
+            switchSettingsMock.Object.KnownReadonlySwitchSymbols = new List<string> { "NewGauge" };
+            switchSettingsMock.Object.KnownWritableSwitchSymbols = new List<string> { "NewSwitch" };
+            profileServiceMock.Raise(x => x.ProfileChanged += null, EventArgs.Empty);
+
+            ValidateSymbol("Gauge_RememberedGauge", expectedSuccess: false);
+            ValidateSymbol("Switch_RememberedSwitch", expectedSuccess: false);
+            ValidateUninitializedSymbol("Gauge_NewGauge");
+            ValidateUninitializedSymbol("Switch_NewSwitch");
         }
 
         [Test]
@@ -391,10 +451,10 @@ namespace NINA.Test.Sequencer.Logic {
 
             // Assert
             ValidateSymbol(key: "Switch_Connected", expectedSuccess: true, expectedValue: false);
-            ValidateSymbol(key: "Gauge_TestSwitch1", expectedSuccess: false);
-            ValidateSymbol(key: "Gauge_TestSwitch2", expectedSuccess: false);
-            ValidateSymbol(key: "Switch_TestSwitch3", expectedSuccess: false);
-            ValidateSymbol(key: "Switch_TestSwitch4", expectedSuccess: false);
+            ValidateUninitializedSymbol("Gauge_TestSwitch1");
+            ValidateUninitializedSymbol("Gauge_TestSwitch2");
+            ValidateUninitializedSymbol("Switch_TestSwitch3");
+            ValidateUninitializedSymbol("Switch_TestSwitch4");
         }
 
 
@@ -436,12 +496,12 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
-            ValidateSymbol(key: "Mount_Altitude", expectedSuccess: false);
-            ValidateSymbol(key: "Mount_Azimuth", expectedSuccess: false);
-            ValidateSymbol(key: "Mount_RightAscensionJ2000", expectedSuccess: false);
-            ValidateSymbol(key: "Mount_DeclinationJ2000", expectedSuccess: false);
-            ValidateSymbol(key: "Mount_SideOfPier", expectedSuccess: false);
-            ValidateSymbol(key: "Mount_AtPark", expectedSuccess: false);
+            ValidateUninitializedSymbol("Mount_Altitude");
+            ValidateUninitializedSymbol("Mount_Azimuth");
+            ValidateUninitializedSymbol("Mount_RightAscensionJ2000");
+            ValidateUninitializedSymbol("Mount_DeclinationJ2000");
+            ValidateUninitializedSymbol("Mount_SideOfPier");
+            ValidateUninitializedSymbol("Mount_AtPark");
         }
 
         [Test]
@@ -475,9 +535,9 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
-            ValidateSymbol(key: "FlatPanel_LightOn", expectedSuccess: false);
-            ValidateSymbol(key: "FlatPanel_Brightness", expectedSuccess: false);
-            ValidateSymbol(key: "FlatPanel_CoverState", expectedSuccess: false);
+            ValidateUninitializedSymbol("FlatPanel_LightOn");
+            ValidateUninitializedSymbol("FlatPanel_Brightness");
+            ValidateUninitializedSymbol("FlatPanel_CoverState");
         }
 
         [Test]
@@ -542,14 +602,14 @@ namespace NINA.Test.Sequencer.Logic {
             ValidateSymbol(key: "Weather_DewPoint", expectedSuccess: true, expectedValue: info.DewPoint);
             ValidateSymbol(key: "Weather_Humidity", expectedSuccess: true, expectedValue: info.Humidity);
             ValidateSymbol(key: "Weather_Pressure", expectedSuccess: true, expectedValue: info.Pressure);
-            ValidateSymbol(key: "Weather_RainRate", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_SkyBrightness", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_SkyQuality", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_SkyTemperature", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_StarFWHM", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_WindDirection", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_WindGust", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_WindSpeed", expectedSuccess: false);
+            ValidateUninitializedSymbol("Weather_RainRate");
+            ValidateUninitializedSymbol("Weather_SkyBrightness");
+            ValidateUninitializedSymbol("Weather_SkyQuality");
+            ValidateUninitializedSymbol("Weather_SkyTemperature");
+            ValidateUninitializedSymbol("Weather_StarFWHM");
+            ValidateUninitializedSymbol("Weather_WindDirection");
+            ValidateUninitializedSymbol("Weather_WindGust");
+            ValidateUninitializedSymbol("Weather_WindSpeed");
         }
 
         [Test]
@@ -565,20 +625,20 @@ namespace NINA.Test.Sequencer.Logic {
 
             // Assert
             ValidateSymbol(key: "Weather_Connected", expectedSuccess: true, expectedValue: false);
-            ValidateSymbol(key: "Weather_Temperature", expectedSuccess: false);
+            ValidateUninitializedSymbol("Weather_Temperature");
             ValidateSymbol(key: "Weather_AveragePeriod", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_CloudCover", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_DewPoint", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_Humidity", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_Pressure", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_RainRate", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_SkyBrightness", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_SkyQuality", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_SkyTemperature", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_StarFWHM", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_WindDirection", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_WindGust", expectedSuccess: false);
-            ValidateSymbol(key: "Weather_WindSpeed", expectedSuccess: false);
+            ValidateUninitializedSymbol("Weather_CloudCover");
+            ValidateUninitializedSymbol("Weather_DewPoint");
+            ValidateUninitializedSymbol("Weather_Humidity");
+            ValidateUninitializedSymbol("Weather_Pressure");
+            ValidateUninitializedSymbol("Weather_RainRate");
+            ValidateUninitializedSymbol("Weather_SkyBrightness");
+            ValidateUninitializedSymbol("Weather_SkyQuality");
+            ValidateUninitializedSymbol("Weather_SkyTemperature");
+            ValidateUninitializedSymbol("Weather_StarFWHM");
+            ValidateUninitializedSymbol("Weather_WindDirection");
+            ValidateUninitializedSymbol("Weather_WindGust");
+            ValidateUninitializedSymbol("Weather_WindSpeed");
         }
 
         [Test]
@@ -615,11 +675,11 @@ namespace NINA.Test.Sequencer.Logic {
 
             // Assert
             ValidateSymbol(key: "Dome_Connected", expectedSuccess: true, expectedValue: false);
-            ValidateSymbol(key: "Dome_ShutterStatus", expectedSuccess: false);
-            ValidateSymbol(key: "Dome_Altitude", expectedSuccess: false);
-            ValidateSymbol(key: "Dome_Azimuth", expectedSuccess: false);
-            ValidateSymbol(key: "Dome_DomeAltitude", expectedSuccess: false);
-            ValidateSymbol(key: "Dome_DomeAzimuth", expectedSuccess: false);
+            ValidateUninitializedSymbol("Dome_ShutterStatus");
+            ValidateUninitializedSymbol("Dome_Altitude");
+            ValidateUninitializedSymbol("Dome_Azimuth");
+            ValidateUninitializedSymbol("Dome_DomeAltitude", isHidden: true);
+            ValidateUninitializedSymbol("Dome_DomeAzimuth", isHidden: true);
         }
 
         [Test]
@@ -657,10 +717,11 @@ namespace NINA.Test.Sequencer.Logic {
 
             // Assert
             ValidateSymbol(key: "Guider_Connected", expectedSuccess: true, expectedValue: false);
-            ValidateSymbol(key: "Guider_PeakRA", expectedSuccess: false);
-            ValidateSymbol(key: "Guider_PeakDec", expectedSuccess: false);
-            ValidateSymbol(key: "Guider_RMSRA", expectedSuccess: false);
-            ValidateSymbol(key: "Guider_RMSDec", expectedSuccess: false);
+            ValidateUninitializedSymbol("Guider_PeakRA");
+            ValidateUninitializedSymbol("Guider_PeakDec");
+            ValidateUninitializedSymbol("Guider_RMSTotal");
+            ValidateUninitializedSymbol("Guider_RMSRA");
+            ValidateUninitializedSymbol("Guider_RMSDec");
         }
 
         [Test]
@@ -691,7 +752,7 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
-            ValidateSymbol(key: "Safety_IsSafe", expectedSuccess: true, expectedValue: false);
+            ValidateUninitializedSymbol("Safety_IsSafe");
         }
 
         [Test]
@@ -708,7 +769,7 @@ namespace NINA.Test.Sequencer.Logic {
             broker.UpdateDeviceInfo(info);
 
             // Assert
-            ValidateSymbol(key: "Safety_IsSafe", expectedSuccess: false);
+            ValidateUninitializedSymbol("Safety_IsSafe");
         }
 
         [Test]
@@ -741,7 +802,7 @@ namespace NINA.Test.Sequencer.Logic {
             ValidateSymbol(key: "Camera_PixelSize", expectedSuccess: true, expectedValue: cameraInfo.PixelSize, isHidden: true);
             ValidateSymbol(key: "Camera_XSize", expectedSuccess: true, expectedValue: cameraInfo.XSize, isHidden: true);
             ValidateSymbol(key: "Camera_YSize", expectedSuccess: true, expectedValue: cameraInfo.YSize, isHidden: true);
-            ValidateSymbol(key: "Weather_CloudCover", expectedSuccess: false);
+            ValidateUninitializedSymbol("Weather_CloudCover");
         }
 
         [Test]
@@ -951,7 +1012,7 @@ namespace NINA.Test.Sequencer.Logic {
             await broker.SetImageStatisticsSymbolsAsync(imageDataMock.Object, -1);
 
             // Assert
-            ValidateSymbol(key: "Image_Mean", expectedSuccess: false);
+            ValidateUninitializedSymbol("Image_Mean");
         }
 
         [Test]
@@ -997,12 +1058,14 @@ namespace NINA.Test.Sequencer.Logic {
                 // Assert
                 setImageSymbolsTask.Wait(TimeSpan.FromSeconds(5)).Should().BeTrue("image statistics must not hold up ImagePrepared handling");
                 ValidateSymbol(key: "Image_ImageId", expectedSuccess: true, expectedValue: 10);
-                ValidateSymbol(key: "Image_Mean", expectedSuccess: false);
+                ValidateUninitializedSymbol("Image_Mean");
             } finally {
                 statisticsCompletion.TrySetResult(imageStatisticsMock.Object);
             }
 
-            SpinWait.SpinUntil(() => broker.TryGetValue("Image_Mean", out _), TimeSpan.FromSeconds(5)).Should().BeTrue();
+            SpinWait.SpinUntil(
+                () => broker.TryGetValue("Image_Mean", out object value) && value != null,
+                TimeSpan.FromSeconds(5)).Should().BeTrue();
         }
 
         private class LegacyStarDetectionAnalysis : IStarDetectionAnalysis {
@@ -1042,13 +1105,17 @@ namespace NINA.Test.Sequencer.Logic {
 
             broker.UpdateDeviceInfo(info);
             ValidateSymbol("Camera_Connected", true, true);
-            ValidateSymbol("FilterWheel_Connected", false, false);
-            ValidateSymbol("Connected", true, true);
+            ValidateUninitializedSymbol("FilterWheel_Connected");
+            broker.TryGetSymbol("Connected", out var ambiguousSymbol).Should().BeFalse();
+            ambiguousSymbol.Should().BeOfType<AmbiguousSymbol>();
+            broker.TryGetValue("Connected", out var ambiguousValue).Should().BeFalse();
+            ambiguousValue.Should().BeOfType<AmbiguousSymbol>();
 
             broker.UpdateDeviceInfo(new CameraInfo { Connected = false });
             ValidateSymbol("Camera_Connected", true, false);
-            ValidateSymbol("FilterWheel_Connected", false, false);
-            ValidateSymbol("Connected", true, false);
+            ValidateUninitializedSymbol("FilterWheel_Connected");
+            broker.TryGetSymbol("Connected", out ambiguousSymbol).Should().BeFalse();
+            ambiguousSymbol.Should().BeOfType<AmbiguousSymbol>();
         }
 
         [Test]
@@ -1181,6 +1248,25 @@ namespace NINA.Test.Sequencer.Logic {
             removed[0].ChangeKind.Should().Be(SymbolChangeKind.Removed);
             removed[0].OldValue.Should().Be(2);
             removed[0].NewValue.Should().BeNull();
+        }
+
+        [Test]
+        public void SymbolBroker_Disconnect_UpdatesCoreSymbolsToNullWithoutRemovingThem() {
+            broker.UpdateDeviceInfo(new CameraInfo {
+                Connected = true,
+                Temperature = -10.5,
+                TemperatureSetPoint = -15
+            });
+            List<SymbolChangedEventArgs> updated = new List<SymbolChangedEventArgs>();
+            List<SymbolChangedEventArgs> removed = new List<SymbolChangedEventArgs>();
+            broker.SymbolUpdated += (sender, args) => updated.Add(args);
+            broker.SymbolRemoved += (sender, args) => removed.Add(args);
+
+            broker.UpdateDeviceInfo(new CameraInfo { Connected = false });
+
+            updated.Should().Contain(x => x.QualifiedKey == "Camera_Temperature" && Equals(x.OldValue, -10.5) && x.NewValue == null);
+            removed.Should().NotContain(x => x.ProviderName == "Camera");
+            ValidateUninitializedSymbol("Camera_Temperature");
         }
 
         [Test]

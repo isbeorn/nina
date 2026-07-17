@@ -39,6 +39,7 @@ using NINA.WPF.Base.ViewModel;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -57,7 +58,7 @@ namespace NINA.Sequencer.Logic {
         IDomeConsumer, ISafetyMonitorConsumer, ICameraConsumer, IFlatDeviceConsumer, IRotatorConsumer, IGuiderConsumer {
 
         private static List<string> _symbolProviders =
-            new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel" };
+            new List<string> { "NINA", "Image", "Dome", "Camera", "Mount", "Rotator", "Weather", "Gauge", "Switch", "Focuser", "Safety", "Filter", "FilterWheel", "FlatPanel", "Guider" };
 
         private static int _internalSymbolProviderCount = _symbolProviders.Count;
 
@@ -102,6 +103,7 @@ namespace NINA.Sequencer.Logic {
         private IGuiderMediator _guiderMediator;
         private ConcurrentDictionary<string, IList<Symbol>> _hiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
         private long _imageSymbolVersion;
+        private ObserveAllCollection<FilterInfo> _watchedFilterList;
 
         private readonly ConcurrentDictionary<string, string> _providerOwnership = new ConcurrentDictionary<string, string>();
 
@@ -147,6 +149,9 @@ namespace NINA.Sequencer.Logic {
             foreach (string provider in _symbolProviders) {
                 RegisterSymbolProvider(provider);
             }
+            InitializeCoreSymbols();
+            InitializeProfileSymbols();
+            SubscribeToProfileSymbols();
             // Register the core functions
             RegisterCoreFunctions();
 
@@ -171,6 +176,130 @@ namespace NINA.Sequencer.Logic {
 
             // This is a singleton, created once in CompositionRoot
             Instance = this;
+        }
+
+        private void InitializeCoreSymbols() {
+            foreach (string symbol in new[] { "TargetName", "TargetRAJ2000", "TargetDecJ2000", "TargetPositionAngle" }) {
+                AddOrUpdateSymbol("NINA", symbol, null);
+            }
+
+            foreach (string symbol in new[] {
+                "HFR", "HFRStDev", "FWHM", "Eccentricity", "StarCount", "ImageId", "ExposureTime", "RMS", "Gain", "Offset", "ImageType",
+                "Mean", "Median", "StDev", "MAD", "Min", "Max", "MinOccurrences", "MaxOccurrences"
+            }) {
+                AddOrUpdateSymbol("Image", symbol, null);
+            }
+            foreach (string symbol in new[] { "HFRPixels", "HFRArcseconds", "HFRStDevPixels", "HFRStDevArcseconds", "FWHMPixels", "FWHMArcseconds" }) {
+                AddOrUpdateSymbol("Image", symbol, null, SymbolType.SYMBOL_HIDDEN);
+            }
+
+            AddOrUpdateSymbol("Mount", "Connected", null);
+            foreach (string symbol in new[] { "Altitude", "Azimuth", "AtPark", "RightAscensionJ2000", "DeclinationJ2000" }) {
+                AddOrUpdateSymbol("Mount", symbol, null);
+            }
+            AddOrUpdateSymbol("Mount", "SideOfPier", null, PierConstants);
+
+            AddOrUpdateSymbol("Switch", "Connected", null);
+            AddOrUpdateSymbol("Weather", "Connected", null);
+            foreach (string symbol in _weatherData) {
+                AddOrUpdateSymbol("Weather", SanitizeIdentifier(symbol), null);
+            }
+
+            AddOrUpdateSymbol("Focuser", "Connected", null);
+            AddOrUpdateSymbol("Focuser", "Position", null);
+            AddOrUpdateSymbol("Focuser", "Temperature", null);
+
+            AddOrUpdateSymbol("FilterWheel", "Connected", null);
+            AddOrUpdateSymbol("FilterWheel", "CurrentFilterIndex", null);
+
+            AddOrUpdateSymbol("Dome", "Connected", null);
+            AddOrUpdateSymbol("Dome", "ShutterStatus", null, ShutterConstants);
+            AddOrUpdateSymbol("Dome", "Azimuth", null);
+            AddOrUpdateSymbol("Dome", "Altitude", null);
+            AddOrUpdateSymbol("Dome", "DomeAzimuth", null, SymbolType.SYMBOL_HIDDEN);
+            AddOrUpdateSymbol("Dome", "DomeAltitude", null, SymbolType.SYMBOL_HIDDEN);
+
+            AddOrUpdateSymbol("Safety", "Connected", null);
+            AddOrUpdateSymbol("Safety", "IsSafe", null);
+
+            AddOrUpdateSymbol("Camera", "Connected", null);
+            foreach (string symbol in new[] { "Temperature", "TemperatureSetPoint", "CoolerOn", "CoolerPower" }) {
+                AddOrUpdateSymbol("Camera", symbol, null);
+            }
+            foreach (string symbol in new[] { "PixelSize", "XSize", "YSize" }) {
+                AddOrUpdateSymbol("Camera", symbol, null, SymbolType.SYMBOL_HIDDEN);
+            }
+
+            AddOrUpdateSymbol("FlatPanel", "Connected", null);
+            AddOrUpdateSymbol("FlatPanel", "LightOn", null);
+            AddOrUpdateSymbol("FlatPanel", "Brightness", null);
+            AddOrUpdateSymbol("FlatPanel", "CoverState", null, CoverConstants);
+
+            AddOrUpdateSymbol("Rotator", "Connected", null);
+            AddOrUpdateSymbol("Rotator", "Position", null);
+            AddOrUpdateSymbol("Rotator", "MechanicalPosition", null);
+
+            AddOrUpdateSymbol("Guider", "Connected", null);
+            foreach (string symbol in new[] { "RMSTotal", "RMSRA", "RMSDec", "PeakRA", "PeakDec" }) {
+                AddOrUpdateSymbol("Guider", symbol, null);
+            }
+        }
+
+        private void InitializeProfileSymbols() {
+            var switchSettings = _profileService.ActiveProfile?.SwitchSettings;
+            foreach (string symbol in switchSettings?.KnownReadonlySwitchSymbols ?? Enumerable.Empty<string>()) {
+                AddOrUpdateSymbol("Gauge", symbol, null);
+            }
+            foreach (string symbol in switchSettings?.KnownWritableSwitchSymbols ?? Enumerable.Empty<string>()) {
+                AddOrUpdateSymbol("Switch", symbol, null);
+            }
+
+            ReconcileFilterSymbols(isConnected: false);
+        }
+
+        private void SubscribeToProfileSymbols() {
+            _profileService.ProfileChanged += ProfileService_ProfileChanged;
+            UpdateWatchedFilterList();
+        }
+
+        private void UpdateWatchedFilterList() {
+            if (_watchedFilterList != null) {
+                _watchedFilterList.CollectionChanged -= FilterList_CollectionChanged;
+            }
+
+            _watchedFilterList = _profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters;
+            if (_watchedFilterList != null) {
+                _watchedFilterList.CollectionChanged += FilterList_CollectionChanged;
+            }
+        }
+
+        private void ProfileService_ProfileChanged(object sender, EventArgs e) {
+            RemoveAllSymbols("Gauge");
+            RemoveAllSymbols("Switch", "Connected");
+            RemoveAllSymbols("Filter");
+            InitializeCoreSymbols();
+            UpdateWatchedFilterList();
+            InitializeProfileSymbols();
+            _ = UpdateNINASymbols();
+        }
+
+        private void FilterList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            bool isConnected = TryGetValue("FilterWheel_Connected", out object value) && value is true;
+            ReconcileFilterSymbols(isConnected);
+        }
+
+        private void ReconcileFilterSymbols(bool isConnected) {
+            var filters = _profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters ?? Enumerable.Empty<FilterInfo>();
+            var desiredFilters = filters
+                .Where(filter => filter != null)
+                .GroupBy(filter => SanitizeIdentifier(filter.Name), StringComparer.OrdinalIgnoreCase)
+                .Select(group => group.Last())
+                .ToList();
+
+            RemoveAllSymbols("Filter", desiredFilters.Select(filter => SanitizeIdentifier(filter.Name)).ToArray());
+            foreach (FilterInfo filter in desiredFilters) {
+                AddOrUpdateSymbol("Filter", SanitizeIdentifier(filter.Name), isConnected ? filter.Position : null);
+            }
         }
 
         private void AddHiddenSymbol(string source, Symbol sym) {
@@ -462,6 +591,27 @@ namespace NINA.Sequencer.Logic {
             PublishSymbolChanges(changes);
         }
 
+        private void UninitializeAllSymbols(string source, params string[] keysToKeep) {
+            List<SymbolChangedEventArgs> changes = new List<SymbolChangedEventArgs>();
+            HashSet<string> keysToKeepSet = keysToKeep?.Length > 0
+                ? new HashSet<string>(keysToKeep, StringComparer.OrdinalIgnoreCase)
+                : null;
+
+            lock (_brokerStateLock) {
+                foreach (IList<Symbol> symbols in _dataSymbols.Values) {
+                    foreach (Symbol symbol in symbols) {
+                        if (symbol.Category == source && keysToKeepSet?.Contains(symbol.Key) != true && symbol.Value != null) {
+                            object oldValue = symbol.Value;
+                            symbol.Value = null;
+                            changes.Add(new SymbolChangedEventArgs(SymbolChangeKind.Updated, CopySymbol(symbol), oldValue, null));
+                        }
+                    }
+                }
+            }
+
+            PublishSymbolChanges(changes);
+        }
+
         private bool RemoveSymbol(string source, string key) {
             SymbolChangedEventArgs change = null;
             bool success;
@@ -624,6 +774,11 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void Dispose() {
+            _profileService.ProfileChanged -= ProfileService_ProfileChanged;
+            if (_watchedFilterList != null) {
+                _watchedFilterList.CollectionChanged -= FilterList_CollectionChanged;
+                _watchedFilterList = null;
+            }
         }
 
         public IReadOnlyCollection<SymbolFunction> GetFunctions() {
@@ -735,6 +890,7 @@ namespace NINA.Sequencer.Logic {
 
             var imageData = e.RenderedImage.RawImageData;
             var imageSymbolVersion = Interlocked.Increment(ref _imageSymbolVersion);
+            UninitializeAllSymbols("Image");
 
             IStarDetectionAnalysis analysis = imageData.StarDetectionAnalysis;
             if (double.IsNaN(analysis.HFR)) {
@@ -947,28 +1103,48 @@ namespace NINA.Sequencer.Logic {
 
                 AddOrUpdateSymbol("Mount", "SideOfPier", (int)deviceInfo.SideOfPier, PierConstants);
             } else {
-                RemoveSymbol("Mount", "Altitude");
-                RemoveSymbol("Mount", "Azimuth");
-                RemoveSymbol("Mount", "AtPark");
-                RemoveSymbol("Mount", "RightAscensionJ2000");
-                RemoveSymbol("Mount", "DeclinationJ2000");
-                RemoveSymbol("Mount", "SideOfPier");
+                UninitializeAllSymbols("Mount", "Connected");
             }
         }
         public void UpdateDeviceInfo(SwitchInfo deviceInfo) {
             AddOrUpdateSymbol("Switch", "Connected", deviceInfo.Connected);
             if (deviceInfo.Connected) {
-                foreach (ISwitch sw in deviceInfo.ReadonlySwitches) {
+                var readonlySwitches = deviceInfo.ReadonlySwitches ?? Enumerable.Empty<ISwitch>();
+                var writableSwitches = deviceInfo.WritableSwitches ?? Enumerable.Empty<IWritableSwitch>();
+                var readonlySymbols = readonlySwitches
+                    .Select(sw => SanitizeIdentifier(sw.Name))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(symbol => symbol, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                var writableSymbols = writableSwitches
+                    .Select(sw => SanitizeIdentifier(sw.Name))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(symbol => symbol, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                RemoveAllSymbols("Gauge", readonlySymbols.ToArray());
+                RemoveAllSymbols("Switch", writableSymbols.Prepend("Connected").ToArray());
+                foreach (ISwitch sw in readonlySwitches) {
                     string key = SanitizeIdentifier(sw.Name);
                     AddOrUpdateSymbol("Gauge", key, sw.Value);
                 }
-                foreach (ISwitch sw in deviceInfo.WritableSwitches) {
+                foreach (IWritableSwitch sw in writableSwitches) {
                     string key = SanitizeIdentifier(sw.Name);
                     AddOrUpdateSymbol("Switch", key, sw.Value);
                 }
+
+                var switchSettings = _profileService.ActiveProfile?.SwitchSettings;
+                if (switchSettings != null) {
+                    if (!(switchSettings.KnownReadonlySwitchSymbols ?? new List<string>()).SequenceEqual(readonlySymbols, StringComparer.OrdinalIgnoreCase)) {
+                        switchSettings.KnownReadonlySwitchSymbols = readonlySymbols;
+                    }
+                    if (!(switchSettings.KnownWritableSwitchSymbols ?? new List<string>()).SequenceEqual(writableSymbols, StringComparer.OrdinalIgnoreCase)) {
+                        switchSettings.KnownWritableSwitchSymbols = writableSymbols;
+                    }
+                }
             } else {
-                RemoveAllSymbols("Gauge");
-                RemoveAllSymbols(source: "Switch", keysToKeep: "Connected");
+                UninitializeAllSymbols("Gauge");
+                UninitializeAllSymbols("Switch", "Connected");
             }
         }
 
@@ -977,17 +1153,17 @@ namespace NINA.Sequencer.Logic {
             if (deviceInfo.Connected) {
                 foreach (string dataName in _weatherData) {
                     PropertyInfo info = deviceInfo.GetType().GetProperty(dataName);
+                    object value = null;
                     if (info != null) {
                         object val = info.GetValue(deviceInfo);
                         if (val is double t && !Double.IsNaN(t)) {
-                            t = Math.Round(t, 2);
-                            string key = SanitizeIdentifier(dataName);
-                            AddOrUpdateSymbol("Weather", SanitizeIdentifier(dataName), t);
+                            value = Math.Round(t, 2);
                         }
                     }
+                    AddOrUpdateSymbol("Weather", SanitizeIdentifier(dataName), value);
                 }
             } else {
-                RemoveAllSymbols(source: "Weather", keysToKeep: "Connected");
+                UninitializeAllSymbols("Weather", "Connected");
             }
         }
 
@@ -997,28 +1173,23 @@ namespace NINA.Sequencer.Logic {
                 AddOrUpdateSymbol("Focuser", "Position", deviceInfo.Position);
                 AddOrUpdateSymbol("Focuser", "Temperature", deviceInfo.Temperature);
             } else {
-                RemoveSymbol("Focuser", "Position");
-                RemoveSymbol("Focuser", "Temperature");
+                UninitializeAllSymbols("Focuser", "Connected");
             }
         }
 
         public void UpdateDeviceInfo(Equipment.Equipment.MyFilterWheel.FilterWheelInfo deviceInfo) {
             AddOrUpdateSymbol("FilterWheel", "Connected", deviceInfo.Connected);
             if (deviceInfo.Connected) {
-                var f = _profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                foreach (FilterInfo filterInfo in f) {
-                    AddOrUpdateSymbol("Filter", SanitizeIdentifier(filterInfo.Name), filterInfo.Position);
-                }
+                ReconcileFilterSymbols(isConnected: true);
 
                 if (deviceInfo.SelectedFilter != null) {
                     AddOrUpdateSymbol("FilterWheel", "CurrentFilterIndex", deviceInfo.SelectedFilter.Position);
+                } else {
+                    AddOrUpdateSymbol("FilterWheel", "CurrentFilterIndex", null);
                 }
             } else {
-                var f = _profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                foreach (FilterInfo filterInfo in f) {
-                    RemoveSymbol("Filter", SanitizeIdentifier(filterInfo.Name));
-                }
-                RemoveSymbol("FilterWheel", "CurrentFilterIndex");
+                ReconcileFilterSymbols(isConnected: false);
+                AddOrUpdateSymbol("FilterWheel", "CurrentFilterIndex", null);
             }
         }
 
@@ -1031,20 +1202,16 @@ namespace NINA.Sequencer.Logic {
                 AddOrUpdateSymbol("Dome", "DomeAzimuth", deviceInfo.Azimuth, SymbolType.SYMBOL_HIDDEN);
                 AddOrUpdateSymbol("Dome", "DomeAltitude", deviceInfo.Altitude, SymbolType.SYMBOL_HIDDEN);
             } else {
-                RemoveSymbol("Dome", "ShutterStatus");
-                RemoveSymbol("Dome", "Azimuth");
-                RemoveSymbol("Dome", "Altitude");
-                RemoveSymbol("Dome", "DomeAzimuth");
-                RemoveSymbol("Dome", "DomeAltitude");
+                UninitializeAllSymbols("Dome", "Connected");
             }
         }
 
         public void UpdateDeviceInfo(SafetyMonitorInfo deviceInfo) {
             AddOrUpdateSymbol("Safety", "Connected", deviceInfo.Connected);
             if (profileService.ActiveProfile.SafetyMonitorSettings.Id != "No_Device") {
-                AddOrUpdateSymbol("Safety", "IsSafe", deviceInfo.Connected && deviceInfo.IsSafe);
+                AddOrUpdateSymbol("Safety", "IsSafe", deviceInfo.Connected ? deviceInfo.IsSafe : null);
             } else {
-                RemoveSymbol("Safety", "IsSafe");
+                AddOrUpdateSymbol("Safety", "IsSafe", null);
             }
         }
 
@@ -1061,13 +1228,7 @@ namespace NINA.Sequencer.Logic {
                 AddOrUpdateSymbol("Camera", "XSize", deviceInfo.XSize, SymbolType.SYMBOL_HIDDEN);
                 AddOrUpdateSymbol("Camera", "YSize", deviceInfo.YSize, SymbolType.SYMBOL_HIDDEN);
             } else {
-                RemoveSymbol("Camera", "Temperature");
-                RemoveSymbol("Camera", "TemperatureSetPoint");
-                RemoveSymbol("Camera", "CoolerOn");
-                RemoveSymbol("Camera", "CoolerPower");
-                RemoveSymbol("Camera", "PixelSize");
-                RemoveSymbol("Camera", "XSize");
-                RemoveSymbol("Camera", "YSize");
+                UninitializeAllSymbols("Camera", "Connected");
             }
         }
 
@@ -1078,9 +1239,7 @@ namespace NINA.Sequencer.Logic {
                 AddOrUpdateSymbol("FlatPanel", "Brightness", deviceInfo.Brightness);
                 AddOrUpdateSymbol("FlatPanel", "CoverState", (int)deviceInfo.CoverState, CoverConstants);
             } else {
-                RemoveSymbol("FlatPanel", "LightOn");
-                RemoveSymbol("FlatPanel", "Brightness");
-                RemoveSymbol("FlatPanel", "CoverState");
+                UninitializeAllSymbols("FlatPanel", "Connected");
             }
         }
 
@@ -1090,8 +1249,7 @@ namespace NINA.Sequencer.Logic {
                 AddOrUpdateSymbol("Rotator", "Position", deviceInfo.Position);
                 AddOrUpdateSymbol("Rotator", "MechanicalPosition", deviceInfo.MechanicalPosition);
             } else {
-                RemoveSymbol("Rotator", "Position");
-                RemoveSymbol("Rotator", "MechanicalPosition");
+                UninitializeAllSymbols("Rotator", "Connected");
             }
         }
 
@@ -1110,11 +1268,7 @@ namespace NINA.Sequencer.Logic {
                 AddOrUpdateSymbol("Guider", "PeakRA", deviceInfo.RMSError.PeakRA.Arcseconds);
                 AddOrUpdateSymbol("Guider", "PeakDec", deviceInfo.RMSError.PeakDec.Arcseconds);
             } else {
-                RemoveSymbol("Guider", "RMSTotal");
-                RemoveSymbol("Guider", "RMSRA");
-                RemoveSymbol("Guider", "RMSDec");
-                RemoveSymbol("Guider", "PeakRA");
-                RemoveSymbol("Guider", "PeakDec");
+                UninitializeAllSymbols("Guider", "Connected");
             }
         }
     }

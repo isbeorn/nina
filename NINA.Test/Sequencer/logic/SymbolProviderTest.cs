@@ -166,12 +166,12 @@ namespace NINA.Test.Sequencer.Logic {
             broker.TryGetSymbol("PierStatus", out sym).Should().BeTrue();
             //sym.Value.Should().Be(1);
 
-            broker.TryGetSymbol("PierUnknown", out sym).Should().BeTrue();
+            broker.TryGetSymbol("PierUnknown", out sym).Should().BeFalse();
+            sym.Should().BeOfType<AmbiguousSymbol>();
+            broker.TryGetSymbol("Mount_PierUnknown", out sym).Should().BeTrue();
             sym.Value.Should().Be(-1);
-            broker.TryGetSymbol("PierEast", out sym).Should().BeTrue();
+            broker.TryGetSymbol("Plugin1_PierEast", out sym).Should().BeTrue();
             sym.Value.Should().Be(0);
-            broker.TryGetSymbol("PierWest", out sym).Should().BeTrue();
-            sym.Value.Should().Be(1);
             broker.TryGetSymbol("Plugin1_PierWest", out sym).Should().BeTrue();
             sym.Value.Should().Be(1);
         }

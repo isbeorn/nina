@@ -379,11 +379,10 @@ namespace NINA.Sequencer.Container {
                 }
                 await base.Execute(progress, token);
             } finally {
-                // Remove Symbols for Target; no harm if they don't exist
-                broker.RemoveSymbol(provider, "TargetName");
-                broker.RemoveSymbol(provider, "TargetRAJ2000");
-                broker.RemoveSymbol(provider, "TargetDecJ2000");
-                broker.RemoveSymbol(provider, "TargetPositionAngle");
+                broker.AddOrUpdateSymbol(provider, "TargetName", null);
+                broker.AddOrUpdateSymbol(provider, "TargetRAJ2000", null);
+                broker.AddOrUpdateSymbol(provider, "TargetDecJ2000", null);
+                broker.AddOrUpdateSymbol(provider, "TargetPositionAngle", null);
             }
         }
     }
