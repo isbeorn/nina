@@ -1,0 +1,167 @@
+name: Prepare Version Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: prepare-version-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Create Version Pull Request
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET_BRANCH: ${{ github.ref_name }}
+
+    steps:
+    - name: Validate target branch
+      shell: pwsh
+      run: |
+        if ('${{ github.ref_type }}' -ne 'branch') {
+            Write-Error 'Version releases must be started from a branch.'
+            exit 1
+        }
+
+        $isAllowed = $env:TARGET_BRANCH -eq 'develop' `
+            -or $env:TARGET_BRANCH -eq 'master' `
+            -or $env:TARGET_BRANCH -match '^release/.+$'
+
+        if (-not $isAllowed) {
+            Write-Error "Version releases are only allowed from develop, master, or release/* branches. Selected branch: $env:TARGET_BRANCH"
+            exit 1
+        }
+
+    - name: Checkout selected branch
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref }}
+        fetch-depth: 0
+
+    - name: Ensure no version pull request is already open
+      shell: pwsh
+      run: |
+        $pullRequests = gh pr list `
+            --state open `
+            --base $env:TARGET_BRANCH `
+            --limit 1000 `
+            --json number,headRefName,url | ConvertFrom-Json
+
+        $existing = $pullRequests | Where-Object { $_.headRefName -like 'automation/version-bump/*' } | Select-Object -First 1
+        if ($existing) {
+            Write-Error "A version pull request is already open for $env:TARGET_BRANCH`: $($existing.url)"
+            exit 1
+        }
+
+    - name: Bump version
+      id: bump_version
+      shell: pwsh
+      run: |
+        $file = 'CommonAssemblyInfo.cs'
+
+        if (-not (Test-Path $file)) {
+            Write-Error "File not found: $file"
+            exit 1
+        }
+
+        $content = Get-Content $file -Raw
+        $versionPattern = '\[assembly: AssemblyVersion\("(\d+)\.(\d+)\.(\d+)\.(\d+)"\)\]'
+        $match = [regex]::Match($content, $versionPattern)
+        if (-not $match.Success) {
+            Write-Error "AssemblyVersion not found in $file"
+            exit 1
+        }
+
+        $major = $match.Groups[1].Value
+        $minor = $match.Groups[2].Value
+        $patch = $match.Groups[3].Value
+        $build = [int]$match.Groups[4].Value + 1
+        $releaseVersion = "$major.$minor.$patch.$build"
+
+        $channelDigit = $build.ToString().Substring(0, 1)
+        switch ($channelDigit) {
+            '1' { $assemblyPostfix = '-nightly' }
+            '2' { $assemblyPostfix = '-beta' }
+            '3' { $assemblyPostfix = '-rc' }
+            '9' { $assemblyPostfix = '' }
+            default {
+                Write-Error "Unknown channel digit: $channelDigit"
+                exit 1
+            }
+        }
+
+        $content = $content -replace '\[assembly: AssemblyVersion\(".*?"\)\]', "[assembly: AssemblyVersion(`"$releaseVersion`")]"
+        $content = $content -replace '\[assembly: AssemblyFileVersion\(".*?"\)\]', "[assembly: AssemblyFileVersion(`"$releaseVersion`")]"
+        $content = $content -replace '\[assembly: AssemblyInformationalVersion\(".*?"\)\]', "[assembly: AssemblyInformationalVersion(`"$releaseVersion$assemblyPostfix`")]"
+        Set-Content -Path $file -Value $content -Encoding UTF8
+
+        $csprojFiles = git ls-files -- '*.csproj' | ForEach-Object { Get-Item $_ } | Where-Object {
+            $_.Name -like 'NINA*' -or $_.Name -eq 'nikoncswrapper.csproj'
+        }
+        foreach ($csproj in $csprojFiles) {
+            [xml]$project = Get-Content $csproj.FullName
+            if ($project.Project.PropertyGroup) {
+                $changed = $false
+                foreach ($propertyGroup in $project.Project.PropertyGroup) {
+                    if ($propertyGroup.Version) {
+                        $propertyGroup.Version = "$releaseVersion$assemblyPostfix"
+                        $changed = $true
+                    }
+                }
+                if ($changed) {
+                    $project.Save($csproj.FullName)
+                    git add $csproj.FullName
+                    Write-Host "Updated <Version> in $($csproj.Name) to $releaseVersion$assemblyPostfix"
+                }
+            }
+        }
+
+        git add $file
+        "version=$releaseVersion" >> $env:GITHUB_OUTPUT
+        "assembly_postfix=$assemblyPostfix" >> $env:GITHUB_OUTPUT
+
+    - name: Commit and push version branch
+      id: push_branch
+      shell: pwsh
+      env:
+        VERSION: ${{ steps.bump_version.outputs.version }}
+      run: |
+        $branch = "automation/version-bump/$env:VERSION-$env:GITHUB_RUN_ID"
+
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git switch -c $branch
+        git commit -m "Bump version to $env:VERSION"
+        git push --set-upstream origin $branch
+
+        "branch=$branch" >> $env:GITHUB_OUTPUT
+
+    - name: Create version pull request
+      id: create_pr
+      shell: pwsh
+      env:
+        VERSION: ${{ steps.bump_version.outputs.version }}
+        VERSION_BRANCH: ${{ steps.push_branch.outputs.branch }}
+      run: |
+        $body = @(
+            "Automated version increment to $env:VERSION."
+            ''
+            "Target branch: ``$env:TARGET_BRANCH``"
+            "Preparation run: $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
+            ''
+            'The repository owner must approve the pending Build and Test workflow. After it succeeds, CI will squash-merge this pull request and publish the merged commit.'
+        ) -join "`n"
+
+        $pullRequestUrl = gh pr create `
+            --base $env:TARGET_BRANCH `
+            --head $env:VERSION_BRANCH `
+            --title "Bump version to $env:VERSION" `
+            --body $body
+
+        "url=$pullRequestUrl" >> $env:GITHUB_OUTPUT
+        "### Version pull request created`n`n$pullRequestUrl`n`nApprove its pending **Build and Test** workflow to continue the release." >> $env:GITHUB_STEP_SUMMARY
