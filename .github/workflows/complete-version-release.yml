@@ -6,8 +6,6 @@ on:
       - Build and Test
     types:
       - completed
-    branches:
-      - automation/version-bump/**
 
 permissions:
   actions: read
@@ -21,7 +19,7 @@ concurrency:
 jobs:
   complete:
     name: Merge Validated Version Pull Request
-    if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'automation/version-bump/') }}
     runs-on: ubuntu-latest
 
     steps:
