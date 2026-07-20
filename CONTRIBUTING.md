@@ -131,8 +131,9 @@ This project is utilizing a standard git flow where it has the following branche
 
 ## Versioning in N.I.N.A.
 
-N.I.N.A. utilizes the versioning scheme MAJOR.MINOR.PATCH.CHANNEL|BUILDNRXXX  
-There is currently no automation used and versions are maintained manually.  
+N.I.N.A. utilizes the versioning scheme MAJOR.MINOR.PATCH.CHANNEL|BUILDNRXXX.
+
+MAJOR, MINOR, PATCH, and CHANNEL transitions are maintained manually. The release workflow increments BUILDNR on the selected `develop`, `master`, or `release/*` branch through a protected pull request.
 
 MAJOR version increases for big changes, like changing technologies etc.
 

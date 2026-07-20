@@ -1,40 +1,92 @@
-name: Version Increment and Release
+name: Build and Release Version
 
 on:
-  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - publish-version
 
 env:
   BUILD_CONFIG: SignedRelease
 
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: publish-version-${{ github.event.client_payload.merge_commit_sha }}
+  cancel-in-progress: false
+
 jobs:
   versioning:
-    name: Bump Version
+    name: Validate Release Metadata
     runs-on: windows-latest
-    permissions:
-      contents: write
     outputs:
-      version: ${{ steps.bump_version.outputs.version }}
-      release_channel: ${{ steps.bump_version.outputs.release_channel }}
-      commit_sha: ${{ steps.bump_version.outputs.commit_sha }}
+      version: ${{ steps.release_metadata.outputs.version }}
+      release_channel: ${{ steps.release_metadata.outputs.release_channel }}
+      commit_sha: ${{ steps.release_metadata.outputs.commit_sha }}
 
     steps:
-    - name: Checkout repository
+    - name: Checkout merged version
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.client_payload.merge_commit_sha }}
+        fetch-depth: 0
 
-    - name: Bump and export version in CommonAssemblyInfo.cs
-      id: bump_version
+    - name: Validate release request and export version
+      id: release_metadata
       shell: pwsh
+      env:
+        GH_TOKEN: ${{ github.token }}
+        MERGE_COMMIT_SHA: ${{ github.event.client_payload.merge_commit_sha }}
+        PULL_REQUEST_NUMBER: ${{ github.event.client_payload.pull_request_number }}
+        TARGET_BRANCH: ${{ github.event.client_payload.target_branch }}
       run: |
-        $file = "CommonAssemblyInfo.cs"
-
-        if (-not (Test-Path $file)) {
-            Write-Error "File not found: $file"
+        if (-not $env:MERGE_COMMIT_SHA -or -not $env:PULL_REQUEST_NUMBER -or -not $env:TARGET_BRANCH) {
+            Write-Error 'The publication dispatch is missing required release metadata.'
             exit 1
         }
 
-        $content = Get-Content $file -Raw
+        if ($env:MERGE_COMMIT_SHA -notmatch '^[0-9a-f]{40}$' -or $env:PULL_REQUEST_NUMBER -notmatch '^\d+$') {
+            Write-Error 'The publication dispatch contains malformed release metadata.'
+            exit 1
+        }
 
-        # Match and increment the version (assuming 1-based indexing)
+        $isAllowedBranch = $env:TARGET_BRANCH -eq 'develop' `
+            -or $env:TARGET_BRANCH -eq 'master' `
+            -or $env:TARGET_BRANCH -match '^release/.+$'
+        if (-not $isAllowedBranch) {
+            Write-Error "Invalid release target branch: $env:TARGET_BRANCH"
+            exit 1
+        }
+
+        $pullRequestJson = gh api "repos/$env:GITHUB_REPOSITORY/pulls/$env:PULL_REQUEST_NUMBER"
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Unable to load pull request #$env:PULL_REQUEST_NUMBER."
+            exit 1
+        }
+        $pullRequest = $pullRequestJson | ConvertFrom-Json
+
+        $isValidPullRequest = $pullRequest.merged `
+            -and $pullRequest.user.login -eq 'github-actions[bot]' `
+            -and $pullRequest.head.repo.full_name -eq $env:GITHUB_REPOSITORY `
+            -and $pullRequest.head.ref.StartsWith('automation/version-bump/') `
+            -and $pullRequest.base.ref -eq $env:TARGET_BRANCH `
+            -and $pullRequest.merge_commit_sha -eq $env:MERGE_COMMIT_SHA
+        if (-not $isValidPullRequest) {
+            Write-Error "Pull request #$env:PULL_REQUEST_NUMBER is not a valid merged version pull request."
+            exit 1
+        }
+
+        $targetRefspec = "+refs/heads/$($env:TARGET_BRANCH):refs/remotes/origin/$($env:TARGET_BRANCH)"
+        git fetch origin $targetRefspec
+        git merge-base --is-ancestor $env:MERGE_COMMIT_SHA "origin/$env:TARGET_BRANCH"
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Merge commit $env:MERGE_COMMIT_SHA is not contained in $env:TARGET_BRANCH."
+            exit 1
+        }
+
+        $file = 'CommonAssemblyInfo.cs'
+        $content = Get-Content $file -Raw
         $versionPattern = '\[assembly: AssemblyVersion\("(\d+)\.(\d+)\.(\d+)\.(\d+)"\)\]'
         $match = [regex]::Match($content, $versionPattern)
         if (-not $match.Success) {
@@ -45,10 +97,10 @@ jobs:
         $major = $match.Groups[1].Value
         $minor = $match.Groups[2].Value
         $patch = $match.Groups[3].Value
-        $build = [int]$match.Groups[4].Value + 1
+        $build = [int]$match.Groups[4].Value
         $releaseVersion = "$major.$minor.$patch.$build"
 
-        $channelDigit = $build.ToString().Substring(0,1)
+        $channelDigit = $build.ToString().Substring(0, 1)
         switch ($channelDigit) {
             '1' { $assemblyPostfix = '-nightly' }
             '2' { $assemblyPostfix = '-beta' }
@@ -60,67 +112,28 @@ jobs:
             }
         }
         switch ($channelDigit) {
-          '1' { $channelName = 'Nightlies' }
-          '2' { $channelName = 'Betas' }
-          '3' { $channelName = 'Betas' }
-          '9' { $channelName = 'Releases' }
+            '1' { $channelName = 'Nightlies' }
+            '2' { $channelName = 'Betas' }
+            '3' { $channelName = 'Betas' }
+            '9' { $channelName = 'Releases' }
             default {
-            Write-Error "Unknown channel digit: $channelDigit"
+                Write-Error "Unknown channel digit: $channelDigit"
+                exit 1
+            }
+        }
+
+        $fileVersionPattern = '\[assembly: AssemblyFileVersion\("' + [regex]::Escape($releaseVersion) + '"\)\]'
+        $informationalVersionPattern = '\[assembly: AssemblyInformationalVersion\("' + [regex]::Escape("$releaseVersion$assemblyPostfix") + '"\)\]'
+        if ($content -notmatch $fileVersionPattern -or $content -notmatch $informationalVersionPattern) {
+            Write-Error 'The assembly version attributes are inconsistent.'
             exit 1
-            }
         }
 
-        # Replace all relevant lines
-        $content = $content -replace '\[assembly: AssemblyVersion\(".*?"\)\]', "[assembly: AssemblyVersion(`"$releaseVersion`")]"
-        $content = $content -replace '\[assembly: AssemblyFileVersion\(".*?"\)\]', "[assembly: AssemblyFileVersion(`"$releaseVersion`")]"
-        $content = $content -replace '\[assembly: AssemblyInformationalVersion\(".*?"\)\]', "[assembly: AssemblyInformationalVersion(`"$releaseVersion$assemblyPostfix`")]"
+        "version=$releaseVersion" >> $env:GITHUB_OUTPUT
+        "release_channel=$channelName" >> $env:GITHUB_OUTPUT
+        "commit_sha=$env:MERGE_COMMIT_SHA" >> $env:GITHUB_OUTPUT
 
-        Set-Content -Path $file -Value $content -Encoding UTF8
-        
-        $csprojFiles = Get-ChildItem -Path . -Filter *.csproj -Recurse | Where-Object { $_.Name -like 'NINA*' -or $_.Name -eq 'nikoncswrapper.csproj' }
-        foreach ($csproj in $csprojFiles) {
-            [xml]$proj = Get-Content $csproj.FullName
-
-            # No namespace case (SDK-style projects):
-            if ($proj.Project.PropertyGroup) {
-                $changed = $false
-                foreach ($pg in $proj.Project.PropertyGroup) {
-                    if ($pg.Version) {
-                        $pg.Version = "$releaseVersion$assemblyPostfix"
-                        $changed = $true
-                    }
-                }
-                if ($changed) {
-                    $proj.Save($csproj.FullName)
-                    Write-Host "🔄 Updated <Version> in $($csproj.Name) to $releaseVersion$assemblyPostfix"
-                    git add $csproj.FullName
-                }
-            }
-        }
-
-        echo "✅ Bumped to version $releaseVersion"
-        echo "VERSION=$releaseVersion" >> $env:GITHUB_ENV
-        echo "RELEASE_CHANNEL=$channelName" >> $env:GITHUB_ENV
-        echo "release_channel=$channelName" >> $env:GITHUB_OUTPUT
-        echo "version=$releaseVersion" >> $env:GITHUB_OUTPUT
-
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        git add $file
-        git commit -m "Bump version to $releaseVersion"
-        git push
-
-        $commitSha = git rev-parse HEAD
-        echo "commit_sha=$commitSha" >> $env:GITHUB_OUTPUT
-
-
-    - name: Show version
-      shell: pwsh
-      run: echo "✅ Version is $env:VERSION"
-
-    - name: Show release channel
-      shell: pwsh
-      run: echo "✅ Release channel is $env:RELEASE_CHANNEL"
+        "### Validated release`n`n- Version: $releaseVersion`n- Channel: $channelName`n- Target: $env:TARGET_BRANCH`n- Commit: $env:MERGE_COMMIT_SHA" >> $env:GITHUB_STEP_SUMMARY
 
   build:
     name: Build and Prepare Setup
