@@ -53,7 +53,7 @@ This allows you to safely return to a stable release if needed.
 - Native Nikon and Canon camera drivers can now be configured to use the file format selection, such as FITS or XISF, instead of always saving native camera RAW files.
 - Sky brightness readings in the Weather device windows have been increased from 2 decimal places to 5 so that measurements obtained in low light conditions are adequately displayed.
 - Improved Sky Atlas search performance.
-- The offline framing sky map now refreshes constellations, grid lines, deep-sky objects, boundaries, and cached survey imagery continuously while dragging, with substantially lower rendering overhead and bounded decoded-image memory use.
+- The offline framing sky map now refreshes constellations, grid lines, deep-sky objects, boundaries, cached survey imagery, and camera framing rectangles continuously while dragging, with substantially lower rendering overhead and bounded decoded-image memory use. The grid and viewport projection can be switched between Equatorial and Alt/Az coordinates, using outward-looking planetarium handedness and correct camera position-angle projection, and an optional local/custom horizon hides all annotations and cached imagery below it without masking visible sky in wide-field views.
 - **Autofocus & Star Measurements**
     - The native star detector now measures HFR from a centroid-refined curve of growth instead of using a first-moment approximation
     - Local star background estimation now uses a robust sigma-clipped median to reduce bias from nearby stars and outliers

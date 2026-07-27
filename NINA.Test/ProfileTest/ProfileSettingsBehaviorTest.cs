@@ -305,6 +305,22 @@ namespace NINA.Test.ProfileTest {
             settings.ColorSchema.PrimaryColor.Should().Be(originalPrimary);
         }
 
+        [Test]
+        public void FramingAssistantSettings_ProjectionModeAndHorizon_RoundTripWithCompatibleDefaults() {
+            FramingAssistantSettings defaults = new FramingAssistantSettings();
+            FramingAssistantSettings settings = new FramingAssistantSettings {
+                SkyMapProjectionMode = SkyMapProjectionMode.AltAz,
+                ShowHorizon = true
+            };
+
+            FramingAssistantSettings roundTripped = RoundTrip(settings);
+
+            defaults.SkyMapProjectionMode.Should().Be(SkyMapProjectionMode.Equatorial);
+            defaults.ShowHorizon.Should().BeFalse();
+            roundTripped.SkyMapProjectionMode.Should().Be(SkyMapProjectionMode.AltAz);
+            roundTripped.ShowHorizon.Should().BeTrue();
+        }
+
         private static List<string> CapturePropertyChanges(INotifyPropertyChanged source) {
             List<string> propertyNames = new List<string>();
             source.PropertyChanged += (object sender, PropertyChangedEventArgs args) => propertyNames.Add(args.PropertyName);

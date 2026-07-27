@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,8 @@ namespace NINA.WPF.Base.SkySurvey {
         DeepSkyObjects = 4,
         ConstellationBoundaries = 8,
         EquatorialGrid = 16,
+        HorizontalGrid = 32,
+        Horizon = 64,
         All = Stars | Constellations | DeepSkyObjects | ConstellationBoundaries | EquatorialGrid
     }
 
@@ -41,28 +44,18 @@ namespace NINA.WPF.Base.SkySurvey {
             IReadOnlyList<SkyMapLine> constellationLines,
             IReadOnlyList<SkyMapDeepSkyObject> deepSkyObjects,
             IReadOnlyList<SkyMapPath> constellationBoundaries,
-            IReadOnlyList<SkyMapPath> gridLines) {
-            Stars = stars;
-            ConstellationLines = constellationLines;
-            DeepSkyObjects = deepSkyObjects;
-            ConstellationBoundaries = constellationBoundaries;
-            GridLines = gridLines;
-            Labels = [];
-        }
-
-        public SkyMapScene(
-            IReadOnlyList<SkyMapStar> stars,
-            IReadOnlyList<SkyMapLine> constellationLines,
-            IReadOnlyList<SkyMapDeepSkyObject> deepSkyObjects,
-            IReadOnlyList<SkyMapPath> constellationBoundaries,
             IReadOnlyList<SkyMapPath> gridLines,
-            IReadOnlyList<SkyMapLabel> labels) {
+            IReadOnlyList<SkyMapLabel> labels = null,
+            IReadOnlyList<SkyMapPath> horizonLines = null,
+            IReadOnlyList<SkyMapPath> horizonMaskAreas = null) {
             Stars = stars;
             ConstellationLines = constellationLines;
             DeepSkyObjects = deepSkyObjects;
             ConstellationBoundaries = constellationBoundaries;
             GridLines = gridLines;
-            Labels = labels;
+            HorizonLines = horizonLines ?? [];
+            HorizonMaskAreas = horizonMaskAreas ?? [];
+            Labels = labels ?? [];
         }
 
         public IReadOnlyList<SkyMapStar> Stars { get; }
@@ -70,6 +63,8 @@ namespace NINA.WPF.Base.SkySurvey {
         public IReadOnlyList<SkyMapDeepSkyObject> DeepSkyObjects { get; }
         public IReadOnlyList<SkyMapPath> ConstellationBoundaries { get; }
         public IReadOnlyList<SkyMapPath> GridLines { get; }
+        public IReadOnlyList<SkyMapPath> HorizonLines { get; }
+        public IReadOnlyList<SkyMapPath> HorizonMaskAreas { get; }
         public IReadOnlyList<SkyMapLabel> Labels { get; }
     }
 
@@ -110,6 +105,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
     public sealed class SkyMapSceneBuilder {
         private static readonly double[] DeclinationSteps = [0.5, 1, 2, 4, 12, 20];
+        private static readonly double[] HorizontalSteps = [1, 2, 5, 10, 15, 30];
         private static readonly double[] RightAscensionSteps = [1.25, 2.5, 3.75, 7.5, 15];
         private readonly IReadOnlyList<ConstellationBoundary> boundaries;
         private readonly IReadOnlyList<ConstellationData> constellations;
@@ -125,28 +121,55 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         public SkyMapScene Build(ViewportFoV viewport, SkyMapRenderOptions options) {
-            return Build(viewport, options, AllSkyMapVisibility.Instance, null);
+            return Build(
+                new SkyMapViewportProjection(viewport),
+                options,
+                null,
+                null,
+                AllSkyMapVisibility.Instance);
         }
 
         public SkyMapScene Build(ViewportFoV viewport, SkyMapRenderOptions options, ISkyMapVisibility visibility) {
-            return Build(viewport, options, visibility, null);
+            return Build(new SkyMapViewportProjection(viewport), options, null, null, visibility);
         }
 
         public SkyMapScene Build(ViewportFoV viewport, SkyMapRenderOptions options, IReadOnlySet<string> disabledCatalogues) {
-            return Build(viewport, options, AllSkyMapVisibility.Instance, disabledCatalogues);
+            return Build(
+                new SkyMapViewportProjection(viewport),
+                options,
+                null,
+                disabledCatalogues,
+                AllSkyMapVisibility.Instance);
         }
 
         public SkyMapScene Build(
-            ViewportFoV viewport,
+            SkyMapViewportProjection projection,
             SkyMapRenderOptions options,
-            ISkyMapVisibility visibility,
-            IReadOnlySet<string> disabledCatalogues) {
-            SkyMapProjection projection = new SkyMapProjection(viewport);
+            IReadOnlySet<string> disabledCatalogues = null) {
+            SkyMapObserverSnapshot observer = projection.Observer;
+            if ((options & (SkyMapRenderOptions.HorizontalGrid | SkyMapRenderOptions.Horizon)) != 0 && observer is null) {
+                throw new ArgumentException("Horizontal rendering requires a projection with an observer.", nameof(projection));
+            }
+            ISkyMapVisibility visibility = (options & SkyMapRenderOptions.Horizon) != 0
+                ? observer
+                : AllSkyMapVisibility.Instance;
+            return Build(projection, options, observer, disabledCatalogues, visibility);
+        }
+
+        private SkyMapScene Build(
+            SkyMapViewportProjection projection,
+            SkyMapRenderOptions options,
+            SkyMapObserverSnapshot observer,
+            IReadOnlySet<string> disabledCatalogues,
+            ISkyMapVisibility visibility) {
+            ViewportFoV viewport = projection.Viewport;
             List<SkyMapStar> stars = [];
             List<SkyMapLine> constellationLines = [];
             List<SkyMapDeepSkyObject> dsos = [];
             List<SkyMapPath> constellationBoundaries = [];
             List<SkyMapPath> gridLines = [];
+            List<SkyMapPath> horizonLines = [];
+            List<SkyMapPath> horizonMaskAreas = [];
             List<SkyMapLabel> labels = [];
 
             if ((options & (SkyMapRenderOptions.Stars | SkyMapRenderOptions.Constellations)) != 0) {
@@ -161,13 +184,33 @@ namespace NINA.WPF.Base.SkySurvey {
             if ((options & SkyMapRenderOptions.EquatorialGrid) != 0) {
                 BuildGrid(viewport, projection, visibility, gridLines, labels);
             }
+            if ((options & SkyMapRenderOptions.HorizontalGrid) != 0 && observer is not null) {
+                BuildHorizontalGrid(
+                    viewport,
+                    projection,
+                    observer,
+                    (options & SkyMapRenderOptions.Horizon) != 0,
+                    gridLines,
+                    labels);
+            }
+            if ((options & SkyMapRenderOptions.Horizon) != 0 && observer is not null) {
+                BuildHorizon(viewport, projection, observer, horizonLines, horizonMaskAreas);
+            }
 
-            return new SkyMapScene(stars, constellationLines, dsos, constellationBoundaries, gridLines, labels);
+            return new SkyMapScene(
+                stars,
+                constellationLines,
+                dsos,
+                constellationBoundaries,
+                gridLines,
+                labels,
+                horizonLines,
+                horizonMaskAreas);
         }
 
         private void BuildConstellations(
             ViewportFoV viewport,
-            SkyMapProjection projection,
+            SkyMapViewportProjection projection,
             SkyMapRenderOptions options,
             ISkyMapVisibility visibility,
             List<SkyMapStar> stars,
@@ -222,7 +265,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
         private void BuildDeepSkyObjects(
             ViewportFoV viewport,
-            SkyMapProjection projection,
+            SkyMapViewportProjection projection,
             ISkyMapVisibility visibility,
             IReadOnlySet<string> disabledCatalogues,
             List<SkyMapDeepSkyObject> result) {
@@ -251,16 +294,24 @@ namespace NINA.WPF.Base.SkySurvey {
                     center,
                     width / viewport.ArcSecWidth / 2,
                     height / viewport.ArcSecHeight / 2,
-                    AdjustedPositionAngle(dso, viewport, center)));
+                    AdjustedPositionAngle(dso, viewport, projection, center)));
             }
         }
 
-        private static double AdjustedPositionAngle(DeepSkyObject dso, ViewportFoV viewport, Point center) {
+        private static double AdjustedPositionAngle(
+            DeepSkyObject dso,
+            ViewportFoV viewport,
+            SkyMapViewportProjection projection,
+            Point center) {
             if (dso.PositionAngle is null) {
                 return 0;
             }
 
             double positionAngle = 90 - dso.PositionAngle.Degree;
+            if (projection.Mode == SkyMapProjectionMode.AltAz) {
+                return projection.RotationForPositionAngle(dso.Coordinates, dso.PositionAngle.Degree, center);
+            }
+
             if (Math.Abs(viewport.CenterCoordinates.RA - dso.Coordinates.RA) <= 1E-13
                 && Math.Abs(viewport.CenterCoordinates.Dec - dso.Coordinates.Dec) <= 1E-13) {
                 return positionAngle;
@@ -274,11 +325,12 @@ namespace NINA.WPF.Base.SkySurvey {
                 viewport.Rotation,
                 viewport.ArcSecWidth,
                 viewport.ArcSecHeight);
-            return positionAngle - (90 - AstroUtil.CalculatePositionAngle(
+            double adjusted = positionAngle - (90 - AstroUtil.CalculatePositionAngle(
                 referenceCenter.RADegrees,
                 dso.Coordinates.RADegrees,
                 referenceCenter.Dec,
                 dso.Coordinates.Dec));
+            return adjusted;
         }
 
         private static string DsoLabel(DeepSkyObject dso) {
@@ -303,7 +355,7 @@ namespace NINA.WPF.Base.SkySurvey {
             return false;
         }
 
-        private void BuildBoundaries(SkyMapProjection projection, ISkyMapVisibility visibility, List<SkyMapPath> result) {
+        private void BuildBoundaries(SkyMapViewportProjection projection, ISkyMapVisibility visibility, List<SkyMapPath> result) {
             foreach (ConstellationBoundary boundary in boundaries) {
                 if (boundary.Boundaries.Any(projection.Contains)) {
                     if (boundary.Boundaries.All(visibility.IsVisible)) {
@@ -317,7 +369,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
         private static void BuildGrid(
             ViewportFoV viewport,
-            SkyMapProjection projection,
+            SkyMapViewportProjection projection,
             ISkyMapVisibility visibility,
             List<SkyMapPath> result,
             List<SkyMapLabel> labels) {
@@ -378,6 +430,266 @@ namespace NINA.WPF.Base.SkySurvey {
             }
         }
 
+        private static void BuildHorizontalGrid(
+            ViewportFoV viewport,
+            SkyMapViewportProjection projection,
+            SkyMapObserverSnapshot observer,
+            bool hideBelowHorizon,
+            List<SkyMapPath> result,
+            List<SkyMapLabel> labels) {
+            double step = ClosestStep(HorizontalSteps, Math.Max(viewport.HFoV, viewport.VFoV) / 4);
+            double sampleStep = step / 4;
+            double radius = Math.Max(viewport.HFoV, viewport.VFoV) + sampleStep;
+            SkyMapHorizontalCoordinates center = observer.ToHorizontal(viewport.CenterCoordinates);
+
+            for (double azimuth = 0; azimuth < 360; azimuth += step) {
+                SkyMapHorizontalCoordinates lineCenter = new SkyMapHorizontalCoordinates(center.Altitude, azimuth);
+                if (!projection.Contains(lineCenter)) {
+                    continue;
+                }
+
+                int previousCount = result.Count;
+                List<Point> points = [];
+                double from = Math.Max(-89.999, center.Altitude - radius);
+                double through = Math.Min(89.999, center.Altitude + radius);
+                for (double altitude = from; altitude <= through; altitude += sampleStep) {
+                    SkyMapHorizontalCoordinates horizontal = new SkyMapHorizontalCoordinates(altitude, azimuth);
+                    if (projection.Contains(horizontal)
+                        && (!hideBelowHorizon || observer.HorizonClearance(horizontal) >= 0)) {
+                        points.Add(projection.Project(horizontal));
+                    } else {
+                        AddPathIfDrawable(points, result, azimuth, 1);
+                        points = [];
+                    }
+                }
+                AddPathIfDrawable(points, result, azimuth, 1);
+                AddGridLabels(result, previousCount, labels, $"{azimuth:N0}°", viewport);
+            }
+
+            for (double altitude = -Math.Floor(89.999 / step) * step; altitude < 90; altitude += step) {
+                SkyMapHorizontalCoordinates lineCenter = new SkyMapHorizontalCoordinates(altitude, center.Azimuth);
+                if (!projection.Contains(lineCenter)) {
+                    continue;
+                }
+
+                int previousCount = result.Count;
+                List<Point> points = [];
+                for (double azimuth = 0; azimuth < 360; azimuth += sampleStep) {
+                    SkyMapHorizontalCoordinates horizontal = new SkyMapHorizontalCoordinates(altitude, azimuth);
+                    if (projection.Contains(horizontal)
+                        && (!hideBelowHorizon || observer.HorizonClearance(horizontal) >= 0)) {
+                        points.Add(projection.Project(horizontal));
+                    } else {
+                        AddPathIfDrawable(points, result, altitude, altitude == 0 ? 3 : 1);
+                        points = [];
+                    }
+                }
+                AddPathIfDrawable(points, result, altitude, altitude == 0 ? 3 : 1);
+                AddGridLabels(result, previousCount, labels, $"{altitude:N0}°", viewport);
+            }
+        }
+
+        private static void BuildHorizon(
+            ViewportFoV viewport,
+            SkyMapViewportProjection projection,
+            SkyMapObserverSnapshot observer,
+            List<SkyMapPath> result,
+            List<SkyMapPath> maskAreas) {
+            double sampleStep = ClosestStep(HorizontalSteps, Math.Max(viewport.HFoV, viewport.VFoV) / 4) / 4;
+            List<Point> points = [];
+            for (double azimuth = 0; azimuth <= 360; azimuth += sampleStep) {
+                double altitude = observer.HorizonAltitude(azimuth);
+                SkyMapHorizontalCoordinates horizontal = new SkyMapHorizontalCoordinates(altitude, azimuth);
+                if (projection.Mode == SkyMapProjectionMode.AltAz && projection.Contains(horizontal)) {
+                    points.Add(projection.Project(horizontal));
+                } else if (projection.Mode == SkyMapProjectionMode.Equatorial) {
+                    Coordinates celestial = observer.ToCelestial(horizontal);
+                    if (projection.Contains(celestial)) {
+                        points.Add(projection.Project(celestial));
+                    } else {
+                        AddPathIfDrawable(points, result, strokeThickness: 2);
+                        points = [];
+                    }
+                } else {
+                    AddPathIfDrawable(points, result, strokeThickness: 2);
+                    points = [];
+                }
+            }
+            AddPathIfDrawable(points, result, strokeThickness: 2);
+            BuildHorizonMask(viewport, projection, observer, maskAreas);
+        }
+
+        private static void BuildHorizonMask(
+            ViewportFoV viewport,
+            SkyMapViewportProjection projection,
+            SkyMapObserverSnapshot observer,
+            List<SkyMapPath> result) {
+            if (observer.HasFlatHorizon) {
+                double centerAltitude = observer.ToHorizontal(viewport.CenterCoordinates).Altitude;
+                if (centerAltitude >= projection.AngularRadius) {
+                    return;
+                }
+                if (centerAltitude <= -projection.AngularRadius) {
+                    result.Add(ViewportRectangle(viewport));
+                    return;
+                }
+            }
+
+            const double targetCellSize = 12;
+            int columns = Math.Max(1, (int)Math.Ceiling(viewport.Width / targetCellSize));
+            int rows = Math.Max(1, (int)Math.Ceiling(viewport.Height / targetCellSize));
+            double cellWidth = viewport.Width / columns;
+            double cellHeight = viewport.Height / rows;
+            double[,] clearance = new double[rows + 1, columns + 1];
+            bool allHidden = true;
+            bool allVisible = true;
+            for (int row = 0; row <= rows; row++) {
+                for (int column = 0; column <= columns; column++) {
+                    Point point = new Point(column * cellWidth, row * cellHeight);
+                    double value = observer.HorizonClearance(projection.UnprojectHorizontal(point));
+                    clearance[row, column] = value;
+                    allHidden &= value < 0;
+                    allVisible &= value >= 0;
+                }
+            }
+
+            if (allVisible) {
+                return;
+            }
+            if (allHidden) {
+                result.Add(ViewportRectangle(viewport));
+                return;
+            }
+
+            for (int row = 0; row < rows; row++) {
+                int hiddenRunStart = -1;
+                for (int column = 0; column < columns; column++) {
+                    Point topLeft = new Point(column * cellWidth, row * cellHeight);
+                    Point topRight = new Point((column + 1) * cellWidth, row * cellHeight);
+                    Point bottomRight = new Point((column + 1) * cellWidth, (row + 1) * cellHeight);
+                    Point bottomLeft = new Point(column * cellWidth, (row + 1) * cellHeight);
+                    double topLeftClearance = clearance[row, column];
+                    double topRightClearance = clearance[row, column + 1];
+                    double bottomRightClearance = clearance[row + 1, column + 1];
+                    double bottomLeftClearance = clearance[row + 1, column];
+                    bool cellHidden = topLeftClearance < 0
+                        && topRightClearance < 0
+                        && bottomRightClearance < 0
+                        && bottomLeftClearance < 0;
+                    if (cellHidden) {
+                        hiddenRunStart = hiddenRunStart < 0 ? column : hiddenRunStart;
+                        continue;
+                    }
+
+                    AddHiddenRun(result, hiddenRunStart, column, row, cellWidth, cellHeight);
+                    hiddenRunStart = -1;
+                    bool cellVisible = topLeftClearance >= 0
+                        && topRightClearance >= 0
+                        && bottomRightClearance >= 0
+                        && bottomLeftClearance >= 0;
+                    if (cellVisible) {
+                        continue;
+                    }
+                    AddPartiallyHiddenCell(
+                        result,
+                        [topLeft, topRight, bottomRight, bottomLeft],
+                        [topLeftClearance, topRightClearance, bottomRightClearance, bottomLeftClearance]);
+                }
+                AddHiddenRun(result, hiddenRunStart, columns, row, cellWidth, cellHeight);
+            }
+        }
+
+        private static SkyMapPath ViewportRectangle(ViewportFoV viewport) {
+            return new SkyMapPath(
+                [
+                    new Point(0, 0),
+                    new Point(viewport.Width, 0),
+                    new Point(viewport.Width, viewport.Height),
+                    new Point(0, viewport.Height)
+                ],
+                closed: true);
+        }
+
+        private static void AddHiddenRun(
+            List<SkyMapPath> result,
+            int fromColumn,
+            int throughColumn,
+            int row,
+            double cellWidth,
+            double cellHeight) {
+            if (fromColumn < 0) {
+                return;
+            }
+            double left = fromColumn * cellWidth;
+            double right = throughColumn * cellWidth;
+            double top = row * cellHeight;
+            double bottom = (row + 1) * cellHeight;
+            result.Add(new SkyMapPath(
+                [new Point(left, top), new Point(right, top), new Point(right, bottom), new Point(left, bottom)],
+                closed: true));
+        }
+
+        private static void AddPartiallyHiddenCell(
+            List<SkyMapPath> result,
+            IReadOnlyList<Point> corners,
+            IReadOnlyList<double> clearance) {
+            int hiddenCorners = 0;
+            int pattern = 0;
+            for (int i = 0; i < corners.Count; i++) {
+                if (clearance[i] < 0) {
+                    hiddenCorners++;
+                    pattern |= 1 << i;
+                }
+            }
+            if (hiddenCorners == 0 || hiddenCorners == corners.Count) {
+                return;
+            }
+
+            if (pattern == 5 || pattern == 10) {
+                for (int i = 0; i < corners.Count; i++) {
+                    if (clearance[i] >= 0) {
+                        continue;
+                    }
+                    int previous = (i + corners.Count - 1) % corners.Count;
+                    int next = (i + 1) % corners.Count;
+                    result.Add(new SkyMapPath(
+                        [
+                            corners[i],
+                            HorizonIntersection(corners[i], clearance[i], corners[next], clearance[next]),
+                            HorizonIntersection(corners[i], clearance[i], corners[previous], clearance[previous])
+                        ],
+                        closed: true));
+                }
+                return;
+            }
+
+            List<Point> polygon = [];
+            int previousIndex = corners.Count - 1;
+            for (int currentIndex = 0; currentIndex < corners.Count; currentIndex++) {
+                bool previousHidden = clearance[previousIndex] < 0;
+                bool currentHidden = clearance[currentIndex] < 0;
+                if (previousHidden != currentHidden) {
+                    polygon.Add(HorizonIntersection(
+                        corners[previousIndex],
+                        clearance[previousIndex],
+                        corners[currentIndex],
+                        clearance[currentIndex]));
+                }
+                if (currentHidden) {
+                    polygon.Add(corners[currentIndex]);
+                }
+                previousIndex = currentIndex;
+            }
+            result.Add(new SkyMapPath(polygon, closed: true));
+        }
+
+        private static Point HorizonIntersection(Point from, double fromClearance, Point through, double throughClearance) {
+            double amount = fromClearance / (fromClearance - throughClearance);
+            return new Point(
+                from.X + (through.X - from.X) * amount,
+                from.Y + (through.Y - from.Y) * amount);
+        }
+
         private static string FormatRightAscension(double rightAscension) {
             string text = AstroUtil.HoursToHMS(AstroUtil.DegreesToHours(rightAscension));
             return $"{text[..^3]}h";
@@ -385,7 +697,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
         private static void AddVisiblePath(
             IReadOnlyList<Coordinates> coordinates,
-            SkyMapProjection projection,
+            SkyMapViewportProjection projection,
             ISkyMapVisibility visibility,
             List<SkyMapPath> result,
             double value = 0,
@@ -402,7 +714,11 @@ namespace NINA.WPF.Base.SkySurvey {
             AddPathIfDrawable(points, result, value, strokeThickness);
         }
 
-        private static void AddPathIfDrawable(List<Point> points, List<SkyMapPath> result, double value, double strokeThickness) {
+        private static void AddPathIfDrawable(
+            List<Point> points,
+            List<SkyMapPath> result,
+            double value = 0,
+            double strokeThickness = 1) {
             if (points.Count > 1) {
                 result.Add(new SkyMapPath(points, value, strokeThickness: strokeThickness));
             }
@@ -426,77 +742,6 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         private readonly record struct ConstellationData(Constellation Constellation, Coordinates Center);
-
-        private readonly struct SkyMapProjection {
-            private const double ArcSecondsPerRadian = 180d * 3600 / Math.PI;
-            private readonly double centerDeclinationCosine;
-            private readonly double centerDeclinationSine;
-            private readonly double centerRightAscension;
-            private readonly double cosineRadius;
-            private readonly double horizontalPixelsPerRadian;
-            private readonly double rotationCosine;
-            private readonly double rotationSine;
-            private readonly double verticalPixelsPerRadian;
-            private readonly double x;
-            private readonly double y;
-
-            public SkyMapProjection(ViewportFoV viewport) {
-                centerRightAscension = AstroUtil.ToRadians(viewport.CenterCoordinates.RADegrees);
-                double centerDeclination = AstroUtil.ToRadians(viewport.CenterCoordinates.Dec);
-                centerDeclinationSine = Math.Sin(centerDeclination);
-                centerDeclinationCosine = Math.Cos(centerDeclination);
-                double rotation = AstroUtil.ToRadians(viewport.Rotation);
-                rotationSine = Math.Sin(rotation);
-                rotationCosine = Math.Cos(rotation);
-                cosineRadius = Math.Cos(AstroUtil.ToRadians(Math.Max(viewport.HFoV, viewport.VFoV)));
-                horizontalPixelsPerRadian = ArcSecondsPerRadian / viewport.ArcSecWidth;
-                verticalPixelsPerRadian = ArcSecondsPerRadian / viewport.ArcSecHeight;
-                x = viewport.ViewPortCenterPoint.X;
-                y = viewport.ViewPortCenterPoint.Y;
-            }
-
-            public bool Contains(Coordinates coordinates) {
-                return Contains(coordinates.RADegrees, coordinates.Dec);
-            }
-
-            public bool Contains(double rightAscension, double declination) {
-                double declinationRadians = AstroUtil.ToRadians(declination);
-                double cosineDistance = Math.Sin(declinationRadians) * centerDeclinationSine
-                    + Math.Cos(declinationRadians) * centerDeclinationCosine
-                    * Math.Cos(NormalizedRightAscension(rightAscension));
-                return cosineDistance > cosineRadius;
-            }
-
-            public Point Project(Coordinates coordinates) {
-                return Project(coordinates.RADegrees, coordinates.Dec);
-            }
-
-            public Point Project(double rightAscension, double declination) {
-                double declinationRadians = AstroUtil.ToRadians(declination);
-                double declinationSine = Math.Sin(declinationRadians);
-                double declinationCosine = Math.Cos(declinationRadians);
-                double rightAscensionDifference = NormalizedRightAscension(rightAscension);
-                double rightAscensionCosine = Math.Cos(rightAscensionDifference);
-                double scale = 2 / (1 + declinationSine * centerDeclinationSine
-                    + declinationCosine * centerDeclinationCosine * rightAscensionCosine);
-                double rightAscensionOffset = scale * Math.Sin(rightAscensionDifference) * declinationCosine;
-                double declinationOffset = scale * (declinationSine * centerDeclinationCosine
-                    - declinationCosine * centerDeclinationSine * rightAscensionCosine);
-                double rotatedX = rightAscensionOffset * rotationCosine + declinationOffset * rotationSine;
-                double rotatedY = declinationOffset * rotationCosine - rightAscensionOffset * rotationSine;
-                return new Point(x - rotatedX * horizontalPixelsPerRadian, y - rotatedY * verticalPixelsPerRadian);
-            }
-
-            private double NormalizedRightAscension(double rightAscension) {
-                double difference = AstroUtil.ToRadians(rightAscension) - centerRightAscension;
-                if (difference > Math.PI) {
-                    difference -= 2 * Math.PI;
-                } else if (difference < -Math.PI) {
-                    difference += 2 * Math.PI;
-                }
-                return difference;
-            }
-        }
 
         private sealed class AllSkyMapVisibility : ISkyMapVisibility {
             public static AllSkyMapVisibility Instance { get; } = new AllSkyMapVisibility();

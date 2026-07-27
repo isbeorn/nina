@@ -34,6 +34,7 @@ namespace NINA.WPF.Base.SkySurvey {
         private static readonly DrawingBrush BoundaryBrush = new DrawingBrush(DrawingColor.FromArgb(128, DrawingColor.Khaki));
         private static readonly DrawingBrush ConstellationBrush = new DrawingBrush(DrawingColor.FromArgb(128, 255, 255, 153));
         private static readonly DrawingBrush GridBrush = new DrawingBrush(DrawingColor.SteelBlue);
+        private static readonly DrawingBrush HorizonMaskBrush = new DrawingBrush(DrawingColor.Black);
         private static readonly DrawingBrush StarBrush = new DrawingBrush(DrawingColor.FromArgb(200, 255, 255, 255));
         private static readonly DrawingBrush StarLabelBrush = new DrawingBrush(DrawingColor.FromArgb(128, 255, 215, 0));
         private static readonly DrawingBrush DsoFillBrush = new DrawingBrush(DrawingColor.FromArgb(10, 255, 255, 255));
@@ -41,6 +42,7 @@ namespace NINA.WPF.Base.SkySurvey {
         private static readonly DrawingPen ConstellationPen = new DrawingPen(DrawingColor.FromArgb(128, 0, 255, 0), 1);
         private static readonly DrawingPen GridPen = new DrawingPen(DrawingColor.FromArgb(127, DrawingColor.SteelBlue), 1);
         private static readonly DrawingPen GridEquatorPen = new DrawingPen(DrawingColor.FromArgb(127, DrawingColor.SteelBlue), 3);
+        private static readonly DrawingPen HorizonPen = new DrawingPen(DrawingColor.FromArgb(200, DrawingColor.Orange), 2);
         private static readonly DrawingPen TelescopePen = new DrawingPen(DrawingColor.FromArgb(128, DrawingColor.Yellow), 2);
         private static readonly DrawingFont ConstellationFont = new DrawingFont("Segoe UI", 11, DrawingFontStyle.Bold);
         private static readonly DrawingFont DsoFont = new DrawingFont("Segoe UI", 10, DrawingFontStyle.Regular);
@@ -73,9 +75,9 @@ namespace NINA.WPF.Base.SkySurvey {
                         System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
                         writeableBitmap.BackBuffer);
                     using Graphics frameGraphics = Graphics.FromImage(bitmap);
-                    frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
                     frameGraphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
                     frameGraphics.Clear(DrawingColor.Transparent);
+                    frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
                     DrawPaths(frameGraphics, scene.ConstellationBoundaries, BoundaryPen, null);
                     DrawPaths(frameGraphics, scene.GridLines, GridPen, GridEquatorPen);
                     DrawConstellations(frameGraphics, scene);
@@ -84,6 +86,10 @@ namespace NINA.WPF.Base.SkySurvey {
                     if (telescopePosition is MediaPoint telescope) {
                         DrawTelescope(frameGraphics, telescope);
                     }
+                    frameGraphics.SmoothingMode = SmoothingMode.None;
+                    DrawFilledPaths(frameGraphics, scene.HorizonMaskAreas, HorizonMaskBrush);
+                    frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    DrawPaths(frameGraphics, scene.HorizonLines, HorizonPen, null);
                 } finally {
                     writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
                     writeableBitmap.Unlock();
@@ -173,6 +179,22 @@ namespace NINA.WPF.Base.SkySurvey {
             }
         }
 
+        private static void DrawFilledPaths(
+            Graphics graphics,
+            IReadOnlyList<SkyMapPath> paths,
+            DrawingBrush brush) {
+            foreach (SkyMapPath path in paths) {
+                if (path.Points.Count < 3) {
+                    continue;
+                }
+                DrawingPoint[] points = new DrawingPoint[path.Points.Count];
+                for (int i = 0; i < points.Length; i++) {
+                    points[i] = ToDrawingPoint(path.Points[i]);
+                }
+                graphics.FillPolygon(brush, points);
+            }
+        }
+
         private static void DrawTelescope(Graphics graphics, MediaPoint position) {
             graphics.DrawEllipse(TelescopePen, (float)position.X - 15, (float)position.Y - 15, 30, 30);
             graphics.DrawLine(TelescopePen, (float)position.X, (float)position.Y - 15, (float)position.X, (float)position.Y - 5);
@@ -187,7 +209,20 @@ namespace NINA.WPF.Base.SkySurvey {
             using (DrawingContext context = drawing.Open()) {
                 context.DrawRectangle(MediaBrushes.Transparent, null, bounds);
                 foreach (SkyMapImagePlacement image in images) {
-                    context.PushTransform(new RotateTransform(image.Rotation, image.Center.X, image.Center.Y));
+                    double rotation = image.Rotation * Math.PI / 180;
+                    double cosine = Math.Cos(rotation);
+                    double sine = Math.Sin(rotation);
+                    double horizontalScale = image.FlipHorizontally ? -1 : 1;
+                    System.Windows.Media.Matrix matrix = new System.Windows.Media.Matrix(
+                        horizontalScale * cosine,
+                        horizontalScale * sine,
+                        -sine,
+                        cosine,
+                        0,
+                        0);
+                    matrix.OffsetX = image.Center.X - image.Center.X * matrix.M11 - image.Center.Y * matrix.M21;
+                    matrix.OffsetY = image.Center.Y - image.Center.X * matrix.M12 - image.Center.Y * matrix.M22;
+                    context.PushTransform(new MatrixTransform(matrix));
                     context.DrawImage(image.Image, new Rect(
                         image.Center.X - image.Width / 2,
                         image.Center.Y - image.Height / 2,

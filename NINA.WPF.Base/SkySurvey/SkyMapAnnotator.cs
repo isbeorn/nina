@@ -14,6 +14,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces.Mediator;
@@ -28,6 +29,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Point = System.Windows.Point;
 using PointF = System.Drawing.PointF;
 
@@ -44,6 +46,9 @@ namespace NINA.WPF.Base.SkySurvey {
         private CancellationTokenSource imageLoadCancellation;
         private SkyMapImageCache imageCache;
         private int renderVersion;
+        private readonly DispatcherTimer observerRefreshTimer;
+        private SkyMapObserverSnapshot projectionObserver;
+        private SkyMapObserverSnapshot observerSnapshot;
         private SkyMapRasterRenderer rasterRenderer;
         private SkyMapSceneBuilder sceneBuilder;
         private bool telescopeConnected;
@@ -63,9 +68,19 @@ namespace NINA.WPF.Base.SkySurvey {
             telescopeMediator = mediator;
             this.profileService = profileService;
             LoadSettings();
+            profileService.ProfileChanged += ProfileService_ProfileChanged;
+            profileService.LocationChanged += ProfileService_LocationOrHorizonChanged;
+            profileService.HorizonChanged += ProfileService_LocationOrHorizonChanged;
+            observerRefreshTimer = new DispatcherTimer(DispatcherPriority.Background) {
+                Interval = TimeSpan.FromSeconds(10)
+            };
+            observerRefreshTimer.Tick += ObserverRefreshTimer_Tick;
+            observerRefreshTimer.Start();
         }
 
         public ViewportFoV ViewportFoV { get; private set; }
+        public SkyMapViewportProjection Projection { get; private set; }
+        public event EventHandler ProjectionChanged;
         public ICommand DragCommand { get; private set; }
         public FrameLineMatrix2 FrameLineMatrix { get; }
         public List<FramingDSO> DSOInViewport { get; }
@@ -91,6 +106,18 @@ namespace NINA.WPF.Base.SkySurvey {
         private bool annotateGrid;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsAltAzProjection))]
+        [NotifyPropertyChangedFor(nameof(IsEquatorialProjection))]
+        private SkyMapProjectionMode projectionMode;
+
+        public bool IsAltAzProjection => ProjectionMode == SkyMapProjectionMode.AltAz;
+
+        public bool IsEquatorialProjection => ProjectionMode == SkyMapProjectionMode.Equatorial;
+
+        [ObservableProperty]
+        private bool showHorizon;
+
+        [ObservableProperty]
         private bool annotateDSO;
 
         [ObservableProperty]
@@ -104,6 +131,8 @@ namespace NINA.WPF.Base.SkySurvey {
 
         private List<string> DisabledCatalogues =>
             profileService?.ActiveProfile?.FramingAssistantSettings?.DisabledCatalogues ?? [];
+
+        private bool UsesObserver => ProjectionMode == SkyMapProjectionMode.AltAz || ShowHorizon;
 
         public async Task Initialize(
             Coordinates centerCoordinates,
@@ -159,12 +188,19 @@ namespace NINA.WPF.Base.SkySurvey {
                 ViewportFoV.Width,
                 ViewportFoV.Height,
                 ViewportFoV.Rotation);
-            UpdateSkyMap();
             return ViewportFoV;
         }
 
         public Coordinates ShiftViewport(Vector delta) {
-            ViewportFoV.Shift(delta);
+            SkyMapObserverSnapshot observer = UsesObserver ? CreateObserverSnapshot() : null;
+            SkyMapViewportProjection projection = GetProjection(observer, out _);
+            Coordinates center = projection.ShiftCenter(delta);
+            ViewportFoV = new ViewportFoV(
+                center,
+                ViewportFoV.VFoV,
+                ViewportFoV.Width,
+                ViewportFoV.Height,
+                ViewportFoV.Rotation);
             return ViewportFoV.CenterCoordinates;
         }
 
@@ -197,18 +233,31 @@ namespace NINA.WPF.Base.SkySurvey {
                 options |= SkyMapRenderOptions.ConstellationBoundaries;
             }
             if (AnnotateGrid) {
-                options |= SkyMapRenderOptions.EquatorialGrid;
+                options |= ProjectionMode == SkyMapProjectionMode.AltAz
+                    ? SkyMapRenderOptions.HorizontalGrid
+                    : SkyMapRenderOptions.EquatorialGrid;
+            }
+            if (ShowHorizon) {
+                options |= SkyMapRenderOptions.Horizon;
             }
 
             HashSet<string> disabledCatalogues = DisabledCatalogues.ToHashSet(StringComparer.Ordinal);
-            SkyMapScene scene = sceneBuilder.Build(ViewportFoV, options, disabledCatalogues);
+            SkyMapObserverSnapshot observer = UsesObserver ? CreateObserverSnapshot() : null;
+            Projection = GetProjection(observer, out bool projectionChanged);
+            SkyMapScene scene = sceneBuilder.Build(Projection, options, disabledCatalogues);
             IReadOnlyList<SkyMapImagePlacement> images = UseCachedImages && imageCache is not null
-                ? imageCache.GetPlacements(ViewportFoV)
+                ? imageCache.GetPlacements(ViewportFoV, Projection)
                 : [];
-            Point? telescopePosition = telescopeConnected && ViewportFoV.ContainsCoordinates(telescopeCoordinates)
-                ? telescopeCoordinates.XYProjection(ViewportFoV)
+            bool telescopeVisible = telescopeConnected
+                && Projection.Contains(telescopeCoordinates)
+                && (!ShowHorizon || observer.IsVisible(telescopeCoordinates));
+            Point? telescopePosition = telescopeVisible
+                ? Projection.Project(telescopeCoordinates)
                 : null;
             SkyMapOverlay = rasterRenderer.Render(scene, images, telescopePosition);
+            if (projectionChanged) {
+                ProjectionChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void QueueMissingImages(int version) {
@@ -280,14 +329,16 @@ namespace NINA.WPF.Base.SkySurvey {
 
         public void CalculateConstellationBoundaries() {
             ConstellationBoundariesInViewPort.Clear();
+            SkyMapObserverSnapshot observer = UsesObserver ? CreateObserverSnapshot() : null;
+            SkyMapViewportProjection projection = GetProjection(observer, out _);
             foreach (ConstellationBoundary boundary in constellationBoundaries) {
-                if (!boundary.Boundaries.Any(ViewportFoV.ContainsCoordinates)) {
+                if (!boundary.Boundaries.Any(projection.Contains)) {
                     continue;
                 }
 
                 FramingConstellationBoundary line = new FramingConstellationBoundary();
                 foreach (Coordinates coordinates in boundary.Boundaries) {
-                    Point point = coordinates.XYProjection(ViewportFoV);
+                    Point point = projection.Project(coordinates);
                     line.Points.Add(new PointF((float)point.X, (float)point.Y));
                 }
                 ConstellationBoundariesInViewPort.Add(line);
@@ -312,6 +363,15 @@ namespace NINA.WPF.Base.SkySurvey {
 
         public void Dispose() {
             telescopeMediator?.RemoveConsumer(this);
+            if (profileService is not null) {
+                profileService.ProfileChanged -= ProfileService_ProfileChanged;
+                profileService.LocationChanged -= ProfileService_LocationOrHorizonChanged;
+                profileService.HorizonChanged -= ProfileService_LocationOrHorizonChanged;
+            }
+            observerRefreshTimer?.Stop();
+            if (observerRefreshTimer is not null) {
+                observerRefreshTimer.Tick -= ObserverRefreshTimer_Tick;
+            }
             CancelImageLoad();
             rasterRenderer?.Dispose();
             FrameLineMatrix.Dispose();
@@ -338,6 +398,18 @@ namespace NINA.WPF.Base.SkySurvey {
         partial void OnAnnotateGridChanged(bool oldValue, bool newValue) {
             if (profileService?.ActiveProfile?.FramingAssistantSettings is { } settings) {
                 settings.AnnotateGrid = newValue;
+            }
+        }
+
+        partial void OnProjectionModeChanged(SkyMapProjectionMode oldValue, SkyMapProjectionMode newValue) {
+            if (profileService?.ActiveProfile?.FramingAssistantSettings is { } settings) {
+                settings.SkyMapProjectionMode = newValue;
+            }
+        }
+
+        partial void OnShowHorizonChanged(bool oldValue, bool newValue) {
+            if (profileService?.ActiveProfile?.FramingAssistantSettings is { } settings) {
+                settings.ShowHorizon = newValue;
             }
         }
 
@@ -394,6 +466,58 @@ namespace NINA.WPF.Base.SkySurvey {
             AnnotateConstellations = settings.AnnotateConstellations;
             AnnotateDSO = settings.AnnotateDSO;
             AnnotateGrid = settings.AnnotateGrid;
+            ProjectionMode = settings.SkyMapProjectionMode;
+            ShowHorizon = settings.ShowHorizon;
+        }
+
+        private SkyMapObserverSnapshot CreateObserverSnapshot() {
+            DateTime timestamp = DateTime.UtcNow;
+            if (observerSnapshot is not null && !observerSnapshot.NeedsRefresh(timestamp)) {
+                return observerSnapshot;
+            }
+
+            var settings = profileService.ActiveProfile.AstrometrySettings;
+            Func<double, double> horizonAltitude = settings.Horizon is null
+                ? null
+                : settings.Horizon.GetAltitude;
+            observerSnapshot = new SkyMapObserverSnapshot(
+                settings.Latitude,
+                settings.Longitude,
+                timestamp,
+                horizonAltitude);
+            return observerSnapshot;
+        }
+
+        private SkyMapViewportProjection GetProjection(SkyMapObserverSnapshot observer, out bool changed) {
+            changed = Projection is null
+                || !ReferenceEquals(Projection.Viewport, ViewportFoV)
+                || Projection.Mode != ProjectionMode
+                || !ReferenceEquals(projectionObserver, observer);
+            if (changed) {
+                Projection = new SkyMapViewportProjection(ViewportFoV, ProjectionMode, observer);
+                projectionObserver = observer;
+            }
+            return Projection;
+        }
+
+        private void ObserverRefreshTimer_Tick(object sender, EventArgs e) {
+            if (UsesObserver && (observerSnapshot is null || observerSnapshot.NeedsRefresh(DateTime.UtcNow))) {
+                observerSnapshot = null;
+                UpdateSkyMap();
+            }
+        }
+
+        private void ProfileService_LocationOrHorizonChanged(object sender, EventArgs e) {
+            observerSnapshot = null;
+            if (UsesObserver) {
+                UpdateSkyMap();
+            }
+        }
+
+        private void ProfileService_ProfileChanged(object sender, EventArgs e) {
+            observerSnapshot = null;
+            LoadSettings();
+            UpdateSkyMap();
         }
 
         private void CancelImageLoad() {

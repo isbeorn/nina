@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using NINA.WPF.Base.SkySurvey;
 using System.Globalization;
 using System.IO;
@@ -302,6 +303,99 @@ namespace NINA.Test.SkySurvey {
                 sut.GetPlacements(viewport).Should().HaveCount(3);
                 sut.DecodedImageCount.Should().Be(3);
             }
+        }
+
+        [Test]
+        public async Task SkyMapImageCache_AltAzProjection_PositionsTileAgainstHorizontalGrid() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(35, 180));
+            Coordinates tileCoordinates = observer.ToCelestial(new SkyMapHorizontalCoordinates(35, 182));
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage(
+                "Horizontal tile",
+                tileCoordinates.RA,
+                tileCoordinates.Dec,
+                0,
+                60,
+                60,
+                "NASASkySurvey"));
+            ViewportFoV viewport = new ViewportFoV(center, 20, 400, 400, 0);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapImageCache sut = new SkyMapImageCache(cache);
+
+            await sut.LoadAsync(viewport, CancellationToken.None);
+            SkyMapImagePlacement placement = sut.GetPlacements(viewport, projection).Single();
+
+            placement.Center.Should().Be(projection.Project(tileCoordinates));
+            placement.Center.Y.Should().BeApproximately(viewport.ViewPortCenterPoint.Y, 1);
+        }
+
+        [TestCase(50, 45, 180, 38, 205, 11)]
+        [TestCase(50, 45, 180, 38, 155, 11)]
+        [TestCase(50, 70, 350, 60, 10, 0)]
+        [TestCase(-33, 45, 0, 30, 25, 27)]
+        [TestCase(-33, 45, 0, 30, 335, 27)]
+        public async Task SkyMapImageCache_AltAzProjection_AlignsBothImageAxesWithCelestialOrientation(
+            double latitude,
+            double centerAltitude,
+            double centerAzimuth,
+            double tileAltitude,
+            double tileAzimuth,
+            double viewportRotation) {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(latitude, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(centerAltitude, centerAzimuth));
+            Coordinates tileCoordinates = observer.ToCelestial(new SkyMapHorizontalCoordinates(tileAltitude, tileAzimuth));
+            const double imageRotation = 17;
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage(
+                "Oriented horizontal tile",
+                tileCoordinates.RA,
+                tileCoordinates.Dec,
+                imageRotation,
+                60,
+                60,
+                "NASASkySurvey"));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 800, 600, viewportRotation);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapImageCache sut = new SkyMapImageCache(cache);
+
+            await sut.LoadAsync(viewport, CancellationToken.None);
+            SkyMapImagePlacement placement = sut.GetPlacements(viewport, projection).Single();
+            System.Windows.Point top = projection.Project(OffsetCoordinates(tileCoordinates, -imageRotation));
+            System.Windows.Point right = projection.Project(OffsetCoordinates(tileCoordinates, 270 - imageRotation));
+            double expectedTopRotation = AstroUtil.EuclidianModulus(AstroUtil.ToDegree(Math.Atan2(
+                top.Y - placement.Center.Y,
+                top.X - placement.Center.X)) + 90, 360);
+            double expectedRightAngle = AstroUtil.EuclidianModulus(AstroUtil.ToDegree(Math.Atan2(
+                right.Y - placement.Center.Y,
+                right.X - placement.Center.X)), 360);
+            double actualRightAngle = AstroUtil.EuclidianModulus(
+                placement.Rotation + (placement.FlipHorizontally ? 180 : 0),
+                360);
+
+            AstroUtil.EuclidianModulus(placement.Rotation, 360).Should().BeApproximately(expectedTopRotation, 0.05);
+            actualRightAngle.Should().BeApproximately(expectedRightAngle, 0.05);
+        }
+
+        private static Coordinates OffsetCoordinates(Coordinates coordinates, double positionAngle) {
+            const double referenceDistance = 0.01;
+            double longitude = AstroUtil.ToRadians(coordinates.RADegrees);
+            double latitude = AstroUtil.ToRadians(coordinates.Dec);
+            double bearing = AstroUtil.ToRadians(positionAngle);
+            double distance = AstroUtil.ToRadians(referenceDistance);
+            double referenceLatitude = Math.Asin(
+                Math.Sin(latitude) * Math.Cos(distance)
+                + Math.Cos(latitude) * Math.Sin(distance) * Math.Cos(bearing));
+            double referenceLongitude = longitude + Math.Atan2(
+                Math.Sin(bearing) * Math.Sin(distance) * Math.Cos(latitude),
+                Math.Cos(distance) - Math.Sin(latitude) * Math.Sin(referenceLatitude));
+            return new Coordinates(
+                AstroUtil.EuclidianModulus(AstroUtil.ToDegree(referenceLongitude), 360),
+                AstroUtil.ToDegree(referenceLatitude),
+                Epoch.J2000,
+                Coordinates.RAType.Degrees);
         }
 
         private static SkySurveyImage CreateSkySurveyImage(string name, double raHours, double decDegrees, double rotation, double fovWidth, double fovHeight, string source) {

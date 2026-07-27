@@ -14,10 +14,12 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.WPF.Base.Model.FramingAssistant;
 using NINA.WPF.Base.SkySurvey;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,10 +30,16 @@ using System.Windows.Media;
 namespace NINA.WPF.Base.Interfaces.ViewModel {
 
     public interface ISkyMapAnnotator {
+        event EventHandler ProjectionChanged;
+
         bool AnnotateConstellationBoundaries { get; set; }
         bool AnnotateConstellations { get; set; }
         bool AnnotateDSO { get; set; }
         bool AnnotateGrid { get; set; }
+        SkyMapProjectionMode ProjectionMode { get; set; }
+        bool IsAltAzProjection { get; }
+        bool IsEquatorialProjection { get; }
+        bool ShowHorizon { get; set; }
         bool UseCachedImages { get; set; }
         bool ShowAllCatalogues { get; set; }
         IList<ActiveCatalogue> ActiveCatalogues { get; set; }
@@ -43,6 +51,7 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         FrameLineMatrix2 FrameLineMatrix { get; }
         bool Initialized { get; }
         ImageSource SkyMapOverlay { get; set; }
+        SkyMapViewportProjection Projection { get; }
         ViewportFoV ViewportFoV { get; }
 
         void CalculateConstellationBoundaries();

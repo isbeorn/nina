@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -30,7 +31,8 @@ namespace NINA.WPF.Base.SkySurvey {
         Point Center,
         double Width,
         double Height,
-        double Rotation);
+        double Rotation,
+        bool FlipHorizontally = false);
 
     public sealed class SkyMapImageCache {
         public const int DefaultDecodedImageCapacity = 32;
@@ -83,7 +85,10 @@ namespace NINA.WPF.Base.SkySurvey {
 
         public long MaximumEstimatedBytes => maximumEstimatedBytes;
 
-        public IReadOnlyList<SkyMapImagePlacement> GetPlacements(ViewportFoV viewport) {
+        public IReadOnlyList<SkyMapImagePlacement> GetPlacements(
+            ViewportFoV viewport,
+            SkyMapViewportProjection projection = null) {
+            projection ??= new SkyMapViewportProjection(viewport);
             List<SkyMapImagePlacement> result = [];
             foreach (ImageTile tile in RelevantTiles(viewport)) {
                 BitmapSource image = GetLoadedImage(tile, viewport);
@@ -95,8 +100,9 @@ namespace NINA.WPF.Base.SkySurvey {
                 double imageResolutionHeight = AstroUtil.ArcminToArcsec(tile.FieldOfViewHeight) / image.PixelHeight;
                 double width = image.PixelWidth * imageResolutionWidth / viewport.ArcSecWidth;
                 double height = image.PixelHeight * imageResolutionHeight / viewport.ArcSecHeight;
-                System.Windows.Point center = tile.Coordinates.XYProjection(viewport);
-                result.Add(new SkyMapImagePlacement(image, center, width, height, CalculateRotation(tile, viewport, center)));
+                System.Windows.Point center = projection.Project(tile.Coordinates);
+                (double rotation, bool flipHorizontally) = CalculateTransform(tile, viewport, projection, center);
+                result.Add(new SkyMapImagePlacement(image, center, width, height, rotation, flipHorizontally));
             }
             return result;
         }
@@ -225,7 +231,15 @@ namespace NINA.WPF.Base.SkySurvey {
             return AstroUtil.ToDegree(Math.Acos(Math.Clamp(cosine, -1, 1)));
         }
 
-        private static double CalculateRotation(ImageTile tile, ViewportFoV viewport, System.Windows.Point center) {
+        private static (double Rotation, bool FlipHorizontally) CalculateTransform(
+            ImageTile tile,
+            ViewportFoV viewport,
+            SkyMapViewportProjection projection,
+            System.Windows.Point center) {
+            if (projection.Mode == SkyMapProjectionMode.AltAz) {
+                return projection.ImageTransformFromEquatorial(tile.Coordinates, tile.Rotation, center);
+            }
+
             double deltaX = center.X - viewport.ViewPortCenterPoint.X;
             double deltaY = center.Y - viewport.ViewPortCenterPoint.Y;
             Coordinates referenceCenter = viewport.CenterCoordinates.Shift(
@@ -234,18 +248,18 @@ namespace NINA.WPF.Base.SkySurvey {
                 viewport.Rotation,
                 viewport.ArcSecWidth,
                 viewport.ArcSecHeight);
-            double rotation = -(90 - AstroUtil.CalculatePositionAngle(
+            double equatorialRotation = -(90 - AstroUtil.CalculatePositionAngle(
                 referenceCenter.RADegrees,
                 tile.Coordinates.RADegrees,
                 referenceCenter.Dec,
                 tile.Coordinates.Dec));
             if (deltaX < 0) {
-                rotation += 180;
+                equatorialRotation += 180;
             }
             if (tile.Coordinates.Dec < 0 || (referenceCenter.Dec < 0 && tile.Coordinates.Dec >= 0)) {
-                rotation += 180;
+                equatorialRotation += 180;
             }
-            return rotation + tile.Rotation;
+            return (equatorialRotation + tile.Rotation, false);
         }
 
         private readonly record struct ImageKey(ImageTile Tile, int Size);

@@ -14,6 +14,7 @@
 
 using BenchmarkDotNet.Attributes;
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using NINA.Image.ImageAnalysis;
 using NINA.WPF.Base.Model.FramingAssistant;
 using NINA.WPF.Base.SkySurvey;
@@ -31,17 +32,30 @@ namespace NINA.Benchmark {
     [ShortRunJob]
     public class SkyMapRenderingBenchmark {
         private Bitmap bitmap = null!;
+        private SkyMapViewportProjection altAzProjection = null!;
+        private SkyMapViewportProjection alternateAltAzProjection = null!;
+        private SkyMapViewportProjection equatorialObserverProjection = null!;
+        private FramingRectangle[] alternateCameraRectangles = null!;
         private IReadOnlyList<ConstellationBoundary> boundaries = null!;
+        private FramingRectangle[] cameraRectangles = null!;
+        private SkyMapCameraRectanglePlacement[] cameraRectanglePlacements = null!;
+        private BitmapSource cachedImage = null!;
         private IReadOnlyList<Constellation> constellations = null!;
         private IReadOnlyList<DeepSkyObject> deepSkyObjects = null!;
         private Graphics graphics = null!;
+        private Point[] imageCenters = null!;
+        private Coordinates[] imageCoordinates = null!;
         private FrameLineMatrix2 legacyGrid = null!;
         private List<FramingConstellation> legacyConstellations = null!;
         private List<FramingDSO> legacyDeepSkyObjects = null!;
         private SkyMapSceneBuilder renderer = null!;
         private SkyMapRasterRenderer rasterRenderer = null!;
         private SkyMapScene scene = null!;
+        private SkyMapObserverSnapshot observer = null!;
         private ViewportFoV viewport = null!;
+        private ViewportFoV wideViewport = null!;
+        private SkyMapViewportProjection wideAltAzProjection = null!;
+        private bool useAlternateCameraProjection;
 
         [GlobalSetup]
         public void Setup() {
@@ -49,6 +63,45 @@ namespace NINA.Benchmark {
             deepSkyObjects = CreateDeepSkyObjects();
             boundaries = CreateBoundaries();
             viewport = new ViewportFoV(CelestialCoordinates(85, 0), 30, 1200, 800, 0);
+            observer = new SkyMapObserverSnapshot(50, new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc), 16.5);
+            altAzProjection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            equatorialObserverProjection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.Equatorial, observer);
+            alternateAltAzProjection = new SkyMapViewportProjection(
+                new ViewportFoV(CelestialCoordinates(86, 1), 30, 1200, 800, 3),
+                SkyMapProjectionMode.AltAz,
+                observer);
+            imageCoordinates = Enumerable.Range(0, 32)
+                .Select(i => observer.ToCelestial(new SkyMapHorizontalCoordinates(15 + i % 7 * 10, i * 360d / 32)))
+                .ToArray();
+            imageCenters = imageCoordinates.Select(altAzProjection.Project).ToArray();
+            cameraRectangles = imageCoordinates
+                .Select((coordinates, index) => new FramingRectangle(0, 0, 0, 320, 180) {
+                    Coordinates = coordinates,
+                    Id = index + 1
+                })
+                .ToArray();
+            alternateCameraRectangles = imageCoordinates
+                .Select((coordinates, index) => new FramingRectangle(0, 0, 0, 320, 180) {
+                    Coordinates = coordinates,
+                    Id = index + 1
+                })
+                .ToArray();
+            cameraRectanglePlacements = cameraRectangles
+                .Select(rectangle => new SkyMapCameraRectanglePlacement(rectangle))
+                .ToArray();
+            cachedImage = BitmapSource.Create(
+                1,
+                1,
+                96,
+                96,
+                PixelFormats.Bgra32,
+                null,
+                new byte[] { 255, 255, 255, 255 },
+                4);
+            cachedImage.Freeze();
+            Coordinates wideCenter = observer.ToCelestial(new SkyMapHorizontalCoordinates(30, 180));
+            wideViewport = new ViewportFoV(wideCenter, 140, 1200, 800, 37);
+            wideAltAzProjection = new SkyMapViewportProjection(wideViewport, SkyMapProjectionMode.AltAz, observer);
             renderer = new SkyMapSceneBuilder(constellations, deepSkyObjects, boundaries);
             rasterRenderer = new SkyMapRasterRenderer((int)viewport.Width, (int)viewport.Height);
             scene = renderer.Build(viewport, SkyMapRenderOptions.All);
@@ -90,6 +143,15 @@ namespace NINA.Benchmark {
         }
 
         [Benchmark]
+        public ImageSource NewAltAzHorizonFullFrame() {
+            SkyMapRenderOptions options = (SkyMapRenderOptions.All & ~SkyMapRenderOptions.EquatorialGrid)
+                | SkyMapRenderOptions.HorizontalGrid
+                | SkyMapRenderOptions.Horizon;
+            SkyMapScene scene = renderer.Build(altAzProjection, options);
+            return rasterRenderer.Render(scene, [], null);
+        }
+
+        [Benchmark]
         public SkyMapScene NewSceneOnly() {
             return renderer.Build(viewport, SkyMapRenderOptions.All);
         }
@@ -121,6 +183,91 @@ namespace NINA.Benchmark {
         [BenchmarkCategory("Layers")]
         public SkyMapScene NewGridLayer() {
             return renderer.Build(viewport, SkyMapRenderOptions.EquatorialGrid);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Layers")]
+        public SkyMapScene NewAltAzGridLayer() {
+            return renderer.Build(altAzProjection, SkyMapRenderOptions.HorizontalGrid);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Layers")]
+        public SkyMapScene NewHorizonLayer() {
+            return renderer.Build(equatorialObserverProjection, SkyMapRenderOptions.Horizon);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Layers")]
+        public SkyMapScene NewWideAltAzHorizonLayer() {
+            return renderer.Build(wideAltAzProjection, SkyMapRenderOptions.Horizon);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Layers")]
+        public double NewAltAzCachedImageOrientations() {
+            double total = 0;
+            for (int i = 0; i < imageCoordinates.Length; i++) {
+                (double rotation, bool flipHorizontally) = altAzProjection.ImageTransformFromEquatorial(
+                    imageCoordinates[i],
+                    17,
+                    imageCenters[i]);
+                total += rotation + (flipHorizontally ? 1 : 0);
+            }
+            return total;
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Layers")]
+        public double NewAltAzCameraRectanglePlacements() {
+            SkyMapViewportProjection projection = useAlternateCameraProjection
+                ? alternateAltAzProjection
+                : altAzProjection;
+            FramingRectangle[] rectangles = useAlternateCameraProjection
+                ? alternateCameraRectangles
+                : cameraRectangles;
+            useAlternateCameraProjection = !useAlternateCameraProjection;
+            double total = 0;
+            for (int i = 0; i < cameraRectanglePlacements.Length; i++) {
+                SkyMapCameraRectanglePlacement placement = cameraRectanglePlacements[i];
+                placement.SetRectangle(rectangles[i]);
+                placement.Update(projection, 343);
+                total += placement.X + placement.Y + placement.Rotation;
+            }
+            return total;
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Interaction")]
+        public ImageSource NewAltAzDragFrame() {
+            SkyMapViewportProjection projection = useAlternateCameraProjection
+                ? alternateAltAzProjection
+                : altAzProjection;
+            FramingRectangle[] rectangles = useAlternateCameraProjection
+                ? alternateCameraRectangles
+                : cameraRectangles;
+            useAlternateCameraProjection = !useAlternateCameraProjection;
+            SkyMapRenderOptions options = (SkyMapRenderOptions.All & ~SkyMapRenderOptions.EquatorialGrid)
+                | SkyMapRenderOptions.HorizontalGrid
+                | SkyMapRenderOptions.Horizon;
+            SkyMapScene currentScene = renderer.Build(projection, options);
+            SkyMapImagePlacement[] images = new SkyMapImagePlacement[imageCoordinates.Length];
+            double total = 0;
+            for (int i = 0; i < imageCoordinates.Length; i++) {
+                Point center = projection.Project(imageCoordinates[i]);
+                (double rotation, bool flipHorizontally) = projection.ImageTransformFromEquatorial(
+                    imageCoordinates[i],
+                    17,
+                    center);
+                images[i] = new SkyMapImagePlacement(cachedImage, center, 80, 80, rotation, flipHorizontally);
+
+                SkyMapCameraRectanglePlacement placement = cameraRectanglePlacements[i];
+                placement.SetRectangle(rectangles[i]);
+                placement.Update(projection, 343);
+                total += placement.X + placement.Y + placement.Rotation;
+            }
+            GC.KeepAlive(total);
+            return rasterRenderer.Render(currentScene, images, null);
         }
 
         private void DrawLegacyConstellations() {

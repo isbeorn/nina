@@ -14,6 +14,7 @@
 
 using FluentAssertions;
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using NINA.WPF.Base.SkySurvey;
 using NUnit.Framework;
 using System;
@@ -158,6 +159,325 @@ namespace NINA.Test.SkySurvey {
         }
 
         [Test]
+        public void Build_AltAzGrid_UsesObserverLocationAndTime() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot firstObserver = new SkyMapObserverSnapshot(50, 10, at);
+            SkyMapObserverSnapshot laterObserver = new SkyMapObserverSnapshot(50, 10, at.AddHours(1));
+            Coordinates center = firstObserver.ToCelestial(new SkyMapHorizontalCoordinates(45, 180));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 1200, 800, 0);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([], [], []);
+
+            SkyMapViewportProjection firstProjection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, firstObserver);
+            SkyMapViewportProjection laterProjection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, laterObserver);
+            SkyMapScene first = sut.Build(firstProjection, SkyMapRenderOptions.HorizontalGrid);
+            SkyMapScene later = sut.Build(laterProjection, SkyMapRenderOptions.HorizontalGrid);
+
+            SkyMapLabel[] labels = VisibleGridLabels(first, viewport);
+            first.GridLines.Should().NotBeEmpty();
+            labels.Should().NotBeEmpty();
+            labels.Should().OnlyContain(x => x.Text.EndsWith("°", StringComparison.Ordinal));
+            later.GridLines.SelectMany(x => x.Points).Should().NotEqual(first.GridLines.SelectMany(x => x.Points));
+        }
+
+        [TestCase(85, 0)]
+        [TestCase(359, 45)]
+        [TestCase(170, -60)]
+        public void Build_AltAzGrid_ForArbitraryCelestialViewport_RemainsVisible(double rightAscension, double declination) {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at);
+            ViewportFoV viewport = new ViewportFoV(CelestialCoordinates(rightAscension, declination), 30, 1200, 800, 0);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([], [], []);
+
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapScene scene = sut.Build(projection, SkyMapRenderOptions.HorizontalGrid);
+
+            scene.GridLines.Should().NotBeEmpty();
+            VisibleGridLabels(scene, viewport).Should().NotBeEmpty();
+        }
+
+        [Test]
+        public void AltAzProjection_HorizontalDragMovesAlongAzimuthGrid() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(35, 180));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 1200, 800, 0);
+            SkyMapViewportProjection sut = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+
+            Coordinates shiftedCenter = sut.ShiftCenter(new Vector(20, 0));
+            SkyMapHorizontalCoordinates shifted = observer.ToHorizontal(shiftedCenter);
+            Point sameAltitude = sut.Project(observer.ToCelestial(new SkyMapHorizontalCoordinates(35, 182)));
+
+            shifted.Altitude.Should().BeApproximately(35, 0.01);
+            shifted.Azimuth.Should().BeGreaterThan(180);
+            sameAltitude.Y.Should().BeApproximately(viewport.ViewPortCenterPoint.Y, 1);
+        }
+
+        [Test]
+        public void EquatorialProjection_MatchesEstablishedViewportProjectionAndShift() {
+            ViewportFoV viewport = new ViewportFoV(CelestialCoordinates(85, 20), 30, 1200, 800, 17);
+            Coordinates target = CelestialCoordinates(91, 24);
+            Vector delta = new Vector(25, -40);
+            SkyMapViewportProjection sut = new SkyMapViewportProjection(viewport);
+            ViewportFoV expectedShift = new ViewportFoV(
+                viewport.CenterCoordinates,
+                viewport.VFoV,
+                viewport.Width,
+                viewport.Height,
+                viewport.Rotation);
+
+            Point projected = sut.Project(target);
+            expectedShift.Shift(delta);
+            Coordinates shifted = sut.ShiftCenter(delta);
+
+            Point expectedProjection = target.XYProjection(viewport);
+            projected.X.Should().BeApproximately(expectedProjection.X, 1E-9);
+            projected.Y.Should().BeApproximately(expectedProjection.Y, 1E-9);
+            shifted.RADegrees.Should().BeApproximately(expectedShift.CenterCoordinates.RADegrees, 1E-10);
+            shifted.Dec.Should().BeApproximately(expectedShift.CenterCoordinates.Dec, 1E-10);
+        }
+
+        [TestCase(SkyMapProjectionMode.Equatorial)]
+        [TestCase(SkyMapProjectionMode.AltAz)]
+        public void ViewportProjection_ProjectAndUnproject_RoundTripsAtRotation(SkyMapProjectionMode mode) {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, at, 16.5);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(30, 180));
+            Coordinates expected = observer.ToCelestial(new SkyMapHorizontalCoordinates(15, 145));
+            ViewportFoV viewport = new ViewportFoV(center, 100, 1200, 800, 37);
+            SkyMapViewportProjection sut = new SkyMapViewportProjection(viewport, mode, observer);
+
+            Coordinates actual = sut.Unproject(sut.Project(expected));
+
+            double rightAscensionDifference = AstroUtil.EuclidianModulus(
+                actual.RADegrees - expected.RADegrees + 180,
+                360) - 180;
+            rightAscensionDifference.Should().BeApproximately(0, 1E-9);
+            actual.Dec.Should().BeApproximately(expected.Dec, 1E-9);
+        }
+
+        [TestCase(50, 45, 180, 38, 205, 11)]
+        [TestCase(50, 45, 180, 38, 155, 11)]
+        [TestCase(50, 70, 350, 60, 10, 0)]
+        [TestCase(-33, 45, 0, 30, 25, 27)]
+        [TestCase(-33, 45, 0, 30, 335, 27)]
+        public void CameraRectanglePlacement_AltAz_AlignsCenterAndCameraAxis(
+            double latitude,
+            double centerAltitude,
+            double centerAzimuth,
+            double rectangleAltitude,
+            double rectangleAzimuth,
+            double viewportRotation) {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(latitude, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(centerAltitude, centerAzimuth));
+            Coordinates rectangleCoordinates = observer.ToCelestial(new SkyMapHorizontalCoordinates(rectangleAltitude, rectangleAzimuth));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 800, 600, viewportRotation);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            FramingRectangle rectangle = new FramingRectangle(0, 0, 0, 320, 180) {
+                Coordinates = rectangleCoordinates,
+                Id = 3
+            };
+            const double positionAngle = 343;
+            SkyMapCameraRectanglePlacement sut = new SkyMapCameraRectanglePlacement(rectangle);
+
+            sut.Update(projection, positionAngle);
+
+            Point expectedCenter = projection.Project(rectangleCoordinates);
+            double expectedRotation = AstroUtil.EuclidianModulus(
+                projection.RotationForPositionAngle(rectangleCoordinates, positionAngle, expectedCenter) + 90,
+                360);
+            sut.X.Should().BeApproximately(expectedCenter.X - rectangle.Width / 2, 1E-9);
+            sut.Y.Should().BeApproximately(expectedCenter.Y - rectangle.Height / 2, 1E-9);
+            sut.Rotation.Should().BeApproximately(expectedRotation, 0.05);
+            sut.Width.Should().Be(rectangle.Width);
+            sut.Height.Should().Be(rectangle.Height);
+            sut.Id.Should().Be(rectangle.Id);
+        }
+
+        [Test]
+        public void CameraRectanglePlacement_Equatorial_PreservesEstablishedOverlayRotation() {
+            Coordinates center = CelestialCoordinates(85, 20);
+            ViewportFoV viewport = new ViewportFoV(center, 30, 1200, 800, 13);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport);
+            FramingRectangle rectangle = new FramingRectangle(13, 0, 0, 320, 180) {
+                Coordinates = center,
+                Rotation = 34
+            };
+            SkyMapCameraRectanglePlacement sut = new SkyMapCameraRectanglePlacement(rectangle);
+
+            sut.Update(projection, AstroUtil.EuclidianModulus(360 - rectangle.TotalRotation, 360));
+
+            sut.X.Should().BeApproximately(viewport.ViewPortCenterPoint.X - rectangle.Width / 2, 1E-9);
+            sut.Y.Should().BeApproximately(viewport.ViewPortCenterPoint.Y - rectangle.Height / 2, 1E-9);
+            sut.Rotation.Should().BeApproximately(rectangle.Rotation, 0.05);
+        }
+
+        [Test]
+        public void CameraRectanglePlacement_ObserverRefresh_ReprojectsExistingPlacement() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            Coordinates rectangleCoordinates = CelestialCoordinates(10.68470833, 41.26875);
+            SkyMapObserverSnapshot firstObserver = new SkyMapObserverSnapshot(50, 10, at);
+            SkyMapObserverSnapshot laterObserver = new SkyMapObserverSnapshot(50, 10, at.AddMinutes(1));
+            Coordinates center = firstObserver.ToCelestial(new SkyMapHorizontalCoordinates(45, 180));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 800, 600, 0);
+            SkyMapViewportProjection firstProjection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, firstObserver);
+            SkyMapViewportProjection laterProjection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, laterObserver);
+            FramingRectangle rectangle = new FramingRectangle(0, 0, 0, 320, 180) {
+                Coordinates = rectangleCoordinates
+            };
+            SkyMapCameraRectanglePlacement sut = new SkyMapCameraRectanglePlacement(rectangle);
+
+            sut.Update(firstProjection, 35);
+            double firstX = sut.X;
+            double firstRotation = sut.Rotation;
+            double firstInverseRotation = sut.InverseRotation;
+            sut.Update(laterProjection, 35);
+
+            Point expectedCenter = laterProjection.Project(rectangleCoordinates);
+            sut.X.Should().BeApproximately(expectedCenter.X - rectangle.Width / 2, 1E-9);
+            sut.Y.Should().BeApproximately(expectedCenter.Y - rectangle.Height / 2, 1E-9);
+            sut.X.Should().NotBeApproximately(firstX, 0.01);
+            sut.Rotation.Should().NotBeApproximately(firstRotation, 0.01);
+            sut.InverseRotation.Should().NotBeApproximately(firstInverseRotation, 0.01);
+            (sut.Rotation + sut.InverseRotation).Should().BeApproximately(0, 1E-10);
+        }
+
+        [Test]
+        public void CameraRectanglePlacement_ScrollRecalculation_ReusesPresentationObject() {
+            FramingRectangle first = new FramingRectangle(0, 10, 20, 320, 180) { Id = 1 };
+            FramingRectangle recalculated = new FramingRectangle(0, 30, 40, 640, 360) { Id = 2 };
+            SkyMapCameraRectanglePlacement sut = new SkyMapCameraRectanglePlacement(first);
+
+            sut.SetRectangle(recalculated);
+            sut.Update(recalculated.X, recalculated.Y, recalculated.Rotation);
+
+            sut.Rectangle.Should().BeSameAs(recalculated);
+            sut.X.Should().Be(recalculated.X);
+            sut.Y.Should().Be(recalculated.Y);
+            sut.Width.Should().Be(recalculated.Width);
+            sut.Height.Should().Be(recalculated.Height);
+            sut.Id.Should().Be(recalculated.Id);
+        }
+
+        [Test]
+        public void CameraRectanglePlacement_ProjectionBeforeCoordinates_DoesNotThrowOrMove() {
+            FramingRectangle rectangle = new FramingRectangle(0, 10, 20, 320, 180);
+            SkyMapCameraRectanglePlacement sut = new SkyMapCameraRectanglePlacement(rectangle);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(
+                new ViewportFoV(CelestialCoordinates(0, 0), 6, 1200, 800, 0));
+
+            Action act = () => sut.Update(projection, 0);
+
+            act.Should().NotThrow();
+            sut.X.Should().Be(rectangle.X);
+            sut.Y.Should().Be(rectangle.Y);
+            sut.Rotation.Should().Be(rectangle.Rotation);
+        }
+
+        [Test]
+        public void CameraRectanglePlacement_InverseRotation_CancelsAltAzDisplayRotation() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(45, 180));
+            Coordinates rectangleCoordinates = observer.ToCelestial(new SkyMapHorizontalCoordinates(38, 205));
+            const double viewportRotation = 11;
+            ViewportFoV viewport = new ViewportFoV(center, 40, 800, 600, viewportRotation);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            FramingRectangle rectangle = new FramingRectangle(viewportRotation, 0, 0, 320, 180) {
+                Coordinates = rectangleCoordinates,
+                Rotation = 34
+            };
+            SkyMapCameraRectanglePlacement sut = new SkyMapCameraRectanglePlacement(rectangle);
+
+            sut.Update(projection, AstroUtil.EuclidianModulus(360 - rectangle.TotalRotation, 360));
+
+            double projectedResidual = AstroUtil.EuclidianModulus(sut.Rotation + sut.InverseRotation + 180, 360) - 180;
+            projectedResidual.Should().BeApproximately(0, 1E-10);
+        }
+
+        [Test]
+        public void Build_AltAzMode_ProjectsSkyLayersAgainstHorizontalGrid() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at);
+            Coordinates left = observer.ToCelestial(new SkyMapHorizontalCoordinates(35, 178));
+            Coordinates right = observer.ToCelestial(new SkyMapHorizontalCoordinates(35, 182));
+            Constellation constellation = new Constellation("Horizontal") {
+                Stars = [new Star(1, "Left", left, 2), new Star(2, "Right", right, 2)]
+            };
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(35, 180));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 1200, 800, 0);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([constellation], [], []);
+
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapScene scene = sut.Build(
+                projection,
+                SkyMapRenderOptions.Stars | SkyMapRenderOptions.HorizontalGrid);
+
+            scene.Stars.Should().HaveCount(2);
+            scene.Stars.Single(x => x.Name == "Left").Center.X.Should().BeLessThan(viewport.ViewPortCenterPoint.X);
+            scene.Stars.Single(x => x.Name == "Right").Center.X.Should().BeGreaterThan(viewport.ViewPortCenterPoint.X);
+            scene.Stars[0].Center.Y.Should().BeApproximately(scene.Stars[1].Center.Y, 1);
+        }
+
+        [Test]
+        public void Build_HorizonEnabled_DrawsHorizonAndHidesEveryLayerBelowIt() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at, _ => 5);
+            Coordinates above1 = observer.ToCelestial(new SkyMapHorizontalCoordinates(10, 175));
+            Coordinates above2 = observer.ToCelestial(new SkyMapHorizontalCoordinates(10, 185));
+            Coordinates below = observer.ToCelestial(new SkyMapHorizontalCoordinates(0, 180));
+            Star visibleStar = new Star(1, "Visible", above1, 2);
+            Star hiddenStar = new Star(2, "Hidden", below, 2);
+            Constellation constellation = new Constellation("Test") { Stars = [visibleStar, hiddenStar] };
+            constellation.StarConnections.Add(Tuple.Create(visibleStar, hiddenStar));
+            DeepSkyObject visibleDso = new DeepSkyObject("Visible DSO", above2, null) { Size = 3600 };
+            DeepSkyObject hiddenDso = new DeepSkyObject("Hidden DSO", below, null) { Size = 3600 };
+            ConstellationBoundary boundary = new ConstellationBoundary {
+                Name = "Test",
+                Boundaries = [above1, above2, below]
+            };
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(5, 180));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 1200, 800, 0);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([constellation], [visibleDso, hiddenDso], [boundary]);
+
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.Equatorial, observer);
+            SkyMapScene withoutHorizon = sut.Build(viewport, SkyMapRenderOptions.All);
+            SkyMapScene scene = sut.Build(projection, SkyMapRenderOptions.All | SkyMapRenderOptions.Horizon);
+
+            withoutHorizon.HorizonLines.Should().BeEmpty();
+            withoutHorizon.HorizonMaskAreas.Should().BeEmpty();
+            withoutHorizon.Stars.Should().HaveCount(2);
+            withoutHorizon.DeepSkyObjects.Should().HaveCount(2);
+            scene.HorizonLines.Should().NotBeEmpty();
+            scene.HorizonMaskAreas.Should().NotBeEmpty();
+            scene.Stars.Should().ContainSingle(x => x.Id == visibleStar.Id);
+            scene.ConstellationLines.Should().BeEmpty();
+            scene.DeepSkyObjects.Should().ContainSingle(x => x.Id == visibleDso.Id);
+            scene.ConstellationBoundaries.Should().ContainSingle();
+            scene.ConstellationBoundaries.Single().Points.Should().HaveCount(2);
+        }
+
+        [Test]
+        public void Build_HorizonBelowEntireViewport_MasksCompleteViewport() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at, _ => 5);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(-20, 180));
+            ViewportFoV viewport = new ViewportFoV(center, 10, 100, 100, 0);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([], [], []);
+
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapScene scene = sut.Build(projection, SkyMapRenderOptions.Horizon);
+
+            scene.HorizonLines.Should().BeEmpty();
+            scene.HorizonMaskAreas.Should().ContainSingle();
+            scene.HorizonMaskAreas.Single().Points.Should().Equal(
+                new Point(0, 0),
+                new Point(100, 0),
+                new Point(100, 100),
+                new Point(0, 100));
+        }
+
+        [Test]
         public void Build_DeepSkyObject_PreservesProjectedAxesAngleAndAliases() {
             DeepSkyObject dso = new DeepSkyObject("NGC1976", CelestialCoordinates(84, -1), null) {
                 DSOType = "BRTNB",
@@ -176,27 +496,50 @@ namespace NINA.Test.SkySurvey {
             result.PositionAngle.Should().NotBe(0);
         }
 
-        [Test]
-        public void ObserverSnapshot_UsesLocationTimeAndHorizonUntilRefreshIsDue() {
-            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
-            const double latitude = 50;
-            const double longitude = 10;
-            double siderealTime = AstroUtil.GetLocalSiderealTime(at, longitude);
-            Coordinates zenith = CelestialCoordinates(AstroUtil.HoursToDegrees(siderealTime), latitude);
-            Coordinates nadir = CelestialCoordinates(AstroUtil.HoursToDegrees(siderealTime) + 180, -latitude);
-            SkyMapObserverSnapshot sut = new SkyMapObserverSnapshot(latitude, longitude, at, _ => 5);
+        [TestCase(4, 37, 0)]
+        [TestCase(17, 37, 23)]
+        [TestCase(10, 48, 71)]
+        public void Build_AltAzMode_KeepsM110OutsideM31EllipseWhenViewportIsPanned(
+            double viewportRightAscension,
+            double viewportDeclination,
+            double viewportRotation) {
+            DeepSkyObject m31 = new DeepSkyObject("NGC224", CelestialCoordinates(10.68470833, 41.26875), null) {
+                DSOType = "GALXY",
+                Size = 11340,
+                SizeMin = 3660,
+                PositionAngle = Angle.ByDegree(35)
+            };
+            DeepSkyObject m110 = new DeepSkyObject("NGC205", CelestialCoordinates(10.09189356, 41.68541564), null) {
+                DSOType = "GALXY",
+                Size = 1170,
+                SizeMin = 690,
+                PositionAngle = Angle.ByDegree(170)
+            };
+            ViewportFoV viewport = new ViewportFoV(
+                CelestialCoordinates(viewportRightAscension, viewportDeclination),
+                20,
+                1200,
+                800,
+                viewportRotation);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(
+                50,
+                new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc),
+                16.5);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([], [m31, m110], []);
 
-            SkyMapHorizontalCoordinates horizontal = sut.ToHorizontal(zenith);
-            Coordinates roundTripSource = CelestialCoordinates(120, 25);
-            Coordinates roundTrip = sut.ToCelestial(sut.ToHorizontal(roundTripSource));
+            SkyMapScene equatorial = sut.Build(viewport, SkyMapRenderOptions.DeepSkyObjects);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapScene altAz = sut.Build(projection, SkyMapRenderOptions.DeepSkyObjects);
+            SkyMapDeepSkyObject equatorialM31 = equatorial.DeepSkyObjects.Single(x => x.Id == m31.Id);
+            SkyMapDeepSkyObject equatorialM110 = equatorial.DeepSkyObjects.Single(x => x.Id == m110.Id);
+            SkyMapDeepSkyObject altAzM31 = altAz.DeepSkyObjects.Single(x => x.Id == m31.Id);
+            SkyMapDeepSkyObject altAzM110 = altAz.DeepSkyObjects.Single(x => x.Id == m110.Id);
+            double equatorialDistance = NormalizedEllipseDistance(equatorialM31, equatorialM110.Center);
+            double altAzDistance = NormalizedEllipseDistance(altAzM31, altAzM110.Center);
 
-            horizontal.Altitude.Should().BeApproximately(90, 0.0001);
-            roundTrip.RADegrees.Should().BeApproximately(roundTripSource.RADegrees, 1E-9);
-            roundTrip.Dec.Should().BeApproximately(roundTripSource.Dec, 1E-9);
-            sut.IsVisible(zenith).Should().BeTrue();
-            sut.IsVisible(nadir).Should().BeFalse();
-            sut.NeedsRefresh(at.AddSeconds(59)).Should().BeFalse();
-            sut.NeedsRefresh(at.AddMinutes(1)).Should().BeTrue();
+            equatorialDistance.Should().BeGreaterThan(1);
+            altAzDistance.Should().BeApproximately(equatorialDistance, 0.01);
+            altAzDistance.Should().BeGreaterThan(1);
         }
 
         [Test]
@@ -268,6 +611,181 @@ namespace NINA.Test.SkySurvey {
         }
 
         [Test]
+        public void RasterRenderer_WithHorizontallyFlippedCachedImage_MirrorsImagePixels() {
+            BitmapSource asymmetric = BitmapSource.Create(
+                2,
+                1,
+                96,
+                96,
+                PixelFormats.Bgra32,
+                null,
+                new byte[] {
+                    0, 0, 255, 255,
+                    255, 0, 0, 255
+                },
+                8);
+            asymmetric.Freeze();
+            SkyMapScene scene = new SkyMapScene([], [], [], [], []);
+            using SkyMapRasterRenderer renderer = new SkyMapRasterRenderer(100, 100);
+            using SkyMapAnnotator annotator = new SkyMapAnnotator();
+            WpfImage image = new WpfImage { Width = 100, Height = 100 };
+            BindingOperations.SetBinding(
+                image,
+                WpfImage.SourceProperty,
+                new Binding(nameof(SkyMapAnnotator.SkyMapOverlay)) { Source = annotator });
+
+            annotator.SkyMapOverlay = renderer.Render(
+                scene,
+                [new SkyMapImagePlacement(asymmetric, new Point(50, 50), 40, 20, 0, FlipHorizontally: true)],
+                null);
+            byte[] frame = Render(image);
+
+            byte[] left = PixelAt(frame, 100, 40, 50);
+            byte[] right = PixelAt(frame, 100, 60, 50);
+            left[0].Should().BeGreaterThan(left[2]);
+            right[2].Should().BeGreaterThan(right[0]);
+            left[3].Should().Be(255);
+            right[3].Should().Be(255);
+        }
+
+        [Test]
+        public void RasterRenderer_HorizonMask_HidesCachedImagesBelowHorizon() {
+            BitmapSource red = CreatePixel(0, 0, 255);
+            SkyMapPath hiddenHalf = new SkyMapPath(
+                [new Point(0, 50), new Point(100, 50), new Point(100, 100), new Point(0, 100)],
+                closed: true);
+            SkyMapScene scene = new SkyMapScene(
+                [],
+                [],
+                [new SkyMapDeepSkyObject("D", "D", "BRTNB", new Point(50, 45), 20, 20, 0)],
+                [],
+                [],
+                [],
+                [],
+                [hiddenHalf]);
+            using SkyMapRasterRenderer renderer = new SkyMapRasterRenderer(100, 100);
+            using SkyMapAnnotator annotator = new SkyMapAnnotator();
+            WpfImage image = new WpfImage { Width = 100, Height = 100 };
+            BindingOperations.SetBinding(
+                image,
+                WpfImage.SourceProperty,
+                new Binding(nameof(SkyMapAnnotator.SkyMapOverlay)) { Source = annotator });
+
+            annotator.SkyMapOverlay = renderer.Render(
+                scene,
+                [new SkyMapImagePlacement(red, new Point(50, 50), 100, 100, 0)],
+                null);
+            byte[] frame = Render(image);
+
+            PixelAt(frame, 100, 10, 25).Should().Equal(0, 0, 255, 255);
+            PixelAt(frame, 100, 10, 75).Should().Equal(0, 0, 0, 255);
+            PixelAt(frame, 100, 50, 55).Should().Equal(0, 0, 0, 255);
+            PixelAt(frame, 100, 50, 75).Should().Equal(0, 0, 0, 255);
+            PixelAt(frame, 100, 90, 75).Should().Equal(0, 0, 0, 255);
+        }
+
+        [Test]
+        public void HorizonPipeline_HidesCachedSkyBelowLocalHorizon() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(0, 180));
+            ViewportFoV viewport = new ViewportFoV(center, 20, 100, 100, 0);
+            SkyMapSceneBuilder builder = new SkyMapSceneBuilder([], [], []);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapScene scene = builder.Build(projection, SkyMapRenderOptions.Horizon);
+            BitmapSource red = CreatePixel(0, 0, 255);
+            using SkyMapRasterRenderer renderer = new SkyMapRasterRenderer(100, 100);
+            using SkyMapAnnotator annotator = new SkyMapAnnotator();
+            WpfImage image = new WpfImage { Width = 100, Height = 100 };
+            BindingOperations.SetBinding(
+                image,
+                WpfImage.SourceProperty,
+                new Binding(nameof(SkyMapAnnotator.SkyMapOverlay)) { Source = annotator });
+
+            annotator.SkyMapOverlay = renderer.Render(
+                scene,
+                [new SkyMapImagePlacement(red, new Point(50, 50), 100, 100, 0)],
+                null);
+            byte[] frame = Render(image);
+
+            PixelAt(frame, 100, 50, 25).Should().Equal(0, 0, 255, 255);
+            PixelAt(frame, 100, 10, 75).Should().Equal(0, 0, 0, 255);
+            PixelAt(frame, 100, 50, 75).Should().Equal(0, 0, 0, 255);
+            PixelAt(frame, 100, 90, 75).Should().Equal(0, 0, 0, 255);
+        }
+
+        [TestCase(30, 0, 0)]
+        [TestCase(-30, 0, 0)]
+        [TestCase(30, 37, 0)]
+        [TestCase(-30, 37, 0)]
+        [TestCase(30, 37, 15)]
+        public void HorizonPipeline_WhenZoomedOut_MasksOnlyCoordinatesBelowHorizon(
+            double centerAltitude,
+            double rotation,
+            double customHorizonAmplitude) {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            Func<double, double> customHorizon = customHorizonAmplitude == 0
+                ? null
+                : azimuth => customHorizonAmplitude * Math.Sin(AstroUtil.ToRadians(azimuth * 2));
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, at, 16.5, customHorizon);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(centerAltitude, 180));
+            ViewportFoV viewport = new ViewportFoV(center, 140, 100, 100, rotation);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapSceneBuilder builder = new SkyMapSceneBuilder([], [], []);
+            SkyMapScene scene = builder.Build(projection, SkyMapRenderOptions.Horizon);
+            BitmapSource red = CreatePixel(0, 0, 255);
+            using SkyMapRasterRenderer renderer = new SkyMapRasterRenderer(100, 100);
+            using SkyMapAnnotator annotator = new SkyMapAnnotator();
+            WpfImage image = new WpfImage { Width = 100, Height = 100 };
+            BindingOperations.SetBinding(
+                image,
+                WpfImage.SourceProperty,
+                new Binding(nameof(SkyMapAnnotator.SkyMapOverlay)) { Source = annotator });
+
+            annotator.SkyMapOverlay = renderer.Render(
+                scene,
+                [new SkyMapImagePlacement(red, new Point(50, 50), 100, 100, 0)],
+                null);
+            byte[] frame = Render(image);
+            int visibleSamples = 0;
+            int hiddenSamples = 0;
+
+            foreach (double altitude in new[] { -60d, -30d, -10d, 10d, 30d, 60d }) {
+                for (double azimuth = 0; azimuth < 360; azimuth += 15) {
+                    Coordinates coordinates = observer.ToCelestial(new SkyMapHorizontalCoordinates(altitude, azimuth));
+                    if (!projection.Contains(coordinates)) {
+                        continue;
+                    }
+                    Point projected = projection.Project(coordinates);
+                    int x = (int)Math.Round(projected.X);
+                    int y = (int)Math.Round(projected.Y);
+                    if (x < 2 || x >= 98 || y < 2 || y >= 98) {
+                        continue;
+                    }
+
+                    double clearance = observer.HorizonClearance(coordinates);
+                    if (Math.Abs(clearance) < 8) {
+                        continue;
+                    }
+                    if (clearance >= 0) {
+                        PixelAt(frame, 100, x, y).Should().Equal(
+                            new byte[] { 0, 0, 255, 255 },
+                            $"altitude {altitude}°, azimuth {azimuth}° is above the configured horizon");
+                        visibleSamples++;
+                    } else {
+                        PixelAt(frame, 100, x, y).Should().Equal(
+                            new byte[] { 0, 0, 0, 255 },
+                            $"altitude {altitude}°, azimuth {azimuth}° is below the configured horizon");
+                        hiddenSamples++;
+                    }
+                }
+            }
+
+            visibleSamples.Should().BeGreaterThan(0);
+            hiddenSamples.Should().BeGreaterThan(0);
+        }
+
+        [Test]
         public void RasterRenderer_ConsecutiveCachedFrames_RenderThroughWpfBinding() {
             BitmapSource red = CreatePixel(0, 0, 255);
             BitmapSource blue = CreatePixel(255, 0, 0);
@@ -312,6 +830,16 @@ namespace NINA.Test.SkySurvey {
                 4);
             source.Freeze();
             return source;
+        }
+
+        private static double NormalizedEllipseDistance(SkyMapDeepSkyObject ellipse, Point point) {
+            double angle = AstroUtil.ToRadians(ellipse.PositionAngle);
+            double deltaX = point.X - ellipse.Center.X;
+            double deltaY = point.Y - ellipse.Center.Y;
+            double localX = deltaX * Math.Cos(angle) + deltaY * Math.Sin(angle);
+            double localY = -deltaX * Math.Sin(angle) + deltaY * Math.Cos(angle);
+            return localX * localX / (ellipse.RadiusX * ellipse.RadiusX)
+                + localY * localY / (ellipse.RadiusY * ellipse.RadiusY);
         }
 
         private static byte[] Render(WpfImage image) {
