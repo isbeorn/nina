@@ -66,6 +66,15 @@ The `SkySurvey/` folder is a contained subsystem for retrieving and caching surv
 
 This functionality is shared infrastructure for features like the sky atlas and framing workflows.
 
+The offline framing map uses a separate frame pipeline inside this subsystem:
+
+- `SkyMapSceneBuilder` projects constellations, stars, DSO outlines, constellation boundaries, and equatorial grid lines into one per-viewport scene. Catalogue-wide data is indexed or precomputed when the builder is created; do not restore full catalogue scans or retained mutable annotation view models to the drag path.
+- `SkyMapRasterRenderer` draws that scene into one reusable WPF `WriteableBitmap`. The surface is intentionally UI-thread-owned and mutable so dragging does not clone the full viewport bitmap each frame.
+- `SkyMapImageCache` parses cached survey metadata once, serializes image decoding off the UI thread, and composites already-loaded tiles without hiding vector annotations during a drag. Its least-recently-used history is bounded by both image count and estimated pixel memory, while every tile in the active viewport is protected until the view moves; keep both the history bounds and active-view protection intact when changing the tile-loading path.
+- `SkyMapObserverSnapshot` is the time/location boundary for future horizontal-coordinate layers. It converts between celestial and Alt/Az coordinates, implements layer visibility against a local horizon, and expires after one minute so time-dependent grids and clipping can be rebuilt together.
+
+Every celestial layer must be rebuilt from the same viewport and visibility snapshot. This keeps panning planetarium-like and prevents time-dependent horizon filtering from disagreeing between layers.
+
 ## Dependency Position
 
 Project references:

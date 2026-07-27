@@ -12,18 +12,18 @@
 
 #endregion "copyright"
 
-using NINA.Equipment.Equipment.MyTelescope;
+using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Astrometry;
+using NINA.Core.Utility;
+using NINA.Equipment.Equipment.MyTelescope;
+using NINA.WPF.Base.Model.FramingAssistant;
+using NINA.WPF.Base.SkySurvey;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using NINA.WPF.Base.Model.FramingAssistant;
-using NINA.WPF.Base.SkySurvey;
-using CommunityToolkit.Mvvm.ComponentModel;
-using NINA.Core.Utility;
+using System.Windows.Media;
 
 namespace NINA.WPF.Base.Interfaces.ViewModel {
 
@@ -42,7 +42,7 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         bool DynamicFoV { get; set; }
         FrameLineMatrix2 FrameLineMatrix { get; }
         bool Initialized { get; }
-        BitmapSource SkyMapOverlay { get; set; }
+        ImageSource SkyMapOverlay { get; set; }
         ViewportFoV ViewportFoV { get; }
 
         void CalculateConstellationBoundaries();

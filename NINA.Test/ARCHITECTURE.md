@@ -30,6 +30,7 @@ The folder structure mirrors the production code areas being tested:
 - `Plugin/`
 - `ProfileTest/`
 - `Rotator/`
+- `SkySurvey/`
 - `Sequencer/`
 - `SerialCommunication/`
 - `SimpleSequencer/`
@@ -97,3 +98,4 @@ It is the verification layer, not a reusable library.
 - For astronomical or other numerically sensitive changes, prefer assertions based on documented reference values, authoritative sample data, and edge cases rather than only hand-derived spot checks.
 - `AstrometryTest/AstrometryTest.cs` already contains that pattern, including cases annotated with SOFA documented values and other cited reference data; extend those fixtures when the production change touches the same calculation families.
 - Keep tests explicit about integration boundaries; some areas here are pure unit tests, while others intentionally exercise file I/O, serialization, or native-library loading.
+- Offline sky-map scene, projection, horizon-snapshot, and reusable-surface regressions live under `SkySurvey/`; pair performance-sensitive changes there with `NINA.Benchmark/SkyMapRenderingBenchmark.cs`.

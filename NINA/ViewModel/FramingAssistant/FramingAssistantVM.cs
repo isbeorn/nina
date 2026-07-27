@@ -1399,21 +1399,14 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private bool cachedImagesActive;
-
         private void DragStart(object obj) {
-            cachedImagesActive = SkyMapAnnotator.UseCachedImages;
-            SkyMapAnnotator.UseCachedImages = false;
         }
 
         private void DragStop(object obj) {
-            SkyMapAnnotator.UseCachedImages = cachedImagesActive;
             DSO.Coordinates = Rectangle.Coordinates;
             ImageParameter.Coordinates = SkyMapAnnotator.ViewportFoV.CenterCoordinates;
             RaiseCoordinatesChanged();
-            if (SkyMapAnnotator.UseCachedImages) {
-                DragMove(new DragResult());
-            }
+            SkyMapAnnotator.UpdateSkyMap();
         }
         private void DragMove(object obj) {
             if (RectangleCalculated) {
