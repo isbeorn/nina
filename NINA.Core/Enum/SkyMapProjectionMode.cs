@@ -12,10 +12,18 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
+using System.ComponentModel;
+
 namespace NINA.Core.Enum {
 
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SkyMapProjectionMode {
+
+        [Description("LblEquatorial")]
         Equatorial,
+
+        [Description("LblAltAz")]
         AltAz
     }
 }

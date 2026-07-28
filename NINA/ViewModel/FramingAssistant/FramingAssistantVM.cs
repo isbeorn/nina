@@ -92,7 +92,10 @@ namespace NINA.ViewModel.FramingAssistant {
             this.imageDataFactory = imageDataFactory;
             this.windowServiceFactory = windowServiceFactory;
 
+            TimeContext = new FramingAssistantTimeContext();
+            TimeContext.PropertyChanged += TimeContext_PropertyChanged;
             SkyMapAnnotator = new SkyMapAnnotator(telescopeMediator, profileService);
+            SkyMapAnnotator.ObservationTime = TimeContext.SelectedDateTime;
             SkyMapAnnotator.ProjectionChanged += SkyMapAnnotator_ProjectionChanged;
 
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
@@ -146,7 +149,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
             InitializeCommands();
             Task.Run(() => {
-                this.NighttimeData = this.nighttimeCalculator.Calculate();
+                this.NighttimeData = this.nighttimeCalculator.Calculate(SelectedAltitudeChartDate);
                 nighttimeCalculator.OnReferenceDayChanged += NighttimeCalculator_OnReferenceDayChanged;
                 InitializeCache();
                 LoadHipsSkyMaps().Wait();
@@ -157,7 +160,7 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private void NighttimeCalculator_OnReferenceDayChanged(object sender, EventArgs e) {
-            NighttimeData = nighttimeCalculator.Calculate();
+            NighttimeData = nighttimeCalculator.Calculate(SelectedAltitudeChartDate);
             RaisePropertyChanged(nameof(NighttimeData));
         }
 
@@ -186,12 +189,16 @@ namespace NINA.ViewModel.FramingAssistant {
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache, (object o) => Cache != null);
             DeleteCacheEntryCommand = new RelayCommand(DeleteCacheEntry, (object o) => Cache != null);
-            RefreshSkyMapAnnotationCommand = new RelayCommand((object o) => {
-                if (o is SkyMapProjectionMode projectionMode) {
-                    SkyMapAnnotator.ProjectionMode = projectionMode;
+            RefreshSkyMapAnnotationCommand = new RelayCommand(
+                (object o) => SkyMapAnnotator.UpdateSkyMap(),
+                (object o) => SkyMapAnnotator.Initialized);
+            ResetObservationTimeCommand = new RelayCommand((object o) => {
+                if (TimeContext.UseCurrentTime) {
+                    TimeContext.Refresh();
+                } else {
+                    TimeContext.UseCurrentTime = true;
                 }
-                SkyMapAnnotator.UpdateSkyMap();
-            }, (object o) => SkyMapAnnotator.Initialized);
+            });
             MouseWheelCommand = new RelayCommand(MouseWheel);
             GetRotationFromCameraCommand = new AsyncCommand<bool>(GetRotationFromCamera, (object o) => RectangleCalculated && cameraMediator.GetInfo().Connected && cameraMediator.IsFreeToCapture(this));
             CancelGetRotationFromCameraCommand = new RelayCommand(o => { try { getRotationTokenSource?.Cancel(); } catch { } });
@@ -242,7 +249,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
                     dso.RotationPositionAngle = AstroUtil.EuclidianModulus(rect.DSOPositionAngle, 360);
 
-                    dso.SetDateAndPosition(NighttimeCalculator.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
+                    dso.SetDateAndPosition(NighttimeCalculator.GetReferenceDate(SelectedAltitudeChartDate), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
 
                     Logger.Info($"Adding target to simple sequencer: {dso.Name} - {dso.Coordinates}");
                     sequenceMediator.AddSimpleTarget(dso);
@@ -705,7 +712,7 @@ namespace NINA.ViewModel.FramingAssistant {
             get => _dSO;
             set {
                 _dSO = value;
-                _dSO?.SetDateAndPosition(NighttimeCalculator.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
+                _dSO?.SetDateAndPosition(NighttimeCalculator.GetReferenceDate(SelectedAltitudeChartDate), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                 RaisePropertyChanged();
             }
         }
@@ -726,6 +733,10 @@ namespace NINA.ViewModel.FramingAssistant {
         private IImageDataFactory imageDataFactory;
         private IWindowServiceFactory windowServiceFactory;
 
+        public FramingAssistantTimeContext TimeContext { get; }
+
+        private DateTime SelectedAltitudeChartDate => TimeContext.SelectedDate.AddHours(12);
+
         public NighttimeData NighttimeData {
             get => nighttimeData;
             set {
@@ -733,6 +744,23 @@ namespace NINA.ViewModel.FramingAssistant {
                     nighttimeData = value;
                     RaisePropertyChanged();
                 }
+            }
+        }
+
+        private void TimeContext_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName != nameof(FramingAssistantTimeContext.SelectedDateTime)) {
+                return;
+            }
+
+            DateTime selectedDateTime = TimeContext.SelectedDateTime;
+            SkyMapAnnotator.ObservationTime = selectedDateTime;
+            DateTime referenceDate = NighttimeCalculator.GetReferenceDate(SelectedAltitudeChartDate);
+            if (NighttimeData?.ReferenceDate != referenceDate) {
+                _dSO?.SetDateAndPosition(
+                    referenceDate,
+                    profileService.ActiveProfile.AstrometrySettings.Latitude,
+                    profileService.ActiveProfile.AstrometrySettings.Longitude);
+                NighttimeData = nighttimeCalculator.Calculate(SelectedAltitudeChartDate);
             }
         }
 
@@ -854,7 +882,7 @@ namespace NINA.ViewModel.FramingAssistant {
             RaisePropertyChanged(nameof(DecMinutes));
             RaisePropertyChanged(nameof(DecSeconds));
             NegativeDec = DSO?.Coordinates?.Dec < 0;
-            NighttimeData = nighttimeCalculator.Calculate();
+            NighttimeData = nighttimeCalculator.Calculate(SelectedAltitudeChartDate);
         }
 
         private int _downloadProgressValue;
@@ -1683,6 +1711,8 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public void Dispose() {
             this.cameraMediator.RemoveConsumer(this);
+            TimeContext.PropertyChanged -= TimeContext_PropertyChanged;
+            TimeContext.Dispose();
             SkyMapAnnotator.ProjectionChanged -= SkyMapAnnotator_ProjectionChanged;
             SkyMapAnnotator.Dispose();
         }
@@ -1707,6 +1737,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public ICommand DeleteCacheEntryCommand { get; private set; }
         public ICommand ScrollViewerSizeChangedCommand { get; private set; }
         public ICommand RefreshSkyMapAnnotationCommand { get; private set; }
+        public ICommand ResetObservationTimeCommand { get; private set; }
         public ICommand MouseWheelCommand { get; private set; }
         public IAsyncCommand GetRotationFromCameraCommand { get; private set; }
         public ICommand CancelGetRotationFromCameraCommand { get; private set; }

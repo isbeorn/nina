@@ -83,6 +83,14 @@ namespace NINA.CustomControlLibrary {
             set => SetValue(StepSizeProperty, value);
         }
 
+        public static readonly DependencyProperty WrapAroundProperty =
+           DependencyProperty.Register(nameof(WrapAround), typeof(bool), typeof(IntStepperControl), new UIPropertyMetadata(false));
+
+        public bool WrapAround {
+            get => (bool)GetValue(WrapAroundProperty);
+            set => SetValue(WrapAroundProperty, value);
+        }
+
         public static readonly DependencyProperty UnitProperty =
            DependencyProperty.Register(nameof(Unit), typeof(string), typeof(IntStepperControl), new UIPropertyMetadata(string.Empty));
 
@@ -112,12 +120,16 @@ namespace NINA.CustomControlLibrary {
         private void Button_PART_Increment_Click(object sender, RoutedEventArgs e) {
             if (Value + StepSize <= MaxValue) {
                 Value += StepSize;
+            } else if (WrapAround) {
+                Value = MinValue;
             }
         }
 
         private void Button_PART_Decrement_Click(object sender, RoutedEventArgs e) {
             if (Value - StepSize >= MinValue) {
                 Value -= StepSize;
+            } else if (WrapAround) {
+                Value = MaxValue;
             }
         }
 

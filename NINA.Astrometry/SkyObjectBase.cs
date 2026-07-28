@@ -211,6 +211,7 @@ namespace NINA.Astrometry {
             this._latitude = latitude;
             this._longitude = longitude;
             this._altitudes = null;
+            RaisePropertyChanged(nameof(Altitudes));
         }
 
         public void SetCustomHorizon(CustomHorizon customHorizon) {

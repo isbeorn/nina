@@ -36,6 +36,7 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         bool AnnotateConstellations { get; set; }
         bool AnnotateDSO { get; set; }
         bool AnnotateGrid { get; set; }
+        DateTime? ObservationTime { get; set; }
         SkyMapProjectionMode ProjectionMode { get; set; }
         bool IsAltAzProjection { get; }
         bool IsEquatorialProjection { get; }

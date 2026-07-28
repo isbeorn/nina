@@ -122,6 +122,83 @@ namespace NINA.Test.SkySurvey {
             changes.Should().Be(2);
         }
 
+        [Test]
+        public async Task ProjectionModeChanged_RebuildsProjectionWithoutExplicitRefreshCommand() {
+            AstrometrySettings astrometrySettings = new AstrometrySettings {
+                Latitude = 50,
+                Longitude = 10
+            };
+            FramingAssistantSettings framingAssistantSettings = new FramingAssistantSettings();
+            Mock<IProfile> profile = new Mock<IProfile>();
+            profile.SetupGet(x => x.AstrometrySettings).Returns(astrometrySettings);
+            profile.SetupGet(x => x.FramingAssistantSettings).Returns(framingAssistantSettings);
+            Mock<IProfileService> profileService = new Mock<IProfileService>();
+            profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
+            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object);
+            await sut.Initialize(CelestialCoordinates(85, 20), 40, 100, 100, 0, null, CancellationToken.None);
+
+            sut.ProjectionMode = SkyMapProjectionMode.AltAz;
+
+            sut.Projection.Mode.Should().Be(SkyMapProjectionMode.AltAz);
+        }
+
+        [Test]
+        public async Task ObservationTimeChanged_ReprojectsAltAzViewForSelectedTime() {
+            AstrometrySettings astrometrySettings = new AstrometrySettings {
+                Latitude = 50,
+                Longitude = 10
+            };
+            FramingAssistantSettings framingAssistantSettings = new FramingAssistantSettings {
+                SkyMapProjectionMode = SkyMapProjectionMode.AltAz
+            };
+            Mock<IProfile> profile = new Mock<IProfile>();
+            profile.SetupGet(x => x.AstrometrySettings).Returns(astrometrySettings);
+            profile.SetupGet(x => x.FramingAssistantSettings).Returns(framingAssistantSettings);
+            Mock<IProfileService> profileService = new Mock<IProfileService>();
+            profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
+            Coordinates target = CelestialCoordinates(90, 25);
+            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object) {
+                ObservationTime = new DateTime(2026, 7, 28, 18, 0, 0, DateTimeKind.Utc)
+            };
+            await sut.Initialize(CelestialCoordinates(85, 20), 40, 100, 100, 0, null, CancellationToken.None);
+            Point first = sut.Projection.Project(target);
+
+            sut.ObservationTime = sut.ObservationTime.Value.AddHours(6);
+
+            Point later = sut.Projection.Project(target);
+            later.Should().NotBeEquivalentTo(first);
+        }
+
+        [Test]
+        public async Task ObservationTimeChanged_RefreshesObserverAtMinuteCadence() {
+            AstrometrySettings astrometrySettings = new AstrometrySettings {
+                Latitude = 50,
+                Longitude = 10
+            };
+            FramingAssistantSettings framingAssistantSettings = new FramingAssistantSettings {
+                SkyMapProjectionMode = SkyMapProjectionMode.AltAz
+            };
+            Mock<IProfile> profile = new Mock<IProfile>();
+            profile.SetupGet(x => x.AstrometrySettings).Returns(astrometrySettings);
+            profile.SetupGet(x => x.FramingAssistantSettings).Returns(framingAssistantSettings);
+            Mock<IProfileService> profileService = new Mock<IProfileService>();
+            profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
+            DateTime observationTime = new DateTime(2026, 7, 28, 18, 0, 0, DateTimeKind.Utc);
+            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object) {
+                ObservationTime = observationTime
+            };
+            await sut.Initialize(CelestialCoordinates(85, 20), 40, 100, 100, 0, null, CancellationToken.None);
+            SkyMapViewportProjection initialProjection = sut.Projection;
+
+            sut.ObservationTime = observationTime.AddSeconds(30);
+
+            sut.Projection.Should().BeSameAs(initialProjection);
+
+            sut.ObservationTime = observationTime.AddMinutes(1);
+
+            sut.Projection.Should().NotBeSameAs(initialProjection);
+        }
+
         private static Coordinates CelestialCoordinates(double rightAscension, double declination) {
             return new Coordinates(rightAscension, declination, Epoch.J2000, Coordinates.RAType.Degrees);
         }

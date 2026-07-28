@@ -106,6 +106,9 @@ namespace NINA.WPF.Base.SkySurvey {
         private bool annotateGrid;
 
         [ObservableProperty]
+        private DateTime? observationTime;
+
+        [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsAltAzProjection))]
         [NotifyPropertyChangedFor(nameof(IsEquatorialProjection))]
         private SkyMapProjectionMode projectionMode;
@@ -405,6 +408,22 @@ namespace NINA.WPF.Base.SkySurvey {
             if (profileService?.ActiveProfile?.FramingAssistantSettings is { } settings) {
                 settings.SkyMapProjectionMode = newValue;
             }
+            UpdateSkyMap();
+        }
+
+        partial void OnObservationTimeChanged(DateTime? oldValue, DateTime? newValue) {
+            DateTime timestamp = newValue?.ToUniversalTime() ?? DateTime.UtcNow;
+            if (observerSnapshot is not null
+                && newValue is not null
+                && timestamp >= observerSnapshot.Timestamp
+                && !observerSnapshot.NeedsRefresh(timestamp)) {
+                return;
+            }
+
+            observerSnapshot = null;
+            if (UsesObserver) {
+                UpdateSkyMap();
+            }
         }
 
         partial void OnShowHorizonChanged(bool oldValue, bool newValue) {
@@ -471,7 +490,7 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         private SkyMapObserverSnapshot CreateObserverSnapshot() {
-            DateTime timestamp = DateTime.UtcNow;
+            DateTime timestamp = ObservationTime?.ToUniversalTime() ?? DateTime.UtcNow;
             if (observerSnapshot is not null && !observerSnapshot.NeedsRefresh(timestamp)) {
                 return observerSnapshot;
             }
@@ -501,7 +520,9 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         private void ObserverRefreshTimer_Tick(object sender, EventArgs e) {
-            if (UsesObserver && (observerSnapshot is null || observerSnapshot.NeedsRefresh(DateTime.UtcNow))) {
+            if (ObservationTime is null
+                && UsesObserver
+                && (observerSnapshot is null || observerSnapshot.NeedsRefresh(DateTime.UtcNow))) {
                 observerSnapshot = null;
                 UpdateSkyMap();
             }
