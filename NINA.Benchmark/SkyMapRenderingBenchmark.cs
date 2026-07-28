@@ -15,11 +15,13 @@
 using BenchmarkDotNet.Attributes;
 using NINA.Astrometry;
 using NINA.Core.Enum;
+using NINA.Core.Model;
 using NINA.Image.ImageAnalysis;
 using NINA.WPF.Base.Model.FramingAssistant;
 using NINA.WPF.Base.SkySurvey;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
@@ -31,6 +33,14 @@ namespace NINA.Benchmark {
     [MemoryDiagnoser]
     [ShortRunJob]
     public class SkyMapRenderingBenchmark {
+        private const string SharpHorizon = """
+            0, 15
+            32, 36
+            33, 12
+            37, 39
+            88, 28
+            360, 15
+            """;
         private Bitmap bitmap = null!;
         private SkyMapViewportProjection altAzProjection = null!;
         private SkyMapViewportProjection alternateAltAzProjection = null!;
@@ -51,6 +61,7 @@ namespace NINA.Benchmark {
         private SkyMapSceneBuilder renderer = null!;
         private SkyMapRasterRenderer rasterRenderer = null!;
         private SkyMapScene scene = null!;
+        private SkyMapViewportProjection sharpHorizonProjection = null!;
         private SkyMapObserverSnapshot observer = null!;
         private ViewportFoV viewport = null!;
         private ViewportFoV wideViewport = null!;
@@ -102,6 +113,18 @@ namespace NINA.Benchmark {
             Coordinates wideCenter = observer.ToCelestial(new SkyMapHorizontalCoordinates(30, 180));
             wideViewport = new ViewportFoV(wideCenter, 140, 1200, 800, 37);
             wideAltAzProjection = new SkyMapViewportProjection(wideViewport, SkyMapProjectionMode.AltAz, observer);
+            using StringReader sharpHorizonReader = new StringReader(SharpHorizon);
+            CustomHorizon sharpHorizon = CustomHorizon.FromReader_Standard(sharpHorizonReader);
+            SkyMapObserverSnapshot sharpHorizonObserver = new SkyMapObserverSnapshot(
+                50,
+                new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc),
+                16.5,
+                sharpHorizon.GetAltitude);
+            Coordinates sharpHorizonCenter = sharpHorizonObserver.ToCelestial(new SkyMapHorizontalCoordinates(25, 32.5));
+            sharpHorizonProjection = new SkyMapViewportProjection(
+                new ViewportFoV(sharpHorizonCenter, 40, 1200, 800, 17),
+                SkyMapProjectionMode.AltAz,
+                sharpHorizonObserver);
             renderer = new SkyMapSceneBuilder(constellations, deepSkyObjects, boundaries);
             rasterRenderer = new SkyMapRasterRenderer((int)viewport.Width, (int)viewport.Height);
             scene = renderer.Build(viewport, SkyMapRenderOptions.All);
@@ -201,6 +224,12 @@ namespace NINA.Benchmark {
         [BenchmarkCategory("Layers")]
         public SkyMapScene NewWideAltAzHorizonLayer() {
             return renderer.Build(wideAltAzProjection, SkyMapRenderOptions.Horizon);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Layers")]
+        public SkyMapScene NewSharpHorizonLayer() {
+            return renderer.Build(sharpHorizonProjection, SkyMapRenderOptions.Horizon);
         }
 
         [Benchmark]

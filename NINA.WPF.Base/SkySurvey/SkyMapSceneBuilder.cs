@@ -46,7 +46,7 @@ namespace NINA.WPF.Base.SkySurvey {
             IReadOnlyList<SkyMapPath> constellationBoundaries,
             IReadOnlyList<SkyMapPath> gridLines,
             IReadOnlyList<SkyMapLabel> labels = null,
-            IReadOnlyList<SkyMapPath> horizonLines = null,
+            IReadOnlyList<SkyMapLine> horizonLines = null,
             IReadOnlyList<SkyMapPath> horizonMaskAreas = null) {
             Stars = stars;
             ConstellationLines = constellationLines;
@@ -63,7 +63,7 @@ namespace NINA.WPF.Base.SkySurvey {
         public IReadOnlyList<SkyMapDeepSkyObject> DeepSkyObjects { get; }
         public IReadOnlyList<SkyMapPath> ConstellationBoundaries { get; }
         public IReadOnlyList<SkyMapPath> GridLines { get; }
-        public IReadOnlyList<SkyMapPath> HorizonLines { get; }
+        public IReadOnlyList<SkyMapLine> HorizonLines { get; }
         public IReadOnlyList<SkyMapPath> HorizonMaskAreas { get; }
         public IReadOnlyList<SkyMapLabel> Labels { get; }
     }
@@ -170,7 +170,7 @@ namespace NINA.WPF.Base.SkySurvey {
             List<SkyMapDeepSkyObject> dsos = [];
             List<SkyMapPath> constellationBoundaries = [];
             List<SkyMapPath> gridLines = [];
-            List<SkyMapPath> horizonLines = [];
+            List<SkyMapLine> horizonLines = [];
             List<SkyMapPath> horizonMaskAreas = [];
             List<SkyMapLabel> labels = [];
 
@@ -539,35 +539,17 @@ namespace NINA.WPF.Base.SkySurvey {
             ViewportFoV viewport,
             SkyMapViewportProjection projection,
             SkyMapObserverSnapshot observer,
-            List<SkyMapPath> result,
+            List<SkyMapLine> result,
             List<SkyMapPath> maskAreas) {
-            double sampleStep = ClosestStep(HorizontalSteps, Math.Max(viewport.HFoV, viewport.VFoV) / 4) / 4;
-            List<Point> points = [];
-            for (double azimuth = 0; azimuth <= 360; azimuth += sampleStep) {
-                double altitude = observer.HorizonAltitude(azimuth);
-                SkyMapHorizontalCoordinates horizontal = new SkyMapHorizontalCoordinates(altitude, azimuth);
-                if (projection.Mode == SkyMapProjectionMode.AltAz && projection.Contains(horizontal)) {
-                    points.Add(projection.Project(horizontal));
-                } else if (projection.Mode == SkyMapProjectionMode.Equatorial) {
-                    Coordinates celestial = observer.ToCelestial(horizontal);
-                    if (projection.Contains(celestial)) {
-                        points.Add(projection.Project(celestial));
-                    } else {
-                        points = CompletePath(points, result, strokeThickness: 2);
-                    }
-                } else {
-                    points = CompletePath(points, result, strokeThickness: 2);
-                }
-            }
-            AddPathIfDrawable(points, result, strokeThickness: 2);
-            BuildHorizonMask(viewport, projection, observer, maskAreas);
+            BuildHorizonMask(viewport, projection, observer, maskAreas, result);
         }
 
         private static void BuildHorizonMask(
             ViewportFoV viewport,
             SkyMapViewportProjection projection,
             SkyMapObserverSnapshot observer,
-            List<SkyMapPath> result) {
+            List<SkyMapPath> result,
+            List<SkyMapLine> horizonLines) {
             if (observer.HasFlatHorizon) {
                 double centerAltitude = observer.ToHorizontal(viewport.CenterCoordinates).Altitude;
                 if (centerAltitude >= projection.AngularRadius) {
@@ -634,10 +616,20 @@ namespace NINA.WPF.Base.SkySurvey {
                     if (cellVisible) {
                         continue;
                     }
+                    ReadOnlySpan<Point> corners = [topLeft, topRight, bottomRight, bottomLeft];
+                    ReadOnlySpan<double> cornerClearance = [
+                        topLeftClearance,
+                        topRightClearance,
+                        bottomRightClearance,
+                        bottomLeftClearance
+                    ];
                     AddPartiallyHiddenCell(
                         result,
-                        [topLeft, topRight, bottomRight, bottomLeft],
-                        [topLeftClearance, topRightClearance, bottomRightClearance, bottomLeftClearance]);
+                        horizonLines,
+                        projection,
+                        observer,
+                        corners,
+                        cornerClearance);
                 }
                 AddHiddenRun(result, hiddenRunStart, columns, row, cellWidth, cellHeight);
             }
@@ -675,49 +667,79 @@ namespace NINA.WPF.Base.SkySurvey {
 
         private static void AddPartiallyHiddenCell(
             List<SkyMapPath> result,
-            IReadOnlyList<Point> corners,
-            IReadOnlyList<double> clearance) {
+            List<SkyMapLine> horizonLines,
+            SkyMapViewportProjection projection,
+            SkyMapObserverSnapshot observer,
+            ReadOnlySpan<Point> corners,
+            ReadOnlySpan<double> clearance) {
             int hiddenCorners = 0;
             int pattern = 0;
-            for (int i = 0; i < corners.Count; i++) {
+            for (int i = 0; i < corners.Length; i++) {
                 if (clearance[i] < 0) {
                     hiddenCorners++;
                     pattern |= 1 << i;
                 }
             }
-            if (hiddenCorners == 0 || hiddenCorners == corners.Count) {
+            if (hiddenCorners == 0 || hiddenCorners == corners.Length) {
                 return;
             }
 
             if (pattern == 5 || pattern == 10) {
-                for (int i = 0; i < corners.Count; i++) {
+                for (int i = 0; i < corners.Length; i++) {
                     if (clearance[i] >= 0) {
                         continue;
                     }
-                    int previous = (i + corners.Count - 1) % corners.Count;
-                    int next = (i + 1) % corners.Count;
+                    int previous = (i + corners.Length - 1) % corners.Length;
+                    int next = (i + 1) % corners.Length;
+                    Point nextIntersection = HorizonIntersection(
+                        projection,
+                        observer,
+                        corners[i],
+                        clearance[i],
+                        corners[next],
+                        clearance[next]);
+                    Point previousIntersection = HorizonIntersection(
+                        projection,
+                        observer,
+                        corners[i],
+                        clearance[i],
+                        corners[previous],
+                        clearance[previous]);
                     result.Add(new SkyMapPath(
                         [
                             corners[i],
-                            HorizonIntersection(corners[i], clearance[i], corners[next], clearance[next]),
-                            HorizonIntersection(corners[i], clearance[i], corners[previous], clearance[previous])
+                            nextIntersection,
+                            previousIntersection
                         ],
                         closed: true));
+                    horizonLines.Add(new SkyMapLine(nextIntersection, previousIntersection));
                 }
                 return;
             }
 
             List<Point> polygon = [];
-            int previousIndex = corners.Count - 1;
-            for (int currentIndex = 0; currentIndex < corners.Count; currentIndex++) {
+            Point firstIntersection = default;
+            Point secondIntersection = default;
+            int intersectionCount = 0;
+            int previousIndex = corners.Length - 1;
+            for (int currentIndex = 0; currentIndex < corners.Length; currentIndex++) {
                 bool previousHidden = clearance[previousIndex] < 0;
                 bool currentHidden = clearance[currentIndex] < 0;
                 if (previousHidden != currentHidden) {
-                    polygon.Add(HorizonIntersection(
+                    Point intersection = HorizonIntersection(
+                        projection,
+                        observer,
                         corners[previousIndex],
                         clearance[previousIndex],
                         corners[currentIndex],
-                        clearance[currentIndex]));
+                        clearance[currentIndex]);
+                    polygon.Add(intersection);
+                    if (intersectionCount == 0) {
+                        firstIntersection = intersection;
+                    } else {
+                        secondIntersection = intersection;
+                    }
+                    intersectionCount++;
                 }
                 if (currentHidden) {
                     polygon.Add(corners[currentIndex]);
@@ -725,13 +747,45 @@ namespace NINA.WPF.Base.SkySurvey {
                 previousIndex = currentIndex;
             }
             result.Add(new SkyMapPath(polygon, closed: true));
+            if (intersectionCount == 2) {
+                horizonLines.Add(new SkyMapLine(firstIntersection, secondIntersection));
+            }
         }
 
-        private static Point HorizonIntersection(Point from, double fromClearance, Point through, double throughClearance) {
-            double amount = fromClearance / (fromClearance - throughClearance);
-            return new Point(
-                from.X + (through.X - from.X) * amount,
-                from.Y + (through.Y - from.Y) * amount);
+        private static Point HorizonIntersection(
+            SkyMapViewportProjection projection,
+            SkyMapObserverSnapshot observer,
+            Point from,
+            double fromClearance,
+            Point through,
+            double throughClearance) {
+            const double clearanceTolerance = 0.01;
+            const int maximumIterations = 12;
+            Point intersection = default;
+            for (int i = 0; i < maximumIterations; i++) {
+                double amount = i == 0
+                    ? fromClearance / (fromClearance - throughClearance)
+                    : 0.5;
+                intersection = new Point(
+                    from.X + (through.X - from.X) * amount,
+                    from.Y + (through.Y - from.Y) * amount);
+                if (observer.HasFlatHorizon) {
+                    break;
+                }
+                double intersectionClearance = observer.HorizonClearance(projection.UnprojectHorizontal(intersection));
+                if (Math.Abs(intersectionClearance) <= clearanceTolerance) {
+                    break;
+                }
+
+                if ((intersectionClearance < 0) == (fromClearance < 0)) {
+                    from = intersection;
+                    fromClearance = intersectionClearance;
+                } else {
+                    through = intersection;
+                    throughClearance = intersectionClearance;
+                }
+            }
+            return intersection;
         }
 
         private static string FormatRightAscension(double rightAscension) {

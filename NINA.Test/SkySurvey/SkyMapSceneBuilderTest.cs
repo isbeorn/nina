@@ -15,9 +15,11 @@
 using FluentAssertions;
 using NINA.Astrometry;
 using NINA.Core.Enum;
+using NINA.Core.Model;
 using NINA.WPF.Base.SkySurvey;
 using NUnit.Framework;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -32,6 +34,27 @@ namespace NINA.Test.SkySurvey {
     [Apartment(ApartmentState.STA)]
     [NonParallelizable]
     public class SkyMapSceneBuilderTest {
+        private const string SharpHorizon = """
+            348, 15
+            33, 12
+            32, 36
+            37, 39
+            88, 28
+            90, 7
+            103, 7
+            118, 12
+            152, 14
+            176, 33
+            188, 17
+            219, 17
+            221, 27
+            249, 23
+            280, 32
+            297, 11
+            310, 8
+            321, 14
+            356, 15
+            """;
 
         [Test]
         public void Build_WhenViewportMoves_ReprojectsEveryEnabledLayer() {
@@ -798,6 +821,68 @@ namespace NINA.Test.SkySurvey {
             hiddenSamples.Should().BeGreaterThan(0);
         }
 
+        [TestCase(SkyMapProjectionMode.Equatorial, 0)]
+        [TestCase(SkyMapProjectionMode.Equatorial, 15)]
+        [TestCase(SkyMapProjectionMode.AltAz, 0)]
+        [TestCase(SkyMapProjectionMode.AltAz, 15)]
+        public void Build_WhenZoomedOut_HorizonLineFollowsImageMaskBoundary(
+            SkyMapProjectionMode projectionMode,
+            double customHorizonAmplitude) {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            Func<double, double> customHorizon = customHorizonAmplitude == 0
+                ? null
+                : azimuth => customHorizonAmplitude * Math.Sin(AstroUtil.ToRadians(azimuth * 2));
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(
+                50,
+                at,
+                16.5,
+                customHorizon);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(30, 180));
+            ViewportFoV viewport = new ViewportFoV(center, 140, 1200, 800, 37);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, projectionMode, observer);
+            SkyMapSceneBuilder builder = new SkyMapSceneBuilder([], [], []);
+
+            SkyMapScene scene = builder.Build(projection, SkyMapRenderOptions.Horizon);
+            Point[] lineMidpoints = scene.HorizonLines
+                .Select(line => new Point(
+                    (line.Start.X + line.End.X) / 2,
+                    (line.Start.Y + line.End.Y) / 2))
+                .Where(point => point.X >= 0 && point.X <= viewport.Width)
+                .Where(point => point.Y >= 0 && point.Y <= viewport.Height)
+                .ToArray();
+
+            lineMidpoints.Should().NotBeEmpty();
+            scene.HorizonMaskAreas.Should().NotBeEmpty();
+            lineMidpoints.Max(point => DistanceToMaskBoundary(point, scene.HorizonMaskAreas)).Should().BeLessThan(0.01);
+        }
+
+        [TestCase(SkyMapProjectionMode.Equatorial, 31.75, 0)]
+        [TestCase(SkyMapProjectionMode.Equatorial, 32.25, 17)]
+        [TestCase(SkyMapProjectionMode.AltAz, 32.5, 0)]
+        [TestCase(SkyMapProjectionMode.AltAz, 32.75, 37)]
+        public void Build_SharpCustomHorizon_RemainsAccurateWhilePanning(
+            SkyMapProjectionMode projectionMode,
+            double centerAzimuth,
+            double rotation) {
+            using StringReader reader = new StringReader(SharpHorizon);
+            CustomHorizon customHorizon = CustomHorizon.FromReader_Standard(reader);
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, at, 16.5, customHorizon.GetAltitude);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(25, centerAzimuth));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 1200, 800, rotation);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, projectionMode, observer);
+            SkyMapSceneBuilder builder = new SkyMapSceneBuilder([], [], []);
+
+            SkyMapScene scene = builder.Build(projection, SkyMapRenderOptions.Horizon);
+            Point[] linePoints = scene.HorizonLines
+                .SelectMany(line => new[] { line.Start, line.End })
+                .ToArray();
+
+            linePoints.Should().NotBeEmpty();
+            linePoints.Max(point => Math.Abs(observer.HorizonClearance(projection.UnprojectHorizontal(point))))
+                .Should().BeLessThan(0.05);
+        }
+
         [Test]
         public void RasterRenderer_ConsecutiveCachedFrames_RenderThroughWpfBinding() {
             BitmapSource red = CreatePixel(0, 0, 255);
@@ -853,6 +938,22 @@ namespace NINA.Test.SkySurvey {
             double localY = -deltaX * Math.Sin(angle) + deltaY * Math.Cos(angle);
             return localX * localX / (ellipse.RadiusX * ellipse.RadiusX)
                 + localY * localY / (ellipse.RadiusY * ellipse.RadiusY);
+        }
+
+        private static double DistanceToMaskBoundary(Point point, IReadOnlyList<SkyMapPath> maskAreas) {
+            return maskAreas.Min(path => Enumerable.Range(0, path.Points.Count)
+                .Min(index => DistanceToSegment(point, path.Points[index], path.Points[(index + 1) % path.Points.Count])));
+        }
+
+        private static double DistanceToSegment(Point point, Point start, Point end) {
+            Vector segment = end - start;
+            if (segment.LengthSquared == 0) {
+                return (point - start).Length;
+            }
+
+            double amount = Math.Clamp(Vector.Multiply(point - start, segment) / segment.LengthSquared, 0, 1);
+            Point closest = start + segment * amount;
+            return (point - closest).Length;
         }
 
         private static byte[] Render(WpfImage image) {

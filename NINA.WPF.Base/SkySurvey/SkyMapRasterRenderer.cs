@@ -91,7 +91,7 @@ namespace NINA.WPF.Base.SkySurvey {
                         DrawFilledPaths(frameGraphics, scene.HorizonMaskAreas, HorizonMaskBrush);
                         frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
                     }
-                    DrawPaths(frameGraphics, scene.HorizonLines, HorizonPen, null);
+                    DrawLines(frameGraphics, scene.HorizonLines, HorizonPen);
                 } finally {
                     writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
                     writeableBitmap.Unlock();
@@ -102,12 +102,16 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         private static void DrawConstellations(Graphics graphics, SkyMapScene scene) {
-            foreach (SkyMapLine line in scene.ConstellationLines) {
-                graphics.DrawLine(ConstellationPen, ToDrawingPoint(line.Start), ToDrawingPoint(line.End));
-            }
+            DrawLines(graphics, scene.ConstellationLines, ConstellationPen);
             foreach (SkyMapStar star in scene.Stars) {
                 float radius = (float)star.Radius;
                 graphics.FillEllipse(StarBrush, (float)star.Center.X - radius, (float)star.Center.Y - radius, radius * 2, radius * 2);
+            }
+        }
+
+        private static void DrawLines(Graphics graphics, IReadOnlyList<SkyMapLine> lines, DrawingPen pen) {
+            foreach (SkyMapLine line in lines) {
+                graphics.DrawLine(pen, ToDrawingPoint(line.Start), ToDrawingPoint(line.End));
             }
         }
 
