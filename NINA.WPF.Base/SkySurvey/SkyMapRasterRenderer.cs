@@ -86,9 +86,11 @@ namespace NINA.WPF.Base.SkySurvey {
                     if (telescopePosition is MediaPoint telescope) {
                         DrawTelescope(frameGraphics, telescope);
                     }
-                    frameGraphics.SmoothingMode = SmoothingMode.None;
-                    DrawFilledPaths(frameGraphics, scene.HorizonMaskAreas, HorizonMaskBrush);
-                    frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    if (scene.HorizonMaskAreas.Count > 0) {
+                        frameGraphics.SmoothingMode = SmoothingMode.None;
+                        DrawFilledPaths(frameGraphics, scene.HorizonMaskAreas, HorizonMaskBrush);
+                        frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    }
                     DrawPaths(frameGraphics, scene.HorizonLines, HorizonPen, null);
                 } finally {
                     writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
@@ -137,6 +139,10 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         private static void DrawLabels(Graphics graphics, IReadOnlyList<SkyMapLabel> labels) {
+            if (labels.Count == 0) {
+                return;
+            }
+            RectangleF visibleBounds = graphics.VisibleClipBounds;
             foreach (SkyMapLabel label in labels) {
                 (DrawingFont font, DrawingBrush brush) = label.Kind switch {
                     SkyMapLabelKind.Constellation => (ConstellationFont, ConstellationBrush),
@@ -149,9 +155,8 @@ namespace NINA.WPF.Base.SkySurvey {
                 if (label.Kind is SkyMapLabelKind.Constellation or SkyMapLabelKind.Star) {
                     x -= size.Width / 2;
                 } else {
-                    RectangleF bounds = graphics.VisibleClipBounds;
-                    x = Math.Clamp(x, bounds.Left, Math.Max(bounds.Left, bounds.Right - size.Width));
-                    y = Math.Clamp(y, bounds.Top, Math.Max(bounds.Top, bounds.Bottom - size.Height));
+                    x = Math.Clamp(x, visibleBounds.Left, Math.Max(visibleBounds.Left, visibleBounds.Right - size.Width));
+                    y = Math.Clamp(y, visibleBounds.Top, Math.Max(visibleBounds.Top, visibleBounds.Bottom - size.Height));
                 }
                 graphics.DrawString(label.Text, font, brush, x, y);
             }
@@ -212,6 +217,17 @@ namespace NINA.WPF.Base.SkySurvey {
                     double rotation = image.Rotation * Math.PI / 180;
                     double cosine = Math.Cos(rotation);
                     double sine = Math.Sin(rotation);
+                    double halfWidth = image.Width / 2;
+                    double halfHeight = image.Height / 2;
+                    double transformedHalfWidth = Math.Abs(cosine) * halfWidth + Math.Abs(sine) * halfHeight;
+                    double transformedHalfHeight = Math.Abs(sine) * halfWidth + Math.Abs(cosine) * halfHeight;
+                    if (image.Center.X + transformedHalfWidth <= 0
+                        || image.Center.X - transformedHalfWidth >= width
+                        || image.Center.Y + transformedHalfHeight <= 0
+                        || image.Center.Y - transformedHalfHeight >= height) {
+                        continue;
+                    }
+
                     double horizontalScale = image.FlipHorizontally ? -1 : 1;
                     System.Windows.Media.Matrix matrix = new System.Windows.Media.Matrix(
                         horizontalScale * cosine,
@@ -224,8 +240,8 @@ namespace NINA.WPF.Base.SkySurvey {
                     matrix.OffsetY = image.Center.Y - image.Center.X * matrix.M12 - image.Center.Y * matrix.M22;
                     context.PushTransform(new MatrixTransform(matrix));
                     context.DrawImage(image.Image, new Rect(
-                        image.Center.X - image.Width / 2,
-                        image.Center.Y - image.Height / 2,
+                        image.Center.X - halfWidth,
+                        image.Center.Y - halfHeight,
                         image.Width,
                         image.Height));
                     context.Pop();

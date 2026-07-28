@@ -82,6 +82,19 @@ namespace NINA.Test.SkySurvey {
         }
 
         [Test]
+        public void Build_SharedConstellationStar_IsRenderedOnce() {
+            Star sharedStar = new Star(1, "Shared", CelestialCoordinates(85, 0), 2);
+            Constellation first = new Constellation("First") { Stars = [sharedStar] };
+            Constellation second = new Constellation("Second") { Stars = [sharedStar] };
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([first, second], [], []);
+            ViewportFoV viewport = new ViewportFoV(CelestialCoordinates(85, 0), 30, 1200, 800, 0);
+
+            SkyMapScene scene = sut.Build(viewport, SkyMapRenderOptions.Stars);
+
+            scene.Stars.Should().ContainSingle(x => x.Id == sharedStar.Id);
+        }
+
+        [Test]
         public void Build_WhenVisibilityChanges_AppliesItToEveryCelestialLayer() {
             Star hiddenStar = new Star(1, "Hidden", CelestialCoordinates(82, -2), 2);
             Star visibleStar = new Star(2, "Visible", CelestialCoordinates(86, 3), 3);
