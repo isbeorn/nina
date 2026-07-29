@@ -20,6 +20,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using DrawingBrush = System.Drawing.SolidBrush;
+using DrawingBaseBrush = System.Drawing.Brush;
 using DrawingColor = System.Drawing.Color;
 using DrawingFont = System.Drawing.Font;
 using DrawingFontStyle = System.Drawing.FontStyle;
@@ -34,7 +35,10 @@ namespace NINA.WPF.Base.SkySurvey {
         private static readonly DrawingBrush BoundaryBrush = new DrawingBrush(DrawingColor.FromArgb(128, DrawingColor.Khaki));
         private static readonly DrawingBrush ConstellationBrush = new DrawingBrush(DrawingColor.FromArgb(128, 255, 255, 153));
         private static readonly DrawingBrush GridBrush = new DrawingBrush(DrawingColor.SteelBlue);
-        private static readonly DrawingBrush HorizonMaskBrush = new DrawingBrush(DrawingColor.Black);
+        private static readonly DrawingBaseBrush HorizonMaskBrush = new HatchBrush(
+            HatchStyle.ForwardDiagonal,
+            DrawingColor.FromArgb(255, 58, 42, 22),
+            DrawingColor.FromArgb(255, 8, 8, 8));
         private static readonly DrawingBrush StarBrush = new DrawingBrush(DrawingColor.FromArgb(200, 255, 255, 255));
         private static readonly DrawingBrush StarLabelBrush = new DrawingBrush(DrawingColor.FromArgb(128, 255, 215, 0));
         private static readonly DrawingBrush DsoFillBrush = new DrawingBrush(DrawingColor.FromArgb(10, 255, 255, 255));
@@ -191,7 +195,7 @@ namespace NINA.WPF.Base.SkySurvey {
         private static void DrawFilledPaths(
             Graphics graphics,
             IReadOnlyList<SkyMapPath> paths,
-            DrawingBrush brush) {
+            DrawingBaseBrush brush) {
             foreach (SkyMapPath path in paths) {
                 if (path.Points.Count < 3) {
                     continue;

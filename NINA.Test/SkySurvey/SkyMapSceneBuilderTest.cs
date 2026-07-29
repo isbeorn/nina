@@ -714,10 +714,40 @@ namespace NINA.Test.SkySurvey {
             byte[] frame = Render(image);
 
             PixelAt(frame, 100, 10, 25).Should().Equal(0, 0, 255, 255);
-            PixelAt(frame, 100, 10, 75).Should().Equal(0, 0, 0, 255);
-            PixelAt(frame, 100, 50, 55).Should().Equal(0, 0, 0, 255);
-            PixelAt(frame, 100, 50, 75).Should().Equal(0, 0, 0, 255);
-            PixelAt(frame, 100, 90, 75).Should().Equal(0, 0, 0, 255);
+            AssertOpaqueMaskPixel(frame, 100, 10, 75);
+            AssertOpaqueMaskPixel(frame, 100, 50, 55);
+            AssertOpaqueMaskPixel(frame, 100, 50, 75);
+            AssertOpaqueMaskPixel(frame, 100, 90, 75);
+        }
+
+        [Test]
+        public void RasterRenderer_FullyBlockedHorizon_UsesOpaquePattern() {
+            BitmapSource red = CreatePixel(0, 0, 255);
+            SkyMapPath fullMask = new SkyMapPath(
+                [new Point(0, 0), new Point(100, 0), new Point(100, 100), new Point(0, 100)],
+                closed: true);
+            SkyMapScene scene = new SkyMapScene([], [], [], [], [], horizonMaskAreas: [fullMask]);
+            using SkyMapRasterRenderer renderer = new SkyMapRasterRenderer(100, 100);
+            using SkyMapAnnotator annotator = new SkyMapAnnotator();
+            WpfImage image = new WpfImage { Width = 100, Height = 100 };
+            BindingOperations.SetBinding(
+                image,
+                WpfImage.SourceProperty,
+                new Binding(nameof(SkyMapAnnotator.SkyMapOverlay)) { Source = annotator });
+
+            annotator.SkyMapOverlay = renderer.Render(
+                scene,
+                [new SkyMapImagePlacement(red, new Point(50, 50), 100, 100, 0)],
+                null);
+            byte[] frame = Render(image);
+            uint[] colors = Enumerable.Range(0, frame.Length / 4)
+                .Select(index => BitConverter.ToUInt32(frame, index * 4))
+                .Distinct()
+                .ToArray();
+
+            colors.Should().HaveCountGreaterThan(1);
+            colors.Should().OnlyContain(color => (color & 0xff000000) == 0xff000000);
+            colors.Should().NotContain(0xffff0000);
         }
 
         [Test]
@@ -745,9 +775,9 @@ namespace NINA.Test.SkySurvey {
             byte[] frame = Render(image);
 
             PixelAt(frame, 100, 50, 25).Should().Equal(0, 0, 255, 255);
-            PixelAt(frame, 100, 10, 75).Should().Equal(0, 0, 0, 255);
-            PixelAt(frame, 100, 50, 75).Should().Equal(0, 0, 0, 255);
-            PixelAt(frame, 100, 90, 75).Should().Equal(0, 0, 0, 255);
+            AssertOpaqueMaskPixel(frame, 100, 10, 75);
+            AssertOpaqueMaskPixel(frame, 100, 50, 75);
+            AssertOpaqueMaskPixel(frame, 100, 90, 75);
         }
 
         [TestCase(30, 0, 0)]
@@ -809,9 +839,7 @@ namespace NINA.Test.SkySurvey {
                             $"altitude {altitude}°, azimuth {azimuth}° is above the configured horizon");
                         visibleSamples++;
                     } else {
-                        PixelAt(frame, 100, x, y).Should().Equal(
-                            new byte[] { 0, 0, 0, 255 },
-                            $"altitude {altitude}°, azimuth {azimuth}° is below the configured horizon");
+                        AssertOpaqueMaskPixel(frame, 100, x, y);
                         hiddenSamples++;
                     }
                 }
@@ -970,6 +998,12 @@ namespace NINA.Test.SkySurvey {
         private static byte[] PixelAt(byte[] pixels, int width, int x, int y) {
             int offset = (y * width + x) * 4;
             return pixels.Skip(offset).Take(4).ToArray();
+        }
+
+        private static void AssertOpaqueMaskPixel(byte[] pixels, int width, int x, int y) {
+            byte[] pixel = PixelAt(pixels, width, x, y);
+            pixel[3].Should().Be(255);
+            BitConverter.ToUInt32(pixel, 0).Should().NotBe(0xffff0000);
         }
 
         private static SkyMapLabel[] VisibleGridLabels(SkyMapScene scene, ViewportFoV viewport) {
