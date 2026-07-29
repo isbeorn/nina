@@ -33,6 +33,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
     public sealed class SkyMapRasterRenderer : IDisposable {
         private static readonly DrawingBrush BoundaryBrush = new DrawingBrush(DrawingColor.FromArgb(128, DrawingColor.Khaki));
+        private static readonly DrawingBrush CardinalDirectionBrush = new DrawingBrush(DrawingColor.Red);
         private static readonly DrawingBrush ConstellationBrush = new DrawingBrush(DrawingColor.FromArgb(128, 255, 255, 153));
         private static readonly DrawingBrush GridBrush = new DrawingBrush(DrawingColor.SteelBlue);
         private static readonly DrawingBaseBrush HorizonMaskBrush = new HatchBrush(
@@ -48,6 +49,7 @@ namespace NINA.WPF.Base.SkySurvey {
         private static readonly DrawingPen GridEquatorPen = new DrawingPen(DrawingColor.FromArgb(127, DrawingColor.SteelBlue), 3);
         private static readonly DrawingPen HorizonPen = new DrawingPen(DrawingColor.FromArgb(200, DrawingColor.Orange), 2);
         private static readonly DrawingPen TelescopePen = new DrawingPen(DrawingColor.FromArgb(128, DrawingColor.Yellow), 2);
+        private static readonly DrawingFont CardinalDirectionFont = new DrawingFont("Segoe UI", 16, DrawingFontStyle.Bold);
         private static readonly DrawingFont ConstellationFont = new DrawingFont("Segoe UI", 11, DrawingFontStyle.Bold);
         private static readonly DrawingFont DsoFont = new DrawingFont("Segoe UI", 10, DrawingFontStyle.Regular);
         private static readonly DrawingFont GridFont = new DrawingFont("Segoe UI", 7, DrawingFontStyle.Italic);
@@ -96,6 +98,7 @@ namespace NINA.WPF.Base.SkySurvey {
                         frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
                     }
                     DrawLines(frameGraphics, scene.HorizonLines, HorizonPen);
+                    DrawCardinalDirectionLabels(frameGraphics, scene.Labels);
                 } finally {
                     writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
                     writeableBitmap.Unlock();
@@ -152,22 +155,43 @@ namespace NINA.WPF.Base.SkySurvey {
             }
             RectangleF visibleBounds = graphics.VisibleClipBounds;
             foreach (SkyMapLabel label in labels) {
-                (DrawingFont font, DrawingBrush brush) = label.Kind switch {
-                    SkyMapLabelKind.Constellation => (ConstellationFont, ConstellationBrush),
-                    SkyMapLabelKind.Star => (StarFont, StarLabelBrush),
-                    _ => (GridFont, GridBrush)
-                };
-                float x = (float)label.Position.X;
-                float y = (float)label.Position.Y;
-                SizeF size = graphics.MeasureString(label.Text, font);
-                if (label.Kind is SkyMapLabelKind.Constellation or SkyMapLabelKind.Star) {
-                    x -= size.Width / 2;
-                } else {
-                    x = Math.Clamp(x, visibleBounds.Left, Math.Max(visibleBounds.Left, visibleBounds.Right - size.Width));
-                    y = Math.Clamp(y, visibleBounds.Top, Math.Max(visibleBounds.Top, visibleBounds.Bottom - size.Height));
+                if (label.Kind != SkyMapLabelKind.CardinalDirection) {
+                    DrawLabel(graphics, label, visibleBounds);
                 }
-                graphics.DrawString(label.Text, font, brush, x, y);
             }
+        }
+
+        private static void DrawCardinalDirectionLabels(Graphics graphics, IReadOnlyList<SkyMapLabel> labels) {
+            RectangleF visibleBounds = graphics.VisibleClipBounds;
+            foreach (SkyMapLabel label in labels) {
+                if (label.Kind == SkyMapLabelKind.CardinalDirection) {
+                    DrawLabel(graphics, label, visibleBounds);
+                }
+            }
+        }
+
+        private static void DrawLabel(Graphics graphics, SkyMapLabel label, RectangleF visibleBounds) {
+            (DrawingFont font, DrawingBrush brush) = label.Kind switch {
+                SkyMapLabelKind.CardinalDirection => (CardinalDirectionFont, CardinalDirectionBrush),
+                SkyMapLabelKind.Constellation => (ConstellationFont, ConstellationBrush),
+                SkyMapLabelKind.Star => (StarFont, StarLabelBrush),
+                _ => (GridFont, GridBrush)
+            };
+            float x = (float)label.Position.X;
+            float y = (float)label.Position.Y;
+            SizeF size = graphics.MeasureString(label.Text, font);
+            if (label.Kind == SkyMapLabelKind.CardinalDirection) {
+                x -= size.Width / 2;
+                y -= size.Height / 2;
+                x = Math.Clamp(x, visibleBounds.Left, Math.Max(visibleBounds.Left, visibleBounds.Right - size.Width));
+                y = Math.Clamp(y, visibleBounds.Top, Math.Max(visibleBounds.Top, visibleBounds.Bottom - size.Height));
+            } else if (label.Kind is SkyMapLabelKind.Constellation or SkyMapLabelKind.Star) {
+                x -= size.Width / 2;
+            } else {
+                x = Math.Clamp(x, visibleBounds.Left, Math.Max(visibleBounds.Left, visibleBounds.Right - size.Width));
+                y = Math.Clamp(y, visibleBounds.Top, Math.Max(visibleBounds.Top, visibleBounds.Bottom - size.Height));
+            }
+            graphics.DrawString(label.Text, font, brush, x, y);
         }
 
         private static void DrawPaths(

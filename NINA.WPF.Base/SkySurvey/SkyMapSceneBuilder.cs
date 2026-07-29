@@ -71,7 +71,8 @@ namespace NINA.WPF.Base.SkySurvey {
     public enum SkyMapLabelKind {
         Star,
         Constellation,
-        Grid
+        Grid,
+        CardinalDirection
     }
 
     public readonly record struct SkyMapLabel(string Text, Point Position, SkyMapLabelKind Kind);
@@ -104,6 +105,16 @@ namespace NINA.WPF.Base.SkySurvey {
     }
 
     public sealed class SkyMapSceneBuilder {
+        private static readonly (double Azimuth, string Direction)[] CardinalDirections = [
+            (0, "N"),
+            (45, "NE"),
+            (90, "E"),
+            (135, "SE"),
+            (180, "S"),
+            (225, "SW"),
+            (270, "W"),
+            (315, "NW")
+        ];
         private static readonly double[] DeclinationSteps = [0.5, 1, 2, 4, 12, 20];
         private static readonly double[] HorizontalSteps = [1, 2, 5, 10, 15, 30];
         private static readonly double[] RightAscensionSteps = [1.25, 2.5, 3.75, 7.5, 15];
@@ -532,6 +543,28 @@ namespace NINA.WPF.Base.SkySurvey {
                 }
                 AddPathIfDrawable(points, result, altitude, altitude == 0 ? 3 : 1);
                 AddGridLabels(result, previousCount, labels, $"{altitude:N0}°", viewport);
+            }
+
+            AddCardinalDirectionLabels(viewport, projection, labels);
+        }
+
+        private static void AddCardinalDirectionLabels(
+            ViewportFoV viewport,
+            SkyMapViewportProjection projection,
+            List<SkyMapLabel> labels) {
+            foreach ((double azimuth, string direction) in CardinalDirections) {
+                SkyMapHorizontalCoordinates horizontal = new SkyMapHorizontalCoordinates(0, azimuth);
+                if (!projection.Contains(horizontal)) {
+                    continue;
+                }
+
+                Point position = projection.Project(horizontal);
+                if (position.X >= 0
+                    && position.X < viewport.Width
+                    && position.Y >= 0
+                    && position.Y < viewport.Height) {
+                    labels.Add(new SkyMapLabel(direction, position, SkyMapLabelKind.CardinalDirection));
+                }
             }
         }
 

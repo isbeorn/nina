@@ -55,7 +55,7 @@ This allows you to safely return to a stable release if needed.
 - Improved Sky Atlas search performance.
 - **Offline framing sky map improvements**
     - All map layers and camera framing rectangles now refresh continuously while dragging, with substantially lower rendering overhead, fewer temporary allocations, and bounded decoded-image memory use.
-    - The grid and viewport projection can be switched between Equatorial and Alt/Az coordinates, with planetarium handedness and correct image and camera orientation.
+    - The grid and viewport projection can be switched between Equatorial and Alt/Az coordinates, with clear compass direction indicators along the zero-altitude line that remain visible over the horizon overlay, planetarium handedness and correct image and camera orientation.
     - An optional local or custom horizon hides annotations and cached imagery below it, including in wide-field views.
     - Offline-only date and time steppers provide a current or fixed observation context for the map and horizon, while the selected date drives the altitude chart.
 - **Autofocus & Star Measurements**

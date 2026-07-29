@@ -34,6 +34,7 @@ namespace NINA.Test.SkySurvey {
     [Apartment(ApartmentState.STA)]
     [NonParallelizable]
     public class SkyMapSceneBuilderTest {
+        private static readonly string[] CardinalDirections = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
         private const string SharpHorizon = """
             348, 15
             33, 12
@@ -213,6 +214,101 @@ namespace NINA.Test.SkySurvey {
             labels.Should().NotBeEmpty();
             labels.Should().OnlyContain(x => x.Text.EndsWith("°", StringComparison.Ordinal));
             later.GridLines.SelectMany(x => x.Points).Should().NotEqual(first.GridLines.SelectMany(x => x.Points));
+        }
+
+        [TestCase(0, "N")]
+        [TestCase(45, "NE")]
+        [TestCase(90, "E")]
+        [TestCase(135, "SE")]
+        [TestCase(180, "S")]
+        [TestCase(225, "SW")]
+        [TestCase(270, "W")]
+        [TestCase(315, "NW")]
+        public void Build_AltAzGrid_AnnotatesVisibleCardinalDirection(double azimuth, string direction) {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(10, azimuth));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 1200, 800, 37);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([], [], []);
+
+            SkyMapScene scene = sut.Build(projection, SkyMapRenderOptions.HorizontalGrid);
+            SkyMapLabel[] cardinalDirections = scene.Labels
+                .Where(x => x.Kind == SkyMapLabelKind.CardinalDirection)
+                .ToArray();
+
+            cardinalDirections.Should().ContainSingle();
+            cardinalDirections.Should().ContainSingle(x => x.Text == direction);
+            SkyMapLabel label = cardinalDirections.Single(x => x.Text == direction);
+            label.Position.X.Should().BeGreaterThanOrEqualTo(0).And.BeLessThan(viewport.Width);
+            label.Position.Y.Should().BeGreaterThanOrEqualTo(0).And.BeLessThan(viewport.Height);
+            SkyMapHorizontalCoordinates horizontal = projection.UnprojectHorizontal(label.Position);
+            horizontal.Altitude.Should().BeApproximately(0, 0.01);
+            double azimuthError = Math.Abs(AstroUtil.EuclidianModulus(horizontal.Azimuth - azimuth + 180, 360) - 180);
+            azimuthError.Should().BeLessThan(0.01);
+        }
+
+        [Test]
+        public void Build_AltAzGrid_WhenZeroAltitudeIsOutsideViewport_DoesNotAnnotateCardinalDirection() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(35, 90));
+            ViewportFoV viewport = new ViewportFoV(center, 20, 1200, 800, 0);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([], [], []);
+
+            SkyMapScene scene = sut.Build(projection, SkyMapRenderOptions.HorizontalGrid);
+
+            scene.Labels.Should().NotContain(x => x.Kind == SkyMapLabelKind.CardinalDirection);
+        }
+
+        [Test]
+        public void Build_AltAzGrid_WithCustomHorizon_KeepsZeroAltitudeCardinalDirection() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, at, 10, _ => 30);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(10, 90));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 1200, 800, 37);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([], [], []);
+
+            SkyMapScene scene = sut.Build(
+                projection,
+                SkyMapRenderOptions.HorizontalGrid | SkyMapRenderOptions.Horizon);
+            SkyMapLabel direction = scene.Labels.Single(x => x.Text == "E");
+            SkyMapHorizontalCoordinates horizontal = projection.UnprojectHorizontal(direction.Position);
+
+            horizontal.Altitude.Should().BeApproximately(0, 0.01);
+            observer.HorizonClearance(horizontal).Should().BeLessThan(0);
+        }
+
+        [Test]
+        public void Build_AltAzGrid_WithFlatHorizon_AnnotatesCardinalDirectionOnHorizon() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(10, 90));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 1200, 800, 37);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([], [], []);
+
+            SkyMapScene scene = sut.Build(
+                projection,
+                SkyMapRenderOptions.HorizontalGrid | SkyMapRenderOptions.Horizon);
+            SkyMapLabel direction = scene.Labels.Single(x => x.Text == "E");
+            SkyMapHorizontalCoordinates horizontal = projection.UnprojectHorizontal(direction.Position);
+
+            horizontal.Altitude.Should().BeApproximately(0, 0.01);
+            observer.HorizonClearance(horizontal).Should().BeApproximately(0, 0.01);
+        }
+
+        [Test]
+        public void Build_EquatorialGrid_DoesNotAnnotateCardinalDirections() {
+            ViewportFoV viewport = new ViewportFoV(CelestialCoordinates(85, 0), 30, 1200, 800, 0);
+            SkyMapSceneBuilder sut = new SkyMapSceneBuilder([], [], []);
+
+            SkyMapScene scene = sut.Build(viewport, SkyMapRenderOptions.EquatorialGrid);
+
+            scene.Labels.Should().NotContain(x => CardinalDirections.Contains(x.Text));
+            scene.Labels.Should().NotContain(x => x.Kind == SkyMapLabelKind.CardinalDirection);
         }
 
         [TestCase(85, 0)]
@@ -721,6 +817,38 @@ namespace NINA.Test.SkySurvey {
         }
 
         [Test]
+        public void RasterRenderer_CardinalDirection_RendersLargeBoldRedLabel() {
+            SkyMapScene scene = new SkyMapScene(
+                [],
+                [],
+                [],
+                [],
+                [],
+                [new SkyMapLabel("N", new Point(50, 50), SkyMapLabelKind.CardinalDirection)]);
+            using SkyMapRasterRenderer renderer = new SkyMapRasterRenderer(100, 100);
+
+            BitmapSource result = renderer.Render(scene, [], null).Should().BeAssignableTo<BitmapSource>().Subject;
+            CountRedPixels(result).Should().BeGreaterThan(40);
+        }
+
+        [Test]
+        public void RasterRenderer_CustomHorizon_KeepsCardinalDirectionVisible() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, at, 10, _ => 30);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(10, 90));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 100, 100, 0);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapSceneBuilder builder = new SkyMapSceneBuilder([], [], []);
+            SkyMapScene scene = builder.Build(
+                projection,
+                SkyMapRenderOptions.HorizontalGrid | SkyMapRenderOptions.Horizon);
+            using SkyMapRasterRenderer renderer = new SkyMapRasterRenderer(100, 100);
+
+            BitmapSource result = renderer.Render(scene, [], null).Should().BeAssignableTo<BitmapSource>().Subject;
+            CountRedPixels(result).Should().BeGreaterThan(40);
+        }
+
+        [Test]
         public void RasterRenderer_FullyBlockedHorizon_UsesOpaquePattern() {
             BitmapSource red = CreatePixel(0, 0, 255);
             SkyMapPath fullMask = new SkyMapPath(
@@ -998,6 +1126,16 @@ namespace NINA.Test.SkySurvey {
         private static byte[] PixelAt(byte[] pixels, int width, int x, int y) {
             int offset = (y * width + x) * 4;
             return pixels.Skip(offset).Take(4).ToArray();
+        }
+
+        private static int CountRedPixels(BitmapSource source) {
+            int stride = source.PixelWidth * 4;
+            byte[] pixels = new byte[stride * source.PixelHeight];
+            source.CopyPixels(pixels, stride, 0);
+            return Enumerable.Range(0, pixels.Length / 4)
+                .Count(index => pixels[index * 4 + 2] > 128
+                    && pixels[index * 4 + 1] < 64
+                    && pixels[index * 4] < 64);
         }
 
         private static void AssertOpaqueMaskPixel(byte[] pixels, int width, int x, int y) {
