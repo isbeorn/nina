@@ -53,6 +53,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private CancellationTokenSource downloadExposureTaskCTS;
         private Task<IExposureData> downloadExposureTask;
 
+        /*
+         * The last gain and offset that were successfully commanded, so that a read mode change can put
+         * them back after it reinitializes the camera. Null until something has been commanded, in which
+         * case the value the camera holds just before the reinitialization is the one to keep.
+         */
+        private double? lastRequestedGain;
+        private int? lastRequestedOffset;
+
         public IQhySdk Sdk { get; set; } = QhySdk.Instance;
 
         public QHYCamera(uint cameraIdx, IProfileService profileService, IExposureDataFactory exposureDataFactory) {
@@ -319,6 +327,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 if (Connected && CanSetGain) {
                     if (Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_GAIN, value)) {
                         Info.CurGain = value;
+                        lastRequestedGain = value;
                         RaisePropertyChanged();
                     }
                 }
@@ -379,6 +388,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             set {
                 if (Connected && CanSetOffset) {
                     if (Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, value)) {
+                        lastRequestedOffset = value;
                         RaisePropertyChanged();
                     }
                 }
@@ -476,6 +486,15 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                                 Logger.Debug($"QHYCCD: ReadoutMode: Setting readout mode to {mode} ({modeName})");
 
+                                /*
+                                 * SetQHYCCDReadMode() followed by InitQHYCCD() reinitializes the camera and resets
+                                 * CONTROL_GAIN and CONTROL_OFFSET to the new read mode's power-on defaults, and
+                                 * StartExposure() has already applied them before it gets here. Take them now,
+                                 * while the camera still holds them, and write them back after the reinitialization.
+                                 */
+                                double gainToRestore = lastRequestedGain ?? Gain;
+                                int offsetToRestore = lastRequestedOffset ?? Offset;
+
                                 if ((rv = Sdk.SetReadMode(mode)) != QhySdk.QHYCCD_SUCCESS) {
                                     Logger.Error($"QHYCCD: SetQHYCCDReadMode() failed. Returned {rv}");
                                     return;
@@ -487,6 +506,25 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                                 Sdk.InitCamera();
                                 SetImageResolution();
+
+                                /*
+                                 * A failed restore leaves the sensor at the wrong operating point, so it must
+                                 * abort the exposure rather than silently produce a miscalibrated frame.
+                                 * The error is also logged because PersistSettingsCameraDecorator swallows
+                                 * exceptions from this setter when it restores the read mode on connect.
+                                 */
+                                if (CanSetGain && !Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_GAIN, gainToRestore)) {
+                                    var message = $"QHYCCD: Failed to restore gain {gainToRestore} after switching to readout mode {mode} ({modeName})";
+                                    Logger.Error(message);
+                                    throw new Exception(message);
+                                }
+                                if (CanSetOffset && !Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, offsetToRestore)) {
+                                    var message = $"QHYCCD: Failed to restore offset {offsetToRestore} after switching to readout mode {mode} ({modeName})";
+                                    Logger.Error(message);
+                                    throw new Exception(message);
+                                }
+
+                                Logger.Debug($"QHYCCD: ReadoutMode: Re-applied gain {gainToRestore} and offset {offsetToRestore} after read mode change");
                             }
                         }
                     }
