@@ -21,10 +21,6 @@ using System.Windows;
 
 namespace NINA.WPF.Base.SkySurvey {
 
-    public interface ISkyMapVisibility {
-        bool IsVisible(Coordinates coordinates);
-    }
-
     [Flags]
     public enum SkyMapRenderOptions {
         None = 0,
@@ -77,12 +73,11 @@ namespace NINA.WPF.Base.SkySurvey {
 
     public readonly record struct SkyMapLabel(string Text, Point Position, SkyMapLabelKind Kind);
 
-    public readonly record struct SkyMapStar(int Id, string Name, Point Center, double Radius);
+    public readonly record struct SkyMapStar(Point Center, double Radius);
 
     public readonly record struct SkyMapLine(Point Start, Point End);
 
     public readonly record struct SkyMapDeepSkyObject(
-        string Id,
         string Name,
         string Type,
         Point Center,
@@ -91,15 +86,13 @@ namespace NINA.WPF.Base.SkySurvey {
         double PositionAngle);
 
     public sealed class SkyMapPath {
-        public SkyMapPath(IReadOnlyList<Point> points, double value = 0, bool closed = false, double strokeThickness = 1) {
+        public SkyMapPath(IReadOnlyList<Point> points, bool closed = false, double strokeThickness = 1) {
             Points = points;
-            Value = value;
             Closed = closed;
             StrokeThickness = strokeThickness;
         }
 
         public IReadOnlyList<Point> Points { get; }
-        public double Value { get; }
         public bool Closed { get; }
         public double StrokeThickness { get; }
     }
@@ -133,48 +126,15 @@ namespace NINA.WPF.Base.SkySurvey {
             stars = constellations.SelectMany(x => x.Stars).DistinctBy(x => x.Id).ToArray();
         }
 
-        public SkyMapScene Build(ViewportFoV viewport, SkyMapRenderOptions options) {
-            return Build(
-                new SkyMapViewportProjection(viewport),
-                options,
-                null,
-                null,
-                AllSkyMapVisibility.Instance);
-        }
-
-        public SkyMapScene Build(ViewportFoV viewport, SkyMapRenderOptions options, ISkyMapVisibility visibility) {
-            return Build(new SkyMapViewportProjection(viewport), options, null, null, visibility);
-        }
-
-        public SkyMapScene Build(ViewportFoV viewport, SkyMapRenderOptions options, IReadOnlySet<string> disabledCatalogues) {
-            return Build(
-                new SkyMapViewportProjection(viewport),
-                options,
-                null,
-                disabledCatalogues,
-                AllSkyMapVisibility.Instance);
-        }
-
         public SkyMapScene Build(
             SkyMapViewportProjection projection,
             SkyMapRenderOptions options,
-            IReadOnlySet<string> disabledCatalogues = null) {
+            IReadOnlyList<string> disabledCatalogues = null) {
             SkyMapObserverSnapshot observer = projection.Observer;
             if ((options & (SkyMapRenderOptions.HorizontalGrid | SkyMapRenderOptions.Horizon)) != 0 && observer is null) {
                 throw new ArgumentException("Horizontal rendering requires a projection with an observer.", nameof(projection));
             }
-            ISkyMapVisibility visibility = (options & SkyMapRenderOptions.Horizon) != 0
-                ? observer
-                : AllSkyMapVisibility.Instance;
-            return Build(projection, options, observer, disabledCatalogues, visibility);
-        }
-
-        private SkyMapScene Build(
-            SkyMapViewportProjection projection,
-            SkyMapRenderOptions options,
-            SkyMapObserverSnapshot observer,
-            IReadOnlySet<string> disabledCatalogues,
-            ISkyMapVisibility visibility) {
+            SkyMapObserverSnapshot visibilityObserver = (options & SkyMapRenderOptions.Horizon) != 0 ? observer : null;
             ViewportFoV viewport = projection.Viewport;
             List<SkyMapStar> stars = [];
             List<SkyMapLine> constellationLines = [];
@@ -186,16 +146,16 @@ namespace NINA.WPF.Base.SkySurvey {
             List<SkyMapLabel> labels = [];
 
             if ((options & (SkyMapRenderOptions.Stars | SkyMapRenderOptions.Constellations)) != 0) {
-                BuildConstellations(viewport, projection, options, visibility, stars, constellationLines, labels);
+                BuildConstellations(viewport, projection, options, visibilityObserver, stars, constellationLines, labels);
             }
             if ((options & SkyMapRenderOptions.DeepSkyObjects) != 0) {
-                BuildDeepSkyObjects(viewport, projection, visibility, disabledCatalogues, dsos);
+                BuildDeepSkyObjects(viewport, projection, visibilityObserver, disabledCatalogues, dsos);
             }
             if ((options & SkyMapRenderOptions.ConstellationBoundaries) != 0) {
-                BuildBoundaries(projection, visibility, constellationBoundaries);
+                BuildBoundaries(projection, visibilityObserver, constellationBoundaries);
             }
             if ((options & SkyMapRenderOptions.EquatorialGrid) != 0) {
-                BuildGrid(viewport, projection, visibility, gridLines, labels);
+                BuildGrid(viewport, projection, visibilityObserver, gridLines, labels);
             }
             if ((options & SkyMapRenderOptions.HorizontalGrid) != 0 && observer is not null) {
                 BuildHorizontalGrid(
@@ -225,16 +185,16 @@ namespace NINA.WPF.Base.SkySurvey {
             ViewportFoV viewport,
             SkyMapViewportProjection projection,
             SkyMapRenderOptions options,
-            ISkyMapVisibility visibility,
+            SkyMapObserverSnapshot visibilityObserver,
             List<SkyMapStar> stars,
             List<SkyMapLine> lines,
             List<SkyMapLabel> labels) {
             if ((options & SkyMapRenderOptions.Stars) != 0) {
                 foreach (Star star in this.stars) {
-                    if (projection.Contains(star.Coords) && visibility.IsVisible(star.Coords)) {
+                    if (projection.Contains(star.Coords) && IsVisible(visibilityObserver, star.Coords)) {
                         double radius = Math.Max(1, (-3.375 * star.Mag + 23.25) / (viewport.VFoV / 8));
                         Point center = projection.Project(star.Coords);
-                        stars.Add(new SkyMapStar(star.Id, star.Name, center, radius));
+                        stars.Add(new SkyMapStar(center, radius));
                         if ((options & SkyMapRenderOptions.Constellations) != 0 && !string.IsNullOrWhiteSpace(star.Name)) {
                             labels.Add(new SkyMapLabel(star.Name, new Point(center.X + radius, center.Y + radius * 2 + 5), SkyMapLabelKind.Star));
                         }
@@ -247,12 +207,12 @@ namespace NINA.WPF.Base.SkySurvey {
                     Constellation constellation = data.Constellation;
                     foreach (Tuple<Star, Star> connection in constellation.StarConnections) {
                         if ((projection.Contains(connection.Item1.Coords) || projection.Contains(connection.Item2.Coords))
-                            && visibility.IsVisible(connection.Item1.Coords)
-                            && visibility.IsVisible(connection.Item2.Coords)) {
+                            && IsVisible(visibilityObserver, connection.Item1.Coords)
+                            && IsVisible(visibilityObserver, connection.Item2.Coords)) {
                             lines.Add(new SkyMapLine(projection.Project(connection.Item1.Coords), projection.Project(connection.Item2.Coords)));
                         }
                     }
-                    if (projection.Contains(data.Center) && visibility.IsVisible(data.Center)) {
+                    if (projection.Contains(data.Center) && IsVisible(visibilityObserver, data.Center)) {
                         labels.Add(new SkyMapLabel(constellation.Name, projection.Project(data.Center), SkyMapLabelKind.Constellation));
                     }
                 }
@@ -278,8 +238,8 @@ namespace NINA.WPF.Base.SkySurvey {
         private void BuildDeepSkyObjects(
             ViewportFoV viewport,
             SkyMapViewportProjection projection,
-            ISkyMapVisibility visibility,
-            IReadOnlySet<string> disabledCatalogues,
+            SkyMapObserverSnapshot visibilityObserver,
+            IReadOnlyList<string> disabledCatalogues,
             List<SkyMapDeepSkyObject> result) {
             double minimumSize = Math.Min(viewport.HFoV, viewport.VFoV) < 10
                 ? 0
@@ -288,7 +248,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
             foreach (DeepSkyObject dso in deepSkyObjects.Query(viewport)) {
                 if (!projection.Contains(dso.Coordinates)
-                    || !visibility.IsVisible(dso.Coordinates)
+                    || !IsVisible(visibilityObserver, dso.Coordinates)
                     || IsDisabled(dso.Name, disabledCatalogues)
                     || (viewport.VFoV > 10 && (dso.Size is null || dso.Size <= minimumSize || dso.Size >= maximumSize))) {
                     continue;
@@ -300,7 +260,6 @@ namespace NINA.WPF.Base.SkySurvey {
                     : dso.SizeMin >= viewport.ArcSecHeight ? dso.SizeMin.Value : 30;
                 Point center = projection.Project(dso.Coordinates);
                 result.Add(new SkyMapDeepSkyObject(
-                    dso.Id,
                     DsoLabel(dso),
                     dso.DSOType,
                     center,
@@ -373,7 +332,7 @@ namespace NINA.WPF.Base.SkySurvey {
             return includeThird ? third : string.Empty;
         }
 
-        private static bool IsDisabled(string name, IReadOnlySet<string> disabledCatalogues) {
+        private static bool IsDisabled(string name, IReadOnlyList<string> disabledCatalogues) {
             if (disabledCatalogues is null) {
                 return false;
             }
@@ -385,7 +344,7 @@ namespace NINA.WPF.Base.SkySurvey {
             return false;
         }
 
-        private void BuildBoundaries(SkyMapViewportProjection projection, ISkyMapVisibility visibility, List<SkyMapPath> result) {
+        private void BuildBoundaries(SkyMapViewportProjection projection, SkyMapObserverSnapshot visibilityObserver, List<SkyMapPath> result) {
             foreach (ConstellationBoundary boundary in boundaries) {
                 IReadOnlyList<Coordinates> coordinates = boundary.Boundaries;
                 bool intersects = false;
@@ -401,13 +360,13 @@ namespace NINA.WPF.Base.SkySurvey {
 
                 bool allVisible = true;
                 for (int i = 0; i < coordinates.Count; i++) {
-                    if (!visibility.IsVisible(coordinates[i])) {
+                    if (!IsVisible(visibilityObserver, coordinates[i])) {
                         allVisible = false;
                         break;
                     }
                 }
                 if (!allVisible) {
-                    AddVisiblePath(coordinates, projection, visibility, result);
+                    AddVisiblePath(coordinates, projection, visibilityObserver, result);
                     continue;
                 }
 
@@ -422,7 +381,7 @@ namespace NINA.WPF.Base.SkySurvey {
         private static void BuildGrid(
             ViewportFoV viewport,
             SkyMapViewportProjection projection,
-            ISkyMapVisibility visibility,
+            SkyMapObserverSnapshot visibilityObserver,
             List<SkyMapPath> result,
             List<SkyMapLabel> labels) {
             double declinationStep = ClosestStep(DeclinationSteps, viewport.VFoV / 4);
@@ -443,7 +402,7 @@ namespace NINA.WPF.Base.SkySurvey {
                     points.Add(CelestialCoordinates(ra, dec));
                 }
                 int previousCount = result.Count;
-                AddVisiblePath(points, projection, visibility, result, ra);
+                AddVisiblePath(points, projection, visibilityObserver, result);
                 AddGridLabels(result, previousCount, labels, FormatRightAscension(ra), viewport);
             }
 
@@ -459,7 +418,7 @@ namespace NINA.WPF.Base.SkySurvey {
                     points.Add(CelestialCoordinates(viewport.CenterCoordinates.RADegrees + offset, dec));
                 }
                 int previousCount = result.Count;
-                AddVisiblePath(points, projection, visibility, result, dec, dec == 0 ? 3 : 1);
+                AddVisiblePath(points, projection, visibilityObserver, result, dec == 0 ? 3 : 1);
                 AddGridLabels(result, previousCount, labels, $"{dec:N2}°", viewport);
             }
         }
@@ -517,10 +476,10 @@ namespace NINA.WPF.Base.SkySurvey {
                         && (!hideBelowHorizon || observer.HorizonClearance(horizontal) >= 0)) {
                         points.Add(projection.Project(horizontal));
                     } else {
-                        points = CompletePath(points, result, azimuth, 1);
+                        points = CompletePath(points, result);
                     }
                 }
-                AddPathIfDrawable(points, result, azimuth, 1);
+                AddPathIfDrawable(points, result);
                 AddGridLabels(result, previousCount, labels, $"{azimuth:N0}°", viewport);
             }
 
@@ -538,10 +497,10 @@ namespace NINA.WPF.Base.SkySurvey {
                         && (!hideBelowHorizon || observer.HorizonClearance(horizontal) >= 0)) {
                         points.Add(projection.Project(horizontal));
                     } else {
-                        points = CompletePath(points, result, altitude, altitude == 0 ? 3 : 1);
+                        points = CompletePath(points, result, altitude == 0 ? 3 : 1);
                     }
                 }
-                AddPathIfDrawable(points, result, altitude, altitude == 0 ? 3 : 1);
+                AddPathIfDrawable(points, result, altitude == 0 ? 3 : 1);
                 AddGridLabels(result, previousCount, labels, $"{altitude:N0}°", viewport);
             }
 
@@ -829,28 +788,26 @@ namespace NINA.WPF.Base.SkySurvey {
         private static void AddVisiblePath(
             IReadOnlyList<Coordinates> coordinates,
             SkyMapViewportProjection projection,
-            ISkyMapVisibility visibility,
+            SkyMapObserverSnapshot visibilityObserver,
             List<SkyMapPath> result,
-            double value = 0,
             double strokeThickness = 1) {
             List<Point> points = [];
             foreach (Coordinates coordinate in coordinates) {
-                if (visibility.IsVisible(coordinate)) {
+                if (IsVisible(visibilityObserver, coordinate)) {
                     points.Add(projection.Project(coordinate));
                 } else {
-                    points = CompletePath(points, result, value, strokeThickness);
+                    points = CompletePath(points, result, strokeThickness);
                 }
             }
-            AddPathIfDrawable(points, result, value, strokeThickness);
+            AddPathIfDrawable(points, result, strokeThickness);
         }
 
         private static List<Point> CompletePath(
             List<Point> points,
             List<SkyMapPath> result,
-            double value = 0,
             double strokeThickness = 1) {
             if (points.Count > 1) {
-                result.Add(new SkyMapPath(points, value, strokeThickness: strokeThickness));
+                result.Add(new SkyMapPath(points, strokeThickness: strokeThickness));
                 return [];
             }
             points.Clear();
@@ -860,11 +817,14 @@ namespace NINA.WPF.Base.SkySurvey {
         private static void AddPathIfDrawable(
             List<Point> points,
             List<SkyMapPath> result,
-            double value = 0,
             double strokeThickness = 1) {
             if (points.Count > 1) {
-                result.Add(new SkyMapPath(points, value, strokeThickness: strokeThickness));
+                result.Add(new SkyMapPath(points, strokeThickness: strokeThickness));
             }
+        }
+
+        private static bool IsVisible(SkyMapObserverSnapshot observer, Coordinates coordinates) {
+            return observer is null || observer.IsVisible(coordinates);
         }
 
         private static Coordinates CelestialCoordinates(double rightAscension, double declination) {
@@ -885,14 +845,6 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         private readonly record struct ConstellationData(Constellation Constellation, Coordinates Center);
-
-        private sealed class AllSkyMapVisibility : ISkyMapVisibility {
-            public static AllSkyMapVisibility Instance { get; } = new AllSkyMapVisibility();
-
-            public bool IsVisible(Coordinates coordinates) {
-                return true;
-            }
-        }
 
         private sealed class DeepSkyObjectIndex {
             private const double BinSize = 5;

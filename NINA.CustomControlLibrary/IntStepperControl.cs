@@ -15,8 +15,23 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System;
 
 namespace NINA.CustomControlLibrary {
+
+    public enum StepDirection {
+        Decrement = -1,
+        Increment = 1
+    }
+
+    public sealed class StepRequestedEventArgs : EventArgs {
+        public StepRequestedEventArgs(StepDirection direction) {
+            Direction = direction;
+        }
+
+        public StepDirection Direction { get; }
+        public bool Handled { get; set; }
+    }
 
     [TemplatePart(Name = "PART_TextBox", Type = typeof(UnitTextBox))]
     [TemplatePart(Name = "PART_Decrement", Type = typeof(Button))]
@@ -83,14 +98,6 @@ namespace NINA.CustomControlLibrary {
             set => SetValue(StepSizeProperty, value);
         }
 
-        public static readonly DependencyProperty WrapAroundProperty =
-           DependencyProperty.Register(nameof(WrapAround), typeof(bool), typeof(IntStepperControl), new UIPropertyMetadata(false));
-
-        public bool WrapAround {
-            get => (bool)GetValue(WrapAroundProperty);
-            set => SetValue(WrapAroundProperty, value);
-        }
-
         public static readonly DependencyProperty UnitProperty =
            DependencyProperty.Register(nameof(Unit), typeof(string), typeof(IntStepperControl), new UIPropertyMetadata(string.Empty));
 
@@ -98,6 +105,8 @@ namespace NINA.CustomControlLibrary {
             get => (string)GetValue(UnitProperty);
             set => SetValue(UnitProperty, value);
         }
+
+        public event EventHandler<StepRequestedEventArgs> StepRequested;
 
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
@@ -118,18 +127,24 @@ namespace NINA.CustomControlLibrary {
         }
 
         private void Button_PART_Increment_Click(object sender, RoutedEventArgs e) {
+            StepRequestedEventArgs args = new StepRequestedEventArgs(StepDirection.Increment);
+            StepRequested?.Invoke(this, args);
+            if (args.Handled) {
+                return;
+            }
             if (Value + StepSize <= MaxValue) {
                 Value += StepSize;
-            } else if (WrapAround) {
-                Value = MinValue;
             }
         }
 
         private void Button_PART_Decrement_Click(object sender, RoutedEventArgs e) {
+            StepRequestedEventArgs args = new StepRequestedEventArgs(StepDirection.Decrement);
+            StepRequested?.Invoke(this, args);
+            if (args.Handled) {
+                return;
+            }
             if (Value - StepSize >= MinValue) {
                 Value -= StepSize;
-            } else if (WrapAround) {
-                Value = MaxValue;
             }
         }
 

@@ -23,7 +23,6 @@ namespace NINA.WPF.Base.SkySurvey {
         private static readonly PropertyChangedEventArgs HeightChanged = new PropertyChangedEventArgs(nameof(Height));
         private static readonly PropertyChangedEventArgs IdChanged = new PropertyChangedEventArgs(nameof(Id));
         private static readonly PropertyChangedEventArgs InverseRotationChanged = new PropertyChangedEventArgs(nameof(InverseRotation));
-        private static readonly PropertyChangedEventArgs RectangleChanged = new PropertyChangedEventArgs(nameof(Rectangle));
         private static readonly PropertyChangedEventArgs RotationChanged = new PropertyChangedEventArgs(nameof(Rotation));
         private static readonly PropertyChangedEventArgs WidthChanged = new PropertyChangedEventArgs(nameof(Width));
         private static readonly PropertyChangedEventArgs XChanged = new PropertyChangedEventArgs(nameof(X));
@@ -40,7 +39,7 @@ namespace NINA.WPF.Base.SkySurvey {
         public double Height => Rectangle.Height;
         public int Id => Rectangle.Id;
         public double InverseRotation => -Rotation;
-        public FramingRectangle Rectangle { get; private set; }
+        private FramingRectangle Rectangle { get; set; }
         public double Width => Rectangle.Width;
 
         public double Rotation {
@@ -79,7 +78,6 @@ namespace NINA.WPF.Base.SkySurvey {
                 return;
             }
             Rectangle = rectangle;
-            OnPropertyChanged(RectangleChanged);
             OnPropertyChanged(WidthChanged);
             OnPropertyChanged(HeightChanged);
             OnPropertyChanged(IdChanged);

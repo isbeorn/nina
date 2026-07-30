@@ -13,10 +13,18 @@
 #endregion "copyright"
 
 using NINA.Core.Utility;
+using NINA.CustomControlLibrary;
 using System;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel.FramingAssistant {
+
+    internal enum FramingAssistantTimePart {
+        Month,
+        Day,
+        Hour,
+        Minute
+    }
 
     internal sealed class FramingAssistantTimeContext : BaseINPC, IDisposable {
         private readonly Func<DateTime> clock;
@@ -41,7 +49,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public DateTime SelectedDateTime {
             get => selectedDateTime;
-            set {
+            private set {
                 if (selectedDateTime != value) {
                     selectedDateTime = value;
                     RaisePropertyChanged();
@@ -60,21 +68,15 @@ namespace NINA.ViewModel.FramingAssistant {
             get => SelectedDateTime.Year;
             set {
                 int day = Math.Min(SelectedDateTime.Day, DateTime.DaysInMonth(value, SelectedDateTime.Month));
-                SetSelectedDateTime(value, Month, day, Hour, Minute);
+                SetFixedTime(value, Month, day, Hour, Minute);
             }
         }
 
         public int Month {
             get => SelectedDateTime.Month;
             set {
-                DateTime date = SelectedDateTime;
-                if (Month == 12 && value == 1) {
-                    date = SelectedDateTime.AddYears(1);
-                } else if (Month == 1 && value == 12) {
-                    date = SelectedDateTime.AddYears(-1);
-                }
-                int day = Math.Min(date.Day, DateTime.DaysInMonth(date.Year, value));
-                SetSelectedDateTime(date.Year, value, day, Hour, Minute);
+                int day = Math.Min(Day, DateTime.DaysInMonth(Year, value));
+                SetFixedTime(Year, value, day, Hour, Minute);
             }
         }
 
@@ -82,64 +84,66 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public int Day {
             get => SelectedDateTime.Day;
-            set {
-                DateTime date = SelectedDateTime;
-                int day = value;
-                if (Day == DaysInSelectedMonth && value == 1) {
-                    date = SelectedDateTime.AddDays(1);
-                } else if (Day == 1 && value == DaysInSelectedMonth) {
-                    date = SelectedDateTime.AddDays(-1);
-                    day = date.Day;
-                }
-                SetSelectedDateTime(date.Year, date.Month, day, Hour, Minute);
-            }
+            set => SetFixedTime(Year, Month, value, Hour, Minute);
         }
 
         public int Hour {
             get => SelectedDateTime.Hour;
-            set {
-                DateTime date = SelectedDateTime;
-                if (Hour == 23 && value == 0) {
-                    date = SelectedDateTime.AddDays(1);
-                } else if (Hour == 0 && value == 23) {
-                    date = SelectedDateTime.AddDays(-1);
-                }
-                SetSelectedDateTime(date.Year, date.Month, date.Day, value, Minute);
-            }
+            set => SetFixedTime(Year, Month, Day, value, Minute);
         }
 
         public int Minute {
             get => SelectedDateTime.Minute;
-            set {
-                DateTime date = SelectedDateTime;
-                if (Minute == 59 && value == 0) {
-                    date = SelectedDateTime.AddHours(1);
-                } else if (Minute == 0 && value == 59) {
-                    date = SelectedDateTime.AddHours(-1);
-                }
-                SetSelectedDateTime(date.Year, date.Month, date.Day, date.Hour, value);
+            set => SetFixedTime(Year, Month, Day, Hour, value);
+        }
+
+        private void SetFixedTime(int year, int month, int day, int hour, int minute) {
+            SetFixedTime(new DateTime(year, month, day, hour, minute, 0, SelectedDateTime.Kind));
+        }
+
+        private void SetFixedTime(DateTime value) {
+            if (useCurrentTime) {
+                useCurrentTime = false;
+                RaisePropertyChanged(nameof(UseCurrentTime));
             }
+            SelectedDateTime = value;
         }
 
-        private void SetSelectedDateTime(int year, int month, int day, int hour, int minute) {
-            UseCurrentTime = false;
-            SelectedDateTime = new DateTime(year, month, day, hour, minute, 0, SelectedDateTime.Kind);
-        }
+        public DateTime SelectedDate => SelectedDateTime.Date;
 
-        public DateTime SelectedDate {
-            get => SelectedDateTime.Date;
-            set => SelectedDateTime = value.Date + SelectedDateTime.TimeOfDay;
-        }
+        public bool UseCurrentTime => useCurrentTime;
 
-        public bool UseCurrentTime {
-            get => useCurrentTime;
-            set {
-                if (useCurrentTime != value) {
-                    useCurrentTime = value;
-                    RaisePropertyChanged();
-                    Refresh();
-                }
+        public void Adjust(FramingAssistantTimePart part, StepDirection direction) {
+            int amount = (int)direction;
+            DateTime adjusted;
+            try {
+                adjusted = part switch {
+                    FramingAssistantTimePart.Month => SelectedDateTime.AddMonths(amount),
+                    FramingAssistantTimePart.Day => SelectedDateTime.AddDays(amount),
+                    FramingAssistantTimePart.Hour => SelectedDateTime.AddHours(amount),
+                    FramingAssistantTimePart.Minute => SelectedDateTime.AddMinutes(amount),
+                    _ => SelectedDateTime
+                };
+            } catch (ArgumentOutOfRangeException) {
+                return;
             }
+
+            SetFixedTime(new DateTime(
+                adjusted.Year,
+                adjusted.Month,
+                adjusted.Day,
+                adjusted.Hour,
+                adjusted.Minute,
+                0,
+                adjusted.Kind));
+        }
+
+        public void ResetToCurrentTime() {
+            if (!useCurrentTime) {
+                useCurrentTime = true;
+                RaisePropertyChanged(nameof(UseCurrentTime));
+            }
+            Refresh();
         }
 
         internal void Refresh() {

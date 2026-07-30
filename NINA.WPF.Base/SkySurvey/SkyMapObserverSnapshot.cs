@@ -19,7 +19,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
     public readonly record struct SkyMapHorizontalCoordinates(double Altitude, double Azimuth);
 
-    public sealed class SkyMapObserverSnapshot : ISkyMapVisibility {
+    public sealed class SkyMapObserverSnapshot {
         public static readonly TimeSpan RefreshInterval = TimeSpan.FromMinutes(1);
         private readonly Func<double, double> horizonAltitude;
         private readonly double latitudeCosine;

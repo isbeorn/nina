@@ -19,6 +19,8 @@ Build shape:
 - `NewFullFrame` covers scene construction and the reusable WPF render surface.
 - `NewSceneOnly` and the four `*Layer` cases isolate scene calculation.
 - `NewRasterOnly` isolates final image generation.
+- `NewAltAzDragFramePreparation` measures scene, cached-image, camera-placement and raster preparation for an alternating drag frame.
+- `NewAltAzDragFrameMaterialized` uses the same prepared frame and measures binding the resulting image plus WPF presentation into a reusable render target.
 
 Run benchmarks in Release mode and treat results as machine-specific comparisons. Keep functional and numerical assertions in `NINA.Test`; benchmarks prove cost, not correctness.
 

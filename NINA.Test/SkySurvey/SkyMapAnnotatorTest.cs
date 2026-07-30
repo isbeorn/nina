@@ -16,6 +16,7 @@ using FluentAssertions;
 using Moq;
 using NINA.Astrometry;
 using NINA.Core.Enum;
+using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.SkySurvey;
@@ -24,6 +25,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Test.SkySurvey {
 
@@ -43,7 +45,7 @@ namespace NINA.Test.SkySurvey {
             Mock<IProfileService> profileService = new Mock<IProfileService>();
             profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
 
-            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object);
+            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object) { DynamicFoV = true };
 
             sut.ProjectionMode.Should().Be(SkyMapProjectionMode.AltAz);
             sut.ShowHorizon.Should().BeTrue();
@@ -53,6 +55,42 @@ namespace NINA.Test.SkySurvey {
 
             settings.SkyMapProjectionMode.Should().Be(SkyMapProjectionMode.Equatorial);
             settings.ShowHorizon.Should().BeFalse();
+        }
+
+        [Test]
+        public async Task StaticImage_ForcesEquatorialProjectionWithoutChangingPersistedPreference() {
+            AstrometrySettings astrometrySettings = new AstrometrySettings {
+                Latitude = 50,
+                Longitude = 10
+            };
+            FramingAssistantSettings framingAssistantSettings = new FramingAssistantSettings {
+                SkyMapProjectionMode = SkyMapProjectionMode.AltAz
+            };
+            Mock<IProfile> profile = new Mock<IProfile>();
+            profile.SetupGet(x => x.AstrometrySettings).Returns(astrometrySettings);
+            profile.SetupGet(x => x.FramingAssistantSettings).Returns(framingAssistantSettings);
+            Mock<IProfileService> profileService = new Mock<IProfileService>();
+            profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
+
+            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object) {
+                DynamicFoV = false
+            };
+            await sut.Initialize(CelestialCoordinates(85, 20), 40, 100, 100, 0, null, CancellationToken.None);
+
+            sut.Projection.Mode.Should().Be(SkyMapProjectionMode.Equatorial);
+            sut.ProjectionMode.Should().Be(SkyMapProjectionMode.AltAz);
+            framingAssistantSettings.SkyMapProjectionMode.Should().Be(SkyMapProjectionMode.AltAz);
+
+            sut.DynamicFoV = true;
+            sut.Projection.Mode.Should().Be(SkyMapProjectionMode.AltAz);
+
+            sut.DynamicFoV = false;
+            sut.Projection.Mode.Should().Be(SkyMapProjectionMode.Equatorial);
+            sut.ProjectionMode.Should().Be(SkyMapProjectionMode.AltAz);
+            framingAssistantSettings.SkyMapProjectionMode.Should().Be(SkyMapProjectionMode.AltAz);
+
+            sut.Dispose();
+            sut.Initialized.Should().BeFalse();
         }
 
         [Test]
@@ -70,7 +108,7 @@ namespace NINA.Test.SkySurvey {
             Coordinates center = CelestialCoordinates(85, 20);
             Coordinates target = CelestialCoordinates(90, 25);
 
-            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object);
+            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object) { DynamicFoV = true };
             await sut.Initialize(center, 40, 100, 100, 0, null, CancellationToken.None);
             sut.AnnotateGrid = false;
             sut.ProjectionMode = SkyMapProjectionMode.AltAz;
@@ -134,7 +172,7 @@ namespace NINA.Test.SkySurvey {
             profile.SetupGet(x => x.FramingAssistantSettings).Returns(framingAssistantSettings);
             Mock<IProfileService> profileService = new Mock<IProfileService>();
             profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
-            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object);
+            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object) { DynamicFoV = true };
             await sut.Initialize(CelestialCoordinates(85, 20), 40, 100, 100, 0, null, CancellationToken.None);
 
             sut.ProjectionMode = SkyMapProjectionMode.AltAz;
@@ -158,6 +196,7 @@ namespace NINA.Test.SkySurvey {
             profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
             Coordinates target = CelestialCoordinates(90, 25);
             using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object) {
+                DynamicFoV = true,
                 ObservationTime = new DateTime(2026, 7, 28, 18, 0, 0, DateTimeKind.Utc)
             };
             await sut.Initialize(CelestialCoordinates(85, 20), 40, 100, 100, 0, null, CancellationToken.None);
@@ -185,6 +224,7 @@ namespace NINA.Test.SkySurvey {
             profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
             DateTime observationTime = new DateTime(2026, 7, 28, 18, 0, 0, DateTimeKind.Utc);
             using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object) {
+                DynamicFoV = true,
                 ObservationTime = observationTime
             };
             await sut.Initialize(CelestialCoordinates(85, 20), 40, 100, 100, 0, null, CancellationToken.None);
@@ -197,6 +237,42 @@ namespace NINA.Test.SkySurvey {
             sut.ObservationTime = observationTime.AddMinutes(1);
 
             sut.Projection.Should().NotBeSameAs(initialProjection);
+        }
+
+        [Test]
+        public async Task RenderPropertiesAndTelescopeState_UpdateTheVisibleOverlayDirectly() {
+            FramingAssistantSettings framingAssistantSettings = new FramingAssistantSettings();
+            Mock<IProfile> profile = new Mock<IProfile>();
+            profile.SetupGet(x => x.FramingAssistantSettings).Returns(framingAssistantSettings);
+            Mock<IProfileService> profileService = new Mock<IProfileService>();
+            profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
+            Coordinates center = CelestialCoordinates(85, 20);
+            using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object);
+            await sut.Initialize(center, 40, 200, 160, 0, null, CancellationToken.None);
+            sut.AnnotateConstellations = false;
+            sut.AnnotateConstellationBoundaries = false;
+            sut.AnnotateDSO = false;
+            sut.AnnotateGrid = true;
+            byte[] grid = CopyPixels((BitmapSource)sut.SkyMapOverlay);
+
+            sut.AnnotateGrid = false;
+            byte[] blank = CopyPixels((BitmapSource)sut.SkyMapOverlay);
+
+            blank.Should().NotEqual(grid);
+
+            sut.UpdateDeviceInfo(new TelescopeInfo { Connected = true, Coordinates = center });
+            byte[] telescope = CopyPixels((BitmapSource)sut.SkyMapOverlay);
+            telescope.Should().NotEqual(blank);
+
+            sut.UpdateDeviceInfo(new TelescopeInfo { Connected = false });
+            CopyPixels((BitmapSource)sut.SkyMapOverlay).Should().Equal(blank);
+        }
+
+        private static byte[] CopyPixels(BitmapSource source) {
+            int stride = (source.PixelWidth * source.Format.BitsPerPixel + 7) / 8;
+            byte[] pixels = new byte[stride * source.PixelHeight];
+            source.CopyPixels(pixels, stride, 0);
+            return pixels;
         }
 
         private static Coordinates CelestialCoordinates(double rightAscension, double declination) {

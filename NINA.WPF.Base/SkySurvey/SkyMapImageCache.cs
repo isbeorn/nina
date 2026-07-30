@@ -39,11 +39,11 @@ namespace NINA.WPF.Base.SkySurvey {
         public const long DefaultMaximumEstimatedBytes = 64L * 1024 * 1024;
 
         private readonly int decodedImageCapacity;
-        private readonly Dictionary<ImageKey, CacheEntry> images = [];
+        private readonly Dictionary<ImageTile, CacheEntry> images = [];
         private readonly SemaphoreSlim loadGate = new SemaphoreSlim(1, 1);
         private readonly object lockObject = new object();
         private readonly long maximumEstimatedBytes;
-        private readonly LinkedList<ImageKey> recentlyUsed = [];
+        private readonly LinkedList<ImageTile> recentlyUsed = [];
         private readonly IReadOnlyList<ImageTile> tiles;
         private long estimatedBytes;
 
@@ -85,10 +85,8 @@ namespace NINA.WPF.Base.SkySurvey {
 
         public long MaximumEstimatedBytes => maximumEstimatedBytes;
 
-        public IReadOnlyList<SkyMapImagePlacement> GetPlacements(
-            ViewportFoV viewport,
-            SkyMapViewportProjection projection = null) {
-            projection ??= new SkyMapViewportProjection(viewport);
+        public IReadOnlyList<SkyMapImagePlacement> GetPlacements(SkyMapViewportProjection projection) {
+            ViewportFoV viewport = projection.Viewport;
             List<SkyMapImagePlacement> result = [];
             foreach (ImageTile tile in RelevantTiles(viewport)) {
                 BitmapSource image = GetLoadedImage(tile, viewport);
@@ -126,17 +124,10 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         private BitmapSource GetLoadedImage(ImageTile tile, ViewportFoV viewport) {
-            ImageKey desiredKey = new ImageKey(tile, tile.DesiredSize(viewport));
             lock (lockObject) {
-                if (images.TryGetValue(desiredKey, out CacheEntry exact)) {
-                    Touch(exact.Node);
-                    return exact.Image;
-                }
-                foreach (KeyValuePair<ImageKey, CacheEntry> item in images) {
-                    if (ReferenceEquals(item.Key.Tile, tile)) {
-                        Touch(item.Value.Node);
-                        return item.Value.Image;
-                    }
+                if (images.TryGetValue(tile, out CacheEntry loaded)) {
+                    Touch(loaded.Node);
+                    return loaded.Image;
                 }
                 return null;
             }
@@ -147,50 +138,46 @@ namespace NINA.WPF.Base.SkySurvey {
             ViewportFoV viewport,
             IReadOnlySet<ImageTile> activeTiles,
             CancellationToken token) {
-            ImageKey key = new ImageKey(tile, tile.DesiredSize(viewport));
+            int size = tile.DesiredSize(viewport);
             lock (lockObject) {
-                if (images.TryGetValue(key, out CacheEntry loaded)) {
+                if (images.TryGetValue(tile, out CacheEntry loaded) && loaded.Size == size) {
                     Touch(loaded.Node);
                     return false;
                 }
             }
 
-            BitmapSource image = tile.Load(key.Size);
+            BitmapSource image = tile.Load(size);
             if (image is null) {
                 return false;
             }
             token.ThrowIfCancellationRequested();
 
             lock (lockObject) {
-                if (images.TryGetValue(key, out CacheEntry loaded)) {
+                if (images.TryGetValue(tile, out CacheEntry loaded) && loaded.Size == size) {
                     Touch(loaded.Node);
                     return false;
                 }
-
-                ImageKey[] obsoleteResolutions = images.Keys
-                    .Where(x => ReferenceEquals(x.Tile, tile) && x.Size != key.Size)
-                    .ToArray();
-                foreach (ImageKey obsoleteResolution in obsoleteResolutions) {
-                    Remove(obsoleteResolution);
+                if (loaded is not null) {
+                    Remove(tile);
                 }
-                LinkedListNode<ImageKey> node = recentlyUsed.AddFirst(key);
+                LinkedListNode<ImageTile> node = recentlyUsed.AddFirst(tile);
                 long imageBytes = EstimateBytes(image);
-                images.Add(key, new CacheEntry(image, imageBytes, node));
+                images.Add(tile, new CacheEntry(image, size, imageBytes, node));
                 estimatedBytes += imageBytes;
                 Trim(activeTiles);
                 return true;
             }
         }
 
-        private void Touch(LinkedListNode<ImageKey> node) {
+        private void Touch(LinkedListNode<ImageTile> node) {
             recentlyUsed.Remove(node);
             recentlyUsed.AddFirst(node);
         }
 
         private void Trim(IReadOnlySet<ImageTile> activeTiles) {
             while ((images.Count > decodedImageCapacity || estimatedBytes > maximumEstimatedBytes) && images.Count > 1) {
-                LinkedListNode<ImageKey> candidate = recentlyUsed.Last;
-                while (candidate is not null && activeTiles.Contains(candidate.Value.Tile)) {
+                LinkedListNode<ImageTile> candidate = recentlyUsed.Last;
+                while (candidate is not null && activeTiles.Contains(candidate.Value)) {
                     candidate = candidate.Previous;
                 }
                 if (candidate is null) {
@@ -200,10 +187,10 @@ namespace NINA.WPF.Base.SkySurvey {
             }
         }
 
-        private void Remove(ImageKey key) {
-            CacheEntry removed = images[key];
+        private void Remove(ImageTile tile) {
+            CacheEntry removed = images[tile];
             recentlyUsed.Remove(removed.Node);
-            images.Remove(key);
+            images.Remove(tile);
             estimatedBytes -= removed.EstimatedBytes;
         }
 
@@ -262,9 +249,7 @@ namespace NINA.WPF.Base.SkySurvey {
             return (equatorialRotation + tile.Rotation, false);
         }
 
-        private readonly record struct ImageKey(ImageTile Tile, int Size);
-
-        private sealed record CacheEntry(BitmapSource Image, long EstimatedBytes, LinkedListNode<ImageKey> Node);
+        private sealed record CacheEntry(BitmapSource Image, int Size, long EstimatedBytes, LinkedListNode<ImageTile> Node);
 
         private sealed class ImageTile {
             public ImageTile(double rightAscension, double declination, double fieldOfViewWidth, double fieldOfViewHeight, double rotation, string path) {

@@ -31,7 +31,7 @@ using MediaPoint = System.Windows.Point;
 
 namespace NINA.WPF.Base.SkySurvey {
 
-    public sealed class SkyMapRasterRenderer : IDisposable {
+    public sealed class SkyMapRasterRenderer {
         private static readonly DrawingBrush BoundaryBrush = new DrawingBrush(DrawingColor.FromArgb(128, DrawingColor.Khaki));
         private static readonly DrawingBrush CardinalDirectionBrush = new DrawingBrush(DrawingColor.Red);
         private static readonly DrawingBrush ConstellationBrush = new DrawingBrush(DrawingColor.FromArgb(128, 255, 255, 153));
@@ -55,10 +55,8 @@ namespace NINA.WPF.Base.SkySurvey {
         private static readonly DrawingFont GridFont = new DrawingFont("Segoe UI", 7, DrawingFontStyle.Italic);
         private static readonly DrawingFont StarFont = new DrawingFont("Segoe UI", 8, DrawingFontStyle.Italic);
         private readonly int height;
-        private readonly object lockObject = new object();
         private readonly int width;
         private readonly WriteableBitmap writeableBitmap;
-        private bool disposed;
 
         public SkyMapRasterRenderer(int width, int height) {
             this.width = width;
@@ -70,42 +68,40 @@ namespace NINA.WPF.Base.SkySurvey {
             SkyMapScene scene,
             IReadOnlyList<SkyMapImagePlacement> images,
             MediaPoint? telescopePosition) {
-            lock (lockObject) {
-                ObjectDisposedException.ThrowIf(disposed, this);
-                writeableBitmap.Lock();
-                try {
-                    using Bitmap bitmap = new Bitmap(
-                        width,
-                        height,
-                        writeableBitmap.BackBufferStride,
-                        System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
-                        writeableBitmap.BackBuffer);
-                    using Graphics frameGraphics = Graphics.FromImage(bitmap);
-                    frameGraphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                    frameGraphics.Clear(DrawingColor.Transparent);
-                    frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    DrawPaths(frameGraphics, scene.ConstellationBoundaries, BoundaryPen, null);
-                    DrawPaths(frameGraphics, scene.GridLines, GridPen, GridEquatorPen);
-                    DrawConstellations(frameGraphics, scene);
-                    DrawDeepSkyObjects(frameGraphics, scene);
-                    DrawLabels(frameGraphics, scene.Labels);
-                    if (telescopePosition is MediaPoint telescope) {
-                        DrawTelescope(frameGraphics, telescope);
-                    }
-                    if (scene.HorizonMaskAreas.Count > 0) {
-                        frameGraphics.SmoothingMode = SmoothingMode.None;
-                        DrawFilledPaths(frameGraphics, scene.HorizonMaskAreas, HorizonMaskBrush);
-                        frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    }
-                    DrawLines(frameGraphics, scene.HorizonLines, HorizonPen);
-                    DrawCardinalDirectionLabels(frameGraphics, scene.Labels);
-                } finally {
-                    writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
-                    writeableBitmap.Unlock();
+            writeableBitmap.Dispatcher.VerifyAccess();
+            writeableBitmap.Lock();
+            try {
+                using Bitmap bitmap = new Bitmap(
+                    width,
+                    height,
+                    writeableBitmap.BackBufferStride,
+                    System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
+                    writeableBitmap.BackBuffer);
+                using Graphics frameGraphics = Graphics.FromImage(bitmap);
+                frameGraphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                frameGraphics.Clear(DrawingColor.Transparent);
+                frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
+                DrawPaths(frameGraphics, scene.ConstellationBoundaries, BoundaryPen, null);
+                DrawPaths(frameGraphics, scene.GridLines, GridPen, GridEquatorPen);
+                DrawConstellations(frameGraphics, scene);
+                DrawDeepSkyObjects(frameGraphics, scene);
+                DrawLabels(frameGraphics, scene.Labels);
+                if (telescopePosition is MediaPoint telescope) {
+                    DrawTelescope(frameGraphics, telescope);
                 }
-
-                return images.Count == 0 ? writeableBitmap : Composite(images, writeableBitmap);
+                if (scene.HorizonMaskAreas.Count > 0) {
+                    frameGraphics.SmoothingMode = SmoothingMode.None;
+                    DrawFilledPaths(frameGraphics, scene.HorizonMaskAreas, HorizonMaskBrush);
+                    frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
+                }
+                DrawLines(frameGraphics, scene.HorizonLines, HorizonPen);
+                DrawCardinalDirectionLabels(frameGraphics, scene.Labels);
+            } finally {
+                writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
+                writeableBitmap.Unlock();
             }
+
+            return images.Count == 0 ? writeableBitmap : Composite(images, writeableBitmap);
         }
 
         private static void DrawConstellations(Graphics graphics, SkyMapScene scene) {
@@ -295,13 +291,6 @@ namespace NINA.WPF.Base.SkySurvey {
                 "GLOCL" => (DsoResources.GlobularClusterPen, DsoResources.GlobularClusterBrush),
                 _ => (DsoResources.DefaultPen, DsoResources.DefaultBrush)
             };
-        }
-
-        public void Dispose() {
-            if (disposed) {
-                return;
-            }
-            disposed = true;
         }
 
         private static class DsoResources {

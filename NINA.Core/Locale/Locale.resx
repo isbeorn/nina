@@ -174,9 +174,6 @@
   <data name="LblAltairCameraSetup" xml:space="preserve">
     <value>Altair Camera Setup</value>
   </data>
-  <data name="LblAltAzMode" xml:space="preserve">
-    <value>Use Alt/Az Projection</value>
-  </data>
   <data name="LblAltAz" xml:space="preserve">
     <value>Alt/Az</value>
   </data>
@@ -5809,9 +5806,6 @@ The default behavior is to continue on errors, however for some instructions it 
   </data>
   <data name="LblEquatorial" xml:space="preserve">
     <value>Equatorial</value>
-  </data>
-  <data name="LblEquatorialMode" xml:space="preserve">
-    <value>Use Equatorial Projection</value>
   </data>
   <data name="LblForkOnWedge" xml:space="preserve">
     <value>Fork on Wedge</value>

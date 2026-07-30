@@ -16,22 +16,21 @@ using BenchmarkDotNet.Attributes;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Model;
-using NINA.Image.ImageAnalysis;
-using NINA.WPF.Base.Model.FramingAssistant;
 using NINA.WPF.Base.SkySurvey;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
+using System.ComponentModel;
+using System.Windows.Data;
+using System.Threading;
+using System.Windows.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Color = System.Drawing.Color;
-using DrawingPen = System.Drawing.Pen;
+using WpfImage = System.Windows.Controls.Image;
 using Point = System.Windows.Point;
 
 namespace NINA.Benchmark {
 
     [MemoryDiagnoser]
-    [ShortRunJob]
+    [SimpleJob(launchCount: 1, warmupCount: 5, iterationCount: 10)]
     public class SkyMapRenderingBenchmark {
         private const string SharpHorizon = """
             0, 15
@@ -41,23 +40,20 @@ namespace NINA.Benchmark {
             88, 28
             360, 15
             """;
-        private Bitmap bitmap = null!;
         private SkyMapViewportProjection altAzProjection = null!;
         private SkyMapViewportProjection alternateAltAzProjection = null!;
         private SkyMapViewportProjection equatorialObserverProjection = null!;
+        private SkyMapViewportProjection equatorialProjection = null!;
         private FramingRectangle[] alternateCameraRectangles = null!;
         private IReadOnlyList<ConstellationBoundary> boundaries = null!;
         private FramingRectangle[] cameraRectangles = null!;
         private SkyMapCameraRectanglePlacement[] cameraRectanglePlacements = null!;
-        private BitmapSource cachedImage = null!;
+        private BitmapSource[] cachedImages = null!;
         private IReadOnlyList<Constellation> constellations = null!;
         private IReadOnlyList<DeepSkyObject> deepSkyObjects = null!;
-        private Graphics graphics = null!;
         private Point[] imageCenters = null!;
         private Coordinates[] imageCoordinates = null!;
-        private FrameLineMatrix2 legacyGrid = null!;
-        private List<FramingConstellation> legacyConstellations = null!;
-        private List<FramingDSO> legacyDeepSkyObjects = null!;
+        private LegacySkyMapRenderer legacyRenderer = null!;
         private SkyMapSceneBuilder renderer = null!;
         private SkyMapRasterRenderer rasterRenderer = null!;
         private SkyMapScene scene = null!;
@@ -67,6 +63,12 @@ namespace NINA.Benchmark {
         private ViewportFoV wideViewport = null!;
         private SkyMapViewportProjection wideAltAzProjection = null!;
         private bool useAlternateCameraProjection;
+        private WpfImage materializedImage = null!;
+        private MaterializedFrameSource materializedFrameSource = null!;
+        private RenderTargetBitmap materializedTarget = null!;
+        private Dispatcher materializedDispatcher = null!;
+        private SkyMapRasterRenderer materializedRenderer = null!;
+        private Thread materializedThread = null!;
 
         [GlobalSetup]
         public void Setup() {
@@ -76,6 +78,7 @@ namespace NINA.Benchmark {
             viewport = new ViewportFoV(CelestialCoordinates(85, 0), 30, 1200, 800, 0);
             observer = new SkyMapObserverSnapshot(50, new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc), 16.5);
             altAzProjection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            equatorialProjection = new SkyMapViewportProjection(viewport);
             equatorialObserverProjection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.Equatorial, observer);
             alternateAltAzProjection = new SkyMapViewportProjection(
                 new ViewportFoV(CelestialCoordinates(86, 1), 30, 1200, 800, 3),
@@ -100,16 +103,7 @@ namespace NINA.Benchmark {
             cameraRectanglePlacements = cameraRectangles
                 .Select(rectangle => new SkyMapCameraRectanglePlacement(rectangle))
                 .ToArray();
-            cachedImage = BitmapSource.Create(
-                1,
-                1,
-                96,
-                96,
-                PixelFormats.Bgra32,
-                null,
-                new byte[] { 255, 255, 255, 255 },
-                4);
-            cachedImage.Freeze();
+            cachedImages = Enumerable.Range(0, 32).Select(CreatePatternedImage).ToArray();
             Coordinates wideCenter = observer.ToCelestial(new SkyMapHorizontalCoordinates(30, 180));
             wideViewport = new ViewportFoV(wideCenter, 140, 1200, 800, 37);
             wideAltAzProjection = new SkyMapViewportProjection(wideViewport, SkyMapProjectionMode.AltAz, observer);
@@ -127,41 +121,56 @@ namespace NINA.Benchmark {
                 sharpHorizonObserver);
             renderer = new SkyMapSceneBuilder(constellations, deepSkyObjects, boundaries);
             rasterRenderer = new SkyMapRasterRenderer((int)viewport.Width, (int)viewport.Height);
-            scene = renderer.Build(viewport, SkyMapRenderOptions.All);
+            scene = renderer.Build(equatorialProjection, SkyMapRenderOptions.All);
 
-            bitmap = new Bitmap((int)viewport.Width, (int)viewport.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            graphics = Graphics.FromImage(bitmap);
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-            legacyGrid = new FrameLineMatrix2();
-            legacyConstellations = [];
-            legacyDeepSkyObjects = [];
+            legacyRenderer = new LegacySkyMapRenderer(viewport, constellations, deepSkyObjects, boundaries);
+
+            using ManualResetEventSlim materializedReady = new ManualResetEventSlim();
+            materializedThread = new Thread(() => {
+                materializedDispatcher = Dispatcher.CurrentDispatcher;
+                materializedFrameSource = new MaterializedFrameSource();
+                materializedImage = new WpfImage {
+                    Width = viewport.Width,
+                    Height = viewport.Height,
+                    Stretch = Stretch.None,
+                    DataContext = materializedFrameSource
+                };
+                BindingOperations.SetBinding(
+                    materializedImage,
+                    WpfImage.SourceProperty,
+                    new Binding(nameof(MaterializedFrameSource.Frame)));
+                materializedImage.Measure(new System.Windows.Size(viewport.Width, viewport.Height));
+                materializedImage.Arrange(new System.Windows.Rect(0, 0, viewport.Width, viewport.Height));
+                materializedTarget = new RenderTargetBitmap(
+                    (int)viewport.Width,
+                    (int)viewport.Height,
+                    96,
+                    96,
+                    PixelFormats.Pbgra32);
+                materializedRenderer = new SkyMapRasterRenderer((int)viewport.Width, (int)viewport.Height);
+                materializedReady.Set();
+                Dispatcher.Run();
+            });
+            materializedThread.SetApartmentState(ApartmentState.STA);
+            materializedThread.Start();
+            materializedReady.Wait();
         }
 
         [GlobalCleanup]
         public void Cleanup() {
-            graphics.Dispose();
-            bitmap.Dispose();
-            legacyGrid.Dispose();
-            rasterRenderer.Dispose();
+            legacyRenderer.Dispose();
+            materializedDispatcher.InvokeShutdown();
+            materializedThread.Join();
         }
 
         [Benchmark(Baseline = true)]
         public BitmapSource LegacyFullFrame() {
-            graphics.Clear(Color.Transparent);
-            DrawLegacyConstellations();
-            DrawLegacyDeepSkyObjects();
-            DrawLegacyBoundaries();
-            legacyGrid.CalculatePoints(viewport);
-            legacyGrid.Draw(graphics);
-            BitmapSource image = ImageUtility.ConvertBitmap(bitmap, PixelFormats.Bgra32);
-            image.Freeze();
-            return image;
+            return legacyRenderer.Render();
         }
 
         [Benchmark]
         public ImageSource NewFullFrame() {
-            SkyMapScene scene = renderer.Build(viewport, SkyMapRenderOptions.All);
+            SkyMapScene scene = renderer.Build(equatorialProjection, SkyMapRenderOptions.All);
             return rasterRenderer.Render(scene, [], null);
         }
 
@@ -176,7 +185,7 @@ namespace NINA.Benchmark {
 
         [Benchmark]
         public SkyMapScene NewSceneOnly() {
-            return renderer.Build(viewport, SkyMapRenderOptions.All);
+            return renderer.Build(equatorialProjection, SkyMapRenderOptions.All);
         }
 
         [Benchmark]
@@ -187,25 +196,25 @@ namespace NINA.Benchmark {
         [Benchmark]
         [BenchmarkCategory("Layers")]
         public SkyMapScene NewConstellationsLayer() {
-            return renderer.Build(viewport, SkyMapRenderOptions.Stars | SkyMapRenderOptions.Constellations);
+            return renderer.Build(equatorialProjection, SkyMapRenderOptions.Stars | SkyMapRenderOptions.Constellations);
         }
 
         [Benchmark]
         [BenchmarkCategory("Layers")]
         public SkyMapScene NewDeepSkyObjectLayer() {
-            return renderer.Build(viewport, SkyMapRenderOptions.DeepSkyObjects);
+            return renderer.Build(equatorialProjection, SkyMapRenderOptions.DeepSkyObjects);
         }
 
         [Benchmark]
         [BenchmarkCategory("Layers")]
         public SkyMapScene NewBoundaryLayer() {
-            return renderer.Build(viewport, SkyMapRenderOptions.ConstellationBoundaries);
+            return renderer.Build(equatorialProjection, SkyMapRenderOptions.ConstellationBoundaries);
         }
 
         [Benchmark]
         [BenchmarkCategory("Layers")]
         public SkyMapScene NewGridLayer() {
-            return renderer.Build(viewport, SkyMapRenderOptions.EquatorialGrid);
+            return renderer.Build(equatorialProjection, SkyMapRenderOptions.EquatorialGrid);
         }
 
         [Benchmark]
@@ -268,7 +277,20 @@ namespace NINA.Benchmark {
 
         [Benchmark]
         [BenchmarkCategory("Interaction")]
-        public ImageSource NewAltAzDragFrame() {
+        public ImageSource NewAltAzDragFramePreparation() {
+            return PrepareAltAzDragFrame(rasterRenderer);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Interaction")]
+        public void NewAltAzDragFrameMaterialized() {
+            materializedDispatcher.Invoke(() => {
+                materializedFrameSource.Frame = PrepareAltAzDragFrame(materializedRenderer);
+                materializedTarget.Render(materializedImage);
+            });
+        }
+
+        private ImageSource PrepareAltAzDragFrame(SkyMapRasterRenderer frameRenderer) {
             SkyMapViewportProjection projection = useAlternateCameraProjection
                 ? alternateAltAzProjection
                 : altAzProjection;
@@ -288,7 +310,7 @@ namespace NINA.Benchmark {
                     imageCoordinates[i],
                     17,
                     center);
-                images[i] = new SkyMapImagePlacement(cachedImage, center, 80, 80, rotation, flipHorizontally);
+                images[i] = new SkyMapImagePlacement(cachedImages[i], center, 80, 80, rotation, flipHorizontally);
 
                 SkyMapCameraRectanglePlacement placement = cameraRectanglePlacements[i];
                 placement.SetRectangle(rectangles[i]);
@@ -296,65 +318,45 @@ namespace NINA.Benchmark {
                 total += placement.X + placement.Y + placement.Rotation;
             }
             GC.KeepAlive(total);
-            return rasterRenderer.Render(currentScene, images, null);
+            return frameRenderer.Render(currentScene, images, null);
         }
 
-        private void DrawLegacyConstellations() {
-            foreach (Constellation constellation in constellations) {
-                FramingConstellation? visible = legacyConstellations.FirstOrDefault(x => x.Id == constellation.Id);
-                bool isVisible = constellation.Stars.Any(x => viewport.ContainsCoordinates(x.Coords));
-                if (isVisible) {
-                    if (visible is null) {
-                        visible = new FramingConstellation(constellation, viewport);
-                        legacyConstellations.Add(visible);
-                    }
-                    visible.RecalculateConstellationPoints(viewport, true);
-                } else if (visible is not null) {
-                    legacyConstellations.Remove(visible);
+        private static BitmapSource CreatePatternedImage(int index) {
+            const int size = 500;
+            const int bytesPerPixel = 4;
+            byte[] pixels = new byte[size * size * bytesPerPixel];
+            for (int y = 0; y < size; y++) {
+                for (int x = 0; x < size; x++) {
+                    int offset = (y * size + x) * bytesPerPixel;
+                    pixels[offset] = (byte)((x * 3 + index * 17) & 0xff);
+                    pixels[offset + 1] = (byte)((y * 5 + index * 29) & 0xff);
+                    pixels[offset + 2] = (byte)(((x ^ y) + index * 11) & 0xff);
+                    pixels[offset + 3] = 255;
                 }
             }
-            foreach (FramingConstellation constellation in legacyConstellations) {
-                constellation.DrawAnnotations(graphics);
-                constellation.DrawStars(graphics);
-            }
+            BitmapSource image = BitmapSource.Create(
+                size,
+                size,
+                96,
+                96,
+                PixelFormats.Bgra32,
+                null,
+                pixels,
+                size * bytesPerPixel);
+            image.Freeze();
+            return image;
         }
 
-        private void DrawLegacyDeepSkyObjects() {
-            double minimumSize = 3 * Math.Min(viewport.ArcSecWidth, viewport.ArcSecHeight);
-            double maximumSize = AstroUtil.DegreeToArcsec(2 * Math.Max(viewport.HFoV, viewport.VFoV));
-            Dictionary<string, DeepSkyObject> visible = deepSkyObjects
-                .Where(x => x.Size > minimumSize && x.Size < maximumSize)
-                .Where(x => viewport.ContainsCoordinates(x.Coordinates))
-                .ToDictionary(x => x.Id, x => x);
+        private sealed class MaterializedFrameSource : INotifyPropertyChanged {
+            private ImageSource frame = null!;
 
-            for (int i = legacyDeepSkyObjects.Count - 1; i >= 0; i--) {
-                FramingDSO dso = legacyDeepSkyObjects[i];
-                if (visible.Remove(dso.Id)) {
-                    dso.RecalculateTopLeft(viewport);
-                } else {
-                    legacyDeepSkyObjects.RemoveAt(i);
-                }
-            }
-            foreach (DeepSkyObject dso in visible.Values) {
-                legacyDeepSkyObjects.Add(new FramingDSO(dso, viewport));
-            }
-            foreach (FramingDSO dso in legacyDeepSkyObjects) {
-                dso.Draw(graphics);
-            }
-        }
+            public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void DrawLegacyBoundaries() {
-            using DrawingPen pen = new DrawingPen(Color.FromArgb(128, Color.Khaki), 0.5f);
-            foreach (ConstellationBoundary boundary in boundaries) {
-                if (!boundary.Boundaries.Any(viewport.ContainsCoordinates)) {
-                    continue;
-                }
-                PointF[] points = boundary.Boundaries.Select(x => {
-                    Point point = x.XYProjection(viewport);
-                    return new PointF((float)point.X, (float)point.Y);
-                }).ToArray();
-                if (points.Length > 1) {
-                    graphics.DrawPolygon(pen, points);
+            public ImageSource Frame {
+                get => frame;
+                set {
+                    frame = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Frame)));
                 }
             }
         }

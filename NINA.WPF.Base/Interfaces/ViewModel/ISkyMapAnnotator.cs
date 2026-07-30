@@ -17,19 +17,17 @@ using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyTelescope;
-using NINA.WPF.Base.Model.FramingAssistant;
 using NINA.WPF.Base.SkySurvey;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINA.WPF.Base.Interfaces.ViewModel {
 
-    public interface ISkyMapAnnotator {
+    public interface ISkyMapAnnotator : IDisposable {
         event EventHandler ProjectionChanged;
 
         bool AnnotateConstellationBoundaries { get; set; }
@@ -38,34 +36,19 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         bool AnnotateGrid { get; set; }
         DateTime? ObservationTime { get; set; }
         SkyMapProjectionMode ProjectionMode { get; set; }
-        bool IsAltAzProjection { get; }
-        bool IsEquatorialProjection { get; }
         bool ShowHorizon { get; set; }
         bool UseCachedImages { get; set; }
         bool ShowAllCatalogues { get; set; }
         IList<ActiveCatalogue> ActiveCatalogues { get; set; }
-        List<FramingConstellationBoundary> ConstellationBoundariesInViewPort { get; }
-        List<FramingConstellation> ConstellationsInViewport { get; }
-        ICommand DragCommand { get; }
-        List<FramingDSO> DSOInViewport { get; }
         bool DynamicFoV { get; set; }
-        FrameLineMatrix2 FrameLineMatrix { get; }
         bool Initialized { get; }
         ImageSource SkyMapOverlay { get; set; }
         SkyMapViewportProjection Projection { get; }
         ViewportFoV ViewportFoV { get; }
 
-        void CalculateConstellationBoundaries();
-
-        void CalculateFrameLineMatrix();
-
         ViewportFoV ChangeFoV(double vFoVDegrees);
 
-        void ClearFrameLineMatrix();
         void ClearImagesForViewport();
-        void Dispose();
-
-        Dictionary<string, DeepSkyObject> GetDeepSkyObjectsForViewport();
 
         Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CacheSkySurvey cache, CancellationToken ct);
 
