@@ -36,6 +36,8 @@ This allows you to safely return to a stable release if needed.
 - Fixed an issue where custom popout windows and message boxes could briefly render incorrectly when opened.
 - Firmware version is now correctly displayed for certain QHY camera models.
 - Image save failures in the asynchronous save queue now raise a persistent notification and are forwarded into the active sequence failure event stream.
+- QHY cameras now re-apply gain and offset after a read mode change. Previously a frame taken across a read mode switch was exposed with the new mode's power-on defaults while its metadata still recorded the requested values.
+- QHY cameras connected in a read mode that fixes the offset in hardware, such as Linearity HDR, no longer misreport their offset for the remainder of the session.
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
