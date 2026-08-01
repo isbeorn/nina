@@ -53,6 +53,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private CancellationTokenSource downloadExposureTaskCTS;
         private Task<IExposureData> downloadExposureTask;
 
+        /*
+         * The last gain and offset that were successfully commanded, so that a read mode change can put
+         * them back after it reinitializes the camera. Null until something has been commanded, in which
+         * case the value the camera holds just before the reinitialization is the one to keep.
+         */
+        private double? lastRequestedGain;
+        private int? lastRequestedOffset;
+
         public IQhySdk Sdk { get; set; } = QhySdk.Instance;
 
         public QHYCamera(uint cameraIdx, IProfileService profileService, IExposureDataFactory exposureDataFactory) {
@@ -319,6 +327,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 if (Connected && CanSetGain) {
                     if (Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_GAIN, value)) {
                         Info.CurGain = value;
+                        lastRequestedGain = value;
                         RaisePropertyChanged();
                     }
                 }
@@ -379,6 +388,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             set {
                 if (Connected && CanSetOffset) {
                     if (Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, value)) {
+                        lastRequestedOffset = value;
                         RaisePropertyChanged();
                     }
                 }
@@ -476,6 +486,15 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                                 Logger.Debug($"QHYCCD: ReadoutMode: Setting readout mode to {mode} ({modeName})");
 
+                                /*
+                                 * SetQHYCCDReadMode() followed by InitQHYCCD() reinitializes the camera and resets
+                                 * CONTROL_GAIN and CONTROL_OFFSET to the new read mode's power-on defaults, and
+                                 * StartExposure() has already applied them before it gets here. Take them now,
+                                 * while the camera still holds them, and write them back after the reinitialization.
+                                 */
+                                double gainToRestore = lastRequestedGain ?? Gain;
+                                int offsetToRestore = lastRequestedOffset ?? Offset;
+
                                 if ((rv = Sdk.SetReadMode(mode)) != QhySdk.QHYCCD_SUCCESS) {
                                     Logger.Error($"QHYCCD: SetQHYCCDReadMode() failed. Returned {rv}");
                                     return;
@@ -487,6 +506,25 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                                 Sdk.InitCamera();
                                 SetImageResolution();
+
+                                /*
+                                 * A failed restore leaves the sensor at the wrong operating point, so it must
+                                 * abort the exposure rather than silently produce a miscalibrated frame.
+                                 * The error is also logged because PersistSettingsCameraDecorator swallows
+                                 * exceptions from this setter when it restores the read mode on connect.
+                                 */
+                                if (CanSetGain && !Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_GAIN, gainToRestore)) {
+                                    var message = $"QHYCCD: Failed to restore gain {gainToRestore} after switching to readout mode {mode} ({modeName})";
+                                    Logger.Error(message);
+                                    throw new Exception(message);
+                                }
+                                if (CanSetOffset && !Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, offsetToRestore)) {
+                                    var message = $"QHYCCD: Failed to restore offset {offsetToRestore} after switching to readout mode {mode} ({modeName})";
+                                    Logger.Error(message);
+                                    throw new Exception(message);
+                                }
+
+                                Logger.Debug($"QHYCCD: ReadoutMode: Re-applied gain {gainToRestore} and offset {offsetToRestore} after read mode change");
                             }
                         }
                     }
@@ -1915,21 +1953,44 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private void QuirkInflatedOffset() {
             double saveOffset = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET);
 
-            double wantOffset = 1;
-            double gotOffset;
+            /*
+             * Probe with two offsets rather than one. An inflating camera adds the same constant to both.
+             * A camera whose current read mode fixes the offset in hardware - QHY's Linearity HDR does -
+             * ignores both writes and reports the same number twice, which a single probe cannot tell
+             * apart from inflation. Getting that wrong is expensive: InflatedOff is subtracted from every
+             * offset reported afterwards, so one connect in such a read mode would make the driver
+             * misreport the offset for the rest of the session, in every read mode.
+             */
+            double firstProbe = Info.OffMin;
+            double secondProbe = Info.OffMin + Info.OffStep;
 
-            _ = Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, wantOffset);
-            gotOffset = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET) - wantOffset;
+            if (secondProbe <= firstProbe || secondProbe > Info.OffMax) {
+                Logger.Debug($"QHYCCD_QUIRK: Offset range {Info.OffMin}..{Info.OffMax} step {Info.OffStep} leaves no room for two distinct probes; not compensating for Offset inflation");
+                Info.InflatedOff = 0;
+                return;
+            }
 
-            if (gotOffset != 0) {
-                Logger.Debug($"QHYCCD_QUIRK: This camera inflates its Offset by {gotOffset}");
-                Info.InflatedOff = (int)gotOffset;
+            _ = Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, firstProbe);
+            double firstInflation = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET) - firstProbe;
+
+            _ = Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, secondProbe);
+            double secondInflation = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET) - secondProbe;
+
+            if (firstInflation != secondInflation) {
+                Logger.Debug($"QHYCCD_QUIRK: This camera does not apply Offset settings in its current read mode (probes {firstProbe} and {secondProbe} came back off by {firstInflation} and {secondInflation}); not compensating for Offset inflation");
+                Info.InflatedOff = 0;
+            } else if (firstInflation != 0) {
+                Logger.Debug($"QHYCCD_QUIRK: This camera inflates its Offset by {firstInflation}");
+                Info.InflatedOff = (int)firstInflation;
             } else {
                 Info.InflatedOff = 0;
             }
 
-            /* Restore our original gain setting */
-            _ = Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, saveOffset);
+            /*
+             * Restore our original offset setting. saveOffset was read back inflated, so the inflation has
+             * to come off again before writing it or the camera would apply it a second time.
+             */
+            _ = Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET, saveOffset - Info.InflatedOff);
         }
 
         ///<summary>
