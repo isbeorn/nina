@@ -5890,7 +5890,7 @@ The default behavior is to continue on errors, however for some instructions it 
     <value>Full</value>
   </data>
   <data name="LblRotatorRangeFullTooltip" xml:space="preserve">
-    <value>No restrictions for mechanical position</value>
+    <value>Full range of motion allowed, but with minimized movement. Rotator will move to the requested angle or its 180° reciprocal, whichever one is closest to the rotator's current angle.</value>
   </data>
   <data name="LblRotatorRangeHalf" xml:space="preserve">
     <value>180 Degrees</value>
@@ -8078,5 +8078,11 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
     <value>Instructions that run after conditions are safe again.</value>
+  </data>
+  <data name="LblRotatorRangeLiteral" xml:space="preserve">
+    <value>Literal</value>
+  </data>
+  <data name="LblRotatorRangeLiteralTooltip" xml:space="preserve">
+    <value>Full range motion allowed. Rotator will always move to the requested angle.</value>
   </data>
 </root>
