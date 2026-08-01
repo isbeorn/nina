@@ -765,6 +765,69 @@
                             </Grid>
                         </StackPanel>
                     </GroupBox>
+                    <GroupBox
+                        Header="{ns:Loc LblObservation}"
+                        Visibility="{Binding SkyMapAnnotator.DynamicFoV, Converter={StaticResource VisibilityConverter}}">
+                        <StackPanel HorizontalAlignment="Left">
+                            <WrapPanel>
+                                <StackPanel Width="90" Margin="2,0">
+                                    <TextBlock HorizontalAlignment="Center" Text="{ns:Loc LblYear}" />
+                                    <ninactrl:IntStepperControl
+                                        MaxValue="9999"
+                                        MinValue="1"
+                                        Value="{Binding TimeContext.Year, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel Width="90" Margin="2,0">
+                                    <TextBlock HorizontalAlignment="Center" Text="{ns:Loc LblMonth}" />
+                                    <ninactrl:IntStepperControl
+                                        MaxValue="12"
+                                        MinValue="1"
+                                        StepRequested="ObservationMonth_StepRequested"
+                                        Value="{Binding TimeContext.Month, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel Width="90" Margin="2,0">
+                                    <TextBlock HorizontalAlignment="Center" Text="{ns:Loc LblDay}" />
+                                    <ninactrl:IntStepperControl
+                                        MaxValue="{Binding TimeContext.DaysInSelectedMonth}"
+                                        MinValue="1"
+                                        StepRequested="ObservationDay_StepRequested"
+                                        Value="{Binding TimeContext.Day, Mode=TwoWay}" />
+                                </StackPanel>
+                            </WrapPanel>
+                            <WrapPanel Margin="0,4,0,0">
+                                <StackPanel Width="90" Margin="2,0">
+                                    <TextBlock HorizontalAlignment="Center" Text="{ns:Loc LblHour}" />
+                                    <ninactrl:IntStepperControl
+                                        MaxValue="23"
+                                        MinValue="0"
+                                        StepRequested="ObservationHour_StepRequested"
+                                        Value="{Binding TimeContext.Hour, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel Width="90" Margin="2,0">
+                                    <TextBlock HorizontalAlignment="Center" Text="{ns:Loc LblMinutes}" />
+                                    <ninactrl:IntStepperControl
+                                        MaxValue="59"
+                                        MinValue="0"
+                                        StepRequested="ObservationMinute_StepRequested"
+                                        Value="{Binding TimeContext.Minute, Mode=TwoWay}" />
+                                </StackPanel>
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Margin="2"
+                                    VerticalAlignment="Bottom"
+                                    Command="{Binding ResetObservationTimeCommand}"
+                                    ToolTip="{ns:Loc LblResetObservationTimeToCurrentTime}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource ResetSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
+                                </Button>
+                            </WrapPanel>
+                        </StackPanel>
+                    </GroupBox>
                     <GroupBox Header="{ns:Loc LblTargets}" Visibility="{Binding RectangleCalculated, Converter={StaticResource VisibilityConverter}}">
                         <StackPanel Orientation="Vertical">
                             <Grid Margin="0,0,0,6" VerticalAlignment="Center">
@@ -1286,6 +1349,19 @@
                 </i:Interaction.Triggers>
                 <wpfbase:ImageView.ButtonHeaderContent>
                     <StackPanel Margin="0,0,2,0" Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Style
+                                x:Key="SkyMapTextToggleButton"
+                                BasedOn="{StaticResource TB}"
+                                TargetType="ToggleButton">
+                                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundDisabledBrush}" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Resources>
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOpacity}" />
                         <ninactrl:StepperControl
                             Margin="2,0,0,0"
@@ -1338,7 +1414,6 @@
                         <ToggleButton
                             Width="35"
                             Margin="5"
-                            Command="{Binding RefreshSkyMapAnnotationCommand}"
                             IsChecked="{Binding SkyMapAnnotator.AnnotateConstellationBoundaries}">
                             <ToggleButton.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
@@ -1379,7 +1454,6 @@
                         <ToggleButton
                             Width="35"
                             Margin="5"
-                            Command="{Binding RefreshSkyMapAnnotationCommand}"
                             IsChecked="{Binding SkyMapAnnotator.AnnotateConstellations}">
                             <ToggleButton.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
@@ -1420,7 +1494,6 @@
                         <ToggleButton
                             Width="35"
                             Margin="5"
-                            Command="{Binding RefreshSkyMapAnnotationCommand}"
                             IsChecked="{Binding SkyMapAnnotator.AnnotateGrid}">
                             <ToggleButton.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
@@ -1458,10 +1531,23 @@
                                 </Style>
                             </ToggleButton.Style>
                         </ToggleButton>
+                        <ComboBox
+                            Width="100"
+                            Height="25"
+                            Margin="5"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:SkyMapProjectionMode}}}"
+                            SelectedItem="{Binding SkyMapAnnotator.ProjectionMode, Mode=TwoWay}"
+                            Visibility="{Binding SkyMapAnnotator.DynamicFoV, Converter={StaticResource VisibilityConverter}}" />
                         <ToggleButton
                             Width="35"
                             Margin="5"
-                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            Content="H"
+                            IsChecked="{Binding SkyMapAnnotator.ShowHorizon}"
+                            Style="{StaticResource SkyMapTextToggleButton}"
+                            ToolTip="{ns:Loc LblShowHorizon}" />
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
                             IsChecked="{Binding SkyMapAnnotator.AnnotateDSO}">
                             <ToggleButton.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
@@ -1502,7 +1588,6 @@
                         <ToggleButton
                             Width="35"
                             Margin="5"
-                            Command="{Binding RefreshSkyMapAnnotationCommand}"
                             IsChecked="{Binding SkyMapAnnotator.UseCachedImages}"
                             Visibility="{Binding IsX64, Converter={StaticResource VisibilityConverter}}">
                             <ToggleButton.ToolTip>
@@ -1551,7 +1636,7 @@
                                 <s:Int32 x:Key="zero">0</s:Int32>
                             </Grid.Resources>
                             <Grid>
-                                <ItemsControl ItemsSource="{Binding CameraRectangles}" RenderTransformOrigin="0.5,0.5">
+                                <ItemsControl ItemsSource="{Binding ProjectedCameraRectangles}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <Grid />
@@ -1592,25 +1677,12 @@
                                             </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
-                                    <ItemsControl.RenderTransform>
-                                        <RotateTransform Angle="{Binding Rectangle.Rotation}" />
-                                    </ItemsControl.RenderTransform>
-                                    <ItemsControl.Margin>
-                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
-
-                                            <Binding Path="Rectangle.X" />
-                                            <Binding Path="Rectangle.Y" />
-                                            <Binding Source="{StaticResource zero}" />
-                                            <Binding Source="{StaticResource zero}" />
-                                        </MultiBinding>
-                                    </ItemsControl.Margin>
                                 </ItemsControl>
                                 <Rectangle
-                                    Width="{Binding Rectangle.Width}"
-                                    Height="{Binding Rectangle.Height}"
+                                    Width="{Binding ProjectedRectangle.Width}"
+                                    Height="{Binding ProjectedRectangle.Height}"
                                     behaviors:DragCommandBehavior.Drag="True"
                                     behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
-                                    behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
                                     behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
                                     behaviors:MouseWheelCommandBehavior.Enabled="{Binding SkyMapAnnotator.DynamicFoV}"
                                     behaviors:MouseWheelCommandBehavior.MouseWheelCommand="{Binding MouseWheelCommand}"
@@ -1619,13 +1691,13 @@
                                     Stroke="{StaticResource ButtonForegroundBrush}"
                                     StrokeThickness="2">
                                     <Rectangle.RenderTransform>
-                                        <RotateTransform Angle="{Binding Rectangle.Rotation}" />
+                                        <RotateTransform Angle="{Binding ProjectedRectangle.Rotation}" />
                                     </Rectangle.RenderTransform>
                                     <Rectangle.Margin>
                                         <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
-                                            <Binding Path="Rectangle.X" />
-                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Path="ProjectedRectangle.X" />
+                                            <Binding Path="ProjectedRectangle.Y" />
                                             <Binding Source="{StaticResource zero}" />
                                             <Binding Source="{StaticResource zero}" />
                                         </MultiBinding>
@@ -1638,8 +1710,8 @@
                                     <Border.Margin>
                                         <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
-                                            <Binding Path="Rectangle.X" />
-                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Path="ProjectedRectangle.X" />
+                                            <Binding Path="ProjectedRectangle.Y" />
                                             <Binding Source="{StaticResource zero}" />
                                             <Binding Source="{StaticResource zero}" />
                                         </MultiBinding>
@@ -1647,15 +1719,15 @@
                                 </Border>
 
                                 <Grid
-                                    Width="{Binding Rectangle.Width}"
-                                    Height="{Binding Rectangle.Height}"
+                                    Width="{Binding ProjectedRectangle.Width}"
+                                    Height="{Binding ProjectedRectangle.Height}"
                                     IsHitTestVisible="False"
                                     RenderTransformOrigin="0.5,0.5">
                                     <Grid.Margin>
                                         <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
-                                            <Binding Path="Rectangle.X" />
-                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Path="ProjectedRectangle.X" />
+                                            <Binding Path="ProjectedRectangle.Y" />
                                             <Binding Source="{StaticResource zero}" />
                                             <Binding Source="{StaticResource zero}" />
                                         </MultiBinding>

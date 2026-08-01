@@ -43,7 +43,6 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         IDeepSkyObjectSearchVM DeepSkyObjectSearchVM { get; }
         int DownloadProgressValue { get; set; }
         ICommand DragMoveCommand { get; }
-        ICommand DragStartCommand { get; }
         ICommand DragStopCommand { get; }
         DeepSkyObject DSO { get; set; }
         double FieldOfView { get; set; }
@@ -67,7 +66,6 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         double RASeconds { get; set; }
         FramingRectangle Rectangle { get; set; }
         bool RectangleCalculated { get; }
-        ICommand RefreshSkyMapAnnotationCommand { get; }
         ICommand ScrollViewerSizeChangedCommand { get; }
         XElement SelectedImageCacheInfo { get; set; }
         ICommand SetSequencerTargetCommand { get; }

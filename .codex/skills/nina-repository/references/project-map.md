@@ -23,6 +23,7 @@ This is a route sheet. Treat `AGENTS.md`, `CONTRIBUTING.md`, and each project's 
 | MSI packaging | `NINA.Setup` | runtime output layout, `Product.wxs`, shipped files/directories |
 | Burn bootstrapper | `NINA.SetupBundle` | bundle UI/theme, release-note conversion, chained MSI |
 | Tests | `NINA.Test` | folder matching production area, shared bootstrap/assets, x64/native dependencies |
+| Performance benchmarks | `NINA.Benchmark` | affected production project and matching `NINA.Test` regression fixtures |
 
 ## Recurring Checks
 

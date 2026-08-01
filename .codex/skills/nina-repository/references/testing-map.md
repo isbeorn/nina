@@ -83,7 +83,7 @@ Use the solution-root `.runsettings` file for Visual Studio coverage collection.
 | Sequencer drag/drop/view selectors/converters | `NINA.Test.Sequencer.Behaviors`, `NINA.Test.Sequencer.DragDrop`, `NINA.Test.Sequencer.View` | WPF/shared UI tests and app-level view-model checks |
 | App/shared view models | `NINA.Test.ViewModel`, plus specific VM fixtures such as `FocuserVMTest`, `DomeVMTest`, `FlatDeviceVMTest`, `RotatorVMTest`, `AutofocusVMTest` | DI registration, mediator consumers, profile-setting tests |
 | WPF base mediators | `NINA.Test.Mediator` | affected equipment/view-model tests for the concrete mediator consumers |
-| WPF base sky-survey cache/factory | `NINA.Test.SkySurvey` | framing assistant callers and image/file-format tests when image loading behavior changes |
+| WPF base sky-survey cache/factory/offline map | `NINA.Test.SkySurvey` | run `NINA.Benchmark` sky-map comparisons for render-path changes; include framing assistant callers and image/file-format tests when image loading behavior changes |
 | Installer/runtime file changes | no direct unit-test filter | build `NINA`, inspect output layout, check `NINA.Setup/Product.wxs` and `NINA.SetupBundle` if bundle behavior changed |
 | Source generator changes | build `NINA.Sequencer` and affected generated consumers | `NINA.Test.Sequencer.Logic`, serialization, and expression-backed sequence entity tests |
 

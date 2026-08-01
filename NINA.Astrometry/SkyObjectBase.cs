@@ -210,7 +210,7 @@ namespace NINA.Astrometry {
             this._referenceDate = start;
             this._latitude = latitude;
             this._longitude = longitude;
-            this._altitudes = null;
+            Altitudes = null;
         }
 
         public void SetCustomHorizon(CustomHorizon customHorizon) {

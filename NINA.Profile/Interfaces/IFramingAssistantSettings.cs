@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -29,6 +29,8 @@ namespace NINA.Profile.Interfaces {
         bool AnnotateConstellations { get; set; }
         bool AnnotateDSO { get; set; }
         bool AnnotateGrid { get; set; }
+        SkyMapProjectionMode SkyMapProjectionMode { get; set; }
+        bool ShowHorizon { get; set; }
         List<string> DisabledCatalogues { get; set; }
     }
 }

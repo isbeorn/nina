@@ -41,6 +41,8 @@ namespace NINA.Profile {
             annotateConstellations = false;
             annotateDSO = true;
             annotateGrid = true;
+            skyMapProjectionMode = SkyMapProjectionMode.Equatorial;
+            showHorizon = false;
         }
 
         private SkySurveySource lastSelectedImageSource;
@@ -181,6 +183,32 @@ namespace NINA.Profile {
             set {
                 if (annotateGrid != value) {
                     annotateGrid = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private SkyMapProjectionMode skyMapProjectionMode;
+
+        [DataMember]
+        public SkyMapProjectionMode SkyMapProjectionMode {
+            get => skyMapProjectionMode;
+            set {
+                if (skyMapProjectionMode != value) {
+                    skyMapProjectionMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool showHorizon;
+
+        [DataMember]
+        public bool ShowHorizon {
+            get => showHorizon;
+            set {
+                if (showHorizon != value) {
+                    showHorizon = value;
                     RaisePropertyChanged();
                 }
             }

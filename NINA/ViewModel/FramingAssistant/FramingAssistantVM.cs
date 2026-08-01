@@ -92,7 +92,11 @@ namespace NINA.ViewModel.FramingAssistant {
             this.imageDataFactory = imageDataFactory;
             this.windowServiceFactory = windowServiceFactory;
 
+            TimeContext = new FramingAssistantTimeContext();
+            TimeContext.PropertyChanged += TimeContext_PropertyChanged;
             SkyMapAnnotator = new SkyMapAnnotator(telescopeMediator, profileService);
+            SkyMapAnnotator.ObservationTime = TimeContext.SelectedDateTime;
+            SkyMapAnnotator.ProjectionChanged += SkyMapAnnotator_ProjectionChanged;
 
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
@@ -145,7 +149,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
             InitializeCommands();
             Task.Run(() => {
-                this.NighttimeData = this.nighttimeCalculator.Calculate();
+                this.NighttimeData = this.nighttimeCalculator.Calculate(SelectedNightReferenceDate);
                 nighttimeCalculator.OnReferenceDayChanged += NighttimeCalculator_OnReferenceDayChanged;
                 InitializeCache();
                 LoadHipsSkyMaps().Wait();
@@ -156,7 +160,7 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private void NighttimeCalculator_OnReferenceDayChanged(object sender, EventArgs e) {
-            NighttimeData = nighttimeCalculator.Calculate();
+            NighttimeData = nighttimeCalculator.Calculate(SelectedNightReferenceDate);
             RaisePropertyChanged(nameof(NighttimeData));
         }
 
@@ -180,12 +184,11 @@ namespace NINA.ViewModel.FramingAssistant {
             LoadImageCommand = new AsyncCommand<bool>(async () => { return await LoadImage(); });
             CancelLoadImageFromFileCommand = new RelayCommand((object o) => { CancelLoadImage(); });
             CancelLoadImageCommand = new RelayCommand((object o) => { CancelLoadImage(); });
-            DragStartCommand = new RelayCommand(DragStart);
             DragStopCommand = new RelayCommand(DragStop);
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache, (object o) => Cache != null);
             DeleteCacheEntryCommand = new RelayCommand(DeleteCacheEntry, (object o) => Cache != null);
-            RefreshSkyMapAnnotationCommand = new RelayCommand((object o) => SkyMapAnnotator.UpdateSkyMap(), (object o) => SkyMapAnnotator.Initialized);
+            ResetObservationTimeCommand = new RelayCommand((object o) => TimeContext.ResetToCurrentTime());
             MouseWheelCommand = new RelayCommand(MouseWheel);
             GetRotationFromCameraCommand = new AsyncCommand<bool>(GetRotationFromCamera, (object o) => RectangleCalculated && cameraMediator.GetInfo().Connected && cameraMediator.IsFreeToCapture(this));
             CancelGetRotationFromCameraCommand = new RelayCommand(o => { try { getRotationTokenSource?.Cancel(); } catch { } });
@@ -236,7 +239,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
                     dso.RotationPositionAngle = AstroUtil.EuclidianModulus(rect.DSOPositionAngle, 360);
 
-                    dso.SetDateAndPosition(NighttimeCalculator.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
+                    dso.SetDateAndPosition(SelectedNightReferenceDate, profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
 
                     Logger.Info($"Adding target to simple sequencer: {dso.Name} - {dso.Coordinates}");
                     sequenceMediator.AddSimpleTarget(dso);
@@ -313,7 +316,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
             ScrollViewerSizeChangedCommand = new RelayCommand((parameter) => {
                 resizeTimer.Stop();
-                if (ImageParameter != null && FramingAssistantSource == SkySurveySource.SKYATLAS) {
+                if (ImageParameter != null && SkyMapAnnotator.DynamicFoV) {
                     resizeTimer.Start();
                 }
             });
@@ -483,7 +486,8 @@ namespace NINA.ViewModel.FramingAssistant {
                     FieldOfView = Math.Min(200, FieldOfView + stepSize);
                 }
             }
-            CalculateRectangle(SkyMapAnnotator.ChangeFoV(FieldOfView));
+            CalculateRectangle(SkyMapAnnotator.ChangeFoV(FieldOfView), updatePlacements: false);
+            SkyMapAnnotator.UpdateSkyMap();
         }
 
         private async void ResizeTimer_Tick(object sender, EventArgs e) {
@@ -565,7 +569,9 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         // Proxy Property for derotating the image according to the rectangle rotation
-        public double InverseRectangleRotation => RotateSky ? (-Rectangle?.Rotation ?? 0) : 0;
+        public double InverseRectangleRotation => RotateSky
+            ? ProjectedRectangle?.InverseRotation ?? -(Rectangle?.Rotation ?? 0)
+            : 0;
 
         // Proxy Property to be able to recalculate rectangle on change
         public double RectangleTotalRotation {
@@ -696,7 +702,7 @@ namespace NINA.ViewModel.FramingAssistant {
             get => _dSO;
             set {
                 _dSO = value;
-                _dSO?.SetDateAndPosition(NighttimeCalculator.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
+                _dSO?.SetDateAndPosition(SelectedNightReferenceDate, profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                 RaisePropertyChanged();
             }
         }
@@ -717,6 +723,10 @@ namespace NINA.ViewModel.FramingAssistant {
         private IImageDataFactory imageDataFactory;
         private IWindowServiceFactory windowServiceFactory;
 
+        public FramingAssistantTimeContext TimeContext { get; }
+
+        private DateTime SelectedNightReferenceDate => TimeContext.SelectedDate.AddHours(12);
+
         public NighttimeData NighttimeData {
             get => nighttimeData;
             set {
@@ -724,6 +734,23 @@ namespace NINA.ViewModel.FramingAssistant {
                     nighttimeData = value;
                     RaisePropertyChanged();
                 }
+            }
+        }
+
+        private void TimeContext_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName != nameof(FramingAssistantTimeContext.SelectedDateTime)) {
+                return;
+            }
+
+            DateTime selectedDateTime = TimeContext.SelectedDateTime;
+            SkyMapAnnotator.ObservationTime = selectedDateTime;
+            DateTime referenceDate = SelectedNightReferenceDate;
+            if (NighttimeData?.ReferenceDate != referenceDate) {
+                _dSO?.SetDateAndPosition(
+                    referenceDate,
+                    profileService.ActiveProfile.AstrometrySettings.Latitude,
+                    profileService.ActiveProfile.AstrometrySettings.Longitude);
+                NighttimeData = nighttimeCalculator.Calculate(referenceDate);
             }
         }
 
@@ -845,7 +872,7 @@ namespace NINA.ViewModel.FramingAssistant {
             RaisePropertyChanged(nameof(DecMinutes));
             RaisePropertyChanged(nameof(DecSeconds));
             NegativeDec = DSO?.Coordinates?.Dec < 0;
-            NighttimeData = nighttimeCalculator.Calculate();
+            NighttimeData = nighttimeCalculator.Calculate(SelectedNightReferenceDate);
         }
 
         private int _downloadProgressValue;
@@ -927,6 +954,19 @@ namespace NINA.ViewModel.FramingAssistant {
                 RaisePropertyChanged();
             }
         }
+
+        private AsyncObservableCollection<SkyMapCameraRectanglePlacement> projectedCameraRectangles;
+
+        public AsyncObservableCollection<SkyMapCameraRectanglePlacement> ProjectedCameraRectangles {
+            get {
+                if (projectedCameraRectangles == null) {
+                    projectedCameraRectangles = new AsyncObservableCollection<SkyMapCameraRectanglePlacement>();
+                }
+                return projectedCameraRectangles;
+            }
+        }
+
+        public SkyMapCameraRectanglePlacement ProjectedRectangle { get; private set; }
 
         private int horizontalPanels = 1;
 
@@ -1165,8 +1205,8 @@ namespace NINA.ViewModel.FramingAssistant {
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                         }
 
-                        await SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, AstroUtil.ArcminToDegree(skySurveyImage.FoVHeight), ImageParameter.Image.PixelWidth, ImageParameter.Image.PixelHeight, ImageParameter.Rotation, Cache, _loadImageSource.Token);
                         SkyMapAnnotator.DynamicFoV = FramingAssistantSource == SkySurveySource.SKYATLAS;
+                        await SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, AstroUtil.ArcminToDegree(skySurveyImage.FoVHeight), ImageParameter.Image.PixelWidth, ImageParameter.Image.PixelHeight, ImageParameter.Rotation, Cache, _loadImageSource.Token);
                         CalculateRectangle(SkyMapAnnotator.ViewportFoV);
                         if (FramingAssistantSource != SkySurveySource.FILE) {
                             RectangleTotalRotation = profileService.ActiveProfile.FramingAssistantSettings.LastRotationAngle;
@@ -1292,7 +1332,7 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private void CalculateRectangle(ViewportFoV parameter) {
+        private void CalculateRectangle(ViewportFoV parameter, bool updatePlacements = true) {
             if (parameter != null) {
                 var previousRotation = 0d;
                 if (Rectangle != null) {
@@ -1396,33 +1436,74 @@ namespace NINA.ViewModel.FramingAssistant {
                 RectangleCalculated = Rectangle?.Coordinates != null;
 
                 FontSize = Math.Max(1, (int)((height / verticalPanels) * 0.1));
+                if (updatePlacements) {
+                    UpdateCameraRectanglePlacements();
+                }
             }
         }
 
-        private bool cachedImagesActive;
+        private void SkyMapAnnotator_ProjectionChanged(object sender, EventArgs e) {
+            UpdateCameraRectanglePlacements();
+        }
 
-        private void DragStart(object obj) {
-            cachedImagesActive = SkyMapAnnotator.UseCachedImages;
-            SkyMapAnnotator.UseCachedImages = false;
+        private void UpdateCameraRectanglePlacements() {
+            if (Rectangle is null) {
+                return;
+            }
+
+            if (ProjectedRectangle is null) {
+                ProjectedRectangle = new SkyMapCameraRectanglePlacement(Rectangle);
+                RaisePropertyChanged(nameof(ProjectedRectangle));
+            } else {
+                ProjectedRectangle.SetRectangle(Rectangle);
+            }
+
+            if (ProjectedCameraRectangles.Count != CameraRectangles.Count) {
+                ProjectedCameraRectangles.Clear();
+                foreach (FramingRectangle rectangle in CameraRectangles) {
+                    ProjectedCameraRectangles.Add(new SkyMapCameraRectanglePlacement(rectangle));
+                }
+            } else {
+                for (int i = 0; i < CameraRectangles.Count; i++) {
+                    ProjectedCameraRectangles[i].SetRectangle(CameraRectangles[i]);
+                }
+            }
+
+            if (SkyMapAnnotator.DynamicFoV && SkyMapAnnotator.Projection is { } projection) {
+                ProjectedRectangle.Update(
+                    projection,
+                    AstroUtil.EuclidianModulus(360 - Rectangle.TotalRotation, 360));
+                for (int i = 0; i < ProjectedCameraRectangles.Count; i++) {
+                    FramingRectangle rectangle = CameraRectangles[i];
+                    ProjectedCameraRectangles[i].Update(projection, rectangle.DSOPositionAngle);
+                }
+            } else {
+                ProjectedRectangle.Update(Rectangle.X, Rectangle.Y, Rectangle.Rotation);
+                for (int i = 0; i < ProjectedCameraRectangles.Count; i++) {
+                    FramingRectangle rectangle = CameraRectangles[i];
+                    ProjectedCameraRectangles[i].Update(
+                        Rectangle.X + rectangle.X,
+                        Rectangle.Y + rectangle.Y,
+                        Rectangle.Rotation + rectangle.Rotation);
+                }
+            }
+            RaisePropertyChanged(nameof(InverseRectangleRotation));
         }
 
         private void DragStop(object obj) {
-            SkyMapAnnotator.UseCachedImages = cachedImagesActive;
             DSO.Coordinates = Rectangle.Coordinates;
             ImageParameter.Coordinates = SkyMapAnnotator.ViewportFoV.CenterCoordinates;
             RaiseCoordinatesChanged();
-            if (SkyMapAnnotator.UseCachedImages) {
-                DragMove(new DragResult());
-            }
+            SkyMapAnnotator.UpdateSkyMap();
         }
         private void DragMove(object obj) {
             if (RectangleCalculated) {
                 var delta = ((DragResult)obj).Delta;
-                if (FramingAssistantSource == SkySurveySource.SKYATLAS) {
+                if (SkyMapAnnotator.DynamicFoV) {
                     delta = new Vector(-delta.X, -delta.Y);
 
-                    var newCenter = SkyMapAnnotator.ShiftViewport(delta);
-                    CalculateRectangle(SkyMapAnnotator.ViewportFoV);
+                    SkyMapAnnotator.ShiftViewport(delta);
+                    CalculateRectangle(SkyMapAnnotator.ViewportFoV, updatePlacements: false);
 
                     SkyMapAnnotator.UpdateSkyMap();
 
@@ -1489,6 +1570,9 @@ namespace NINA.ViewModel.FramingAssistant {
                         rect.Rotation = panelRotation;
                         rect.DSOPositionAngle = 360 - AstroUtil.EuclidianModulus(dsoRotation, 360);
                     }
+                }
+                if (FramingAssistantSource != SkySurveySource.SKYATLAS) {
+                    UpdateCameraRectanglePlacements();
                 }
             }
         }
@@ -1614,11 +1698,14 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public void Dispose() {
             this.cameraMediator.RemoveConsumer(this);
+            TimeContext.PropertyChanged -= TimeContext_PropertyChanged;
+            TimeContext.Dispose();
+            SkyMapAnnotator.ProjectionChanged -= SkyMapAnnotator_ProjectionChanged;
+            SkyMapAnnotator.Dispose();
         }
 
         public ICommand CoordsFromPlanetariumCommand { get; set; }
         public ICommand CoordsFromScopeCommand { get; set; }
-        public ICommand DragStartCommand { get; private set; }
         public ICommand DragStopCommand { get; private set; }
         public ICommand DragMoveCommand { get; private set; }
         public IAsyncCommand LoadImageCommand { get; private set; }
@@ -1635,7 +1722,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public ICommand ClearCacheCommand { get; private set; }
         public ICommand DeleteCacheEntryCommand { get; private set; }
         public ICommand ScrollViewerSizeChangedCommand { get; private set; }
-        public ICommand RefreshSkyMapAnnotationCommand { get; private set; }
+        public ICommand ResetObservationTimeCommand { get; private set; }
         public ICommand MouseWheelCommand { get; private set; }
         public IAsyncCommand GetRotationFromCameraCommand { get; private set; }
         public ICommand CancelGetRotationFromCameraCommand { get; private set; }
