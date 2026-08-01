@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using NINA.WPF.Base.SkySurvey;
 using System.Globalization;
 using System.IO;
@@ -193,6 +194,236 @@ namespace NINA.Test.SkySurvey {
             rendered.Height.Should().Be(CacheImage.SmallThumbnailSize);
             File.Exists(thumbnailPath).Should().BeTrue();
             cacheImage.Coordinates.Dec.Should().Be(0);
+        }
+
+        [Test]
+        public async Task SkyMapImageCache_WhenViewportMoves_EvictsDecodedImagesBeyondCapacity() {
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage("First", 0, 0, 0, 60, 60, "NASASkySurvey"));
+            cache.SaveImageToCache(CreateSkySurveyImage("Second", 12, 0, 0, 60, 60, "NASASkySurvey"));
+            SkyMapImageCache sut = new SkyMapImageCache(cache, decodedImageCapacity: 1);
+            ViewportFoV firstViewport = new ViewportFoV(
+                new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees),
+                5,
+                400,
+                400,
+                0);
+            ViewportFoV secondViewport = new ViewportFoV(
+                new Coordinates(180, 0, Epoch.J2000, Coordinates.RAType.Degrees),
+                5,
+                400,
+                400,
+                0);
+
+            await sut.LoadAsync(firstViewport, CancellationToken.None);
+            await sut.LoadAsync(secondViewport, CancellationToken.None);
+
+            sut.DecodedImageCount.Should().BeLessThanOrEqualTo(sut.DecodedImageCapacity);
+            sut.GetPlacements(new SkyMapViewportProjection(firstViewport)).Should().BeEmpty();
+            sut.GetPlacements(new SkyMapViewportProjection(secondViewport)).Should().ContainSingle();
+        }
+
+        [Test]
+        public async Task SkyMapImageCache_WhenByteBudgetIsExceeded_EvictsLeastRecentlyUsedImage() {
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage("First", 0, 0, 0, 60, 60, "NASASkySurvey"));
+            cache.SaveImageToCache(CreateSkySurveyImage("Second", 12, 0, 0, 60, 60, "NASASkySurvey"));
+            ViewportFoV firstViewport = new ViewportFoV(
+                new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees),
+                5,
+                400,
+                400,
+                0);
+            ViewportFoV secondViewport = new ViewportFoV(
+                new Coordinates(180, 0, Epoch.J2000, Coordinates.RAType.Degrees),
+                5,
+                400,
+                400,
+                0);
+            SkyMapImageCache probe = new SkyMapImageCache(cache, maximumEstimatedBytes: long.MaxValue);
+            await probe.LoadAsync(firstViewport, CancellationToken.None);
+            long oneImageBudget = probe.EstimatedBytes;
+            SkyMapImageCache sut = new SkyMapImageCache(cache, maximumEstimatedBytes: oneImageBudget);
+
+            await sut.LoadAsync(firstViewport, CancellationToken.None);
+            await sut.LoadAsync(secondViewport, CancellationToken.None);
+
+            sut.EstimatedBytes.Should().BeLessThanOrEqualTo(sut.MaximumEstimatedBytes);
+            sut.DecodedImageCount.Should().Be(1);
+            sut.GetPlacements(new SkyMapViewportProjection(firstViewport)).Should().BeEmpty();
+            sut.GetPlacements(new SkyMapViewportProjection(secondViewport)).Should().ContainSingle();
+        }
+
+        [Test]
+        public async Task SkyMapImageCache_WhenViewportExceedsCapacity_KeepsEveryVisibleImage() {
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage("Left", 23.9, 0, 0, 60, 60, "NASASkySurvey"));
+            cache.SaveImageToCache(CreateSkySurveyImage("Center", 0, 0, 0, 60, 60, "NASASkySurvey"));
+            cache.SaveImageToCache(CreateSkySurveyImage("Right", 0.1, 0, 0, 60, 60, "NASASkySurvey"));
+            SkyMapImageCache sut = new SkyMapImageCache(cache, decodedImageCapacity: 1, maximumEstimatedBytes: 1);
+            ViewportFoV viewport = new ViewportFoV(
+                new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees),
+                5,
+                400,
+                400,
+                0);
+
+            await sut.LoadAsync(viewport, CancellationToken.None);
+
+            sut.GetPlacements(new SkyMapViewportProjection(viewport)).Should().HaveCount(3);
+        }
+
+        [Test]
+        public async Task SkyMapImageCache_WhenPanningRepeatedly_KeepsActiveTilesWithoutAccumulatingHistory() {
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage("First Left", 23.9, 0, 0, 60, 60, "NASASkySurvey"));
+            cache.SaveImageToCache(CreateSkySurveyImage("First Center", 0, 0, 0, 60, 60, "NASASkySurvey"));
+            cache.SaveImageToCache(CreateSkySurveyImage("First Right", 0.1, 0, 0, 60, 60, "NASASkySurvey"));
+            cache.SaveImageToCache(CreateSkySurveyImage("Second Left", 11.9, 0, 0, 60, 60, "NASASkySurvey"));
+            cache.SaveImageToCache(CreateSkySurveyImage("Second Center", 12, 0, 0, 60, 60, "NASASkySurvey"));
+            cache.SaveImageToCache(CreateSkySurveyImage("Second Right", 12.1, 0, 0, 60, 60, "NASASkySurvey"));
+            SkyMapImageCache sut = new SkyMapImageCache(cache, decodedImageCapacity: 1, maximumEstimatedBytes: 1);
+            ViewportFoV firstViewport = new ViewportFoV(
+                new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees),
+                5,
+                400,
+                400,
+                0);
+            ViewportFoV secondViewport = new ViewportFoV(
+                new Coordinates(180, 0, Epoch.J2000, Coordinates.RAType.Degrees),
+                5,
+                400,
+                400,
+                0);
+
+            for (int i = 0; i < 25; i++) {
+                ViewportFoV viewport = i % 2 == 0 ? firstViewport : secondViewport;
+                await sut.LoadAsync(viewport, CancellationToken.None);
+
+                sut.GetPlacements(new SkyMapViewportProjection(viewport)).Should().HaveCount(3);
+                sut.DecodedImageCount.Should().Be(3);
+            }
+        }
+
+        [Test]
+        public async Task SkyMapImageCache_AltAzProjection_PositionsTileAgainstHorizontalGrid() {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(35, 180));
+            Coordinates tileCoordinates = observer.ToCelestial(new SkyMapHorizontalCoordinates(35, 182));
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage(
+                "Horizontal tile",
+                tileCoordinates.RA,
+                tileCoordinates.Dec,
+                0,
+                60,
+                60,
+                "NASASkySurvey"));
+            ViewportFoV viewport = new ViewportFoV(center, 20, 400, 400, 0);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapImageCache sut = new SkyMapImageCache(cache);
+
+            await sut.LoadAsync(viewport, CancellationToken.None);
+            SkyMapImagePlacement placement = sut.GetPlacements(projection).Single();
+
+            placement.Center.Should().Be(projection.Project(tileCoordinates));
+            placement.Center.Y.Should().BeApproximately(viewport.ViewPortCenterPoint.Y, 1);
+        }
+
+        [Test]
+        public async Task SkyMapImageCache_EquatorialProjection_PreservesImageOrientation() {
+            Coordinates tileCoordinates = new Coordinates(5, 20, Epoch.J2000, Coordinates.RAType.Hours);
+            const double imageRotation = 17;
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage(
+                "Oriented equatorial tile",
+                tileCoordinates.RA,
+                tileCoordinates.Dec,
+                imageRotation,
+                60,
+                60,
+                "NASASkySurvey"));
+            ViewportFoV viewport = new ViewportFoV(tileCoordinates, 20, 400, 400, 13);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport);
+            SkyMapImageCache sut = new SkyMapImageCache(cache);
+
+            await sut.LoadAsync(viewport, CancellationToken.None);
+            SkyMapImagePlacement placement = sut.GetPlacements(projection).Single();
+            System.Windows.Point top = projection.Project(OffsetCoordinates(tileCoordinates, -imageRotation));
+            double expectedRotation = AstroUtil.EuclidianModulus(AstroUtil.ToDegree(Math.Atan2(
+                top.Y - placement.Center.Y,
+                top.X - placement.Center.X)) + 90, 360);
+
+            placement.FlipHorizontally.Should().BeFalse();
+            AstroUtil.EuclidianModulus(placement.Rotation, 360).Should().BeApproximately(expectedRotation, 0.05);
+        }
+
+        [TestCase(50, 45, 180, 38, 205, 11)]
+        [TestCase(50, 45, 180, 38, 155, 11)]
+        [TestCase(50, 70, 350, 60, 10, 0)]
+        [TestCase(-33, 45, 0, 30, 25, 27)]
+        [TestCase(-33, 45, 0, 30, 335, 27)]
+        public async Task SkyMapImageCache_AltAzProjection_AlignsBothImageAxesWithCelestialOrientation(
+            double latitude,
+            double centerAltitude,
+            double centerAzimuth,
+            double tileAltitude,
+            double tileAzimuth,
+            double viewportRotation) {
+            DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(latitude, 10, at);
+            Coordinates center = observer.ToCelestial(new SkyMapHorizontalCoordinates(centerAltitude, centerAzimuth));
+            Coordinates tileCoordinates = observer.ToCelestial(new SkyMapHorizontalCoordinates(tileAltitude, tileAzimuth));
+            const double imageRotation = 17;
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage(
+                "Oriented horizontal tile",
+                tileCoordinates.RA,
+                tileCoordinates.Dec,
+                imageRotation,
+                60,
+                60,
+                "NASASkySurvey"));
+            ViewportFoV viewport = new ViewportFoV(center, 40, 800, 600, viewportRotation);
+            SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport, SkyMapProjectionMode.AltAz, observer);
+            SkyMapImageCache sut = new SkyMapImageCache(cache);
+
+            await sut.LoadAsync(viewport, CancellationToken.None);
+            SkyMapImagePlacement placement = sut.GetPlacements(projection).Single();
+            System.Windows.Point top = projection.Project(OffsetCoordinates(tileCoordinates, -imageRotation));
+            System.Windows.Point right = projection.Project(OffsetCoordinates(tileCoordinates, 270 - imageRotation));
+            double expectedTopRotation = AstroUtil.EuclidianModulus(AstroUtil.ToDegree(Math.Atan2(
+                top.Y - placement.Center.Y,
+                top.X - placement.Center.X)) + 90, 360);
+            double expectedRightAngle = AstroUtil.EuclidianModulus(AstroUtil.ToDegree(Math.Atan2(
+                right.Y - placement.Center.Y,
+                right.X - placement.Center.X)), 360);
+            double actualRightAngle = AstroUtil.EuclidianModulus(
+                placement.Rotation + (placement.FlipHorizontally ? 180 : 0),
+                360);
+
+            AstroUtil.EuclidianModulus(placement.Rotation, 360).Should().BeApproximately(expectedTopRotation, 0.05);
+            actualRightAngle.Should().BeApproximately(expectedRightAngle, 0.05);
+        }
+
+        private static Coordinates OffsetCoordinates(Coordinates coordinates, double positionAngle) {
+            const double referenceDistance = 0.01;
+            double longitude = AstroUtil.ToRadians(coordinates.RADegrees);
+            double latitude = AstroUtil.ToRadians(coordinates.Dec);
+            double bearing = AstroUtil.ToRadians(positionAngle);
+            double distance = AstroUtil.ToRadians(referenceDistance);
+            double referenceLatitude = Math.Asin(
+                Math.Sin(latitude) * Math.Cos(distance)
+                + Math.Cos(latitude) * Math.Sin(distance) * Math.Cos(bearing));
+            double referenceLongitude = longitude + Math.Atan2(
+                Math.Sin(bearing) * Math.Sin(distance) * Math.Cos(latitude),
+                Math.Cos(distance) - Math.Sin(latitude) * Math.Sin(referenceLatitude));
+            return new Coordinates(
+                AstroUtil.EuclidianModulus(AstroUtil.ToDegree(referenceLongitude), 360),
+                AstroUtil.ToDegree(referenceLatitude),
+                Epoch.J2000,
+                Coordinates.RAType.Degrees);
         }
 
         private static SkySurveyImage CreateSkySurveyImage(string name, double raHours, double decDegrees, double rotation, double fovWidth, double fovHeight, string source) {

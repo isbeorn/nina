@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -14,154 +14,68 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Astrometry;
+using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.Image.ImageAnalysis;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Interfaces.ViewModel;
-using NINA.WPF.Base.Model.FramingAssistant;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using Color = System.Drawing.Color;
-using Pen = System.Drawing.Pen;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using System.Windows.Threading;
+using Point = System.Windows.Point;
 
 namespace NINA.WPF.Base.SkySurvey {
 
     public partial class SkyMapAnnotator : BaseINPC, ITelescopeConsumer, ISkyMapAnnotator {
         private readonly DatabaseInteraction dbInstance;
-        public ViewportFoV ViewportFoV { get; private set; }
-        private List<Constellation> dbConstellations;
-        private Dictionary<string, DeepSkyObject> dbDSOs;
-        private List<CacheImage> cacheImages;
-        private Bitmap img;
-        private Bitmap dsoImageBuffer;
-        private Graphics g;
-        private Graphics dsoImageGraphics;
-        private ITelescopeMediator telescopeMediator;
         private readonly IProfileService profileService;
+        private readonly ITelescopeMediator telescopeMediator;
         private CacheSkySurvey cache;
+        private IReadOnlyList<ConstellationBoundary> constellationBoundaries = [];
+        private IReadOnlyList<Constellation> dbConstellations = [];
+        private IReadOnlyDictionary<string, DeepSkyObject> dbDeepSkyObjects = new Dictionary<string, DeepSkyObject>();
+        private CancellationTokenSource imageLoadCancellation;
+        private SkyMapImageCache imageCache;
+        private int renderVersion;
+        private readonly DispatcherTimer observerRefreshTimer;
+        private SkyMapObserverSnapshot observerSnapshot;
+        private SkyMapRasterRenderer rasterRenderer;
+        private SkyMapSceneBuilder sceneBuilder;
+        private bool telescopeConnected;
+        private bool suppressRender;
+        private Coordinates telescopeCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
 
         public SkyMapAnnotator() {
             dbInstance = new DatabaseInteraction();
-            DSOInViewport = new List<FramingDSO>();
-            ConstellationsInViewport = new List<FramingConstellation>();
-            FrameLineMatrix = new FrameLineMatrix2();
-            ConstellationBoundaries = new Dictionary<string, ConstellationBoundary>();
-            cacheImages = new List<CacheImage>();
-            annotateDSO = true;
-            annotateGrid = true;
+            AnnotateDSO = true;
+            AnnotateGrid = true;
         }
 
         public SkyMapAnnotator(ITelescopeMediator mediator, IProfileService profileService) : this() {
-            this.telescopeMediator = mediator;
+            telescopeMediator = mediator;
             this.profileService = profileService;
             LoadSettings();
+            profileService.ProfileChanged += ProfileService_ProfileChanged;
+            profileService.LocationChanged += ProfileService_LocationOrHorizonChanged;
+            profileService.HorizonChanged += ProfileService_LocationOrHorizonChanged;
+            observerRefreshTimer = new DispatcherTimer(DispatcherPriority.Background) {
+                Interval = TimeSpan.FromSeconds(10)
+            };
+            observerRefreshTimer.Tick += ObserverRefreshTimer_Tick;
+            observerRefreshTimer.Start();
         }
 
-        public async Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CacheSkySurvey cache, CancellationToken ct) {
-            telescopeMediator?.RemoveConsumer(this);
-
-            dsoImageGraphics?.Dispose();
-            g?.Dispose();
-            img?.Dispose();
-            dsoImageBuffer?.Dispose();
-
-            this.cache = cache;
-
-            ViewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
-
-            if (dbConstellations == null) {
-                dbConstellations = await dbInstance.GetConstellationsWithStars(ct);
-            }
-
-            if (dbDSOs == null) {
-                dbDSOs = (await dbInstance.GetDeepSkyObjects(string.Empty, null, new DatabaseInteraction.DeepSkyObjectSearchParams(), ct)).ToDictionary(x => x.Id, y => y);
-            }
-
-            if (ActiveCatalogues == null) {
-                var catalogues = await dbInstance.GetCatalogues(50, ct);
-                var settings = profileService.ActiveProfile.FramingAssistantSettings;
-
-                ActiveCatalogues = catalogues?.Select(x => {
-
-                    bool isActive = !settings.DisabledCatalogues.Contains(x);
-                    var activeCat = new ActiveCatalogue(x, isActive);
-
-                    activeCat.PropertyChanged += (s, e) => {
-                        if (e.PropertyName == nameof(ActiveCatalogue.Active)) {
-                            SaveDisabledCatalogues();
-                            UpdateSkyMap();
-                        }
-                    };
-
-                    return activeCat;
-                }).ToList() ?? new List<ActiveCatalogue>();
-
-                UpdateShowAllCataloguesState();
-            }
-
-            ConstellationsInViewport.Clear();
-            ClearFrameLineMatrix();
-
-            img = new Bitmap((int)ViewportFoV.Width, (int)ViewportFoV.Height, PixelFormat.Format32bppArgb);
-            dsoImageBuffer = new Bitmap((int)ViewportFoV.Width, (int)ViewportFoV.Height, PixelFormat.Format32bppArgb);
-
-            dsoImageGraphics = Graphics.FromImage(dsoImageBuffer);
-            dsoImageGraphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-            dsoImageGraphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-            g = Graphics.FromImage(img);
-            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-
-            FrameLineMatrix.CalculatePoints(ViewportFoV);
-            if (ConstellationBoundaries.Count == 0) {
-                ConstellationBoundaries = await GetConstellationBoundaries();
-            }
-
-            telescopeMediator?.RegisterConsumer(this);
-            Initialized = true;
-
-            firstDraw = true;
-            UpdateSkyMap();
-            firstDraw = false;
-        }
-
-        public ViewportFoV ChangeFoV(double vFoVDegrees) {
-            ConstellationsInViewport.Clear();
-            ClearFrameLineMatrix();
-            ViewportFoV = new ViewportFoV(ViewportFoV.CenterCoordinates, vFoVDegrees, ViewportFoV.Width, ViewportFoV.Height, ViewportFoV.Rotation);
-
-            FrameLineMatrix.CalculatePoints(ViewportFoV);
-
-            UpdateSkyMap();
-
-            return ViewportFoV;
-        }
-
-        public ICommand DragCommand { get; private set; }
-
-        public FrameLineMatrix2 FrameLineMatrix { get; private set; }
-
-        public List<FramingDSO> DSOInViewport { get; private set; }
-
+        public ViewportFoV ViewportFoV { get; private set; }
+        public SkyMapViewportProjection Projection { get; private set; }
+        public event EventHandler ProjectionChanged;
         [ObservableProperty]
         private bool initialized;
-
-        public List<FramingConstellation> ConstellationsInViewport { get; private set; }
 
         [ObservableProperty]
         private IList<ActiveCatalogue> activeCatalogues;
@@ -172,11 +86,25 @@ namespace NINA.WPF.Base.SkySurvey {
         [ObservableProperty]
         private bool dynamicFoV;
 
+        public SkyMapProjectionMode EffectiveProjectionMode => DynamicFoV
+            ? ProjectionMode
+            : SkyMapProjectionMode.Equatorial;
+
         [ObservableProperty]
         private bool annotateConstellations;
 
         [ObservableProperty]
         private bool annotateGrid;
+
+        [ObservableProperty]
+        private DateTime? observationTime;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(EffectiveProjectionMode))]
+        private SkyMapProjectionMode projectionMode;
+
+        [ObservableProperty]
+        private bool showHorizon;
 
         [ObservableProperty]
         private bool annotateDSO;
@@ -185,451 +113,406 @@ namespace NINA.WPF.Base.SkySurvey {
         private bool useCachedImages;
 
         [ObservableProperty]
-        private BitmapSource skyMapOverlay;
+        private ImageSource skyMapOverlay;
 
         [ObservableProperty]
         private bool showAllCatalogues = true;
-        private List<string> DisabledCatalogues =>
-               profileService.ActiveProfile.FramingAssistantSettings?.DisabledCatalogues ?? new List<string>();
 
-        partial void OnAnnotateConstellationBoundariesChanged(bool oldValue, bool newValue) {
-            if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries != newValue)
-                profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries = newValue;
-        }
+        private IReadOnlyList<string> DisabledCatalogues =>
+            profileService?.ActiveProfile?.FramingAssistantSettings?.DisabledCatalogues ?? [];
 
-        partial void OnAnnotateConstellationsChanged(bool oldValue, bool newValue) {
-            if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellations != newValue)
-                profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellations = newValue;
-        }
+        private bool UsesObserver => EffectiveProjectionMode == SkyMapProjectionMode.AltAz || ShowHorizon;
 
-        partial void OnAnnotateDSOChanged(bool oldValue, bool newValue) {
-            if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateDSO != newValue)
-                profileService.ActiveProfile.FramingAssistantSettings.AnnotateDSO = newValue;
-        }
+        public async Task Initialize(
+            Coordinates centerCoordinates,
+            double vFoVDegrees,
+            double imageWidth,
+            double imageHeight,
+            double imageRotation,
+            CacheSkySurvey cache,
+            CancellationToken token) {
+            telescopeMediator?.RemoveConsumer(this);
+            CancelImageLoad();
+            this.cache = cache;
+            ViewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
 
-        partial void OnAnnotateGridChanged(bool oldValue, bool newValue) {
-            if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid != newValue)
-                profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid = newValue;
-        }
-
-        partial void OnShowAllCataloguesChanged(bool oldValue, bool newValue) {
-            if (ActiveCatalogues == null) return;
-
-            foreach (var catalogue in ActiveCatalogues) {
-                catalogue.Active = newValue;
+            if (dbConstellations.Count == 0) {
+                dbConstellations = await dbInstance.GetConstellationsWithStars(token);
+            }
+            if (dbDeepSkyObjects.Count == 0) {
+                dbDeepSkyObjects = (await dbInstance.GetDeepSkyObjects(
+                    string.Empty,
+                    null,
+                    new DatabaseInteraction.DeepSkyObjectSearchParams(),
+                    token)).ToDictionary(x => x.Id, x => x);
+            }
+            if (constellationBoundaries.Count == 0) {
+                constellationBoundaries = await dbInstance.GetConstellationBoundaries(token);
+            }
+            if (ActiveCatalogues is null) {
+                await LoadCatalogues(token);
             }
 
-            SaveDisabledCatalogues();
+            sceneBuilder ??= new SkyMapSceneBuilder(
+                dbConstellations,
+                dbDeepSkyObjects.Values.ToArray(),
+                constellationBoundaries);
+            rasterRenderer = new SkyMapRasterRenderer((int)ViewportFoV.Width, (int)ViewportFoV.Height);
+            imageCache = new SkyMapImageCache(cache);
+
+            telescopeMediator?.RegisterConsumer(this);
+            Initialized = true;
             UpdateSkyMap();
         }
-        private void SaveDisabledCatalogues() {
 
-            if (ActiveCatalogues == null) return;
-
-            var settings = profileService.ActiveProfile.FramingAssistantSettings;
-            settings.DisabledCatalogues = ActiveCatalogues
-                .Where(x => !x.Active)
-                .Select(x => x.Name)
-                .ToList();
-        }
-        private void UpdateShowAllCataloguesState() {
-
-            if (ActiveCatalogues == null || !ActiveCatalogues.Any()) return;
-
-            bool newState;
-            if (ActiveCatalogues.All(c => c.Active)) {
-                newState = true;
-            } else if (ActiveCatalogues.All(c => !c.Active)) {
-                newState = false;
-            } else {
-                return;
-            }
-
-            if (ShowAllCatalogues != newState) {
-                ShowAllCatalogues = newState;
-            }
-        }
-
-        private void LoadSettings() {
-            AnnotateConstellationBoundaries =
-                profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries;
-            AnnotateConstellations = profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellations;
-            AnnotateDSO = profileService.ActiveProfile.FramingAssistantSettings.AnnotateDSO;
-            AnnotateGrid = profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid;
-        }
-
-        /// <summary>
-        /// Query for skyobjects for a reference coordinate that overlap the current viewport
-        /// </summary>
-        /// <returns></returns>
-        public Dictionary<string, DeepSkyObject> GetDeepSkyObjectsForViewport() {
-            var dsoList = new Dictionary<string, DeepSkyObject>();
-
-            double minSize = 0;
-            if (!(Math.Min(ViewportFoV.HFoV, ViewportFoV.VFoV) < 10)) {
-                // Stuff has to be at least 3 pixel wide
-                minSize = 3 * Math.Min(ViewportFoV.ArcSecWidth, ViewportFoV.ArcSecHeight);
-            }
-            var maxSize = AstroUtil.DegreeToArcsec(2 * Math.Max(ViewportFoV.HFoV, ViewportFoV.VFoV));
-
-            var filteredCatalogues = ActiveCatalogues.Where(x => !x.Active).Select(x => x.Name).ToList();
-
-            return dbDSOs
-                .Where(d => (d.Value.Size != null && d.Value.Size > minSize && d.Value.Size < maxSize) || ViewportFoV.VFoV <= 10)
-                .Where(dso => !filteredCatalogues.Any(dso.Value.Name.StartsWith))
-                .Where(dso => ViewportFoV.ContainsCoordinates(dso.Value.Coordinates))
-                .ToDictionary(x => x.Key, y => y.Value);
-        }
-
-        public void ClearImagesForViewport() {
-            if (cacheImages != null) {
-                foreach (var image in cacheImages) {
-                    image.Dispose();
-                }
-                cacheImages.Clear();
-            }
-        }
-
-        /// <summary>
-        /// Query for skyobjects for a reference coordinate that overlap the current viewport
-        /// </summary>
-        /// <returns></returns>
-        private List<CacheImage> GetCacheImagesForViewport() {
-            using (MyStopWatch.Measure()) {
-                double minSize = 6;
-                double maxSize = 600;
-
-                var l = new List<CacheImage>();
-                foreach (var entry in cache.Cache.Elements("Image")) {
-                    double fovW = double.Parse(entry.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
-                    double fovH = double.Parse(entry.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
-
-                    if (fovW < minSize || fovW > maxSize) {
-                        continue;
-                    }
-
-                    double ra = double.Parse(entry.Attribute("RA").Value, CultureInfo.InvariantCulture);
-                    double dec = double.Parse(entry.Attribute("Dec").Value, CultureInfo.InvariantCulture);
-                    double rotation = double.Parse(entry.Attribute("Rotation").Value, CultureInfo.InvariantCulture);
-                    string path = Path.Combine(cache.framingAssistantCachePath, entry.Attribute("FileName").Value);
-
-                    if (AstroUtil.ArcminToArcsec(fovW) > minSize && AstroUtil.ArcminToArcsec(fovH) > minSize) {
-                        var existing = cacheImages.FirstOrDefault(x => x.Coordinates.RA == ra && x.Coordinates.Dec == dec);
-                        if (existing == null) {
-                            existing = new CacheImage(ra, dec, fovW, fovH, rotation, path);
-                            cacheImages.Add(existing);
-                        }
-                        l.Add(existing);
-                    }
-                }
-
-                l = l.Where(x => {
-                    var distance = x.Coordinates - ViewportFoV.CenterCoordinates;
-                    return distance.Distance.Degree < Math.Max(ViewportFoV.HFoV, ViewportFoV.VFoV) + AstroUtil.ArcminToDegree(Math.Max(x.FoVH, x.FoVW));
-                })
-                    //Order in descending order so that smallest field of view is drawn on top, as it most likely contains most details
-                    .OrderByDescending(x => x.FoVW)
-                    .ToList();
-
-                return l;
-            }
+        public ViewportFoV ChangeFoV(double vFoVDegrees) {
+            ViewportFoV = new ViewportFoV(
+                ViewportFoV.CenterCoordinates,
+                vFoVDegrees,
+                ViewportFoV.Width,
+                ViewportFoV.Height,
+                ViewportFoV.Rotation);
+            return ViewportFoV;
         }
 
         public Coordinates ShiftViewport(Vector delta) {
-            ViewportFoV.Shift(delta);
-
+            SkyMapObserverSnapshot observer = UsesObserver ? CreateObserverSnapshot() : null;
+            SkyMapViewportProjection projection = GetProjection(observer, out _);
+            Coordinates center = projection.ShiftCenter(delta);
+            ViewportFoV = new ViewportFoV(
+                center,
+                ViewportFoV.VFoV,
+                ViewportFoV.Width,
+                ViewportFoV.Height,
+                ViewportFoV.Rotation);
             return ViewportFoV.CenterCoordinates;
         }
 
-        public void ClearFrameLineMatrix() {
-            FrameLineMatrix.RAPoints.Clear();
-            FrameLineMatrix.DecPoints.Clear();
-        }
-
-        public void CalculateFrameLineMatrix() {
-            FrameLineMatrix.CalculatePoints(ViewportFoV);
-        }
-
-        private Dictionary<string, ConstellationBoundary> ConstellationBoundaries;
-
-        private async Task<Dictionary<string, ConstellationBoundary>> GetConstellationBoundaries() {
-            var dic = new Dictionary<string, ConstellationBoundary>();
-            var list = await dbInstance.GetConstellationBoundaries(new CancellationToken());
-            foreach (var item in list) {
-                dic.Add(item.Name, item);
-            }
-            return dic;
-        }
-
-        public List<FramingConstellationBoundary> ConstellationBoundariesInViewPort { get; private set; } = new List<FramingConstellationBoundary>();
-
-        public void CalculateConstellationBoundaries() {
-            ConstellationBoundariesInViewPort.Clear();
-            foreach (var boundary in ConstellationBoundaries) {
-                var frameLine = new FramingConstellationBoundary();
-                if (boundary.Value.Boundaries.Any((x) => ViewportFoV.ContainsCoordinates(x))) {
-                    foreach (var coordinates in boundary.Value.Boundaries) {
-                        var point = coordinates.XYProjection(ViewportFoV);
-                        frameLine.Points.Add(new PointF((float)point.X, (float)point.Y));
-                    }
-
-                    ConstellationBoundariesInViewPort.Add(frameLine);
-                }
-            }
-        }
-
-        private void UpdateAndAnnotateDSOs() {
-            var allGatheredDSO = GetDeepSkyObjectsForViewport();
-
-            var existingDSOs = new List<string>();
-            for (int i = DSOInViewport.Count - 1; i >= 0; i--) {
-                var dso = DSOInViewport[i];
-                if (allGatheredDSO.ContainsKey(dso.Id)) {
-                    dso.RecalculateTopLeft(ViewportFoV);
-                    existingDSOs.Add(dso.Id);
-                } else {
-                    DSOInViewport.RemoveAt(i);
-                }
-            }
-
-            var dsosToAdd = allGatheredDSO.Where(x => !existingDSOs.Any(y => y == x.Value.Id));
-            foreach (var dso in dsosToAdd) {
-                DSOInViewport.Add(new FramingDSO(dso.Value, ViewportFoV));
-            }
-
-            foreach (var dso in DSOInViewport) {
-                dso.Draw(g);
-            }
-        }
-
-        private void DrawStars() {
-            foreach (var constellation in ConstellationsInViewport) {
-                constellation.DrawStars(g);
-            }
-        }
-
-        private void UpdateAndAnnotateConstellations(bool drawAnnotations) {
-            foreach (var constellation in dbConstellations) {
-                var viewPortConstellation = ConstellationsInViewport.FirstOrDefault(x => x.Id == constellation.Id);
-
-                var isInViewport = false;
-                foreach (var star in constellation.Stars) {
-                    if (!ViewportFoV.ContainsCoordinates(star.Coords)) {
-                        continue;
-                    }
-
-                    isInViewport = true;
-                    break;
-                }
-
-                if (isInViewport) {
-                    if (viewPortConstellation == null) {
-                        var framingConstellation = new FramingConstellation(constellation, ViewportFoV);
-                        framingConstellation.RecalculateConstellationPoints(ViewportFoV, drawAnnotations);
-                        ConstellationsInViewport.Add(framingConstellation);
-                    } else {
-                        viewPortConstellation.RecalculateConstellationPoints(ViewportFoV, drawAnnotations);
-                    }
-                } else if (viewPortConstellation != null) {
-                    ConstellationsInViewport.Remove(viewPortConstellation);
-                }
-            }
-
-            if (drawAnnotations) {
-                foreach (var constellation in ConstellationsInViewport) {
-                    constellation.DrawAnnotations(g);
-                }
-            }
-        }
-
-        private void UpdateAndDrawConstellationBoundaries() {
-            CalculateConstellationBoundaries();
-            foreach (var constellationBoundary in ConstellationBoundariesInViewPort) {
-                constellationBoundary.Draw(g);
-            }
-        }
-
-        private void UpdateAndDrawGrid() {
-            ClearFrameLineMatrix();
-            CalculateFrameLineMatrix();
-
-            FrameLineMatrix.Draw(g);
-        }
-
-        private Task DrawBufferedDSOImages(CancellationToken ct) {
-            return Task.Run(async () => {
-                try {
-                    var relevantImages = GetCacheImagesForViewport();
-                    foreach (var cacheImage in relevantImages) {
-                        ct.ThrowIfCancellationRequested();
-                        if (File.Exists(cacheImage.ImagePath)) {
-                            var image = cacheImage.GetImageForScale(ViewportFoV.HFoV, ViewportFoV.Width);
-                            var sourceR = new RectangleF(0, 0, image.Width, image.Height);
-
-                            var imageResW = AstroUtil.ArcminToArcsec(cacheImage.FoVW) / image.Width;
-                            var imageResH = AstroUtil.ArcminToArcsec(cacheImage.FoVH) / image.Height;
-                            var conversionW = imageResW / ViewportFoV.ArcSecWidth;
-                            var conversionH = imageResH / ViewportFoV.ArcSecHeight;
-                            var dest = new RectangleF(-(float)(image.Width * conversionW / 2f), -(float)(image.Height * conversionH / 2f), (float)(image.Width * conversionW), (float)(image.Height * conversionH));
-
-                            var center = cacheImage.Coordinates.XYProjection(ViewportFoV);
-
-                            var panelDeltaX = center.X - ViewportFoV.ViewPortCenterPoint.X;
-                            var panelDeltaY = center.Y - ViewportFoV.ViewPortCenterPoint.Y;
-                            var referenceCenter = ViewportFoV.CenterCoordinates.Shift(panelDeltaX < 1E-10 ? 1 : 0, panelDeltaY, ViewportFoV.Rotation, ViewportFoV.ArcSecWidth, ViewportFoV.ArcSecHeight);
-
-                            var rotation = -(90 - ((float)AstroUtil.CalculatePositionAngle(referenceCenter.RADegrees, cacheImage.Coordinates.RADegrees, referenceCenter.Dec, cacheImage.Coordinates.Dec)));
-                            if (panelDeltaX < 0) {
-                                rotation += 180;
-                            }
-                            if (cacheImage.Coordinates.Dec < 0 || (referenceCenter.Dec < 0 && cacheImage.Coordinates.Dec >= 0)) {
-                                rotation += 180;
-                            }
-
-                            rotation += (float)cacheImage.Rotation;
-
-                            dsoImageGraphics.TranslateTransform((float)center.X, (float)center.Y);
-                            dsoImageGraphics.RotateTransform(rotation);
-                            dsoImageGraphics.DrawImage(image, dest, sourceR, GraphicsUnit.Pixel);
-                            dsoImageGraphics.ResetTransform();
-                        }
-                    }
-                    ct.ThrowIfCancellationRequested();
-
-                    Render();
-                } catch (Exception) {
-                } finally {
-                    renderCts?.Cancel();
-                }
-            });
-        }
-
-        private void Render() {
-            try {
-                g.Clear(Color.Transparent);
-
-                if (!DllLoader.IsX86() && UseCachedImages) {
-                    g.DrawImage((Bitmap)dsoImageBuffer.Clone(), 0, 0);
-                }
-
-                if (!AnnotateConstellations && AnnotateDSO || AnnotateConstellations) {
-                    UpdateAndAnnotateConstellations(AnnotateConstellations);
-                    if (!AnnotateDSO) {
-                        DrawStars();
-                    }
-                }
-
-                if (AnnotateDSO) {
-                    UpdateAndAnnotateDSOs();
-                    DrawStars();
-                }
-
-                if (AnnotateConstellationBoundaries) {
-                    UpdateAndDrawConstellationBoundaries();
-                }
-
-                if (AnnotateGrid) {
-                    UpdateAndDrawGrid();
-                }
-
-                if (telescopeConnected) {
-                    DrawTelescope();
-                }
-                var source = ImageUtility.ConvertBitmap(img, PixelFormats.Bgra32);
-                source.Freeze();
-                SkyMapOverlay = source;
-            } catch (Exception) {
-            }
-        }
-
-        private PeriodicTimer renderTimer;
-        private CancellationTokenSource renderCts;
-        private Task renderTask;
-        private Coordinates oldCenter;
-        private double oldFoV;
-        private bool oldUseCachedImages;
         public void UpdateSkyMap() {
-            if (Initialized) {
-                var center = ViewportFoV.CenterCoordinates;
-                var fov = ViewportFoV.HFoV;
-                var needFullRedraw = firstDraw || center != oldCenter || fov != oldFoV || UseCachedImages != oldUseCachedImages || renderTask == null || renderTask.Status < TaskStatus.RanToCompletion;
-                try {
-                    try { renderCts?.Cancel(); } catch { }
-                    while (renderTask != null && (renderTask.Status < TaskStatus.RanToCompletion)) {
-                    }
-                } catch (Exception) {
+            if (suppressRender) {
+                return;
+            }
+            if (Application.Current?.Dispatcher is { } dispatcher && !dispatcher.CheckAccess()) {
+                _ = dispatcher.InvokeAsync(UpdateSkyMap);
+                return;
+            }
+            if (!Initialized || sceneBuilder is null) {
+                return;
+            }
+
+            int version = Interlocked.Increment(ref renderVersion);
+            RenderCurrentFrame();
+            QueueMissingImages(version);
+        }
+
+        private void RenderCurrentFrame() {
+            SkyMapRenderOptions options = SkyMapRenderOptions.None;
+            if (AnnotateConstellations || AnnotateDSO) {
+                options |= SkyMapRenderOptions.Stars;
+            }
+            if (AnnotateConstellations) {
+                options |= SkyMapRenderOptions.Constellations;
+            }
+            if (AnnotateDSO) {
+                options |= SkyMapRenderOptions.DeepSkyObjects;
+            }
+            if (AnnotateConstellationBoundaries) {
+                options |= SkyMapRenderOptions.ConstellationBoundaries;
+            }
+            if (AnnotateGrid) {
+                options |= EffectiveProjectionMode == SkyMapProjectionMode.AltAz
+                    ? SkyMapRenderOptions.HorizontalGrid
+                    : SkyMapRenderOptions.EquatorialGrid;
+            }
+            if (ShowHorizon) {
+                options |= SkyMapRenderOptions.Horizon;
+            }
+
+            SkyMapObserverSnapshot observer = UsesObserver ? CreateObserverSnapshot() : null;
+            Projection = GetProjection(observer, out bool projectionChanged);
+            SkyMapScene scene = sceneBuilder.Build(Projection, options, DisabledCatalogues);
+            IReadOnlyList<SkyMapImagePlacement> images = UseCachedImages && imageCache is not null
+                ? imageCache.GetPlacements(Projection)
+                : [];
+            bool telescopeVisible = telescopeConnected
+                && Projection.Contains(telescopeCoordinates)
+                && (!ShowHorizon || observer.IsVisible(telescopeCoordinates));
+            Point? telescopePosition = telescopeVisible
+                ? Projection.Project(telescopeCoordinates)
+                : null;
+            SkyMapOverlay = rasterRenderer.Render(scene, images, telescopePosition);
+            if (projectionChanged) {
+                ProjectionChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void QueueMissingImages(int version) {
+            CancelImageLoad();
+            if (!UseCachedImages || imageCache is null) {
+                return;
+            }
+
+            imageLoadCancellation = new CancellationTokenSource();
+            CancellationToken token = imageLoadCancellation.Token;
+            SkyMapImageCache cache = imageCache;
+            ViewportFoV viewport = new ViewportFoV(
+                ViewportFoV.CenterCoordinates,
+                ViewportFoV.VFoV,
+                ViewportFoV.Width,
+                ViewportFoV.Height,
+                ViewportFoV.Rotation);
+            _ = LoadMissingImages(cache, version, viewport, token);
+        }
+
+        private async Task LoadMissingImages(SkyMapImageCache cache, int version, ViewportFoV viewport, CancellationToken token) {
+            try {
+                bool changed = await cache.LoadAsync(viewport, token);
+                if (!changed || token.IsCancellationRequested || version != renderVersion) {
+                    return;
                 }
 
-                oldCenter = ViewportFoV.CenterCoordinates;
-                oldFoV = ViewportFoV.HFoV;
-                oldUseCachedImages = UseCachedImages;
-
-                if (needFullRedraw) {
-                    dsoImageGraphics.Clear(Color.Transparent);
-                }
-                Render();
-
-                if (UseCachedImages && needFullRedraw) {
-                    renderCts = new CancellationTokenSource();
-                    renderTask = DrawBufferedDSOImages(renderCts.Token);
-
-                    renderTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(200));
-                    var token = renderCts.Token;
-                    _ = Task.Run(async () => {
-                        try {
-                            while (await renderTimer.WaitForNextTickAsync(token)) {
-                                Render();
-                            }
-                        } catch { }
-
+                if (Application.Current?.Dispatcher is { } dispatcher && !dispatcher.CheckAccess()) {
+                    await dispatcher.InvokeAsync(() => {
+                        if (version == renderVersion) {
+                            RenderCurrentFrame();
+                        }
                     });
+                } else {
+                    RenderCurrentFrame();
                 }
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                Logger.Error("Failed to load an offline sky map image.", ex);
             }
         }
 
-        private void DrawTelescope() {
-            if (ViewportFoV.ContainsCoordinates(telescopeCoordinates)) {
-                System.Windows.Point scopePosition = telescopeCoordinates.XYProjection(ViewportFoV);
-                g.DrawEllipse(ScopePen, (float)(scopePosition.X - 15), (float)(scopePosition.Y - 15), 30, 30);
-                g.DrawLine(ScopePen, (float)(scopePosition.X), (float)(scopePosition.Y - 15),
-                    (float)(scopePosition.X), (float)(scopePosition.Y - 5));
-                g.DrawLine(ScopePen, (float)(scopePosition.X), (float)(scopePosition.Y + 5),
-                    (float)(scopePosition.X), (float)(scopePosition.Y + 15));
-                g.DrawLine(ScopePen, (float)(scopePosition.X - 15), (float)(scopePosition.Y),
-                    (float)(scopePosition.X - 5), (float)(scopePosition.Y));
-                g.DrawLine(ScopePen, (float)(scopePosition.X + 5), (float)(scopePosition.Y),
-                    (float)(scopePosition.X + 15), (float)(scopePosition.Y));
-            }
+        public void ClearImagesForViewport() {
+            CancelImageLoad();
+            imageCache = new SkyMapImageCache(cache);
         }
-
-        private static readonly Pen ScopePen = new Pen(Color.FromArgb(128, Color.Yellow), 2.0f);
-
-        private bool telescopeConnected;
-        private Coordinates telescopeCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
-        private bool firstDraw;
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
-            if (deviceInfo.Connected && deviceInfo.Coordinates != null) {
+            if (deviceInfo.Connected && deviceInfo.Coordinates is not null) {
+                Coordinates coordinates = deviceInfo.Coordinates.Transform(Epoch.J2000);
+                bool moved = Math.Abs(telescopeCoordinates.RADegrees - coordinates.RADegrees) > 0.01
+                    || Math.Abs(telescopeCoordinates.Dec - coordinates.Dec) > 0.01;
                 telescopeConnected = true;
-                var coordinates = deviceInfo.Coordinates.Transform(Epoch.J2000);
-                if (Math.Abs(telescopeCoordinates.RADegrees - coordinates.RADegrees) > 0.01 || Math.Abs(telescopeCoordinates.Dec - coordinates.Dec) > 0.01) {
-                    telescopeCoordinates = coordinates;
-                    if (ViewportFoV.ContainsCoordinates(coordinates)) {
-                        UpdateSkyMap();
-                    }
+                telescopeCoordinates = coordinates;
+                if (moved && ViewportFoV?.ContainsCoordinates(coordinates) == true) {
+                    UpdateSkyMap();
                 }
-            } else {
+            } else if (telescopeConnected) {
                 telescopeConnected = false;
+                UpdateSkyMap();
             }
         }
 
         public void Dispose() {
+            Interlocked.Increment(ref renderVersion);
+            Initialized = false;
             telescopeMediator?.RemoveConsumer(this);
-            dsoImageGraphics?.Dispose();
-            g?.Dispose();
-            img?.Dispose();
-            dsoImageBuffer?.Dispose();
-            FrameLineMatrix?.Dispose();
+            if (profileService is not null) {
+                profileService.ProfileChanged -= ProfileService_ProfileChanged;
+                profileService.LocationChanged -= ProfileService_LocationOrHorizonChanged;
+                profileService.HorizonChanged -= ProfileService_LocationOrHorizonChanged;
+            }
+            observerRefreshTimer?.Stop();
+            if (observerRefreshTimer is not null) {
+                observerRefreshTimer.Tick -= ObserverRefreshTimer_Tick;
+            }
+            CancelImageLoad();
+        }
+
+        partial void OnAnnotateConstellationBoundariesChanged(bool oldValue, bool newValue) {
+            if (profileService?.ActiveProfile?.FramingAssistantSettings is { } settings) {
+                settings.AnnotateConstellationBoundaries = newValue;
+            }
+            UpdateSkyMap();
+        }
+
+        partial void OnAnnotateConstellationsChanged(bool oldValue, bool newValue) {
+            if (profileService?.ActiveProfile?.FramingAssistantSettings is { } settings) {
+                settings.AnnotateConstellations = newValue;
+            }
+            UpdateSkyMap();
+        }
+
+        partial void OnAnnotateDSOChanged(bool oldValue, bool newValue) {
+            if (profileService?.ActiveProfile?.FramingAssistantSettings is { } settings) {
+                settings.AnnotateDSO = newValue;
+            }
+            UpdateSkyMap();
+        }
+
+        partial void OnAnnotateGridChanged(bool oldValue, bool newValue) {
+            if (profileService?.ActiveProfile?.FramingAssistantSettings is { } settings) {
+                settings.AnnotateGrid = newValue;
+            }
+            UpdateSkyMap();
+        }
+
+        partial void OnProjectionModeChanged(SkyMapProjectionMode oldValue, SkyMapProjectionMode newValue) {
+            if (profileService?.ActiveProfile?.FramingAssistantSettings is { } settings) {
+                settings.SkyMapProjectionMode = newValue;
+            }
+            UpdateSkyMap();
+        }
+
+        partial void OnDynamicFoVChanged(bool oldValue, bool newValue) {
+            OnPropertyChanged(nameof(EffectiveProjectionMode));
+            UpdateSkyMap();
+        }
+
+        partial void OnObservationTimeChanged(DateTime? oldValue, DateTime? newValue) {
+            DateTime timestamp = newValue?.ToUniversalTime() ?? DateTime.UtcNow;
+            if (observerSnapshot is not null
+                && newValue is not null
+                && timestamp >= observerSnapshot.Timestamp
+                && !observerSnapshot.NeedsRefresh(timestamp)) {
+                return;
+            }
+
+            observerSnapshot = null;
+            if (UsesObserver) {
+                UpdateSkyMap();
+            }
+        }
+
+        partial void OnShowHorizonChanged(bool oldValue, bool newValue) {
+            if (profileService?.ActiveProfile?.FramingAssistantSettings is { } settings) {
+                settings.ShowHorizon = newValue;
+            }
+            observerSnapshot = null;
+            UpdateSkyMap();
+        }
+
+        partial void OnUseCachedImagesChanged(bool oldValue, bool newValue) {
+            if (!newValue) {
+                CancelImageLoad();
+            }
+            UpdateSkyMap();
+        }
+
+        partial void OnShowAllCataloguesChanged(bool oldValue, bool newValue) {
+            if (ActiveCatalogues is null) {
+                return;
+            }
+            foreach (ActiveCatalogue catalogue in ActiveCatalogues) {
+                catalogue.Active = newValue;
+            }
+            SaveDisabledCatalogues();
+            UpdateSkyMap();
+        }
+
+        private async Task LoadCatalogues(CancellationToken token) {
+            List<string> catalogues = await dbInstance.GetCatalogues(50, token);
+            ActiveCatalogues = catalogues?.Select(name => {
+                ActiveCatalogue catalogue = new ActiveCatalogue(name, !DisabledCatalogues.Contains(name));
+                catalogue.PropertyChanged += (_, args) => {
+                    if (args.PropertyName == nameof(ActiveCatalogue.Active)) {
+                        SaveDisabledCatalogues();
+                        UpdateShowAllCataloguesState();
+                        UpdateSkyMap();
+                    }
+                };
+                return catalogue;
+            }).ToList() ?? [];
+            UpdateShowAllCataloguesState();
+        }
+
+        private void SaveDisabledCatalogues() {
+            if (ActiveCatalogues is null || profileService?.ActiveProfile?.FramingAssistantSettings is not { } settings) {
+                return;
+            }
+            settings.DisabledCatalogues = ActiveCatalogues.Where(x => !x.Active).Select(x => x.Name).ToList();
+        }
+
+        private void UpdateShowAllCataloguesState() {
+            if (ActiveCatalogues is null || ActiveCatalogues.Count == 0) {
+                return;
+            }
+            if (ActiveCatalogues.All(x => x.Active)) {
+                ShowAllCatalogues = true;
+            } else if (ActiveCatalogues.All(x => !x.Active)) {
+                ShowAllCatalogues = false;
+            }
+        }
+
+        private void LoadSettings() {
+            if (profileService?.ActiveProfile?.FramingAssistantSettings is not { } settings) {
+                return;
+            }
+            suppressRender = true;
+            try {
+                AnnotateConstellationBoundaries = settings.AnnotateConstellationBoundaries;
+                AnnotateConstellations = settings.AnnotateConstellations;
+                AnnotateDSO = settings.AnnotateDSO;
+                AnnotateGrid = settings.AnnotateGrid;
+                ProjectionMode = settings.SkyMapProjectionMode;
+                ShowHorizon = settings.ShowHorizon;
+            } finally {
+                suppressRender = false;
+            }
+        }
+
+        private SkyMapObserverSnapshot CreateObserverSnapshot() {
+            DateTime timestamp = ObservationTime?.ToUniversalTime() ?? DateTime.UtcNow;
+            if (observerSnapshot is not null && !observerSnapshot.NeedsRefresh(timestamp)) {
+                return observerSnapshot;
+            }
+
+            var settings = profileService.ActiveProfile.AstrometrySettings;
+            Func<double, double> horizonAltitude = settings.Horizon is null
+                ? null
+                : settings.Horizon.GetAltitude;
+            observerSnapshot = new SkyMapObserverSnapshot(
+                settings.Latitude,
+                settings.Longitude,
+                timestamp,
+                horizonAltitude);
+            return observerSnapshot;
+        }
+
+        private SkyMapViewportProjection GetProjection(SkyMapObserverSnapshot observer, out bool changed) {
+            changed = Projection is null
+                || !ReferenceEquals(Projection.Viewport, ViewportFoV)
+                || Projection.Mode != EffectiveProjectionMode
+                || !ReferenceEquals(Projection.Observer, observer);
+            if (changed) {
+                Projection = new SkyMapViewportProjection(ViewportFoV, EffectiveProjectionMode, observer);
+            }
+            return Projection;
+        }
+
+        private void ObserverRefreshTimer_Tick(object sender, EventArgs e) {
+            if (ObservationTime is null
+                && UsesObserver
+                && (observerSnapshot is null || observerSnapshot.NeedsRefresh(DateTime.UtcNow))) {
+                observerSnapshot = null;
+                UpdateSkyMap();
+            }
+        }
+
+        private void ProfileService_LocationOrHorizonChanged(object sender, EventArgs e) {
+            observerSnapshot = null;
+            if (UsesObserver) {
+                UpdateSkyMap();
+            }
+        }
+
+        private void ProfileService_ProfileChanged(object sender, EventArgs e) {
+            observerSnapshot = null;
+            LoadSettings();
+            UpdateSkyMap();
+        }
+
+        private void CancelImageLoad() {
+            try {
+                imageLoadCancellation?.Cancel();
+            } catch (ObjectDisposedException) {
+            }
+            imageLoadCancellation?.Dispose();
+            imageLoadCancellation = null;
         }
     }
 }

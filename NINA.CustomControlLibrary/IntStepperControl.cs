@@ -15,8 +15,23 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System;
 
 namespace NINA.CustomControlLibrary {
+
+    public enum StepDirection {
+        Decrement = -1,
+        Increment = 1
+    }
+
+    public sealed class StepRequestedEventArgs : EventArgs {
+        public StepRequestedEventArgs(StepDirection direction) {
+            Direction = direction;
+        }
+
+        public StepDirection Direction { get; }
+        public bool Handled { get; set; }
+    }
 
     [TemplatePart(Name = "PART_TextBox", Type = typeof(UnitTextBox))]
     [TemplatePart(Name = "PART_Decrement", Type = typeof(Button))]
@@ -91,6 +106,8 @@ namespace NINA.CustomControlLibrary {
             set => SetValue(UnitProperty, value);
         }
 
+        public event EventHandler<StepRequestedEventArgs> StepRequested;
+
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
             var button = GetTemplateChild("PART_Increment") as Button;
@@ -110,12 +127,22 @@ namespace NINA.CustomControlLibrary {
         }
 
         private void Button_PART_Increment_Click(object sender, RoutedEventArgs e) {
+            StepRequestedEventArgs args = new StepRequestedEventArgs(StepDirection.Increment);
+            StepRequested?.Invoke(this, args);
+            if (args.Handled) {
+                return;
+            }
             if (Value + StepSize <= MaxValue) {
                 Value += StepSize;
             }
         }
 
         private void Button_PART_Decrement_Click(object sender, RoutedEventArgs e) {
+            StepRequestedEventArgs args = new StepRequestedEventArgs(StepDirection.Decrement);
+            StepRequested?.Invoke(this, args);
+            if (args.Handled) {
+                return;
+            }
             if (Value - StepSize >= MinValue) {
                 Value -= StepSize;
             }

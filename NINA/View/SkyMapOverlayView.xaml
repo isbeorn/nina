@@ -21,7 +21,6 @@
     <Canvas
         behaviors:DragCommandBehavior.Drag="{Binding SkyMapAnnotator.DynamicFoV}"
         behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
-        behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
         behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
         behaviors:DragCommandBehavior.OverrideCursor="False"
         behaviors:MouseWheelCommandBehavior.Enabled="{Binding SkyMapAnnotator.DynamicFoV}"

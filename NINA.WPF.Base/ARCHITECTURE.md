@@ -66,6 +66,18 @@ The `SkySurvey/` folder is a contained subsystem for retrieving and caching surv
 
 This functionality is shared infrastructure for features like the sky atlas and framing workflows.
 
+The offline framing map uses a separate frame pipeline inside this subsystem:
+
+- `SkyMapSceneBuilder` projects constellations, stars, DSO outlines, constellation boundaries, equatorial or Alt/Az grid lines, and the local horizon into one per-viewport scene. Catalogue-wide data is indexed or precomputed when the builder is created, and clipped path construction reuses empty point buffers instead of allocating for every rejected sample; do not restore full catalogue scans, per-sample list allocation, or retained mutable annotation view models to the drag path.
+- `SkyMapViewportProjection` is the single projection and pan boundary for the scene, cached survey tiles, telescope marker, and framing-camera overlays. Equatorial mode must remain compatible with `ViewportFoV`; Alt/Az mode converts through the shared observer snapshot so every layer, camera position angle, and drag delta follows the horizontal grid. `SkyMapAnnotator.ObservationTime` optionally supplies the shared observation instant; when it is unset, the annotator retains its automatic current-time refresh behavior.
+- `SkyMapRasterRenderer` draws that scene into one reusable WPF `WriteableBitmap`. The surface is intentionally UI-thread-owned and mutable so dragging does not clone the full viewport bitmap each frame.
+- `SkyMapImageCache` parses cached survey metadata once, serializes image decoding off the UI thread, and composites already-loaded tiles without hiding vector annotations during a drag. Its least-recently-used history is bounded by both image count and estimated pixel memory, while every tile in the active viewport is protected until the view moves; keep both the history bounds and active-view protection intact when changing the tile-loading path.
+- `SkyMapObserverSnapshot` is the time/location boundary for the Alt/Az grid and local-horizon clipping. It converts between celestial and Alt/Az coordinates, implements layer visibility against the configured horizon, and expires after one minute so time-dependent grids and clipping are rebuilt together. Reuse the snapshot throughout its lifetime; constructing one may require astronomical time data and does not belong in the drag path.
+
+When the horizon is enabled, the scene contains both the visible horizon stroke and opaque below-horizon mask areas. The raster renderer draws those mask areas over cached imagery before drawing the visible annotations; filtering only catalogue objects is insufficient because cached survey pixels would otherwise remain visible below the horizon. Build partial masks in viewport space from projection inversion and horizon clearance; projected deep-sky polygons can cross the stereographic discontinuity and cover visible sky at wide fields of view. Emit the visible horizon stroke from the same viewport-space mask intersections instead of independently sampling it in angular coordinates, otherwise the stroke and imagery cutoff diverge at wide fields of view. Refine custom-horizon edge intersections against the actual clearance function so steep profile sections remain stable while panning.
+
+Every celestial layer must be rebuilt from the same viewport and visibility snapshot. This keeps panning planetarium-like and prevents time-dependent horizon filtering from disagreeing between layers.
+
 ## Dependency Position
 
 Project references:
