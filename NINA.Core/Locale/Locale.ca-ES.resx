@@ -174,6 +174,9 @@
   <data name="LblAltairCameraSetup" xml:space="preserve">
     <value>Configuració de la Càmera Altair</value>
   </data>
+  <data name="LblAltAz" xml:space="preserve">
+    <value>Alt/Az</value>
+  </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>Esquema de colors alternatiu UI</value>
   </data>
@@ -6261,8 +6264,20 @@ Comproveu si hi ha una actualització disponible.</value>
   <data name="LblDate" xml:space="preserve">
     <value>Data</value>
   </data>
+  <data name="LblDay" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="LblMonth" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="LblYear" xml:space="preserve">
+    <value>Year</value>
+  </data>
   <data name="LblObservation" xml:space="preserve">
     <value>Observació</value>
+  </data>
+  <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
+    <value>Reset observation date and time to the current time</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>Ordre</value>
@@ -6955,6 +6970,9 @@ Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</va
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Mostra l'Histrograma</value>
+  </data>
+  <data name="LblShowHorizon" xml:space="preserve">
+    <value>Show Local Horizon</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
     <value>Show star measurements in arcseconds</value>
