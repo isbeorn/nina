@@ -174,6 +174,9 @@
   <data name="LblAltairCameraSetup" xml:space="preserve">
     <value>Altair camera setup</value>
   </data>
+  <data name="LblAltAz" xml:space="preserve">
+    <value>Alt/Az</value>
+  </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>Alternative UI colour scheme</value>
   </data>
@@ -6270,8 +6273,20 @@ Please check if there is an update available.</value>
   <data name="LblDate" xml:space="preserve">
     <value>Date</value>
   </data>
+  <data name="LblDay" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="LblMonth" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="LblYear" xml:space="preserve">
+    <value>Year</value>
+  </data>
   <data name="LblObservation" xml:space="preserve">
     <value>Observation</value>
+  </data>
+  <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
+    <value>Reset observation date and time to the current time</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>Command</value>
@@ -6963,6 +6978,9 @@ Increase minimum exposure time or wait until it is brighter.</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
+  </data>
+  <data name="LblShowHorizon" xml:space="preserve">
+    <value>Show Local Horizon</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
     <value>Show star measurements in arcseconds</value>

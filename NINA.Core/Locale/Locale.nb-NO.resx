@@ -174,6 +174,9 @@
   <data name="LblAltairCameraSetup" xml:space="preserve">
     <value>Altair kameraoppsett</value>
   </data>
+  <data name="LblAltAz" xml:space="preserve">
+    <value>Alt/Az</value>
+  </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>Alternativt fargeskjema</value>
   </data>
@@ -6253,8 +6256,20 @@ Sjekk om en oppdatert versjon er tilgjengelig.</value>
   <data name="LblDate" xml:space="preserve">
     <value>Dato</value>
   </data>
+  <data name="LblDay" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="LblMonth" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="LblYear" xml:space="preserve">
+    <value>Year</value>
+  </data>
   <data name="LblObservation" xml:space="preserve">
     <value>Observasjon</value>
+  </data>
+  <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
+    <value>Reset observation date and time to the current time</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>Kommando</value>
@@ -6944,6 +6959,9 @@ Reduser minste eksponeringstid eller vent til himmelen er mørkere.</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Vis histogram</value>
+  </data>
+  <data name="LblShowHorizon" xml:space="preserve">
+    <value>Show Local Horizon</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
     <value>Show star measurements in arcseconds</value>
