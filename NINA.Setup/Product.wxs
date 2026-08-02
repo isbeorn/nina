@@ -468,23 +468,11 @@
       <Component Id="MdXaml.Plugins.dll" Guid="b1a6f459-2b0a-4887-a162-7e7dd6b3bc93">
         <File Id="MdXaml.Plugins.dll" Name="MdXaml.Plugins.dll" Source="$(var.NINA_TargetDir)MdXaml.Plugins.dll" />
       </Component>
-      <Component Id="Microsoft.Bcl.AsyncInterfaces.dll" Guid="5b060757-599f-452c-8538-714df4d37dea">
-        <File Id="Microsoft.Bcl.AsyncInterfaces.dll" Name="Microsoft.Bcl.AsyncInterfaces.dll" Source="$(var.NINA_TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
-      </Component>
       <Component Id="Microsoft.CodeAnalysis.CSharp.dll" Guid="8a2dc0cb-30fd-4a8a-8e85-fc1d81b4fb2a">
         <File Id="Microsoft.CodeAnalysis.CSharp.dll" Name="Microsoft.CodeAnalysis.CSharp.dll" Source="$(var.NINA_TargetDir)Microsoft.CodeAnalysis.CSharp.dll" />
       </Component>
       <Component Id="Microsoft.CodeAnalysis.dll" Guid="27641079-0b3e-4740-a2aa-9790ab837625">
         <File Id="Microsoft.CodeAnalysis.dll" Name="Microsoft.CodeAnalysis.dll" Source="$(var.NINA_TargetDir)Microsoft.CodeAnalysis.dll" />
-      </Component>
-      <Component Id="Microsoft.Extensions.Configuration.Abstractions.dll" Guid="13542e26-d152-45e1-8c7a-50b65500ee3f">
-        <File Id="Microsoft.Extensions.Configuration.Abstractions.dll" Name="Microsoft.Extensions.Configuration.Abstractions.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Configuration.Abstractions.dll" />
-      </Component>
-      <Component Id="Microsoft.Extensions.Configuration.Binder.dll" Guid="3ade6f24-f064-440f-9a23-a2e2dbf07dd8">
-        <File Id="Microsoft.Extensions.Configuration.Binder.dll" Name="Microsoft.Extensions.Configuration.Binder.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Configuration.Binder.dll" />
-      </Component>
-      <Component Id="Microsoft.Extensions.Configuration.dll" Guid="43a755b8-039f-4483-b2e3-6214455378b9">
-        <File Id="Microsoft.Extensions.Configuration.dll" Name="Microsoft.Extensions.Configuration.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Configuration.dll" />
       </Component>
       <Component Id="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Guid="fc905efb-a8f2-4bf6-8937-f1b5e2e6754d">
         <File Id="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Name="Microsoft.Extensions.DependencyInjection.Abstractions.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
@@ -494,27 +482,6 @@
       </Component>
       <Component Id="Microsoft.Extensions.Logging.Abstractions.dll" Guid="455a3bc1-0f54-4d0a-9884-979fe24c80a9">
         <File Id="Microsoft.Extensions.Logging.Abstractions.dll" Name="Microsoft.Extensions.Logging.Abstractions.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Logging.Abstractions.dll" />
-      </Component>
-      <Component Id="Microsoft.Extensions.Logging.Configuration.dll" Guid="c14f6547-28f0-421f-a163-624935b8ec1c">
-        <File Id="Microsoft.Extensions.Logging.Configuration.dll" Name="Microsoft.Extensions.Logging.Configuration.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Logging.Configuration.dll" />
-      </Component>
-      <Component Id="Microsoft.Extensions.Logging.Console.dll" Guid="76941819-a40e-4787-b736-77879ae1f37a">
-        <File Id="Microsoft.Extensions.Logging.Console.dll" Name="Microsoft.Extensions.Logging.Console.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Logging.Console.dll" />
-      </Component>
-      <Component Id="Microsoft.Extensions.Logging.dll" Guid="6a217110-cab9-418f-bb31-bc3f63d20413">
-        <File Id="Microsoft.Extensions.Logging.dll" Name="Microsoft.Extensions.Logging.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Logging.dll" />
-      </Component>
-      <Component Id="Microsoft.Extensions.Logging.TraceSource.dll" Guid="7272f701-e59b-4e71-8b2f-336378aef6e7">
-        <File Id="Microsoft.Extensions.Logging.TraceSource.dll" Name="Microsoft.Extensions.Logging.TraceSource.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Logging.TraceSource.dll" />
-      </Component>
-      <Component Id="Microsoft.Extensions.Options.ConfigurationExtensions.dll" Guid="5b4afd35-c20f-4287-8fea-3ce35b9ab024">
-        <File Id="Microsoft.Extensions.Options.ConfigurationExtensions.dll" Name="Microsoft.Extensions.Options.ConfigurationExtensions.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
-      </Component>
-      <Component Id="Microsoft.Extensions.Options.dll" Guid="ecf75adc-55ed-41bc-8b2f-55856cc06311">
-        <File Id="Microsoft.Extensions.Options.dll" Name="Microsoft.Extensions.Options.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Options.dll" />
-      </Component>
-      <Component Id="Microsoft.Extensions.Primitives.dll" Guid="b214f008-9914-45be-a39c-18f5ec0029ce">
-        <File Id="Microsoft.Extensions.Primitives.dll" Name="Microsoft.Extensions.Primitives.dll" Source="$(var.NINA_TargetDir)Microsoft.Extensions.Primitives.dll" />
       </Component>
       <Component Id="Microsoft.Xaml.Behaviors.dll" Guid="69093258-81a8-4474-bdb7-d69732bfc56e" Bitness="$(var.Win64)">
         <File Id="Microsoft.Xaml.Behaviors.dll" Name="Microsoft.Xaml.Behaviors.dll" Source="$(var.NINA_TargetDir)Microsoft.Xaml.Behaviors.dll" />
@@ -530,6 +497,12 @@
       </Component>
       <Component Id="NCalc.Core.dll" Guid="49be3dcd-b28a-4df8-8414-2bd04ca9d970">
           <File Id="NCalc.Core.dll" Name="NCalc.Core.dll" Source="$(var.NINA_TargetDir)NCalc.Core.dll" />
+      </Component>
+      <Component Id="NCalc.Domain.dll" Guid="f4e852c9-b223-493e-a35e-9dafec503192">
+          <File Id="NCalc.Domain.dll" Name="NCalc.Domain.dll" Source="$(var.NINA_TargetDir)NCalc.Domain.dll" />
+      </Component>
+      <Component Id="NCalc.Parser.dll" Guid="c3721bbe-630f-4089-a4d0-58326edfcc20">
+          <File Id="NCalc.Parser.dll" Name="NCalc.Parser.dll" Source="$(var.NINA_TargetDir)NCalc.Parser.dll" />
       </Component>
       <Component Id="NCalc.Sync.dll" Guid="b6d06c81-da22-4969-8279-7225b0375265">
           <File Id="NCalc.Sync.dll" Name="NCalc.Sync.dll" Source="$(var.NINA_TargetDir)NCalc.Sync.dll" />

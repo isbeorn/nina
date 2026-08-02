@@ -144,6 +144,22 @@ namespace NINA.Test.Sequencer.Logic {
             Evaluate("Not(1 < 2)").Value.Should().Be(0);
         }
 
+        [TestCase("If(true, \"selected\", Explode())", "selected")]
+        [TestCase("If(false, Explode(), \"selected\")", "selected")]
+        [TestCase("Ifs(true, \"selected\", Explode(), Explode(), Explode())", "selected")]
+        [TestCase("Ifs(false, Explode(), false, Explode(), \"fallback\")", "fallback")]
+        public void ConditionalFunctions_EvaluateOnlySelectedBranch(string definition, string expected) {
+            ISymbolProvider provider = broker.RegisterSymbolProvider("LazyEvaluation");
+            provider.RegisterFunction(new SymbolFunction(
+                key: "Explode",
+                category: "LazyEvaluation",
+                description: "Fails when evaluated",
+                usageExample: "Explode()",
+                implementation: _ => throw new InvalidOperationException("An unselected branch was evaluated.")));
+
+            Evaluate(definition).StringValue.Should().Be(expected);
+        }
+
         [Test]
         public void LogicIn_MatchesShortSymbolAgainstIntegerLiteral() {
             ISymbolProvider provider = broker.RegisterSymbolProvider("Test");

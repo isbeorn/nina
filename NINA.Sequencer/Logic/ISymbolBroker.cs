@@ -12,7 +12,6 @@
 
 #endregion "copyright"
 
-using NCalc.Handlers;
 using NINA.Equipment.Interfaces.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -30,7 +29,7 @@ namespace NINA.Sequencer.Logic {
         bool IsProviderRegistered(string providerName);
         IList<Symbol> GetHiddenSymbols(string source);
         IReadOnlyCollection<SymbolFunction> GetFunctions();
-        void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile);
+        void InvokeFunction(string name, ISymbolFunctionArguments args, out object result, out bool isVolatile);
         public IReadOnlyCollection<ISymbolProvider> GetMyProviders();
     }
     internal interface ISymbolBrokerProviderApi : ISymbolBroker, IDockableVM {

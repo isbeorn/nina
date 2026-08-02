@@ -1,5 +1,4 @@
-﻿using NCalc.Handlers;
-using NINA.Core.Locale;
+﻿using NINA.Core.Locale;
 using NINA.Core.Utility;
 using System;
 using System.Collections;
@@ -10,12 +9,12 @@ using System.Text;
 namespace NINA.Sequencer.Logic.SymbolFunctions {
 
     public class TimeFunctions : IEnumerable<SymbolFunction> {
-        private static DateTime GetDateTime(FunctionArgs args) {
+        private static DateTime GetDateTime(ISymbolFunctionArguments args) {
             DateTime dt;
-            if (args.Parameters?.Length > 0) {
+            if (args.Count > 0) {
                 try {
                     var utc = CoreUtil.UnixTimeStampToDateTime(
-                        Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture));
+                        Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture));
                     dt = utc.ToLocalTime();
                 } catch {
                     dt = DateTime.MinValue;
@@ -112,15 +111,15 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                         DateTime baseDt;
                         double minutes;
 
-                        if (args.Parameters.Length == 1) {
+                        if (args.Count == 1) {
                             // base: now, arg: minutes
                             baseDt = DateTime.Now;
-                            minutes = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                            minutes = Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture);
                         } else {
                             // first arg: unix timestamp, second: minutes
-                            var baseSeconds = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                            var baseSeconds = Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture);
                             baseDt = CoreUtil.UnixTimeStampToDateTime(baseSeconds).ToLocalTime();
-                            minutes = Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                            minutes = Convert.ToDouble(args.Evaluate(1), CultureInfo.InvariantCulture);
                         }
 
                         var result = baseDt.AddMinutes(minutes);
@@ -140,15 +139,15 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                         DateTime baseDt;
                         double hours;
 
-                        if (args.Parameters.Length == 1) {
+                        if (args.Count == 1) {
                             // base: now, arg: hours
                             baseDt = DateTime.Now;
-                            hours = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                            hours = Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture);
                         } else {
                             // first arg: unix timestamp, second: hours
-                            var baseSeconds = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                            var baseSeconds = Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture);
                             baseDt = CoreUtil.UnixTimeStampToDateTime(baseSeconds).ToLocalTime();
-                            hours = Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                            hours = Convert.ToDouble(args.Evaluate(1), CultureInfo.InvariantCulture);
                         }
 
                         var result = baseDt.AddHours(hours);
@@ -181,7 +180,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     usageExample: "DateString(now(), \"yyyy-MM-dd HH:mm:ss\")",
                     implementation: args => {
                         var dt = GetDateTime(args);
-                        var fmt = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        var fmt = Convert.ToString(args.Evaluate(1), CultureInfo.InvariantCulture);
                         return dt.ToString(fmt);
                     },
                     minArgs: 2,

@@ -48,7 +48,7 @@
     <ProjectReference Include="..\NINA.Profile\NINA.Profile.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
   </ItemGroup>
   <PropertyGroup>
     <Description>This assembly contains the Platesolving components of N.I.N.A. to invoke different platesolvers.</Description>

@@ -41,9 +41,9 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Logic_In_Description"],
                     usageExample: "in(1 + 1, 1, 2, 3)",
                     implementation: args => {
-                        var value = args.Parameters[0].Evaluate();
-                        for (int i = 1; i < args.Parameters.Length; i++) {
-                            if (AreEqual(value, args.Parameters[i].Evaluate()))
+                        var value = args.Evaluate(0);
+                        for (int i = 1; i < args.Count; i++) {
+                            if (AreEqual(value, args.Evaluate(i)))
                                 return true;
                         }
                         return false;
@@ -57,10 +57,10 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Logic_If_Description"],
                     usageExample: "if(3 % 2 = 1, 'value is true', 'value is false')",
                     implementation: args => {
-                        bool condition = Convert.ToBoolean(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        bool condition = Convert.ToBoolean(args.Evaluate(0), CultureInfo.InvariantCulture);
                         return condition
-                            ? args.Parameters[1].Evaluate()
-                            : args.Parameters[2].Evaluate();
+                            ? args.Evaluate(1)
+                            : args.Evaluate(2);
                     },
                     minArgs: 3, maxArgs: 3
                 ),
@@ -71,18 +71,18 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Logic_Ifs_Description"],
                     usageExample: "ifs(foo > 50, \"bar\", foo > 75, \"baz\", \"quux\")",
                     implementation: args => {
-                        int count = args.Parameters.Length;
+                        int count = args.Count;
 
                         if (count < 3)
                             throw new ArgumentException("ifs() requires at least 3 arguments.");
 
                         for (int i = 0; i < count - 1; i += 2) {
-                            bool cond = Convert.ToBoolean(args.Parameters[i].Evaluate(), CultureInfo.InvariantCulture);
+                            bool cond = Convert.ToBoolean(args.Evaluate(i), CultureInfo.InvariantCulture);
                             if (cond)
-                                return args.Parameters[i + 1].Evaluate();
+                                return args.Evaluate(i + 1);
                         }
 
-                        return args.Parameters[count - 1].Evaluate();
+                        return args.Evaluate(count - 1);
                     },
                     minArgs: 3, maxArgs: int.MaxValue
                 ),
@@ -93,7 +93,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Logic_Defined_Description"],
                     usageExample: "Defined(\"foo\")",
                     implementation: args => {
-                        var str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        var str = Convert.ToString(args.Evaluate(0), CultureInfo.InvariantCulture);
                         return symbolBroker.TryGetValue(str, out _);
                     },
                     minArgs: 1,
@@ -107,7 +107,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Logic_Not_Description"],
                     usageExample: "Not(cloudy)",
                     implementation: args => {
-                        bool v = Convert.ToBoolean(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        bool v = Convert.ToBoolean(args.Evaluate(0), CultureInfo.InvariantCulture);
                         return !v;
                     },
                     minArgs: 1,
