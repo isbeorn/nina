@@ -47,7 +47,7 @@
     <ProjectReference Include="..\NINA.Core\NINA.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
   </ItemGroup>
   <PropertyGroup>
     <Version>3.3.0.1050-nightly</Version>

@@ -29,7 +29,6 @@ using NINA.Astrometry.RiseAndSet;
 using Nito.AsyncEx;
 using Nikon;
 using NINA.Sequencer.Generators;
-using Microsoft.Extensions.Options;
 using NINA.Sequencer.Logic;
 using System.Runtime.Serialization;
 

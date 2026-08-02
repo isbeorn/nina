@@ -12,8 +12,6 @@
 
 #endregion "copyright"
 
-using Namotion.Reflection;
-using NCalc.Handlers;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Model;
@@ -815,7 +813,7 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        public void InvokeFunction(string name, FunctionArgs args, out object result, out bool isVolatile) {
+        public void InvokeFunction(string name, ISymbolFunctionArguments args, out object result, out bool isVolatile) {
             result = null;
             isVolatile = false;
 

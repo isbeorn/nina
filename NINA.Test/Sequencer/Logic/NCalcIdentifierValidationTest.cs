@@ -31,7 +31,7 @@ namespace NINA.Test.Sequencer.Logic {
             var parameters = new Dictionary<string, object> {
                 { identifier, 5.0 }
             };
-            expr.Parameters = parameters;
+            AddParameters(expr, parameters);
 
             Action act = () => {
                 var result = expr.Evaluate();
@@ -52,7 +52,7 @@ namespace NINA.Test.Sequencer.Logic {
             var parameters = new Dictionary<string, object> {
                 { identifier, 5.0 }  // This won't work as expected
             };
-            expr.Parameters = parameters;
+            AddParameters(expr, parameters);
 
             // The expression "my-var + 1" will be parsed as "my - var + 1"
             // not as a single identifier "my-var"
@@ -72,7 +72,7 @@ namespace NINA.Test.Sequencer.Logic {
                 { "test", 10.0 },
                 { "var", 3.0 }
             };
-            expr.Parameters = parameters;
+            AddParameters(expr, parameters);
 
             var result = expr.Evaluate();
             
@@ -89,13 +89,19 @@ namespace NINA.Test.Sequencer.Logic {
                 { "test", 10.0 },
                 { "var", 3.0 }
             };
-            expr.Parameters = parameters;
+            AddParameters(expr, parameters);
 
             var result = expr.Evaluate();
             
             // If "test+var" were a single identifier, this would fail
             // Instead, it's parsed as "test + var" = 10 + 3 = 13
             result.Should().Be(13.0);
+        }
+
+        private static void AddParameters(NCalc.Expression expression, IReadOnlyDictionary<string, object> parameters) {
+            foreach (KeyValuePair<string, object> parameter in parameters) {
+                expression.Parameters[parameter.Key] = parameter.Value;
+            }
         }
     }
 }

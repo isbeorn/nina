@@ -87,6 +87,8 @@ The `Logic/` area is a distinct subsystem:
 
 This subsystem is the reason the project consumes the `NINA.Sequencer.Generators` analyzer.
 
+NCalc is an internal expression-engine implementation detail. Public and plugin-facing symbol APIs must use NINA-owned contracts such as `ISymbolFunctionArguments`; they must not expose NCalc types. `ISymbolFunctionArguments.Evaluate(int)` intentionally preserves lazy argument evaluation, so conditional functions should evaluate only the branch they select. Keep NCalc version-specific event arguments and parameter access contained in the internal adapter.
+
 ## Dependency Position
 
 Project references:

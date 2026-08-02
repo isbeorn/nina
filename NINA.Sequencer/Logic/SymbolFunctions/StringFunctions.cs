@@ -19,8 +19,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_String_StartsWith_Description"],
                     usageExample: "StartsWith(\"hello\", \"he\")",
                     implementation: args => {
-                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                        var prefix = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        var s = Convert.ToString(args.Evaluate(0), CultureInfo.InvariantCulture);
+                        var prefix = Convert.ToString(args.Evaluate(1), CultureInfo.InvariantCulture);
                         return s.StartsWith(prefix, StringComparison.Ordinal);
                     },
                     minArgs: 2,
@@ -33,7 +33,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_String_StrLength_Description"],
                     usageExample: "StrLength(\"hello\")",
                     implementation: args => {
-                        var v = args.Parameters[0].Evaluate();
+                        var v = args.Evaluate(0);
                         return v is string s ? s.Length : -1;
                     },
                     minArgs: 1,
@@ -46,8 +46,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_String_StrConcat_Description"],
                     usageExample: "StrConcat(\"hello\", \" world\")",
                     implementation: args => {
-                        var a = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                        var b = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        var a = Convert.ToString(args.Evaluate(0), CultureInfo.InvariantCulture);
+                        var b = Convert.ToString(args.Evaluate(1), CultureInfo.InvariantCulture);
                         return string.Concat(a, b);
                     },
                     minArgs: 2,
@@ -60,9 +60,9 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_String_StrAtPos_Description"],
                     usageExample: "StrAtPos(\"hello\", 1)",
                     implementation: args => {
-                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture) ?? string.Empty;
+                        var s = Convert.ToString(args.Evaluate(0), CultureInfo.InvariantCulture) ?? string.Empty;
                         try {
-                            int idx = Convert.ToInt32(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                            int idx = Convert.ToInt32(args.Evaluate(1), CultureInfo.InvariantCulture);
                             if (idx >= 0 && idx < s.Length)
                                 return s[idx].ToString();
                         } catch {
@@ -79,8 +79,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_String_Contains_Description"],
                     usageExample: "Contains(filterName, \"Ha\")",
                     implementation: args => {
-                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                        var sub = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        var s = Convert.ToString(args.Evaluate(0), CultureInfo.InvariantCulture);
+                        var sub = Convert.ToString(args.Evaluate(1), CultureInfo.InvariantCulture);
                         return s?.Contains(sub, StringComparison.Ordinal) ?? false;
                     },
                     minArgs: 2,
@@ -93,8 +93,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_String_EndsWith_Description"],
                     usageExample: "EndsWith(fileName, \".fits\")",
                     implementation: args => {
-                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                        var suffix = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        var s = Convert.ToString(args.Evaluate(0), CultureInfo.InvariantCulture);
+                        var suffix = Convert.ToString(args.Evaluate(1), CultureInfo.InvariantCulture);
                         return s?.EndsWith(suffix, StringComparison.Ordinal) ?? false;
                     },
                     minArgs: 2,
@@ -107,17 +107,17 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_String_Substring_Description"],
                     usageExample: "Substring(\"hello\", 1, 3)  // \"ell\"",
                     implementation: args => {
-                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture) ?? string.Empty;
-                        int start = Convert.ToInt32(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        var s = Convert.ToString(args.Evaluate(0), CultureInfo.InvariantCulture) ?? string.Empty;
+                        int start = Convert.ToInt32(args.Evaluate(1), CultureInfo.InvariantCulture);
 
                         if (start < 0 || start > s.Length)
                             return string.Empty;
 
-                        if (args.Parameters.Length == 2) {
+                        if (args.Count == 2) {
                             // from start to end
                             return s.Substring(start);
                         } else {
-                            int length = Convert.ToInt32(args.Parameters[2].Evaluate(), CultureInfo.InvariantCulture);
+                            int length = Convert.ToInt32(args.Evaluate(2), CultureInfo.InvariantCulture);
                             if (length < 0)
                                 return string.Empty;
                             if (start + length > s.Length)
@@ -135,7 +135,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_String_ToLower_Description"],
                     usageExample: "ToLower(filterName)",
                     implementation: args => {
-                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        var s = Convert.ToString(args.Evaluate(0), CultureInfo.InvariantCulture);
                         return s?.ToLowerInvariant();
                     },
                     minArgs: 1,
@@ -148,7 +148,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_String_ToUpper_Description"],
                     usageExample: "toUpper(filterName)",
                     implementation: args => {
-                        var s = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        var s = Convert.ToString(args.Evaluate(0), CultureInfo.InvariantCulture);
                         return s?.ToUpperInvariant();
                     },
                     minArgs: 1,

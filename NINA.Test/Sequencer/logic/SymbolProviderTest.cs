@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -14,7 +14,6 @@
 
 using FluentAssertions;
 using Moq;
-using NCalc.Handlers;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer;
@@ -25,6 +24,7 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -197,7 +197,7 @@ namespace NINA.Test.Sequencer.Logic {
 
             provider.RegisterFunction(fn);
 
-            var args = new FunctionArgs(Guid.NewGuid(), []);
+            var args = new TestSymbolFunctionArguments();
 
             // act
             broker.InvokeFunction("const42", args, out var result, out var isVolatile);
@@ -213,7 +213,7 @@ namespace NINA.Test.Sequencer.Logic {
             ISymbolBroker broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
                flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
-            var args = new FunctionArgs(Guid.NewGuid(), []);
+            var args = new TestSymbolFunctionArguments();
 
             // act
             Action fn = () => broker.InvokeFunction("doesNotExist", args, out var result, out var isVolatile);
@@ -241,7 +241,7 @@ namespace NINA.Test.Sequencer.Logic {
 
             provider.RegisterFunction(fn);
 
-            var args = new FunctionArgs(Guid.NewGuid(), []);
+            var args = new TestSymbolFunctionArguments();
 
             // act
             broker.InvokeFunction("volatileFunc", args, out var result, out var isVolatile);
@@ -263,14 +263,14 @@ namespace NINA.Test.Sequencer.Logic {
                 category: "Plugin",
                 description: "",
                 usageExample: "",
-                implementation: args => args.Parameters[0].Evaluate(),
+                implementation: args => args.Evaluate(0),
                 minArgs: 1,
                 maxArgs: 1,
                 isVolatile: false);
 
             provider.RegisterFunction(fn);
 
-            var args = new FunctionArgs(Guid.NewGuid(), []); // 0 parameters
+            var args = new TestSymbolFunctionArguments(); // 0 parameters
 
             // act
             Action act = () => {
@@ -348,12 +348,22 @@ namespace NINA.Test.Sequencer.Logic {
             overwrite.Should().NotThrow<ArgumentException>("overwriting an existing function in a different category should be allowed");
         }
 
-        private static FunctionArgs CreateArgsFromStrings(params string[] exprStrings) {
-            var exprs = exprStrings
-                .Select(s => new NCalc.Expression(s))
-                .ToArray();
+        private static ISymbolFunctionArguments CreateArgsFromStrings(params string[] values) {
+            return new TestSymbolFunctionArguments(values
+                .Select(value => (Func<object>)(() => double.Parse(value, CultureInfo.InvariantCulture)))
+                .ToArray());
+        }
 
-            return new FunctionArgs(Guid.NewGuid(), exprs);
+        private sealed class TestSymbolFunctionArguments : ISymbolFunctionArguments {
+            private readonly Func<object>[] evaluators;
+
+            public TestSymbolFunctionArguments(params Func<object>[] evaluators) {
+                this.evaluators = evaluators;
+            }
+
+            public int Count => evaluators.Length;
+
+            public object Evaluate(int index) => evaluators[index]();
         }
 
         [Test]
@@ -369,8 +379,8 @@ namespace NINA.Test.Sequencer.Logic {
                 description: "",
                 usageExample: "",
                 implementation: args => {
-                    var min = Convert.ToDouble(args.Parameters[0].Evaluate());
-                    var max = Convert.ToDouble(args.Parameters[1].Evaluate());
+                    var min = Convert.ToDouble(args.Evaluate(0));
+                    var max = Convert.ToDouble(args.Evaluate(1));
                     return max; // simplified; real impl would use RNG
                 },
                 minArgs: 2,
@@ -402,9 +412,8 @@ namespace NINA.Test.Sequencer.Logic {
                 description: "",
                 usageExample: "",
                 implementation: args => {
-                    // args.Parameters[i] are NCalc.Expression
-                    var a = Convert.ToInt32(args.Parameters[0].Evaluate());
-                    var b = Convert.ToInt32(args.Parameters[1].Evaluate());
+                                        var a = Convert.ToInt32(args.Evaluate(0));
+                    var b = Convert.ToInt32(args.Evaluate(1));
                     return a + b;
                 },
                 minArgs: 2,
@@ -437,9 +446,8 @@ namespace NINA.Test.Sequencer.Logic {
                 description: "",
                 usageExample: "",
                 implementation: args => {
-                    // args.Parameters[i] are NCalc.Expression
-                    var a = Convert.ToInt32(args.Parameters[0].Evaluate());
-                    var b = Convert.ToInt32(args.Parameters[1].Evaluate());
+                                        var a = Convert.ToInt32(args.Evaluate(0));
+                    var b = Convert.ToInt32(args.Evaluate(1));
                     return a + b;
                 },
                 minArgs: 2,
@@ -472,9 +480,8 @@ namespace NINA.Test.Sequencer.Logic {
                 description: "",
                 usageExample: "",
                 implementation: args => {
-                    // args.Parameters[i] are NCalc.Expression
-                    var a = Convert.ToInt32(args.Parameters[0].Evaluate());
-                    var b = Convert.ToInt32(args.Parameters[1].Evaluate());
+                                        var a = Convert.ToInt32(args.Evaluate(0));
+                    var b = Convert.ToInt32(args.Evaluate(1));
                     return a + b;
                 },
                 minArgs: 2,
@@ -490,10 +497,9 @@ namespace NINA.Test.Sequencer.Logic {
                 description: "",
                 usageExample: "",
                 implementation: args => {
-                    // args.Parameters[i] are NCalc.Expression
-                    var a = Convert.ToInt32(args.Parameters[0].Evaluate());
-                    var b = Convert.ToInt32(args.Parameters[1].Evaluate());
-                    var c = Convert.ToInt32(args.Parameters[2].Evaluate());
+                                        var a = Convert.ToInt32(args.Evaluate(0));
+                    var b = Convert.ToInt32(args.Evaluate(1));
+                    var c = Convert.ToInt32(args.Evaluate(2));
                     return a + b + c;
                 },
                 minArgs: 3,
@@ -531,9 +537,8 @@ namespace NINA.Test.Sequencer.Logic {
                 description: "",
                 usageExample: "",
                 implementation: args => {
-                    // args.Parameters[i] are NCalc.Expression
-                    var a = Convert.ToInt32(args.Parameters[0].Evaluate());
-                    var b = Convert.ToInt32(args.Parameters[1].Evaluate());
+                                        var a = Convert.ToInt32(args.Evaluate(0));
+                    var b = Convert.ToInt32(args.Evaluate(1));
                     return a + b;
                 },
                 minArgs: 2,
@@ -549,10 +554,9 @@ namespace NINA.Test.Sequencer.Logic {
                 description: "",
                 usageExample: "",
                 implementation: args => {
-                    // args.Parameters[i] are NCalc.Expression
-                    var a = Convert.ToInt32(args.Parameters[0].Evaluate());
-                    var b = Convert.ToInt32(args.Parameters[1].Evaluate());
-                    var c = Convert.ToInt32(args.Parameters[2].Evaluate());
+                                        var a = Convert.ToInt32(args.Evaluate(0));
+                    var b = Convert.ToInt32(args.Evaluate(1));
+                    var c = Convert.ToInt32(args.Evaluate(2));
                     return a + b + c;
                 },
                 minArgs: 3,

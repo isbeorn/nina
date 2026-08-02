@@ -21,7 +21,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Abs_Description"],
                     usageExample: "Abs(-1)",
-                    implementation: args => Math.Abs(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Abs(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -30,7 +30,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Acos_Description"],
                     usageExample: "Acos(1)",
-                    implementation: args => Math.Acos(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Acos(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -39,7 +39,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Asin_Description"],
                     usageExample: "Asin(0)",
-                    implementation: args => Math.Asin(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Asin(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -48,7 +48,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Atan_Description"],
                     usageExample: "Atan(0)",
-                    implementation: args => Math.Atan(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Atan(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -59,9 +59,9 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     usageExample: "Avg(1, 2, 3)",
                     implementation: args => {
                         double sum = 0.0;
-                        int count = args.Parameters.Length;
+                        int count = args.Count;
                         for (int i = 0; i < count; i++) {
-                            sum += Convert.ToDouble(args.Parameters[i].Evaluate(), CultureInfo.InvariantCulture);
+                            sum += Convert.ToDouble(args.Evaluate(i), CultureInfo.InvariantCulture);
                         }
                         return sum / count;
                     },
@@ -74,7 +74,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Ceiling_Description"],
                     usageExample: "Ceiling(1.5)",
-                    implementation: args => Math.Ceiling(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Ceiling(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -83,7 +83,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Cos_Description"],
                     usageExample: "Cos(0)",
-                    implementation: args => Math.Cos(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Cos(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -92,7 +92,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Exp_Description"],
                     usageExample: "Exp(0)",
-                    implementation: args => Math.Exp(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Exp(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -101,7 +101,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Floor_Description"],
                     usageExample: "Floor(1.5)",
-                    implementation: args => Math.Floor(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Floor(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -111,8 +111,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_IEEERemainder_Description"],
                     usageExample: "IEEERemainder(3, 2)",
                     implementation: args => Math.IEEERemainder(
-                        Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture),
-                        Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture)),
+                        Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture),
+                        Convert.ToDouble(args.Evaluate(1), CultureInfo.InvariantCulture)),
                     minArgs: 2, maxArgs: 2
                 ),
 
@@ -121,7 +121,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Ln_Description"],
                     usageExample: "Ln(1)",
-                    implementation: args => Math.Log(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Log(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -131,8 +131,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Log_Description"],
                     usageExample: "Log(1, 10)",
                     implementation: args => Math.Log(
-                        Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture),
-                        Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture)),
+                        Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture),
+                        Convert.ToDouble(args.Evaluate(1), CultureInfo.InvariantCulture)),
                     minArgs: 2, maxArgs: 2
                 ),
 
@@ -141,7 +141,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Log10_Description"],
                     usageExample: "Log10(1)",
-                    implementation: args => Math.Log10(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Log10(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -151,8 +151,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Max_Description"],
                     usageExample: "Max(1, 2)",
                     implementation: args => Math.Max(
-                        Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture),
-                        Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture)),
+                        Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture),
+                        Convert.ToDouble(args.Evaluate(1), CultureInfo.InvariantCulture)),
                     minArgs: 2, maxArgs: 2
                 ),
 
@@ -162,8 +162,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Min_Description"],
                     usageExample: "Min(1, 2)",
                     implementation: args => Math.Min(
-                        Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture),
-                        Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture)),
+                        Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture),
+                        Convert.ToDouble(args.Evaluate(1), CultureInfo.InvariantCulture)),
                     minArgs: 2, maxArgs: 2
                 ),
 
@@ -173,8 +173,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Pow_Description"],
                     usageExample: "Pow(3, 2)",
                     implementation: args => Math.Pow(
-                        Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture),
-                        Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture)),
+                        Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture),
+                        Convert.ToDouble(args.Evaluate(1), CultureInfo.InvariantCulture)),
                     minArgs: 2, maxArgs: 2
                 ),
 
@@ -184,12 +184,12 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Round_Description"],
                     usageExample: "Round(3.222, 2)",
                     implementation: args => {
-                        if (args.Parameters.Length == 2) {
+                        if (args.Count == 2) {
                             return Math.Round(
-                                Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture),
-                                Convert.ToInt32(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture));
+                                Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture),
+                                Convert.ToInt32(args.Evaluate(1), CultureInfo.InvariantCulture));
                         }
-                        return Math.Round(Convert.ToDouble(args.Parameters[0].Evaluate()));
+                        return Math.Round(Convert.ToDouble(args.Evaluate(0)));
                     },
                     minArgs: 1, maxArgs: 2
                 ),
@@ -199,7 +199,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Sign_Description"],
                     usageExample: "Sign(-10)",
-                    implementation: args => Math.Sign(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Sign(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -208,7 +208,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Sin_Description"],
                     usageExample: "Sin(0)",
-                    implementation: args => Math.Sin(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Sin(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -217,7 +217,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Sqrt_Description"],
                     usageExample: "Sqrt(4)",
-                    implementation: args => Math.Sqrt(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Sqrt(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -226,7 +226,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Tan_Description"],
                     usageExample: "Tan(0)",
-                    implementation: args => Math.Tan(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Tan(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -235,7 +235,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     category: "Math",
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Truncate_Description"],
                     usageExample: "Truncate(1.7)",
-                    implementation: args => Math.Truncate(Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture)),
+                    implementation: args => Math.Truncate(Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture)),
                     minArgs: 1, maxArgs: 1
                 ),
 
@@ -245,8 +245,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Mod_Description"],
                     usageExample: "Mod(-1, 10)",
                     implementation: args => {
-                        var a = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                        var b = Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        var a = Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture);
+                        var b = Convert.ToDouble(args.Evaluate(1), CultureInfo.InvariantCulture);
                         var r = a % b;
                         if (r < 0 && b > 0) r += b;
                         return r;
@@ -260,9 +260,9 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Clamp_Description"],
                     usageExample: "Clamp(exposure, 1, 600)",
                     implementation: args => {
-                        var v = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                        var lo = Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
-                        var hi = Convert.ToDouble(args.Parameters[2].Evaluate(), CultureInfo.InvariantCulture);
+                        var v = Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture);
+                        var lo = Convert.ToDouble(args.Evaluate(1), CultureInfo.InvariantCulture);
+                        var hi = Convert.ToDouble(args.Evaluate(2), CultureInfo.InvariantCulture);
                         return Math.Clamp(v, lo, hi);
                     },
                     minArgs: 3, maxArgs: 3
@@ -274,9 +274,9 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Between_Description"],
                     usageExample: "Between(temperature, -10, 40)",
                     implementation: args => {
-                        var v = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                        var lo = Convert.ToDouble(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
-                        var hi = Convert.ToDouble(args.Parameters[2].Evaluate(), CultureInfo.InvariantCulture);
+                        var v = Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture);
+                        var lo = Convert.ToDouble(args.Evaluate(1), CultureInfo.InvariantCulture);
+                        var hi = Convert.ToDouble(args.Evaluate(2), CultureInfo.InvariantCulture);
                         return v >= lo && v <= hi;
                     },
                     minArgs: 3, maxArgs: 3
@@ -288,7 +288,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Deg_Description"],
                     usageExample: "Deg(PI() / 2)",
                     implementation: args => {
-                        var rad = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        var rad = Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture);
                         return AstroUtil.ToDegree(rad);
                     },
                     minArgs: 1, maxArgs: 1
@@ -300,7 +300,7 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     description: Loc.Instance["Lbl_SymbolFunction_Math_Rad_Description"],
                     usageExample: "Rad(90)",
                     implementation: args => {
-                        var deg = Convert.ToDouble(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        var deg = Convert.ToDouble(args.Evaluate(0), CultureInfo.InvariantCulture);
                         return AstroUtil.ToRadians(deg);
                     },
                     minArgs: 1, maxArgs: 1
@@ -313,8 +313,8 @@ namespace NINA.Sequencer.Logic.SymbolFunctions {
                     usageExample: "Sum(1, 2, 3)",
                     implementation: args => {
                         double sum = 0.0;
-                        for (int i = 0; i < args.Parameters.Length; i++) {
-                            sum += Convert.ToDouble(args.Parameters[i].Evaluate(), CultureInfo.InvariantCulture);
+                        for (int i = 0; i < args.Count; i++) {
+                            sum += Convert.ToDouble(args.Evaluate(i), CultureInfo.InvariantCulture);
                         }
                         return sum;
                     },

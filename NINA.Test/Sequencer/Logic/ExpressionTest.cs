@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using MdXaml.Plugins;
 using Moq;
-using NCalc.Handlers;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Sequencer;
@@ -360,10 +359,10 @@ namespace NINA.Test.Sequencer.Logic {
             _symbolBroker
                 .Setup(b => b.InvokeFunction(
                     "myFunc",
-                    It.IsAny<FunctionArgs>(),
+                    It.IsAny<ISymbolFunctionArguments>(),
                     out It.Ref<object>.IsAny,
                     out It.Ref<bool>.IsAny))
-                .Callback((string name, FunctionArgs args, out object result, out bool isVolatile) => {
+                .Callback((string name, ISymbolFunctionArguments args, out object result, out bool isVolatile) => {
                     result = 42.0;
                     isVolatile = true;
                 });
@@ -386,10 +385,10 @@ namespace NINA.Test.Sequencer.Logic {
             _symbolBroker
                 .Setup(b => b.InvokeFunction(
                     "failFunc",
-                    It.IsAny<FunctionArgs>(),
+                    It.IsAny<ISymbolFunctionArguments>(),
                     out It.Ref<object>.IsAny,
                     out It.Ref<bool>.IsAny))
-                .Callback((string name, FunctionArgs args, out object result, out bool isVolatile) => {
+                .Callback((string name, ISymbolFunctionArguments args, out object result, out bool isVolatile) => {
                     result = null;
                     isVolatile = false;
                     throw new InvalidOperationException("Boom");

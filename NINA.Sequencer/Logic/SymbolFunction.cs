@@ -12,8 +12,6 @@
 
 #endregion "copyright"
 
-using NCalc;
-using NCalc.Handlers;
 using NINA.Core.Locale;
 using System;
 
@@ -23,7 +21,7 @@ namespace NINA.Sequencer.Logic {
         public string Category { get; }
         public string Description { get; }
         public string UsageExample { get; }
-        public Func<FunctionArgs, object> Implementation { get; }
+        public Func<ISymbolFunctionArguments, object> Implementation { get; }
         public int MinArgs { get; }
         public int MaxArgs { get; }  
         public bool IsVolatile { get; }
@@ -33,7 +31,7 @@ namespace NINA.Sequencer.Logic {
                 string category,
                 string description,            
                 string usageExample,
-                Func<FunctionArgs, object> implementation,
+                Func<ISymbolFunctionArguments, object> implementation,
                 int minArgs = 0,
                 int maxArgs = 0,
                 bool isVolatile = false) {
@@ -49,8 +47,8 @@ namespace NINA.Sequencer.Logic {
             IsVolatile = isVolatile;
         }
 
-        public void ValidateArgs(string name, FunctionArgs args) {
-            var count = args.Parameters?.Length ?? 0;
+        public void ValidateArgs(string name, ISymbolFunctionArguments args) {
+            var count = args.Count;
 
             if (MaxArgs == 0 && count > 0) {
                 throw new ArgumentException(string.Format(Loc.Instance["Lbl_SymbolFunctions_Validation_NoArguments"], name, count));

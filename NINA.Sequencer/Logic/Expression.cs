@@ -200,7 +200,6 @@ namespace NINA.Sequencer.Logic {
 
                     // Evaluate just so that we can parse the expression
                     NCalc.Expression e = new NCalc.Expression(value, NCalc.ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
-                    e.Parameters = new Dictionary<string, object>();
                     IsSyntaxError = false;
                     try {
                         e.Evaluate();
@@ -482,9 +481,9 @@ namespace NINA.Sequencer.Logic {
             }
             return string.Format(CultureInfo.InvariantCulture, Loc.Instance[msgKey], Range[0], Range[1]);
         }
-        private void ExtensionFunction(string name, FunctionArgs args) {
+        private void ExtensionFunction(string name, FunctionEventArgs args) {
             try {
-                SymbolBroker.InvokeFunction(name, args, out var result, out var isVolatile);
+                SymbolBroker.InvokeFunction(name, new NCalcSymbolFunctionArguments(args.Parameters), out var result, out var isVolatile);
                 args.Result = result;
 
                 if (isVolatile) {
@@ -655,7 +654,10 @@ namespace NINA.Sequencer.Logic {
                         e.EvaluateFunction += ExtensionFunction;
                         _cachedNCalcExpression = e;
                     }
-                    e.Parameters = parameters;
+                    e.Parameters.Clear();
+                    foreach (KeyValuePair<string, object> parameter in parameters) {
+                        e.Parameters[parameter.Key] = parameter.Value;
+                    }
 
                     if (e.HasErrors()) {
                         Error = Loc.Instance["LblSyntaxError"];

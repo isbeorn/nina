@@ -56,9 +56,9 @@
     <ProjectReference Include="..\NINA.WPF.Base\NINA.WPF.Base.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NCalcSync" Version="5.2.11" />
-    <PackageReference Include="Parlot" Version="1.3.3" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="NCalcSync" Version="7.0.0" />
+    <PackageReference Include="Parlot" Version="1.5.8" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
   </ItemGroup>
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
