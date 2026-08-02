@@ -6262,19 +6262,19 @@ Por favor, comprueba si hay disponible actualización.</value>
     <value>Fecha</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>Día</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>Mes</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>Año</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
     <value>Observación</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>Restablecer fecha y hora de observación a la hora actual</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>Orden</value>
@@ -6968,7 +6968,7 @@ Aumenta el tiempo mínimo de exposición o espera hasta que sea más brillante.<
     <value>Mostrar histograma</value>
   </data>
   <data name="LblShowHorizon" xml:space="preserve">
-    <value>Show Local Horizon</value>
+    <value>Mostrar horizonte local</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
     <value>Mostrar mediciones de estrellas en segundos de arco</value>
