@@ -973,13 +973,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         Info.CoolerTargetTemp = 0;
                     }
 
-                    /*
-                     * Force any TEC cooler to off upon startup
-                     */
                     if (!internalReconnect) {
-                        CoolerOn = false;
-                        CancelCoolingSync();
-
                         /*
                          * Start the thread that operates the TEC
                          * This thread will operate the TEC in accordance with the user turning the cooler on or off
@@ -1088,9 +1082,16 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             try {
                 if (!internalReconnect) {
-                    Connected = false;
+                    /*
+                     * CancelCoolingSync() returns immediately while Connected is false, so the
+                     * workers have to be shut down before the flag is cleared. Clearing it first
+                     * skipped the whole cooler teardown: the CoolerWorker task and its
+                     * CancellationTokenSource were left running and the TEC was never commanded
+                     * off, so the camera kept cooling after NINA released it.
+                     */
                     CancelCoolingSync();
                     CancelSensorStatsSync();
+                    Connected = false;
                     Logger.Info($"QHYCCD: Closing camera {Info.Id}");
                 }
 
