@@ -51,6 +51,30 @@ namespace NINA.View {
             }
         }
 
+        private void ObservationMonth_StepRequested(object sender, StepRequestedEventArgs e) {
+            AdjustObservationTime(sender, e, FramingAssistantTimePart.Month);
+        }
+
+        private void ObservationDay_StepRequested(object sender, StepRequestedEventArgs e) {
+            AdjustObservationTime(sender, e, FramingAssistantTimePart.Day);
+        }
+
+        private void ObservationHour_StepRequested(object sender, StepRequestedEventArgs e) {
+            AdjustObservationTime(sender, e, FramingAssistantTimePart.Hour);
+        }
+
+        private void ObservationMinute_StepRequested(object sender, StepRequestedEventArgs e) {
+            AdjustObservationTime(sender, e, FramingAssistantTimePart.Minute);
+        }
+
+        private static void AdjustObservationTime(object sender, StepRequestedEventArgs e, FramingAssistantTimePart part) {
+            if (sender is IntStepperControl stepper
+                && stepper.GetBindingExpression(IntStepperControl.ValueProperty)?.ResolvedSource is FramingAssistantTimeContext context) {
+                e.Handled = true;
+                context.Adjust(part, e.Direction);
+            }
+        }
+
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;

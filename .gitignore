@@ -42,6 +42,7 @@ Generated\ Files/
 # NUNIT
 *.VisualState.xml
 TestResult.xml
+BenchmarkDotNet.Artifacts/
 
 # Files built by Visual Studio
 *_i.c
