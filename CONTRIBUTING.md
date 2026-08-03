@@ -133,7 +133,7 @@ This project is utilizing a standard git flow where it has the following branche
 
 N.I.N.A. utilizes the versioning scheme MAJOR.MINOR.PATCH.CHANNEL|BUILDNRXXX.
 
-MAJOR, MINOR, PATCH, and CHANNEL transitions are maintained manually. The release workflow increments BUILDNR on the selected `develop`, `master`, or `release/*` branch through a protected pull request.
+MAJOR, MINOR, PATCH, and CHANNEL transitions are maintained manually. Only the repository owner can start the release workflow. It increments BUILDNR on the selected `develop`, `master`, or `release/*` branch through a protected pull request. After the owner approves its pending Build and Test workflow, a gated final job verifies that the pull request was created by CI and contains only the expected one-step version changes before it squash-merges and publishes the release.
 
 MAJOR version increases for big changes, like changing technologies etc.
 

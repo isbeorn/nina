@@ -20,6 +20,14 @@ jobs:
       TARGET_BRANCH: ${{ github.ref_name }}
 
     steps:
+    - name: Validate release owner
+      shell: pwsh
+      run: |
+        if ('${{ github.actor }}' -ne '${{ github.repository_owner }}') {
+            Write-Error 'Only the repository owner can start a version release.'
+            exit 1
+        }
+
     - name: Validate target branch
       shell: pwsh
       run: |
@@ -98,7 +106,7 @@ jobs:
         $content = $content -replace '\[assembly: AssemblyVersion\(".*?"\)\]', "[assembly: AssemblyVersion(`"$releaseVersion`")]"
         $content = $content -replace '\[assembly: AssemblyFileVersion\(".*?"\)\]', "[assembly: AssemblyFileVersion(`"$releaseVersion`")]"
         $content = $content -replace '\[assembly: AssemblyInformationalVersion\(".*?"\)\]', "[assembly: AssemblyInformationalVersion(`"$releaseVersion$assemblyPostfix`")]"
-        Set-Content -Path $file -Value $content -Encoding UTF8
+        Set-Content -Path $file -Value $content -Encoding UTF8 -NoNewline
 
         $csprojFiles = git ls-files -- '*.csproj' | ForEach-Object { Get-Item $_ } | Where-Object {
             $_.Name -like 'NINA*' -or $_.Name -eq 'nikoncswrapper.csproj'
@@ -154,7 +162,7 @@ jobs:
             "Target branch: ``$env:TARGET_BRANCH``"
             "Preparation run: $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
             ''
-            'The repository owner must approve the pending Build and Test workflow. After it succeeds, CI will squash-merge this pull request and publish the merged commit.'
+            'The repository owner must approve the pending Build and Test workflow. Its final gated job will validate the version-only diff, squash-merge this pull request and publish the merged commit.'
         ) -join "`n"
 
         $pullRequestUrl = gh pr create `
@@ -164,4 +172,4 @@ jobs:
             --body $body
 
         "url=$pullRequestUrl" >> $env:GITHUB_OUTPUT
-        "### Version pull request created`n`n$pullRequestUrl`n`nApprove its pending **Build and Test** workflow to continue the release." >> $env:GITHUB_STEP_SUMMARY
+        "### Version pull request created`n`n$pullRequestUrl`n`nApprove its pending **Build and Test** workflow to validate, merge and publish the release." >> $env:GITHUB_STEP_SUMMARY
