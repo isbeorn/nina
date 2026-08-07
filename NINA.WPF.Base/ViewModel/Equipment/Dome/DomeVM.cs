@@ -647,7 +647,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             if (DomeInfo?.Connected == true) {
                 try {
                     var from = DomeInfo.Azimuth;
-                    Logger.Info($"Slewing dome to azimuth {degrees}°");
+                    Logger.Info($"Slewing dome to azimuth {degrees:F2}°");
                     progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSlew"] });
                     await Dome?.SlewToAzimuth(degrees, token);
                     var waitForUpdate = updateTimer.WaitForNextUpdate(token);
