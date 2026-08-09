@@ -61,6 +61,7 @@ This allows you to safely return to a stable release if needed.
     - The grid and viewport projection can be switched between Equatorial and Alt/Az coordinates, with clear compass direction indicators along the zero-altitude line that remain visible over the horizon overlay, planetarium handedness and correct image and camera orientation.
     - An optional local or custom horizon hides annotations and cached imagery below it, including in wide-field views.
     - Offline-only date and time steppers provide a current or fixed observation context for the map and horizon, while the selected date drives the altitude chart.
+    - The zoom buttons now adjust the offline map's field of view, matching mouse-wheel navigation, while other image sources retain image scaling.
 - **Autofocus & Star Measurements**
     - The native star detector now measures HFR from a centroid-refined curve of growth instead of using a first-moment approximation
     - Local star background estimation now uses a robust sigma-clipped median to reduce bias from nearby stars and outliers
