@@ -584,7 +584,9 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
 
-                Logger.Info($"Removing all symbols from: {source} ({count})");
+                if (count > 0) {
+                    Logger.Info($"Removing all symbols from: {source} ({count})");
+                }
             }
             PublishSymbolChanges(changes);
         }
