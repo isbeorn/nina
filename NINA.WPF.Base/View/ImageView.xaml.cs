@@ -75,6 +75,22 @@ namespace NINA.WPF.Base.View {
             set => SetValue(RightMouseButtonMoveCommandProperty, value);
         }
 
+        public static readonly DependencyProperty ZoomInCommandProperty =
+            DependencyProperty.Register(nameof(ZoomInCommand), typeof(ICommand), typeof(ImageView), new PropertyMetadata(null));
+
+        public ICommand ZoomInCommand {
+            get => (ICommand)GetValue(ZoomInCommandProperty);
+            set => SetValue(ZoomInCommandProperty, value);
+        }
+
+        public static readonly DependencyProperty ZoomOutCommandProperty =
+            DependencyProperty.Register(nameof(ZoomOutCommand), typeof(ICommand), typeof(ImageView), new PropertyMetadata(null));
+
+        public ICommand ZoomOutCommand {
+            get => (ICommand)GetValue(ZoomOutCommandProperty);
+            set => SetValue(ZoomOutCommandProperty, value);
+        }
+
         public static readonly DependencyProperty ScrollEnabledProperty =
             DependencyProperty.Register(nameof(ScrollEnabled), typeof(bool), typeof(ImageView), new PropertyMetadata(true));
 
@@ -292,6 +308,10 @@ namespace NINA.WPF.Base.View {
         }
 
         private void ButtonZoomIn_Click(object sender, RoutedEventArgs e) {
+            if (TryExecuteZoomCommand(ZoomInCommand)) {
+                return;
+            }
+
             Zoom(PART_ScaleTransform.ScaleX + PART_ScaleTransform.ScaleX * 0.25);
             var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
                                                          PART_ScrollViewer.ViewportHeight / 2);
@@ -300,11 +320,24 @@ namespace NINA.WPF.Base.View {
         }
 
         private void ButtonZoomOut_Click(object sender, RoutedEventArgs e) {
+            if (TryExecuteZoomCommand(ZoomOutCommand)) {
+                return;
+            }
+
             Zoom(PART_ScaleTransform.ScaleX - PART_ScaleTransform.ScaleX * 0.25);
             var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
                                                          PART_ScrollViewer.ViewportHeight / 2);
             lastCenterPositionOnTarget =
                   PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
+        }
+
+        private static bool TryExecuteZoomCommand(ICommand command) {
+            if (command?.CanExecute(null) != true) {
+                return false;
+            }
+
+            command.Execute(null);
+            return true;
         }
 
         private void ButtonZoomReset_Click(object sender, RoutedEventArgs e) {
