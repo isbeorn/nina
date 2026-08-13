@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.Input;
 using FluentAssertions;
 using NINA.Core.Enum;
 using NINA.CustomControlLibrary;
@@ -23,6 +24,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -212,6 +214,70 @@ namespace NINA.Test.View {
             GC.KeepAlive(host);
         }
 
+        [Test]
+        public void ZoomButtons_AdjustFieldOfViewWhenOfflineSkyMapIsLoaded() {
+            EnsureApplicationResources();
+            using FramingAssistantTimeContext timeContext = new FramingAssistantTimeContext(() => DateTime.Now, startTimer: false);
+            SourceContext context = new SourceContext {
+                FramingAssistantSource = SkySurveySource.SKYATLAS,
+                SkyMapAnnotator = new SkyMapAnnotatorContext { DynamicFoV = true },
+                TimeContext = timeContext
+            };
+            int zoomInCount = 0;
+            int zoomOutCount = 0;
+            context.ZoomInCommand = new RelayCommand(() => zoomInCount++, () => context.SkyMapAnnotator.DynamicFoV);
+            context.ZoomOutCommand = new RelayCommand(() => zoomOutCount++, () => context.SkyMapAnnotator.DynamicFoV);
+            FramingAssistantView view = new FramingAssistantView { DataContext = context };
+            Window host = new Window { Width = 1280, Height = 800, Content = view };
+            host.Measure(new Size(host.Width, host.Height));
+            host.Arrange(new Rect(0, 0, host.Width, host.Height));
+            host.UpdateLayout();
+            DrainDispatcher();
+            NINA.WPF.Base.View.ImageView imageView = FindDescendants<NINA.WPF.Base.View.ImageView>(view).Single();
+            Button zoomIn = FindImageViewButton(imageView, 0)!;
+            Button zoomOut = FindImageViewButton(imageView, 1)!;
+            TextBlock scale = (TextBlock)imageView.FindName("PART_TextblockScale");
+            string initialScale = scale.Text;
+
+            zoomIn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            zoomOut.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            zoomInCount.Should().Be(1);
+            zoomOutCount.Should().Be(1);
+            scale.Text.Should().Be(initialScale);
+            GC.KeepAlive(host);
+        }
+
+        [Test]
+        public void ZoomButtons_RetainImageScalingWhenOfflineSkyMapIsNotLoaded() {
+            EnsureApplicationResources();
+            using FramingAssistantTimeContext timeContext = new FramingAssistantTimeContext(() => DateTime.Now, startTimer: false);
+            SourceContext context = new SourceContext {
+                FramingAssistantSource = SkySurveySource.NASA,
+                SkyMapAnnotator = new SkyMapAnnotatorContext { DynamicFoV = false },
+                TimeContext = timeContext
+            };
+            int commandCount = 0;
+            context.ZoomInCommand = new RelayCommand(() => commandCount++, () => context.SkyMapAnnotator.DynamicFoV);
+            context.ZoomOutCommand = new RelayCommand(() => commandCount++, () => context.SkyMapAnnotator.DynamicFoV);
+            FramingAssistantView view = new FramingAssistantView { DataContext = context };
+            Window host = new Window { Width = 1280, Height = 800, Content = view };
+            host.Measure(new Size(host.Width, host.Height));
+            host.Arrange(new Rect(0, 0, host.Width, host.Height));
+            host.UpdateLayout();
+            DrainDispatcher();
+            NINA.WPF.Base.View.ImageView imageView = FindDescendants<NINA.WPF.Base.View.ImageView>(view).Single();
+            Button zoomIn = FindImageViewButton(imageView, 0)!;
+            TextBlock scale = (TextBlock)imageView.FindName("PART_TextblockScale");
+            string initialScale = scale.Text;
+
+            zoomIn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            commandCount.Should().Be(0);
+            scale.Text.Should().NotBe(initialScale);
+            GC.KeepAlive(host);
+        }
+
         [TestCase(10, 2, 0, 20, 12)]
         [TestCase(10, 0, 0, 20, 8)]
         [TestCase(20, 2, 0, 20, 20)]
@@ -275,6 +341,10 @@ namespace NINA.Test.View {
                 }
             }
             return null;
+        }
+
+        private static Button? FindImageViewButton(DependencyObject parent, int column) {
+            return FindDescendants<Button>(parent).FirstOrDefault(button => Grid.GetColumn(button) == column);
         }
 
         private static void ConstructInHost() {
@@ -351,6 +421,8 @@ namespace NINA.Test.View {
             public SkySurveySource FramingAssistantSource { get; set; }
             public SkyMapAnnotatorContext SkyMapAnnotator { get; set; } = new SkyMapAnnotatorContext();
             public FramingAssistantTimeContext TimeContext { get; set; } = null!;
+            public ICommand ZoomInCommand { get; set; } = null!;
+            public ICommand ZoomOutCommand { get; set; } = null!;
         }
 
         private sealed class SkyMapAnnotatorContext : INotifyPropertyChanged {

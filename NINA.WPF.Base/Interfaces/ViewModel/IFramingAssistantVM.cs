@@ -54,6 +54,8 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         SkySurveyImage ImageParameter { get; set; }
         IAsyncCommand LoadImageCommand { get; }
         ICommand MouseWheelCommand { get; }
+        ICommand ZoomInCommand { get; }
+        ICommand ZoomOutCommand { get; }
         bool NegativeDec { get; set; }
         double Opacity { get; set; }
         double OverlapPercentage { get; set; }

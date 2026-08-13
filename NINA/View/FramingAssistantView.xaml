@@ -1341,7 +1341,9 @@
                 ImageRotation="{Binding InverseRectangleRotation}"
                 RectangleFontSize="{Binding FontSize}"
                 RectangleOpacity="{Binding Opacity}"
-                ScrollEnabled="{Binding SkyMapAnnotator.DynamicFoV, Converter={StaticResource InverseBooleanConverter}}">
+                ScrollEnabled="{Binding SkyMapAnnotator.DynamicFoV, Converter={StaticResource InverseBooleanConverter}}"
+                ZoomInCommand="{Binding ZoomInCommand}"
+                ZoomOutCommand="{Binding ZoomOutCommand}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding RelativeSource={RelativeSource AncestorType=wpfbase:ImageView, Mode=FindAncestor}, Path=PART_ScrollViewerBinding}">
                         <i:InvokeCommandAction Command="{Binding ScrollViewerSizeChangedCommand}" />
