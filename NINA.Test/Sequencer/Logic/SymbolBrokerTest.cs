@@ -21,6 +21,9 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -117,6 +120,35 @@ namespace NINA.Test.Sequencer.Logic {
 
             broker.TryGetValue(key, out var value).Should().BeTrue(key);
             value.Should().BeNull(key);
+        }
+
+        private static IReadOnlyList<string> CaptureInfoMessages(Action action) {
+            var sink = new CollectingLogEventSink();
+            var originalLogger = Log.Logger;
+            using var logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.Sink(sink)
+                .CreateLogger();
+
+            Log.Logger = logger;
+            try {
+                action();
+            } finally {
+                Log.Logger = originalLogger;
+            }
+
+            return sink.Events
+                .Where(logEvent => logEvent.Level == LogEventLevel.Information)
+                .Select(logEvent => logEvent.RenderMessage())
+                .ToList();
+        }
+
+        private sealed class CollectingLogEventSink : ILogEventSink {
+            public List<LogEvent> Events { get; } = new List<LogEvent>();
+
+            public void Emit(LogEvent logEvent) {
+                Events.Add(logEvent);
+            }
         }
 
         [Test]
@@ -391,6 +423,25 @@ namespace NINA.Test.Sequencer.Logic {
             ValidateSymbol(key: "Switch_TestSwitch4", expectedSuccess: true, expectedValue: 52.3);
             switchSettingsMock.Object.KnownReadonlySwitchSymbols.Should().Equal("TestSwitch1", "TestSwitch2");
             switchSettingsMock.Object.KnownWritableSwitchSymbols.Should().Equal("TestSwitch3", "TestSwitch4");
+        }
+
+        [Test]
+        public void SymbolBroker_RemoveAllSymbols_LogsOnlyWhenSymbolsAreRemoved() {
+            var readOnlySwitch = new Mock<ISwitch>();
+            readOnlySwitch.SetupGet(x => x.Name).Returns("TestSwitch");
+            broker.UpdateDeviceInfo(new SwitchInfo {
+                Connected = true,
+                ReadonlySwitches = new System.Collections.ObjectModel.ReadOnlyCollection<ISwitch>(new List<ISwitch> { readOnlySwitch.Object })
+            });
+
+            var messages = CaptureInfoMessages(() => {
+                broker.UpdateDeviceInfo(new SwitchInfo { Connected = true });
+                broker.UpdateDeviceInfo(new FilterWheelInfo { Connected = true });
+            });
+
+            var removalMessages = messages.Where(message => message.Contains("Removing all symbols from:"));
+            removalMessages.Should().ContainSingle()
+                .Which.Should().Contain("Removing all symbols from: Gauge (1)");
         }
 
         [Test]
