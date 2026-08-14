@@ -39,6 +39,7 @@ This allows you to safely return to a stable release if needed.
 - QHY cameras now re-apply gain and offset after a read mode change. Previously a frame taken across a read mode switch was exposed with the new mode's power-on defaults while its metadata still recorded the requested values.
 - QHY cameras connected in a read mode that fixes the offset in hardware, such as Linearity HDR, no longer misreport their offset for the remainder of the session.
 - QHY cameras now really have their cooler turned off when they are disconnected. The cooler shutdown was skipped on every disconnect, so a camera that was cooling kept regulating to its old set point after being disconnected or after N.I.N.A. was closed, while the next session reported the cooler as off.
+- Captures now switch to the exposure's readout mode before applying gain and offset, so the first frame after a mode change is digitized and logged with the settings for that mode.
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
