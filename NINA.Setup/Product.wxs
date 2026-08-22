@@ -33,8 +33,23 @@
   <Package Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="!(bind.fileVersion.NINA.exe)" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A" InstallerVersion="200">
     
 
-    <!--https://learn.microsoft.com/en-us/windows/win32/msi/reinstallmode-->
-    <Property Id="REINSTALLMODE" Value="amus" />
+    <!-- A Property-table default is not sufficient here because Burn supplies
+         REINSTALLMODE=muso for upgrades and REINSTALLMODE=cmuse for repairs on the
+         MSI command line, which takes precedence over that default. Those modes let
+         MSI file-versioning rules skip a changed or higher-version file. During a
+         major upgrade the old product can then remove that skipped file, leaving it
+         missing instead of installing the packaged copy.
+
+         Reassert "amus" with a scheduled SetProperty action so "a" forces every
+         packaged file to be reinstalled regardless of checksum or version. It must
+         run before CostInitialize because file replacement decisions are made during
+         costing. Sequence="both" applies the override to the UI and execute sequences
+         (and is stated explicitly even though it is the WiX default), covering both
+         direct MSI UI and Burn/quiet execution paths.
+
+         https://learn.microsoft.com/en-us/windows/win32/msi/reinstallmode
+         https://learn.microsoft.com/en-us/windows/win32/msi/costinitialize-action -->
+    <SetProperty Id="REINSTALLMODE" Value="amus" Before="CostInitialize" Sequence="both" />
         
     <Icon Id="Logo_Nina.ico" SourceFile="Logo_Nina.ico" />
     <Property Id="ARPPRODUCTICON" Value="Logo_Nina.ico" />
