@@ -25,6 +25,8 @@ The bundle:
 
 The bundle is therefore a thin outer installer shell around the MSI, not a second independent package definition.
 
+Burn controls the MSI command line for install and repair, including `REINSTALLMODE`. The chained MSI deliberately reasserts its required file-replacement mode before file costing. Do not rely on an MSI Property-table default for a value that Burn passes on the command line.
+
 ## Build-Time Responsibilities
 
 `NINA.SetupBundle.wixproj` also performs build-pipeline work:
