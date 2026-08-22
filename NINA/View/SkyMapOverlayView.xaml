@@ -20,12 +20,15 @@
     mc:Ignorable="d">
     <Canvas
         behaviors:DragCommandBehavior.Drag="{Binding SkyMapAnnotator.DynamicFoV}"
+        behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
         behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
         behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
         behaviors:DragCommandBehavior.OverrideCursor="False"
         behaviors:MouseWheelCommandBehavior.Enabled="{Binding SkyMapAnnotator.DynamicFoV}"
         behaviors:MouseWheelCommandBehavior.MouseWheelCommand="{Binding MouseWheelCommand}"
         IsHitTestVisible="True">
-        <Image Source="{Binding SkyMapAnnotator.SkyMapOverlay}" />
+        <Image
+            RenderOptions.BitmapScalingMode="NearestNeighbor"
+            Source="{Binding SkyMapAnnotator.SkyMapOverlay}" />
     </Canvas>
 </UserControl>

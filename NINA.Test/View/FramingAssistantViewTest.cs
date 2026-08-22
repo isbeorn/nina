@@ -18,6 +18,7 @@ using NINA.Core.Enum;
 using NINA.CustomControlLibrary;
 using NINA.View;
 using NINA.ViewModel.FramingAssistant;
+using NINA.WPF.Base.Behaviors;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -43,6 +44,40 @@ namespace NINA.Test.View {
             Action construct = ConstructInHost;
 
             construct.Should().NotThrow();
+        }
+
+        [Test]
+        public void OfflineMapDragSurfaces_BindCompleteInteractionLifecycle() {
+            EnsureApplicationResources();
+            using FramingAssistantTimeContext timeContext = new FramingAssistantTimeContext(() => DateTime.Now, startTimer: false);
+            SourceContext context = new SourceContext {
+                FramingAssistantSource = SkySurveySource.SKYATLAS,
+                TimeContext = timeContext,
+                DragStartCommand = new RelayCommand(() => { }),
+                DragMoveCommand = new RelayCommand(() => { }),
+                DragStopCommand = new RelayCommand(() => { })
+            };
+            FramingAssistantView view = new FramingAssistantView { DataContext = context };
+            Window host = new Window { Width = 1280, Height = 800, Content = view };
+            host.Measure(new Size(host.Width, host.Height));
+            host.Arrange(new Rect(0, 0, host.Width, host.Height));
+            host.UpdateLayout();
+            DrainDispatcher();
+
+            NINA.WPF.Base.View.ImageView imageView = FindDescendants<NINA.WPF.Base.View.ImageView>(view).Single();
+            DependencyObject imageArea = imageView.ImageAreaContent.Should().BeAssignableTo<DependencyObject>().Subject;
+            FrameworkElement[] dragSurfaces = FindDescendants<FrameworkElement>(imageArea)
+                .Where(element => BindingPath(element, DragCommandBehavior.DragMoveCommandProperty) == "DragMoveCommand")
+                .ToArray();
+
+            dragSurfaces.Should().HaveCount(2);
+            dragSurfaces.Should().OnlyContain(element =>
+                BindingPath(element, DragCommandBehavior.DragStartCommandProperty) == "DragStartCommand"
+                && BindingPath(element, DragCommandBehavior.DragStopCommandProperty) == "DragStopCommand");
+            System.Windows.Controls.Image skyMapImage = FindDescendants<System.Windows.Controls.Image>(imageArea)
+                .Single(image => BindingPath(image, System.Windows.Controls.Image.SourceProperty) == "SkyMapAnnotator.SkyMapOverlay");
+            RenderOptions.GetBitmapScalingMode(skyMapImage).Should().Be(BitmapScalingMode.NearestNeighbor);
+            GC.KeepAlive(host);
         }
 
         [Test]
@@ -417,12 +452,19 @@ namespace NINA.Test.View {
             app.Resources[resourcesLoadedMarker] = true;
         }
 
+        private static string BindingPath(DependencyObject target, DependencyProperty property) {
+            return BindingOperations.GetBinding(target, property)?.Path?.Path;
+        }
+
         private sealed class SourceContext {
             public SkySurveySource FramingAssistantSource { get; set; }
             public SkyMapAnnotatorContext SkyMapAnnotator { get; set; } = new SkyMapAnnotatorContext();
             public FramingAssistantTimeContext TimeContext { get; set; } = null!;
             public ICommand ZoomInCommand { get; set; } = null!;
             public ICommand ZoomOutCommand { get; set; } = null!;
+            public ICommand DragStartCommand { get; set; } = null!;
+            public ICommand DragMoveCommand { get; set; } = null!;
+            public ICommand DragStopCommand { get; set; } = null!;
         }
 
         private sealed class SkyMapAnnotatorContext : INotifyPropertyChanged {

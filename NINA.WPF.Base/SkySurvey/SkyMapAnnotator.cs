@@ -42,6 +42,9 @@ namespace NINA.WPF.Base.SkySurvey {
         private IReadOnlyDictionary<string, DeepSkyObject> dbDeepSkyObjects = new Dictionary<string, DeepSkyObject>();
         private CancellationTokenSource imageLoadCancellation;
         private SkyMapImageCache imageCache;
+        private bool interactionRenderPending;
+        private readonly DispatcherTimer interactionRenderTimer;
+        private bool isInteracting;
         private int renderVersion;
         private readonly DispatcherTimer observerRefreshTimer;
         private SkyMapObserverSnapshot observerSnapshot;
@@ -55,6 +58,10 @@ namespace NINA.WPF.Base.SkySurvey {
             dbInstance = new DatabaseInteraction();
             AnnotateDSO = true;
             AnnotateGrid = true;
+            interactionRenderTimer = new DispatcherTimer(DispatcherPriority.Render) {
+                Interval = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60)
+            };
+            interactionRenderTimer.Tick += InteractionRenderTimer_Tick;
         }
 
         public SkyMapAnnotator(ITelescopeMediator mediator, IProfileService profileService) : this() {
@@ -133,6 +140,8 @@ namespace NINA.WPF.Base.SkySurvey {
             CancellationToken token) {
             telescopeMediator?.RemoveConsumer(this);
             CancelImageLoad();
+            imageCache?.Dispose();
+            rasterRenderer?.Dispose();
             this.cache = cache;
             ViewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
 
@@ -175,6 +184,20 @@ namespace NINA.WPF.Base.SkySurvey {
             return ViewportFoV;
         }
 
+        public void BeginInteraction() {
+            CancelImageLoad();
+            interactionRenderPending = false;
+            interactionRenderTimer.Stop();
+            isInteracting = true;
+        }
+
+        public void EndInteraction() {
+            interactionRenderPending = false;
+            interactionRenderTimer.Stop();
+            isInteracting = false;
+            UpdateSkyMap();
+        }
+
         public Coordinates ShiftViewport(Vector delta) {
             SkyMapObserverSnapshot observer = UsesObserver ? CreateObserverSnapshot() : null;
             SkyMapViewportProjection projection = GetProjection(observer, out _);
@@ -201,11 +224,19 @@ namespace NINA.WPF.Base.SkySurvey {
             }
 
             int version = Interlocked.Increment(ref renderVersion);
-            RenderCurrentFrame();
+            if (isInteracting) {
+                interactionRenderPending = true;
+                if (!interactionRenderTimer.IsEnabled) {
+                    interactionRenderTimer.Start();
+                }
+                return;
+            }
+
+            RenderCurrentFrame(SkyMapRenderQuality.Final);
             QueueMissingImages(version);
         }
 
-        private void RenderCurrentFrame() {
+        private void RenderCurrentFrame(SkyMapRenderQuality quality = SkyMapRenderQuality.Final) {
             SkyMapRenderOptions options = SkyMapRenderOptions.None;
             if (AnnotateConstellations || AnnotateDSO) {
                 options |= SkyMapRenderOptions.Stars;
@@ -231,16 +262,17 @@ namespace NINA.WPF.Base.SkySurvey {
             SkyMapObserverSnapshot observer = UsesObserver ? CreateObserverSnapshot() : null;
             Projection = GetProjection(observer, out bool projectionChanged);
             SkyMapScene scene = sceneBuilder.Build(Projection, options, DisabledCatalogues);
-            IReadOnlyList<SkyMapImagePlacement> images = UseCachedImages && imageCache is not null
-                ? imageCache.GetPlacements(Projection)
-                : [];
             bool telescopeVisible = telescopeConnected
                 && Projection.Contains(telescopeCoordinates)
                 && (!ShowHorizon || observer.IsVisible(telescopeCoordinates));
             Point? telescopePosition = telescopeVisible
                 ? Projection.Project(telescopeCoordinates)
                 : null;
-            SkyMapOverlay = rasterRenderer.Render(scene, images, telescopePosition);
+            SkyMapOverlay = UseCachedImages && imageCache is not null
+                ? imageCache.UsePlacements(
+                    Projection,
+                    images => rasterRenderer.Render(scene, images, telescopePosition, quality))
+                : rasterRenderer.Render(scene, [], telescopePosition, quality);
             if (projectionChanged) {
                 ProjectionChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -281,6 +313,7 @@ namespace NINA.WPF.Base.SkySurvey {
                     RenderCurrentFrame();
                 }
             } catch (OperationCanceledException) {
+            } catch (ObjectDisposedException) when (token.IsCancellationRequested) {
             } catch (Exception ex) {
                 Logger.Error("Failed to load an offline sky map image.", ex);
             }
@@ -288,6 +321,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
         public void ClearImagesForViewport() {
             CancelImageLoad();
+            imageCache?.Dispose();
             imageCache = new SkyMapImageCache(cache);
         }
 
@@ -320,7 +354,11 @@ namespace NINA.WPF.Base.SkySurvey {
             if (observerRefreshTimer is not null) {
                 observerRefreshTimer.Tick -= ObserverRefreshTimer_Tick;
             }
+            interactionRenderTimer.Stop();
+            interactionRenderTimer.Tick -= InteractionRenderTimer_Tick;
             CancelImageLoad();
+            imageCache?.Dispose();
+            rasterRenderer?.Dispose();
         }
 
         partial void OnAnnotateConstellationBoundariesChanged(bool oldValue, bool newValue) {
@@ -491,6 +529,15 @@ namespace NINA.WPF.Base.SkySurvey {
                 observerSnapshot = null;
                 UpdateSkyMap();
             }
+        }
+
+        private void InteractionRenderTimer_Tick(object sender, EventArgs e) {
+            interactionRenderTimer.Stop();
+            if (!isInteracting || !interactionRenderPending || !Initialized) {
+                return;
+            }
+            interactionRenderPending = false;
+            RenderCurrentFrame(SkyMapRenderQuality.InteractionPreview);
         }
 
         private void ProfileService_LocationOrHorizonChanged(object sender, EventArgs e) {

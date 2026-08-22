@@ -20,7 +20,10 @@ Build shape:
 - `NewSceneOnly` and the four `*Layer` cases isolate scene calculation.
 - `NewRasterOnly` isolates final image generation.
 - `NewAltAzDragFramePreparation` measures scene, cached-image, camera-placement and raster preparation for an alternating drag frame.
-- `NewAltAzDragFrameMaterialized` uses the same prepared frame and measures binding the resulting image plus WPF presentation into a reusable render target.
+- `NewAltAzSoftwareDragPreviewPreparation` forces WPF software rendering and measures preparation of the 50% scratch frame plus publication into the full-viewport interaction surface used by the live UI.
+- `NewAltAzSoftwareDragPreviewMaterialized` additionally measures binding and synchronous presentation into a reusable full-viewport render target.
+- `NewAltAzSoftwarePresentationOnly` isolates the synthetic full-viewport `RenderTargetBitmap` readback from live frame preparation.
+- `NewAltAzSoftwareFinalFrameMaterialized` forces WPF software rendering and measures the full-quality frame emitted when an interaction ends.
 
 Run benchmarks in Release mode and treat results as machine-specific comparisons. Keep functional and numerical assertions in `NINA.Test`; benchmarks prove cost, not correctness.
 

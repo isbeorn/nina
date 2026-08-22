@@ -101,6 +101,196 @@ namespace NINA.Test.SkySurvey {
         }
 
         [Test]
+        public void RasterRenderer_InSoftwareMode_CompositesCachedImagesIntoReusableBitmap() {
+            System.Windows.Interop.RenderMode previousMode = RenderOptions.ProcessRenderMode;
+            try {
+                RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+                BitmapSource cachedImage = CreatePixel(0, 0, 255);
+                SkyMapScene scene = new SkyMapScene([], [], [], [], []);
+                SkyMapRasterRenderer sut = new SkyMapRasterRenderer(100, 100);
+                SkyMapImagePlacement placement = new SkyMapImagePlacement(cachedImage, new Point(50, 50), 100, 100, 0);
+
+                ImageSource first = sut.Render(scene, [placement], null);
+                ImageSource second = sut.Render(scene, [placement], null);
+
+                first.Should().BeAssignableTo<BitmapSource>();
+                second.Should().BeSameAs(first);
+                byte[] pixels = new byte[100 * 100 * 4];
+                ((BitmapSource)second).CopyPixels(pixels, 100 * 4, 0);
+                PixelAt(pixels, 100, 50, 50).Should().Equal(0, 0, 255, 255);
+            } finally {
+                RenderOptions.ProcessRenderMode = previousMode;
+            }
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(3, 5)]
+        [TestCase(1200, 800)]
+        public void RasterRenderer_InSoftwareMode_PreservesViewportCoordinateSpaceDuringInteraction(
+            int width,
+            int height) {
+            System.Windows.Interop.RenderMode previousMode = RenderOptions.ProcessRenderMode;
+            try {
+                RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+                SkyMapScene scene = new SkyMapScene([], [], [], [], []);
+                using SkyMapRasterRenderer sut = new SkyMapRasterRenderer(width, height);
+
+                BitmapSource preview = (BitmapSource)sut.Render(
+                    scene,
+                    [],
+                    null,
+                    SkyMapRenderQuality.InteractionPreview);
+                BitmapSource final = (BitmapSource)sut.Render(scene, [], null, SkyMapRenderQuality.Final);
+
+                preview.PixelWidth.Should().Be(width);
+                preview.PixelHeight.Should().Be(height);
+                final.PixelWidth.Should().Be(width);
+                final.PixelHeight.Should().Be(height);
+                final.Should().BeSameAs(preview);
+            } finally {
+                RenderOptions.ProcessRenderMode = previousMode;
+            }
+        }
+
+        [Test]
+        public void RasterRenderer_InSoftwareMode_PreservesFlipAndClearsPreviousFrame() {
+            System.Windows.Interop.RenderMode previousMode = RenderOptions.ProcessRenderMode;
+            try {
+                RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+                BitmapSource asymmetric = CreateAsymmetricImage();
+                SkyMapScene scene = new SkyMapScene([], [], [], [], []);
+                SkyMapRasterRenderer sut = new SkyMapRasterRenderer(100, 100);
+
+                BitmapSource first = (BitmapSource)sut.Render(
+                    scene,
+                    [new SkyMapImagePlacement(asymmetric, new Point(50, 50), 40, 20, 0, FlipHorizontally: true)],
+                    null);
+                byte[] firstPixels = new byte[100 * 100 * 4];
+                first.CopyPixels(firstPixels, 100 * 4, 0);
+
+                PixelAt(firstPixels, 100, 40, 50)[0].Should().BeGreaterThan(PixelAt(firstPixels, 100, 40, 50)[2]);
+                PixelAt(firstPixels, 100, 60, 50)[2].Should().BeGreaterThan(PixelAt(firstPixels, 100, 60, 50)[0]);
+
+                BitmapSource second = (BitmapSource)sut.Render(scene, [], null);
+                byte[] secondPixels = new byte[100 * 100 * 4];
+                second.CopyPixels(secondPixels, 100 * 4, 0);
+                PixelAt(secondPixels, 100, 40, 50)[3].Should().Be(0);
+                PixelAt(secondPixels, 100, 60, 50)[3].Should().Be(0);
+            } finally {
+                RenderOptions.ProcessRenderMode = previousMode;
+            }
+        }
+
+        [Test]
+        public void RasterRenderer_InSoftwareMode_RotatesCachedImageAroundCenter() {
+            System.Windows.Interop.RenderMode previousMode = RenderOptions.ProcessRenderMode;
+            try {
+                RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+                SkyMapScene scene = new SkyMapScene([], [], [], [], []);
+                SkyMapRasterRenderer sut = new SkyMapRasterRenderer(100, 100);
+
+                BitmapSource result = (BitmapSource)sut.Render(
+                    scene,
+                    [new SkyMapImagePlacement(CreateAsymmetricImage(), new Point(50, 50), 40, 20, 90)],
+                    null);
+                byte[] pixels = new byte[100 * 100 * 4];
+                result.CopyPixels(pixels, 100 * 4, 0);
+
+                PixelAt(pixels, 100, 50, 40)[2].Should().BeGreaterThan(PixelAt(pixels, 100, 50, 40)[0]);
+                PixelAt(pixels, 100, 50, 60)[0].Should().BeGreaterThan(PixelAt(pixels, 100, 50, 60)[2]);
+            } finally {
+                RenderOptions.ProcessRenderMode = previousMode;
+            }
+        }
+
+        [Test]
+        public void RasterRenderer_InSoftwareMode_HorizonMaskCoversCachedImage() {
+            System.Windows.Interop.RenderMode previousMode = RenderOptions.ProcessRenderMode;
+            try {
+                RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+                BitmapSource red = CreatePixel(0, 0, 255);
+                SkyMapPath hiddenHalf = new SkyMapPath(
+                    [new Point(0, 50), new Point(100, 50), new Point(100, 100), new Point(0, 100)],
+                    closed: true);
+                SkyMapScene scene = new SkyMapScene([], [], [], [], [], horizonMaskAreas: [hiddenHalf]);
+                SkyMapRasterRenderer sut = new SkyMapRasterRenderer(100, 100);
+
+                BitmapSource result = (BitmapSource)sut.Render(
+                    scene,
+                    [new SkyMapImagePlacement(red, new Point(50, 50), 100, 100, 0)],
+                    null,
+                    SkyMapRenderQuality.InteractionPreview);
+                byte[] pixels = new byte[100 * 100 * 4];
+                result.CopyPixels(pixels, 100 * 4, 0);
+
+                PixelAt(pixels, 100, 50, 25).Should().Equal(0, 0, 255, 255);
+                AssertOpaqueMaskPixel(pixels, 100, 50, 75);
+            } finally {
+                RenderOptions.ProcessRenderMode = previousMode;
+            }
+        }
+
+        [Test]
+        public void RasterRenderer_InSoftwareMode_PreviewKeepsCachedTargetAlignedWithViewport() {
+            System.Windows.Interop.RenderMode previousMode = RenderOptions.ProcessRenderMode;
+            try {
+                RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+                BitmapSource red = CreatePixel(0, 0, 255);
+                SkyMapScene scene = new SkyMapScene([], [], [], [], []);
+                using SkyMapRasterRenderer sut = new SkyMapRasterRenderer(100, 100);
+
+                BitmapSource result = (BitmapSource)sut.Render(
+                    scene,
+                    [new SkyMapImagePlacement(red, new Point(20, 30), 20, 10, 0)],
+                    null,
+                    SkyMapRenderQuality.InteractionPreview);
+                byte[] pixels = new byte[100 * 100 * 4];
+                result.CopyPixels(pixels, 100 * 4, 0);
+
+                PixelAt(pixels, 100, 20, 30).Should().Equal(0, 0, 255, 255);
+                PixelAt(pixels, 100, 40, 60)[3].Should().Be(0);
+            } finally {
+                RenderOptions.ProcessRenderMode = previousMode;
+            }
+        }
+
+        [Test]
+        public void RasterRenderer_InSoftwareMode_PreviewPreservesDsoAndFollowingLabelTransform() {
+            System.Windows.Interop.RenderMode previousMode = RenderOptions.ProcessRenderMode;
+            try {
+                RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+                SkyMapScene scene = new SkyMapScene(
+                    [],
+                    [],
+                    [
+                        new SkyMapDeepSkyObject(string.Empty, "BRTNB", new Point(20, 75), 6, 4, 30),
+                        new SkyMapDeepSkyObject(string.Empty, "GLOCL", new Point(75, 75), 8, 8, 0)
+                    ],
+                    [],
+                    [],
+                    [new SkyMapLabel("STAR", new Point(75, 20), SkyMapLabelKind.Star)]);
+                using SkyMapRasterRenderer sut = new SkyMapRasterRenderer(100, 100);
+
+                BitmapSource final = (BitmapSource)sut.Render(scene, [], null, SkyMapRenderQuality.Final);
+                byte[] finalPixels = new byte[100 * 100 * 4];
+                final.CopyPixels(finalPixels, 100 * 4, 0);
+                bool finalDsoVisible = PixelAt(finalPixels, 100, 75, 75)[3] > 0;
+                bool finalStarLabelVisible = RegionHasAlpha(finalPixels, 100, 55, 15, 40, 25);
+
+                BitmapSource preview = (BitmapSource)sut.Render(scene, [], null, SkyMapRenderQuality.InteractionPreview);
+                byte[] previewPixels = new byte[100 * 100 * 4];
+                preview.CopyPixels(previewPixels, 100 * 4, 0);
+
+                finalDsoVisible.Should().BeTrue();
+                finalStarLabelVisible.Should().BeTrue();
+                PixelAt(previewPixels, 100, 75, 75)[3].Should().BeGreaterThan(0);
+                RegionHasAlpha(previewPixels, 100, 55, 15, 40, 25).Should().BeTrue();
+            } finally {
+                RenderOptions.ProcessRenderMode = previousMode;
+            }
+        }
+
+        [Test]
         public void RasterRenderer_WithHorizontallyFlippedCachedImage_MirrorsImagePixels() {
             BitmapSource asymmetric = BitmapSource.Create(
                 2,
@@ -382,6 +572,21 @@ namespace NINA.Test.SkySurvey {
             return source;
         }
 
+        private static BitmapSource CreateAsymmetricImage() {
+            byte[] pixels = new byte[20 * 10 * 4];
+            for (int y = 0; y < 10; y++) {
+                for (int x = 0; x < 20; x++) {
+                    int offset = (y * 20 + x) * 4;
+                    pixels[offset] = x < 10 ? (byte)0 : (byte)255;
+                    pixels[offset + 2] = x < 10 ? (byte)255 : (byte)0;
+                    pixels[offset + 3] = 255;
+                }
+            }
+            BitmapSource source = BitmapSource.Create(20, 10, 96, 96, PixelFormats.Bgra32, null, pixels, 20 * 4);
+            source.Freeze();
+            return source;
+        }
+
         private static byte[] Render(WpfImage image) {
             image.Measure(new Size(100, 100));
             image.Arrange(new Rect(0, 0, 100, 100));
@@ -396,6 +601,17 @@ namespace NINA.Test.SkySurvey {
         private static byte[] PixelAt(byte[] pixels, int width, int x, int y) {
             int offset = (y * width + x) * 4;
             return pixels.Skip(offset).Take(4).ToArray();
+        }
+
+        private static bool RegionHasAlpha(byte[] pixels, int width, int x, int y, int regionWidth, int regionHeight) {
+            for (int row = y; row < y + regionHeight; row++) {
+                for (int column = x; column < x + regionWidth; column++) {
+                    if (pixels[(row * width + column) * 4 + 3] > 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private static int CountRedPixels(BitmapSource source) {

@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -25,13 +26,21 @@ using DrawingColor = System.Drawing.Color;
 using DrawingFont = System.Drawing.Font;
 using DrawingFontStyle = System.Drawing.FontStyle;
 using DrawingPen = System.Drawing.Pen;
+using DrawingPixelFormat = System.Drawing.Imaging.PixelFormat;
 using DrawingPoint = System.Drawing.PointF;
 using MediaBrushes = System.Windows.Media.Brushes;
 using MediaPoint = System.Windows.Point;
 
 namespace NINA.WPF.Base.SkySurvey {
 
-    public sealed class SkyMapRasterRenderer {
+    public enum SkyMapRenderQuality {
+        Final,
+        InteractionPreview
+    }
+
+    public sealed class SkyMapRasterRenderer : IDisposable {
+        private const int RasterCacheCapacity = 64;
+        private const float PreviewScale = 0.5f;
         private static readonly DrawingBrush BoundaryBrush = new DrawingBrush(DrawingColor.FromArgb(128, DrawingColor.Khaki));
         private static readonly DrawingBrush CardinalDirectionBrush = new DrawingBrush(DrawingColor.Red);
         private static readonly DrawingBrush ConstellationBrush = new DrawingBrush(DrawingColor.FromArgb(128, 255, 255, 153));
@@ -54,7 +63,12 @@ namespace NINA.WPF.Base.SkySurvey {
         private static readonly DrawingFont DsoFont = new DrawingFont("Segoe UI", 10, DrawingFontStyle.Regular);
         private static readonly DrawingFont GridFont = new DrawingFont("Segoe UI", 7, DrawingFontStyle.Italic);
         private static readonly DrawingFont StarFont = new DrawingFont("Segoe UI", 8, DrawingFontStyle.Italic);
+        private static readonly ImageAttributes TileImageAttributes = CreateTileImageAttributes();
         private readonly int height;
+        private readonly Dictionary<RasterCacheKey, RasterCacheEntry> rasterCache = [];
+        private readonly LinkedList<RasterCacheKey> rasterCacheHistory = [];
+        private readonly Bitmap previewBitmap;
+        private readonly bool softwareComposition;
         private readonly int width;
         private readonly WriteableBitmap writeableBitmap;
 
@@ -62,13 +76,34 @@ namespace NINA.WPF.Base.SkySurvey {
             this.width = width;
             this.height = height;
             writeableBitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
+            softwareComposition = RenderOptions.ProcessRenderMode == System.Windows.Interop.RenderMode.SoftwareOnly;
+            previewBitmap = softwareComposition
+                ? new Bitmap(
+                    Math.Max(1, (int)Math.Ceiling(width * PreviewScale)),
+                    Math.Max(1, (int)Math.Ceiling(height * PreviewScale)),
+                    DrawingPixelFormat.Format32bppPArgb)
+                : null;
         }
+
+        public bool UsesSoftwareComposition => softwareComposition;
 
         public ImageSource Render(
             SkyMapScene scene,
             IReadOnlyList<SkyMapImagePlacement> images,
             MediaPoint? telescopePosition) {
+            return Render(scene, images, telescopePosition, SkyMapRenderQuality.Final);
+        }
+
+        public ImageSource Render(
+            SkyMapScene scene,
+            IReadOnlyList<SkyMapImagePlacement> images,
+            MediaPoint? telescopePosition,
+            SkyMapRenderQuality quality) {
             writeableBitmap.Dispatcher.VerifyAccess();
+            if (softwareComposition) {
+                return RenderSoftware(scene, images, telescopePosition, quality);
+            }
+
             writeableBitmap.Lock();
             try {
                 using Bitmap bitmap = new Bitmap(
@@ -78,30 +113,183 @@ namespace NINA.WPF.Base.SkySurvey {
                     System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
                     writeableBitmap.BackBuffer);
                 using Graphics frameGraphics = Graphics.FromImage(bitmap);
-                frameGraphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                frameGraphics.Clear(DrawingColor.Transparent);
-                frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
-                DrawPaths(frameGraphics, scene.ConstellationBoundaries, BoundaryPen, null);
-                DrawPaths(frameGraphics, scene.GridLines, GridPen, GridEquatorPen);
-                DrawConstellations(frameGraphics, scene);
-                DrawDeepSkyObjects(frameGraphics, scene);
-                DrawLabels(frameGraphics, scene.Labels);
-                if (telescopePosition is MediaPoint telescope) {
-                    DrawTelescope(frameGraphics, telescope);
-                }
-                if (scene.HorizonMaskAreas.Count > 0) {
-                    frameGraphics.SmoothingMode = SmoothingMode.None;
-                    DrawFilledPaths(frameGraphics, scene.HorizonMaskAreas, HorizonMaskBrush);
-                    frameGraphics.SmoothingMode = SmoothingMode.AntiAlias;
-                }
-                DrawLines(frameGraphics, scene.HorizonLines, HorizonPen);
-                DrawCardinalDirectionLabels(frameGraphics, scene.Labels);
+                DrawFrame(frameGraphics, scene, [], telescopePosition);
             } finally {
                 writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
                 writeableBitmap.Unlock();
             }
 
             return images.Count == 0 ? writeableBitmap : Composite(images, writeableBitmap);
+        }
+
+        public void Dispose() {
+            previewBitmap?.Dispose();
+            foreach (RasterCacheEntry entry in rasterCache.Values) {
+                entry.Bitmap.Dispose();
+            }
+            rasterCache.Clear();
+            rasterCacheHistory.Clear();
+        }
+
+        internal static Bitmap CreateRasterImage(BitmapSource source) {
+            BitmapSource converted = source.Format == PixelFormats.Pbgra32
+                ? source
+                : new FormatConvertedBitmap(source, PixelFormats.Pbgra32, null, 0);
+            Bitmap bitmap = new Bitmap(converted.PixelWidth, converted.PixelHeight, DrawingPixelFormat.Format32bppPArgb);
+            BitmapData data = null;
+            try {
+                try {
+                    data = bitmap.LockBits(
+                        new Rectangle(System.Drawing.Point.Empty, bitmap.Size),
+                        ImageLockMode.WriteOnly,
+                        DrawingPixelFormat.Format32bppPArgb);
+                    converted.CopyPixels(Int32Rect.Empty, data.Scan0, data.Height * data.Stride, data.Stride);
+                } finally {
+                    if (data is not null) {
+                        bitmap.UnlockBits(data);
+                    }
+                }
+                return bitmap;
+            } catch {
+                bitmap.Dispose();
+                throw;
+            }
+        }
+
+        private ImageSource RenderSoftware(
+            SkyMapScene scene,
+            IReadOnlyList<SkyMapImagePlacement> images,
+            MediaPoint? telescopePosition,
+            SkyMapRenderQuality quality) {
+            if (quality == SkyMapRenderQuality.InteractionPreview) {
+                using (Graphics previewGraphics = Graphics.FromImage(previewBitmap)) {
+                    previewGraphics.ScaleTransform(PreviewScale, PreviewScale);
+                    DrawFrame(previewGraphics, scene, images, telescopePosition);
+                }
+            }
+
+            writeableBitmap.Lock();
+            try {
+                using Bitmap bitmap = new Bitmap(
+                    width,
+                    height,
+                    writeableBitmap.BackBufferStride,
+                    DrawingPixelFormat.Format32bppPArgb,
+                    writeableBitmap.BackBuffer);
+                if (quality == SkyMapRenderQuality.InteractionPreview) {
+                    using Graphics frameGraphics = Graphics.FromImage(bitmap);
+                    frameGraphics.Clear(DrawingColor.Transparent);
+                    frameGraphics.CompositingMode = CompositingMode.SourceCopy;
+                    frameGraphics.CompositingQuality = CompositingQuality.HighSpeed;
+                    frameGraphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                    frameGraphics.PixelOffsetMode = PixelOffsetMode.Half;
+                    frameGraphics.DrawImage(
+                        previewBitmap,
+                        new Rectangle(0, 0, width, height),
+                        new Rectangle(0, 0, previewBitmap.Width, previewBitmap.Height),
+                        GraphicsUnit.Pixel);
+                } else {
+                    using Graphics frameGraphics = Graphics.FromImage(bitmap);
+                    DrawFrame(frameGraphics, scene, images, telescopePosition);
+                }
+            } finally {
+                writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
+                writeableBitmap.Unlock();
+            }
+            return writeableBitmap;
+        }
+
+        private void DrawFrame(
+            Graphics graphics,
+            SkyMapScene scene,
+            IReadOnlyList<SkyMapImagePlacement> images,
+            MediaPoint? telescopePosition) {
+            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+            graphics.Clear(DrawingColor.Transparent);
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            DrawImages(graphics, images);
+            DrawPaths(graphics, scene.ConstellationBoundaries, BoundaryPen, null);
+            DrawPaths(graphics, scene.GridLines, GridPen, GridEquatorPen);
+            DrawConstellations(graphics, scene);
+            DrawDeepSkyObjects(graphics, scene);
+            DrawLabels(graphics, scene.Labels);
+            if (telescopePosition is MediaPoint telescope) {
+                DrawTelescope(graphics, telescope);
+            }
+            if (scene.HorizonMaskAreas.Count > 0) {
+                graphics.SmoothingMode = SmoothingMode.None;
+                DrawFilledPaths(graphics, scene.HorizonMaskAreas, HorizonMaskBrush);
+                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            }
+            DrawLines(graphics, scene.HorizonLines, HorizonPen);
+            DrawCardinalDirectionLabels(graphics, scene.Labels);
+        }
+
+        private void DrawImages(Graphics graphics, IReadOnlyList<SkyMapImagePlacement> images) {
+            foreach (SkyMapImagePlacement image in images) {
+                double rotation = image.Rotation * Math.PI / 180;
+                double cosine = Math.Cos(rotation);
+                double sine = Math.Sin(rotation);
+                double halfWidth = image.Width / 2;
+                double halfHeight = image.Height / 2;
+                double transformedHalfWidth = Math.Abs(cosine) * halfWidth + Math.Abs(sine) * halfHeight;
+                double transformedHalfHeight = Math.Abs(sine) * halfWidth + Math.Abs(cosine) * halfHeight;
+                if (image.Center.X + transformedHalfWidth <= 0
+                    || image.Center.X - transformedHalfWidth >= width
+                    || image.Center.Y + transformedHalfHeight <= 0
+                    || image.Center.Y - transformedHalfHeight >= height) {
+                    continue;
+                }
+
+                Bitmap rasterImage = image.FlipHorizontally
+                    ? GetRasterImage(image.Image, flipHorizontally: true)
+                    : image.RasterImage ?? GetRasterImage(image.Image, flipHorizontally: false);
+                GraphicsState state = graphics.Save();
+                graphics.TranslateTransform((float)image.Center.X, (float)image.Center.Y);
+                graphics.RotateTransform((float)image.Rotation);
+                graphics.InterpolationMode = InterpolationMode.HighQualityBilinear;
+                graphics.DrawImage(
+                    rasterImage,
+                    [
+                        new DrawingPoint((float)-halfWidth, (float)-halfHeight),
+                        new DrawingPoint((float)halfWidth, (float)-halfHeight),
+                        new DrawingPoint((float)-halfWidth, (float)halfHeight)
+                    ],
+                    new RectangleF(0, 0, rasterImage.Width, rasterImage.Height),
+                    GraphicsUnit.Pixel,
+                    TileImageAttributes);
+                graphics.Restore(state);
+            }
+        }
+
+        private static ImageAttributes CreateTileImageAttributes() {
+            ImageAttributes attributes = new ImageAttributes();
+            attributes.SetWrapMode(WrapMode.TileFlipXY);
+            return attributes;
+        }
+
+        private Bitmap GetRasterImage(BitmapSource source, bool flipHorizontally) {
+            RasterCacheKey key = new RasterCacheKey(source, flipHorizontally);
+            if (rasterCache.TryGetValue(key, out RasterCacheEntry existing)) {
+                rasterCacheHistory.Remove(existing.Node);
+                rasterCacheHistory.AddFirst(existing.Node);
+                return existing.Bitmap;
+            }
+
+            Bitmap bitmap = CreateRasterImage(source);
+            if (flipHorizontally) {
+                bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
+            }
+            LinkedListNode<RasterCacheKey> node = rasterCacheHistory.AddFirst(key);
+            rasterCache.Add(key, new RasterCacheEntry(bitmap, node));
+            if (rasterCache.Count > RasterCacheCapacity) {
+                LinkedListNode<RasterCacheKey> last = rasterCacheHistory.Last;
+                RasterCacheEntry removed = rasterCache[last.Value];
+                rasterCacheHistory.RemoveLast();
+                rasterCache.Remove(last.Value);
+                removed.Bitmap.Dispose();
+            }
+            return bitmap;
         }
 
         private static void DrawConstellations(Graphics graphics, SkyMapScene scene) {
@@ -121,6 +309,7 @@ namespace NINA.WPF.Base.SkySurvey {
         private static void DrawDeepSkyObjects(Graphics graphics, SkyMapScene scene) {
             foreach (SkyMapDeepSkyObject dso in scene.DeepSkyObjects) {
                 (DrawingPen pen, DrawingBrush brush) = DsoStyle(dso.Type);
+                GraphicsState state = graphics.Save();
                 graphics.TranslateTransform((float)dso.Center.X, (float)dso.Center.Y);
                 graphics.RotateTransform((float)dso.PositionAngle);
                 graphics.TranslateTransform(-(float)dso.Center.X, -(float)dso.Center.Y);
@@ -131,7 +320,7 @@ namespace NINA.WPF.Base.SkySurvey {
                     (float)(dso.RadiusY * 2));
                 graphics.FillEllipse(DsoFillBrush, bounds);
                 graphics.DrawEllipse(pen, bounds);
-                graphics.ResetTransform();
+                graphics.Restore(state);
 
                 if (!string.IsNullOrWhiteSpace(dso.Name)) {
                     SizeF size = graphics.MeasureString(dso.Name, DsoFont);
@@ -305,5 +494,9 @@ namespace NINA.WPF.Base.SkySurvey {
             public static readonly DrawingPen GlobularClusterPen = new DrawingPen(DrawingColor.FromArgb(128, DrawingColor.Yellow));
             public static readonly DrawingPen DefaultPen = new DrawingPen(DrawingColor.FromArgb(127, 255, 255, 255));
         }
+
+        private readonly record struct RasterCacheKey(BitmapSource Image, bool FlipHorizontally);
+
+        private sealed record RasterCacheEntry(Bitmap Bitmap, LinkedListNode<RasterCacheKey> Node);
     }
 }
