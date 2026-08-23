@@ -38,6 +38,12 @@ From the code, the MSI is responsible for:
 
 The file layout in the MSI mirrors the runtime layout expected by the executable and libraries.
 
+## Upgrade File Replacement
+
+`Product.wxs` schedules `REINSTALLMODE=amus` before `CostInitialize` in both MSI sequences. This must be a scheduled property assignment rather than a Property-table default because Burn supplies its own `REINSTALLMODE` value on the MSI command line. The scheduled assignment makes file costing replace every packaged file during upgrade and repair, including files that are missing, locally changed or report a higher version than the packaged file.
+
+`Tests/InstallerUpgradeFileBehavior.ps1` verifies this through two isolated full-payload Burn bundles. It covers missing, lower-version, equal-version mismatch, higher-version and modified unversioned files. It also covers `Newtonsoft.Json.dll` as a third-party dependency and verifies that an unrelated sentinel is preserved. The harness uses test-only product, bundle, component, registry and install-directory identities and confirms that existing N.I.N.A. registrations and selected file hashes are unchanged after cleanup.
+
 ## Project References And Harvesting
 
 `NINA.Setup.wixproj` references the built outputs of:
@@ -72,3 +78,4 @@ It should contain installer authoring and packaging rules, not application logic
 - If a runtime feature requires a new shipped file or directory, verify both the executable project output and this WiX authoring.
 - Keep the install layout aligned with the paths the runtime code expects, especially under `External`, `Database`, `Utility`, and `Sequencer`.
 - Package behavior such as shortcuts, registry entries, and custom actions belongs here, not in the main application project.
+- Keep the scheduled `REINSTALLMODE=amus` assignment before file costing. A Property-table default can be overwritten by the Burn command line and can cause a skipped higher-version file to be removed during a major upgrade.
