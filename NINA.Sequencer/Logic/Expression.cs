@@ -1,4 +1,4 @@
-﻿using NCalc;
+using NCalc;
 using NCalc.Exceptions;
 using NCalc.Handlers;
 using Newtonsoft.Json;
@@ -16,7 +16,7 @@ using static NINA.Sequencer.Logic.UserSymbol;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
-    public class Expression : BaseINPC {
+    public class Expression : BaseINPC, IDisposable {
 
         private static readonly int ONE_YEAR = 365 * 24 * 60 * 60;
 
@@ -134,19 +134,21 @@ namespace NINA.Sequencer.Logic {
                 value = value.Trim();
 
                 if (value.Length == 0) {
-                    IsExpression = false;
-                    if (!double.IsNaN(Default)) {
-                        Value = Default;
-                    } else {
-                        Value = Double.NaN;
+                    lock (this) {
+                        ReleaseConsumersNoLock();
+                        IsExpression = false;
+                        if (!double.IsNaN(Default)) {
+                            Value = Default;
+                        } else {
+                            Value = Double.NaN;
+                        }
+                        field = value;
+                        _cachedNCalcExpression = null;
+                        parameters.Clear();
+                        references.Clear();
+                        Error = null;
+                        ForceAnnotated = false;
                     }
-                    field = value;
-                    _cachedNCalcExpression = null;
-                    parameters.Clear();
-                    resolved.Clear();
-                    references.Clear();
-                    Error = null;
-                    ForceAnnotated = false;
                     RaisePropertyChanged(nameof(Error));
                     RaisePropertyChanged(nameof(IsAnnotated));
                     RaisePropertyChanged(nameof(DefaultString));
@@ -157,14 +159,10 @@ namespace NINA.Sequencer.Logic {
 
                 if (value != field && IsExpression) {
                     // The value has changed.  Clear what we had...
-                    foreach (var symKvp in Resolved) {
-                        UserSymbol s = symKvp.Value;
-                        if (s != null) {
-                            symKvp.Value.RemoveConsumer(this);
-                        }
+                    lock (this) {
+                        ReleaseConsumersNoLock();
+                        parameters.Clear();
                     }
-                    resolved.Clear();
-                    parameters.Clear();
                 }
 
                 field = value;
@@ -219,8 +217,10 @@ namespace NINA.Sequencer.Logic {
                     }
 
                     // References now holds all of the CV's used in the expression
-                    parameters.Clear();
-                    resolved.Clear();
+                    lock (this) {
+                        ReleaseConsumersNoLock();
+                        parameters.Clear();
+                    }
                     Evaluate();
                     if (Symbol != null) {
                         UserSymbol.SymbolDirty(Symbol);
@@ -501,7 +501,7 @@ namespace NINA.Sequencer.Logic {
 
         private void Resolve(string reference, UserSymbol sym) {
             parameters.Remove(reference);
-            resolved.Remove(reference);
+            ReleaseConsumerNoLock(reference);
             resolved.Add(reference, sym);
             if (sym.Expr.Error == null) {
                 if (sym.Expr.Value == double.NegativeInfinity) {
@@ -575,7 +575,7 @@ namespace NINA.Sequencer.Logic {
                             }
                         }
                         foreach (string key in volatiles) {
-                            resolved.Remove(key);
+                            ReleaseConsumerNoLock(key);
                             parameters.Remove(key);
                         }
                     }
@@ -588,7 +588,7 @@ namespace NINA.Sequencer.Logic {
 
                     if (Parameters.Count < Resolved.Count) {
                         parameters.Clear();
-                        resolved.Clear();
+                        ReleaseConsumersNoLock();
                     }
 
                     if (SymbolBroker == null && Context != null) {
@@ -622,7 +622,7 @@ namespace NINA.Sequencer.Logic {
                                 object val = null;
                                 if (!found && SymbolBroker.TryGetValue(symReference, out val)) {
                                     // We don't want these resolved, just added to Parameters
-                                    resolved.Remove(symReference);
+                                    ReleaseConsumerNoLock(symReference);
                                     resolved.Add(symReference, null);
                                     parameters.Remove(symReference);
                                     AddParameter(symReference, ToExpressionParameterValue(val));
@@ -770,9 +770,11 @@ namespace NINA.Sequencer.Logic {
         public void ReferenceRemoved(UserSymbol sym) {
             lock (this) {
                 // A definition we use was removed
-                string identifier = sym.Identifier;
-                parameters.Remove(identifier);
-                resolved.Remove(identifier);
+                foreach (string identifier in resolved.Where(kvp => ReferenceEquals(kvp.Value, sym)).Select(kvp => kvp.Key).ToArray()) {
+                    parameters.Remove(identifier);
+                    resolved.Remove(identifier);
+                }
+                sym.RemoveConsumer(this);
                 Evaluate();
             }
         }
@@ -780,7 +782,7 @@ namespace NINA.Sequencer.Logic {
         public void Refresh() {
             lock (this) {
                 parameters.Clear();
-                resolved.Clear();
+                ReleaseConsumersNoLock();
                 Evaluate();
             }
         }
@@ -788,9 +790,32 @@ namespace NINA.Sequencer.Logic {
         public void RemoveParameter(string identifier) {
             lock (this) {
                 parameters.Remove(identifier);
-                resolved.Remove(identifier);
+                ReleaseConsumerNoLock(identifier);
                 Evaluate();
             }
+        }
+
+        public void ReleaseConsumers() {
+            lock (this) {
+                ReleaseConsumersNoLock();
+            }
+        }
+
+        public void Dispose() {
+            ReleaseConsumers();
+        }
+
+        private void ReleaseConsumerNoLock(string identifier) {
+            if (resolved.Remove(identifier, out UserSymbol symbol) && symbol != null) {
+                symbol.RemoveConsumer(this);
+            }
+        }
+
+        private void ReleaseConsumersNoLock() {
+            foreach (UserSymbol symbol in resolved.Values.Where(symbol => symbol != null).Distinct()) {
+                symbol.RemoveConsumer(this);
+            }
+            resolved.Clear();
         }
 
         public override string ToString() {

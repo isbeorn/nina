@@ -111,3 +111,4 @@ The project is referenced by the main app, the plugin layer, the installer, and 
 - Add MEF export metadata (`Name`, `Description`, `Icon`, `Category`) for anything that should appear in the sequencer UI or plugin loader registries.
 - Keep JSON compatibility in mind; serialization depends on the existing converters and prototype factory model.
 - If you use expression-backed properties, follow the generator-based pattern already used in this project instead of hand-writing the same boilerplate.
+- Generated expression properties release their symbol consumers automatically. A hand-written `Expression` owner must release the previous value when replacing it and override `ReleaseExpressionConsumers()` so detaching its sequence graph releases the current value.

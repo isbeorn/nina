@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -30,7 +30,7 @@ namespace NINA.Sequencer.Logic {
             try {
                 value = ExpressionPattern.Replace(value, match => {
                     string toReplace = match.Groups[1].Value;
-                    Expression ex = new Expression(toReplace, parent);
+                    using Expression ex = new Expression(toReplace, parent);
                     ex.SymbolBroker = symbolBroker;
                     ex.Evaluate(true);
                     if (ex.Error != null) {
