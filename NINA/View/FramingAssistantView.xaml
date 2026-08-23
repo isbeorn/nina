@@ -1684,14 +1684,17 @@
                                     Width="{Binding ProjectedRectangle.Width}"
                                     Height="{Binding ProjectedRectangle.Height}"
                                     behaviors:DragCommandBehavior.Drag="True"
+                                    behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
                                     behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
                                     behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
                                     behaviors:MouseWheelCommandBehavior.Enabled="{Binding SkyMapAnnotator.DynamicFoV}"
                                     behaviors:MouseWheelCommandBehavior.MouseWheelCommand="{Binding MouseWheelCommand}"
                                     Fill="Transparent"
+                                    HorizontalAlignment="Left"
                                     RenderTransformOrigin="0.5,0.5"
                                     Stroke="{StaticResource ButtonForegroundBrush}"
-                                    StrokeThickness="2">
+                                    StrokeThickness="2"
+                                    VerticalAlignment="Top">
                                     <Rectangle.RenderTransform>
                                         <RotateTransform Angle="{Binding ProjectedRectangle.Rotation}" />
                                     </Rectangle.RenderTransform>
@@ -1705,26 +1708,13 @@
                                         </MultiBinding>
                                     </Rectangle.Margin>
                                 </Rectangle>
-                                <Border
-                                    Width="2.5"
-                                    Height="2.5"
-                                    Background="{StaticResource ButtonForegroundBrush}">
-                                    <Border.Margin>
-                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
-
-                                            <Binding Path="ProjectedRectangle.X" />
-                                            <Binding Path="ProjectedRectangle.Y" />
-                                            <Binding Source="{StaticResource zero}" />
-                                            <Binding Source="{StaticResource zero}" />
-                                        </MultiBinding>
-                                    </Border.Margin>
-                                </Border>
-
                                 <Grid
                                     Width="{Binding ProjectedRectangle.Width}"
                                     Height="{Binding ProjectedRectangle.Height}"
+                                    HorizontalAlignment="Left"
                                     IsHitTestVisible="False"
-                                    RenderTransformOrigin="0.5,0.5">
+                                    RenderTransformOrigin="0.5,0.5"
+                                    VerticalAlignment="Top">
                                     <Grid.Margin>
                                         <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
@@ -1734,6 +1724,10 @@
                                             <Binding Source="{StaticResource zero}" />
                                         </MultiBinding>
                                     </Grid.Margin>
+                                    <Border
+                                        Width="2.5"
+                                        Height="2.5"
+                                        Background="{StaticResource ButtonForegroundBrush}" />
                                 </Grid>
                             </Grid>
                         </Grid>

@@ -127,14 +127,16 @@ namespace NINA.Benchmark {
 
             using ManualResetEventSlim materializedReady = new ManualResetEventSlim();
             materializedThread = new Thread(() => {
+                RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
                 materializedDispatcher = Dispatcher.CurrentDispatcher;
                 materializedFrameSource = new MaterializedFrameSource();
                 materializedImage = new WpfImage {
                     Width = viewport.Width,
                     Height = viewport.Height,
-                    Stretch = Stretch.None,
+                    Stretch = Stretch.Fill,
                     DataContext = materializedFrameSource
                 };
+                RenderOptions.SetBitmapScalingMode(materializedImage, BitmapScalingMode.NearestNeighbor);
                 BindingOperations.SetBinding(
                     materializedImage,
                     WpfImage.SourceProperty,
@@ -148,6 +150,9 @@ namespace NINA.Benchmark {
                     96,
                     PixelFormats.Pbgra32);
                 materializedRenderer = new SkyMapRasterRenderer((int)viewport.Width, (int)viewport.Height);
+                materializedFrameSource.Frame = PrepareAltAzDragFrame(
+                    materializedRenderer,
+                    SkyMapRenderQuality.InteractionPreview);
                 materializedReady.Set();
                 Dispatcher.Run();
             });
@@ -283,14 +288,43 @@ namespace NINA.Benchmark {
 
         [Benchmark]
         [BenchmarkCategory("Interaction")]
-        public void NewAltAzDragFrameMaterialized() {
+        public void NewAltAzSoftwareDragPreviewMaterialized() {
+            materializedDispatcher.Invoke(() => {
+                materializedFrameSource.Frame = PrepareAltAzDragFrame(
+                    materializedRenderer,
+                    SkyMapRenderQuality.InteractionPreview);
+                materializedTarget.Render(materializedImage);
+            });
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("InteractionDiagnostics")]
+        public void NewAltAzSoftwareDragPreviewPreparation() {
+            materializedDispatcher.Invoke(() => {
+                materializedFrameSource.Frame = PrepareAltAzDragFrame(
+                    materializedRenderer,
+                    SkyMapRenderQuality.InteractionPreview);
+            });
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("InteractionDiagnostics")]
+        public void NewAltAzSoftwarePresentationOnly() {
+            materializedDispatcher.Invoke(() => materializedTarget.Render(materializedImage));
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Interaction")]
+        public void NewAltAzSoftwareFinalFrameMaterialized() {
             materializedDispatcher.Invoke(() => {
                 materializedFrameSource.Frame = PrepareAltAzDragFrame(materializedRenderer);
                 materializedTarget.Render(materializedImage);
             });
         }
 
-        private ImageSource PrepareAltAzDragFrame(SkyMapRasterRenderer frameRenderer) {
+        private ImageSource PrepareAltAzDragFrame(
+            SkyMapRasterRenderer frameRenderer,
+            SkyMapRenderQuality quality = SkyMapRenderQuality.Final) {
             SkyMapViewportProjection projection = useAlternateCameraProjection
                 ? alternateAltAzProjection
                 : altAzProjection;
@@ -318,7 +352,7 @@ namespace NINA.Benchmark {
                 total += placement.X + placement.Y + placement.Rotation;
             }
             GC.KeepAlive(total);
-            return frameRenderer.Render(currentScene, images, null);
+            return frameRenderer.Render(currentScene, images, null, quality);
         }
 
         private static BitmapSource CreatePatternedImage(int index) {

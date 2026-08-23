@@ -14,10 +14,14 @@
 
 using CommunityToolkit.Mvvm.Input;
 using FluentAssertions;
+using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.CustomControlLibrary;
 using NINA.View;
 using NINA.ViewModel.FramingAssistant;
+using NINA.WPF.Base.Behaviors;
+using NINA.WPF.Base.SkySurvey;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -26,6 +30,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace NINA.Test.View {
@@ -43,6 +49,141 @@ namespace NINA.Test.View {
             Action construct = ConstructInHost;
 
             construct.Should().NotThrow();
+        }
+
+        [Test]
+        public void OfflineMapDragSurfaces_BindCompleteInteractionLifecycle() {
+            EnsureApplicationResources();
+            using FramingAssistantTimeContext timeContext = new FramingAssistantTimeContext(() => DateTime.Now, startTimer: false);
+            SourceContext context = new SourceContext {
+                FramingAssistantSource = SkySurveySource.SKYATLAS,
+                TimeContext = timeContext,
+                DragStartCommand = new RelayCommand(() => { }),
+                DragMoveCommand = new RelayCommand(() => { }),
+                DragStopCommand = new RelayCommand(() => { })
+            };
+            FramingAssistantView view = new FramingAssistantView { DataContext = context };
+            Window host = new Window { Width = 1280, Height = 800, Content = view };
+            host.Measure(new Size(host.Width, host.Height));
+            host.Arrange(new Rect(0, 0, host.Width, host.Height));
+            host.UpdateLayout();
+            DrainDispatcher();
+
+            NINA.WPF.Base.View.ImageView imageView = FindDescendants<NINA.WPF.Base.View.ImageView>(view).Single();
+            DependencyObject imageArea = imageView.ImageAreaContent.Should().BeAssignableTo<DependencyObject>().Subject;
+            FrameworkElement[] dragSurfaces = FindDescendants<FrameworkElement>(imageArea)
+                .Where(element => BindingPath(element, DragCommandBehavior.DragMoveCommandProperty) == "DragMoveCommand")
+                .ToArray();
+
+            dragSurfaces.Should().HaveCount(2);
+            dragSurfaces.Should().OnlyContain(element =>
+                BindingPath(element, DragCommandBehavior.DragStartCommandProperty) == "DragStartCommand"
+                && BindingPath(element, DragCommandBehavior.DragStopCommandProperty) == "DragStopCommand");
+            System.Windows.Controls.Image skyMapImage = FindDescendants<System.Windows.Controls.Image>(imageArea)
+                .Single(image => BindingPath(image, System.Windows.Controls.Image.SourceProperty) == "SkyMapAnnotator.SkyMapOverlay");
+            RenderOptions.GetBitmapScalingMode(skyMapImage).Should().Be(BitmapScalingMode.NearestNeighbor);
+            GC.KeepAlive(host);
+        }
+
+        [TestCase(0, true)]
+        [TestCase(37, true)]
+        [TestCase(323, true)]
+        [TestCase(90, true)]
+        [TestCase(180, true)]
+        [TestCase(270, true)]
+        [TestCase(0, false)]
+        [TestCase(37, false)]
+        [TestCase(323, false)]
+        [TestCase(90, false)]
+        [TestCase(180, false)]
+        [TestCase(270, false)]
+        public void ThreePanelMosaic_BaseAndPanelsRotateAroundTheMosaicCenter(double rotation, bool horizontal) {
+            EnsureApplicationResources();
+            using FramingAssistantTimeContext timeContext = new FramingAssistantTimeContext(() => DateTime.Now, startTimer: false);
+            double mainX = horizontal ? 120 : 300;
+            double mainY = horizontal ? 200 : 20;
+            double mainWidth = horizontal ? 560 : 200;
+            double mainHeight = horizontal ? 200 : 560;
+            FramingRectangle mainRectangle = new FramingRectangle(0, mainX, mainY, mainWidth, mainHeight) {
+                Rotation = rotation
+            };
+            SkyMapCameraRectanglePlacement mainPlacement = new SkyMapCameraRectanglePlacement(mainRectangle);
+            mainPlacement.Update(mainX, mainY, rotation);
+            FramingRectangle leftRectangle = new FramingRectangle(0, 0, 0, 200, 200) { Id = 1 };
+            SkyMapCameraRectanglePlacement leftPlacement = new SkyMapCameraRectanglePlacement(leftRectangle);
+            UpdatePanelPlacement(leftPlacement, rotation, horizontal ? -180 : 0, horizontal ? 0 : -180);
+            FramingRectangle centerRectangle = new FramingRectangle(0, 180, 0, 200, 200) { Id = 2 };
+            SkyMapCameraRectanglePlacement centerPlacement = new SkyMapCameraRectanglePlacement(centerRectangle);
+            UpdatePanelPlacement(centerPlacement, rotation, 0, 0);
+            FramingRectangle rightRectangle = new FramingRectangle(0, 360, 0, 200, 200) { Id = 3 };
+            SkyMapCameraRectanglePlacement rightPlacement = new SkyMapCameraRectanglePlacement(rightRectangle);
+            UpdatePanelPlacement(rightPlacement, rotation, horizontal ? 180 : 0, horizontal ? 0 : 180);
+            SourceContext context = new SourceContext {
+                FramingAssistantSource = SkySurveySource.SKYATLAS,
+                SkyMapAnnotator = new SkyMapAnnotatorContext { DynamicFoV = true },
+                TimeContext = timeContext,
+                ImageParameter = new SkySurveyImage {
+                    Image = new WriteableBitmap(800, 600, 96, 96, PixelFormats.Bgra32, null)
+                },
+                ProjectedRectangle = mainPlacement,
+                ProjectedCameraRectangles = [leftPlacement, centerPlacement, rightPlacement],
+                DragStartCommand = new RelayCommand(() => { }),
+                DragMoveCommand = new RelayCommand(() => { }),
+                DragStopCommand = new RelayCommand(() => { })
+            };
+            FramingAssistantView view = new FramingAssistantView { DataContext = context };
+            using TestWindow host = new TestWindow { Width = 1280, Height = 800, Content = view };
+            host.Show();
+            host.Measure(new Size(host.Width, host.Height));
+            host.Arrange(new Rect(0, 0, host.Width, host.Height));
+            host.UpdateLayout();
+            DrainDispatcher();
+            host.UpdateLayout();
+
+            NINA.WPF.Base.View.ImageView imageView = FindVisualDescendants<NINA.WPF.Base.View.ImageView>(view).Single();
+            Canvas placementCanvas = FindVisualDescendants<Canvas>(imageView)
+                .Single(canvas => BindingPath(canvas, FrameworkElement.WidthProperty) == "ImageParameter.Image.PixelWidth");
+            Rectangle main = FindVisualDescendants<Rectangle>(imageView)
+                .Single(rectangle => BindingPath(rectangle, FrameworkElement.WidthProperty) == "ProjectedRectangle.Width");
+            Rectangle[] panels = FindVisualDescendants<Rectangle>(imageView)
+                .Where(rectangle => rectangle.DataContext is SkyMapCameraRectanglePlacement)
+                .OrderBy(rectangle => ((SkyMapCameraRectanglePlacement)rectangle.DataContext).Id)
+                .ToArray();
+            Border centerDot = FindVisualDescendants<Border>(imageView)
+                .Single(border => border.Width == 2.5 && border.Height == 2.5);
+            panels.Should().HaveCount(3);
+            Point mainCenter = main.TranslatePoint(
+                new Point(main.ActualWidth / 2, main.ActualHeight / 2), imageView);
+            Point actualCenterDot = centerDot.TranslatePoint(
+                new Point(centerDot.ActualWidth / 2, centerDot.ActualHeight / 2), imageView);
+            Point leftCenter = panels[0].TranslatePoint(
+                new Point(panels[0].ActualWidth / 2, panels[0].ActualHeight / 2), imageView);
+            Point centerPanelCenter = panels[1].TranslatePoint(
+                new Point(panels[1].ActualWidth / 2, panels[1].ActualHeight / 2), imageView);
+            Point rightCenter = panels[2].TranslatePoint(
+                new Point(panels[2].ActualWidth / 2, panels[2].ActualHeight / 2), imageView);
+
+            AssertPoint(mainCenter, placementCanvas, imageView, mainPlacement.X + mainPlacement.Width / 2, mainPlacement.Y + mainPlacement.Height / 2);
+            AssertPoint(actualCenterDot, placementCanvas, imageView, mainPlacement.X + mainPlacement.Width / 2, mainPlacement.Y + mainPlacement.Height / 2);
+            AssertPoint(leftCenter, placementCanvas, imageView, leftPlacement.X + leftPlacement.Width / 2, leftPlacement.Y + leftPlacement.Height / 2);
+            AssertPoint(centerPanelCenter, placementCanvas, imageView, centerPlacement.X + centerPlacement.Width / 2, centerPlacement.Y + centerPlacement.Height / 2);
+            AssertPoint(rightCenter, placementCanvas, imageView, rightPlacement.X + rightPlacement.Width / 2, rightPlacement.Y + rightPlacement.Height / 2);
+            GC.KeepAlive(host);
+        }
+
+        private static void UpdatePanelPlacement(SkyMapCameraRectanglePlacement placement, double rotation, double horizontalOffset, double verticalOffset) {
+            double radians = AstroUtil.ToRadians(rotation);
+            const double mosaicCenterX = 400;
+            const double mosaicCenterY = 300;
+            double centerX = mosaicCenterX + horizontalOffset * Math.Cos(radians) - verticalOffset * Math.Sin(radians);
+            double centerY = mosaicCenterY + horizontalOffset * Math.Sin(radians) + verticalOffset * Math.Cos(radians);
+            placement.Update(centerX - placement.Width / 2, centerY - placement.Height / 2, rotation);
+        }
+
+        private static void AssertPoint(Point point, Canvas placementCanvas, NINA.WPF.Base.View.ImageView imageView, double x, double y) {
+            Point expected = placementCanvas.TranslatePoint(new Point(x, y), imageView);
+            point.X.Should().BeApproximately(expected.X, 0.01);
+            point.Y.Should().BeApproximately(expected.Y, 0.01);
         }
 
         [Test]
@@ -328,6 +469,18 @@ namespace NINA.Test.View {
             }
         }
 
+        private static IEnumerable<T> FindVisualDescendants<T>(DependencyObject parent) where T : DependencyObject {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++) {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T result) {
+                    yield return result;
+                }
+                foreach (T descendant in FindVisualDescendants<T>(child)) {
+                    yield return descendant;
+                }
+            }
+        }
+
         private static Button? FindStepperButton(DependencyObject parent, int column) {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++) {
                 DependencyObject child = VisualTreeHelper.GetChild(parent, i);
@@ -417,12 +570,32 @@ namespace NINA.Test.View {
             app.Resources[resourcesLoadedMarker] = true;
         }
 
+        private static string BindingPath(DependencyObject target, DependencyProperty property) {
+            return BindingOperations.GetBinding(target, property)?.Path?.Path;
+        }
+
         private sealed class SourceContext {
             public SkySurveySource FramingAssistantSource { get; set; }
             public SkyMapAnnotatorContext SkyMapAnnotator { get; set; } = new SkyMapAnnotatorContext();
             public FramingAssistantTimeContext TimeContext { get; set; } = null!;
             public ICommand ZoomInCommand { get; set; } = null!;
             public ICommand ZoomOutCommand { get; set; } = null!;
+            public ICommand DragStartCommand { get; set; } = null!;
+            public ICommand DragMoveCommand { get; set; } = null!;
+            public ICommand DragStopCommand { get; set; } = null!;
+            public SkySurveyImage ImageParameter { get; set; } = null!;
+            public SkyMapCameraRectanglePlacement ProjectedRectangle { get; set; } = null!;
+            public IReadOnlyList<SkyMapCameraRectanglePlacement> ProjectedCameraRectangles { get; set; } = [];
+            public int FontSize { get; set; } = 20;
+            public double Opacity { get; set; } = 0.5;
+            public double InverseRectangleRotation { get; set; }
+        }
+
+        private sealed class TestWindow : Window, IDisposable {
+
+            public void Dispose() {
+                Close();
+            }
         }
 
         private sealed class SkyMapAnnotatorContext : INotifyPropertyChanged {

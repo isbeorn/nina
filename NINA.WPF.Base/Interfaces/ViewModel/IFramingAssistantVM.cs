@@ -42,6 +42,7 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         double DecSeconds { get; set; }
         IDeepSkyObjectSearchVM DeepSkyObjectSearchVM { get; }
         int DownloadProgressValue { get; set; }
+        ICommand DragStartCommand => null;
         ICommand DragMoveCommand { get; }
         ICommand DragStopCommand { get; }
         DeepSkyObject DSO { get; set; }

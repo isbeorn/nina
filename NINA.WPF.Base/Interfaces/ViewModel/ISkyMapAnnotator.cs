@@ -48,11 +48,18 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
 
         ViewportFoV ChangeFoV(double vFoVDegrees);
 
+        void BeginInteraction() {
+        }
+
         void ClearImagesForViewport();
 
         Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CacheSkySurvey cache, CancellationToken ct);
 
         Coordinates ShiftViewport(Vector delta);
+
+        void EndInteraction() {
+            UpdateSkyMap();
+        }
 
         void UpdateDeviceInfo(TelescopeInfo deviceInfo);
 

@@ -184,6 +184,7 @@ namespace NINA.ViewModel.FramingAssistant {
             LoadImageCommand = new AsyncCommand<bool>(async () => { return await LoadImage(); });
             CancelLoadImageFromFileCommand = new RelayCommand((object o) => { CancelLoadImage(); });
             CancelLoadImageCommand = new RelayCommand((object o) => { CancelLoadImage(); });
+            DragStartCommand = new RelayCommand((object o) => SkyMapAnnotator.BeginInteraction());
             DragStopCommand = new RelayCommand(DragStop);
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache, (object o) => Cache != null);
@@ -1503,7 +1504,7 @@ namespace NINA.ViewModel.FramingAssistant {
             DSO.Coordinates = Rectangle.Coordinates;
             ImageParameter.Coordinates = SkyMapAnnotator.ViewportFoV.CenterCoordinates;
             RaiseCoordinatesChanged();
-            SkyMapAnnotator.UpdateSkyMap();
+            SkyMapAnnotator.EndInteraction();
         }
         private void DragMove(object obj) {
             if (RectangleCalculated) {
@@ -1730,6 +1731,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public ICommand CancelLoadImageFromFileCommand { get; private set; }
         public ICommand ClearCacheCommand { get; private set; }
         public ICommand DeleteCacheEntryCommand { get; private set; }
+        public ICommand DragStartCommand { get; private set; }
         public ICommand ScrollViewerSizeChangedCommand { get; private set; }
         public ICommand ResetObservationTimeCommand { get; private set; }
         public ICommand MouseWheelCommand { get; private set; }

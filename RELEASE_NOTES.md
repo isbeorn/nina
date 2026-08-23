@@ -59,7 +59,8 @@ This allows you to safely return to a stable release if needed.
 - Sky brightness readings in the Weather device windows have been increased from 2 decimal places to 5 so that measurements obtained in low light conditions are adequately displayed.
 - Improved Sky Atlas search performance.
 - **Offline framing sky map improvements**
-    - All map layers and camera framing rectangles now refresh continuously while dragging, with substantially lower rendering overhead, fewer temporary allocations, and bounded decoded-image memory use.
+    - All map layers and camera framing rectangles now refresh continuously while dragging, with substantially lower rendering overhead, fewer temporary allocations and bounded decoded-image memory use.
+    - Drag updates are now scheduled at up to 60 FPS in both rendering modes. Software-only rendering composites cached map tiles into one reusable full-viewport surface using a reduced-resolution scratch frame, substantially improving responsiveness when hardware acceleration is disabled while keeping targets, framing overlays and annotations aligned.
     - The grid and viewport projection can be switched between Equatorial and Alt/Az coordinates, with clear compass direction indicators along the zero-altitude line that remain visible over the horizon overlay, planetarium handedness and correct image and camera orientation.
     - An optional local or custom horizon hides annotations and cached imagery below it, including in wide-field views.
     - Offline-only date and time steppers provide a current or fixed observation context for the map and horizon, while the selected date drives the altitude chart.

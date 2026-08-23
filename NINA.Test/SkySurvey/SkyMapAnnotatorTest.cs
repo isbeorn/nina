@@ -25,7 +25,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace NINA.Test.SkySurvey {
 
@@ -268,6 +270,70 @@ namespace NINA.Test.SkySurvey {
             CopyPixels((BitmapSource)sut.SkyMapOverlay).Should().Equal(blank);
         }
 
+        [TestCase(System.Windows.Interop.RenderMode.Default)]
+        [TestCase(System.Windows.Interop.RenderMode.SoftwareOnly)]
+        public async Task Interaction_CoalescesMovesAndRendersFinalFrameOnEnd(System.Windows.Interop.RenderMode renderMode) {
+            System.Windows.Interop.RenderMode previousMode = RenderOptions.ProcessRenderMode;
+            try {
+                RenderOptions.ProcessRenderMode = renderMode;
+                FramingAssistantSettings framingAssistantSettings = new FramingAssistantSettings();
+                Mock<IProfile> profile = new Mock<IProfile>();
+                profile.SetupGet(x => x.FramingAssistantSettings).Returns(framingAssistantSettings);
+                Mock<IProfileService> profileService = new Mock<IProfileService>();
+                profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
+                using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object);
+                await sut.Initialize(CelestialCoordinates(85, 20), 40, 100, 100, 0, null, CancellationToken.None);
+                int changes = 0;
+                sut.ProjectionChanged += (_, _) => changes++;
+
+                sut.BeginInteraction();
+                for (int i = 0; i < 3; i++) {
+                    sut.ShiftViewport(new Vector(1, 0));
+                    sut.UpdateSkyMap();
+                }
+
+                changes.Should().Be(0);
+                PumpDispatcher(TimeSpan.FromMilliseconds(100));
+                changes.Should().Be(1);
+
+                sut.ShiftViewport(new Vector(1, 0));
+                sut.UpdateSkyMap();
+                sut.EndInteraction();
+
+                changes.Should().Be(2);
+            } finally {
+                RenderOptions.ProcessRenderMode = previousMode;
+            }
+        }
+
+        [TestCase(System.Windows.Interop.RenderMode.Default)]
+        [TestCase(System.Windows.Interop.RenderMode.SoftwareOnly)]
+        public async Task Interaction_RendersPendingMoveAtSixtyFpsCadence(System.Windows.Interop.RenderMode renderMode) {
+            System.Windows.Interop.RenderMode previousMode = RenderOptions.ProcessRenderMode;
+            try {
+                RenderOptions.ProcessRenderMode = renderMode;
+                FramingAssistantSettings framingAssistantSettings = new FramingAssistantSettings();
+                Mock<IProfile> profile = new Mock<IProfile>();
+                profile.SetupGet(x => x.FramingAssistantSettings).Returns(framingAssistantSettings);
+                Mock<IProfileService> profileService = new Mock<IProfileService>();
+                profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
+                using SkyMapAnnotator sut = new SkyMapAnnotator(null, profileService.Object);
+                await sut.Initialize(CelestialCoordinates(85, 20), 40, 100, 100, 0, null, CancellationToken.None);
+                int changes = 0;
+                sut.ProjectionChanged += (_, _) => changes++;
+
+                sut.BeginInteraction();
+                sut.ShiftViewport(new Vector(1, 0));
+                sut.UpdateSkyMap();
+                PumpDispatcher(TimeSpan.FromMilliseconds(25));
+
+                changes.Should().Be(1);
+                sut.EndInteraction();
+            } finally {
+                RenderOptions.ProcessRenderMode = previousMode;
+            }
+        }
+
         private static byte[] CopyPixels(BitmapSource source) {
             int stride = (source.PixelWidth * source.Format.BitsPerPixel + 7) / 8;
             byte[] pixels = new byte[stride * source.PixelHeight];
@@ -277,6 +343,17 @@ namespace NINA.Test.SkySurvey {
 
         private static Coordinates CelestialCoordinates(double rightAscension, double declination) {
             return new Coordinates(rightAscension, declination, Epoch.J2000, Coordinates.RAType.Degrees);
+        }
+
+        private static void PumpDispatcher(TimeSpan duration) {
+            DispatcherFrame frame = new DispatcherFrame();
+            DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.ApplicationIdle) { Interval = duration };
+            timer.Tick += (_, _) => {
+                timer.Stop();
+                frame.Continue = false;
+            };
+            timer.Start();
+            Dispatcher.PushFrame(frame);
         }
     }
 }
