@@ -32,6 +32,9 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public bool Check(ISequenceItem previousItem, ISequenceItem nextItem, bool test) {
             if (!test) CalculateExpectedTime();
+            if (!double.IsFinite(Data.CurrentAltitude)) {
+                return true;
+            }
 
             var check = true;
             switch (Data.Comparator) {

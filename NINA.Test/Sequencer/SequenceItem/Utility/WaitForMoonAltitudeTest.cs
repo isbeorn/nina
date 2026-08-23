@@ -14,9 +14,14 @@
 
 using FluentAssertions;
 using Moq;
+using NINA.Core.Enum;
+using NINA.Core.Model;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.SequenceItem.Utility;
 using NUnit.Framework;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
@@ -43,6 +48,47 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             item2.Icon.Should().BeSameAs(sut.Icon);
             item2.Data.TargetAltitude.Should().Be(sut.Data.TargetAltitude);
             item2.Data.Comparator.Should().Be(sut.Data.Comparator);
+        }
+
+        [Test]
+        [TestCase(9.99, ComparisonOperatorEnum.LESS_THAN, true)]
+        [TestCase(10.0, ComparisonOperatorEnum.LESS_THAN, true)]
+        [TestCase(10.01, ComparisonOperatorEnum.LESS_THAN, false)]
+        [TestCase(9.99, ComparisonOperatorEnum.GREATER_THAN, false)]
+        [TestCase(10.0, ComparisonOperatorEnum.GREATER_THAN, false)]
+        [TestCase(10.01, ComparisonOperatorEnum.GREATER_THAN, true)]
+        [TestCase(double.NaN, ComparisonOperatorEnum.LESS_THAN, true)]
+        [TestCase(double.NaN, ComparisonOperatorEnum.GREATER_THAN, true)]
+        public void WaitForSunAltitude_Execute_UsesThresholdAndWaitsForInvalidAltitude(
+            double currentAltitude,
+            ComparisonOperatorEnum comparator,
+            bool shouldWait) {
+            var sut = new TestableWaitForSunAltitude(profileServiceMock.Object, currentAltitude);
+            sut.Data.Offset = 10.0;
+            sut.Data.Comparator = comparator;
+            var progress = new Mock<IProgress<ApplicationStatus>>();
+            using var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.Cancel();
+
+            if (shouldWait) {
+                Assert.CatchAsync<OperationCanceledException>(async () =>
+                    await sut.Execute(progress.Object, cancellationTokenSource.Token));
+            } else {
+                Assert.DoesNotThrowAsync(async () =>
+                    await sut.Execute(progress.Object, cancellationTokenSource.Token));
+            }
+        }
+
+        private sealed class TestableWaitForSunAltitude : WaitForSunAltitude {
+            private readonly double currentAltitude;
+
+            public TestableWaitForSunAltitude(IProfileService profileService, double currentAltitude) : base(profileService) {
+                this.currentAltitude = currentAltitude;
+            }
+
+            public override void CalculateExpectedTime() {
+                Data.CurrentAltitude = currentAltitude;
+            }
         }
     }
 }

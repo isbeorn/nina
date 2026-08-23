@@ -70,7 +70,7 @@ namespace NINA.Test.Sequencer.Conditions {
         [Test]
         [TestCase(10, 20, ComparisonOperatorEnum.LESS_THAN, false)]
         [TestCase(20, 10, ComparisonOperatorEnum.LESS_THAN, true)]
-        //[TestCase(10, 10, ComparisonOperatorEnum.LESS_THAN, true)]   Only < and > now
+        [TestCase(10, 10, ComparisonOperatorEnum.LESS_THAN, false)]
         [TestCase(10, 10.01, ComparisonOperatorEnum.LESS_THAN, false)]
         [TestCase(10, 9.99, ComparisonOperatorEnum.LESS_THAN, true)]
         [TestCase(10, 20, ComparisonOperatorEnum.GREATER_THAN, true)]
@@ -86,6 +86,18 @@ namespace NINA.Test.Sequencer.Conditions {
             sut.Data.CurrentAltitude = currentAlt;
 
             sut.Check(default, default, true).Should().Be(expected);
+        }
+
+        [Test]
+        [TestCase(ComparisonOperatorEnum.LESS_THAN)]
+        [TestCase(ComparisonOperatorEnum.GREATER_THAN)]
+        public void Check_NaNAltitude_ContinuesCondition(ComparisonOperatorEnum comparator) {
+            var sut = new MoonAltitudeCondition(profileServiceMock.Object);
+            sut.Data.Comparator = comparator;
+            sut.Data.Offset = 10.0;
+            sut.Data.CurrentAltitude = double.NaN;
+
+            sut.Check(default, default, true).Should().BeTrue();
         }
 
         [Test]

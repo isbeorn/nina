@@ -73,6 +73,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         private bool MustWait() {
+            if (!double.IsFinite(Data.CurrentAltitude)) {
+                return true;
+            }
+
             switch (Data.Comparator) {
                 case ComparisonOperatorEnum.GREATER_THAN:
                     return Data.CurrentAltitude > GetDataOffset();
