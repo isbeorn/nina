@@ -250,6 +250,19 @@ namespace NINA.Sequencer.Container {
             }
         }
 
+        public override void ReleaseExpressionConsumers() {
+            base.ReleaseExpressionConsumers();
+            foreach (ISequenceItem item in Items) {
+                item.ReleaseExpressionConsumers();
+            }
+            foreach (ISequenceCondition condition in Conditions) {
+                condition.ReleaseExpressionConsumers();
+            }
+            foreach (ISequenceTrigger trigger in Triggers) {
+                trigger.ReleaseExpressionConsumers();
+            }
+        }
+
         public bool CheckConditions(ISequenceItem previousItem, ISequenceItem nextItem) {
             lock (lockObj) {
                 var c = GetConditionsSnapshot().Where(x => x.Status != SequenceEntityStatus.DISABLED).ToList();

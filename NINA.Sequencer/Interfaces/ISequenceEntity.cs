@@ -67,5 +67,7 @@ namespace NINA.Sequencer {
         /// Each time the sequence container finishes a loop this is called
         /// </summary>
         void SequenceBlockFinished();
+
+        void ReleaseExpressionConsumers();
     }
 }

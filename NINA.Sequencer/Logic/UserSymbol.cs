@@ -80,7 +80,15 @@ namespace NINA.Sequencer.Logic {
         public Expression Expr {
             get => _expr;
             set {
+                if (ReferenceEquals(_expr, value)) {
+                    return;
+                }
+                _expr?.ReleaseConsumers();
                 _expr = value;
+                if (_expr == null) {
+                    RaisePropertyChanged();
+                    return;
+                }
                 _expr.SymbolBroker = SymbolBroker;
                 RaisePropertyChanged();
             }
@@ -187,6 +195,7 @@ namespace NINA.Sequencer.Logic {
             if (SymbolCache.TryGetValue(GlobalSymbols, out cached)) {
                 Logger.Info("Cleared UserSymbols");
                 cached.Clear();
+                RemoveScopeIfEmpty(GlobalSymbols, cached);
             }
         }
 
@@ -374,7 +383,8 @@ namespace NINA.Sequencer.Logic {
             }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
             // Make sure adler's problem sequence works here (fixed in Powerups)
-            if (!IsAttachedToRoot(Parent) && (Parent != GlobalSymbols) && !(this is GlobalVariable || this is GlobalConstant)) {
+            bool isGlobal = this is GlobalVariable || this is GlobalConstant;
+            if (!IsAttachedToRoot(Parent) && (Parent != GlobalSymbols) && (!isGlobal || LastSParent != null)) {
                 if (Expr != null) {
                     // We've deleted this Symbol
                     SymbolDictionary cached;
@@ -386,7 +396,7 @@ namespace NINA.Sequencer.Logic {
                         return;
                     }
                     if (SymbolCache.TryGetValue(LastSParent, out cached)) {
-                        if (cached.TryRemove(Identifier, out _)) {
+                        if (RemoveCachedSymbol(LastSParent, cached, Identifier, this, out _)) {
                             SymbolDirty(this);
                         } else {
                             Warn("Deleting " + this + " but not in SParent's cache?");
@@ -428,9 +438,9 @@ namespace NINA.Sequencer.Logic {
                                 }
 
                                 Logger.Warning("Replacing global symbol: " + SymbolLogDetails("Existing", gv) + "; " + SymbolLogDetails("New", this));
-                                SymbolDirty(gv);
-                                gv.Consumers.Clear();
-                                cached.TryUpdate(Identifier, this, gv);
+                                if (cached.TryUpdate(Identifier, this, gv)) {
+                                    SymbolDirty(gv);
+                                }
                             }
                         } else if (!added) {
                             Identifier = GenId(cached, Identifier);
@@ -460,8 +470,30 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void RemoveConsumer(Expression expr) {
-            if (!Consumers.TryRemove(expr, out _)) {
-                Warn("RemoveConsumer: " + expr + " not found in " + this);
+            Consumers.TryRemove(expr, out _);
+        }
+
+        public override void ReleaseExpressionConsumers() {
+            base.ReleaseExpressionConsumers();
+            Expr?.ReleaseConsumers();
+        }
+
+        private static bool RemoveCachedSymbol(ISequenceContainer scope, SymbolDictionary cached, string identifier, UserSymbol expected, out UserSymbol symbol) {
+            symbol = null;
+            if (!cached.TryGetValue(identifier, out UserSymbol current) || !ReferenceEquals(current, expected)) {
+                return false;
+            }
+            if (!cached.TryRemove(new KeyValuePair<string, UserSymbol>(identifier, expected))) {
+                return false;
+            }
+            symbol = expected;
+            RemoveScopeIfEmpty(scope, cached);
+            return true;
+        }
+
+        private static void RemoveScopeIfEmpty(ISequenceContainer scope, SymbolDictionary cached) {
+            if (cached.IsEmpty) {
+                SymbolCache.TryRemove(new KeyValuePair<ISequenceContainer, SymbolDictionary>(scope, cached));
             }
         }
 

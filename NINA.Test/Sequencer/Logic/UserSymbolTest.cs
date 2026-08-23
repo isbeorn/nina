@@ -17,11 +17,14 @@ using Moq;
 using NINA.Core.Locale;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Expressions;
+using NINA.Sequencer.Trigger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -817,8 +820,208 @@ namespace NINA.Test.Sequencer.Logic {
 
             variable.AttachNewParent(null);
 
-            UserSymbol.SymbolCache[container].Should().NotContainKey("local");
+            UserSymbol.SymbolCache.Should().NotContainKey(container);
             consumer.Dirty.Should().BeTrue();
+        }
+
+        [Test]
+        public void Expression_DefinitionTransitions_ReleasePreviousSymbolConsumers() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer container = CreateContainer("Scope");
+            root.Add(container);
+            Constant local = CreateConstant("local", "10", container);
+            Constant other = CreateConstant("other", "20", container);
+            Mock<ISequenceEntity> context = CreateContext(container);
+            Expression expression = CreateResolvedExpression("local + 1", context.Object);
+
+            expression.Definition = "5";
+
+            local.Consumers.Should().NotContainKey(expression);
+
+            expression.Definition = "local + 1";
+            expression.Definition = "other + 1";
+
+            local.Consumers.Should().NotContainKey(expression);
+            other.Consumers.Should().ContainKey(expression);
+
+            expression.Definition = "";
+
+            other.Consumers.Should().NotContainKey(expression);
+        }
+
+        [Test]
+        public void Expression_Refresh_ReleasesConsumerFromPreviouslyResolvedSymbol() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer container = CreateContainer("Scope");
+            root.Add(container);
+            Variable original = CreateVariable("local", "10", container);
+            Mock<ISequenceEntity> context = CreateContext(container);
+            Expression expression = CreateResolvedExpression("local + 1", context.Object);
+            Variable replacement = CreateVariable("local", "20");
+            UserSymbol.SymbolCache[container]["local"] = replacement;
+
+            expression.Refresh();
+
+            original.Consumers.Should().NotContainKey(expression);
+            replacement.Consumers.Should().ContainKey(expression);
+        }
+
+        [Test]
+        public void Expression_VolatileReevaluation_ReleasesConsumerFromPreviouslyResolvedSymbol() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer container = CreateContainer("Scope");
+            root.Add(container);
+            Variable original = CreateVariable("local", "10", container);
+            Mock<ISequenceEntity> context = CreateContext(container);
+            Expression expression = CreateResolvedExpression("local + 1", context.Object);
+            original.Expr.GlobalVolatile = true;
+            Variable replacement = CreateVariable("local", "20");
+            UserSymbol.SymbolCache[container]["local"] = replacement;
+
+            expression.Evaluate(ignoreRoot: true);
+
+            original.Consumers.Should().NotContainKey(expression);
+            replacement.Consumers.Should().ContainKey(expression);
+        }
+
+        [Test]
+        public void UserSymbol_Removal_ReleasesConsumersAndEmptyScopeCache() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer container = CreateContainer("Scope");
+            root.Add(container);
+            Variable variable = CreateVariable("local", "10", container);
+            Mock<ISequenceEntity> context = CreateContext(container);
+            Expression expression = CreateResolvedExpression("local + 1", context.Object);
+
+            variable.AttachNewParent(null);
+
+            variable.Consumers.Should().NotContainKey(expression);
+            expression.Resolved.Should().NotContainKey("local");
+            UserSymbol.SymbolCache.Should().NotContainKey(container);
+        }
+
+        [Test]
+        public void GlobalSymbol_Removal_ReleasesCacheEntry() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            GlobalConstant global = CreateGlobalConstant("globalValue", "10");
+            root.Add(global);
+            UserSymbol.SymbolCache[UserSymbol.GlobalSymbols].Should().ContainKey("globalValue");
+
+            root.Remove(global);
+
+            UserSymbol.SymbolCache.Should().NotContainKey(UserSymbol.GlobalSymbols);
+        }
+
+        [Test]
+        public void ExpressionExpander_ReleasesTemporaryExpressionConsumers() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer container = CreateContainer("Scope");
+            root.Add(container);
+            Constant variable = CreateConstant("local", "10", container);
+
+            for (int i = 0; i < 100; i++) {
+                ExpressionExpander.Expand("Value: {local + 1}", _symbolBroker.Object, variable).Should().Be("Value: 11");
+            }
+
+            variable.Consumers.Should().BeEmpty();
+        }
+
+        [Test]
+        public void UserSymbol_ExprReplacement_ReleasesPreviousExpressionConsumers() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer container = CreateContainer("Scope");
+            root.Add(container);
+            Variable dependency = CreateVariable("dependency", "10", container);
+            Variable variable = CreateVariable("target", "dependency + 1", container);
+            variable.Expr.Evaluate(ignoreRoot: true);
+            Expression previous = variable.Expr;
+
+            variable.Expr = new Expression("0", variable) { SymbolBroker = _symbolBroker.Object };
+
+            dependency.Consumers.Should().NotContainKey(previous);
+        }
+
+        [Test]
+        public void GeneratedExpressionPropertyReplacement_ReleasesPreviousExpressionConsumers() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            SequentialContainer container = CreateContainer("Scope");
+            root.Add(container);
+            Variable dependency = CreateVariable("dependency", "10", container);
+            LoopCondition condition = new LoopCondition();
+            container.Add(condition);
+            Expression previous = new Expression("dependency + 1", condition) { SymbolBroker = _symbolBroker.Object };
+            condition.IterationsExpression = previous;
+            previous.Evaluate(ignoreRoot: true);
+
+            condition.IterationsExpression = new Expression("2", condition) { SymbolBroker = _symbolBroker.Object };
+
+            dependency.Consumers.Should().NotContainKey(previous);
+        }
+
+        [Test]
+        public void SequenceGraphDetachment_ReleasesGlobalSymbolConsumerAndAllowsCollection() {
+            (GlobalConstant global, WeakReference detachedGraph) = CreateAndDetachGlobalConsumerGraph();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            global.Consumers.Should().BeEmpty();
+            detachedGraph.IsAlive.Should().BeFalse();
+        }
+
+        [Test]
+        public void TriggerDetachment_ReleasesConsumersFromNestedRunnerGraph() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            GlobalConstant global = CreateGlobalConstant("globalValue", "10");
+            root.Add(global);
+            Mock<SequenceTrigger> triggerMock = new Mock<SequenceTrigger> { CallBase = true };
+            SequenceTrigger trigger = triggerMock.Object;
+            root.Add(trigger);
+            LoopCondition condition = new LoopCondition();
+            trigger.TriggerRunner.Add(condition);
+            Expression expression = new Expression("globalValue + 1", condition) { SymbolBroker = _symbolBroker.Object };
+            condition.IterationsExpression = expression;
+            expression.Evaluate(ignoreRoot: true);
+            global.Consumers.Should().ContainKey(expression);
+
+            root.Remove(trigger);
+
+            global.Consumers.Should().NotContainKey(expression);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private (GlobalConstant Global, WeakReference DetachedGraph) CreateAndDetachGlobalConsumerGraph() {
+            SequenceRootContainer root = new SequenceRootContainer();
+            GlobalConstant global = CreateGlobalConstant("globalValue", "10");
+            root.Add(global);
+            SequentialContainer detached = CreateContainer("Detached");
+            root.Add(detached);
+            LoopCondition condition = new LoopCondition();
+            detached.Add(condition);
+            Expression expression = new Expression("globalValue + 1", condition) { SymbolBroker = _symbolBroker.Object };
+            condition.IterationsExpression = expression;
+            expression.Evaluate(ignoreRoot: true);
+            global.Consumers.Should().ContainKey(expression);
+            WeakReference detachedGraph = new WeakReference(detached);
+
+            root.Remove(detached);
+
+            return (global, detachedGraph);
+        }
+
+        private Mock<ISequenceEntity> CreateContext(ISequenceContainer parent) {
+            Mock<ISequenceEntity> context = new Mock<ISequenceEntity>();
+            context.SetupGet(c => c.Parent).Returns(parent);
+            context.SetupGet(c => c.SymbolBroker).Returns(_symbolBroker.Object);
+            context.SetupGet(c => c.Name).Returns("Consumer");
+            return context;
+        }
+
+        private Expression CreateResolvedExpression(string definition, ISequenceEntity context) {
+            Expression expression = new Expression(definition, context) { SymbolBroker = _symbolBroker.Object };
+            expression.Evaluate(ignoreRoot: true);
+            return expression;
         }
 
         /// <summary>

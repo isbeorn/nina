@@ -163,6 +163,7 @@ namespace NINA.Sequencer.Generators {
             // Build the partial class with one method per property
             var cloneSource = string.Empty;
             var expressionClones = string.Empty;
+            var expressionReleases = string.Empty;
             var propertiesSource = string.Empty;
             var methodsSource = string.Empty;
 
@@ -230,11 +231,16 @@ namespace NINA.Sequencer.Generators {
                 expressionClones += $@"
             clone.{propNameExpression} = new Expression (this.{propNameExpression}, clone, {(hasValidator ? $"clone.{propNameExpression}Validator" : "null")});";
 
+                expressionReleases += $@"
+            {fieldNameExpression}?.ReleaseConsumers();";
+
                 propertiesSource += $@"
                 }}
                 return {fieldNameExpression};
             }}
             set {{
+                if (ReferenceEquals({fieldNameExpression}, value)) return;
+                {fieldNameExpression}?.ReleaseConsumers();
                 {fieldNameExpression} = value;
                 if (value == null) return;";
                 propertiesSource += $@"
@@ -318,6 +324,10 @@ namespace {namespaceName}
             AfterClone(this, clone);
             AfterClone(clone);
             return clone;
+        }}
+
+        public override void ReleaseExpressionConsumers() {{
+            base.ReleaseExpressionConsumers();{expressionReleases}
         }}
 
         partial void AfterClone({className} clone);

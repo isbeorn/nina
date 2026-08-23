@@ -190,6 +190,13 @@ namespace NINA.Sequencer.Trigger {
             Parent = newParent;
 
             AfterParentChanged();
+            if (newParent == null) {
+                ReleaseExpressionConsumers();
+            }
+        }
+
+        public virtual void ReleaseExpressionConsumers() {
+            TriggerRunner?.ReleaseExpressionConsumers();
         }
 
         public abstract bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem);

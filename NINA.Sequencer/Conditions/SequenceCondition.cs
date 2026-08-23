@@ -105,6 +105,12 @@ namespace NINA.Sequencer.Conditions {
             Parent = newParent;
 
             AfterParentChanged();
+            if (newParent == null) {
+                ReleaseExpressionConsumers();
+            }
+        }
+
+        public virtual void ReleaseExpressionConsumers() {
         }
 
         public bool RunCheck(ISequenceItem previousItem, ISequenceItem nextItem) {

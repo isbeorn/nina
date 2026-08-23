@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using NINA.Core.Model;
 using System;
 using System.ComponentModel.Composition;
@@ -99,6 +99,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         public Expression OriginalExpr {
             get => _originalExpr;
             set {
+                if (ReferenceEquals(_originalExpr, value)) {
+                    return;
+                }
+                _originalExpr?.ReleaseConsumers();
                 _originalExpr = value;
                 RaisePropertyChanged();
             }
@@ -117,6 +121,11 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 }
             }
             OriginalExpr = new Expression(OriginalExpr?.Definition ?? "", Parent, this);
+        }
+
+        public override void ReleaseExpressionConsumers() {
+            base.ReleaseExpressionConsumers();
+            OriginalExpr?.ReleaseConsumers();
         }
 
 
