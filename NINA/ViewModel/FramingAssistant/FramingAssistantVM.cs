@@ -1489,11 +1489,19 @@ namespace NINA.ViewModel.FramingAssistant {
                 }
             } else {
                 ProjectedRectangle.Update(Rectangle.X, Rectangle.Y, Rectangle.Rotation);
+                Matrix mosaicRotation = Matrix.Identity;
+                mosaicRotation.RotateAt(
+                    Rectangle.Rotation,
+                    Rectangle.Width / 2,
+                    Rectangle.Height / 2);
                 for (int i = 0; i < ProjectedCameraRectangles.Count; i++) {
                     FramingRectangle rectangle = CameraRectangles[i];
+                    Point panelCenter = mosaicRotation.Transform(new Point(
+                        rectangle.X + rectangle.Width / 2,
+                        rectangle.Y + rectangle.Height / 2));
                     ProjectedCameraRectangles[i].Update(
-                        Rectangle.X + rectangle.X,
-                        Rectangle.Y + rectangle.Y,
+                        Rectangle.X + panelCenter.X - rectangle.Width / 2,
+                        Rectangle.Y + panelCenter.Y - rectangle.Height / 2,
                         Rectangle.Rotation + rectangle.Rotation);
                 }
             }
