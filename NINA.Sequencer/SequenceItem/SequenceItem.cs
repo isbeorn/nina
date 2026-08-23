@@ -148,6 +148,12 @@ namespace NINA.Sequencer.SequenceItem {
             Parent = newParent;
 
             AfterParentChanged();
+            if (newParent == null) {
+                ReleaseExpressionConsumers();
+            }
+        }
+
+        public virtual void ReleaseExpressionConsumers() {
         }
 
         public abstract object Clone();

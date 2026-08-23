@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Sequencer.Validations;
 using System;
@@ -70,9 +70,18 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         public Expression Expr {
             get => _Expr;
             set {
+                if (ReferenceEquals(_Expr, value)) {
+                    return;
+                }
+                _Expr?.ReleaseConsumers();
                 _Expr = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public override void ReleaseExpressionConsumers() {
+            base.ReleaseExpressionConsumers();
+            Expr?.ReleaseConsumers();
         }
 
         private string variable;
