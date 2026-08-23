@@ -42,9 +42,9 @@ namespace NINA.Test.ViewModel {
 
             UpdateCameraRectanglePlacements(sut);
 
-            AssertPlacement(sut.ProjectedCameraRectangles[0], 400, 120, 90);
-            AssertPlacement(sut.ProjectedCameraRectangles[1], 400, 300, 90);
-            AssertPlacement(sut.ProjectedCameraRectangles[2], 400, 480, 90);
+            AssertPlacement(sut.ProjectedCameraRectangles[0], sut.CameraRectangles[0], 400, 120, 90);
+            AssertPlacement(sut.ProjectedCameraRectangles[1], sut.CameraRectangles[1], 400, 300, 90);
+            AssertPlacement(sut.ProjectedCameraRectangles[2], sut.CameraRectangles[2], 400, 480, 90);
         }
 
         [TestCase(0, true, 0, 0)]
@@ -93,6 +93,57 @@ namespace NINA.Test.ViewModel {
                     panel);
                 AssertPlacement(
                     sut.ProjectedCameraRectangles[i],
+                    panel,
+                    centerX,
+                    centerY,
+                    sut.Rectangle.Rotation + panel.Rotation);
+            }
+        }
+
+        [TestCase(3, 3, 37, 115, -45)]
+        [TestCase(2, 3, 90, -260, 110)]
+        [TestCase(2, 2, 323, -75, -125)]
+        public void NonOfflineMultiRowMosaic_ProjectsEveryPanelAtCorrectCoordinates(
+            int horizontalPanels,
+            int verticalPanels,
+            double rotation,
+            double translationX,
+            double translationY) {
+            const double panelWidth = 200;
+            const double panelHeight = 120;
+            const double horizontalStride = 180;
+            const double verticalStride = 105;
+            double rectangleWidth = panelWidth + (horizontalPanels - 1) * horizontalStride;
+            double rectangleHeight = panelHeight + (verticalPanels - 1) * verticalStride;
+            FramingAssistantVM sut = CreateUninitializedViewModel();
+            sut.Rectangle = new FramingRectangle(
+                0,
+                300 + translationX,
+                200 + translationY,
+                rectangleWidth,
+                rectangleHeight) {
+                Rotation = rotation
+            };
+            IReadOnlyList<FramingRectangle> panels = CreatePanels(
+                horizontalPanels,
+                verticalPanels,
+                panelWidth,
+                panelHeight,
+                horizontalStride,
+                verticalStride);
+            foreach (FramingRectangle panel in panels) {
+                sut.CameraRectangles.Add(panel);
+            }
+
+            UpdateCameraRectanglePlacements(sut);
+
+            sut.ProjectedCameraRectangles.Should().HaveCount(panels.Count);
+            for (int i = 0; i < panels.Count; i++) {
+                FramingRectangle panel = panels[i];
+                (double centerX, double centerY) = RotatePanelCenter(sut.Rectangle, panel);
+                AssertPlacement(
+                    sut.ProjectedCameraRectangles[i],
+                    panel,
                     centerX,
                     centerY,
                     sut.Rectangle.Rotation + panel.Rotation);
@@ -105,6 +156,32 @@ namespace NINA.Test.ViewModel {
                 new FramingRectangle(0, horizontal ? 180 : 0, horizontal ? 0 : 180, 200, 200) { Id = 2 },
                 new FramingRectangle(0, horizontal ? 360 : 0, horizontal ? 0 : 360, 200, 200) { Id = 3, Rotation = 358 }
             ];
+        }
+
+        private static IReadOnlyList<FramingRectangle> CreatePanels(
+            int horizontalPanels,
+            int verticalPanels,
+            double panelWidth,
+            double panelHeight,
+            double horizontalStride,
+            double verticalStride) {
+            List<FramingRectangle> panels = [];
+            int id = 1;
+            for (int row = 0; row < verticalPanels; row++) {
+                for (int column = 0; column < horizontalPanels; column++) {
+                    panels.Add(new FramingRectangle(
+                        0,
+                        column * horizontalStride,
+                        row * verticalStride,
+                        panelWidth,
+                        panelHeight) {
+                        Id = id,
+                        Rotation = id * 2
+                    });
+                    id++;
+                }
+            }
+            return panels;
         }
 
         private static (double X, double Y) RotatePanelCenter(
@@ -140,11 +217,15 @@ namespace NINA.Test.ViewModel {
 
         private static void AssertPlacement(
             SkyMapCameraRectanglePlacement placement,
+            FramingRectangle panel,
             double expectedCenterX,
             double expectedCenterY,
             double expectedRotation) {
-            (placement.X + placement.Width / 2).Should().BeApproximately(expectedCenterX, 1E-9);
-            (placement.Y + placement.Height / 2).Should().BeApproximately(expectedCenterY, 1E-9);
+            placement.Id.Should().Be(panel.Id);
+            placement.Width.Should().BeApproximately(panel.Width, 1E-9);
+            placement.Height.Should().BeApproximately(panel.Height, 1E-9);
+            placement.X.Should().BeApproximately(expectedCenterX - panel.Width / 2, 1E-9);
+            placement.Y.Should().BeApproximately(expectedCenterY - panel.Height / 2, 1E-9);
             placement.Rotation.Should().BeApproximately(expectedRotation, 1E-9);
         }
     }
