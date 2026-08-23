@@ -28,6 +28,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1117,6 +1118,141 @@ namespace NINA.Test.Sequencer.Logic {
             SpinWait.SpinUntil(
                 () => broker.TryGetValue("Image_Mean", out object value) && value != null,
                 TimeSpan.FromSeconds(5)).Should().BeTrue();
+        }
+
+        [Test]
+        public void SymbolBroker_SetImageSymbols_LiveViewBurst_SerializesStatisticsAndSkipsIntermediateFrames() {
+            // Arrange
+            var firstStatisticsCompletion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var firstStatisticsStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var startedFrameIds = new ConcurrentQueue<int>();
+            var concurrencyLock = new object();
+            var activeStatistics = 0;
+            var maximumStatisticsConcurrency = 0;
+
+            ImagePreparedEventArgs CreateImagePreparedEventArgs(int frameId) {
+                var statisticsMock = new Mock<IImageStatistics>();
+                statisticsMock.SetupGet(x => x.Mean).Returns(frameId);
+
+                var statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => {
+                    lock (concurrencyLock) {
+                        activeStatistics++;
+                        maximumStatisticsConcurrency = Math.Max(maximumStatisticsConcurrency, activeStatistics);
+                    }
+                    startedFrameIds.Enqueue(frameId);
+
+                    try {
+                        if (frameId == 1) {
+                            firstStatisticsStarted.TrySetResult(true);
+                            await firstStatisticsCompletion.Task;
+                        }
+                        return statisticsMock.Object;
+                    } finally {
+                        lock (concurrencyLock) {
+                            activeStatistics--;
+                        }
+                    }
+                });
+
+                var imageDataMock = new Mock<IImageData>();
+                imageDataMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData {
+                    Image = new ImageParameter { Id = frameId, ImageType = "LIGHT" },
+                    Camera = new CameraParameter()
+                });
+                imageDataMock.SetupGet(x => x.StarDetectionAnalysis).Returns(new Mock<IStarDetectionAnalysis>().Object);
+                imageDataMock.SetupGet(x => x.Statistics).Returns(statistics);
+
+                var renderedImageMock = new Mock<IRenderedImage>();
+                renderedImageMock.SetupGet(x => x.RawImageData).Returns(imageDataMock.Object);
+
+                return new ImagePreparedEventArgs {
+                    RenderedImage = renderedImageMock.Object,
+                    Parameters = new Core.Utility.PrepareImageParameters(false, false)
+                };
+            }
+
+            // Act
+            broker.SetImageSymbols(this, CreateImagePreparedEventArgs(1));
+            firstStatisticsStarted.Task.Wait(TimeSpan.FromSeconds(5)).Should().BeTrue("the gated first frame must begin statistics");
+
+            try {
+                broker.SetImageSymbols(this, CreateImagePreparedEventArgs(2));
+                broker.SetImageSymbols(this, CreateImagePreparedEventArgs(3));
+
+                // Assert
+                SpinWait.SpinUntil(() => startedFrameIds.Count > 1, TimeSpan.FromMilliseconds(250));
+                startedFrameIds.ToArray().Should().Equal(new[] { 1 });
+                maximumStatisticsConcurrency.Should().Be(1, "statistics work must be serialized");
+                ValidateUninitializedSymbol("Image_Mean");
+            } finally {
+                firstStatisticsCompletion.TrySetResult(true);
+            }
+
+            SpinWait.SpinUntil(
+                () => broker.TryGetValue("Image_Mean", out object value) && Equals(value, 3d),
+                TimeSpan.FromSeconds(5)).Should().BeTrue("the latest frame must publish after the active frame completes");
+            startedFrameIds.ToArray().Should().Equal(new[] { 1, 3 });
+            maximumStatisticsConcurrency.Should().Be(1, "statistics work must remain serialized");
+        }
+
+        [Test]
+        public void SymbolBroker_SetImageSymbols_ReplacedPendingImageIsCollectible() {
+            // Arrange
+            var statisticsCompletion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var firstStatisticsStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            var activeImage = PublishImageWithGatedStatistics(1, statisticsCompletion.Task, firstStatisticsStarted);
+            firstStatisticsStarted.Task.Wait(TimeSpan.FromSeconds(5)).Should().BeTrue("the first frame must become active");
+
+            var replacedPendingImage = PublishImageWithGatedStatistics(2, statisticsCompletion.Task);
+            var latestPendingImage = PublishImageWithGatedStatistics(3, statisticsCompletion.Task);
+
+            try {
+                // Act
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+                // Assert
+                replacedPendingImage.TryGetTarget(out _).Should().BeFalse("a newer pending frame must release the intermediate full-frame image");
+                activeImage.TryGetTarget(out _).Should().BeTrue("the running statistics operation must retain its active image");
+                latestPendingImage.TryGetTarget(out _).Should().BeTrue("the pump must retain the latest pending image");
+            } finally {
+                statisticsCompletion.TrySetResult(true);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private WeakReference<IImageData> PublishImageWithGatedStatistics(
+            int frameId,
+            Task statisticsCompletion,
+            TaskCompletionSource<bool> statisticsStarted = null) {
+            var statisticsMock = new Mock<IImageStatistics>();
+            statisticsMock.SetupGet(x => x.Mean).Returns(frameId);
+
+            var statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => {
+                statisticsStarted?.TrySetResult(true);
+                await statisticsCompletion;
+                return statisticsMock.Object;
+            });
+
+            var imageDataMock = new Mock<IImageData>();
+            imageDataMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData {
+                Image = new ImageParameter { Id = frameId, ImageType = "LIGHT" },
+                Camera = new CameraParameter()
+            });
+            imageDataMock.SetupGet(x => x.StarDetectionAnalysis).Returns(new Mock<IStarDetectionAnalysis>().Object);
+            imageDataMock.SetupGet(x => x.Statistics).Returns(statistics);
+
+            var renderedImageMock = new Mock<IRenderedImage>();
+            renderedImageMock.SetupGet(x => x.RawImageData).Returns(imageDataMock.Object);
+
+            broker.SetImageSymbols(this, new ImagePreparedEventArgs {
+                RenderedImage = renderedImageMock.Object,
+                Parameters = new Core.Utility.PrepareImageParameters(false, false)
+            });
+
+            return new WeakReference<IImageData>(imageDataMock.Object);
         }
 
         private class LegacyStarDetectionAnalysis : IStarDetectionAnalysis {
