@@ -658,6 +658,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             return new AsyncEnumerable<IExposureData>(async yield => {
                 if (CameraInfo.Connected) {
                     try {
+                        ApplyReadoutModeForSequence(sequence);
                         SetGain(sequence.Gain);
                         SetOffset(sequence.Offset);
                         if (sequence.Binning == null) {
@@ -715,6 +716,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         public async Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {
             if (CameraInfo.Connected == true) {
+                ApplyReadoutModeForSequence(sequence);
                 SetGain(sequence.Gain);
                 SetOffset(sequence.Offset);
                 if (sequence.Binning == null) {
@@ -796,6 +798,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 Cam.ReadoutMode = CameraInfo.ReadoutMode = mode;
                 BroadcastCameraInfo();
             }
+        }
+
+        private void ApplyReadoutModeForSequence(CaptureSequence sequence) {
+            short mode = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT
+                ? Cam.ReadoutModeForSnapImages
+                : Cam.ReadoutModeForNormalImages;
+            SetReadoutMode(mode);
         }
 
         public void SetUSBLimit(int usbLimit) {
