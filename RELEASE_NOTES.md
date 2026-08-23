@@ -22,6 +22,7 @@ This allows you to safely return to a stable release if needed.
 - The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
 
 ## Bugfixes
+- Sun and Moon altitude calculations no longer return transient incorrect values when plugins calculate solar-system body positions concurrently.
 - Installer upgrades and repairs now restore missing, locally changed and higher-version application files instead of potentially leaving skipped files absent.
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 - ToupTek based filter wheels and focusers will no longer be listed in the camera connector.

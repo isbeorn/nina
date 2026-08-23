@@ -24,6 +24,9 @@ namespace NINA.Astrometry {
 
     public static class NOVAS {
         private const string DLLNAME = "NOVAS31lib.dll";
+        // NOVAS 3.1 uses process-wide mutable caches and is not reentrant.
+        // Every call into NOVAS31lib.dll must be serialized on this gate.
+        private static readonly object lockObj = new object();
 
         private static double JPL_EPHEM_START_DATE = 2305424.5; // First date of data in the ephemerides file
         private static double JPL_EPHEM_END_DATE = 2525008.5; // Last date of data in the ephemerides file
@@ -41,29 +44,36 @@ namespace NINA.Astrometry {
             DllLoader.LoadDll(Path.Combine("NOVAS", DLLNAME));
 
             short a = 0;
-            if(File.Exists(EphemerisLocation)) {
-                var code = EphemOpen(EphemerisLocation, ref JPL_EPHEM_START_DATE, ref JPL_EPHEM_END_DATE, ref a);
-                if (code > 0) {
-                    Logger.Error($"Failed to load ephemerides file due to error {code}");
+            lock (lockObj) {
+                if(File.Exists(EphemerisLocation)) {
+                    var code = EphemOpen(EphemerisLocation, ref JPL_EPHEM_START_DATE, ref JPL_EPHEM_END_DATE, ref a);
+                    if (code > 0) {
+                        Logger.Error($"Failed to load ephemerides file due to error {code}");
+                    }
+                } else {
+                    Logger.Error($"Ephemeris file not found at {EphemerisLocation}");
                 }
-            } else {
-                Logger.Error($"Ephemeris file not found at {EphemerisLocation}");
             }
-            
         }
 
         #region "Public Methods"
 
         public static short Shutdown() {
-            return EphemClose();
+            lock (lockObj) {
+                return EphemClose();
+            }
         }
 
         public static short SiderealTime(double jdHigh, double jdLow, double deltaT, GstType gstType, Method method, Accuracy accuracy, ref double gst) {
-            return NOVAS_SiderealTime(jdHigh, jdLow, deltaT, gstType, method, accuracy, ref gst);
+            lock (lockObj) {
+                return NOVAS_SiderealTime(jdHigh, jdLow, deltaT, gstType, method, accuracy, ref gst);
+            }
         }
 
         public static double JulianDate(short year, short month, short day, double hour) {
-            return NOVAS_JulianDate(year, month, day, hour);
+            lock (lockObj) {
+                return NOVAS_JulianDate(year, month, day, hour);
+            }
         }
 
         public static DateTime JulianToDateTime(double jdtt) {
@@ -71,7 +81,9 @@ namespace NINA.Astrometry {
         }
 
         public static double CalDate(double jtd, ref short year, ref short month, ref short day, ref double hour) {
-            return NOVAS_CalDate(jtd, ref year, ref month, ref day, ref hour);
+            lock (lockObj) {
+                return NOVAS_CalDate(jtd, ref year, ref month, ref day, ref hour);
+            }
         }
 
         /// <summary>
@@ -82,7 +94,9 @@ namespace NINA.Astrometry {
         /// <param name="zdObs"></param>
         /// <returns></returns>
         public static double Refract(ref OnSurface location, RefractionOption refractionOption, double zdObs) {
-            return NOVAS_Refract(ref location, refractionOption, zdObs);
+            lock (lockObj) {
+                return NOVAS_Refract(ref location, refractionOption, zdObs);
+            }
         }
 
         /// <summary>
@@ -100,8 +114,21 @@ namespace NINA.Astrometry {
         public static short Place(double jdTt, CelestialObject celestialObject, Observer observer, double deltaT, CoordinateSystem coordinateSystem, Accuracy accuracy, ref SkyPosition position) {
             lock (lockObj) {
                 var err = NOVAS_Place(jdTt, ref celestialObject, ref observer, deltaT, (short)coordinateSystem, (short)accuracy, ref position);
+                if (err != 0) {
+                    position = CreateInvalidSkyPosition();
+                }
                 return err;
             }
+        }
+
+        private static SkyPosition CreateInvalidSkyPosition() {
+            return new SkyPosition {
+                RHat = new[] { double.NaN, double.NaN, double.NaN },
+                RA = double.NaN,
+                Dec = double.NaN,
+                Dis = double.NaN,
+                RV = double.NaN
+            };
         }
 
         /// <summary>
@@ -112,18 +139,20 @@ namespace NINA.Astrometry {
         /// <param name="accuracy">Requested level of accuracy. Full by default</param>
         /// <returns>Apparent equatorial coordinates from an earth-based geocentric observer</returns>
         public static Coordinates PlanetApparentCoordinates(double jd_tt, Body body, Accuracy accuracy = Accuracy.Full) {
-            var result = NOVAS_make_object(ObjectType.MajorPlanetSunOrMoon, (short)body, body.ToString(), dummy_star.Value, out var celestialObject);
-            if (result != 0) {
-                throw new Exception($"Failed MakeObject for {body}. Result={result}");
-            }
+            lock (lockObj) {
+                var result = NOVAS_make_object(ObjectType.MajorPlanetSunOrMoon, (short)body, body.ToString(), dummy_star.Value, out var celestialObject);
+                if (result != 0) {
+                    throw new Exception($"Failed MakeObject for {body}. Result={result}");
+                }
 
-            result = NOVAS_app_planet(jd_tt, celestialObject, accuracy, out var ra, out var dec, out var _);
-            if (result != 0) {
-                throw new Exception($"Failed AppPlanet for {body}. Result={result}");
-            }
+                result = NOVAS_app_planet(jd_tt, celestialObject, accuracy, out var ra, out var dec, out var _);
+                if (result != 0) {
+                    throw new Exception($"Failed AppPlanet for {body}. Result={result}");
+                }
 
-            var referenceDateTime = JulianToDateTime(jd_tt);
-            return new Coordinates(Angle.ByHours(ra), Angle.ByDegree(dec), Epoch.JNOW, referenceDateTime);
+                var referenceDateTime = JulianToDateTime(jd_tt);
+                return new Coordinates(Angle.ByHours(ra), Angle.ByDegree(dec), Epoch.JNOW, referenceDateTime);
+            }
         }
 
         /// <summary>
@@ -134,17 +163,19 @@ namespace NINA.Astrometry {
         /// <param name="origin">Origin reference</param>
         /// <returns>Rectangular position and velocity vectors</returns>
         public static RectangularPV BodyPositionAndVelocity(double jdtt, Body body, SolarSystemOrigin origin) {
-            var jd = new double[] { jdtt, 0 };
-            var position = new double[3];
-            var velocity = new double[3];
-            var result = NOVAS_solarsystem_hp(jd, body, origin, position, velocity);
-            if (result != 0) {
-                throw new Exception($"SolarSystemBodyPV failed for {body} with origin {origin}. Result={result}");
-            }
+            lock (lockObj) {
+                var jd = new double[] { jdtt, 0 };
+                var position = new double[3];
+                var velocity = new double[3];
+                var result = NOVAS_solarsystem_hp(jd, body, origin, position, velocity);
+                if (result != 0) {
+                    throw new Exception($"SolarSystemBodyPV failed for {body} with origin {origin}. Result={result}");
+                }
 
-            return new RectangularPV(
-                new RectangularCoordinates(position[0], position[1], position[2]),
-                new RectangularCoordinates(velocity[0], velocity[1], velocity[2]));
+                return new RectangularPV(
+                    new RectangularCoordinates(position[0], position[1], position[2]),
+                    new RectangularCoordinates(velocity[0], velocity[1], velocity[2]));
+            }
         }
 
         public static RectangularPV GetPositionOnEarthSurface(double jdtt, double deltaT, Angle latitude, Angle longitude, double elevation) {
@@ -168,7 +199,14 @@ namespace NINA.Astrometry {
                 new RectangularCoordinates(vel[0], vel[1], vel[2]));
         }
 
-        private static readonly object lockObj = new object();
+        public static short NOVAS_geo_posvel(
+            double jdtt, double deltaT, NOVAS.Accuracy accuracy, NOVAS.Observer observer,
+            [In, Out][MarshalAs(UnmanagedType.LPArray, SizeConst = 3)] double[] pos,
+            [In, Out][MarshalAs(UnmanagedType.LPArray, SizeConst = 3)] double[] vel) {
+            lock (lockObj) {
+                return NOVAS_geo_posvel_native(jdtt, deltaT, accuracy, observer, pos, vel);
+            }
+        }
 
         #endregion "Public Methods"
 
@@ -237,7 +275,7 @@ namespace NINA.Astrometry {
             [Out] out double dis);
 
         [DllImport(DLLNAME, EntryPoint = "geo_posvel", CallingConvention = CallingConvention.Cdecl)]
-        public static extern short NOVAS_geo_posvel(
+        private static extern short NOVAS_geo_posvel_native(
             double jdtt, double deltaT, NOVAS.Accuracy accuracy, NOVAS.Observer observer,
             [In, Out][MarshalAs(UnmanagedType.LPArray, SizeConst = 3)] double[] pos,
             [In, Out][MarshalAs(UnmanagedType.LPArray, SizeConst = 3)] double[] vel);
