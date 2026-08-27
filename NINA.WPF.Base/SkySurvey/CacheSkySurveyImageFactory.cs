@@ -71,19 +71,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
                         var center = cacheImage.Coordinates.XYProjection(ViewportFoV);
 
-                        var panelDeltaX = center.X - ViewportFoV.ViewPortCenterPoint.X;
-                        var panelDeltaY = center.Y - ViewportFoV.ViewPortCenterPoint.Y;
-                        var referenceCenter = ViewportFoV.CenterCoordinates.Shift(panelDeltaX < 1E-10 ? 1 : 0, panelDeltaY, ViewportFoV.Rotation, ViewportFoV.ArcSecWidth, ViewportFoV.ArcSecHeight);
-
-                        var rotation = -(90 - ((float)AstroUtil.CalculatePositionAngle(referenceCenter.RADegrees, cacheImage.Coordinates.RADegrees, referenceCenter.Dec, cacheImage.Coordinates.Dec)));
-                        if (panelDeltaX < 0) {
-                            rotation += 180;
-                        }
-                        if (cacheImage.Coordinates.Dec < 0 || (referenceCenter.Dec < 0 && cacheImage.Coordinates.Dec >= 0)) {
-                            rotation += 180;
-                        }
-
-                        rotation += (float)cacheImage.Rotation;
+                        var rotation = GetImageRotation(cacheImage.Coordinates, cacheImage.Rotation, center);
 
                         dsoImageGraphics.TranslateTransform((float)center.X, (float)center.Y);
                         dsoImageGraphics.RotateTransform(rotation);
@@ -94,6 +82,26 @@ namespace NINA.WPF.Base.SkySurvey {
             } catch (Exception) {
             } finally {
             }
+        }
+
+        private float GetImageRotation(Coordinates coordinates, double imageRotation, System.Windows.Point center) {
+            // Project a nearby point toward the image's top edge. The bearing remains stable
+            // across zoom levels, either hemisphere and the right-ascension wrap.
+            var longitude = AstroUtil.ToRadians(coordinates.RADegrees);
+            var latitude = AstroUtil.ToRadians(coordinates.Dec);
+            var bearing = AstroUtil.ToRadians(-imageRotation);
+            var distance = AstroUtil.ToRadians(0.01);
+            var referenceLatitude = Math.Asin(
+                Math.Sin(latitude) * Math.Cos(distance)
+                + Math.Cos(latitude) * Math.Sin(distance) * Math.Cos(bearing));
+            var referenceLongitude = longitude + Math.Atan2(
+                Math.Sin(bearing) * Math.Sin(distance) * Math.Cos(latitude),
+                Math.Cos(distance) - Math.Sin(latitude) * Math.Sin(referenceLatitude));
+            var reference = new Coordinates(
+                AstroUtil.EuclidianModulus(AstroUtil.ToDegree(referenceLongitude), 360),
+                AstroUtil.ToDegree(referenceLatitude), coordinates.Epoch, Coordinates.RAType.Degrees);
+            var projected = reference.XYProjection(ViewportFoV);
+            return (float)(AstroUtil.ToDegree(Math.Atan2(projected.Y - center.Y, projected.X - center.X)) + 90);
         }
 
         private List<CacheImage> GetCacheImagesForViewport() {
