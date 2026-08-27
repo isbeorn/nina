@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     Copyright (c) 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
@@ -105,6 +105,28 @@
                         </Binding>
                     </TextBox.Text>
                 </ninactrl:UnitTextBox>
+            </UniformGrid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2"
+                DataContext="{Binding DataContext.ActiveProfile.GuiderSettings, RelativeSource={RelativeSource AncestorType=local:GuiderView}}">
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPHD2GuideChartShowStarMass}" />
+                <CheckBox
+                    Height="25"
+                    HorizontalAlignment="Left"
+                    IsChecked="{Binding PHD2GuideChartShowStarMass}" />
+            </UniformGrid>
+            <UniformGrid
+                Margin="5,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2"
+                DataContext="{Binding DataContext.ActiveProfile.GuiderSettings, RelativeSource={RelativeSource AncestorType=local:GuiderView}}">
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPHD2GuideChartShowSNR}" />
+                <CheckBox
+                    Height="25"
+                    HorizontalAlignment="Left"
+                    IsChecked="{Binding PHD2GuideChartShowSNR}" />
             </UniformGrid>
             <UniformGrid
                 Margin="0,5,0,0"

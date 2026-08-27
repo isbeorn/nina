@@ -321,6 +321,22 @@ namespace NINA.Test.ProfileTest {
             roundTripped.ShowHorizon.Should().BeTrue();
         }
 
+        [Test]
+        public void GuiderSettings_PHD2StarMetricVisibility_RoundTripsWithCompatibleDefaults() {
+            GuiderSettings defaults = new GuiderSettings();
+            GuiderSettings settings = new GuiderSettings {
+                PHD2GuideChartShowStarMass = true,
+                PHD2GuideChartShowSNR = true
+            };
+
+            GuiderSettings roundTripped = RoundTrip(settings);
+
+            defaults.PHD2GuideChartShowStarMass.Should().BeFalse();
+            defaults.PHD2GuideChartShowSNR.Should().BeFalse();
+            roundTripped.PHD2GuideChartShowStarMass.Should().BeTrue();
+            roundTripped.PHD2GuideChartShowSNR.Should().BeTrue();
+        }
+
         private static List<string> CapturePropertyChanges(INotifyPropertyChanged source) {
             List<string> propertyNames = new List<string>();
             source.PropertyChanged += (object sender, PropertyChangedEventArgs args) => propertyNames.Add(args.PropertyName);
