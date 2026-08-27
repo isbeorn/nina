@@ -49,6 +49,9 @@ namespace NINA {
         [DllImport("kernel32.dll")]
         static extern bool FreeConsole(uint dwProcessId);
         const uint ATTACH_PARENT_PROCESS = 0x0ffffffff;
+        // Microsoft recommends positive, non-zero process exit codes for errors to avoid negative exit codes.
+        // https://learn.microsoft.com/en-us/dotnet/api/system.environment.exitcode?view=net-10.0
+        const int STARTUP_ERROR_EXIT_CODE = 1;
 
         private CommandLineOptions _commandLineOptions;
         private ProfileService _profileService;
@@ -132,7 +135,7 @@ namespace NINA {
             FreeConsole(ATTACH_PARENT_PROCESS);
             if (_commandLineOptions.HasErrors) {
 
-                Shutdown(-1);
+                Shutdown(STARTUP_ERROR_EXIT_CODE);
                 return;
             }
 
@@ -157,8 +160,14 @@ namespace NINA {
 
             var startWithProfileId = _commandLineOptions.ProfileId;
             if (!_profileService.TryLoad(startWithProfileId)) {
-                ProfileService.ActivateInstanceOfNinaReferencingProfile(startWithProfileId);
-                Shutdown();
+                var profileExists = _profileService.Profiles.Any(x => x.Id.ToString() == startWithProfileId);
+                if (profileExists) {
+                    ProfileService.ActivateInstanceOfNinaReferencingProfile(startWithProfileId);
+                    Shutdown();
+                } else {
+                    Logger.Error($"Profile {startWithProfileId} was not found. Available profiles: {string.Join(", ", _profileService.Profiles.Select(x => x.Id))}");
+                    Shutdown(STARTUP_ERROR_EXIT_CODE);
+                }
                 return;
             }
             this.RefreshJumpList(_profileService);
@@ -231,7 +240,7 @@ namespace NINA {
         }
 
         protected override void OnExit(ExitEventArgs e) {
-            if (e?.ApplicationExitCode != -1) {
+            if (e?.ApplicationExitCode != STARTUP_ERROR_EXIT_CODE) {
                 this.RefreshJumpList(_profileService);
             }
         }
