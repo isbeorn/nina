@@ -7369,4 +7369,7 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
   <data name="LblReadout" xml:space="preserve">
     <value>Readout</value>
   </data>
+  <data name="LblCopyURL" xml:space="preserve">
+    <value>Copy URL</value>
+  </data>
 </root>

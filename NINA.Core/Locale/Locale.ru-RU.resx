@@ -7368,4 +7368,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   <data name="LblReadout" xml:space="preserve">
     <value>Readout</value>
   </data>
+  <data name="LblCopyURL" xml:space="preserve">
+    <value>Copy URL</value>
+  </data>
 </root>

@@ -7363,4 +7363,7 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque√
   <data name="LblReadout" xml:space="preserve">
     <value>Readout</value>
   </data>
+  <data name="LblCopyURL" xml:space="preserve">
+    <value>Copy URL</value>
+  </data>
 </root>

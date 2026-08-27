@@ -7366,4 +7366,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblReadout" xml:space="preserve">
     <value>Readout</value>
   </data>
+  <data name="LblCopyURL" xml:space="preserve">
+    <value>Copy URL</value>
+  </data>
 </root>

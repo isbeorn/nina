@@ -298,7 +298,7 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
                                                     TextWrapping="Wrap">
-                                                    <Hyperlink NavigateUri="{Binding Homepage, FallbackValue=''}" RequestNavigate="Hyperlink_RequestNavigate">
+                                                    <Hyperlink NavigateUri="{Binding Homepage, FallbackValue=''}">
                                                         <TextBlock
                                                             VerticalAlignment="Center"
                                                             FontSize="16"
@@ -318,7 +318,7 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
                                                     TextWrapping="Wrap">
-                                                    <Hyperlink NavigateUri="{Binding ChangelogURL, FallbackValue=''}" RequestNavigate="Hyperlink_RequestNavigate">
+                                                    <Hyperlink NavigateUri="{Binding ChangelogURL, FallbackValue=''}">
                                                         <TextBlock
                                                             VerticalAlignment="Center"
                                                             FontSize="16"
