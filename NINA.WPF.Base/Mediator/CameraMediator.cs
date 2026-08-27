@@ -28,15 +28,24 @@ namespace NINA.WPF.Base.Mediator {
 
     public class CameraMediator : DeviceMediator<ICameraVM, ICameraConsumer, CameraInfo>, ICameraMediator {
         private object blockingConsumer;
+        private readonly object captureCancellationLock = new();
+        private CancellationTokenSource captureAbortTokenSource = new();
 
         public event Func<object, EventArgs, Task> DownloadTimeout {
             add { this.handler.DownloadTimeout += value; }
             remove { this.handler.DownloadTimeout -= value; }
         }
 
-        public Task Capture(CaptureSequence sequence, CancellationToken token,
+        public async Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {
-            return handler.Capture(sequence, token, progress);
+            CancellationTokenSource linkedTokenSource;
+            lock (captureCancellationLock) {
+                linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, captureAbortTokenSource.Token);
+            }
+
+            using (linkedTokenSource) {
+                await handler.Capture(sequence, linkedTokenSource.Token, progress);
+            }
         }
 
         public IAsyncEnumerable<IExposureData> LiveView(CancellationToken token) {
@@ -60,6 +69,18 @@ namespace NINA.WPF.Base.Mediator {
         }
 
         public void AbortExposure() {
+            CancellationTokenSource tokenSourceToCancel;
+            lock (captureCancellationLock) {
+                tokenSourceToCancel = captureAbortTokenSource;
+                captureAbortTokenSource = new CancellationTokenSource();
+            }
+
+            try {
+                tokenSourceToCancel.Cancel();
+            } finally {
+                tokenSourceToCancel.Dispose();
+            }
+
             handler.AbortExposure();
         }
 
