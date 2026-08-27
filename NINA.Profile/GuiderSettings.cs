@@ -33,6 +33,7 @@ namespace NINA.Profile {
         protected override void SetDefaultValues() {
             lastDeviceName = string.Empty;
             ditherPixels = 5;
+            mountDitherMinimumPixels = 0;
             ditherRAOnly = false;
             settleTime = 10;
             pHD2ServerUrl = "localhost";
@@ -103,6 +104,19 @@ namespace NINA.Profile {
             set {
                 if (ditherPixels != value) {
                     ditherPixels = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double mountDitherMinimumPixels;
+
+        [DataMember]
+        public double MountDitherMinimumPixels {
+            get => mountDitherMinimumPixels;
+            set {
+                if (mountDitherMinimumPixels != value) {
+                    mountDitherMinimumPixels = value;
                     RaisePropertyChanged();
                 }
             }

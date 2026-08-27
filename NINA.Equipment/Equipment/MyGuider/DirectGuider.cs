@@ -19,7 +19,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Astrometry;
-using Accord.Statistics.Distributions.Univariate;
 using NINA.Core.Enum;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Core.Locale;
@@ -35,10 +34,16 @@ namespace NINA.Equipment.Equipment.MyGuider {
     public class DirectGuider : BaseINPC, IGuider, ITelescopeConsumer {
         private readonly IProfileService profileService;
         private readonly ITelescopeMediator telescopeMediator;
+        private readonly DitherOffsetSelector ditherOffsetSelector;
 
-        public DirectGuider(IProfileService profileService, ITelescopeMediator telescopeMediator) {
+        public DirectGuider(IProfileService profileService, ITelescopeMediator telescopeMediator)
+            : this(profileService, telescopeMediator, new DitherOffsetSelector()) {
+        }
+
+        internal DirectGuider(IProfileService profileService, ITelescopeMediator telescopeMediator, DitherOffsetSelector ditherOffsetSelector) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
+            this.ditherOffsetSelector = ditherOffsetSelector;
             this.telescopeMediator.RegisterConsumer(this);
         }
 
@@ -216,13 +221,15 @@ namespace NINA.Equipment.Equipment.MyGuider {
             return Task.FromResult(true);
         }
 
-        private readonly Random random = new Random();
-        private double previousWestEastOffsetPixels = 0.0;
-        private double previousNorthSouthOffsetPixels = 0.0;
+        private DitherOffset previousOffset = new DitherOffset(0.0, 0.0);
 
         public event EventHandler<IGuideStep> GuideEvent { add { } remove { } }
 
-        public async Task<bool>Dither (double ditherPixels, TimeSpan settleTime, bool ditherRAOnly, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+        public Task<bool> Dither(double ditherPixels, TimeSpan settleTime, bool ditherRAOnly, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            return Dither(ditherPixels, 0.0, settleTime, ditherRAOnly, progress, ct);
+        }
+
+        private async Task<bool> Dither(double ditherPixels, double minimumDitherPixels, TimeSpan settleTime, bool ditherRAOnly, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             try {
                 State = "Dithering...";
 
@@ -230,7 +237,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
                 if (!telescopeInfo.Connected) {
                     return false;
                 } else {
-                    var pulseInstructions = SelectDitherPulse(ditherPixels);
+                    var pulseInstructions = SelectDitherPulse(ditherPixels, minimumDitherPixels, ditherRAOnly);
 
                     // Note: According to the ASCOM specification, PulseGuide returns immediately (asynchronous) if the mount supports back to back axis moves, otherwise
                     // it waits until completion. To be strictly correct here we'd start a counter here instead to avoid a potential extra wait. However, DirectGuiding is
@@ -258,7 +265,14 @@ namespace NINA.Equipment.Equipment.MyGuider {
         }
 
         public Task<bool> Dither(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            return Dither(profileService.ActiveProfile.GuiderSettings.DitherPixels, TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime), profileService.ActiveProfile.GuiderSettings.DitherRAOnly, progress, ct);
+            IGuiderSettings settings = profileService.ActiveProfile.GuiderSettings;
+            return Dither(
+                settings.DitherPixels,
+                settings.MountDitherMinimumPixels,
+                TimeSpan.FromSeconds(settings.SettleTime),
+                settings.DitherRAOnly,
+                progress,
+                ct);
         }
 
         private struct GuidePulses {
@@ -271,34 +285,28 @@ namespace NINA.Equipment.Equipment.MyGuider {
         /// <summary>
         /// Determines what dither pulses to send in N/S and W/E directions so that deviations are normally distributed
         /// around the target, with standard deviation equal to the configured "DitherPixels", and distances clamped to +- 3 times that.
-        /// This is accomplished by computing a vector from the previous randomly chosen offset to the target and sending a pulse guide
-        /// accordingly. Durations are chosen by factoring in the mount-reported guiding rate (using 0.5x sidereal as a fallback) and the camera pixel scale,
-        /// which also factors in telescope focal length
+        /// Candidate offsets that do not move at least the configured minimum are rejected. This is accomplished by computing a vector
+        /// from the previous accepted offset to the target and sending a pulse guide accordingly. Durations are chosen by factoring in
+        /// the mount-reported guiding rate (using 0.5x sidereal as a fallback) and the camera pixel scale, which also factors in telescope focal length.
         /// </summary>
         /// <returns>Parameters for two guide pulses, one in N/S direction and one in E/W direction</returns>
 
-        private GuidePulses SelectDitherPulse(double ditherPixels) {
-            double ditherAngle = random.NextDouble() * Math.PI;
-            double cosAngle = Math.Cos(ditherAngle);
-            double sinAngle = Math.Sin(ditherAngle);
-            var expectedDitherPixels = ditherPixels;
+        private GuidePulses SelectDitherPulse(double ditherPixels, double minimumDitherPixels, bool ditherRAOnly) {
+            double effectiveMinimum = DitherOffsetSelector.NormalizeMinimum(ditherPixels, minimumDitherPixels);
+            if (effectiveMinimum != minimumDitherPixels) {
+                Logger.Warning($"Mount Dither minimum of {minimumDitherPixels} pixels is outside the valid range of 0 to {ditherPixels} pixels and will use {effectiveMinimum} pixels");
+            }
 
-            // Generate a normally distributed distance from 0 with standard deviation equal to the configured "Dither Pixels", and clamped to +- 3 standard deviations
-            double targetDistancePixels = NormalDistribution.Random(mean: 0.0, stdDev: expectedDitherPixels);
-            targetDistancePixels = Math.Min(3.0d * expectedDitherPixels, Math.Max(-3.0d * expectedDitherPixels, targetDistancePixels));
-
-            double targetWestEastOffsetPixels = targetDistancePixels * cosAngle;
-            double targetNorthSouthOffsetPixels = targetDistancePixels * sinAngle;
+            DitherOffset targetOffset = ditherOffsetSelector.SelectOffset(previousOffset, ditherPixels, effectiveMinimum, ditherRAOnly);
 
             // RA axis is East/West
             // Dec axis is North/South
             // pixels * (arcseconds per pixel) / (arcseconds per second) = seconds
-            double westEastDuration = (targetWestEastOffsetPixels - previousWestEastOffsetPixels) * PixelScale / WestEastGuideRate;
-            double northSouthDuration = (targetNorthSouthOffsetPixels - previousNorthSouthOffsetPixels) * PixelScale / NorthSouthGuideRate;
-            Logger.Info($"Dither target from ({previousWestEastOffsetPixels}, {previousNorthSouthOffsetPixels}) to ({targetWestEastOffsetPixels}, {targetNorthSouthOffsetPixels}) using guide durations of {westEastDuration} and {northSouthDuration} seconds");
+            double westEastDuration = (targetOffset.WestEastPixels - previousOffset.WestEastPixels) * PixelScale / WestEastGuideRate;
+            double northSouthDuration = (targetOffset.NorthSouthPixels - previousOffset.NorthSouthPixels) * PixelScale / NorthSouthGuideRate;
+            Logger.Info($"Dither target from ({previousOffset.WestEastPixels}, {previousOffset.NorthSouthPixels}) to ({targetOffset.WestEastPixels}, {targetOffset.NorthSouthPixels}) using guide durations of {westEastDuration} and {northSouthDuration} seconds");
 
-            previousWestEastOffsetPixels = targetWestEastOffsetPixels;
-            previousNorthSouthOffsetPixels = targetNorthSouthOffsetPixels;
+            previousOffset = targetOffset;
 
             GuidePulses resultPulses = new GuidePulses();
             if (westEastDuration >= 0) {
