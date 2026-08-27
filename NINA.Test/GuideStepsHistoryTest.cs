@@ -22,6 +22,7 @@ using NINA.Core.Interfaces;
 using NINA.Equipment.Equipment;
 using NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents;
 using FluentAssertions;
+using Moq;
 using NUnit.Framework.Legacy;
 
 namespace NINA.Test {
@@ -117,6 +118,40 @@ namespace NINA.Test {
             Assert.That(gsh.RMS.Dec, Is.EqualTo(630));
             var total = Math.Sqrt((Math.Pow(300, 2) + Math.Pow(630, 2)));
             Assert.That(gsh.RMS.Total, Is.EqualTo(total));
+        }
+
+        [Test]
+        public void GuideStepsHistory_PHD2GuideStep_PreservesStarMetricsThroughResizeAndScaleChanges() {
+            GuideStepsHistory history = new GuideStepsHistory(2, GuiderScaleEnum.PIXELS, 4);
+            history.AddGuideStep(new PhdEventGuideStep {
+                RADistanceRaw = 1,
+                DECDistanceRaw = 2,
+                StarMass = 1234.5,
+                SNR = 27.25
+            });
+            history.AddGuideStep(new PhdEventGuideStep { StarMass = 900, SNR = 20 });
+            history.AddGuideStep(new PhdEventGuideStep { StarMass = 800, SNR = 15 });
+
+            history.GuideSteps.Select(step => step.StarMass).Should().Equal(900, 800);
+            history.GuideSteps.Select(step => step.SNR).Should().Equal(20, 15);
+
+            history.HistorySize = 3;
+            history.PixelScale = 2;
+            history.Scale = GuiderScaleEnum.ARCSECONDS;
+
+            history.GuideSteps.Select(step => step.StarMass).Should().Equal(1234.5, 900, 800);
+            history.GuideSteps.Select(step => step.SNR).Should().Equal(27.25, 20, 15);
+        }
+
+        [Test]
+        public void GuideStepsHistory_NonPHD2AndDitherSteps_UseNaNForStarMetrics() {
+            GuideStepsHistory history = new GuideStepsHistory(3, GuiderScaleEnum.PIXELS, 4);
+            Mock<IGuideStep> genericStep = new Mock<IGuideStep>();
+
+            history.AddGuideStep(genericStep.Object);
+            history.AddDitherIndicator();
+
+            history.GuideSteps.Should().OnlyContain(step => double.IsNaN(step.StarMass) && double.IsNaN(step.SNR));
         }
 
         [Test]

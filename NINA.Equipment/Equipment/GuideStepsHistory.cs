@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NINA.Core.Model;
 using NINA.Core.Interfaces;
+using NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents;
 
 namespace NINA.Equipment.Equipment {
 
@@ -225,10 +226,13 @@ namespace NINA.Equipment.Equipment {
             public double DECDistanceRaw { get; private set; }
             public double DECDistanceRawDisplay { get; private set; }
             public double DECDuration { get; private set; }
+            public double StarMass { get; private set; } = double.NaN;
+            public double SNR { get; private set; } = double.NaN;
             public double Dither { get; private set; } = double.NaN;
 
             public static HistoryStep FromGuideStep(IGuideStep guideStep, double pixelScale) {
                 var id = idProvider++;
+                var phd2GuideStep = guideStep as PhdEventGuideStep;
                 return new HistoryStep() {
                     Id = id,
                     RADistanceRaw = guideStep.RADistanceRaw,
@@ -236,7 +240,9 @@ namespace NINA.Equipment.Equipment {
                     RADuration = guideStep.RADuration,
                     DECDistanceRaw = guideStep.DECDistanceRaw,
                     DECDistanceRawDisplay = guideStep.DECDistanceRaw * pixelScale,
-                    DECDuration = guideStep.DECDuration
+                    DECDuration = guideStep.DECDuration,
+                    StarMass = phd2GuideStep?.StarMass ?? double.NaN,
+                    SNR = phd2GuideStep?.SNR ?? double.NaN
                 };
             }
 
@@ -263,6 +269,8 @@ namespace NINA.Equipment.Equipment {
                     DECDistanceRaw = this.DECDistanceRaw,
                     DECDistanceRawDisplay = this.DECDistanceRaw * pixelScale,
                     DECDuration = this.DECDuration,
+                    StarMass = this.StarMass,
+                    SNR = this.SNR,
                     Dither = this.Dither
                 };
             }

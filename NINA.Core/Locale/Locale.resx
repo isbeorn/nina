@@ -8082,4 +8082,16 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
     <value>Instructions that run after conditions are safe again.</value>
   </data>
+  <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
+    <value>Show Star Mass in Guide Graph</value>
+  </data>
+  <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
+    <value>Show Star SNR in Guide Graph</value>
+  </data>
+  <data name="LblStarMass" xml:space="preserve">
+    <value>Star Mass</value>
+  </data>
+  <data name="LblStarSNR" xml:space="preserve">
+    <value>Star SNR</value>
+  </data>
 </root>
