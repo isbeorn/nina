@@ -117,7 +117,10 @@ namespace NINA.WPF.Base.SkySurvey {
                 double width = image.PixelWidth * imageResolutionWidth / viewport.ArcSecWidth;
                 double height = image.PixelHeight * imageResolutionHeight / viewport.ArcSecHeight;
                 System.Windows.Point center = projection.Project(tile.Coordinates);
-                (double rotation, bool flipHorizontally) = CalculateTransform(tile, viewport, projection, center);
+                (double rotation, bool flipHorizontally) = projection.ImageTransformFromEquatorial(
+                    tile.Coordinates,
+                    tile.Rotation,
+                    center);
                 result.Add(new SkyMapImagePlacement(image, center, width, height, rotation, flipHorizontally) {
                     RasterImage = loaded.RasterImage
                 });
@@ -267,37 +270,6 @@ namespace NINA.WPF.Base.SkySurvey {
                 + Math.Cos(firstDeclination) * Math.Cos(secondDeclination)
                 * Math.Cos(AstroUtil.ToRadians(first.RADegrees - second.RADegrees));
             return AstroUtil.ToDegree(Math.Acos(Math.Clamp(cosine, -1, 1)));
-        }
-
-        private static (double Rotation, bool FlipHorizontally) CalculateTransform(
-            ImageTile tile,
-            ViewportFoV viewport,
-            SkyMapViewportProjection projection,
-            System.Windows.Point center) {
-            if (projection.Mode == SkyMapProjectionMode.AltAz) {
-                return projection.ImageTransformFromEquatorial(tile.Coordinates, tile.Rotation, center);
-            }
-
-            double deltaX = center.X - viewport.ViewPortCenterPoint.X;
-            double deltaY = center.Y - viewport.ViewPortCenterPoint.Y;
-            Coordinates referenceCenter = viewport.CenterCoordinates.Shift(
-                deltaX < 1E-10 ? 1 : 0,
-                deltaY,
-                viewport.Rotation,
-                viewport.ArcSecWidth,
-                viewport.ArcSecHeight);
-            double equatorialRotation = -(90 - AstroUtil.CalculatePositionAngle(
-                referenceCenter.RADegrees,
-                tile.Coordinates.RADegrees,
-                referenceCenter.Dec,
-                tile.Coordinates.Dec));
-            if (deltaX < 0) {
-                equatorialRotation += 180;
-            }
-            if (tile.Coordinates.Dec < 0 || (referenceCenter.Dec < 0 && tile.Coordinates.Dec >= 0)) {
-                equatorialRotation += 180;
-            }
-            return (equatorialRotation + tile.Rotation, false);
         }
 
         private sealed record CacheEntry(

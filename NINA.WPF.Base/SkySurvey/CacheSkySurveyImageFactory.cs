@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
@@ -57,6 +57,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
         private void DrawBufferedDSOImages(Graphics dsoImageGraphics) {
             try {
+                var projection = new SkyMapViewportProjection(ViewportFoV);
                 var relevantImages = GetCacheImagesForViewport();
                 foreach (var cacheImage in relevantImages) {
                     if (File.Exists(cacheImage.ImagePath)) {
@@ -69,24 +70,14 @@ namespace NINA.WPF.Base.SkySurvey {
                         var conversionH = imageResH / ViewportFoV.ArcSecHeight;
                         var dest = new RectangleF(-(float)(image.Width * conversionW / 2f), -(float)(image.Height * conversionH / 2f), (float)(image.Width * conversionW), (float)(image.Height * conversionH));
 
-                        var center = cacheImage.Coordinates.XYProjection(ViewportFoV);
-
-                        var panelDeltaX = center.X - ViewportFoV.ViewPortCenterPoint.X;
-                        var panelDeltaY = center.Y - ViewportFoV.ViewPortCenterPoint.Y;
-                        var referenceCenter = ViewportFoV.CenterCoordinates.Shift(panelDeltaX < 1E-10 ? 1 : 0, panelDeltaY, ViewportFoV.Rotation, ViewportFoV.ArcSecWidth, ViewportFoV.ArcSecHeight);
-
-                        var rotation = -(90 - ((float)AstroUtil.CalculatePositionAngle(referenceCenter.RADegrees, cacheImage.Coordinates.RADegrees, referenceCenter.Dec, cacheImage.Coordinates.Dec)));
-                        if (panelDeltaX < 0) {
-                            rotation += 180;
-                        }
-                        if (cacheImage.Coordinates.Dec < 0 || (referenceCenter.Dec < 0 && cacheImage.Coordinates.Dec >= 0)) {
-                            rotation += 180;
-                        }
-
-                        rotation += (float)cacheImage.Rotation;
+                        var center = projection.Project(cacheImage.Coordinates);
+                        var (rotation, _) = projection.ImageTransformFromEquatorial(
+                            cacheImage.Coordinates,
+                            cacheImage.Rotation,
+                            center);
 
                         dsoImageGraphics.TranslateTransform((float)center.X, (float)center.Y);
-                        dsoImageGraphics.RotateTransform(rotation);
+                        dsoImageGraphics.RotateTransform((float)rotation);
                         dsoImageGraphics.DrawImage(image, dest, sourceR, GraphicsUnit.Pixel);
                         dsoImageGraphics.ResetTransform();
                     }
