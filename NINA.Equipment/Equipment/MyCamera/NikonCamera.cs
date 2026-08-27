@@ -241,8 +241,46 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
+        private readonly object exposureSync = new object();
         private TaskCompletionSource<object> _downloadExposure;
         private TaskCompletionSource<bool> _cameraConnected;
+        private Action activeExposureStopAction;
+        private bool activeExposureStopRequested;
+
+        private void SetActiveExposureStopAction(Action stopAction) {
+            lock (exposureSync) {
+                activeExposureStopAction = stopAction;
+                activeExposureStopRequested = false;
+            }
+        }
+
+        private void StopActiveExposure() {
+            Action stopAction;
+            CancellationTokenSource completionCancellationTokenSource;
+            lock (exposureSync) {
+                if (activeExposureStopAction == null || activeExposureStopRequested) {
+                    return;
+                }
+
+                activeExposureStopRequested = true;
+                stopAction = activeExposureStopAction;
+                activeExposureStopAction = null;
+                completionCancellationTokenSource = bulbCompletionCTS;
+                bulbCompletionCTS = null;
+            }
+
+            try {
+                completionCancellationTokenSource?.Cancel();
+            } catch (Exception ex) {
+                Logger.Error("Failed to cancel Nikon Bulb exposure timer.", ex);
+            }
+
+            try {
+                stopAction();
+            } catch (Exception ex) {
+                Logger.Error("Failed to stop Nikon exposure.", ex);
+            }
+        }
 
         private void _camera_CaptureComplete(NikonDevice sender, int data) {
             Logger.Debug("Capture complete");
@@ -612,12 +650,16 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public bool HasBattery => true;
 
         public void AbortExposure() {
-            if (Connected) {
-                _camera.StopBulbCapture();
-            }
+            StopActiveExposure();
         }
 
         public void Disconnect() {
+            StopActiveExposure();
+            lock (exposureSync) {
+                _downloadExposure?.TrySetCanceled();
+                activeExposureStopAction = null;
+                activeExposureStopRequested = false;
+            }
             Connected = false;
             _camera = null;
             _activeNikonManager?.Shutdown();
@@ -631,8 +673,20 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public async Task WaitUntilExposureIsReady(CancellationToken token) {
-            using (token.Register(() => AbortExposure())) {
-                await _downloadExposure.Task;
+            Task downloadExposureTask;
+            lock (exposureSync) {
+                downloadExposureTask = _downloadExposure.Task;
+            }
+
+            try {
+                await downloadExposureTask.WaitAsync(token);
+            } catch (OperationCanceledException) when (token.IsCancellationRequested) {
+                try {
+                    AbortExposure();
+                } catch (Exception ex) {
+                    Logger.Error("Failed to abort Nikon exposure after cancellation.", ex);
+                }
+                throw;
             }
         }
 
@@ -667,21 +721,34 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         private Dictionary<int, double> _shutterSpeeds = new Dictionary<int, double>();
         private int _bulbShutterSpeedIndex;
+        private const double MaximumAutomaticShutterExposureTime = 30.0;
+
+        private static bool UsesAutomaticShutter(double exposureTime) {
+            return exposureTime <= MaximumAutomaticShutterExposureTime;
+        }
 
         public void StartExposure(CaptureSequence sequence) {
             if (Connected) {
-                if (_downloadExposure != null && _downloadExposure.Task.Status <= TaskStatus.Running) {
+                bool exposureInProgress;
+                lock (exposureSync) {
+                    exposureInProgress = _downloadExposure != null && !_downloadExposure.Task.IsCompleted;
+                }
+                if (exposureInProgress) {
                     Notification.ShowWarning(Loc.Instance["LblExposureInProgress"]);
                     Logger.Warning("An exposure was still in progress. Cancelling it to start another.");
-                    try { bulbCompletionCTS?.Cancel(); } catch { }
+                    StopActiveExposure();
                     _downloadExposure.TrySetCanceled();
                 }
 
                 double exposureTime = sequence.ExposureTime;
                 Logger.Debug("Prepare start of exposure: " + sequence);
-                _downloadExposure = new TaskCompletionSource<object>();
+                lock (exposureSync) {
+                    activeExposureStopAction = null;
+                    activeExposureStopRequested = false;
+                    _downloadExposure = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+                }
 
-                if (exposureTime <= 30.0) {
+                if (UsesAutomaticShutter(exposureTime)) {
                     Logger.Debug("Exposuretime <= 30. Setting automatic shutter speed.");
                     var speed = _shutterSpeeds.Aggregate((x, y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
                     SetCameraShutterSpeed(speed.Key);
@@ -778,27 +845,48 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             SetCameraShutterSpeed(_bulbShutterSpeedIndex);
 
+            SetActiveExposureStopAction(() => {
+                try {
+                    stopCapture();
+                } finally {
+                    Logger.Debug("Restore previous shutter speed");
+                    SetCameraShutterSpeed(_prevShutterSpeed);
+                }
+            });
+
             try {
                 Logger.Debug("Starting bulb capture");
                 capture();
             } catch (NikonException ex) {
                 if (ex.ErrorCode != eNkMAIDResult.kNkMAIDResult_BulbReleaseBusy) {
+                    StopActiveExposure();
                     throw;
                 }
+            } catch {
+                StopActiveExposure();
+                throw;
             }
 
             /*Stop Exposure after exposure time or upon cancellation*/
-            try { bulbCompletionCTS?.Cancel(); } catch { }
-            bulbCompletionCTS = new CancellationTokenSource();
-            bulbCompletionTask = Task.Run(async () => {
-                await CoreUtil.Wait(TimeSpan.FromSeconds(exposureTime), bulbCompletionCTS.Token);
-                if (!bulbCompletionCTS.IsCancellationRequested) {
-                    stopCapture();
-                    Logger.Debug("Restore previous shutter speed");
-                    // Restore original shutter speed
-                    SetCameraShutterSpeed(_prevShutterSpeed);
+            var completionCancellationTokenSource = new CancellationTokenSource();
+            lock (exposureSync) {
+                if (activeExposureStopRequested) {
+                    completionCancellationTokenSource.Dispose();
+                    return;
                 }
-            }, bulbCompletionCTS.Token);
+                bulbCompletionCTS = completionCancellationTokenSource;
+            }
+            bulbCompletionTask = Task.Run(async () => {
+                try {
+                    await CoreUtil.Wait(TimeSpan.FromSeconds(exposureTime), completionCancellationTokenSource.Token);
+                    StopActiveExposure();
+                } catch (OperationCanceledException) {
+                } catch (Exception ex) {
+                    Logger.Error("Failed while waiting to stop Nikon Bulb exposure.", ex);
+                } finally {
+                    completionCancellationTokenSource.Dispose();
+                }
+            });
         }
 
         private void StartBulbCapture() {
@@ -853,9 +941,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public void StopExposure() {
-            if (Connected) {
-                _camera.StopBulbCapture();
-            }
+            StopActiveExposure();
         }
 
         public async Task<bool> Connect(CancellationToken token) {
