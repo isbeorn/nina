@@ -207,7 +207,7 @@ namespace NINA.ViewModel {
                 } else {
                     return false;
                 }
-            }, (object o) => Initialized);
+            }, (object o) => Initialized && !((AsyncCommand<bool>)DisconnectAllDevicesCommand).IsRunning);
 
             DisconnectAllDevicesCommand = new AsyncCommand<bool>(async () => {
                 var diag = MyMessageBox.Show(Loc.Instance["LblDisconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
@@ -216,7 +216,7 @@ namespace NINA.ViewModel {
                     return true;
                 }
                 return false;
-            }, (object o) => Initialized);
+            }, (object o) => Initialized && !((AsyncCommand<bool>)ConnectAllDevicesCommand).IsRunning);
         }
 
         private async Task Device_Connected(object arg1, EventArgs arg2) {
