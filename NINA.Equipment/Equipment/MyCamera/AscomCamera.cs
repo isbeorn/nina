@@ -37,6 +37,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
     public class AscomCamera : AscomDevice<ICameraV4>, ICamera, IDisposable {
 
+        private const int MaximumSelectableBinFactor = 16;
+
         public AscomCamera(string cameraId, string name, IProfileService profileService, IExposureDataFactory exposureDataFactory) : base(cameraId, name) {
             this.profileService = profileService;
             this.exposureDataFactory = exposureDataFactory;
@@ -54,16 +56,27 @@ namespace NINA.Equipment.Equipment.MyCamera {
             CanSetGain = true;
             CanGetGain = true;
             _canGetGainMinMax = true;
-            BinningModes = new AsyncObservableCollection<BinningMode>();
-            for (short i = 1; i <= MaxBinX; i++) {
-                if (CanAsymmetricBin) {
-                    for (short j = 1; j <= MaxBinY; j++) {
-                        BinningModes.Add(new BinningMode(i, j));
+            var maxBinX = MaxBinX;
+            var maxBinY = MaxBinY;
+            var canAsymmetricBin = CanAsymmetricBin;
+            var selectableMaxBinX = Math.Clamp((int)maxBinX, 1, MaximumSelectableBinFactor);
+            var selectableMaxBinY = Math.Clamp((int)maxBinY, 1, MaximumSelectableBinFactor);
+
+            if (selectableMaxBinX != maxBinX || selectableMaxBinY != maxBinY) {
+                Logger.Warning($"{Name} reported maximum binning {maxBinX}x{maxBinY}. Selectable binning factors will be limited to {selectableMaxBinX}x{selectableMaxBinY}.");
+            }
+
+            var binningModes = new List<BinningMode>(canAsymmetricBin ? selectableMaxBinX * selectableMaxBinY : selectableMaxBinX);
+            for (var i = 1; i <= selectableMaxBinX; i++) {
+                if (canAsymmetricBin) {
+                    for (var j = 1; j <= selectableMaxBinY; j++) {
+                        binningModes.Add(new BinningMode((short)i, (short)j));
                     }
                 } else {
-                    BinningModes.Add(new BinningMode(i, i));
+                    binningModes.Add(new BinningMode((short)i, (short)i));
                 }
             }
+            BinningModes = new AsyncObservableCollection<BinningMode>(binningModes);
 
             Gains.Clear();
             try {
