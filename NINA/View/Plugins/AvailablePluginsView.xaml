@@ -353,7 +353,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="16"
                                         TextWrapping="Wrap">
-                                        <Hyperlink NavigateUri="{Binding Homepage, FallbackValue=''}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Hyperlink NavigateUri="{Binding Homepage, FallbackValue=''}">
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
@@ -373,7 +373,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="16"
                                         TextWrapping="Wrap">
-                                        <Hyperlink NavigateUri="{Binding ChangelogURL, FallbackValue=''}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Hyperlink NavigateUri="{Binding ChangelogURL, FallbackValue=''}">
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
@@ -433,7 +433,7 @@
                             <StackPanel Orientation="Vertical">
                                 <ContentControl Content="{Binding Installer.Type}" ContentTemplateSelector="{StaticResource PluginInstallerDescriptionTemplateSelector}" />
                                 <TextBlock Margin="0,5,0,5" TextWrapping="Wrap">
-                                    <Hyperlink NavigateUri="{Binding Installer.URL}" RequestNavigate="Hyperlink_RequestNavigate">
+                                    <Hyperlink NavigateUri="{Binding Installer.URL}">
                                         <TextBlock Text="{Binding Installer.URL}" TextWrapping="Wrap" />
                                     </Hyperlink>
                                 </TextBlock>
@@ -458,7 +458,7 @@
                         <GroupBox Header="{ns:Loc LblSource}">
                             <StackPanel Orientation="Vertical">
                                 <TextBlock Margin="0,5,0,5" TextWrapping="Wrap">
-                                    <Hyperlink NavigateUri="{Binding Repository}" RequestNavigate="Hyperlink_RequestNavigate">
+                                    <Hyperlink NavigateUri="{Binding Repository}">
                                         <TextBlock Text="{Binding Repository}" TextWrapping="Wrap" />
                                     </Hyperlink>
                                 </TextBlock>
@@ -469,7 +469,7 @@
                                     <TextBlock Margin="5,0,0,0" Text="{Binding License}" />
                                     <TextBlock Margin="5,0,0,0" Text="-" />
                                     <TextBlock Margin="5,0,0,0" TextWrapping="Wrap">
-                                        <Hyperlink NavigateUri="{Binding LicenseURL}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Hyperlink NavigateUri="{Binding LicenseURL}">
                                             <TextBlock Text="{Binding LicenseURL}" TextWrapping="Wrap" />
                                         </Hyperlink>
                                     </TextBlock>

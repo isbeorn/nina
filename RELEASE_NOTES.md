@@ -44,6 +44,7 @@ This allows you to safely return to a stable release if needed.
 - Captures now switch to the exposure's readout mode before applying gain and offset, so the first frame after a mode change is digitized and logged with the settings for that mode.
 
 ## Improvements
+- URLs throughout the application can now be copied from their right-click context menu.
 - PHD2 users can optionally show guide-star mass and SNR in the guide graphs, using PHD2-style independent scaling in the upper half of the chart.
 - **Autofocus after HFR Increase Trigger**
     - new Trend per Filter checkbox to consider HFR Trend per filter (default) or across all filters to earlier trigger autofocus runs when imaging with continues filter loops 

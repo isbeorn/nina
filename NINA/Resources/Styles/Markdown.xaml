@@ -96,7 +96,7 @@
                 </Style.Triggers>
             </Style>-->
 
-            <Style TargetType="Hyperlink">
+            <Style BasedOn="{StaticResource ApplicationHyperlinkStyle}" TargetType="Hyperlink">
                 <Setter Property="TextDecorations" Value="None" />
             </Style>
 

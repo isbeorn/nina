@@ -100,7 +100,7 @@
                                     <WrapPanel Orientation="Horizontal">
                                         <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
                                         <TextBlock TextWrapping="Wrap">
-                                            <Hyperlink NavigateUri="https://skyview.gsfc.nasa.gov/" RequestNavigate="Hyperlink_RequestNavigate">SkyView</Hyperlink>
+                                            <Hyperlink NavigateUri="https://skyview.gsfc.nasa.gov/">SkyView</Hyperlink>
                                         </TextBlock>
                                         <TextBlock Text=" a service of the Astrophysics Science Division at NASA/GSFC" TextWrapping="Wrap" />
                                     </WrapPanel>
@@ -140,7 +140,7 @@
                                     <WrapPanel Orientation="Horizontal">
                                         <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
                                         <TextBlock TextWrapping="Wrap">
-                                            <Hyperlink NavigateUri="http://skyserver.sdss.org/dr17/" RequestNavigate="Hyperlink_RequestNavigate">Sloan Digital Sky Survey</Hyperlink>
+                                            <Hyperlink NavigateUri="http://skyserver.sdss.org/dr17/">Sloan Digital Sky Survey</Hyperlink>
                                         </TextBlock>
                                         <TextBlock Text=" a service provided by SkyServer" TextWrapping="Wrap" />
                                     </WrapPanel>
@@ -180,7 +180,7 @@
                                     <WrapPanel Orientation="Horizontal">
                                         <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
                                         <TextBlock TextWrapping="Wrap">
-                                            <Hyperlink NavigateUri="http://archive.eso.org/dss/dss" RequestNavigate="Hyperlink_RequestNavigate">ESO Online Digitized Sky Survey</Hyperlink>
+                                            <Hyperlink NavigateUri="http://archive.eso.org/dss/dss">ESO Online Digitized Sky Survey</Hyperlink>
                                         </TextBlock>
                                         <TextBlock Text=" a service provided by the European Southern Observatory" TextWrapping="Wrap" />
                                     </WrapPanel>
@@ -220,7 +220,7 @@
                                     <WrapPanel Orientation="Horizontal">
                                         <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
                                         <TextBlock TextWrapping="Wrap">
-                                            <Hyperlink NavigateUri="https://archive.stsci.edu/dss/acknowledging.html" RequestNavigate="Hyperlink_RequestNavigate">STScI DSS Search</Hyperlink>
+                                            <Hyperlink NavigateUri="https://archive.stsci.edu/dss/acknowledging.html">STScI DSS Search</Hyperlink>
                                         </TextBlock>
                                         <TextBlock Text=" a service provided by the Space Telescope Science Institude" TextWrapping="Wrap" />
                                     </WrapPanel>
@@ -308,7 +308,7 @@
                                     <WrapPanel Margin="0,10,0,0" Orientation="Horizontal">
                                         <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
                                         <TextBlock TextWrapping="Wrap">
-                                            <Hyperlink NavigateUri="https://alasky.u-strasbg.fr/hips-image-services/hips2fits" RequestNavigate="Hyperlink_RequestNavigate">hips2fits</Hyperlink>
+                                            <Hyperlink NavigateUri="https://alasky.u-strasbg.fr/hips-image-services/hips2fits">hips2fits</Hyperlink>
                                         </TextBlock>
                                         <TextBlock Text=" a service provided by CDS" TextWrapping="Wrap" />
                                     </WrapPanel>
