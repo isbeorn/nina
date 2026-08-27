@@ -176,6 +176,10 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         }
 
         private void PlatesolvingImageFollower_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (!ReferenceEquals(sender, platesolvingImageFollower) || !IsActiveForImageFollower()) {
+                return;
+            }
+
             var follower = (PlatesolvingImageFollower)sender;
             if (e.PropertyName == nameof(follower.LastCoordinates)) {
                 var lastCoordinates = follower?.LastCoordinates;
@@ -224,10 +228,16 @@ namespace NINA.Sequencer.Trigger.Platesolving {
 
         public override void SequenceBlockInitialize() {
             EnsureFollowerClosed();
-            platesolvingImageFollower = new PlatesolvingImageFollower(this.profileService, this.telescopeMediator, this.imageSaveMediator, this.applicationStatusMediator) {
+            platesolvingImageFollower = new PlatesolvingImageFollower(this.profileService, this.telescopeMediator, this.imageSaveMediator, this.applicationStatusMediator, IsActiveForImageFollower) {
                 AfterExposures = AfterExposures
             };
             platesolvingImageFollower.PropertyChanged += PlatesolvingImageFollower_PropertyChanged;
+        }
+
+        private bool IsActiveForImageFollower() {
+            return ItemUtility.IsInRootContainer(Parent)
+                && Parent.Status == SequenceEntityStatus.RUNNING
+                && Status != SequenceEntityStatus.DISABLED;
         }
 
         public override void SequenceBlockTeardown() {
