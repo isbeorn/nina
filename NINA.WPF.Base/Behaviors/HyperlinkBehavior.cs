@@ -14,25 +14,36 @@
 
 using NINA.Core.Locale;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace NINA.WPF.Base.Behaviors {
 
-    public static class HyperlinkCopyBehavior {
+    public static class HyperlinkBehavior {
+
+        private static readonly ICommand DefaultNavigationCommand = new OpenUriCommand();
 
         public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.RegisterAttached(
             "IsEnabled",
             typeof(bool),
-            typeof(HyperlinkCopyBehavior),
+            typeof(HyperlinkBehavior),
             new PropertyMetadata(false, OnIsEnabledChanged));
+
+        public static readonly DependencyProperty NavigationCommandProperty = DependencyProperty.RegisterAttached(
+            "NavigationCommand",
+            typeof(ICommand),
+            typeof(HyperlinkBehavior),
+            new PropertyMetadata(DefaultNavigationCommand));
 
         private static readonly DependencyProperty StateProperty = DependencyProperty.RegisterAttached(
             "State",
             typeof(BehaviorState),
-            typeof(HyperlinkCopyBehavior),
+            typeof(HyperlinkBehavior),
             new PropertyMetadata(null));
 
         [AttachedPropertyBrowsableForType(typeof(Hyperlink))]
@@ -42,6 +53,15 @@ namespace NINA.WPF.Base.Behaviors {
 
         public static void SetIsEnabled(DependencyObject element, bool value) {
             element.SetValue(IsEnabledProperty, value);
+        }
+
+        [AttachedPropertyBrowsableForType(typeof(Hyperlink))]
+        public static ICommand GetNavigationCommand(DependencyObject element) {
+            return (ICommand)element.GetValue(NavigationCommandProperty);
+        }
+
+        public static void SetNavigationCommand(DependencyObject element, ICommand value) {
+            element.SetValue(NavigationCommandProperty, value);
         }
 
         private static BehaviorState GetState(DependencyObject element) {
@@ -147,12 +167,14 @@ namespace NINA.WPF.Base.Behaviors {
 
             public void Attach() {
                 hyperlink.ContextMenuOpening += Hyperlink_ContextMenuOpening;
+                hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
                 copyMenuItem.Click += CopyMenuItem_Click;
                 UpdateVisibility();
             }
 
             public void Detach() {
                 hyperlink.ContextMenuOpening -= Hyperlink_ContextMenuOpening;
+                hyperlink.RequestNavigate -= Hyperlink_RequestNavigate;
                 copyMenuItem.Click -= CopyMenuItem_Click;
                 contextMenu.Items.Remove(copyMenuItem);
                 if (separator != null) {
@@ -167,6 +189,14 @@ namespace NINA.WPF.Base.Behaviors {
             private void Hyperlink_ContextMenuOpening(object sender, ContextMenuEventArgs args) {
                 bool hasTarget = UpdateVisibility();
                 if (!hasTarget && ownsContextMenu) {
+                    args.Handled = true;
+                }
+            }
+
+            private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs args) {
+                ICommand command = GetNavigationCommand(hyperlink);
+                if (command?.CanExecute(args.Uri) == true) {
+                    command.Execute(args.Uri);
                     args.Handled = true;
                 }
             }
@@ -186,6 +216,24 @@ namespace NINA.WPF.Base.Behaviors {
                     separator.Visibility = visibility;
                 }
                 return hasTarget;
+            }
+        }
+
+        private sealed class OpenUriCommand : ICommand {
+
+            public event EventHandler CanExecuteChanged {
+                add { }
+                remove { }
+            }
+
+            public bool CanExecute(object parameter) {
+                return parameter is Uri uri && uri.IsAbsoluteUri;
+            }
+
+            public void Execute(object parameter) {
+                if (parameter is Uri uri && uri.IsAbsoluteUri) {
+                    Process.Start(new ProcessStartInfo(uri.AbsoluteUri) { UseShellExecute = true });
+                }
             }
         }
     }

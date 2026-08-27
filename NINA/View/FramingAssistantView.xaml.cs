@@ -19,7 +19,6 @@ using NINA.CustomControlLibrary;
 using NINA.Profile;
 using NINA.ViewModel.FramingAssistant;
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -27,7 +26,6 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 
 namespace NINA.View {
 
@@ -73,11 +71,6 @@ namespace NINA.View {
                 e.Handled = true;
                 context.Adjust(part, e.Direction);
             }
-        }
-
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
-            e.Handled = true;
         }
 
         private void UnitTextBox_Pasting(object sender, System.Windows.DataObjectPastingEventArgs e) {

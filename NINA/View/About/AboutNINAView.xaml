@@ -73,7 +73,7 @@
                     Grid.Column="1"
                     Margin="5,0,0,0"
                     FontSize="14">
-                    <Hyperlink NavigateUri="https://nighttime-imaging.eu/" RequestNavigate="Hyperlink_RequestNavigate">https://nighttime-imaging.eu/</Hyperlink>
+                    <Hyperlink NavigateUri="https://nighttime-imaging.eu/">https://nighttime-imaging.eu/</Hyperlink>
                 </TextBlock>
 
                 <TextBlock
@@ -86,7 +86,7 @@
                     Grid.Column="1"
                     Margin="5,5,0,0"
                     FontSize="14">
-                    <Hyperlink NavigateUri="{Binding Source={x:Static coreuti:CoreUtil.DocumentationPage}, Mode=OneWay}" RequestNavigate="Hyperlink_RequestNavigate">
+                    <Hyperlink NavigateUri="{Binding Source={x:Static coreuti:CoreUtil.DocumentationPage}, Mode=OneWay}">
                         <Run Text="{Binding Source={x:Static coreuti:CoreUtil.DocumentationPage}, Mode=OneWay}" />
                     </Hyperlink>
                 </TextBlock>
@@ -101,7 +101,7 @@
                     Grid.Column="1"
                     Margin="5,5,0,0"
                     FontSize="14">
-                    <Hyperlink NavigateUri="http://discord.gg/fwpmHU4" RequestNavigate="Hyperlink_RequestNavigate">http://discord.gg/fwpmHU4</Hyperlink>
+                    <Hyperlink NavigateUri="http://discord.gg/fwpmHU4">http://discord.gg/fwpmHU4</Hyperlink>
                 </TextBlock>
 
                 <TextBlock
@@ -114,7 +114,7 @@
                     Grid.Column="1"
                     Margin="5,5,0,0"
                     FontSize="14">
-                    <Hyperlink NavigateUri="https://github.com/isbeorn/nina/" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/isbeorn/nina/</Hyperlink>
+                    <Hyperlink NavigateUri="https://github.com/isbeorn/nina/">https://github.com/isbeorn/nina/</Hyperlink>
                 </TextBlock>
 
                 <TextBlock
@@ -128,7 +128,7 @@
                     Margin="5,5,0,0"
                     FontSize="14">
 
-                    <Hyperlink NavigateUri="{Binding Source={x:Static coreuti:CoreUtil.ChangelogPage}, Mode=OneWay}" RequestNavigate="Hyperlink_RequestNavigate">
+                    <Hyperlink NavigateUri="{Binding Source={x:Static coreuti:CoreUtil.ChangelogPage}, Mode=OneWay}">
                         <Run Text="{Binding Source={x:Static coreuti:CoreUtil.ChangelogPage}, Mode=OneWay}" />
                     </Hyperlink>
                 </TextBlock>
@@ -143,7 +143,7 @@
                     Grid.Column="1"
                     Margin="5,5,0,0"
                     FontSize="14">
-                    <Hyperlink NavigateUri="https://nina.crowdin.com/nina" RequestNavigate="Hyperlink_RequestNavigate">https://nina.crowdin.com/nina</Hyperlink>
+                    <Hyperlink NavigateUri="https://nina.crowdin.com/nina">https://nina.crowdin.com/nina</Hyperlink>
                 </TextBlock>
             </Grid>
 
@@ -153,7 +153,7 @@
                 Orientation="Horizontal">
                 <TextBlock FontSize="16" Text="If you like N.I.N.A. and it helps you in your journey for amazing deep sky images, please consider " />
                 <TextBlock FontSize="16">
-                    <Hyperlink NavigateUri="https://nighttime-imaging.eu/donate/" RequestNavigate="Hyperlink_RequestNavigate">supporting the project.</Hyperlink>
+                    <Hyperlink NavigateUri="https://nighttime-imaging.eu/donate/">supporting the project.</Hyperlink>
                 </TextBlock>
             </StackPanel>
 
@@ -171,7 +171,7 @@
                 Orientation="Horizontal">
                 <TextBlock FontSize="16" Text="Copyright © 2016 - 2026 Stefan Berg " />
                 <TextBlock FontSize="16">
-                    <Hyperlink NavigateUri="mailto:isbeorn86+NINA@googlemail.com" RequestNavigate="Hyperlink_RequestNavigate">
+                    <Hyperlink NavigateUri="mailto:isbeorn86+NINA@googlemail.com">
                         &lt;isbeorn86+NINA@googlemail.com&gt;
                     </Hyperlink></TextBlock>
                 <TextBlock FontSize="16" Text=" and the N.I.N.A. contributors" />
