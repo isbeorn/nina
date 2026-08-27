@@ -44,6 +44,7 @@ This allows you to safely return to a stable release if needed.
 - Captures now switch to the exposure's readout mode before applying gain and offset, so the first frame after a mode change is digitized and logged with the settings for that mode.
 
 ## Improvements
+- URLs throughout the application can now be copied from their right-click context menu.
 - **Autofocus after HFR Increase Trigger**
     - new Trend per Filter checkbox to consider HFR Trend per filter (default) or across all filters to earlier trigger autofocus runs when imaging with continues filter loops 
 - When a safety monitor is connected and is reporting unsafe conditions, the imaging related core triggers will no longer fire as the conditions aren't safe anyways to execute them.

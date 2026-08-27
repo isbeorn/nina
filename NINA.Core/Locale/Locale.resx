@@ -3508,6 +3508,9 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <data name="LblURL" xml:space="preserve">
     <value>URL</value>
   </data>
+  <data name="LblCopyURL" xml:space="preserve">
+    <value>Copy URL</value>
+  </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB Limit</value>
   </data>
