@@ -22,6 +22,7 @@ This allows you to safely return to a stable release if needed.
 - The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
 
 ## Bugfixes
+- Center After Drift triggers in completed or otherwise inactive sequence containers no longer consume images or publish drift results while a later container is running.
 - Launching N.I.N.A. with a nonexistent `--profileid` now writes an error log and returns a non-zero exit code instead of failing silently.
 - Sun and Moon altitude calculations no longer return transient incorrect values when plugins calculate solar-system body positions concurrently.
 - Installer upgrades and repairs now restore missing, locally changed and higher-version application files instead of potentially leaving skipped files absent.
