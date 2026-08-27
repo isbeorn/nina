@@ -101,6 +101,23 @@ namespace NINA.Test.ProfileTest {
         }
 
         /// <summary>
+        /// Verifies that an existing requested profile remains discoverable when another instance has locked it.
+        /// </summary>
+        [Test]
+        public void TryLoad_WithLockedRequestedProfile_ReturnsFalseAndRetainsProfileMetadata() {
+            ProfileMeta profile = SaveProfile("Locked Requested Profile");
+            using IProfile lockedProfile = ProfileModel.Load(profile.Location);
+            ProfileService service = CreateService();
+
+            bool loaded = service.TryLoad(profile.Id.ToString());
+
+            loaded.Should().BeFalse();
+            service.ProfileWasSpecifiedFromCommandLineArgs.Should().BeTrue();
+            service.Profiles.Should().ContainSingle().Which.Id.Should().Be(profile.Id);
+            service.ActiveProfile.Should().BeNull();
+        }
+
+        /// <summary>
         /// Verifies that Add creates another persisted profile without disturbing the currently selected profile.
         /// </summary>
         [Test]
