@@ -669,7 +669,15 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        public async Task<bool> SetCoordinates(DeepSkyObject dso) {
+        public Task<bool> SetCoordinates(DeepSkyObject dso) {
+            if (!_dispatcher.CheckAccess()) {
+                return _dispatcher.InvokeAsync(() => SetCoordinatesCore(dso)).Task.Unwrap();
+            }
+
+            return SetCoordinatesCore(dso);
+        }
+
+        private async Task<bool> SetCoordinatesCore(DeepSkyObject dso) {
             DeepSkyObjectSearchVM.SetTargetNameWithoutSearch(dso.Name);
             this.DSO = new DeepSkyObject(dso.Name, dso.Coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
             FramingAssistantSource = profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource;
