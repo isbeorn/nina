@@ -359,6 +359,84 @@ namespace NINA.Test.SkySurvey {
             AstroUtil.EuclidianModulus(placement.Rotation, 360).Should().BeApproximately(expectedRotation, 0.05);
         }
 
+        [TestCase(45.153436349090754, 0)]
+        [TestCase(45.153436349090754, 180)]
+        [TestCase(-45.153436349090754, 0)]
+        [TestCase(-45.153436349090754, 180)]
+        public async Task SkyMapImageCache_WhenZoomChanges_PreservesIssue71TileOrientation(
+            double declination,
+            double viewportRotation) {
+            Coordinates tileCoordinates = new Coordinates(
+                21.073240111482587,
+                declination,
+                Epoch.J2000,
+                Coordinates.RAType.Hours);
+            const double imageRotation = 179.44002835323062;
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage(
+                "Issue 71 tile",
+                tileCoordinates.RA,
+                tileCoordinates.Dec,
+                imageRotation,
+                210.89612594552327,
+                210.89612594552327,
+                nameof(FileSkySurvey)));
+            SkyMapImageCache sut = new SkyMapImageCache(cache);
+
+            (double FieldOfView, int ExpectedPixelWidth)[] zoomSequence = [
+                (40, 75),
+                (20, 150),
+                (6, 500),
+                (4, 4),
+                (6, 500),
+                (20, 150),
+                (40, 75)
+            ];
+            foreach ((double fieldOfView, int expectedPixelWidth) in zoomSequence) {
+                ViewportFoV viewport = new ViewportFoV(tileCoordinates, fieldOfView, 1644, 1513, viewportRotation);
+                SkyMapViewportProjection projection = new SkyMapViewportProjection(viewport);
+
+                await sut.LoadAsync(viewport, CancellationToken.None);
+                SkyMapImagePlacement placement = sut.GetPlacements(projection).Single();
+                System.Windows.Point top = projection.Project(OffsetCoordinates(tileCoordinates, -imageRotation));
+                double expectedRotation = AstroUtil.EuclidianModulus(AstroUtil.ToDegree(Math.Atan2(
+                    top.Y - placement.Center.Y,
+                    top.X - placement.Center.X)) + 90, 360);
+
+                placement.FlipHorizontally.Should().BeFalse();
+                placement.Image.PixelWidth.Should().Be(expectedPixelWidth);
+                AstroUtil.EuclidianModulus(placement.Rotation, 360).Should().BeApproximately(expectedRotation, 0.05);
+            }
+        }
+
+        [Test]
+        public void CacheSkySurveyImageFactory_WhenFieldOfViewChanges_PreservesCenteredTileOrientation() {
+            Coordinates tileCoordinates = new Coordinates(
+                21.073240111482587,
+                45.153436349090754,
+                Epoch.J2000,
+                Coordinates.RAType.Hours);
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(new SkySurveyImage {
+                Name = "Issue 71 directional tile",
+                Source = nameof(FileSkySurvey),
+                Coordinates = tileCoordinates,
+                Rotation = 179.44002835323062,
+                FoVWidth = 210.89612594552327,
+                FoVHeight = 210.89612594552327,
+                Image = CreateDirectionalBitmapSource()
+            });
+            CacheSkySurveyImageFactory sut = new CacheSkySurveyImageFactory(400, 190, cache);
+
+            System.Windows.Point tenDegreeMarker = FindRedMarkerCentroid(sut.Render(tileCoordinates, 10, 0));
+            System.Windows.Point twelveDegreeMarker = FindRedMarkerCentroid(sut.Render(tileCoordinates, 12, 0));
+
+            tenDegreeMarker.X.Should().BeGreaterThan(200);
+            tenDegreeMarker.Y.Should().BeGreaterThan(95);
+            twelveDegreeMarker.X.Should().BeGreaterThan(200);
+            twelveDegreeMarker.Y.Should().BeGreaterThan(95);
+        }
+
         [TestCase(50, 45, 180, 38, 205, 11)]
         [TestCase(50, 45, 180, 38, 155, 11)]
         [TestCase(50, 70, 350, 60, 10, 0)]
@@ -452,6 +530,48 @@ namespace NINA.Test.SkySurvey {
             BitmapSource source = BitmapSource.Create(width, height, 96, 96, PixelFormats.Bgra32, null, pixels, width * 4);
             source.Freeze();
             return source;
+        }
+
+        private static BitmapSource CreateDirectionalBitmapSource() {
+            const int width = 32;
+            const int height = 32;
+            byte[] pixels = new byte[width * height * 4];
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int offset = (y * width + x) * 4;
+                    bool marker = x < 8 && y < 8;
+                    pixels[offset] = marker ? (byte)0 : (byte)255;
+                    pixels[offset + 1] = 0;
+                    pixels[offset + 2] = marker ? (byte)255 : (byte)0;
+                    pixels[offset + 3] = 255;
+                }
+            }
+
+            BitmapSource source = BitmapSource.Create(width, height, 96, 96, PixelFormats.Bgra32, null, pixels, width * 4);
+            source.Freeze();
+            return source;
+        }
+
+        private static System.Windows.Point FindRedMarkerCentroid(BitmapSource source) {
+            int stride = source.PixelWidth * 4;
+            byte[] pixels = new byte[stride * source.PixelHeight];
+            source.CopyPixels(pixels, stride, 0);
+            double totalX = 0;
+            double totalY = 0;
+            int count = 0;
+            for (int y = 0; y < source.PixelHeight; y++) {
+                for (int x = 0; x < source.PixelWidth; x++) {
+                    int offset = y * stride + x * 4;
+                    if (pixels[offset + 2] > 160 && pixels[offset] < 100 && pixels[offset + 1] < 100) {
+                        totalX += x;
+                        totalY += y;
+                        count++;
+                    }
+                }
+            }
+
+            count.Should().BeGreaterThan(0);
+            return new System.Windows.Point(totalX / count, totalY / count);
         }
 
         private static XElement CreateLegacyCacheImageElement(string fileName, string rotation) {
