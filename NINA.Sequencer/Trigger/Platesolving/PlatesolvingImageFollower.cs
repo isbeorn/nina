@@ -38,16 +38,22 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         private readonly ITelescopeMediator telescopeMediator;
         private readonly IProfileService profileService;
         private readonly IApplicationStatusMediator applicationStatusMediator;
+        private readonly Func<bool> isActive;
         private readonly IProgress<ApplicationStatus> progress;
         private object lockObj = new object();
         private bool closed = false;
         private Task solverBackgroundTask;
         private CancellationTokenSource solverBackgroundTaskCancellationSource = new CancellationTokenSource();
 
-        public PlatesolvingImageFollower(IProfileService profileService, ITelescopeMediator telescopeMediator, IImageSaveMediator imageSaveMediator, IApplicationStatusMediator applicationStatusMediator) {
+        public PlatesolvingImageFollower(IProfileService profileService, ITelescopeMediator telescopeMediator, IImageSaveMediator imageSaveMediator, IApplicationStatusMediator applicationStatusMediator)
+            : this(profileService, telescopeMediator, imageSaveMediator, applicationStatusMediator, () => true) {
+        }
+
+        internal PlatesolvingImageFollower(IProfileService profileService, ITelescopeMediator telescopeMediator, IImageSaveMediator imageSaveMediator, IApplicationStatusMediator applicationStatusMediator, Func<bool> isActive) {
             this.profileService = profileService;
             this.imageSaveMediator = imageSaveMediator;
             this.telescopeMediator = telescopeMediator;
+            this.isActive = isActive;
             this.imageSaveMediator.BeforeImageSaved += ImageSaveMediator_BeforeImageSaved;
             this.applicationStatusMediator = applicationStatusMediator;
             this.progress = new Progress<ApplicationStatus>(ProgressStatusUpdate);
@@ -62,6 +68,10 @@ namespace NINA.Sequencer.Trigger.Platesolving {
 
         private async Task ImageSaveMediator_BeforeImageSaved(object sender, BeforeImageSavedEventArgs e) {
             lock (lockObj) {
+                if (closed || !isActive()) {
+                    return;
+                }
+
                 if(e.Image.MetaData.Image.ImageType != "LIGHT") {
                     return;
                 }
@@ -152,8 +162,14 @@ namespace NINA.Sequencer.Trigger.Platesolving {
                 return;
             }
 
-            LastCoordinates = solveResult.Coordinates;
-            ProgressExposures = 0;
+            lock (lockObj) {
+                if (closed || !isActive()) {
+                    return;
+                }
+
+                LastCoordinates = solveResult.Coordinates;
+                ProgressExposures = 0;
+            }
         }
     }
 }
