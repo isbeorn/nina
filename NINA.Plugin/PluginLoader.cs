@@ -355,6 +355,11 @@ namespace NINA.Plugin {
 
                 var references = PluginAssemblyReader.GrabAssemblyReferences(file);
                 if (references.FirstOrDefault(x => x.Contains("NINA.Plugin")) != null) {
+                    if (!PluginAssemblyReader.HasPluginManifestExport(file)) {
+                        Logger.Trace($"The dll {file} references NINA.Plugin but does not export IPluginManifest");
+                        return;
+                    }
+
                     try {
                         var context = new PluginAssemblyLoadContext(Guid.NewGuid().ToString(), file);
                         var assembly = context.LoadFromAssemblyPath(file);
@@ -425,36 +430,7 @@ namespace NINA.Plugin {
                             Plugins[failedManifest] = false;
                         }
                     } catch (Exception ex) {
-                        var message = ex.Message;
-                        if (ex is ReflectionTypeLoadException typeLoadException) {
-                            var loaderExceptions = typeLoadException.LoaderExceptions;
-                            message = string.Join(Environment.NewLine, loaderExceptions.ToList());
-                        }
-
-                        var metadata = PluginAssemblyReader.GrabPluginMetaData(file);
-
-                        var id = metadata[nameof(GuidAttribute)];
-                        var author = metadata[nameof(AssemblyCompanyAttribute)];
-                        var version = new PluginVersion(metadata[nameof(AssemblyFileVersionAttribute)]);
-                        var name = metadata[nameof(AssemblyTitleAttribute)];
-
-                        //Manifest failed - Create a fake manifest using all available file meta info
-                        var fvi = FileVersionInfo.GetVersionInfo(file);
-                        var fileVersion = new Version(fvi.FileVersion);
-                        var failedManifest = new PluginManifest {
-                            Author = fvi.CompanyName,
-                            Identifier = id,
-                            Name = name,
-                            Version = version,
-                            Descriptions = new PluginDescription {
-                                ShortDescription = $"Failed to load {file}",
-                                LongDescription = message
-                            }
-                        };
-
-                        Plugins[failedManifest] = false;
-                        Logger.Error($"Failed to load plugin at {file} - {failedManifest.Name} version {failedManifest.Version} {message}");
-                        Notification.ShowError(string.Format(Loc.Instance["LblPluginFailedToLoad"], failedManifest.Name, failedManifest.Version));
+                        ReportPluginLoadFailure(file, ex);
                     }
                 } else {
                     Logger.Trace($"The dll {file} does not reference NINA.Plugin");
@@ -465,6 +441,89 @@ namespace NINA.Plugin {
             } finally {
                 Logger.Debug($"Time to load plugin {Path.GetFileNameWithoutExtension(file)} {sw.Elapsed}");
             }
+        }
+
+        private void ReportPluginLoadFailure(string file, Exception exception) {
+            Dictionary<string, string> metadata;
+            try {
+                metadata = PluginAssemblyReader.GrabPluginMetaData(file);
+            } catch {
+                metadata = new Dictionary<string, string>();
+            }
+
+            string fileVersion;
+            try {
+                fileVersion = FileVersionInfo.GetVersionInfo(file).FileVersion;
+            } catch {
+                fileVersion = null;
+            }
+
+            string message = exception.Message;
+            if (exception is ReflectionTypeLoadException typeLoadException) {
+                message = string.Join(Environment.NewLine, typeLoadException.LoaderExceptions.ToList());
+            }
+
+            PluginManifest failedManifest = CreateFailedPluginManifest(file, metadata, fileVersion, message);
+            Plugins[failedManifest] = false;
+
+            Logger.Error(
+                $"Failed to load plugin at {file} - {failedManifest.Name} version {failedManifest.Version}. "
+                + $"Raw assembly metadata: Title='{GetMetadataValueForLog(metadata, nameof(AssemblyTitleAttribute))}', "
+                + $"Company='{GetMetadataValueForLog(metadata, nameof(AssemblyCompanyAttribute))}', "
+                + $"Guid='{GetMetadataValueForLog(metadata, nameof(GuidAttribute))}', "
+                + $"AssemblyFileVersion='{GetMetadataValueForLog(metadata, nameof(AssemblyFileVersionAttribute))}', "
+                + $"FileVersion='{fileVersion ?? "<missing>"}'. {message}",
+                exception);
+        }
+
+        private static PluginManifest CreateFailedPluginManifest(
+            string file,
+            IReadOnlyDictionary<string, string> metadata,
+            string fileVersion,
+            string message) {
+            metadata.TryGetValue(nameof(AssemblyTitleAttribute), out string name);
+            metadata.TryGetValue(nameof(AssemblyCompanyAttribute), out string author);
+            metadata.TryGetValue(nameof(GuidAttribute), out string identifier);
+            metadata.TryGetValue(nameof(AssemblyFileVersionAttribute), out string assemblyVersion);
+
+            if (string.IsNullOrWhiteSpace(name)) {
+                name = Path.GetFileNameWithoutExtension(file);
+            }
+            if (string.IsNullOrWhiteSpace(author)) {
+                author = string.Empty;
+            }
+            if (!Guid.TryParse(identifier, out _)) {
+                identifier = file;
+            }
+
+            PluginVersion version = ParsePluginVersion(assemblyVersion)
+                ?? ParsePluginVersion(fileVersion)
+                ?? new PluginVersion();
+
+            return new PluginManifest {
+                Author = author,
+                Identifier = identifier,
+                Name = name,
+                Version = version,
+                Descriptions = new PluginDescription {
+                    ShortDescription = $"Failed to load {file}",
+                    LongDescription = message
+                }
+            };
+        }
+
+        private static PluginVersion ParsePluginVersion(string value) {
+            if (!Version.TryParse(value, out Version version)
+                || version.Build < 0
+                || version.Revision < 0) {
+                return null;
+            }
+
+            return new PluginVersion(value);
+        }
+
+        private static string GetMetadataValueForLog(IReadOnlyDictionary<string, string> metadata, string key) {
+            return metadata.TryGetValue(key, out string value) && value != null ? value : "<missing>";
         }
 
         private void Compose(ComposablePartCatalog catalog, string pluginName) {
