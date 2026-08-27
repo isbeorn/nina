@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace NINA.Plugin {
 
@@ -82,6 +83,34 @@ namespace NINA.Plugin {
                 } catch { }
             }
             return metadata;
+        }
+
+        internal static bool HasPluginManifestExport(string assemblyPath) {
+            using var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var peReader = new PEReader(fs);
+            MetadataReader mr = peReader.GetMetadataReader();
+
+            foreach (CustomAttributeHandle attributeHandle in mr.CustomAttributes) {
+                CustomAttribute attribute = mr.GetCustomAttribute(attributeHandle);
+                if (attribute.Parent.Kind != HandleKind.TypeDefinition
+                    || attribute.Constructor.Kind != HandleKind.MemberReference) {
+                    continue;
+                }
+
+                MemberReference constructor = mr.GetMemberReference((MemberReferenceHandle)attribute.Constructor);
+                if (constructor.Parent.Kind != HandleKind.TypeReference) {
+                    continue;
+                }
+
+                TypeReference attributeType = mr.GetTypeReference((TypeReferenceHandle)constructor.Parent);
+                if (mr.GetString(attributeType.Namespace) == "System.ComponentModel.Composition"
+                    && mr.GetString(attributeType.Name) == "ExportAttribute"
+                    && Encoding.UTF8.GetString(mr.GetBlobBytes(attribute.Value)).Contains("NINA.Plugin.Interfaces.IPluginManifest")) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
