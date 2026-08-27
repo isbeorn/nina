@@ -49,6 +49,7 @@ This allows you to safely return to a stable release if needed.
 
 ## Improvements
 - URLs throughout the application can now be copied from their right-click context menu.
+- Mount Dither can now enforce a configurable minimum movement between exposures, preventing randomly selected offsets that are too small to be useful.
 - PHD2 users can optionally show guide-star mass and SNR in the guide graphs, using PHD2-style independent scaling in the upper half of the chart.
 - **Autofocus after HFR Increase Trigger**
     - new Trend per Filter checkbox to consider HFR Trend per filter (default) or across all filters to earlier trigger autofocus runs when imaging with continues filter loops 

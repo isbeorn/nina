@@ -105,6 +105,38 @@
                         </ninactrl:UnitTextBox>
                     </Grid>
                 </UniformGrid>
+                <UniformGrid
+                    Margin="5,5,0,0"
+                    VerticalAlignment="Center"
+                    Columns="2">
+                    <TextBlock
+                        MinWidth="200"
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblMountDitherMinimumPixels}"
+                        ToolTip="{ns:Loc LblMountDitherMinimumPixelsTooltip}" />
+                    <ninactrl:UnitTextBox
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Unit="px">
+                        <TextBox.Text>
+                            <Binding
+                                Path="ActiveProfile.GuiderSettings.MountDitherMinimumPixels"
+                                Source="{StaticResource ProfileService}"
+                                UpdateSourceTrigger="LostFocus">
+                                <Binding.ValidationRules>
+                                    <rules:DoubleRangeRule>
+                                        <rules:DoubleRangeRule.ValidRange>
+                                            <rules:DoubleRangeChecker
+                                                Maximum="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.GuiderSettings.DitherPixels}"
+                                                Minimum="0" />
+                                        </rules:DoubleRangeRule.ValidRange>
+                                    </rules:DoubleRangeRule>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </ninactrl:UnitTextBox>
+                </UniformGrid>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                     <UniformGrid
                         Margin="5,5,0,0"
