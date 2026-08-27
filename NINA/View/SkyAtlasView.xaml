@@ -555,7 +555,7 @@
                     Orientation="Vertical">
                     <TextBlock Text="{ns:Loc LblDataProvidedBy}" />
                     <TextBlock>
-                        <Hyperlink NavigateUri="https://www.saguaroastro.org/sac-downloads/" RequestNavigate="Hyperlink_RequestNavigate">
+                        <Hyperlink NavigateUri="https://www.saguaroastro.org/sac-downloads/">
                             Saguaro Astronomy Club Database version 8.1
                         </Hyperlink>
                     </TextBlock>

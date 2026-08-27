@@ -554,6 +554,7 @@ namespace NINA.Test.View {
                 "/NINA.WPF.Base;component/Resources/Styles/DatePicker.xaml",
                 "/NINA.WPF.Base;component/Resources/Styles/StepperControl.xaml",
                 "/NINA.WPF.Base;component/Resources/Styles/ContextMenu.xaml",
+                "/NINA.WPF.Base;component/Resources/Styles/Hyperlink.xaml",
                 "/NINA.WPF.Base;component/Resources/Styles/SplitButton.xaml",
                 "/NINA.WPF.Base;component/Resources/Styles/ColorPicker.xaml",
                 "/NINA;component/Resources/Styles/Window.xaml",

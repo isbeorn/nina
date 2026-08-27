@@ -110,6 +110,30 @@
                     Minimum="{Binding MinDurationY}"
                     Position="Right" />
                 <oxy:LinearAxis
+                    Key="StarMassAxis"
+                    EndPosition="1"
+                    IsAxisVisible="False"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    MaximumPadding="0"
+                    Minimum="0"
+                    MinimumPadding="0"
+                    Position="Right"
+                    StartPosition="0.5"
+                    Title="{ns:Loc LblStarMass}" />
+                <oxy:LinearAxis
+                    Key="StarSNRAxis"
+                    EndPosition="1"
+                    IsAxisVisible="False"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    MaximumPadding="0"
+                    Minimum="0"
+                    MinimumPadding="0"
+                    Position="Right"
+                    StartPosition="0.5"
+                    Title="{ns:Loc LblStarSNR}" />
+                <oxy:LinearAxis
                     Key="TextAxisX"
                     IsAxisVisible="False"
                     Maximum="1"
@@ -171,6 +195,24 @@
                     XAxisKey="DataAxisX"
                     YAxisKey="DistanceAxis"
                     Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.GuiderSettings.GuideChartDeclinationColor}" />
+                <oxy:LineSeries
+                    Title="{ns:Loc LblStarMass}"
+                    DataFieldX="Id"
+                    DataFieldY="StarMass"
+                    ItemsSource="{Binding GuideSteps}"
+                    Visibility="{Binding Path=ActiveProfile.GuiderSettings.PHD2GuideChartShowStarMass, Source={StaticResource ProfileService}, Converter={StaticResource VisibilityConverter}}"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="StarMassAxis"
+                    Color="Yellow" />
+                <oxy:LineSeries
+                    Title="{ns:Loc LblStarSNR}"
+                    DataFieldX="Id"
+                    DataFieldY="SNR"
+                    ItemsSource="{Binding GuideSteps}"
+                    Visibility="{Binding Path=ActiveProfile.GuiderSettings.PHD2GuideChartShowSNR, Source={StaticResource ProfileService}, Converter={StaticResource VisibilityConverter}}"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="StarSNRAxis"
+                    Color="White" />
                 <oxy:LineSeries
                     Title="{ns:Loc LblDither}"
                     DataFieldX="Id"

@@ -40,6 +40,8 @@ namespace NINA.Profile {
             pHD2InstanceNumber = 1;
             pHD2LargeHistorySize = 100;
             pHD2GuiderScale = GuiderScaleEnum.PIXELS;
+            pHD2GuideChartShowStarMass = false;
+            pHD2GuideChartShowSNR = false;
             phd2ROIPct = 100;
             settlePixels = 1.5;
             settleTimeout = 40;
@@ -205,6 +207,32 @@ namespace NINA.Profile {
             set {
                 if (pHD2GuiderScale != value) {
                     pHD2GuiderScale = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool pHD2GuideChartShowStarMass;
+
+        [DataMember]
+        public bool PHD2GuideChartShowStarMass {
+            get => pHD2GuideChartShowStarMass;
+            set {
+                if (pHD2GuideChartShowStarMass != value) {
+                    pHD2GuideChartShowStarMass = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool pHD2GuideChartShowSNR;
+
+        [DataMember]
+        public bool PHD2GuideChartShowSNR {
+            get => pHD2GuideChartShowSNR;
+            set {
+                if (pHD2GuideChartShowSNR != value) {
+                    pHD2GuideChartShowSNR = value;
                     RaisePropertyChanged();
                 }
             }
