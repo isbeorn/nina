@@ -1169,6 +1169,12 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
   <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>Liczba pikseli do ditheringu. Proces przebiega zgodnie z rozkładem normalnym skoncentrowanym wokół celu, a liczba pikseli jest odchyleniem standardowym. 67% operacji ditheringu pozostaje w tej odległości</value>
   </data>
+  <data name="LblMountDitherMinimumPixels" xml:space="preserve">
+    <value>Minimum dither movement</value>
+  </data>
+  <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
+    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+  </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dithering tylko w osi RA</value>
   </data>
@@ -2628,6 +2634,9 @@ Obliczone HFR: {2}</value>
   <data name="LblReadoutMode" xml:space="preserve">
     <value>Tryb</value>
   </data>
+  <data name="LblReadout" xml:space="preserve">
+    <value>Readout</value>
+  </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>Wartość liczbowa odpowiadająca trybowi odczytu kamery</value>
   </data>
@@ -3287,6 +3296,9 @@ Przeciągnij prostokąt na gwiazdę ze spajkami bahtinova. NINA spróbuje wykry�
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Resetuj postęp wszystkich elementów sekwencji w celu</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Uruchamia sekwencje</value>
   </data>
@@ -3498,6 +3510,9 @@ Przeciągnij prostokąt nad częścią ramki, na której chcesz wykonać podpró
   </data>
   <data name="LblURL" xml:space="preserve">
     <value>URL</value>
+  </data>
+  <data name="LblCopyURL" xml:space="preserve">
+    <value>Copy URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>Limit USB</value>
@@ -7189,6 +7204,18 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <value>Jasny</value>
     <comment>Light as in light bulb</comment>
   </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
+    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
+    <value>Load Imaging Layout</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
+    <value>The selected file is not a valid Imaging layout backup</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
+    <value>Select an existing Imaging layout backup file</value>
+  </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>Zapisuje bieżącą sekwencję w określonej ścieżce pliku</value>
   </data>
@@ -8066,5 +8093,17 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
     <value>Instructions that run after conditions are safe again.</value>
+  </data>
+  <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
+    <value>Show Star Mass in Guide Graph</value>
+  </data>
+  <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
+    <value>Show Star SNR in Guide Graph</value>
+  </data>
+  <data name="LblStarMass" xml:space="preserve">
+    <value>Star Mass</value>
+  </data>
+  <data name="LblStarSNR" xml:space="preserve">
+    <value>Star SNR</value>
   </data>
 </root>

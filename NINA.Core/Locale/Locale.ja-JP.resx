@@ -1165,6 +1165,12 @@ Do you want to continue and lose the changes anyway?</value>
   <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>ディザリングする一般的なピクセル数。ディザリングは、ターゲットを中心とした正規分布に従い、この値を標準偏差とします。67% のディザリングはこの距離内に収まります。</value>
   </data>
+  <data name="LblMountDitherMinimumPixels" xml:space="preserve">
+    <value>Minimum dither movement</value>
+  </data>
+  <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
+    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+  </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>赤経のみデザリグ</value>
   </data>
@@ -2621,6 +2627,9 @@ Do you want to continue and lose the changes anyway?</value>
   <data name="LblReadoutMode" xml:space="preserve">
     <value>モード</value>
   </data>
+  <data name="LblReadout" xml:space="preserve">
+    <value>Readout</value>
+  </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>カメラの読み出しモードに対応する数値</value>
   </data>
@@ -3278,6 +3287,9 @@ Do you want to continue and lose the changes anyway?</value>
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>ターゲット内で全てのシーケンスアイテムの進捗をリセットする。</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>シーケンスを開始します。</value>
   </data>
@@ -3488,6 +3500,9 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblURL" xml:space="preserve">
     <value>URL</value>
+  </data>
+  <data name="LblCopyURL" xml:space="preserve">
+    <value>Copy URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB限界</value>
@@ -7164,6 +7179,18 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>光</value>
     <comment>Light as in light bulb</comment>
   </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
+    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
+    <value>Load Imaging Layout</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
+    <value>The selected file is not a valid Imaging layout backup</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
+    <value>Select an existing Imaging layout backup file</value>
+  </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>指定したファイルパスに現在のシーケンスを保存します</value>
   </data>
@@ -8041,5 +8068,17 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
     <value>Instructions that run after conditions are safe again.</value>
+  </data>
+  <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
+    <value>Show Star Mass in Guide Graph</value>
+  </data>
+  <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
+    <value>Show Star SNR in Guide Graph</value>
+  </data>
+  <data name="LblStarMass" xml:space="preserve">
+    <value>Star Mass</value>
+  </data>
+  <data name="LblStarSNR" xml:space="preserve">
+    <value>Star SNR</value>
   </data>
 </root>

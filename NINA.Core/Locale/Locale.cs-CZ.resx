@@ -1170,6 +1170,12 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>Typický počet pixelů ditheringu. Dithering následuje normální rozdělení zaměřené na cíl a tato hodnota se považuje za směrodatnou odchylku. 67% ditheringu bude v této oblasti</value>
   </data>
+  <data name="LblMountDitherMinimumPixels" xml:space="preserve">
+    <value>Minimum dither movement</value>
+  </data>
+  <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
+    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+  </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dithering jen RA</value>
   </data>
@@ -2631,6 +2637,9 @@ Klient odpojen od synchronizované služby PHD2.
   <data name="LblReadoutMode" xml:space="preserve">
     <value>Režim</value>
   </data>
+  <data name="LblReadout" xml:space="preserve">
+    <value>Readout</value>
+  </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>Číselná hodnota odpovídající režimu čtení kamery</value>
   </data>
@@ -3290,6 +3299,9 @@ Přetáhněte obdélník na hvězdu s bahtinovskými čarami. NINA provede vyhod
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Obnoví postup všech položek v pořadí</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Zahájí sekvenci</value>
   </data>
@@ -3501,6 +3513,9 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
   </data>
   <data name="LblURL" xml:space="preserve">
     <value>URL</value>
+  </data>
+  <data name="LblCopyURL" xml:space="preserve">
+    <value>Copy URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB Limit</value>
@@ -7195,6 +7210,18 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
     <value>Světlý</value>
     <comment>Light as in light bulb</comment>
   </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
+    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
+    <value>Load Imaging Layout</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
+    <value>The selected file is not a valid Imaging layout backup</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
+    <value>Select an existing Imaging layout backup file</value>
+  </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>Uloží aktuální sekvenci na zadanou cestu k souboru</value>
   </data>
@@ -8072,5 +8099,17 @@ To se hodí v případě, že vestavěný spouštěč má sice požadované nač
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
     <value>Příkazy, které se spustí poté, co jsou podmínky opět bezpečné.</value>
+  </data>
+  <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
+    <value>Show Star Mass in Guide Graph</value>
+  </data>
+  <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
+    <value>Show Star SNR in Guide Graph</value>
+  </data>
+  <data name="LblStarMass" xml:space="preserve">
+    <value>Star Mass</value>
+  </data>
+  <data name="LblStarSNR" xml:space="preserve">
+    <value>Star SNR</value>
   </data>
 </root>
