@@ -4,6 +4,8 @@ using NINA.Core.Enum;
 using NINA.Core.Model;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.Mediator;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.Test.Mediator {
 
@@ -23,6 +25,31 @@ namespace NINA.Test.Mediator {
             mediator.ChangeTab(ApplicationTab.FRAMINGASSISTANT);
 
             applicationVM.Verify(x => x.ChangeTab(ApplicationTab.FRAMINGASSISTANT), Times.Once);
+        }
+
+        [Test]
+        public async Task LoadImagingLayout_ForwardsPathAndCancellationToken() {
+            Mock<IApplicationVM> applicationVM = new Mock<IApplicationVM>();
+            ApplicationMediator mediator = new ApplicationMediator();
+            using var cancellationTokenSource = new CancellationTokenSource();
+            const string filePath = @"C:\Layouts\Imaging.dock.config";
+
+            mediator.RegisterHandler(applicationVM.Object);
+            await mediator.LoadImagingLayout(filePath, cancellationTokenSource.Token);
+
+            applicationVM.Verify(x => x.LoadImagingLayout(filePath, cancellationTokenSource.Token), Times.Once);
+        }
+
+        [Test]
+        public async Task LoadImagingLayout_WhenHandlerFails_PropagatesFailure() {
+            Mock<IApplicationVM> applicationVM = new Mock<IApplicationVM>();
+            applicationVM.Setup(x => x.LoadImagingLayout(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new InvalidOperationException("Load failed"));
+            ApplicationMediator mediator = new ApplicationMediator();
+            mediator.RegisterHandler(applicationVM.Object);
+
+            await mediator.Invoking(x => x.LoadImagingLayout(@"C:\Layouts\Invalid.dock.config", CancellationToken.None))
+                .Should().ThrowAsync<InvalidOperationException>();
         }
 
         /// <summary>

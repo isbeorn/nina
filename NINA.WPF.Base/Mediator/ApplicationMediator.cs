@@ -16,6 +16,8 @@ using NINA.Core.Enum;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.WPF.Base.Mediator {
 
@@ -31,6 +33,10 @@ namespace NINA.WPF.Base.Mediator {
 
         public void ChangeTab(ApplicationTab tab) {
             handler.ChangeTab(tab);
+        }
+
+        public Task LoadImagingLayout(string filePath, CancellationToken token) {
+            return handler.LoadImagingLayout(filePath, token);
         }
     }
 }

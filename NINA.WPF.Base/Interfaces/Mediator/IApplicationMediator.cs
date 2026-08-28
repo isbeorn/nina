@@ -15,11 +15,15 @@
 using NINA.Core.Enum;
 using NINA.Core.Interfaces;
 using NINA.WPF.Base.Interfaces.ViewModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.WPF.Base.Interfaces.Mediator {
 
     public interface IApplicationMediator : IMediator<IApplicationVM> {
 
         void ChangeTab(ApplicationTab tab);
+
+        Task LoadImagingLayout(string filePath, CancellationToken token);
     }
 }
