@@ -3293,6 +3293,9 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>타겟 내 모든 시퀀스 목록의 진행도 초기화</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>시퀀스 시작</value>
   </data>
