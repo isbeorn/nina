@@ -72,6 +72,25 @@
                         FontSize="10pt"
                         Foreground="{StaticResource ButtonForegroundBrush}"
                         Text="{Binding Sequencer.MainContainer.SequenceTitle, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button
+                        Width="35"
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        Command="{Binding Sequencer.MainContainer.ResetProgressCommand}"
+                        IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                        Style="{StaticResource SecondaryBackgroundButton}">
+                        <Button.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="True">
+                                <TextBlock Text="{ns:Loc LblTooltipResetTargetSet}" />
+                            </ToolTip>
+                        </Button.ToolTip>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource LoopSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Button>
                 </Grid>
 
                 <Grid Grid.Row="3" Margin="5,2.5,0,0">
