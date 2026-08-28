@@ -3304,6 +3304,9 @@ Faites glisser le rectangle sur une étoile avec les pointes de bahtinov. NINA e
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Réinitialiser la progression de tous les éléments de la séquence dans la cible</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Démarrer les Séquences</value>
   </data>
