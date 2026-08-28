@@ -3298,6 +3298,9 @@ Dra firkanten over en stjerne med diffraksjonslinjer. NINA vil analysere disse o
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Tilbakestill all fremdrift for dette målet</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Starter sekvenser</value>
   </data>
