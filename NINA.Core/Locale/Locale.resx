@@ -2643,6 +2643,9 @@ Calculated HFR: {2}
   <data name="LblReadoutMode" xml:space="preserve">
     <value>Mode</value>
   </data>
+  <data name="LblReadout" xml:space="preserve">
+    <value>Readout</value>
+  </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>A numeric value corresponding to your camera's readout mode</value>
   </data>

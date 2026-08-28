@@ -51,6 +51,7 @@ This allows you to safely return to a stable release if needed.
 
 ## Improvements
 - URLs throughout the application can now be copied from their right-click context menu.
+- The simple sequencer's Active Sequence Details now shows the configured camera readout mode when multiple modes are available.
 - Mount Dither can now enforce a configurable minimum movement between exposures, preventing randomly selected offsets that are too small to be useful.
 - PHD2 users can optionally show guide-star mass and SNR in the guide graphs, using PHD2-style independent scaling in the upper half of the chart.
 - **Autofocus after HFR Increase Trigger**
