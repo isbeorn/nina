@@ -47,6 +47,7 @@ using System.Diagnostics;
 using System.Threading;
 using NINA.Core.Utility.Notification;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Xml.Linq;
 
 namespace NINA.ViewModel {
 
@@ -219,6 +220,7 @@ namespace NINA.ViewModel {
         private void ProfileService_ProfileChanged(object sender, EventArgs e) {
             lock (lockObj) {
                 _dockloaded = false;
+                pendingDockLayout = null;
             }
         }
 
@@ -231,15 +233,7 @@ namespace NINA.ViewModel {
                         item.IsVisible = false;
                     }
 
-                    var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
-                    serializer.LayoutSerializationCallback += (s, args) => {
-                        if (args.Content is IDockableVM d) {
-                            d.IsVisible = true;
-                            args.Content = d;
-                        }
-                    };
-
-                    LoadDefaultLayout(serializer);
+                    LoadDefaultLayout();
                     SaveAvalonDockLayout();
                     Notification.ShowInformation(Loc.Instance["LblDockLayoutReset"]);
                 }
@@ -300,6 +294,7 @@ namespace NINA.ViewModel {
 
         private AvalonDock.DockingManager _dockmanager;
         private bool _dockloaded = false;
+        private string pendingDockLayout;
         private object lockObj = new object();
         private Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
@@ -326,95 +321,37 @@ namespace NINA.ViewModel {
                     if (!_dockloaded) {
                         _dockmanager = (AvalonDock.DockingManager)o;
 
-                        foreach (var item in Anchorables) {
-                            item.IsVisible = false;
-                        }
-
-                        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
-                        var success = true;
-                        var dupeCheck = new HashSet<string>();
-                        serializer.LayoutSerializationCallback += (s, args) => {
-                            if (args?.Model != null) {
-                                if (dupeCheck.Contains(args.Model.ContentId)) {
-                                    Logger.Trace($"Duplicate entry detected for content id: {args.Model.ContentId}");
-                                    args.Cancel = true;
-                                } else {
-                                    dupeCheck.Add(args.Model.ContentId);
-                                    if (args.Content == null) {
-                                        var context = Anchorables.FirstOrDefault(x => x.ContentId == args.Model.ContentId);
-                                        if (context == null) {
-                                            Logger.Debug($"Content not found for content id: {args.Model.ContentId}");
-                                            args.Cancel = true;
-                                        } else {
-                                            Logger.Trace($"Manually setting content for id: {args.Model.ContentId}");
-                                            args.Content = context;
-                                            success = false;
-                                        }
-                                    } else {
-                                        args.Content = args.Content;
-                                    }
-                                }
-                            } else {
-                                args.Cancel = true;
-                            }
-                        };
-
                         var profileId = profileService.ActiveProfile.Id;
                         var profilePath = GetDockConfigPath(profileId);
-                        if (File.Exists(profilePath)) {
+                        if (pendingDockLayout != null) {
+                            var layout = pendingDockLayout;
+                            pendingDockLayout = null;
+                            try {
+                                Logger.Info("Initializing imaging tab layout from a deferred sequencer instruction");
+                                DeserializeAvalonDockLayout(layout);
+                                SaveAvalonDockLayout();
+                            } catch (Exception ex) {
+                                Logger.Error("Failed to load deferred imaging tab layout. Loading default Layout!", ex);
+                                LoadDefaultLayout();
+                            }
+                        } else if (File.Exists(profilePath)) {
                             try {
                                 Logger.Info($"Initializing imaging tab layout from {profilePath}");
-                                using (var sw = new FileStream(profilePath, FileMode.Open, FileAccess.Read)) {
-                                    serializer.Deserialize(sw);
-                                    if (success) {
-                                        _dockloaded = true;
-                                    } else {
-                                        // Retry
-                                        Logger.Debug("The dock did not succeed to load. Trying again");
-                                        _dockloaded = false;
-
-                                        foreach (var item in Anchorables) {
-                                            item.IsVisible = false;
-                                        }
-                                        dupeCheck.Clear();
-                                        var serializer2 = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
-                                        serializer2.LayoutSerializationCallback += (s, args) => {
-                                            if (args?.Model != null) {
-                                                if (dupeCheck.Contains(args.Model.ContentId)) {
-                                                    Logger.Trace($"Duplicate entry detected for content id: {args.Model.ContentId}");
-                                                    args.Cancel = true;
-                                                } else {
-                                                    dupeCheck.Add(args.Model.ContentId);
-                                                    var d = (IDockableVM)args.Content;
-                                                    if (d != null) {
-                                                        d.IsVisible = true;
-                                                        args.Content = d;
-                                                    }
-                                                }
-                                            } else {
-                                                args.Cancel = true;
-                                            }
-                                        };
-                                        sw.Seek(0, SeekOrigin.Begin);
-                                        serializer2.Deserialize(sw);
-                                        _dockloaded = true;
-                                    }
-                                }
+                                DeserializeAvalonDockLayout(File.ReadAllText(profilePath));
                             } catch (Exception ex) {
                                 Logger.Error("Failed to load imaging tab layout. Loading default Layout!", ex);
-                                LoadDefaultLayout(serializer);
+                                LoadDefaultLayout();
                             }
                         } else if (!Properties.Settings.Default.SingleDockLayout && File.Exists(Path.Combine(CoreUtil.APPLICATIONTEMPPATH, "avalondock.config"))) {
                             try {
                                 Logger.Info("Migrating imaging tab layout from old path");
-                                serializer.Deserialize(Path.Combine(CoreUtil.APPLICATIONTEMPPATH, "avalondock.config"));
-                                _dockloaded = true;
+                                DeserializeAvalonDockLayout(File.ReadAllText(Path.Combine(CoreUtil.APPLICATIONTEMPPATH, "avalondock.config")));
                             } catch (Exception ex) {
                                 Logger.Error("Failed to load imaging tab layout. Loading default Layout!", ex);
-                                LoadDefaultLayout(serializer);
+                                LoadDefaultLayout();
                             }
                         } else {
-                            LoadDefaultLayout(serializer);
+                            LoadDefaultLayout();
                         }
                     }
                 }
@@ -422,11 +359,124 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private void LoadDefaultLayout(AvalonDock.Layout.Serialization.XmlLayoutSerializer serializer) {
-            using (var stream = new StringReader(Properties.Resources.avalondock)) {
-                serializer.Deserialize(stream);
-                _dockloaded = true;
+        public async Task LoadImagingLayout(string filePath, CancellationToken token) {
+            var layout = await File.ReadAllTextAsync(filePath, token);
+            ValidateAvalonDockLayout(layout);
+            token.ThrowIfCancellationRequested();
+
+            await _dispatcher.InvokeAsync(() => {
+                lock (lockObj) {
+                    if (_dockmanager == null) {
+                        pendingDockLayout = layout;
+                        return;
+                    }
+
+                    var currentLayout = SerializeAvalonDockLayout();
+                    try {
+                        DeserializeAvalonDockLayout(layout);
+                        SaveAvalonDockLayout();
+                    } catch {
+                        try {
+                            DeserializeAvalonDockLayout(currentLayout);
+                            SaveAvalonDockLayout();
+                        } catch (Exception rollbackException) {
+                            _dockloaded = false;
+                            Logger.Error("Failed to restore the previous imaging tab layout after a load failure", rollbackException);
+                        }
+                        throw;
+                    }
+                }
+            }, DispatcherPriority.Normal, token);
+        }
+
+        private static void ValidateAvalonDockLayout(string layout) {
+            var document = XDocument.Parse(layout);
+            if (document.Root?.Name.LocalName != "LayoutRoot") {
+                throw new InvalidDataException("The selected file does not contain an AvalonDock LayoutRoot.");
             }
+        }
+
+        private string SerializeAvalonDockLayout() {
+            var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+            using (var writer = new StringWriter()) {
+                serializer.Serialize(writer);
+                return writer.ToString();
+            }
+        }
+
+        private void DeserializeAvalonDockLayout(string layout) {
+            foreach (var item in Anchorables) {
+                item.IsVisible = false;
+            }
+
+            var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+            var retryRequired = false;
+            var dupeCheck = new HashSet<string>();
+            serializer.LayoutSerializationCallback += (s, args) => {
+                if (args?.Model == null) {
+                    args.Cancel = true;
+                    return;
+                }
+
+                if (!dupeCheck.Add(args.Model.ContentId)) {
+                    Logger.Trace($"Duplicate entry detected for content id: {args.Model.ContentId}");
+                    args.Cancel = true;
+                    return;
+                }
+
+                if (args.Content == null) {
+                    var context = Anchorables.FirstOrDefault(x => x.ContentId == args.Model.ContentId);
+                    if (context == null) {
+                        Logger.Debug($"Content not found for content id: {args.Model.ContentId}");
+                        args.Cancel = true;
+                    } else {
+                        Logger.Trace($"Manually setting content for id: {args.Model.ContentId}");
+                        args.Content = context;
+                        retryRequired = true;
+                    }
+                }
+            };
+
+            using (var reader = new StringReader(layout)) {
+                serializer.Deserialize(reader);
+            }
+
+            if (retryRequired) {
+                Logger.Debug("The dock did not succeed to load. Trying again");
+                foreach (var item in Anchorables) {
+                    item.IsVisible = false;
+                }
+
+                dupeCheck.Clear();
+                var retrySerializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+                retrySerializer.LayoutSerializationCallback += (s, args) => {
+                    if (args?.Model == null) {
+                        args.Cancel = true;
+                        return;
+                    }
+
+                    if (!dupeCheck.Add(args.Model.ContentId)) {
+                        Logger.Trace($"Duplicate entry detected for content id: {args.Model.ContentId}");
+                        args.Cancel = true;
+                        return;
+                    }
+
+                    if (args.Content is IDockableVM dockable) {
+                        dockable.IsVisible = true;
+                        args.Content = dockable;
+                    }
+                };
+
+                using (var reader = new StringReader(layout)) {
+                    retrySerializer.Deserialize(reader);
+                }
+            }
+
+            _dockloaded = true;
+        }
+
+        private void LoadDefaultLayout() {
+            DeserializeAvalonDockLayout(Properties.Resources.avalondock);
         }
 
         public void SaveAvalonDockLayout() {

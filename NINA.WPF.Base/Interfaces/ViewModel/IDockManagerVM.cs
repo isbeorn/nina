@@ -15,6 +15,7 @@
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.ViewModel;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -28,6 +29,8 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         ICommand ResetDockLayoutCommand { get; }
 
         Task<bool> InitializeAvalonDockLayout(object o);
+
+        Task LoadImagingLayout(string filePath, CancellationToken token);
 
         void SaveAvalonDockLayout();
     }

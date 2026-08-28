@@ -14,6 +14,8 @@
 
 using CommunityToolkit.Mvvm.Input;
 using NINA.Core.Enum;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.WPF.Base.Interfaces.ViewModel {
@@ -30,5 +32,7 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         string Version { get; }
 
         void ChangeTab(ApplicationTab tab);
+
+        Task LoadImagingLayout(string filePath, CancellationToken token);
     }
 }

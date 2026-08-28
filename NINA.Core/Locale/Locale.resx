@@ -7210,6 +7210,18 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Light</value>
     <comment>Light as in light bulb</comment>
   </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
+    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
+    <value>Load Imaging Layout</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
+    <value>The selected file is not a valid Imaging layout backup</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
+    <value>Select an existing Imaging layout backup file</value>
+  </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>Saves the current sequence at the specified file path</value>
   </data>
