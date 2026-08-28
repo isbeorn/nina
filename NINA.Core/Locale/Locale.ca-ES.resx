@@ -3300,6 +3300,9 @@ Arrossegueu el rectangle sobre una estrella amb les puntes de bahtinov. NINA int
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Torna a iniciar el progrés de totes les seqüències en un objectiu</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Inicia seqüències</value>
   </data>
