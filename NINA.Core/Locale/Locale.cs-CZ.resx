@@ -3299,6 +3299,9 @@ Přetáhněte obdélník na hvězdu s bahtinovskými čarami. NINA provede vyhod
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Obnoví postup všech položek v pořadí</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Zahájí sekvenci</value>
   </data>
