@@ -66,6 +66,26 @@ namespace NINA.Test.View {
         }
 
         /// <summary>
+        /// Verifies readout mode display resolves both valid boundaries and safely rejects incomplete or out-of-range bindings.
+        /// </summary>
+        [Test]
+        public void ReadoutModeNameConverter_ResolvesValidIndicesAndRejectsInvalidInputs() {
+            var converter = new ReadoutModeNameConverter();
+            string[] modes = ["Fast", "11M Mode"];
+
+            converter.Convert(new object[] { modes, (short)0, (short)1 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be("Fast");
+            converter.Convert(new object[] { modes, (short)1, (short)0 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be("11M Mode");
+            converter.Convert(new object[] { modes, DependencyProperty.UnsetValue, (short)1 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be("11M Mode");
+            converter.Convert(new object[] { modes, (short)-1, (short)0 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be(string.Empty);
+            converter.Convert(new object[] { modes, (short)2, (short)0 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be(string.Empty);
+            converter.Convert(new object[] { null, (short)0, (short)0 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be(string.Empty);
+            converter.Convert(new object[] { DependencyProperty.UnsetValue, DependencyProperty.UnsetValue, DependencyProperty.UnsetValue }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be(string.Empty);
+
+            Action convertBack = () => converter.ConvertBack("Fast", new[] { typeof(string), typeof(short), typeof(short) }, null, CultureInfo.InvariantCulture);
+            convertBack.Should().Throw<NotSupportedException>();
+        }
+
+        /// <summary>
         /// Verifies sequence-mode visibility converters expose rotate-only controls while hiding mutually exclusive standard-mode controls.
         /// </summary>
         [Test]
