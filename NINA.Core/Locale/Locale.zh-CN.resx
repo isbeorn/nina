@@ -3299,6 +3299,9 @@
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>重置当前所有序列项的进度</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>开始序列拍摄</value>
   </data>
