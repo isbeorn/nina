@@ -7363,4 +7363,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblSouth" xml:space="preserve">
     <value>South</value>
   </data>
+  <data name="LblReadout" xml:space="preserve">
+    <value>Readout</value>
+  </data>
 </root>

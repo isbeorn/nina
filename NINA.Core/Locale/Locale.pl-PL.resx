@@ -7360,4 +7360,7 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
   <data name="LblSouth" xml:space="preserve">
     <value>South</value>
   </data>
+  <data name="LblReadout" xml:space="preserve">
+    <value>Readout</value>
+  </data>
 </root>

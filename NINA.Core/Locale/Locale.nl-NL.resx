@@ -7360,4 +7360,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   <data name="LblSouth" xml:space="preserve">
     <value>South</value>
   </data>
+  <data name="LblReadout" xml:space="preserve">
+    <value>Readout</value>
+  </data>
 </root>

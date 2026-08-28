@@ -45,6 +45,7 @@
                 </Style.Triggers>
             </Style>
             <sequencer:InverseSequenceModeIsRotateToVisibilityConverter x:Key="InverseSequenceModeIsRotateToVisibilityConverter" />
+            <sequencer:ReadoutModeNameConverter x:Key="ReadoutModeNameConverter" />
             <sequencer:SequenceModeIsRotateToVisibilityConverter x:Key="SequenceModeIsRotateToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -160,6 +161,23 @@
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblMode}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding ActiveTarget.Mode}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderThickness="0"
+                        Visibility="{Binding Data.ReadoutModes, Source={StaticResource CameraInfo}, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblReadout}" />
+                            <TextBlock Margin="5,0,0,0">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource ReadoutModeNameConverter}">
+                                        <Binding Path="Data.ReadoutModes" Source="{StaticResource CameraInfo}" />
+                                        <Binding Path="ActiveProfile.CameraSettings.ReadoutModeForNormalImages" />
+                                        <Binding Path="Data.ReadoutModeForNormalImages" Source="{StaticResource CameraInfo}" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </UniformGrid>
                     </Border>
                     <StackPanel DataContext="{Binding ActiveTarget.ActiveExposure}" Orientation="Vertical">

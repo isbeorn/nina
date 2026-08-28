@@ -7364,4 +7364,7 @@ Hinweis: Dieser Modus setzt voraus, dass die HFR-Unterschiede zwischen den Filte
   <data name="LblSouth" xml:space="preserve">
     <value>Süd</value>
   </data>
+  <data name="LblReadout" xml:space="preserve">
+    <value>Readout</value>
+  </data>
 </root>

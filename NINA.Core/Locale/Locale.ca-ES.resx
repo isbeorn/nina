@@ -7364,4 +7364,7 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
   <data name="LblSouth" xml:space="preserve">
     <value>Sud</value>
   </data>
+  <data name="LblReadout" xml:space="preserve">
+    <value>Readout</value>
+  </data>
 </root>
