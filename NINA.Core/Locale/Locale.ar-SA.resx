@@ -3305,6 +3305,9 @@ HFR المحسوب: {2}
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>إعادة التعيين لجميع عناصر برنامج التصوير في الهدف</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>بدأ برنامج التصوير</value>
   </data>
