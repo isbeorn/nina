@@ -3306,6 +3306,9 @@ Arrastrar o rect√°ngulo sobre a estrela coas espigas de bahtinov. NINA intentar√
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Reiniciar o progreso de todos os elementos da secuencia no obxectivo</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Iniciar secuencias</value>
   </data>
