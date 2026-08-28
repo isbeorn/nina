@@ -3295,6 +3295,9 @@ Sleep de rechthoek over een ster met de Bahtinov spikes. NINA zal proberen de sp
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Voortgang van alle reeks items resetten in het object</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Start reeksen</value>
   </data>
