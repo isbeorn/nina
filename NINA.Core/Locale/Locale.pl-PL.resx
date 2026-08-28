@@ -3296,6 +3296,9 @@ Przeciągnij prostokąt na gwiazdę ze spajkami bahtinova. NINA spróbuje wykry�
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Resetuj postęp wszystkich elementów sekwencji w celu</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Uruchamia sekwencje</value>
   </data>
