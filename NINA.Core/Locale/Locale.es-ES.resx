@@ -3296,6 +3296,9 @@ Mueve el rectángulo sobre una estrella con las espicas de difracción. NINA tra
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Reinicia el progreso de toda la secuencia en un objetivo</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Inicia secuencias</value>
   </data>
