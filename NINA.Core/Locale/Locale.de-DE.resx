@@ -3305,6 +3305,9 @@ Das Rechteck über einen Stern mit Bahtinov Beugungsmuster bewegen. NINA versuch
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Fortschritt aller Sequenzeinträge des Ziels zurücksetzen</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Startet die Sequenzen</value>
   </data>
