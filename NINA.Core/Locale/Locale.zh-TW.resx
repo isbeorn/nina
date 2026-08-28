@@ -3305,6 +3305,9 @@ Should the settings be synchronized?</value>
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>重置當前所有序列項的進度</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>開始序列拍攝</value>
   </data>
