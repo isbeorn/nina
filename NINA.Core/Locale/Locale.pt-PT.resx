@@ -3300,6 +3300,9 @@ Arraste o rectângulo sobre uma estrela com as spikes provocadas pela máscara b
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Reinicializa o progresso de todos os items da sequência</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Inicia sequências</value>
   </data>
