@@ -3297,6 +3297,9 @@ Dikdörtgeni bahtinov yansımalı bir yıldızın üzerine sürükleyin. NINA ya
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Hedefteki tüm sekans ögelerinin ilerlemesini sıfırla</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Sekansları çalıştırır</value>
   </data>
