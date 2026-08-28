@@ -3305,6 +3305,9 @@ Drag the rectangle over a star within the bahtinov spikes. NINA will try to dete
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Reset progress of all sequence items in target</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Starts sequences</value>
   </data>
