@@ -3295,6 +3295,9 @@ Should the settings be synchronized?</value>
   <data name="LblTooltipResetTarget" xml:space="preserve">
     <value>Επαναφορά προόδου όλων των αντικειμένων αλληλουχιών του στόχου</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Ξεκινάει τις αλληλουχίες</value>
   </data>
