@@ -164,6 +164,8 @@ This allows you to safely return to a stable release if needed.
   - Improved reliability, lifetime handling, and positioning across multiple monitors.
   - Added configurable notification placement: primary screen, same screen as the app, or application window, as well as adjustable corner positioning via Options > General > Advanced.
   - Notifications now reposition automatically on window moves, DPI changes, and display configuration changes.
+- **Canon Driver Error Messages**
+  - Improved the "Invalid Mode" error message to guide users to check the Movie/Still switch on cameras like the EOS 6D, preventing confusion when the camera is in Movie mode.
 
 ### File formats
 - **XISF ZStandard Compression**
