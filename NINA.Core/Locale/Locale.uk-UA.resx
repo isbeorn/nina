@@ -1298,7 +1298,7 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Схід</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>На камері не встановлений ручний режим або режим довгої експозиції (Bulb mode)! Будь ласка, встановіть на камері ручний режим або режим довгої експозиції (Bulb mode) перед підключенням</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Enable bit scaling</value>
