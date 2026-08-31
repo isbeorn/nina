@@ -1291,7 +1291,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
     <value>Východ</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Fotoaparát není nastaven na manuální režim nebo režim bulb! Před připojením přepnout na manuální režim nebo režim bulb</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Povolit bitové měřítko</value>
