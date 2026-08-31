@@ -1298,7 +1298,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>東面</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>相機未設置為 M 或 B 門模式! 請連接前將其設置為 M 緊或 B 門模式</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>開啟位擴增</value>
