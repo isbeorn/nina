@@ -1288,7 +1288,7 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Oost</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is niet ingesteld op handmatig of bulb-modus! Stel het in op handmatig of bulb-modus voordat u verbinding maakt</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Schakel bit schalen in</value>
