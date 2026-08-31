@@ -1298,7 +1298,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>شرق</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>لم يتم تعيين الكاميرا إلى الوضع اليدوي أو الوضع المفتوح bulb! الرجاء تعيينها إلى الوضع اليدوي أو الوضع المفتوح bulb قبل الاتصال</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>تمكين تحجيم البت</value>
