@@ -609,17 +609,25 @@ namespace NINA.ViewModel {
                     var starDetection = profileService.ActiveProfile.ImageSettings.DebayeredHFR && detectStars;
 
                     var bayerPattern = cameraInfo.SensorType;
+                    int bayerOffsetX = cameraInfo.BayerOffsetX;
+                    int bayerOffsetY = cameraInfo.BayerOffsetY;
                     if (profileService.ActiveProfile.CameraSettings.BayerPattern != BayerPatternEnum.Auto) {
                         bayerPattern = (SensorType)profileService.ActiveProfile.CameraSettings.BayerPattern;
+                        bayerOffsetX = 0;
+                        bayerOffsetY = 0;
                     } else {
                         // Raw decoders can report the Bayer phase at the visible image origin.
                         // Prefer that concrete pattern over Auto defaults, but ignore placeholder sensor categories.
-                        var imageSensorType = data.MetaData?.Camera?.SensorType;
+                        var imageCamera = data.MetaData?.Camera;
+                        var imageSensorType = imageCamera?.SensorType;
                         if (imageSensorType.HasValue && imageSensorType.Value != SensorType.Monochrome && imageSensorType.Value != SensorType.Color) {
                             bayerPattern = imageSensorType.Value;
+                            bayerOffsetX = imageCamera.BayerOffsetX;
+                            bayerOffsetY = imageCamera.BayerOffsetY;
                         }
                     }
 
+                    bayerPattern = BayerPatternUtility.ApplyOffsets(bayerPattern, bayerOffsetX, bayerOffsetY);
                     renderedImage = renderedImage.Debayer(saveColorChannels: unlinkedStretch, saveLumChannel: starDetection, bayerPattern: bayerPattern);
                 }
 
