@@ -1294,7 +1294,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>Est</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>La càmera no està configurada en mode manual o obturador (bulb)!. Si us plau, configureu-la en mode manual o obturador (bulb) abans de connectar-vos</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Activar escalat de bit</value>
