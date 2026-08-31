@@ -1297,7 +1297,7 @@
     <value>东面</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>相机未设置为 M 或 B 门模式！ 请在连接前将其设置为 M 或 B 门模式</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>开启位扩增</value>
