@@ -1289,7 +1289,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>Este</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
+    <value>La cámara no está configurada en modo Manual o Bulb. Pon el selector de modos en Manual o Bulb. Si la cámara tiene un selector de Vídeo/Foto, ajustarlo a Foto.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Habilita escalado de bits</value>
