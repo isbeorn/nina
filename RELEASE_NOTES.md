@@ -22,6 +22,7 @@ This allows you to safely return to a stable release if needed.
 - The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
 
 ## Bugfixes
+- ASCOM and Alpaca cameras now apply their reported Bayer X/Y offsets when automatically debayering previews, so non-RGGB phases display the correct colors while preserving the original image metadata.
 - The Connect All and Disconnect All commands can no longer run at the same time, preventing conflicting device operations during slow connections.
 - Cached Offline Sky Map and Sky Atlas image tiles now keep a stable orientation across zoom levels instead of occasionally rotating by 180 degrees.
 - Center After Drift triggers in completed or otherwise inactive sequence containers no longer consume images or publish drift results while a later container is running.
