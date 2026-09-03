@@ -1293,7 +1293,7 @@ No caso de ser necessário efectuar a refrigeração de forma mais prolongada, a
     <value>Este</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>A câmera não está definida para o modo manual ou modo "bulb"! Por favor, configure para o modo manual ou modo "bulb" antes de conectar</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Ativar escala de bits</value>

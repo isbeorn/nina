@@ -1298,7 +1298,7 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
     <value>Est</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>La camera non e' impostata su manuale or bulb mode! Pregasi di impostare su manuale o bulb mode prima di connetterla</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Abilita la rimappatura dei bit bit</value>

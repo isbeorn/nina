@@ -1290,7 +1290,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Wschód</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Aparat nie jest ustawiony w trybie ręcznym lub bulb! Proszę ustawić go na tryb ręczny lub bulb przed połączeniem</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Włącz skalowanie bitów</value>

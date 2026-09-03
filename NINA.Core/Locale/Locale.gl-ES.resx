@@ -1299,7 +1299,7 @@ cara atrás; cando as liñas non están aliñadas hai algún erro de aliñación
     <value>Leste</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>A cámara non está en manual ou modo Bulb! Pona nun destes estados antes de conectar</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Activar escalado de bit</value>

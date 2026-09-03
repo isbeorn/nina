@@ -1298,7 +1298,7 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Est</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>La caméra n'est pas réglée en mode manuel ou en mode "Bulb"! Veuillez le régler en mode manuel ou "Bulb" avant de vous connecter</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Activer la mise à l'échelle Bits</value>

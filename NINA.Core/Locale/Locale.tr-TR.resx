@@ -1290,7 +1290,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
     <value>Doğu</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Kamera manuel veya bulb moduna ayarlı değil! Lütfen bağlanmadan önce manual veya bulb moduna ayarlayın</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Bit ölçeklemeyi etkinleştir</value>
