@@ -50,6 +50,7 @@ This allows you to safely return to a stable release if needed.
 - Canceling a native Nikon automatic shutter exposure no longer sends an unsupported Bulb termination command that could terminate N.I.N.A.
 
 ## Improvements
+- "Cool Camera" now waits until the sensor enters the target temperature tolerance whether approaching from above or below.
 - The Legacy Sequencer can now reset progress for every target in the current Target Set with one confirmed action.
 - URLs throughout the application can now be copied from their right-click context menu.
 - The simple sequencer's Active Sequence Details now shows the configured camera readout mode when multiple modes are available.

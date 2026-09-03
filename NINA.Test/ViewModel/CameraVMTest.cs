@@ -247,6 +247,96 @@ namespace NINA.Test.ViewModel {
             cameraMediator.Verify(x => x.Broadcast(It.Is<CameraInfo>(info => info.BinX == 2 && info.BinY == 2)), Times.Never);
         }
 
+        [Test]
+        [TestCase(0, -10)]
+        [TestCase(-20, -10)]
+        public async Task CoolCamera_WhenTemperatureStartsOutsideTolerance_WaitsInEitherDirection(double currentTemperature, double targetTemperature) {
+            CameraVM vm = CreateVm();
+            Mock<ICamera> camera = CreateCamera(connects: true);
+            camera.SetupGet(x => x.Temperature).Returns(currentTemperature);
+            deviceChooser.SetupGet(x => x.SelectedDevice).Returns(camera.Object);
+            await vm.Connect();
+            using CancellationTokenSource cancellationTokenSource = new();
+            cancellationTokenSource.Cancel();
+
+            Func<Task> coolCamera = () => vm.CoolCamera(
+                targetTemperature,
+                TimeSpan.Zero,
+                new Progress<ApplicationStatus>(),
+                cancellationTokenSource.Token);
+
+            await coolCamera.Should().ThrowAsync<OperationCanceledException>();
+            camera.VerifySet(x => x.TemperatureSetPoint = currentTemperature, Times.Once);
+        }
+
+        [Test]
+        [TestCase(-11, -10)]
+        [TestCase(-9, -10)]
+        public async Task CoolCamera_WhenTemperatureIsAtToleranceBoundary_CompletesImmediately(double currentTemperature, double targetTemperature) {
+            CameraVM vm = CreateVm();
+            Mock<ICamera> camera = CreateCamera(connects: true);
+            camera.SetupGet(x => x.Temperature).Returns(currentTemperature);
+            deviceChooser.SetupGet(x => x.SelectedDevice).Returns(camera.Object);
+            await vm.Connect();
+            using CancellationTokenSource cancellationTokenSource = new();
+            cancellationTokenSource.Cancel();
+
+            bool success = await vm.CoolCamera(
+                targetTemperature,
+                TimeSpan.Zero,
+                new Progress<ApplicationStatus>(),
+                cancellationTokenSource.Token);
+
+            success.Should().BeTrue();
+            camera.VerifySet(x => x.TemperatureSetPoint = targetTemperature, Times.Once);
+        }
+
+        [Test]
+        public async Task CoolCamera_WhenTemperatureIsPastOppositeToleranceBoundary_ContinuesWaiting() {
+            const double currentTemperature = -12;
+            const double targetTemperature = -10;
+            CameraVM vm = CreateVm();
+            Mock<ICamera> camera = CreateCamera(connects: true);
+            camera.SetupGet(x => x.Temperature).Returns(currentTemperature);
+            deviceChooser.SetupGet(x => x.SelectedDevice).Returns(camera.Object);
+            await vm.Connect();
+            using CancellationTokenSource cancellationTokenSource = new();
+            cancellationTokenSource.Cancel();
+
+            Func<Task> coolCamera = () => vm.CoolCamera(
+                targetTemperature,
+                TimeSpan.Zero,
+                new Progress<ApplicationStatus>(),
+                cancellationTokenSource.Token);
+
+            await coolCamera.Should().ThrowAsync<OperationCanceledException>();
+            camera.VerifySet(x => x.TemperatureSetPoint = currentTemperature, Times.Once);
+        }
+
+        [Test]
+        public async Task CoolCamera_WhenRampIsShorterThanCheckpoint_AppliesExactTargetBeforeWaiting() {
+            const double currentTemperature = 0;
+            const double targetTemperature = -10;
+            List<double> setPoints = new();
+            CameraVM vm = CreateVm();
+            Mock<ICamera> camera = CreateCamera(connects: true);
+            camera.SetupGet(x => x.Temperature).Returns(currentTemperature);
+            camera.SetupSet(x => x.TemperatureSetPoint = It.IsAny<double>()).Callback<double>(setPoint => setPoints.Add(setPoint));
+            deviceChooser.SetupGet(x => x.SelectedDevice).Returns(camera.Object);
+            await vm.Connect();
+            using CancellationTokenSource cancellationTokenSource = new();
+            cancellationTokenSource.Cancel();
+
+            Func<Task> coolCamera = () => vm.CoolCamera(
+                targetTemperature,
+                TimeSpan.FromSeconds(10),
+                new Progress<ApplicationStatus>(),
+                cancellationTokenSource.Token);
+
+            await coolCamera.Should().ThrowAsync<OperationCanceledException>();
+            setPoints.Should().Equal(targetTemperature, currentTemperature);
+        }
+
         private CameraVM CreateVm() {
             return new CameraVM(profileService.Object, cameraMediator.Object, filterWheelMediator.Object, applicationStatusMediator.Object, deviceChooser.Object);
         }
