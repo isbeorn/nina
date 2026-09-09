@@ -22,6 +22,7 @@ This allows you to safely return to a stable release if needed.
 - The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
 
 ## Bugfixes
+- Dome parking now checks that the driver reports it is parked after movement stops and reports a failure if it is not. A fixed 10-minute timeout aborts parking if it does not complete.
 - ASCOM and Alpaca cameras now apply their reported Bayer X/Y offsets when automatically debayering previews, so non-RGGB phases display the correct colors while preserving the original image metadata.
 - The Connect All and Disconnect All commands can no longer run at the same time, preventing conflicting device operations during slow connections.
 - Cached Offline Sky Map and Sky Atlas image tiles now keep a stable orientation across zoom levels instead of occasionally rotating by 180 degrees.
