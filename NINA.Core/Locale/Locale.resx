@@ -7337,4 +7337,10 @@ Note: This mode requires that HFR differences between filters in your setup are 
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
     <value>Reset progress of all targets in the current Target Set</value>
   </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
 </root>

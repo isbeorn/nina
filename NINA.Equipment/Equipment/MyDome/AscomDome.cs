@@ -315,38 +315,78 @@ namespace NINA.Equipment.Equipment.MyDome {
         public async Task Park(CancellationToken ct) {
             if (ShouldBeConnected) {
                 if (CanPark) {
-                    // ASCOM domes make no promise that a slew operation can take place if one is already in progress, so we do a hard abort up front to ensure Park works
-                    if (Slewing == true) {
-                        Logger.Info("Dome shutter or rotator slewing when a park was requested. Aborting all movement");
-
-                        await device?.AbortSlewAsync(ct);
-                        InvalidatePropertyCache();
-                        await Task.Delay(TimeSpan.FromSeconds(1), ct);
-                    }
-
                     ct.ThrowIfCancellationRequested();
-                    using (ct.Register(() => device?.AbortSlew())) {
+                    TimeSpan timeout = TimeSpan.FromMinutes(10);
+                    using CancellationTokenSource parkCancellation = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                    parkCancellation.CancelAfter(timeout);
+                    CancellationToken parkToken = parkCancellation.Token;
+                    var parkDevice = device;
+                    using CancellationTokenRegistration abortRegistration = parkToken.Register(() => {
+                        try {
+                            parkDevice?.AbortSlew();
+                        } catch (Exception ex) {
+                            Logger.Error("Failed to abort dome parking", ex);
+                        }
+                    });
+
+                    try {
+                        // ASCOM domes make no promise that a slew operation can take place if one is already in progress, so we do a hard abort up front to ensure Park works
+                        if (Slewing == true) {
+                            Logger.Info("Dome shutter or rotator slewing when a park was requested. Aborting all movement");
+                            await parkDevice.AbortSlewAsync(parkToken);
+                            InvalidatePropertyCache();
+                            await Task.Delay(TimeSpan.FromSeconds(1), parkToken);
+                        }
+
+                        parkToken.ThrowIfCancellationRequested();
                         if (AtPark) {
                             Logger.Info("Dome already AtPark. Not sending a Park command");
                         } else {
-                            await (device?.ParkAsync(ct) ?? Task.CompletedTask);
+                            await parkDevice.ParkAsync(parkToken);
                             InvalidatePropertyCache();
                         }
 
+                        parkToken.ThrowIfCancellationRequested();
                         if (CanSetShutter) {
                             if (ShutterStatus == ShutterState.ShutterClosed || ShutterStatus == ShutterState.ShutterClosing) {
                                 Logger.Info($"Not closing dome shutter, since it is already {ShutterStatus}");
                             } else {
                                 Logger.Info($"Closing shutter, since it is currently {ShutterStatus}");
-                                await Task.Run(() => device?.CloseShutter(), ct);
-                                ct.ThrowIfCancellationRequested();
+                                await Task.Run(() => parkDevice.CloseShutter(), parkToken);
                             }
                         }
-                        await Task.Delay(TimeSpan.FromSeconds(3), ct);
-                        while (Slewing && !ct.IsCancellationRequested) {
-                            await Task.Delay(TimeSpan.FromSeconds(1), ct);
+
+                        await Task.Delay(TimeSpan.FromSeconds(3), parkToken);
+                        while (parkDevice.Slewing) {
+                            if (device != parkDevice || !ShouldBeConnected || !parkDevice.Connected) {
+                                throw new ASCOM.NotConnectedException();
+                            }
+                            await Task.Delay(TimeSpan.FromSeconds(1), parkToken);
                         }
+                        parkToken.ThrowIfCancellationRequested();
+                        if (device != parkDevice || !ShouldBeConnected || !parkDevice.Connected) {
+                            throw new ASCOM.NotConnectedException();
+                        }
+
+                        // ASCOM ParkAsync only waits for Slewing to stop. Check AtPark once after movement
+                        // stops, without the display cache or its last-known-value fallback on driver errors.
+                        if (!parkDevice.AtPark) {
+                            string message = Loc.Instance["LblDomeParkFailed"];
+                            Logger.Error("Dome park failed: driver reports AtPark=false after Slewing stopped");
+                            Notification.ShowError(message);
+                            throw new InvalidOperationException(message);
+                        }
+                        parkToken.ThrowIfCancellationRequested();
+                        InvalidatePropertyCache();
+                    } catch (OperationCanceledException ex) {
                         ct.ThrowIfCancellationRequested();
+                        if (!parkCancellation.IsCancellationRequested) {
+                            throw;
+                        }
+                        string message = string.Format(Loc.Instance["LblDomeParkTimeout"], timeout.TotalMinutes);
+                        Logger.Error($"Dome park timed out after {timeout.TotalMinutes} minutes");
+                        Notification.ShowError(message);
+                        throw new TimeoutException(message, ex);
                     }
                 } else {
                     Logger.Warning("Dome cannot find park");
