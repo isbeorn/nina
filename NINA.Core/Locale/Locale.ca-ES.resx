@@ -7065,6 +7065,12 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>El temps d'espera per aparcar el telescopi s'ha esgotat després de {0} minuts.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>El temps de treure aparcament del telescopi s'ha esgotat després de {0} minuts.</value>
   </data>
