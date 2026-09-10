@@ -7059,6 +7059,12 @@ Além disso, é essecial que o driver ASCOM usado suporte também a profundidade
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>Parqueamento do telescópio expirou após {0} minutos.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Sair de parqueamento do telescópio expirou após {0} minutos.</value>
   </data>
