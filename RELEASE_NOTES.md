@@ -3,6 +3,75 @@
 If N.I.N.A. helps you on your journey to capture amazing deep sky images, please consider a donation. Every contribution helps keep the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
+# 3.2 Hotfix 1
+
+## Equipment and capture
+
+- Added direct-IP Alpaca connections for cameras, mounts, domes, filter wheels, flat devices, focusers, rotators, safety monitors, switches and observing conditions. The connection address, port, device number and HTTP/HTTPS selection are stored per profile. Direct connections remain available when discovery fails.
+- Abort Exposure now cancels the active capture operation.
+- Corrected Nikon automatic-exposure cancellation and bulb-stop handling.
+- Apply the readout mode before gain and offset for captures and live view. QHY cameras now retain the correct gain and offset across read-mode changes.
+- Improved QHY cooling and sensor-worker shutdown, failed filter-wheel discovery cleanup and firmware-version reporting.
+- Serialized QHY, ZWO and ToupTek-family native camera calls. ToupTek-family callbacks are retained safely and device-disconnect events cancel pending images without closing the camera from inside a native callback.
+- Improved ToupTek-family camera initialization, binning, fan controls and temperature settings. ZWO camera properties are now queried by camera ID.
+- Limited ASCOM binning choices to valid values. ASCOM V1 cameras and mounts can connect when newer optional capabilities are unavailable.
+- Use valid ASCOM exposure timestamps and durations in image metadata, with fallback when drivers omit or return invalid values. Automatic debayering now respects Bayer offsets while retaining explicit pattern overrides.
+- Cool Camera waits for its target temperature when approaching from either direction.
+- Capture filter metadata now falls back to the selected filter on a connected wheel when no filter was specified.
+- Player One filter-wheel connections wait for homing, with a two-minute timeout and cancellation handling. Added a unidirectional movement setting without changing existing profile defaults.
+- Detect filter-wheel changes made by another client. Filter settings remain observable after reset, and Flat Wizard follows replacement settings objects.
+- Improved dome-parking completion checks and timeout handling.
+- Publish updated equipment state before connection notifications. Prevent overlapping Connect All/Disconnect All operations and guard camera and guider commands while disconnected.
+- Stop the OpenMeteo update worker cleanly on cancellation.
+
+## Mounts, guiding and plate solving
+
+- **Unparking now leaves mount tracking disabled.** Use a subsequent slew or tracking instruction when tracking is required.
+- Telescope sync waits for the reported position to update within one arcsecond, bounded by the configured settle time. Failed syncs return immediately and stalled polling cannot leave the wait hanging.
+- Added padding to pier-side projection near the meridian.
+- The Slew to Alt/Az sequence instruction uses native Alt/Az slewing when supported and provides a tracking option. The equipment-panel Alt/Az control now falls back to equatorial slewing when needed.
+- PHD2 stop requests work from every active guiding state. Event messages are read correctly when split across network packets.
+- Corrected guider RMS removal calculations, guide-distance display and lock-position hashing.
+- Center After Drift now follows the active sequence scope and ignores obsolete asynchronous results.
+- Command-line plate solvers enforce timeout and cancellation, including stopping their child processes.
+- Restore the original filter after failed or canceled capture solves, while preserving the original failure if restoration also fails.
+- Centering stops when a slew fails. Center and Rotate, Solve and Rotate and Solve and Sync honor the configured plate-solving gain.
+- Improved centering without mount sync near right-ascension wraparound and the poles. Coordinate projections now honor the requested projection type.
+- Accept plate-solving calls without a progress reporter. Corrected TheSkyX image-scale formatting and mirrored-image metadata.
+- Improved manual-rotator completion and cancellation. Mechanical moves raise the correct event, and unsupported focuser and rotator controls are hidden.
+
+## Images, sequences and profiles
+
+- Added Zstandard compression for XISF, with optional byte shuffling.
+- FITS filenames containing brackets or parentheses are handled literally. Corrected FITS site metadata and SBIG electrons-per-ADU metadata.
+- XISF readers detect incomplete reads and preserve corrected metadata values and Bayer-offset keywords.
+- Fixed Gaussian blur buffer and stride handling. Released temporary image-analysis bitmaps and graphics resources more reliably.
+- Image-save failures include the image, destination and save stage in diagnostics. Write timeouts are reported clearly, and repeated disk-full notifications are throttled.
+- Added an option for Autofocus after HFR Increase to share history across filters. Per-filter history remains the default and is preserved when cloning the trigger.
+- Annotation instructions preserve their metadata when cloned. Sky Flat validation reports failure when issues are present, and missing trigger runners or validation lists are handled safely.
+- Added Reset All for Legacy Sequencer target sets.
+- Preserve distinct trained flat-calibration records. New profiles save correctly and valid profile backups are retained.
+- Refresh built-in color schemes on upgrade while preserving custom primary and alternate colors.
+- Corrected successful retry handling, image-pattern insertion results, malformed binning-string parsing, byte-size formatting and comma-decimal sexagesimal coordinate parsing.
+- Serialized NOVAS calls and rejected invalid Sun/Moon results in altitude instructions and conditions. Valid zero Earth-rotation corrections are cached.
+
+## Sky Atlas, interface and diagnostics
+
+- Added Sky Atlas filtering and sorting by transit time, including correct sidereal-to-clock-time conversion.
+- Improved Sky Atlas query and rendering performance, result virtualization and horizon filtering. Refreshed altitude and horizon bindings after date, site or profile changes.
+- Corrected cached sky-image orientation when zooming, including high declinations and right-ascension wraparound.
+- Expanded the bright-star catalogue used for manual focusing.
+- Altitude charts show meridian-crossing time. Simple-sequence details display the selected readout mode.
+- Added Copy URL to hyperlinks and centralized navigation for existing views and Markdown links.
+- Improved plate-solving panel layout, thumbnail filter labels, loading spinners and DEBUG/TRACE indicators.
+- Fixed popup focus and initial rendering, modal-dialog lifetime and drag/drop handling when the application layout is unavailable.
+- Improved malformed-plugin diagnostics, invalid provider/behavior handling and installed-plugin indicators. Existing plugin compatibility rules are matched by identifier.
+- Startup errors for invalid profile IDs list available profiles. Sequence-loading diagnostics include the source filename and original exception.
+- Improved plugin-load timing, location-sync, rotator, GPS, Canon mode-error and equipment display messages.
+- Refreshed translations for retained 3.2 functionality and the backported additions.
+- Installer upgrades and repairs restore packaged files consistently, including missing or modified files.
+
+
 # Version 3.2
 
 ## Bugfixes
