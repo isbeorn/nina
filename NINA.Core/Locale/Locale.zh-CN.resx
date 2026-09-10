@@ -1297,7 +1297,7 @@
     <value>东面</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>相机未设置为 M 或 B 门模式！ 请在连接前将其设置为 M 或 B 门模式</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>开启位扩增</value>
@@ -7063,6 +7063,12 @@
   </data>
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>望远镜停放命令在 {0} 分钟后超时。</value>
+  </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>望远镜解除停放命令在 {0} 分钟后超时。</value>
