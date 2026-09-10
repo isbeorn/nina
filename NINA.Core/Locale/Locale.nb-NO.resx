@@ -7054,6 +7054,12 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>Parkering fikk tidsavbrudd etter {0} minutter.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Avparkering fikk tidsavbrudd etter {0} minutter.</value>
   </data>
