@@ -7089,6 +7089,12 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>망원경의 파킹이 {0} 분 후 취소됩니다.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>망원경의 파킹 해제가 {0} 분 후 취소 됩니다.</value>
   </data>
