@@ -7036,6 +7036,12 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>望遠鏡のパークは {0} 分経過後にタイムアウトしました。</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>望遠鏡のアンパークは {0} 分経過後にタイムアウトしました。</value>
   </data>
