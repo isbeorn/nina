@@ -7066,6 +7066,12 @@ En outre, il est essentiel que le pilote ASCOM utilisé prenne également en cha
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>Le parc du télescope a expiré après {0} minutes.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Le déblocage du télescope a expiré après {0} minutes.</value>
   </data>
