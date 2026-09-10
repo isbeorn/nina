@@ -7061,6 +7061,12 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>Przekroczono limit czasu dla {0} minut.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Upłynął limit czasu odparkowania teleskopu po {0} minutach.</value>
   </data>
