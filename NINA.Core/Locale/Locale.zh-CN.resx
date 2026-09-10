@@ -7064,6 +7064,12 @@
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>望远镜停放命令在 {0} 分钟后超时。</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>望远镜解除停放命令在 {0} 分钟后超时。</value>
   </data>
