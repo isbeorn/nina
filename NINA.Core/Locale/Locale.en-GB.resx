@@ -7073,6 +7073,12 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>Telescope park has timed out after {0} minutes.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Telescope unpark has timed out after {0} minutes.</value>
   </data>
