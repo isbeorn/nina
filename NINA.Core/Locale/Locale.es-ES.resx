@@ -7061,6 +7061,12 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>El intento de la montura para alcanzar el modo de aparcado se ha cancelado tras {0} minutos.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>El intento de aparcar la cúpula se ha cancelado tras {0} minutos.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>La cúpula ha dejado de moverse pero el driver no ha confirmado que su aparcado.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>El intento de la montura por desaparcar ha finalizado tras {0} minutos.</value>
   </data>
