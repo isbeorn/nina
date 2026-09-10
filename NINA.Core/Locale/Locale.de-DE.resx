@@ -7065,6 +7065,12 @@ Außerdem muss auch der verwendete ASCOM-Treiber diese 32-Bit-Tiefe unterstütze
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>Parken des Teleskops hat nach {0} Minuten ein Timeout erreicht.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Ausparken des Teleskops hat nach {0} Minuten ein Timeout erreicht.</value>
   </data>
