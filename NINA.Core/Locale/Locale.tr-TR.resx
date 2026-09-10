@@ -7062,6 +7062,12 @@ Ayrıca, kullanılan ASCOM sürücüsünün de bu 32 bit derinliği desteklemesi
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>{0} dakika geçtikten sonra teleskop park etmesi zaman aşımına uğradı.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>{0} dakika geçtikten sonra teleskopun park pozisyonundan çıkması zaman aşımına uğradı.</value>
   </data>
