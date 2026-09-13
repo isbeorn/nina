@@ -24,6 +24,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -33,7 +35,7 @@ using Point = Accord.Point;
 namespace NINA.Image.ImageAnalysis {
 
     public class StarDetection : IStarDetection {
-        private static int _maxWidth = 1552;
+        private const int _maxWidth = 1552;
 
         public string Name => "NINA";
 
@@ -122,6 +124,7 @@ namespace NINA.Image.ImageAnalysis {
         }
 
         public class Star {
+
             // Measure shape/flux out to 1.5x the detected star radius so the aperture includes
             // most of the stellar profile wings without expanding too far into local background
             // or neighboring sources.
@@ -131,6 +134,7 @@ namespace NINA.Image.ImageAnalysis {
             // sub-pixel resolution for the FWHM half-maximum crossing while still smoothing
             // pixel-grid noise.
             private const double RadialProfileBinWidth = 0.5d;
+
             private const int CentroidMaxIterations = 3;
             private const double CentroidConvergencePixels = 0.01d;
 
@@ -139,7 +143,7 @@ namespace NINA.Image.ImageAnalysis {
             public double MeanBrightness { get; set; }
             public double SurroundingMean { get; set; }
             public double MaxPixelValue { get; set; }
-            public Point Position { get;set; }
+            public Point Position { get; set; }
             public double HFR { get; private set; }
             public double FWHM { get; private set; }
             public double Eccentricity { get; private set; }
@@ -155,16 +159,31 @@ namespace NINA.Image.ImageAnalysis {
                     return;
                 }
 
-                var centroidRadius = GetMeasurementRadius(this.Position, pixelData);
-                var centroid = CalculateCentroid(pixelData, this.Position, centroidRadius, iterate: true);
-                if (centroid.TotalFlux <= 0) {
+                // Convert AoS pixel data to SoA layout for vectorized operations
+                var pixelCount = pixelData.Count;
+                var posXArr = new double[pixelCount];
+                var posYArr = new double[pixelCount];
+                var valuesArr = new double[pixelCount];
+                for (int i = 0; i < pixelCount; i++) {
+                    var pd = pixelData[i];
+                    posXArr[i] = pd.PosX;
+                    posYArr[i] = pd.PosY;
+                    valuesArr[i] = pd.Value;
+                }
+                ReadOnlySpan<double> posXSpan = posXArr;
+                ReadOnlySpan<double> posYSpan = posYArr;
+                ReadOnlySpan<double> valuesSpan = valuesArr;
+
+                var centroidRadius = GetMeasurementRadius(this.Position, posXSpan, posYSpan);
+                var (Center, TotalFlux) = CalculateCentroid(posXSpan, posYSpan, valuesSpan, this.Position, centroidRadius, iterate: true);
+                if (TotalFlux <= 0) {
                     return;
                 }
 
-                this.Position = centroid.Center;
+                this.Position = Center;
 
-                var measurementRadius = GetMeasurementRadius(this.Position, pixelData);
-                var radialSamples = CollectRadialSamples(pixelData, this.Position, measurementRadius);
+                var measurementRadius = GetMeasurementRadius(this.Position, posXSpan, posYSpan);
+                var radialSamples = CollectRadialSamples(posXSpan, posYSpan, valuesSpan, this.Position, measurementRadius);
                 if (radialSamples.Count == 0) {
                     return;
                 }
@@ -181,15 +200,43 @@ namespace NINA.Image.ImageAnalysis {
                 this.Eccentricity = CalculateEccentricity(radialSamples, this.Position);
             }
 
-            internal bool InsideCircle(double x, double y, double centerX, double centerY, double radius) {
-                return (Math.Pow(x - centerX, 2) + Math.Pow(y - centerY, 2) <= Math.Pow(radius, 2));
+            internal static bool InsideCircle(double x, double y, double centerX, double centerY, double radius) {
+                return Math.Pow(x - centerX, 2) + Math.Pow(y - centerY, 2) <= Math.Pow(radius, 2);
             }
 
-            private double GetMeasurementRadius(Point center, List<PixelData> pixelData) {
-                var minX = pixelData.Min(p => p.PosX);
-                var maxX = pixelData.Max(p => p.PosX);
-                var minY = pixelData.Min(p => p.PosY);
-                var maxY = pixelData.Max(p => p.PosY);
+            private double GetMeasurementRadius(Point center, ReadOnlySpan<double> posX, ReadOnlySpan<double> posY) {
+                var vectorSize = Vector<double>.Count;
+                var vMinX = new Vector<double>(double.MaxValue);
+                var vMaxX = new Vector<double>(double.MinValue);
+                var vMinY = new Vector<double>(double.MaxValue);
+                var vMaxY = new Vector<double>(double.MinValue);
+                int i = 0;
+
+                for (; i <= posX.Length - vectorSize; i += vectorSize) {
+                    var vx = new Vector<double>(posX.Slice(i, vectorSize));
+                    var vy = new Vector<double>(posY.Slice(i, vectorSize));
+                    vMinX = Vector.Min(vMinX, vx);
+                    vMaxX = Vector.Max(vMaxX, vx);
+                    vMinY = Vector.Min(vMinY, vy);
+                    vMaxY = Vector.Max(vMaxY, vy);
+                }
+
+                double minX = double.MaxValue, maxX = double.MinValue;
+                double minY = double.MaxValue, maxY = double.MinValue;
+                for (int j = 0; j < vectorSize; j++) {
+                    minX = Math.Min(minX, vMinX[j]);
+                    maxX = Math.Max(maxX, vMaxX[j]);
+                    minY = Math.Min(minY, vMinY[j]);
+                    maxY = Math.Max(maxY, vMaxY[j]);
+                }
+
+                for (; i < posX.Length; i++) {
+                    minX = Math.Min(minX, posX[i]);
+                    maxX = Math.Max(maxX, posX[i]);
+                    minY = Math.Min(minY, posY[i]);
+                    maxY = Math.Max(maxY, posY[i]);
+                }
+
                 var availableRadius = Math.Min(
                     Math.Min(center.X - minX, maxX - center.X),
                     Math.Min(center.Y - minY, maxY - center.Y)) - 0.5d;
@@ -198,7 +245,7 @@ namespace NINA.Image.ImageAnalysis {
                 return Math.Max(1d, Math.Min(requestedRadius, availableRadius));
             }
 
-            private (Point Center, double TotalFlux) CalculateCentroid(List<PixelData> pixelData, Point center, double radius, bool iterate) {
+            private (Point Center, double TotalFlux) CalculateCentroid(ReadOnlySpan<double> posX, ReadOnlySpan<double> posY, ReadOnlySpan<double> values, Point center, double radius, bool iterate) {
                 // Windowed centroiding with a circular Gaussian weight follows the standard
                 // weighted-moment source-extraction approach used in SExtractor. See
                 // Bertin & Arnouts (1996), https://doi.org/10.1051/aas:1996164 and
@@ -207,32 +254,81 @@ namespace NINA.Image.ImageAnalysis {
                 var currentCenter = center;
                 var maxIterations = iterate ? CentroidMaxIterations : 1;
                 var lastTotalFlux = 0d;
+                var radiusSq = radius * radius;
+                var negHalfInvSigmaSq = -0.5d / (sigma * sigma);
+                var count = posX.Length;
+
+                // Scratch arrays allocated once, reused across centroid iterations
+                var fPosX = new double[count];
+                var fPosY = new double[count];
+                var fFlux = new double[count];
+                var fWeightedFlux = new double[count];
 
                 for (var iteration = 0; iteration < maxIterations; iteration++) {
-                    double sumWeightedFlux = 0;
-                    double sumX = 0;
-                    double sumY = 0;
-                    double sumFlux = 0;
+                    var filteredCount = 0;
+                    var cx = (double)currentCenter.X;
+                    var cy = (double)currentCenter.Y;
 
-                    foreach (var data in pixelData) {
-                        var dx = data.PosX - currentCenter.X;
-                        var dy = data.PosY - currentCenter.Y;
-                        var distanceSquared = dx * dx + dy * dy;
-                        if (distanceSquared > radius * radius) {
+                    // Scalar pre-filter: compact qualifying pixels into contiguous spans
+                    // and compute Gaussian window weight (Math.Exp is not vectorizable
+                    // without System.Numerics.Tensors)
+                    for (int i = 0; i < count; i++) {
+                        var dx = posX[i] - cx;
+                        var dy = posY[i] - cy;
+                        var distSq = (dx * dx) + (dy * dy);
+                        if (distSq > radiusSq) {
                             continue;
                         }
 
-                        var flux = data.Value - SurroundingMean;
+                        var flux = values[i] - SurroundingMean;
                         if (flux <= 0) {
                             continue;
                         }
 
-                        var window = Math.Exp(-0.5d * distanceSquared / (sigma * sigma));
-                        var weightedFlux = flux * window;
-                        sumWeightedFlux += weightedFlux;
-                        sumX += data.PosX * weightedFlux;
-                        sumY += data.PosY * weightedFlux;
-                        sumFlux += flux;
+                        var window = Math.Exp(distSq * negHalfInvSigmaSq);
+                        fPosX[filteredCount] = posX[i];
+                        fPosY[filteredCount] = posY[i];
+                        fFlux[filteredCount] = flux;
+                        fWeightedFlux[filteredCount] = flux * window;
+                        filteredCount++;
+                    }
+
+                    if (filteredCount == 0) {
+                        return (currentCenter, 0);
+                    }
+
+                    // Vectorized accumulation over the filtered SoA spans
+                    var fPosXSpan = fPosX.AsSpan(0, filteredCount);
+                    var fPosYSpan = fPosY.AsSpan(0, filteredCount);
+                    var fFluxSpan = fFlux.AsSpan(0, filteredCount);
+                    var fWeightedFluxSpan = fWeightedFlux.AsSpan(0, filteredCount);
+
+                    var vectorSize = Vector<double>.Count;
+                    var vSumWeightedFlux = Vector<double>.Zero;
+                    var vSumX = Vector<double>.Zero;
+                    var vSumY = Vector<double>.Zero;
+                    var vSumFlux = Vector<double>.Zero;
+                    int vi = 0;
+
+                    for (; vi <= filteredCount - vectorSize; vi += vectorSize) {
+                        var vWF = new Vector<double>(fWeightedFluxSpan.Slice(vi, vectorSize));
+                        vSumWeightedFlux += vWF;
+                        vSumX += new Vector<double>(fPosXSpan.Slice(vi, vectorSize)) * vWF;
+                        vSumY += new Vector<double>(fPosYSpan.Slice(vi, vectorSize)) * vWF;
+                        vSumFlux += new Vector<double>(fFluxSpan.Slice(vi, vectorSize));
+                    }
+
+                    double sumWeightedFlux = Vector.Dot(vSumWeightedFlux, Vector<double>.One);
+                    double sumX = Vector.Dot(vSumX, Vector<double>.One);
+                    double sumY = Vector.Dot(vSumY, Vector<double>.One);
+                    double sumFlux = Vector.Dot(vSumFlux, Vector<double>.One);
+
+                    // Scalar tail for remaining elements
+                    for (; vi < filteredCount; vi++) {
+                        sumWeightedFlux += fWeightedFluxSpan[vi];
+                        sumX += fPosXSpan[vi] * fWeightedFluxSpan[vi];
+                        sumY += fPosYSpan[vi] * fWeightedFluxSpan[vi];
+                        sumFlux += fFluxSpan[vi];
                     }
 
                     if (sumWeightedFlux <= 0) {
@@ -251,27 +347,48 @@ namespace NINA.Image.ImageAnalysis {
                 return (currentCenter, lastTotalFlux);
             }
 
-            private double GetWindowSigma(double radius) {
+            private static double GetWindowSigma(double radius) {
                 return Math.Max(radius / 2d, 1d);
             }
 
-            private List<RadialSample> CollectRadialSamples(List<PixelData> pixelData, Point center, double radius) {
-                var samples = new List<RadialSample>();
+            private List<RadialSample> CollectRadialSamples(ReadOnlySpan<double> posX, ReadOnlySpan<double> posY, ReadOnlySpan<double> values, Point center, double radius) {
+                var count = posX.Length;
+                var distArr = new double[count];
 
-                foreach (var data in pixelData) {
-                    var distance = Math.Sqrt(Math.Pow(data.PosX - center.X, 2.0d) + Math.Pow(data.PosY - center.Y, 2.0d));
-                    if (distance > radius) {
+                // Vectorized batch distance computation: dist = sqrt(dx² + dy²)
+                var vectorSize = Vector<double>.Count;
+                var vCenterX = new Vector<double>(center.X);
+                var vCenterY = new Vector<double>(center.Y);
+                int i = 0;
+
+                for (; i <= count - vectorSize; i += vectorSize) {
+                    var vDx = new Vector<double>(posX.Slice(i, vectorSize)) - vCenterX;
+                    var vDy = new Vector<double>(posY.Slice(i, vectorSize)) - vCenterY;
+                    var vDistSq = (vDx * vDx) + (vDy * vDy);
+                    Vector.SquareRoot(vDistSq).CopyTo(distArr.AsSpan(i, vectorSize));
+                }
+
+                // Scalar tail
+                for (; i < count; i++) {
+                    var dx = posX[i] - center.X;
+                    var dy = posY[i] - center.Y;
+                    distArr[i] = Math.Sqrt((dx * dx) + (dy * dy));
+                }
+
+                var samples = new List<RadialSample>();
+                for (int j = 0; j < count; j++) {
+                    if (distArr[j] > radius) {
                         continue;
                     }
 
-                    var flux = data.Value - SurroundingMean;
-                    samples.Add(new RadialSample(distance, flux, Math.Max(flux, 0), data.PosX, data.PosY));
+                    var flux = values[j] - SurroundingMean;
+                    samples.Add(new RadialSample(distArr[j], flux, Math.Max(flux, 0), (int)posX[j], (int)posY[j]));
                 }
 
                 return samples;
             }
 
-            private double CalculateHalfFluxRadius(List<RadialSample> samples, double totalFlux) {
+            private static double CalculateHalfFluxRadius(List<RadialSample> samples, double totalFlux) {
                 // Curve-of-growth HFR: sort background-subtracted flux by radius and interpolate
                 // the radius at which the enclosed flux reaches 50% of the total enclosed flux.
                 // This follows the standard half-light / half-flux radius definition rather than
@@ -300,7 +417,7 @@ namespace NINA.Image.ImageAnalysis {
                     }
 
                     var fraction = (targetFlux - previousFlux) / (cumulativeFlux - previousFlux);
-                    return previousRadius + fraction * (sample.Distance - previousRadius);
+                    return previousRadius + (fraction * (sample.Distance - previousRadius));
                 }
 
                 return samples.Max(sample => sample.Distance);
@@ -353,7 +470,7 @@ namespace NINA.Image.ImageAnalysis {
                         }
 
                         var fraction = (halfMaximum - previousValue) / (value - previousValue);
-                        var halfMaxRadius = previousRadius + fraction * (radius - previousRadius);
+                        var halfMaxRadius = previousRadius + (fraction * (radius - previousRadius));
                         return 2d * halfMaxRadius;
                     }
 
@@ -364,7 +481,7 @@ namespace NINA.Image.ImageAnalysis {
                 return double.NaN;
             }
 
-            private double CalculateEccentricity(List<RadialSample> samples, Point center) {
+            private static double CalculateEccentricity(List<RadialSample> samples, Point center) {
                 // Eccentricity from background-subtracted, flux-weighted second central moments
                 // within the local measurement aperture:
                 // e = sqrt(1 - lambda_minor / lambda_major), where the lambdas are the
@@ -372,22 +489,64 @@ namespace NINA.Image.ImageAnalysis {
                 // moment-based shape formalism used in source extraction; see
                 // Bertin & Arnouts (1996), SExtractor, A&AS 117, 393,
                 // https://doi.org/10.1051/aas:1996164
-                double momentXX = 0;
-                double momentYY = 0;
-                double momentXY = 0;
-                double totalFlux = 0;
+
+                // Pack positive-flux samples into parallel SoA arrays so Vector<double> can
+                // operate on contiguous single-field spans (RadialSample is AoS and cannot be
+                // cast directly).
+                var count = 0;
+                var fluxArr = new double[samples.Count];
+                var dxArr = new double[samples.Count];
+                var dyArr = new double[samples.Count];
 
                 foreach (var sample in samples) {
                     if (sample.PositiveFlux <= 0) {
                         continue;
                     }
+                    fluxArr[count] = sample.PositiveFlux;
+                    dxArr[count] = sample.PosX - center.X;
+                    dyArr[count] = sample.PosY - center.Y;
+                    count++;
+                }
 
-                    var dx = sample.PosX - center.X;
-                    var dy = sample.PosY - center.Y;
-                    totalFlux += sample.PositiveFlux;
-                    momentXX += sample.PositiveFlux * dx * dx;
-                    momentYY += sample.PositiveFlux * dy * dy;
-                    momentXY += sample.PositiveFlux * dx * dy;
+                if (count == 0) {
+                    return double.NaN;
+                }
+
+                var fluxSpan = fluxArr.AsSpan(0, count);
+                var dxSpan = dxArr.AsSpan(0, count);
+                var dySpan = dyArr.AsSpan(0, count);
+
+                var vectorSize = Vector<double>.Count;
+                var vTotalFlux = Vector<double>.Zero;
+                var vMomentXX = Vector<double>.Zero;
+                var vMomentYY = Vector<double>.Zero;
+                var vMomentXY = Vector<double>.Zero;
+                int i = 0;
+
+                for (; i <= count - vectorSize; i += vectorSize) {
+                    var vFlux = new Vector<double>(fluxSpan.Slice(i, vectorSize));
+                    var vDx = new Vector<double>(dxSpan.Slice(i, vectorSize));
+                    var vDy = new Vector<double>(dySpan.Slice(i, vectorSize));
+                    vTotalFlux += vFlux;
+                    vMomentXX += vFlux * vDx * vDx;
+                    vMomentYY += vFlux * vDy * vDy;
+                    vMomentXY += vFlux * vDx * vDy;
+                }
+
+                double totalFlux = Vector.Dot(vTotalFlux, Vector<double>.One);
+                double momentXX = Vector.Dot(vMomentXX, Vector<double>.One);
+                double momentYY = Vector.Dot(vMomentYY, Vector<double>.One);
+                double momentXY = Vector.Dot(vMomentXY, Vector<double>.One);
+
+                // Scalar tail for remaining elements that do not fill a full vector
+                for (; i < count; i++) {
+                    var f = fluxSpan[i];
+                    var ddx = dxSpan[i];
+                    var ddy = dySpan[i];
+                    totalFlux += f;
+                    momentXX += f * ddx * ddx;
+                    momentYY += f * ddy * ddy;
+                    momentXY += f * ddx * ddy;
                 }
 
                 if (totalFlux <= 0) {
@@ -399,7 +558,7 @@ namespace NINA.Image.ImageAnalysis {
                 momentXY /= totalFlux;
 
                 var trace = momentXX + momentYY;
-                var determinantTerm = (momentXX - momentYY) * (momentXX - momentYY) + 4d * momentXY * momentXY;
+                var determinantTerm = ((momentXX - momentYY) * (momentXX - momentYY)) + (4d * momentXY * momentXY);
                 var root = Math.Sqrt(Math.Max(0d, determinantTerm));
                 var major = (trace + root) / 2d;
                 var minor = (trace - root) / 2d;
@@ -426,7 +585,7 @@ namespace NINA.Image.ImageAnalysis {
             }
         }
 
-        public record PixelData (int PosX, int PosY, double Value);
+        public record PixelData(int PosX, int PosY, double Value);
         private record RadialSample(double Distance, double RawFlux, double PositiveFlux, int PosX, int PosY);
 
         public async Task<StarDetectionResult> Detect(IRenderedImage image, PixelFormat pf, StarDetectionParams p, IProgress<ApplicationStatus> progress, CancellationToken token) {
@@ -496,7 +655,7 @@ namespace NINA.Image.ImageAnalysis {
             return result;
         }
 
-        private bool InROI(Bitmap bitmapToAnalyze, StarDetectionParams p, Blob blob) {
+        private static bool InROI(Bitmap bitmapToAnalyze, StarDetectionParams p, Blob blob) {
             return DetectionUtility.InROI(
                 new Size(width: bitmapToAnalyze.Width, height: bitmapToAnalyze.Height),
                 blob: blob.Rectangle,
@@ -504,7 +663,7 @@ namespace NINA.Image.ImageAnalysis {
                 innerCropRatio: p.InnerCropRatio);
         }
 
-        private List<DetectedStar> IdentifyStars(StarDetectionParams p, State state, BlobCounter blobCounter, Bitmap bitmapToAnalyze, StarDetectionResult result, CancellationToken token, out int detectedStars) {
+        private static List<DetectedStar> IdentifyStars(StarDetectionParams p, State state, BlobCounter blobCounter, Bitmap bitmapToAnalyze, StarDetectionResult result, CancellationToken token, out int detectedStars) {
             using (MyStopWatch.Measure()) {
                 detectedStars = 0;
                 Blob[] blobs = blobCounter.GetObjectsInformation();
@@ -563,7 +722,7 @@ namespace NINA.Image.ImageAnalysis {
                         for (int y = largeRect.Y; y < largeRect.Y + largeRect.Height; y++) {
                             var pixelValue = state._iarr.FlatArray[x + (state.imageProperties.Width * y)];
                             if (x >= s.Rectangle.X && x < s.Rectangle.X + s.Rectangle.Width && y >= s.Rectangle.Y && y < s.Rectangle.Y + s.Rectangle.Height) { //We're in the small rectangle directly surrounding the star
-                                if (s.InsideCircle(x, y, s.Position.X, s.Position.Y, s.Radius)) { // We're in the inner sanctum of the star
+                                if (Star.InsideCircle(x, y, s.Position.X, s.Position.Y, s.Radius)) { // We're in the inner sanctum of the star
                                     starPixelSum += pixelValue;
                                     starPixelCount++;
                                     innerStarPixelValues.Add(pixelValue);
@@ -583,7 +742,7 @@ namespace NINA.Image.ImageAnalysis {
                         continue;
                     }
 
-                    s.MeanBrightness = starPixelSum / (double)starPixelCount;
+                    s.MeanBrightness = starPixelSum / starPixelCount;
                     if (backgroundPixelValues.Count == 0) {
                         continue;
                     }
@@ -594,9 +753,9 @@ namespace NINA.Image.ImageAnalysis {
                     double largeRectStdev = backgroundStats.Sigma;
                     int minimumNumberOfPixels = (int)Math.Ceiling(Math.Max(state._originalBitmapSource.PixelWidth, state._originalBitmapSource.PixelHeight) / 1000d);
 
-                    if (s.MeanBrightness >= largeRectMean + Math.Min(0.1 * largeRectMean, largeRectStdev) && innerStarPixelValues.Count(pv => pv > largeRectMean + 1.5 * largeRectStdev) > minimumNumberOfPixels) {
+                    if (s.MeanBrightness >= largeRectMean + Math.Min(0.1 * largeRectMean, largeRectStdev) && innerStarPixelValues.Count(pv => pv > largeRectMean + (1.5 * largeRectStdev)) > minimumNumberOfPixels) {
                         s.Calculate(pixelDataList);
-                        //It's a local maximum, and has enough bright pixels, so likely to be a star.                        
+                        //It's a local maximum, and has enough bright pixels, so likely to be a star.
                         if (s.Position.X > (s.Rectangle.X + 1) && s.Position.Y > (s.Rectangle.Y + 1) && s.Position.X < (s.Rectangle.X + s.Rectangle.Width - 2) && s.Position.Y < (s.Rectangle.Y + s.Rectangle.Height - 2)) {
                             // Only add star when centroid is not touching the rectangle edges
                             sumRadius += s.Radius;
@@ -613,13 +772,13 @@ namespace NINA.Image.ImageAnalysis {
 
                 //Now that we have a properly filtered star list, let's compute stats and further filter out from the mean
                 if (starList.Count > 0) {
-                    double avg = sumRadius / (double)starList.Count;
-                    double stdev = Math.Sqrt((sumSquares - starList.Count * avg * avg) / starList.Count);
+                    double avg = sumRadius / starList.Count;
+                    double stdev = Math.Sqrt((sumSquares - (starList.Count * avg * avg)) / starList.Count);
                     if (p.Sensitivity != StarSensitivityEnum.Highest) {
-                        starList = starList.Where(s => s.Radius <= avg + 1.5 * stdev && s.Radius >= avg - 1.5 * stdev).ToList<Star>();
+                        starList = starList.Where(s => s.Radius <= avg + (1.5 * stdev) && s.Radius >= avg - (1.5 * stdev)).ToList<Star>();
                     } else {
                         //More sensitivity means getting fainter and smaller stars, and maybe some noise, skewing the distribution towards low radius. Let's be more permissive towards the large star end.
-                        starList = starList.Where(s => s.Radius <= avg + 2 * stdev && s.Radius >= avg - 1.5 * stdev).ToList<Star>();
+                        starList = starList.Where(s => s.Radius <= avg + (2 * stdev) && s.Radius >= avg - (1.5 * stdev)).ToList<Star>();
                     }
                 }
 
@@ -633,7 +792,7 @@ namespace NINA.Image.ImageAnalysis {
                         if (starList.Count <= p.NumberOfAFStars) {
                             result.BrightestStarPositions = starList.ConvertAll(s => s.Position);
                         } else {
-                            starList = starList.OrderByDescending(s => s.Radius * 0.3 + s.MeanBrightness * 0.7).Take(p.NumberOfAFStars).ToList<Star>();
+                            starList = starList.OrderByDescending(s => (s.Radius * 0.3) + (s.MeanBrightness * 0.7)).Take(p.NumberOfAFStars).ToList<Star>();
                             result.BrightestStarPositions = starList.ConvertAll(i => i.Position);
                         }
                         return starList.Select(s => s.ToDetectedStar()).ToList();
@@ -647,14 +806,14 @@ namespace NINA.Image.ImageAnalysis {
             }
         }
 
-        private double CalculateEccentricity(double width, double height) {
+        private static double CalculateEccentricity(double width, double height) {
             var x = Math.Max(width, height);
             var y = Math.Min(width, height);
             double focus = Math.Sqrt(Math.Pow(x, 2) - Math.Pow(y, 2));
             return focus / x;
         }
 
-        private (double Background, double Sigma) EstimateBackground(List<double> pixelValues) {
+        private static (double Background, double Sigma) EstimateBackground(List<double> pixelValues) {
             // Robust local sky estimate from a sigma-clipped median. Sigma clipping is standard
             // practice for astronomical background estimation in the presence of source pixels
             // and outliers; see the Astropy CCD Reduction Guide:
@@ -671,9 +830,24 @@ namespace NINA.Image.ImageAnalysis {
                 values.Sort();
                 var median = MedianFromSorted(values);
                 var deviations = new List<double>(values.Count);
-                for (var index = 0; index < values.Count; index++) {
-                    deviations.Add(Math.Abs(values[index] - median));
+                CollectionsMarshal.SetCount(deviations, values.Count);
+                var deviationsSpan = CollectionsMarshal.AsSpan(deviations);
+                var valuesSpan = CollectionsMarshal.AsSpan(values);
+                var vMedian = new Vector<double>(median);
+                var vectorSize = Vector<double>.Count;
+                int devIdx = 0;
+
+                // Vectorized computation of MAD
+                for (; devIdx <= valuesSpan.Length - vectorSize; devIdx += vectorSize) {
+                    var v = new Vector<double>(valuesSpan.Slice(devIdx, vectorSize));
+                    Vector.Abs(v - vMedian).CopyTo(deviationsSpan.Slice(devIdx, vectorSize));
                 }
+
+                // Handle any remaining elements that don't fit into a vector
+                for (; devIdx < valuesSpan.Length; devIdx++) {
+                    deviationsSpan[devIdx] = Math.Abs(valuesSpan[devIdx] - median);
+                }
+
                 deviations.Sort();
                 var mad = MedianFromSorted(deviations);
                 var sigma = mad > 0 ? 1.4826d * mad : StandardDeviation(values, median);
@@ -700,7 +874,7 @@ namespace NINA.Image.ImageAnalysis {
             return (finalMedian, StandardDeviation(values, finalMedian));
         }
 
-        private double MedianFromSorted(List<double> values) {
+        private static double MedianFromSorted(List<double> values) {
             if (values.Count == 0) {
                 return 0d;
             }
@@ -713,21 +887,37 @@ namespace NINA.Image.ImageAnalysis {
             return values[middle];
         }
 
-        private double StandardDeviation(List<double> values, double mean) {
+        private static double StandardDeviation(List<double> values, double mean) {
             if (values.Count == 0) {
                 return 0d;
             }
 
-            double sumSquares = 0d;
-            for (var index = 0; index < values.Count; index++) {
-                var delta = values[index] - mean;
+            var span = CollectionsMarshal.AsSpan(values);
+            var vMean = new Vector<double>(mean);
+            var vSumSquares = Vector<double>.Zero;
+            var vectorSize = Vector<double>.Count;
+            int i = 0;
+
+            // Use vectorized operations to compute the sum of squared deviations from the mean.
+            // CPUs with AVX2 (Haswell microarch and later) can do 8 doubles at a time.
+            for (; i <= span.Length - vectorSize; i += vectorSize) {
+                var v = new Vector<double>(span.Slice(i, vectorSize));
+                var delta = v - vMean;
+                vSumSquares += delta * delta;
+            }
+
+            double sumSquares = Vector.Dot(vSumSquares, Vector<double>.One);
+
+            // Handle any remaining elements that don't fit into a vector
+            for (; i < span.Length; i++) {
+                var delta = span[i] - mean;
                 sumSquares += delta * delta;
             }
 
             return Math.Sqrt(sumSquares / values.Count);
         }
 
-        private BlobCounter DetectStructures(Bitmap bmp, CancellationToken token) {
+        private static BlobCounter DetectStructures(Bitmap bmp, CancellationToken token) {
             using (MyStopWatch.Measure()) {
                 /* detect structures */
                 BlobCounter blobCounter = new BlobCounter();
@@ -739,7 +929,7 @@ namespace NINA.Image.ImageAnalysis {
             }
         }
 
-        private void PrepareForStructureDetection(Bitmap bmp, StarDetectionParams p, CancellationToken token) {
+        private static void PrepareForStructureDetection(Bitmap bmp, StarDetectionParams p, CancellationToken token) {
             using (MyStopWatch.Measure()) {
                 using (MyStopWatch.Measure("PrepareForStructureDetection - CannyEdge")) {
                     if (p.NoiseReduction == NoiseReductionEnum.None || p.NoiseReduction == NoiseReductionEnum.Median) {
@@ -764,7 +954,7 @@ namespace NINA.Image.ImageAnalysis {
             }
         }
 
-        private Bitmap ReduceNoise(Bitmap bitmapToAnalyze, StarDetectionParams p) {
+        private static Bitmap ReduceNoise(Bitmap bitmapToAnalyze, StarDetectionParams p) {
             using (MyStopWatch.Measure()) {
                 if (bitmapToAnalyze.Width > _maxWidth) {
                     Bitmap bmp;
