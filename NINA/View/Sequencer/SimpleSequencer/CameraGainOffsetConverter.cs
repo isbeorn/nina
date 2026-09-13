@@ -33,6 +33,10 @@ namespace NINA.View.SimpleSequencer {
             }
 
             Expression expr = value[0] as Expression;
+            // The dropdown writes the numeric gain through its first binding and reads expression metadata through the second.
+            if (expr == null && value[0] is int && value.Length > 1) {
+                expr = value[1] as Expression;
+            }
             // Shouldn't ever happen, but ...
             if (expr == null) {
                 return "(??)";
@@ -50,16 +54,15 @@ namespace NINA.View.SimpleSequencer {
         }
 
         public object[] ConvertBack(object value, Type[] targetType, object parameter, CultureInfo culture) {
-            var param = new object[] { value.ToString(), null };
-            var parsed = (bool)targetType[0]
-                .GetMethod("TryParse", new[] { typeof(string), targetType[0].MakeByRefType() })!
-                .Invoke(null, param)!;
-
-            if (parsed) {
-                return new object[] { param[1]! };
+            object[] result = new object[targetType.Length];
+            Array.Fill(result, Binding.DoNothing);
+            if (value == null || value == DependencyProperty.UnsetValue || value == Binding.DoNothing
+                || targetType.Length == 0 || targetType[0] != typeof(int)) {
+                return result;
             }
 
-            return new object[] { -1 };
+            result[0] = int.TryParse(value.ToString(), NumberStyles.Integer, culture, out int gain) ? gain : -1;
+            return result;
         }
 
     }

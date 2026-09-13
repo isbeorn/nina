@@ -27,6 +27,7 @@ using NINA.View.SimpleSequencer;
 using NINA.View.Thumbnail;
 using System.Globalization;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 using Expression = NINA.Sequencer.Logic.Expression;
 
@@ -63,6 +64,37 @@ namespace NINA.Test.View {
             converter.Convert(new object[] { explicitValue }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be("42");
             converter.ConvertBack("17", new[] { typeof(int) }, null, CultureInfo.InvariantCulture).Should().Equal(17);
             converter.ConvertBack("not an integer", new[] { typeof(int) }, null, CultureInfo.InvariantCulture).Should().Equal(-1);
+        }
+
+        [TestCase("400", 400)]
+        [TestCase("0", 0)]
+        [TestCase("800", 800)]
+        [TestCase("(200)", -1)]
+        public void CameraGainOffsetConverter_UpdatesOnlyTheNumericEditorBinding(string selection, int expected) {
+            CameraGainOffsetConverter converter = new CameraGainOffsetConverter();
+            Type[] targetTypes = [typeof(int), typeof(Expression), typeof(double), typeof(string), typeof(bool), typeof(double)];
+
+            converter.ConvertBack(selection, targetTypes, null, CultureInfo.InvariantCulture)
+                .Should().Equal(expected, Binding.DoNothing, Binding.DoNothing, Binding.DoNothing, Binding.DoNothing, Binding.DoNothing);
+        }
+
+        [Test]
+        public void CameraGainOffsetConverter_IgnoresTransientSelectionValues() {
+            CameraGainOffsetConverter converter = new CameraGainOffsetConverter();
+            foreach (object? value in new object?[] { null, DependencyProperty.UnsetValue, Binding.DoNothing }) {
+                converter.ConvertBack(value, [typeof(int), typeof(Expression)], null, CultureInfo.InvariantCulture)
+                    .Should().Equal(Binding.DoNothing, Binding.DoNothing);
+            }
+        }
+
+        [Test]
+        public void CameraGainOffsetConverter_UsesExpressionMetadataForNumericEditorBindings() {
+            CameraGainOffsetConverter converter = new CameraGainOffsetConverter();
+            Expression expression = new Expression { Default = 200, Definition = string.Empty, IsValid = true };
+
+            converter.Convert([200, expression], typeof(string), null, CultureInfo.InvariantCulture).Should().Be("(200)");
+            expression.Definition = "400";
+            converter.Convert([400, expression], typeof(string), null, CultureInfo.InvariantCulture).Should().Be("400");
         }
 
         /// <summary>

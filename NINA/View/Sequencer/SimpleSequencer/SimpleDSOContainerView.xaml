@@ -1171,13 +1171,13 @@
                                         UpdateSourceTrigger="PropertyChanged">
                                         <Binding
                                             Mode="TwoWay"
-                                            Path="Items[1].GainExpression"
+                                            Path="Items[1].Gain"
                                             UpdateSourceTrigger="PropertyChanged" />
-                                        <Binding
-                                            Mode="OneWay"
-                                            Path="Data.DefaultGain"
-                                            Source="{StaticResource CameraInfo}"
-                                            UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Mode="OneWay" Path="Items[1].GainExpression" />
+                                        <Binding Mode="OneWay" Path="Items[1].GainExpression.Value" />
+                                        <Binding Mode="OneWay" Path="Items[1].GainExpression.DefaultString" />
+                                        <Binding Mode="OneWay" Path="Items[1].GainExpression.IsValid" />
+                                        <Binding Mode="OneWay" Path="Items[1].GainExpression.Default" />
                                     </MultiBinding>
                                 </ComboBox.SelectedValue>
                             </ComboBox>
@@ -1185,11 +1185,20 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                             <TextBlock 
-                                 Margin="5,0,5,0"
-                                 VerticalAlignment="Center"
-                                 TextAlignment="Center"
-                                 Text="{Binding Items[1].GainExpression, Converter={StaticResource MinusOneToEmptyStringConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock
+                                Margin="5,0,5,0"
+                                VerticalAlignment="Center"
+                                TextAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource CameraGainOffsetConverter}" Mode="OneWay">
+                                        <Binding Path="Items[1].GainExpression" />
+                                        <Binding Path="Items[1].GainExpression.Value" />
+                                        <Binding Path="Items[1].GainExpression.DefaultString" />
+                                        <Binding Path="Items[1].GainExpression.IsValid" />
+                                        <Binding Path="Items[1].GainExpression.Default" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

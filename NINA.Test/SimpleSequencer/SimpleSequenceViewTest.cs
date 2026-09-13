@@ -173,7 +173,7 @@ namespace NINA.Test.SimpleSequencer {
             Application.Current.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
         }
 
-        private static void EnsureApplicationResources() {
+        internal static void EnsureApplicationResources() {
             if (resourcesLoaded) {
                 return;
             }
