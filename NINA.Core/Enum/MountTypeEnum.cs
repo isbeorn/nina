@@ -30,5 +30,8 @@ namespace NINA.Core.Enum {
 
         [Description("LblForkOnWedge")]
         FORK_ON_WEDGE,
+
+        [Description("LblAltitudeAzimuth")]
+        ALT_AZ,
     }
 }

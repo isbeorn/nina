@@ -30,18 +30,20 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             Id = "No_Device";
-            LastDeviceName = "";
+            LastDeviceName = string.Empty;
             ScopePositionEastWest_mm = 0.0;
             ScopePositionNorthSouth_mm = 0.0;
             ScopePositionUpDown_mm = 0.0;
             DomeRadius_mm = 0.0;
             GemAxis_mm = 0.0;
+            LateralAxis_mm = 0.0;
             AzimuthTolerance_degrees = 2.0;
             FindHomeBeforePark = false;
             DomeSyncTimeoutSeconds = 120;
             SettleTimeSeconds = 1;
             SyncSlewDomeWhenMountSlews = false;
             SynchronizeDuringMountSlew = false;
+            SlitMaximumAltitude_degrees  = 100d;
         }
 
         private string id = string.Empty;
@@ -338,6 +340,19 @@ namespace NINA.Profile {
             set {
                 if (settleTimeSeconds != value) {
                     settleTimeSeconds = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double slitMaximumAltitude_degrees;
+
+        [DataMember]
+        public double SlitMaximumAltitude_degrees {
+            get => slitMaximumAltitude_degrees;
+            set {
+                if (slitMaximumAltitude_degrees != value) {
+                    slitMaximumAltitude_degrees = value;
                     RaisePropertyChanged();
                 }
             }
