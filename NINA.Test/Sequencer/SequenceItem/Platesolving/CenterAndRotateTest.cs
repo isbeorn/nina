@@ -379,9 +379,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
         }
 
         [Test]
-        [TestCase(160, 260, -80)]
-        [TestCase(160, 170, 10)]
-        public async Task Execute_FullRotatorRange_PlateSolveSuccess_RotationOffOneTime_NoException(double first, double second, double movement) {
+        [TestCase(160, 260, 80, -80)]
+        [TestCase(160, 170, 170, 10)]
+        public async Task Execute_FullRotatorRange_PlateSolveSuccess_RotationOffOneTime_NoException(double first, double second, double adjustedTarget, double movement) {
             var service = new Mock<IWindowService>();
             var coordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(20), Epoch.J2000);
 
@@ -398,9 +398,10 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
             windowServiceFactoryMock.Setup(x => x.Create()).Returns(service.Object);
 
             profileServiceMock.SetupGet(x => x.ActiveProfile.RotatorSettings.RangeType).Returns(RotatorRangeTypeEnum.FULL);
+            // GetTargetPosition performs the FULL range reciprocal adjustment, so the first call returns the adjusted target
             rotatorMediatorMock
                 .SetupSequence(x => x.GetTargetPosition(It.IsAny<float>()))
-                .Returns((float)(second))
+                .Returns((float)(adjustedTarget))
                 .Returns((float)(second));
 
             guiderMediatorMock.Setup(x => x.StopGuiding(It.IsAny<CancellationToken>())).ReturnsAsync(true);

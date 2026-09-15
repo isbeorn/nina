@@ -45,7 +45,6 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
-
     public partial class SolveAndRotate : SequenceItem, IValidatable {
         protected IProfileService profileService;
         protected ITelescopeMediator telescopeMediator;
@@ -144,19 +143,6 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                     }
 
                     rotationDistance = targetRotation - orientation;
-                    if (profileService.ActiveProfile.RotatorSettings.RangeType == Core.Enum.RotatorRangeTypeEnum.FULL) {
-                        // If the full rotation range is allowed, then consider the 180-degree rotated orientation as well in case it is closer
-                        var movement = AstroUtil.EuclidianModulus(rotationDistance, 180);
-                        var movement2 = movement - 180;
-
-                        if (movement < Math.Abs(movement2)) {
-                            rotationDistance = movement;
-                        } else {
-                            targetRotation = AstroUtil.EuclidianModulus(targetRotation + 180, 360);
-                            Logger.Info($"Changing rotation target to {targetRotation} instead since it is closer to the current position");
-                            rotationDistance = movement2;
-                        }
-                    }
 
                     if (!Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(profileService.ActiveProfile.PlateSolveSettings.RotationTolerance), true)) {
                         Logger.Info($"Rotator not inside tolerance {profileService.ActiveProfile.PlateSolveSettings.RotationTolerance} - Current {orientation}° / Target: {PositionAngle}° - Moving rotator relatively by {rotationDistance}°");
