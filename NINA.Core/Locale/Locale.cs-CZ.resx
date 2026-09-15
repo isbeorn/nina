@@ -1291,13 +1291,13 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
     <value>Východ</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Fotoaparát není nastaven na manuální režim nebo režim bulb! Před připojením přepnout na manuální režim nebo režim bulb</value>
+    <value>Fotoaparát není v režimu Ruční (M) ani Bulb (B). Nastavte volič režimů na M nebo B. Pokud má fotoaparát přepínač Foto/Video, přepněte jej na Foto.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Povolit bitové měřítko</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>Ušetřete 8/10/12/14 bitových obrázků se škálováním na 16 bitů. Relevantní pouze pro nativní ovladače Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony a ToupTek.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Povoleno</value>
@@ -2629,7 +2629,7 @@ Klient odpojen od synchronizované služby PHD2.
     <value>Raw konvertor</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>DSLR soubory jsou konvertovány s LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Čtecí šum v e</value>
@@ -2779,10 +2779,10 @@ Klient odpojen od synchronizované služby PHD2.
     <value>Toto nastavení je u digitálních zrcadlovek při použití nativního ovladače ignorováno. Místo toho bude uložen formát RAW!</value>
   </data>
   <data name="LblSaveNativeCameraRaw" xml:space="preserve">
-    <value>Save native camera RAW</value>
+    <value>Uložit nativní soubor RAW z fotoaparátu</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>Je-li tato funkce zapnutá, snímky pořízené fotoaparáty Nikon a Canon se ukládají jako soubory RAW daného fotoaparátu. Je-li tato funkce vypnutá, snímky se ukládají podle nastavení v nabídce Možnosti > Zpracování snímků > Nastavení souborů.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Uložit vybraný profil a příště se neptat</value>
@@ -3515,7 +3515,7 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
     <value>URL</value>
   </data>
   <data name="LblCopyURL" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>Zkopírovat URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB Limit</value>
@@ -4547,31 +4547,31 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
     <value>Překlopení Poledníku</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
-    <value>Programmable Meridian Flip</value>
+    <value>Programovatelné Přepnutí Poledníku</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
-    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+    <value>Spouštěč s překlopením s nastavitelnými akcemi před a po překlopení.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
-    <value>Before Flip Actions</value>
+    <value>Před provedením akce „Překlopení“</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
-    <value>After Flip Actions</value>
+    <value>Po provedením akce „Překlopení“</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting for the meridian flip.</value>
+    <value>Pokyny, které se provedou před čekáním na změnu poledníku.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after the meridian flip.</value>
+    <value>Instrukce, které se spustí po překročení poledníku.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
-    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+    <value>Tyto kroky by měly být krátké. Dlouhé přípravy před překlopením mohou zpozdit překlopení poledníku.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
-    <value>Wait For Flip Window</value>
+    <value>Počkejte, až se okno přetočí</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
-    <value>Resume Tracking and Flip</value>
+    <value>Pokračovat ve sledování a otočit</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
     <value>Stabilizace</value>
@@ -6126,7 +6126,7 @@ Po úspěšném vyřešení se nastaví úhel natočení snímku.</value>
     <value>Obrázek se nepodařilo uložit</value>
   </data>
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+    <value>Uložení snímku se nezdařilo. V cílovém umístění možná není dostatek volného místa na disku.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Získá souřadnice z aktuální pozice dalekohledu</value>
@@ -6283,19 +6283,19 @@ Zkontrolujte, zda je k dispozici aktualizace.</value>
     <value>Datum</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>Den</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>Měsíc</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>Rok</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
     <value>Pozorování</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>Obnovit datum a čas pozorování na aktuální čas</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>Příkaz</value>
@@ -6989,7 +6989,7 @@ Prodlužte minimální dobu expozice nebo počkejte, až bude jasnější.</valu
     <value>Zobrazit Histogram</value>
   </data>
   <data name="LblShowHorizon" xml:space="preserve">
-    <value>Show Local Horizon</value>
+    <value>Zobrazit Místní Horizont</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
     <value>Zobrazit úhlové vzdálenosti hvězd v obloukových sekundách</value>
@@ -7066,6 +7066,12 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   </data>
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>Parkování dalekohledu skončilo po {0} minutách.</value>
+  </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Časový limit pro Park Kopule vypršel po {0} minutách.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Kupole se přestala pohybovat, ale ovladač nepotvrdil,  že je zaparkováno.</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Odparkování dalekohledu skončilo po {0} minutách.</value>
@@ -8089,10 +8095,10 @@ To se hodí v případě, že vestavěný spouštěč má sice požadované nač
     <value>Provede nakonfigurované pokyny, jakmile bezpečnostní monitor nahlásí nebezpečné podmínky nebo se po připojení odpojí, počká, až budou podmínky opět bezpečné, a poté provede následné pokyny.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
-    <value>Before Waiting For Safety</value>
+    <value>Než začnete čekat na bezpečí</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description" xml:space="preserve">
-    <value>After Waiting For Safety</value>
+    <value>Po čekání na zajištění bezpečnosti</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
     <value>Příkazy, které se provedou ještě předtím, než se situace opět stane bezpečnou.</value>
@@ -8101,15 +8107,15 @@ To se hodí v případě, že vestavěný spouštěč má sice požadované nač
     <value>Příkazy, které se spustí poté, co jsou podmínky opět bezpečné.</value>
   </data>
   <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
-    <value>Show Star Mass in Guide Graph</value>
+    <value>Zobrazit Jas hvězd v Grafu Navádění</value>
   </data>
   <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
-    <value>Show Star SNR in Guide Graph</value>
+    <value>Zobrazit hodnoty SNR hvězd v Grafu Navádění</value>
   </data>
   <data name="LblStarMass" xml:space="preserve">
-    <value>Star Mass</value>
+    <value>Jas Hvězdy</value>
   </data>
   <data name="LblStarSNR" xml:space="preserve">
-    <value>Star SNR</value>
+    <value>SNR Hvězdy</value>
   </data>
 </root>
