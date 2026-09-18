@@ -34,6 +34,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("537a7a82-8c12-45e9-abad-b6b3729d6cb1")]
 
 [assembly: InternalsVisibleTo("NINA.Test")]
+[assembly: InternalsVisibleTo("NINA")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 // Version information for an assembly consists of the following four values:

@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Core.Model;
 using NINA.Sequencer.Validations;
 using System;
@@ -23,7 +24,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Symbol")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class ResetVariableToDate : SequenceItem, IValidatable {
+    public class ResetVariableToDate : SequenceItem, IValidatable, ISequenceCustomPropertyEditProvider {
 
         private IList<IDateTimeProvider> dateTimeProviders;
         private IDateTimeProvider selectedProvider;
@@ -196,6 +197,15 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         }
 
         public bool HasFixedTimeProvider => selectedProvider != null && !(selectedProvider is NINA.Sequencer.Utility.DateTimeProvider.TimeProvider);
+
+        bool ISequenceCustomPropertyEditProvider.TryCapturePropertyState(object source, string propertyName, out ISequenceEditSnapshot snapshot) {
+            snapshot = ReferenceEquals(source, this) && propertyName == nameof(SelectedProvider)
+                ? SequenceTimeCapture.Capture(() => SelectedProvider, value => SelectedProvider = value,
+                    () => HasFixedTimeProvider, () => new TimeSpan(Hours, Minutes, Seconds),
+                    value => { Hours = value.Hours; Minutes = value.Minutes; Seconds = value.Seconds; })
+                : null;
+            return snapshot != null;
+        }
 
         [JsonProperty]
         public IDateTimeProvider SelectedProvider {

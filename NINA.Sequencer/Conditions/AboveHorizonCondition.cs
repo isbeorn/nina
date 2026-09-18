@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
@@ -37,7 +38,7 @@ namespace NINA.Sequencer.Conditions {
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
-    public partial class AboveHorizonCondition : LoopForAltitudeBase {
+    public partial class AboveHorizonCondition : LoopForAltitudeBase, ISequenceCustomPropertyEditProvider, ISequenceAttachmentStateProvider {
         private double lastRA;
         private double lastDec;
         private bool hasDsoParent;
@@ -171,6 +172,26 @@ namespace NINA.Sequencer.Conditions {
         }
 
         protected bool Protect = false;
+
+        private void RestoreEditorCoordinates(SequenceCoordinateState state) {
+            if (state.Inherited) return;
+            SequenceCoordinateState.RestoreCoordinates(Data.Coordinates, RaExpression, DecExpression, state.Value,
+                state.NegativeDec, state.RaDefinition, state.DecDefinition, ref Protect, ref lastRA, ref lastDec);
+            PositionAngleExpression.Definition = state.RotationDefinition;
+        }
+
+        private ISequenceEditSnapshot CaptureEditorCoordinates() =>
+            new SequenceEditSnapshot<SequenceCoordinateState>(
+                () => SequenceCoordinateState.Capture(Data.Coordinates, RaExpression, DecExpression, PositionAngleExpression, HasDsoParent),
+                RestoreEditorCoordinates, SequenceCoordinateState.Equal, SequenceEditDetails.Coordinates);
+
+        bool ISequenceCustomPropertyEditProvider.TryCapturePropertyState(object source, string propertyName, out ISequenceEditSnapshot snapshot) {
+            snapshot = ReferenceEquals(source, Data.Coordinates) ? CaptureEditorCoordinates() : null;
+            return snapshot != null;
+        }
+
+        ISequenceEditSnapshot ISequenceAttachmentStateProvider.CaptureAttachmentState() =>
+            Data.Coordinates?.Coordinates == null ? null : CaptureEditorCoordinates();
 
         [JsonProperty(propertyName: "Coordinates")]
         private InputCoordinates DeprecatedCoordinates {

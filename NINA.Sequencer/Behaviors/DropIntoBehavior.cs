@@ -104,7 +104,12 @@ namespace NINA.Sequencer.Behaviors {
                     if (prop != null) {
                         var value = prop.GetValue(drop.DataContext) as ICommand;
                         if (value != null) {
-                            value.Execute(parameter);
+                            if (drop.DataContext is ISequenceEntity entity && (OnDropCommand == "DropIntoCommand"
+                                || OnDropCommand == "DropIntoConditionsCommand" || OnDropCommand == "DropIntoTriggersCommand")) {
+                                Editing.SequenceEditContext.Structure(entity, "Lbl_SequenceHistory_PlaceAction", () => value.Execute(parameter));
+                            } else {
+                                value.Execute(parameter);
+                            }
                         }
                     }
                 }

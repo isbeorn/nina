@@ -71,7 +71,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             dialog.Filter = "N.I.N.A.sequence JSON | *.json";
 
             if (dialog.ShowDialog() == true) {
-                FilePath = dialog.FileName;
+                Editing.SequenceEditContext.Property(this, nameof(FilePath), () => FilePath, value => FilePath = value, dialog.FileName);
             }
         }
 

@@ -12,6 +12,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:NINA.Sequencer.Behaviors;assembly=NINA.Sequencer"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:editing="clr-namespace:NINA.Sequencer.Editing;assembly=NINA.Sequencer"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA.View.Sequencer.AdvancedSequencer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -22,7 +23,11 @@
     xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    editing:SequenceEditContext.History="{Binding EditHistory}">
+    <i:Interaction.Behaviors>
+        <behaviors:SequenceEditBehavior History="{Binding EditHistory}" />
+    </i:Interaction.Behaviors>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -35,6 +40,7 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/TextBox.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Button.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Geometry x:Key="SequenceUndoGeometry">M 8,2 L 0,10 L 8,18 L 8,12 L 13,12 C 17.4,12 21,15.6 21,20 L 25,20 C 25,13.4 19.6,8 13,8 L 8,8 Z</Geometry>
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.InputBindings>
@@ -59,231 +65,292 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height="45" />
+            <RowDefinition Height="Auto" MinHeight="45" />
         </Grid.RowDefinitions>
 
         <sequencer:SequenceView Grid.ColumnSpan="3" />
 
         <!--  ******* Sequence Buttons *******  -->
-        <StackPanel
-            Grid.Row="1"
-            Grid.Column="0"
-            HorizontalAlignment="Left"
-            Orientation="Horizontal">
-            <Button
-                Width="80"
-                Margin="5"
-                Command="{Binding LockSequenceCommand}"
-                Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <TextBlock Text="{ns:Loc Lbl_Sequencer_LockSequence_Tooltip}" />
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
-                    Margin="5"
-                    Data="{StaticResource UnlockSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform"
-                    UseLayoutRounding="True" />
-            </Button>
-            <Button
-                Width="80"
-                Margin="5"
-                Background="{StaticResource ButtonBackgroundSelectedBrush}"
-                Command="{Binding UnlockSequenceCommand}"
-                Visibility="{Binding IsLocked, Converter={StaticResource VisibilityConverter}}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <TextBlock Text="{ns:Loc Lbl_Sequencer_UnlockSequence_Tooltip}" />
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
-                    Margin="5"
-                    Data="{StaticResource LockSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform"
-                    UseLayoutRounding="True" />
-            </Button>
-            <Grid Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <WrapPanel VerticalAlignment="Bottom" Orientation="Horizontal">
                 <Button
                     Width="80"
+                    Height="35"
                     Margin="5"
-                    Command="{Binding DisableDragAndDropCommand}"
-                    Visibility="{Binding CanDragAndDrop, Converter={StaticResource VisibilityConverter}}">
+                    Command="{Binding LockSequenceCommand}"
+                    Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">
-                            <TextBlock Text="{ns:Loc Lbl_Sequencer_DisableDragAndDrop_Tooltip}" />
+                            <TextBlock Text="{ns:Loc Lbl_Sequencer_LockSequence_Tooltip}" />
                         </ToolTip>
                     </Button.ToolTip>
                     <Path
                         Margin="5"
-                        Data="{StaticResource DragDropSVG}"
+                        Data="{StaticResource UnlockSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform"
                         UseLayoutRounding="True" />
                 </Button>
-            </Grid>
-            <Grid Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
                 <Button
                     Width="80"
+                    Height="35"
                     Margin="5"
                     Background="{StaticResource ButtonBackgroundSelectedBrush}"
-                    Command="{Binding EnableDragAndDropCommand}"
-                    Visibility="{Binding CanDragAndDrop, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    Command="{Binding UnlockSequenceCommand}"
+                    Visibility="{Binding IsLocked, Converter={StaticResource VisibilityConverter}}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">
-                            <TextBlock Text="{ns:Loc Lbl_Sequencer_EnableDragAndDrop_Tooltip}" />
+                            <TextBlock Text="{ns:Loc Lbl_Sequencer_UnlockSequence_Tooltip}" />
                         </ToolTip>
                     </Button.ToolTip>
                     <Path
                         Margin="5"
-                        Data="{StaticResource DisableDragDropSVG}"
+                        Data="{StaticResource LockSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform"
                         UseLayoutRounding="True" />
                 </Button>
-            </Grid>
-            <Button
-                Width="80"
-                Margin="5"
-                Command="{Binding SwitchToOverviewCommand}"
-                Visibility="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.SequenceSettings.DisableSimpleSequencer, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <TextBlock Text="{ns:Loc Lbl_Sequencer_SwitchToOverview}" />
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
+                <Grid Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <Button
+                        Width="80"
+                        Height="35"
+                        Margin="5"
+                        Command="{Binding DisableDragAndDropCommand}"
+                        Visibility="{Binding CanDragAndDrop, Converter={StaticResource VisibilityConverter}}">
+                        <Button.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="True">
+                                <TextBlock Text="{ns:Loc Lbl_Sequencer_DisableDragAndDrop_Tooltip}" />
+                            </ToolTip>
+                        </Button.ToolTip>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource DragDropSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Button>
+                </Grid>
+                <Grid Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <Button
+                        Width="80"
+                        Height="35"
+                        Margin="5"
+                        Background="{StaticResource ButtonBackgroundSelectedBrush}"
+                        Command="{Binding EnableDragAndDropCommand}"
+                        Visibility="{Binding CanDragAndDrop, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                        <Button.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="True">
+                                <TextBlock Text="{ns:Loc Lbl_Sequencer_EnableDragAndDrop_Tooltip}" />
+                            </ToolTip>
+                        </Button.ToolTip>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource DisableDragDropSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Button>
+                </Grid>
+                <Button
+                    Width="80"
+                    Height="35"
                     Margin="5"
-                    Data="{StaticResource BackSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform"
-                    UseLayoutRounding="True" />
-            </Button>
-            <Button
-                Width="80"
-                Margin="5"
-                Command="{Binding SaveAsSequenceCommand}"
-                Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <TextBlock Text="{ns:Loc Lbl_Sequencer_SaveAsSequence_Tooltip}" />
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
+                    Command="{Binding SwitchToOverviewCommand}"
+                    Visibility="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.SequenceSettings.DisableSimpleSequencer, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc Lbl_Sequencer_SwitchToOverview}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource BackSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                </Button>
+                <Button
+                    Width="80"
+                    Height="35"
                     Margin="5"
-                    Data="{StaticResource SaveAsSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform"
-                    UseLayoutRounding="True" />
-            </Button>
-            <Button
-                Width="80"
-                Margin="5"
-                Command="{Binding SaveSequenceCommand}"
-                IsEnabled="{Binding SavePath, Converter={StaticResource InverseNullToBooleanConverter}}"
-                Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{ns:Loc Lbl_Sequencer_SaveSequence_Tooltip}" />
-                            <TextBlock Text=" " />
-                            <TextBlock Text="{Binding SavePath}" />
+                    Command="{Binding SaveAsSequenceCommand}"
+                    Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc Lbl_Sequencer_SaveAsSequence_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SaveAsSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                </Button>
+                <Button
+                    Width="80"
+                    Height="35"
+                    Margin="5"
+                    Command="{Binding SaveSequenceCommand}"
+                    IsEnabled="{Binding SavePath, Converter={StaticResource InverseNullToBooleanConverter}}"
+                    Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{ns:Loc Lbl_Sequencer_SaveSequence_Tooltip}" />
+                                <TextBlock Text=" " />
+                                <TextBlock Text="{Binding SavePath}" />
+                            </StackPanel>
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SaveSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                </Button>
+                <Button
+                    Width="80"
+                    Height="35"
+                    Margin="5"
+                    Command="{Binding LoadSequenceCommand}"
+                    Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc Lbl_Sequencer_LoadSequence_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource LoadSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                </Button>
+                <Button
+                    x:Name="UndoSequenceButton"
+                    Width="80"
+                    Height="35"
+                    Margin="5"
+                    AutomationProperties.Name="{ns:Loc Lbl_SequenceHistory_Undo}"
+                    Command="{Binding EditHistory.ActiveHistory.UndoCommand}"
+                    Focusable="False"
+                    ToolTipService.ShowOnDisabled="True">
+                    <Button.ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{Binding EditHistory.ActiveHistory.UndoDescription}" />
+                            <TextBlock FontSize="11" Opacity="0.65" Text="Ctrl+Z" />
                         </StackPanel>
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SequenceUndoGeometry}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                </Button>
+                <Button
+                    x:Name="RedoSequenceButton"
+                    Width="80"
+                    Height="35"
                     Margin="5"
-                    Data="{StaticResource SaveSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform"
-                    UseLayoutRounding="True" />
-            </Button>
-            <Button
-                Width="80"
-                Margin="5"
-                Command="{Binding LoadSequenceCommand}"
-                Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <TextBlock Text="{ns:Loc Lbl_Sequencer_LoadSequence_Tooltip}" />
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
-                    Margin="5"
-                    Data="{StaticResource LoadSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform"
-                    UseLayoutRounding="True" />
-            </Button>
-        </StackPanel>
+                    AutomationProperties.Name="{ns:Loc Lbl_SequenceHistory_Redo}"
+                    Command="{Binding EditHistory.ActiveHistory.RedoCommand}"
+                    Focusable="False"
+                    ToolTipService.ShowOnDisabled="True">
+                    <Button.ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{Binding EditHistory.ActiveHistory.RedoDescription}" />
+                            <TextBlock FontSize="11" Opacity="0.65" Text="Ctrl+Y / Ctrl+Shift+Z" />
+                        </StackPanel>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SequenceUndoGeometry}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        RenderTransformOrigin="0.5,0.5"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True">
+                        <Path.RenderTransform>
+                            <ScaleTransform ScaleX="-1" />
+                        </Path.RenderTransform>
+                    </Path>
+                </Button>
+            </WrapPanel>
 
-        <Border
-            x:Name="TrashcanBorder"
-            Grid.Row="2"
-            Grid.Column="0"
-            Width="80"
-            Margin="5"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Stretch"
-            Background="{StaticResource TertiaryBackgroundBrush}"
-            Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-            <i:Interaction.Behaviors>
-                <behaviors:DragOverBehavior DragOverCenterText="{ns:Loc Lbl_Sequencer_DeleteItem}" DragOverDisplayAnchor="Left" />
-                <behaviors:DropIntoBehavior OnDropCommand="DetachCommand" />
-            </i:Interaction.Behaviors>
-            <Border.Triggers>
-                <EventTrigger RoutedEvent="MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard Storyboard.TargetName="TrashcanBorder" Storyboard.TargetProperty="Background">
-                            <ObjectAnimationUsingKeyFrames Duration="0">
-                                <DiscreteObjectKeyFrame Value="{StaticResource ButtonBackgroundSelectedBrush}" />
-                            </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                    <BeginStoryboard>
-                        <Storyboard Storyboard.TargetName="TrashcanPath" Storyboard.TargetProperty="Data">
-                            <ObjectAnimationUsingKeyFrames Duration="0">
-                                <DiscreteObjectKeyFrame Value="{StaticResource TrashCanOpenSVG}" />
-                            </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard Storyboard.TargetName="TrashcanBorder" Storyboard.TargetProperty="Background">
-                            <ObjectAnimationUsingKeyFrames Duration="0">
-                                <DiscreteObjectKeyFrame Value="{StaticResource TertiaryBackgroundBrush}" />
-                            </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                    <BeginStoryboard>
-                        <Storyboard Storyboard.TargetName="TrashcanPath" Storyboard.TargetProperty="Data">
-                            <ObjectAnimationUsingKeyFrames Duration="0">
-                                <DiscreteObjectKeyFrame Value="{StaticResource TrashCanSVG}" />
-                            </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Border.Triggers>
-            <Path
-                x:Name="TrashcanPath"
-                Grid.Column="0"
-                Width="20"
-                Height="20"
-                Margin="0,0,0,0"
-                Data="{StaticResource TrashCanSVG}"
-                Fill="{StaticResource ButtonForegroundBrush}"
-                Stretch="Uniform"
-                UseLayoutRounding="True" />
-        </Border>
+            <Border
+                x:Name="TrashcanBorder"
+                Grid.Column="1"
+                Width="80"
+                Height="35"
+                Margin="5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="{StaticResource TertiaryBackgroundBrush}"
+                Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                <i:Interaction.Behaviors>
+                    <behaviors:DragOverBehavior DragOverCenterText="{ns:Loc Lbl_Sequencer_DeleteItem}" DragOverDisplayAnchor="Left" />
+                    <behaviors:DropIntoBehavior OnDropCommand="DetachCommand" />
+                </i:Interaction.Behaviors>
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard Storyboard.TargetName="TrashcanBorder" Storyboard.TargetProperty="Background">
+                                <ObjectAnimationUsingKeyFrames Duration="0">
+                                    <DiscreteObjectKeyFrame Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                        <BeginStoryboard>
+                            <Storyboard Storyboard.TargetName="TrashcanPath" Storyboard.TargetProperty="Data">
+                                <ObjectAnimationUsingKeyFrames Duration="0">
+                                    <DiscreteObjectKeyFrame Value="{StaticResource TrashCanOpenSVG}" />
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard Storyboard.TargetName="TrashcanBorder" Storyboard.TargetProperty="Background">
+                                <ObjectAnimationUsingKeyFrames Duration="0">
+                                    <DiscreteObjectKeyFrame Value="{StaticResource TertiaryBackgroundBrush}" />
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                        <BeginStoryboard>
+                            <Storyboard Storyboard.TargetName="TrashcanPath" Storyboard.TargetProperty="Data">
+                                <ObjectAnimationUsingKeyFrames Duration="0">
+                                    <DiscreteObjectKeyFrame Value="{StaticResource TrashCanSVG}" />
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Border.Triggers>
+                <Path
+                    x:Name="TrashcanPath"
+                    Grid.Column="0"
+                    Width="20"
+                    Height="20"
+                    Margin="0,0,0,0"
+                    Data="{StaticResource TrashCanSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
+            </Border>
+        </Grid>
 
         <Grid
             Grid.Row="1"
             Grid.Column="2"
+            Height="35"
             Margin="5,5,15,5"
             HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom"
             DockPanel.Dock="Right">
             <Grid>
                 <!--<ninactrl:AsyncProcessButton

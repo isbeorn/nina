@@ -174,12 +174,12 @@ namespace NINA.Sequencer.Conditions {
         public virtual void Teardown() {
         }
 
-        public ICommand DetachCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>((o) => Detach());
+        public ICommand DetachCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>((o) => Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_DeleteAction", Detach));
 
         public ICommand MoveUpCommand => null;
 
         public ICommand MoveDownCommand => null;
-        public ICommand DisableEnableCommand => new GalaSoft.MvvmLight.Command.RelayCommand(() => {
+        public ICommand DisableEnableCommand => new GalaSoft.MvvmLight.Command.RelayCommand(() => Editing.SequenceEditContext.Toggle(this, () => {
             if (Status != SequenceEntityStatus.DISABLED) {
                 Status = SequenceEntityStatus.DISABLED;
                 ShowMenu = false;
@@ -187,7 +187,7 @@ namespace NINA.Sequencer.Conditions {
                 Status = SequenceEntityStatus.CREATED;
             }
 
-        });
+        }));
 
         public void Detach() {
             Parent?.Remove(this);

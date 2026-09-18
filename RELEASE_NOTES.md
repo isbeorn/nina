@@ -52,6 +52,7 @@ This allows you to safely return to a stable release if needed.
 - Canceling a native Nikon automatic shutter exposure no longer sends an unsupported Bulb termination command that could terminate N.I.N.A.
 
 ## Improvements
+- The advanced sequencer now keeps the last 100 configuration edits in memory with Undo, Redo and an Edit History sidebar tab showing affected items, their locations and before/after values. History remains available during unlocked execution and preserves sequence objects and unrelated progress. Standard plugin fields participate automatically; custom plugin editors can opt in through the editor history context. The history list keeps its rows stable during editing and replay. Details use readable item and selection labels. Core editor coverage includes compound exposure and flat inputs, expression text and stepper controls, coordinate fields, time-provider changes and programmable meridian-flip action sets. Optional custom property and attachment-state providers let plugins capture configuration side effects through the same path as core entities; ordinary fields need no additional interface.
 - "Cool Camera" now waits until the sensor enters the target temperature tolerance whether approaching from above or below.
 - The Legacy Sequencer can now reset progress for every target in the current Target Set with one confirmed action.
 - URLs throughout the application can now be copied from their right-click context menu.

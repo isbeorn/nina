@@ -50,6 +50,10 @@ namespace NINA.Sequencer.Container {
         private bool isExpanded = true;
         private static object lockObj = new object();
 
+        internal static void ApplyEditorChange(Action change) {
+            lock (lockObj) { change(); }
+        }
+
         [JsonProperty]
         public IExecutionStrategy Strategy { get; }
 
@@ -69,11 +73,11 @@ namespace NINA.Sequencer.Container {
         [JsonProperty]
         public IList<ISequenceCondition> Conditions { get; protected set; } = new ObservableCollection<ISequenceCondition>();
 
-        public virtual ICommand DropIntoCommand => new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropInSequenceItem);
+        public virtual ICommand DropIntoCommand => new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(p => Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_PlaceAction", () => DropInSequenceItem(p)));
 
-        public ICommand DropIntoConditionsCommand => new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropInSequenceCondition);
+        public ICommand DropIntoConditionsCommand => new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(p => Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_PlaceAction", () => DropInSequenceCondition(p)));
 
-        public ICommand DropIntoTriggersCommand => new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropInSequenceTrigger);
+        public ICommand DropIntoTriggersCommand => new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(p => Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_PlaceAction", () => DropInSequenceTrigger(p)));
 
         [JsonProperty]
         public virtual bool IsExpanded {

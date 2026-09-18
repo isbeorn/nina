@@ -64,15 +64,20 @@ namespace NINA.Sequencer.Container {
         public override ICommand DetachCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>(
             (o) => {
                 if (MyMessageBox.Show(Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_ClearPrompt"], Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_ClearCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
-                    foreach (var trigger in GetTriggersSnapshot()) {
-                        trigger.Detach();
-                    }
-                    SequenceTitle = Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_Name"];
-                    ClearContainer(Items[0] as ISequenceContainer);
-                    ClearContainer(Items[1] as ISequenceContainer);
-                    ClearContainer(Items[2] as ISequenceContainer);
-                    UserSymbol.ClearUserSymbols();
-                    GC.Collect(2);
+                    Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_ClearAction", () => {
+                        var history = Editing.SequenceEditContext.Find(this);
+                        var title = Editing.SequencePropertyCapture.Capture(Loc.Instance["Lbl_SequenceHistory_ClearAction"], () => SequenceTitle, value => SequenceTitle = value);
+                        foreach (var trigger in GetTriggersSnapshot()) {
+                            trigger.Detach();
+                        }
+                        SequenceTitle = Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_Name"];
+                        ClearContainer(Items[0] as ISequenceContainer);
+                        ClearContainer(Items[1] as ISequenceContainer);
+                        ClearContainer(Items[2] as ISequenceContainer);
+                        UserSymbol.ClearUserSymbols();
+                        GC.Collect(2);
+                        history?.RecordApplied(title.Complete());
+                    });
                 }
             }
         );

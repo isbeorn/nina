@@ -14,6 +14,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Locale;
@@ -36,7 +37,7 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public partial class TimeCondition : SequenceCondition, IValidatable {
+    public partial class TimeCondition : SequenceCondition, IValidatable, ISequenceCustomPropertyEditProvider {
         private IList<IDateTimeProvider> dateTimeProviders;
         private int hours;
         private int minutes;
@@ -167,6 +168,15 @@ namespace NINA.Sequencer.Conditions {
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(RemainingTime));
             }
+        }
+
+        bool ISequenceCustomPropertyEditProvider.TryCapturePropertyState(object source, string propertyName, out ISequenceEditSnapshot snapshot) {
+            snapshot = ReferenceEquals(source, this) && propertyName == nameof(SelectedProvider)
+                ? SequenceTimeCapture.Capture(() => SelectedProvider, value => SelectedProvider = value,
+                    () => HasFixedTimeProvider, () => new TimeSpan(Hours, Minutes, Seconds),
+                    value => { Hours = value.Hours; Minutes = value.Minutes; Seconds = value.Seconds; })
+                : null;
+            return snapshot != null;
         }
 
         [JsonProperty]

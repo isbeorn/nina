@@ -91,7 +91,7 @@ namespace NINA.Sequencer.Container {
             Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
             CoordsToFramingCommand = new GalaSoft.MvvmLight.Command.RelayCommand(SendCoordinatesToFraming);
             CoordsFromPlanetariumCommand = new GalaSoft.MvvmLight.Command.RelayCommand(GetCoordsFromPlanetarium);
-            DropTargetCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(DropTarget);
+            DropTargetCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(o => Editing.SequenceEditContext.Target(this, () => DropTarget(o)));
             DeleteExposureInfoCommand = new GalaSoft.MvvmLight.Command.RelayCommand<ExposureInfo>(DeleteExposureInfo);
 
             WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.LocationChanged), ProfileService_LocationChanged);
@@ -237,19 +237,13 @@ namespace NINA.Sequencer.Container {
                 resp = await s.GetTarget();
 
                 if (resp != null) {
-                    Target.InputCoordinates.Coordinates = resp.Coordinates;
-                    Target.TargetName = resp.Name;
-                    this.Name = resp.Name;
-
-                    Target.PositionAngle = 0;
-
-                    if (s.CanGetRotationAngle) {
-                        double rotationAngle = await s.GetRotationAngle();
-
-                        if (!double.IsNaN(rotationAngle)) {
-                            Target.PositionAngle = rotationAngle;
-                        }
-                    }
+                    double rotationAngle = s.CanGetRotationAngle ? await s.GetRotationAngle() : 0;
+                    Editing.SequenceEditContext.Target(this, () => {
+                        Target.InputCoordinates.Coordinates = resp.Coordinates;
+                        Target.TargetName = resp.Name;
+                        this.Name = resp.Name;
+                        Target.PositionAngle = double.IsNaN(rotationAngle) ? 0 : rotationAngle;
+                    });
 
                     Notification.ShowSuccess(string.Format(Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
                 }

@@ -3,7 +3,9 @@
     x:Class="NINA.Sequencer.Logic.ExprControlVariable"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:NINA.Sequencer.Logic">
+    xmlns:local="clr-namespace:NINA.Sequencer.Logic"
+    xmlns:editing="clr-namespace:NINA.Sequencer.Editing"
+    editing:SequenceEditContext.IsRecordingEnabled="False">
     <UserControl.Resources>
         <local:ExprConverter x:Key="ec" />
     </UserControl.Resources>

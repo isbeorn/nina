@@ -79,7 +79,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             };
 
             if (dialog.ShowDialog() == true) {
-                FilePath = dialog.FileName;
+                Editing.SequenceEditContext.Property(this, nameof(FilePath), () => FilePath, value => FilePath = value, dialog.FileName);
             }
         }
 

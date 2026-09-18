@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,10 @@ namespace NINA.Sequencer.Logic {
 
     [JsonObject(MemberSerialization.OptIn)]
 
-    public abstract class UserSymbol : SequenceItem.SequenceItem, IValidatable {
+    public abstract class UserSymbol : SequenceItem.SequenceItem, IValidatable, ISequenceAttachmentStateProvider {
+
+        ISequenceEditSnapshot ISequenceAttachmentStateProvider.CaptureAttachmentState() =>
+            new SequenceEditSnapshot<string>(() => Identifier, value => Identifier = value);
 
         private static HashSet<string> LoggedOnce = new HashSet<string>();
 

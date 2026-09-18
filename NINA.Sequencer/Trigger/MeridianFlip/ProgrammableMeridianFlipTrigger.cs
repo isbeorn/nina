@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Locale;
@@ -50,7 +51,12 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Telescope")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class ProgrammableMeridianFlipTrigger : MeridianFlipTrigger {
+    public class ProgrammableMeridianFlipTrigger : MeridianFlipTrigger, ISequenceTriggerEditor {
+        IEnumerable<ISequenceContainer> ISequenceTriggerEditor.GetAdditionalEditorContainers() {
+            yield return BeforeFlipActions;
+            yield return AfterFlipActions;
+        }
+
         private enum ProgrammableMeridianFlipStage {
             None,
             StopTracking,

@@ -15,6 +15,7 @@
     xmlns:cont="clr-namespace:NINA.Sequencer.Container"
     xmlns:converter="clr-namespace:NINA.View.Sequencer.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:editing="clr-namespace:NINA.Sequencer.Editing"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA.View.Sequencer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -1688,6 +1689,38 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
+        </TabItem>
+        <TabItem
+            x:Name="EditHistoryTab"
+            ToolTip="{ns:Loc Lbl_SequenceHistory_Title}"
+            Visibility="{Binding Path=(editing:SequenceEditContext.History), RelativeSource={RelativeSource Self}, Converter={StaticResource NullToVisibilityConverter}}">
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <Path
+                        Width="20"
+                        Height="20"
+                        Margin="0,0,10,0"
+                        Data="{StaticResource HistorySVG}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="{StaticResource PrimaryBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="True">
+                                        <Setter Property="Fill" Value="{StaticResource ButtonForegroundBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Style="{StaticResource TabItemTextBox}"
+                        Text="{ns:Loc Lbl_SequenceHistory_Title}" />
+                </StackPanel>
+            </TabItem.Header>
+            <local:SequenceEditHistoryView DataContext="{Binding Path=(editing:SequenceEditContext.History).ActiveHistory, RelativeSource={RelativeSource Self}}" />
         </TabItem>
     </TabControl>
 </UserControl>

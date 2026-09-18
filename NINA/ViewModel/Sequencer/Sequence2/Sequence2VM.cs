@@ -117,6 +117,7 @@ namespace NINA.ViewModel.Sequencer {
             get => sequencer;
             private set {
                 DetachSequencerINPC();
+                ObserveEditHistory(sequencer, value);
                 sequencer = value;
                 AttachSequencerINPC();
             }
@@ -173,12 +174,17 @@ namespace NINA.ViewModel.Sequencer {
         }
 
         public void Dispose() {
+            ObserveEditHistory(sequencer, null);
             cameraMediator.RemoveConsumer(this);
         }
 
         private void Detach(object o) {
             var source = (o as DropIntoParameters)?.Source;
-            source?.Detach();
+            if (source is ISequenceEntity entity) {
+                NINA.Sequencer.Editing.SequenceEditContext.Structure(entity, "Lbl_SequenceHistory_DeleteAction", source.Detach);
+            } else {
+                source?.Detach();
+            }
             if (source != null) {
                 if (source is TemplatedSequenceContainer) {
                     var result = MyMessageBox.Show(string.Format(Loc.Instance["LblTemplate_DeleteTemplateMessageBox_Text"], (source as TemplatedSequenceContainer).Container.Name),
@@ -439,6 +445,7 @@ namespace NINA.ViewModel.Sequencer {
                     ResolveLinkedTemplates();
                     Sequencer.MainContainer.Validate();
                     SavePath = file;
+                    EditHistory?.MarkSaved();
                 } else if (container != null) {
                     // In case a template or target was selected to load, put it into a new sequence root container
                     var rootContainer = SequencerFactory.GetContainer<SequenceRootContainer>();
@@ -491,6 +498,7 @@ namespace NINA.ViewModel.Sequencer {
         }
 
         private void SaveAsSequence(object arg) {
+            EditHistory?.Flush();
             try {
                 var initialDirectory = string.Empty;
                 if (Directory.Exists(profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder)) {
@@ -512,8 +520,13 @@ namespace NINA.ViewModel.Sequencer {
                 if (dialog.ShowDialog().Value) {
                     var json = SequenceJsonConverter.Serialize(Sequencer.MainContainer);
                     File.WriteAllText(dialog.FileName, json);
+                    var titleEdit = NINA.Sequencer.Editing.SequencePropertyCapture.Capture(
+                        string.Format(Loc.Instance["Lbl_SequenceHistory_EditAction"], Sequencer.MainContainer.Name, nameof(Sequencer.MainContainer.SequenceTitle)),
+                        () => Sequencer.MainContainer.SequenceTitle, value => Sequencer.MainContainer.SequenceTitle = value);
                     SavePath = dialog.FileName;
+                    EditHistory?.RecordApplied(titleEdit.Complete());
                     ClearHasChanged();
+                    EditHistory?.MarkSaved();
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -522,6 +535,7 @@ namespace NINA.ViewModel.Sequencer {
         }
 
         private void SaveSequence(object arg) {
+            EditHistory?.Flush();
             if (string.IsNullOrEmpty(SavePath)) {
                 SaveAsSequence(arg);
             } else {
@@ -529,6 +543,7 @@ namespace NINA.ViewModel.Sequencer {
                     var json = SequenceJsonConverter.Serialize(Sequencer.MainContainer);
                     File.WriteAllText(SavePath, json);
                     ClearHasChanged();
+                    EditHistory?.MarkSaved();
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(string.Format(Loc.Instance["Lbl_Sequencer_SaveSequence_FailureNotification"], Sequencer.MainContainer.Name, ex.Message));
@@ -650,7 +665,8 @@ namespace NINA.ViewModel.Sequencer {
         }
 
         public void AddTarget(IDeepSkyObjectContainer container) {
-            (this.Sequencer.MainContainer.Items[1] as ISequenceContainer).Add(container);
+            NINA.Sequencer.Editing.SequenceEditContext.Structure(Sequencer.MainContainer, "Lbl_SequenceHistory_PlaceAction",
+                () => (this.Sequencer.MainContainer.Items[1] as ISequenceContainer).Add(container));
         }
 
         public void AddTargetToTargetList(IDeepSkyObjectContainer container) {

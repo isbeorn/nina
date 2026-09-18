@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Astrometry;
 using NINA.Core.Locale;
 using NINA.Core.Model;
@@ -44,7 +45,7 @@ namespace NINA.Sequencer.Container {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Container")]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class LinkedTemplateContainer : SequenceContainer, ISequenceItemPlacementTarget {
+    public class LinkedTemplateContainer : SequenceContainer, ISequenceItemPlacementTarget, ISequenceCustomPropertyEditProvider {
         private const string LinkedTemplateIconResourceKey = "ConnectSVG";
         private readonly ITemplateLinkResolver templateLinkResolver;
         private TemplateReference templateReference = new TemplateReference();
@@ -69,7 +70,7 @@ namespace NINA.Sequencer.Container {
             BeginEditTemplateCommand = new GalaSoft.MvvmLight.Command.RelayCommand(BeginEditTemplate, () => CanEditTemplate && !IsEditing);
             CancelEditTemplateCommand = new GalaSoft.MvvmLight.Command.RelayCommand(CancelEditTemplate, () => IsEditing);
             SaveTemplateCommand = new AsyncCommand<bool>(SaveTemplate, (object o) => CanSaveTemplate);
-            DropTargetCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(DropTarget);
+            DropTargetCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(o => Editing.SequenceEditContext.Target(this, () => DropTarget(o), CaptureTargetEdit));
             EnsureTargetEditor();
         }
 
@@ -179,6 +180,24 @@ namespace NINA.Sequencer.Container {
             get => targetOverride;
             set => SetTargetOverride(value, true);
         }
+
+        bool ISequenceCustomPropertyEditProvider.TryCapturePropertyState(object source, string propertyName, out ISequenceEditSnapshot snapshot) {
+            snapshot = ReferenceEquals(source, TargetEditor) || ReferenceEquals(source, TargetEditor.InputCoordinates)
+                ? new SequenceEditSnapshot<(LinkedTemplateTargetOverride Override, bool NegativeDec)>(
+                    () => (TargetOverride?.Clone(), TargetEditor.InputCoordinates.NegativeDec),
+                    value => {
+                        TargetOverride = value.Override?.Clone();
+                        TargetEditor.InputCoordinates.NegativeDec = value.NegativeDec;
+                    }, (left, right) => SequencePropertyCapture.TargetEqual(left.Override, right.Override) && left.NegativeDec == right.NegativeDec,
+                    value => SequenceEditDetails.Target(value.Override))
+                : null;
+            return snapshot != null;
+        }
+
+        private SequencePropertyCapture CaptureTargetEdit() => SequencePropertyCapture.Capture(
+            string.Format(Loc.Instance["Lbl_SequenceHistory_TargetAction"], SequenceEditDetails.Name(this)),
+            () => TargetOverride?.Clone(), value => TargetOverride = value?.Clone(), SequencePropertyCapture.TargetEqual,
+            SequenceEditDetails.Context(this), SequenceEditDetails.Target);
 
         public InputTarget TargetEditor => EnsureTargetEditor();
 
@@ -576,6 +595,7 @@ namespace NINA.Sequencer.Container {
             }
 
             IsEditing = true;
+            Editing.SequenceEditContext.Find(this)?.ForOwner(this);
         }
 
         private async Task<bool> SaveTemplate(object arg) {
@@ -585,6 +605,7 @@ namespace NINA.Sequencer.Container {
 
             ISequenceContainer templateContainer = Items.OfType<ISequenceContainer>().Single();
             try {
+                Editing.SequenceEditContext.Find(this)?.Flush();
                 await templateLinkResolver.SaveTemplate(TemplateReference, templateContainer, CancellationToken.None);
                 IsEditing = false;
                 TryResolveTemplate();

@@ -22,6 +22,7 @@ using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.DragDrop;
+using NINA.Sequencer.Editing;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.View.Sequencer;
@@ -81,6 +82,78 @@ namespace NINA.Test.Sequencer.View {
 
             root.Should().NotBeNull();
             InvokeHitTest(view).VisualHit.Should().BeSameAs(view);
+        }
+
+        [TestCase(800)]
+        [TestCase(1280)]
+        public void AdvancedEditorWithHistory_SidebarAndToolbarUseTheSameSession(int width) {
+            EnsureApplicationResources();
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/NINA.Sequencer;component/SequenceItem/Expressions/DataTemplates.xaml", UriKind.Relative) });
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/NINA.WPF.Base;component/Resources/Styles/SplitButton.xaml", UriKind.Relative) });
+            var root = new SequenceRootContainer();
+            using var history = new SequenceEditHistory(root);
+            var edit = SequencePropertyCapture.Capture("Rename sequence", () => root.SequenceTitle, value => root.SequenceTitle = value);
+            root.SequenceTitle = "Edited sequence";
+            history.RecordApplied(edit.Complete());
+            var view = new NINA.View.Sequencer.AdvancedSequencer.AdvancedSequencerView {
+                DataContext = new { EditHistory = history, IsLocked = false, CanDragAndDrop = true, SavePath = "sequence.json" }
+            };
+            view.Measure(new Size(width, 800));
+            view.Arrange(new Rect(0, 0, width, 800));
+            view.UpdateLayout();
+
+            var undo = (Button)view.FindName("UndoSequenceButton");
+            var redo = (Button)view.FindName("RedoSequenceButton");
+            undo.Command.Should().BeSameAs(history.UndoCommand);
+            redo.Command.Should().BeSameAs(history.RedoCommand);
+            undo.Focusable.Should().BeFalse("toolbar undo commits the field without stealing its focus");
+            redo.Focusable.Should().BeFalse();
+            var trash = (Border)view.FindName("TrashcanBorder");
+            Rect trashBounds = trash.TransformToAncestor(view).TransformBounds(new Rect(trash.RenderSize));
+            foreach (Button button in new[] { undo, redo }) {
+                Rect bounds = button.TransformToAncestor(view).TransformBounds(new Rect(button.RenderSize));
+                bounds.Left.Should().BeGreaterThanOrEqualTo(0);
+                bounds.Right.Should().BeLessThanOrEqualTo(width);
+                bounds.Bottom.Should().BeLessThanOrEqualTo(800);
+                bounds.IntersectsWith(trashBounds).Should().BeFalse("the toolbar must wrap before reaching the trash target");
+            }
+
+            var sidebar = FindVisualChild<SequenceSidebar>(view)!;
+            var tab = (TabItem)sidebar.FindName("EditHistoryTab");
+            tab.Visibility.Should().Be(Visibility.Visible);
+            tab.IsSelected = true;
+            view.UpdateLayout();
+            var historyView = (SequenceEditHistoryView)tab.Content;
+            historyView.DataContext.Should().BeSameAs(history);
+            var entries = (ItemsControl)historyView.FindName("HistoryEntries");
+            entries.Items.Count.Should().Be(2);
+            var presenter = (ContentPresenter)entries.ItemContainerGenerator.ContainerFromIndex(1);
+            var entryButton = FindVisualChild<Button>(presenter)!;
+            undo.Command.Execute(null);
+            history.Position.Should().Be(0);
+            view.UpdateLayout();
+            entries.ItemContainerGenerator.ContainerFromIndex(1).Should().BeSameAs(presenter, "undo must preserve the existing history controls");
+            ((Grid)entryButton.Content).Opacity.Should().Be(0.45, "the retained redo row must update its bindings");
+            var details = (TextBlock)entries.ItemTemplate.FindName("EditDetails", presenter);
+            details.Text.Should().Contain("Edited sequence");
+            details.Visibility.Should().Be(Visibility.Visible);
+            entryButton.Command.Should().BeSameAs(history.MoveToCommand);
+            entryButton.Command.Execute(entryButton.CommandParameter);
+            history.Position.Should().Be(1);
+            root.SequenceTitle.Should().Be("Edited sequence");
+            view.UpdateLayout();
+            entries.ItemContainerGenerator.ContainerFromIndex(1).Should().BeSameAs(presenter);
+            ((Grid)entryButton.Content).Opacity.Should().Be(1);
+        }
+
+        private static T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++) {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T match) return match;
+                T? result = FindVisualChild<T>(child);
+                if (result != null) return result;
+            }
+            return null;
         }
 
         /// <summary>

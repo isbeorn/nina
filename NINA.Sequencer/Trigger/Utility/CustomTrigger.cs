@@ -85,7 +85,7 @@ namespace NINA.Sequencer.Trigger.Utility {
             }
         }
 
-        public ICommand DropIntoTriggerSourceCommand => new RelayCommand<DropIntoParameters>(DropInTriggerSource);
+        public ICommand DropIntoTriggerSourceCommand => new RelayCommand<DropIntoParameters>(p => Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_PlaceAction", () => DropInTriggerSource(p)));
 
         public IList<string> Issues {
             get => issues;
