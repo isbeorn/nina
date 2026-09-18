@@ -115,7 +115,7 @@
                                         HorizontalAlignment="Stretch">
                                         <!--  This will allow drops into the start, target and end areas when items are inside with containers - without it some drops are lost into the void  -->
                                         <i:Interaction.Behaviors>
-                                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" RecordSequenceStructure="True" />
                                         </i:Interaction.Behaviors>
                                     </ItemsPresenter>
                                 </Grid>
@@ -760,7 +760,7 @@
                                         HorizontalAlignment="Stretch">
                                         <!--  This will allow drops into the start, target and end areas when items are inside with containers - without it some drops are lost into the void  -->
                                         <i:Interaction.Behaviors>
-                                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" RecordSequenceStructure="True" />
                                         </i:Interaction.Behaviors>
                                     </ItemsPresenter>
                                 </Grid>
@@ -865,7 +865,7 @@
                                                 HorizontalAlignment="Stretch">
                                                 <!--  This will allow drops into the start, target and end areas when items are inside with containers - without it some drops are lost into the void  -->
                                                 <i:Interaction.Behaviors>
-                                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" RecordSequenceStructure="True" />
                                                 </i:Interaction.Behaviors>
                                             </ItemsPresenter>
                                         </Border>

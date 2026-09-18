@@ -365,6 +365,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     editing:SequenceEditContext.Command="{Binding DetachCommand}"
+                    editing:SequenceEditContext.Operation="Delete"
                     Style="{StaticResource BackgroundButton}">
                     <Grid>
                         <Path
@@ -419,7 +420,8 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource BackgroundButton}"
                     Visibility="{Binding Status, Converter={StaticResource InverseDisabledStatusToInvisibleConverter}}"
-                    editing:SequenceEditContext.Command="{Binding DisableEnableCommand}">
+                    editing:SequenceEditContext.Command="{Binding DisableEnableCommand}"
+                    editing:SequenceEditContext.Operation="Toggle">
                     <Grid>
                         <Path
                             Margin="5"
@@ -564,6 +566,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     editing:SequenceEditContext.Command="{Binding DisableEnableCommand}"
+                    editing:SequenceEditContext.Operation="Toggle"
                     Style="{StaticResource TertiaryBackgroundButton}"
                     Visibility="{Binding DisableEnableCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <Grid>
@@ -662,6 +665,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     editing:SequenceEditContext.Command="{Binding MoveUpCommand}"
+                    editing:SequenceEditContext.Operation="Move"
                     Style="{StaticResource TertiaryBackgroundButton}"
                     Visibility="{Binding MoveUpCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <Grid>
@@ -687,6 +691,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     editing:SequenceEditContext.Command="{Binding MoveDownCommand}"
+                    editing:SequenceEditContext.Operation="Move"
                     Style="{StaticResource TertiaryBackgroundButton}"
                     Visibility="{Binding MoveDownCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <Grid>

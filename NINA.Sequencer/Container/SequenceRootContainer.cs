@@ -61,7 +61,7 @@ namespace NINA.Sequencer.Container {
             }
         );
 
-        public override ICommand DetachCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>(
+        public override ICommand DetachCommand => Editing.SequenceEditContext.SelfRecordingCommand(new GalaSoft.MvvmLight.Command.RelayCommand<object>(
             (o) => {
                 if (MyMessageBox.Show(Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_ClearPrompt"], Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_ClearCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
                     Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_ClearAction", () => {
@@ -80,7 +80,7 @@ namespace NINA.Sequencer.Container {
                     });
                 }
             }
-        );
+        ));
 
         private void ClearContainer(ISequenceContainer container) {
             foreach (var item in container.GetItemsSnapshot()) {

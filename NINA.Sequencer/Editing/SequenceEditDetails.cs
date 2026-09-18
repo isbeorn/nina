@@ -127,9 +127,9 @@ namespace NINA.Sequencer.Editing {
         public static string Coordinates(SequenceCoordinateState value) => string.Format(Loc.Instance["Lbl_SequenceHistory_CoordinateValue"],
             Value(value.RaDefinition), Value(value.DecDefinition), Value(value.RotationDefinition), value.Value.Epoch);
 
-        public static string Target(LinkedTemplateTargetOverride value) => value == null
+        public static string Target(SequenceTargetState value) => value == null
             ? Loc.Instance["Lbl_SequenceHistory_NoValue"]
-            : $"{Value(value.TargetName)}: {Coordinates(value.InputCoordinates?.Coordinates, value.InputCoordinates?.NegativeDec == true)}; {Value(value.PositionAngle)}°";
+            : $"{Value(value.TargetName)}: {Coordinates(value.Coordinates?.ToCoordinates(), value.Coordinates?.NegativeDec == true)}; {Value(value.PositionAngle)}°";
 
         public static string Join(IEnumerable<string> details) {
             string[] lines = details.Where(text => !string.IsNullOrWhiteSpace(text)).Distinct().ToArray();

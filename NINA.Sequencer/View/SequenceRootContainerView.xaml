@@ -162,6 +162,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     editing:SequenceEditContext.Command="{Binding DetachCommand}"
+                    editing:SequenceEditContext.Operation="Delete"
                     Style="{StaticResource SecondaryBackgroundButton}"
                     Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <Grid>
@@ -319,7 +320,7 @@
                         Visibility="{Binding Converter={StaticResource StrategyEvaluatesConditionsAndTriggersToVisibilityConverter}}">
                         <i:Interaction.Behaviors>
                             <behaviors:DragOverBehavior DragOverCenterText="{ns:Loc LblDragOver_AddTrigger}" DragOverDisplayAnchor="Right" />
-                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.SequenceTrigger" OnDropCommand="DropIntoTriggersCommand" />
+                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.SequenceTrigger" OnDropCommand="DropIntoTriggersCommand" RecordSequenceStructure="True" />
                         </i:Interaction.Behaviors>
                         <GroupBox.Header>
                             <Grid>

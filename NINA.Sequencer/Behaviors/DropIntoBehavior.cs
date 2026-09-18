@@ -35,6 +35,15 @@ namespace NINA.Sequencer.Behaviors {
 
         public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register(nameof(IsEnabled), typeof(bool), typeof(DropIntoBehavior), new PropertyMetadata(true));
 
+        /// <summary>Record a host structural drop, including an overridden plugin command.</summary>
+        public static readonly DependencyProperty RecordSequenceStructureProperty = DependencyProperty.Register(
+            nameof(RecordSequenceStructure), typeof(bool), typeof(DropIntoBehavior), new PropertyMetadata(false));
+
+        public bool RecordSequenceStructure {
+            get => (bool)GetValue(RecordSequenceStructureProperty);
+            set => SetValue(RecordSequenceStructureProperty, value);
+        }
+
         public DropIntoBehavior() {
             AllowedDragDropTypesString = string.Empty;
         }
@@ -104,9 +113,8 @@ namespace NINA.Sequencer.Behaviors {
                     if (prop != null) {
                         var value = prop.GetValue(drop.DataContext) as ICommand;
                         if (value != null) {
-                            if (drop.DataContext is ISequenceEntity entity && (OnDropCommand == "DropIntoCommand"
-                                || OnDropCommand == "DropIntoConditionsCommand" || OnDropCommand == "DropIntoTriggersCommand")) {
-                                Editing.SequenceEditContext.Structure(entity, "Lbl_SequenceHistory_PlaceAction", () => value.Execute(parameter));
+                            if (RecordSequenceStructure && drop.DataContext is ISequenceEntity entity) {
+                                Editing.SequenceEditContext.ExecuteCommand(entity, Editing.SequenceEditOperation.Place, value, parameter);
                             } else {
                                 value.Execute(parameter);
                             }

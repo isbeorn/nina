@@ -166,7 +166,7 @@ namespace NINA.Sequencer.Conditions {
 
         private void RestoreEditorCoordinates(SequenceCoordinateState state) {
             if (state.Inherited) return;
-            SequenceCoordinateState.RestoreCoordinates(Data.Coordinates, RaExpression, DecExpression, state.Value,
+            SequenceCoordinateState.RestoreCoordinates(Data.Coordinates, RaExpression, DecExpression, state.Value.ToCoordinates(),
                 state.NegativeDec, state.RaDefinition, state.DecDefinition, ref Protect, ref lastRA, ref lastDec);
             PositionAngleExpression.Definition = state.RotationDefinition;
         }

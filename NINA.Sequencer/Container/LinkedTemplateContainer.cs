@@ -45,7 +45,7 @@ namespace NINA.Sequencer.Container {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Container")]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class LinkedTemplateContainer : SequenceContainer, ISequenceItemPlacementTarget, ISequenceCustomPropertyEditProvider {
+    public class LinkedTemplateContainer : SequenceContainer, ISequenceItemPlacementTarget, ISequenceCustomPropertyEditProvider, ISequenceEditSessionBoundary {
         private const string LinkedTemplateIconResourceKey = "ConnectSVG";
         private readonly ITemplateLinkResolver templateLinkResolver;
         private TemplateReference templateReference = new TemplateReference();
@@ -183,21 +183,26 @@ namespace NINA.Sequencer.Container {
 
         bool ISequenceCustomPropertyEditProvider.TryCapturePropertyState(object source, string propertyName, out ISequenceEditSnapshot snapshot) {
             snapshot = ReferenceEquals(source, TargetEditor) || ReferenceEquals(source, TargetEditor.InputCoordinates)
-                ? new SequenceEditSnapshot<(LinkedTemplateTargetOverride Override, bool NegativeDec)>(
-                    () => (TargetOverride?.Clone(), TargetEditor.InputCoordinates.NegativeDec),
-                    value => {
-                        TargetOverride = value.Override?.Clone();
-                        TargetEditor.InputCoordinates.NegativeDec = value.NegativeDec;
-                    }, (left, right) => SequencePropertyCapture.TargetEqual(left.Override, right.Override) && left.NegativeDec == right.NegativeDec,
-                    value => SequenceEditDetails.Target(value.Override))
+                ? new SequenceEditSnapshot<(SequenceTargetState Override, bool NegativeDec)>(
+                    ReadTargetEditState, RestoreTargetEditState,
+                    format: value => SequenceEditDetails.Target(value.Override))
                 : null;
             return snapshot != null;
         }
 
         private SequencePropertyCapture CaptureTargetEdit() => SequencePropertyCapture.Capture(
             string.Format(Loc.Instance["Lbl_SequenceHistory_TargetAction"], SequenceEditDetails.Name(this)),
-            () => TargetOverride?.Clone(), value => TargetOverride = value?.Clone(), SequencePropertyCapture.TargetEqual,
-            SequenceEditDetails.Context(this), SequenceEditDetails.Target);
+            ReadTargetEditState, RestoreTargetEditState,
+            context: SequenceEditDetails.Context(this), format: value => SequenceEditDetails.Target(value.Override));
+
+        private (SequenceTargetState Override, bool NegativeDec) ReadTargetEditState() =>
+            (SequenceTargetState.Capture(TargetOverride), TargetEditor.InputCoordinates.NegativeDec);
+
+        private void RestoreTargetEditState((SequenceTargetState Override, bool NegativeDec) value) {
+            TargetOverride = value.Override?.ToOverride();
+            // The normal target-copy path normalizes zero; retain the editor's sign intent.
+            TargetEditor.InputCoordinates.NegativeDec = value.NegativeDec;
+        }
 
         public InputTarget TargetEditor => EnsureTargetEditor();
 
@@ -595,7 +600,7 @@ namespace NINA.Sequencer.Container {
             }
 
             IsEditing = true;
-            Editing.SequenceEditContext.Find(this)?.ForOwner(this);
+            Editing.SequenceEditContext.Find(this)?.ForContents(this);
         }
 
         private async Task<bool> SaveTemplate(object arg) {

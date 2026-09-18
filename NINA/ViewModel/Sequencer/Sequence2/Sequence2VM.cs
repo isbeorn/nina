@@ -181,7 +181,7 @@ namespace NINA.ViewModel.Sequencer {
         private void Detach(object o) {
             var source = (o as DropIntoParameters)?.Source;
             if (source is ISequenceEntity entity) {
-                NINA.Sequencer.Editing.SequenceEditContext.Structure(entity, "Lbl_SequenceHistory_DeleteAction", source.Detach);
+                NINA.Sequencer.Editing.SequenceEditContext.Placement(entity, "Lbl_SequenceHistory_DeleteAction", source.Detach);
             } else {
                 source?.Detach();
             }

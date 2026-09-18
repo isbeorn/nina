@@ -277,6 +277,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         editing:SequenceEditContext.Command="{Binding DisableEnableCommand}"
+                                        editing:SequenceEditContext.Operation="Toggle"
                                         Style="{StaticResource SecondaryBackgroundButton}"
                                         Visibility="{Binding DisableEnableCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                                         <Grid>
@@ -302,6 +303,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         editing:SequenceEditContext.Command="{Binding DetachCommand}"
+                                        editing:SequenceEditContext.Operation="Delete"
                                         Style="{StaticResource SecondaryBackgroundButton}"
                                         Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                                         <Grid>
@@ -351,6 +353,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         editing:SequenceEditContext.Command="{Binding AddCloneToParentCommand}"
+                                        editing:SequenceEditContext.Operation="Duplicate"
                                         Style="{StaticResource SecondaryBackgroundButton}"
                                         Visibility="{Binding AddCloneToParentCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                                         <Grid>
@@ -376,6 +379,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         editing:SequenceEditContext.Command="{Binding MoveUpCommand}"
+                                        editing:SequenceEditContext.Operation="Move"
                                         Style="{StaticResource SecondaryBackgroundButton}">
                                         <Grid>
                                             <Path
@@ -400,6 +404,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         editing:SequenceEditContext.Command="{Binding MoveDownCommand}"
+                                        editing:SequenceEditContext.Operation="Move"
                                         Style="{StaticResource SecondaryBackgroundButton}"
                                         Visibility="{Binding MoveDownCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                                         <Grid>
@@ -461,7 +466,7 @@
                                                             AllowDragCenter="{Binding Triggers.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
                                                             DragOverCenterText="{ns:Loc LblDragOver_AddTrigger}"
                                                             DragOverDisplayAnchor="Right" />
-                                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.ISequenceTrigger" OnDropCommand="DropIntoTriggersCommand" />
+                                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.ISequenceTrigger" OnDropCommand="DropIntoTriggersCommand" RecordSequenceStructure="True" />
                                                     </i:Interaction.Behaviors>
                                                     <GroupBox.Header>
                                                         <Grid>
@@ -664,7 +669,7 @@
                                                             AllowDragCenter="{Binding Conditions.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
                                                             DragOverCenterText="{ns:Loc LblDragOver_AddCondition}"
                                                             DragOverDisplayAnchor="Right" />
-                                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Conditions.ISequenceCondition" OnDropCommand="DropIntoConditionsCommand" />
+                                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Conditions.ISequenceCondition" OnDropCommand="DropIntoConditionsCommand" RecordSequenceStructure="True" />
                                                     </i:Interaction.Behaviors>
                                                     <ItemsControl
                                                         Margin="0,0,0,0"
@@ -692,7 +697,7 @@
                                 Visibility="{Binding ShowDetails, ElementName=UC, Converter={StaticResource VisibilityConverter}}">
                                 <i:Interaction.Behaviors>
                                     <!--  Drop area For Instructions  -->
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" RecordSequenceStructure="True" />
                                     <behaviors:DragOverBehavior
                                         AllowDragAbove="False"
                                         AllowDragBelow="False"

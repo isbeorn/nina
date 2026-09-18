@@ -56,14 +56,14 @@ namespace NINA.Sequencer.SequenceItem {
         private string name;
         private bool showMenu;
         private SequenceEntityStatus status = SequenceEntityStatus.CREATED;
-        public ICommand AddCloneToParentCommand => new GalaSoft.MvvmLight.Command.RelayCommand<object>((o) => { Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_DuplicateAction", AddCloneToParent); ShowMenu = false; });
+        public ICommand AddCloneToParentCommand => Editing.SequenceEditContext.CreateCommand(this, Editing.SequenceEditOperation.Duplicate, new GalaSoft.MvvmLight.Command.RelayCommand<object>((o) => { AddCloneToParent(); ShowMenu = false; }));
         public string Category { get; set; }
         public string Description { get; set; }
-        public virtual ICommand DetachCommand => new GalaSoft.MvvmLight.Command.RelayCommand(() => Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_DeleteAction", Detach));
+        public virtual ICommand DetachCommand => Editing.SequenceEditContext.CreateCommand(this, Editing.SequenceEditOperation.Delete, new GalaSoft.MvvmLight.Command.RelayCommand(Detach));
         public GeometryGroup Icon { get; set; }
-        public ICommand MoveDownCommand => new GalaSoft.MvvmLight.Command.RelayCommand(() => Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_MoveAction", MoveDown));
-        public ICommand MoveUpCommand => new GalaSoft.MvvmLight.Command.RelayCommand(() => Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_MoveAction", MoveUp));
-        public ICommand DisableEnableCommand => new GalaSoft.MvvmLight.Command.RelayCommand(() => Editing.SequenceEditContext.Toggle(this, () => {
+        public ICommand MoveDownCommand => Editing.SequenceEditContext.CreateCommand(this, Editing.SequenceEditOperation.Move, new GalaSoft.MvvmLight.Command.RelayCommand(MoveDown));
+        public ICommand MoveUpCommand => Editing.SequenceEditContext.CreateCommand(this, Editing.SequenceEditOperation.Move, new GalaSoft.MvvmLight.Command.RelayCommand(MoveUp));
+        public ICommand DisableEnableCommand => Editing.SequenceEditContext.CreateCommand(this, Editing.SequenceEditOperation.Toggle, new GalaSoft.MvvmLight.Command.RelayCommand(() => {
             if(Status != SequenceEntityStatus.DISABLED) {
                 Status = SequenceEntityStatus.DISABLED;
                 ShowMenu = false;

@@ -45,7 +45,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         // expression definitions. Expressions still evaluate against the current runtime values.
         private void RestoreEditorCoordinates(SequenceCoordinateState state) {
             if (state.Inherited) return;
-            SequenceCoordinateState.RestoreCoordinates(Coordinates, RaExpression, DecExpression, state.Value,
+            SequenceCoordinateState.RestoreCoordinates(Coordinates, RaExpression, DecExpression, state.Value.ToCoordinates(),
                 state.NegativeDec, state.RaDefinition, state.DecDefinition, ref Protect, ref lastRA, ref lastDec);
             PositionAngleExpression.Definition = state.RotationDefinition;
             Inherited = false;

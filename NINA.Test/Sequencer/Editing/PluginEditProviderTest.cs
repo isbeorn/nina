@@ -175,7 +175,7 @@ namespace NINA.Test.Sequencer.Editing {
 
         [TestCase(false)]
         [TestCase(true)]
-        public void FailedSnapshotRestore_CompensatesPartialSetterAndInvalidatesHistory(bool redo) {
+        public void FailedSnapshotRestore_CompensatesPartialSetterAndPreservesHistory(bool redo) {
             WithEdit((item, history, box) => {
                 if (redo) history.Undo().Should().BeTrue();
                 item.FailNextRestore = true;
@@ -183,8 +183,8 @@ namespace NINA.Test.Sequencer.Editing {
                 item.Settings.Primary.Should().Be(redo ? 2 : 5);
                 item.Settings.Secondary.Should().Be(redo ? 7 : 50);
                 box.Text.Should().Be(redo ? "2" : "5");
-                history.CanUndo.Should().BeFalse();
-                history.CanRedo.Should().BeFalse();
+                history.CanUndo.Should().Be(!redo);
+                history.CanRedo.Should().Be(redo);
             });
         }
 

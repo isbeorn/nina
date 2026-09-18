@@ -17,10 +17,11 @@ using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Editing {
     // Captures explicit configuration. Inherited values and expression results remain live.
-    internal sealed record SequenceCoordinateState(Coordinates Value, bool NegativeDec, string RaDefinition, string DecDefinition,
+    internal sealed record SequenceCoordinateState(SequenceCoordinateValue Value, string RaDefinition, string DecDefinition,
         string RotationDefinition, bool RaExpression, bool DecExpression, bool Inherited) {
+        public bool NegativeDec => Value.NegativeDec;
         public static SequenceCoordinateState Capture(InputCoordinates coordinates, Expression ra, Expression dec, Expression rotation, bool inherited) =>
-            new(coordinates.Coordinates.Clone(), coordinates.NegativeDec, ra.Definition, dec.Definition, rotation.Definition,
+            new(SequenceCoordinateValue.Capture(coordinates), ra.Definition, dec.Definition, rotation.Definition,
                 ra.IsExpression, dec.IsExpression, inherited);
 
         internal static void RestoreCoordinates(InputCoordinates coordinates, Expression ra, Expression dec, Coordinates value,

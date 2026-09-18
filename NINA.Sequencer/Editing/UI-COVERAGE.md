@@ -4,7 +4,7 @@ Audited on 2026-09-18. This inventory covers the 104 built-in MEF entity types, 
 
 `NINA.Test/Sequencer/Editing/CoreEditorHistoryTest.cs` discovers the entity exports rather than maintaining a separate type list. `CoreEditorTestScope` constructs real entities with mocked services and loads the exported resource dictionaries into an offscreen STA window. Each editable text, selection and checkbox binding must change the accepted model value, create one entry and restore that value through both undo and redo. Forwarding bindings are followed for assertions on the model, not just the control's displayed text. Generated numeric properties are checked by expression definition.
 
-The baseline catalog exercises 267 input instances. The linked-template target test separately exercises all eight override fields. Counts include shared editors each time an entity uses them, including the numeric and expression forms of gain. Zero means the entity has no parameter inputs in its own template; its shared structural controls still use the command paths below. The test's `AUDIT` output lists the resolved fields for each type.
+The baseline catalog exercises 267 input instances. The linked-template target test separately exercises all eight override fields. Counts include shared editors each time an entity uses them, including the numeric and expression forms of gain. Zero means the entity has no parameter inputs in its own template; its shared structural controls still use the command paths below. The test's `AUDIT` output lists the resolved fields for each type. This catalog is embedded by the test project and enforced as the expected export and field inventory, including repeated fields. Input commits use routed focus departure.
 
 ## Additional interaction checks
 
@@ -17,6 +17,7 @@ The baseline catalog exercises 267 input instances. The linked-template target t
 | Time, wait-until-time and reset-variable-to-date | Provider selector, manual hours/minutes/seconds and offset; undoing a provider change restores the previous manual time |
 | Programmable meridian flip | Editable fields and structural operations in both before/after action sets |
 | Linked templates | Eight target override inputs, separate editing history, save/cancel lifecycle and trigger actions routed to that same temporary history |
+| Plugin child collections and session boundaries | Public-only fixtures exercise a replaceable child slot, an explicitly annotated drop command, child field gestures and temporary-session disposal |
 | Plugin trigger action sets | Optional action-container discovery for field edits, removal and restoration through the owning history |
 | Plugin snapshot providers | Coupled nested setters with immediate/deferred bindings, runtime exclusions, ordinary-field fallback, no-ops, conflicts, replay compensation and attachment hooks that replace configuration objects |
 | Standard plugin bindings | Nested configuration, expressions, text, selection, checkbox, date and single writable multi-binding input with read-only context |
@@ -38,7 +39,7 @@ The baseline catalog exercises 267 input instances. The linked-template target t
 
 ## Deliberate exclusions
 
-Execution buttons, reset progress, completed exposure counts, exposure-count deletion, evaluated expression outputs, current variable values and equipment status indicators are not configuration undo. Expansion, menu state, framing navigation, library/file writes and completed equipment actions also remain outside the journal. Linked-template preview contents are read-only and cannot record in the sequence journal. Template source edits use the temporary session.
+Execution buttons, reset progress, completed exposure counts, exposure-count deletion, evaluated expression outputs, current variable values and equipment status indicators are not configuration undo. Expansion, menu state, moon-chart visibility, framing navigation, library/file writes and completed equipment actions also remain outside the journal. Linked-template preview contents are read-only and cannot record in the sequence journal. Template source edits use the temporary session.
 
 Plugin checks use test entities with the existing public contracts, optional-provider fixtures and the repository plugin-composition suite. This audit does not load installed third-party plugin DLLs.
 
@@ -46,7 +47,7 @@ The automated tests use routed WPF events and compiled controls with mocked equi
 
 ## Maintaining coverage
 
-When adding a core input, run the catalog test and inspect its `AUDIT` row. Check every control state that changes the editable surface. Add a focused test for command handlers, coupled setters, replacement configuration objects or custom controls beyond the standard text/selection/checkbox paths. Assert accepted model state in both directions and exclusion of unrelated runtime state. Update this inventory when those surfaces change.
+When adding a core input, run the catalog test and inspect its `AUDIT` row. Check every control state that changes the editable surface. Add a focused test for command handlers, coupled setters, replacement configuration objects or custom controls beyond the standard text/selection/checkbox paths. Assert accepted model state in both directions and exclusion of unrelated runtime state. Update this inventory when those surfaces change; export or field mismatches fail the catalog test. Do not reduce the expected list simply to make a failing binding test pass.
 
 ## Catalog
 

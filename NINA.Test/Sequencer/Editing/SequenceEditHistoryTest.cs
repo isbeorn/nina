@@ -63,7 +63,7 @@ namespace NINA.Test.Sequencer.Editing {
         }
 
         private sealed class CountingRoot : SequenceRootContainer, ISequenceContainer {
-            public int Reads { get; private set; }
+            public int Reads { get; set; }
             ICollection<ISequenceItem> ISequenceContainer.GetItemsSnapshot() { Reads++; return base.GetItemsSnapshot(); }
         }
 
@@ -211,7 +211,7 @@ namespace NINA.Test.Sequencer.Editing {
 
         [TestCase(true)]
         [TestCase(false)]
-        public void ReplayFailure_CompensatesEarlierEditsAndClearsHistory(bool undo) {
+        public void ReplayFailure_CompensatesEarlierEditsAndPreservesHistory(bool undo) {
             var root = new SequenceRootContainer();
             var item = new PluginItem();
             root.Add(item);
@@ -232,9 +232,32 @@ namespace NINA.Test.Sequencer.Editing {
             (undo ? history.Undo() : history.Redo()).Should().BeFalse();
             item.Setting.Should().Be(undo ? 4 : 0);
             other.Should().Be(undo ? 1 : 0);
-            history.Entries.Should().ContainSingle().Which.IsCurrent.Should().BeTrue();
+            history.Entries.Should().HaveCount(2);
+            history.Position.Should().Be(undo ? 1 : 0);
+            fail = false;
+            (undo ? history.Undo() : history.Redo()).Should().BeTrue("a verified rollback allows retry");
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ReplayFailure_UnverifiableCompensationInvalidatesHistory(bool redo) {
+            using var history = new SequenceEditHistory(new SequenceRootContainer());
+            int value = 1;
+            bool fail = false;
+            history.RecordApplied(new PropertySequenceEdit<int>("Setting", () => value, next => {
+                value = fail ? -1 : next;
+                if (fail) throw new InvalidOperationException("Both restore and compensation fail");
+            }, 0, 1));
+            if (redo) history.Undo().Should().BeTrue();
+            string? error = null;
+            history.ReplayFailed += message => error = message;
+            fail = true;
+            (redo ? history.Redo() : history.Undo()).Should().BeFalse();
+            value.Should().Be(-1);
+            history.Entries.Should().HaveCount(1);
             history.CanUndo.Should().BeFalse();
             history.CanRedo.Should().BeFalse();
+            error.Should().NotBeNullOrEmpty();
         }
 
         [Test]
@@ -325,9 +348,9 @@ namespace NINA.Test.Sequencer.Editing {
             Coordinates after = item.Coordinates.Coordinates.Clone();
             history.RecordApplied(capture!.Complete());
             history.Undo().Should().BeTrue();
-            SequencePropertyCapture.CoordinatesEqual(item.Coordinates.Coordinates, before).Should().BeTrue();
+            (item.Coordinates.Coordinates.RA, item.Coordinates.Coordinates.Dec, item.Coordinates.Coordinates.Epoch).Should().Be((before.RA, before.Dec, before.Epoch));
             history.Redo().Should().BeTrue();
-            SequencePropertyCapture.CoordinatesEqual(item.Coordinates.Coordinates, after).Should().BeTrue();
+            (item.Coordinates.Coordinates.RA, item.Coordinates.Coordinates.Dec, item.Coordinates.Coordinates.Epoch).Should().Be((after.RA, after.Dec, after.Epoch));
         }
 
         [Test]
@@ -529,12 +552,14 @@ namespace NINA.Test.Sequencer.Editing {
             root.Add(item);
             using var history = new SequenceEditHistory(root);
             var button = new Button { DataContext = item };
+            SequenceEditContext.SetOperation(button, SequenceEditOperation.Delete);
             button.SetBinding(SequenceEditContext.CommandProperty, new Binding(nameof(item.DetachCommand)));
             button.Command.Execute(null);
             root.Items.Should().BeEmpty();
             history.Position.Should().Be(1);
             history.Undo().Should().BeTrue();
             root.Items.Single().Should().BeSameAs(item);
+            SequenceEditContext.SetOperation(button, SequenceEditOperation.Toggle);
             button.SetBinding(SequenceEditContext.CommandProperty, new Binding(nameof(item.DisableEnableCommand)));
             button.Command.Execute(null);
             history.Position.Should().Be(1);
@@ -593,27 +618,49 @@ namespace NINA.Test.Sequencer.Editing {
             return new WeakReference(item);
         }
 
-        [Test]
-        public void ThousandEntitySequence_FieldEditsDoNotReadOtherEntities() {
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ThousandEntitySequence_FieldGesturesDoNotTraverseTree(bool triggerOwned) {
             var root = new CountingRoot();
-            for (int i = 0; i < 1000; i++) root.Add(new PluginItem());
-            var item = (PluginItem)root.Items[500];
+            for (int i = 0; i < 999; i++) root.Add(new PluginItem());
+            var item = new PluginItem();
+            if (triggerOwned) {
+                var trigger = new UnknownSequenceTrigger();
+                trigger.TriggerRunner.Add(item);
+                root.Add(trigger);
+            } else root.Add(item);
             using var history = new SequenceEditHistory(root);
-            var timer = Stopwatch.StartNew();
+            root.Reads = 0; // Initial ownership indexing is separate from ordinary editing.
             var box = new TextBox { DataContext = item };
-            box.SetBinding(TextBox.TextProperty, new Binding(nameof(item.Setting)));
-            for (int i = 1; i <= 100; i++) {
-                var capture = SequencePropertyCapture.Create(item, box.GetBindingExpression(TextBox.TextProperty));
-                item.Setting = i;
-                history.RecordApplied(capture!.Complete());
-            }
-            history.MoveTo(0);
-            history.MoveTo(100);
-            timer.Stop();
-            TestContext.Out.WriteLine($"100 edits + 100 undo + 100 redo with 1000 entities: {timer.ElapsedMilliseconds} ms");
-            item.Setting.Should().Be(100);
-            root.Items.Should().HaveCount(1000);
-            root.Reads.Should().Be(0);
+            box.SetBinding(TextBox.TextProperty, new Binding(nameof(item.Setting)) { Mode = BindingMode.TwoWay });
+            var panel = new StackPanel();
+            panel.Children.Add(box);
+            var behavior = new SequenceEditBehavior { History = history };
+            behavior.Attach(panel);
+            var timer = Stopwatch.StartNew();
+            try {
+                for (int i = 1; i <= 100; i++) {
+                    box.RaiseEvent(new TextCompositionEventArgs(Keyboard.PrimaryDevice, new TextComposition(InputManager.Current, box, i.ToString())) {
+                        RoutedEvent = TextCompositionManager.PreviewTextInputEvent
+                    });
+                    box.Text = i.ToString();
+                    box.RaiseEvent(new KeyboardFocusChangedEventArgs(Keyboard.PrimaryDevice, 0, box, panel) {
+                        RoutedEvent = Keyboard.LostKeyboardFocusEvent
+                    });
+                    CoreEditorTestScope.Drain();
+                }
+                history.Position.Should().Be(100);
+                history.MoveTo(0);
+                history.Position.Should().Be(0);
+                item.Setting.Should().Be(0);
+                history.MoveTo(100);
+                history.Position.Should().Be(100);
+                item.Setting.Should().Be(100);
+                item.Parent.Items.Should().ContainSingle(x => ReferenceEquals(x, item));
+                root.Reads.Should().Be(0);
+                timer.Stop();
+                TestContext.Out.WriteLine($"100 UI edits + 100 undo + 100 redo with 1000 entities (trigger-owned: {triggerOwned}): {timer.ElapsedMilliseconds} ms");
+            } finally { behavior.Detach(); }
         }
 
         [Test]

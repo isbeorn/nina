@@ -25,8 +25,10 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
 namespace NINA.Sequencer.Editing {
+    internal interface ISequenceEditCapture { ISequenceEdit Complete(); }
+
     /// <summary>Captures only the configuration addressed by an editor, never the whole live graph.</summary>
-    internal sealed class SequencePropertyCapture {
+    internal sealed class SequencePropertyCapture : ISequenceEditCapture {
         private readonly Func<ISequenceEdit> complete;
         private SequencePropertyCapture(Func<ISequenceEdit> complete) { this.complete = complete; }
         public ISequenceEdit Complete() => complete();
@@ -87,15 +89,9 @@ namespace NINA.Sequencer.Editing {
             }
             if (path == null) return null;
             if (source is InputCoordinates) {
-                return Capture(description, () => {
-                    var coordinates = (InputCoordinates)Resolve();
-                    return (Value: coordinates.Coordinates.Clone(), coordinates.NegativeDec);
-                }, value => {
-                    var coordinates = (InputCoordinates)Resolve();
-                    coordinates.Coordinates = value.Value.Clone();
-                    coordinates.NegativeDec = value.NegativeDec;
-                    RefreshBinding();
-                }, (left, right) => CoordinatesEqual(left.Value, right.Value) && left.NegativeDec == right.NegativeDec, context, value => SequenceEditDetails.Coordinates(value.Value, value.NegativeDec));
+                return Capture(description, () => SequenceCoordinateValue.Capture((InputCoordinates)Resolve()),
+                    value => { value.Restore((InputCoordinates)Resolve()); RefreshBinding(); },
+                    context: context, format: value => SequenceEditDetails.Coordinates(value.ToCoordinates(), value.NegativeDec));
             }
             PropertyInfo property = source.GetType().GetProperty(name);
             if (property?.CanRead != true || property.SetMethod?.IsPublic != true || property.GetIndexParameters().Length != 0) return null;
@@ -151,15 +147,9 @@ namespace NINA.Sequencer.Editing {
             string context = SequenceEditDetails.Context(owner);
             if (owner is not IDeepSkyObjectContainer dso) return null;
             return Capture(description,
-                () => (dso.Name, Target: LinkedTemplateTargetOverride.FromInputTarget(dso.Target)),
-                value => {
-                    dso.Name = value.Name;
-                    dso.Target.TargetName = value.Target.TargetName;
-                    if (dso.Target.InputCoordinates == null) dso.Target.InputCoordinates = value.Target.InputCoordinates.Clone();
-                    else dso.Target.InputCoordinates.Coordinates = value.Target.InputCoordinates.Coordinates.Clone();
-                    dso.Target.PositionAngle = value.Target.PositionAngle;
-                },
-                (left, right) => left.Name == right.Name && TargetEqual(left.Target, right.Target), context, value => SequenceEditDetails.Target(value.Target));
+                () => (dso.Name, Target: SequenceTargetState.Capture(dso.Target)),
+                value => { dso.Name = value.Name; value.Target.Restore(dso.Target); },
+                context: context, format: value => SequenceEditDetails.Target(value.Target));
         }
 
         // Search only the selected entity's configuration objects. No traversal of Items,
@@ -188,13 +178,6 @@ namespace NINA.Sequencer.Editing {
             }
             return Visit(owner, new List<PropertyInfo>());
         }
-
-        internal static bool CoordinatesEqual(Coordinates left, Coordinates right) =>
-            ReferenceEquals(left, right) || (left != null && right != null && left.RA == right.RA && left.Dec == right.Dec && left.Epoch == right.Epoch);
-
-        internal static bool TargetEqual(LinkedTemplateTargetOverride left, LinkedTemplateTargetOverride right) =>
-            ReferenceEquals(left, right) || (left != null && right != null && left.TargetName == right.TargetName
-                && left.PositionAngle == right.PositionAngle && CoordinatesEqual(left.InputCoordinates?.Coordinates, right.InputCoordinates?.Coordinates));
 
     }
 }

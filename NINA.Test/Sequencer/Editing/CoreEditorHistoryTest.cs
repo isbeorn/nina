@@ -37,6 +37,21 @@ namespace NINA.Test.Sequencer.Editing {
             .Where(t => !t.IsAbstract && typeof(ISequenceEntity).IsAssignableFrom(t) && t.GetCustomAttributes<ExportAttribute>().Any())
             .OrderBy(t => t.FullName);
 
+        private static IReadOnlyDictionary<string, string[]> ExpectedInputs() {
+            using var stream = typeof(CoreEditorHistoryTest).Assembly.GetManifestResourceStream("SequenceEditorCoverage")!;
+            using var reader = new System.IO.StreamReader(stream);
+            return reader.ReadToEnd().Split('\n')
+                .Select(line => line.Split('|').Select(cell => cell.Trim()).ToArray())
+                .Where(cells => cells.Length == 5 && int.TryParse(cells[2], out _))
+                .ToDictionary(cells => cells[1].Trim('`'), cells => int.Parse(cells[2]) == 0
+                    ? Array.Empty<string>() : cells[3].Replace("`", "").Split(", "));
+        }
+
+        [Test]
+        public void CoreTemplateInventory_CoversEveryExport() {
+            ExpectedInputs().Keys.Should().BeEquivalentTo(CoreEntities.Select(type => type.Name));
+        }
+
         [TestCaseSource(nameof(CoreEntities))]
         public void CoreTemplate_EditableBindingsUndoAndRedo(Type type) {
             using var scope = new CoreEditorTestScope();
@@ -53,7 +68,30 @@ namespace NINA.Test.Sequencer.Editing {
                     CheckBox => ToggleButton.IsCheckedProperty,
                     _ => null
                 };
-                if (property == null) continue;
+                if (property == null) {
+                    // New native input families must be exercised rather than silently skipped.
+                    DependencyProperty? unhandled = editor switch {
+                        DatePicker => DatePicker.SelectedDateProperty,
+                        Calendar => Calendar.SelectedDateProperty,
+                        RangeBase => RangeBase.ValueProperty,
+                        Selector => Selector.SelectedItemProperty,
+                        ToggleButton => ToggleButton.IsCheckedProperty,
+                        _ => null
+                    };
+                    // Template parts bound to another control operate view state (for example
+                    // expander headers and dropdown buttons), not sequence configuration.
+                    // Moon-chart visibility is also view state, kept in MoonInfo.
+                    if (unhandled != null && editor.GetBindingExpression(unhandled) is BindingExpression input
+                        && input.ResolvedSource is not DependencyObject
+                        && !(input.ResolvedSource is NINA.Astrometry.MoonInfo && input.ResolvedSourcePropertyName == nameof(NINA.Astrometry.MoonInfo.DisplayMoon))
+                        && (input.ParentBinding.Mode is BindingMode.TwoWay or BindingMode.OneWayToSource
+                            || input.ParentBinding.Mode == BindingMode.Default
+                            && unhandled.GetMetadata(editor) is FrameworkPropertyMetadata { BindsTwoWayByDefault: true })
+                        && SequenceEditContext.GetIsRecordingEnabled(editor)) {
+                        failures.Add($"Add an interaction check for {editor.GetType().Name}.{unhandled.Name} bound to {input.ResolvedSource?.GetType().Name ?? "unresolved source"}.{input.ResolvedSourcePropertyName}");
+                    }
+                    continue;
+                }
                 BindingExpressionBase? binding = BindingOperations.GetBindingExpressionBase(editor, property);
                 BindingExpression? leaf = binding switch {
                     BindingExpression single => single,
@@ -87,8 +125,7 @@ namespace NINA.Test.Sequencer.Editing {
                     if (editor is TextBox text) {
                         string input = modelProperty.PropertyType == typeof(string) && modelProperty.Name != "Definition" ? "HistoryAudit" : text.Text == "12" ? "13" : "12";
                         TypeText(text, input);
-                        text.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
-                        BindingOperations.GetMultiBindingExpression(text, TextBox.TextProperty)?.UpdateSource();
+
                     } else if (editor is ComboBox combo) {
                         MouseDown(combo);
                         if (combo.IsEditable) combo.SetCurrentValue(ComboBox.TextProperty, combo.Text == "Green" ? "Red" : "Green");
@@ -96,14 +133,16 @@ namespace NINA.Test.Sequencer.Editing {
                             combo.Items.Count.Should().BeGreaterThan(1, name);
                             combo.SetCurrentValue(Selector.SelectedIndexProperty, combo.Items.Count - 1 == combo.SelectedIndex ? 0 : combo.Items.Count - 1);
                         }
-                        combo.GetBindingExpression(property)?.UpdateSource();
-                        BindingOperations.GetMultiBindingExpression(combo, property)?.UpdateSource();
+
                     } else if (editor is CheckBox check) {
                         MouseDown(check);
                         check.SetCurrentValue(ToggleButton.IsCheckedProperty, check.IsChecked != true);
-                        check.GetBindingExpression(ToggleButton.IsCheckedProperty)?.UpdateSource();
+
                     }
-                    scope.Behavior.Commit();
+                    editor.RaiseEvent(new KeyboardFocusChangedEventArgs(Keyboard.PrimaryDevice, 0, editor, scope.Host) {
+                        RoutedEvent = Keyboard.LostKeyboardFocusEvent
+                    });
+                    Drain();
                     object? after = Read();
                     after.Should().NotBe(before, $"{name} must actually change through its binding");
                     scope.History.Position.Should().Be(position + 1, name);
@@ -119,6 +158,7 @@ namespace NINA.Test.Sequencer.Editing {
             }
             TestContext.Out.WriteLine($"AUDIT {type.Name} | {checkedInputs} | {string.Join(", ", fields)}");
             failures.Should().BeEmpty(string.Join(Environment.NewLine, failures));
+            fields.Should().BeEquivalentTo(ExpectedInputs()[type.Name], "the checked-in input inventory must not silently lose coverage");
         }
 
         [TestCase(typeof(NINA.Sequencer.SequenceItem.FlatDevice.SetBrightness))]

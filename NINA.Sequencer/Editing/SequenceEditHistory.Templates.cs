@@ -20,22 +20,25 @@ using System.Linq;
 
 namespace NINA.Sequencer.Editing {
     internal sealed partial class SequenceEditHistory {
-        private readonly Dictionary<LinkedTemplateContainer, SequenceEditHistory> templateHistories = new();
+        private readonly Dictionary<ISequenceEditSessionBoundary, SequenceEditHistory> templateHistories = new();
         private SequenceEditHistory activeHistory;
         private SequenceEditHistory parentHistory;
 
         public SequenceEditHistory ActiveHistory => activeHistory ?? this;
 
-        internal SequenceEditHistory ForOwner(ISequenceEntity owner) {
+        internal SequenceEditHistory ForOwner(ISequenceEntity owner) => ResolveSession(owner, false);
+        internal SequenceEditHistory ForContents(ISequenceContainer container) => ResolveSession(container, true);
+
+        private SequenceEditHistory ResolveSession(ISequenceEntity owner, bool includeOwnBoundary) {
             if (disposed || !dispatcher.CheckAccess()) return null;
-            if (parentHistory != null) return parentHistory.ForOwner(owner);
-            LinkedTemplateContainer editing = null;
+            if (parentHistory != null) return parentHistory.ResolveSession(owner, includeOwnBoundary);
+            ISequenceEditSessionBoundary editing = null;
             IReadOnlyList<ISequenceEntity> path = OwnerPath(owner);
             if (path == null) return null;
             foreach (ISequenceEntity current in path) {
-                if (current is LinkedTemplateContainer linked) {
-                    if (!linked.IsEditing && !ReferenceEquals(current, owner)) return null;
-                    if (linked.IsEditing) editing = linked;
+                if (current is ISequenceEditSessionBoundary linked && (includeOwnBoundary || !ReferenceEquals(current, owner))) {
+                    if (!linked.IsEditing) return null;
+                    editing = linked;
                 }
             }
             if (ReferenceEquals(editing, Root)) editing = null;
@@ -51,26 +54,27 @@ namespace NINA.Sequencer.Editing {
             return selected;
         }
 
-        private IReadOnlyList<ISequenceEntity> OwnerPath(ISequenceEntity owner) {
-            var path = new List<ISequenceEntity>();
-            for (ISequenceEntity current = owner; current != null; current = current.Parent) {
-                path.Add(current);
-                if (ReferenceEquals(current, Root)) return path;
-            }
-            // Execution context proxies are not editor parents. Follow the owning trigger
-            // so template preview/edit-session rules also apply to its action sets.
-            return SequenceEditContext.FindEditorPath(Root, owner)?.Reverse().ToArray();
-        }
+        private IReadOnlyList<ISequenceEntity> OwnerPath(ISequenceEntity owner) => Graph.OwnerPath(owner);
 
         private void ForwardFailure(string message) => ReplayFailed?.Invoke(message);
 
         private void TemplateChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName != nameof(LinkedTemplateContainer.IsEditing) || sender is not LinkedTemplateContainer { IsEditing: false } linked) return;
-            if (templateHistories.Remove(linked, out SequenceEditHistory history)) {
-                linked.PropertyChanged -= TemplateChanged;
-                if (ReferenceEquals(activeHistory, history)) SetProperty(ref activeHistory, null, nameof(ActiveHistory));
-                history.Dispose();
+            if (e.PropertyName != nameof(ISequenceEditSessionBoundary.IsEditing) || sender is not ISequenceEditSessionBoundary { IsEditing: false } linked) return;
+            CloseSession(linked);
+        }
+
+        internal void PruneDetachedSessions() {
+            foreach (var boundary in templateHistories.Keys.ToArray()) {
+                if (OwnerPath(boundary) != null) continue;
+                CloseSession(boundary);
             }
+        }
+
+        private void CloseSession(ISequenceEditSessionBoundary linked) {
+            if (!templateHistories.Remove(linked, out SequenceEditHistory history)) return;
+            linked.PropertyChanged -= TemplateChanged;
+            if (ReferenceEquals(activeHistory, history)) SetProperty(ref activeHistory, null, nameof(ActiveHistory));
+            history.Dispose();
         }
 
         private void DisposeTemplateHistories() {

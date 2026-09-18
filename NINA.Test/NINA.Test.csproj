@@ -45,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="..\NINA.Sequencer\Editing\UI-COVERAGE.md" LogicalName="SequenceEditorCoverage" />
     <None Update="AstrometryTest\HorizonData\commas.hrz">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

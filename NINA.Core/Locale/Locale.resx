@@ -8202,4 +8202,7 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   <data name="Lbl_SequenceHistory_MovedDetail" xml:space="preserve">
     <value>{0}: {1} -&gt; {2}</value>
   </data>
+  <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
+    <value>The edit could not be applied. The previous state and edit history were preserved.</value>
+  </data>
 </root>

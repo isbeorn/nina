@@ -32,7 +32,7 @@ namespace NINA.Sequencer.Editing {
         private readonly List<ISequenceEdit> pending = new();
         private int position;
         private int transactionDepth;
-        private int structureDepth;
+        private int captureDepth;
         private string transactionDescription;
         private long nextState;
         private long? savedState;
@@ -43,6 +43,7 @@ namespace NINA.Sequencer.Editing {
 
         public SequenceEditHistory(ISequenceContainer root) {
             Root = root ?? throw new ArgumentNullException(nameof(root));
+            Graph = new SequenceEditorGraph(root);
             entries.Add(new SequenceEditEntry(nextState));
             Entries = new ReadOnlyObservableCollection<SequenceEditEntry>(entries);
             UndoCommand = new RelayCommand(() => Undo(), () => CanUndo);
@@ -57,6 +58,7 @@ namespace NINA.Sequencer.Editing {
         }
 
         public ISequenceContainer Root { get; }
+        internal SequenceEditorGraph Graph { get; }
         public ReadOnlyObservableCollection<SequenceEditEntry> Entries { get; }
         public RelayCommand UndoCommand { get; }
         public RelayCommand RedoCommand { get; }
@@ -79,7 +81,6 @@ namespace NINA.Sequencer.Editing {
         internal event Action FlushRequested;
         internal event Action<string> ReplayFailed;
         internal bool IsRecording => IsEnabled && !replaying && dispatcher.CheckAccess();
-        internal bool IsCapturingToggle { get; set; }
         internal bool HasPendingEdit {
             get => hasPendingEdit;
             set {
@@ -129,14 +130,23 @@ namespace NINA.Sequencer.Editing {
         }
 
         internal void CaptureStructure(string description, Action action) {
-            if (!IsRecording || structureDepth > 0) { action(); return; }
+            void Apply(Action change) {
+                try { change(); }
+                finally { Graph.Refresh(); PruneDetachedSessions(); }
+            }
+            CaptureEdit(description, () => SequenceStructureSnapshot.Capture(Root, description,
+                change => SequenceContainer.ApplyEditorChange(() => Apply(change))), () => Apply(action));
+        }
+
+        internal void CaptureEdit(string description, Func<ISequenceEditCapture> capture, Action action) {
+            if (!IsRecording || captureDepth > 0) { action(); return; }
             using (BeginTransaction(description)) {
-                var before = SequenceStructureSnapshot.Capture(Root);
-                structureDepth++;
+                ISequenceEditCapture before = capture();
+                captureDepth++;
                 try { action(); }
                 finally {
-                    structureDepth--;
-                    RecordApplied(before.Complete(description));
+                    captureDepth--;
+                    RecordApplied(before?.Complete());
                 }
             }
         }
@@ -158,6 +168,10 @@ namespace NINA.Sequencer.Editing {
                 return true;
             } catch (SequenceEditConflictException) {
                 ReplayFailed?.Invoke(Loc.Instance["Lbl_SequenceHistory_Conflict"]);
+                return false;
+            } catch (SequenceEditReplayException ex) when (ex.Restored) {
+                Logger.Error("Sequence edit replay failed; starting state verified", ex);
+                ReplayFailed?.Invoke(Loc.Instance["Lbl_SequenceHistory_RestoredFailure"]);
                 return false;
             } catch (Exception ex) {
                 Logger.Error("Sequence edit replay failed; history invalidated", ex);

@@ -15,13 +15,10 @@
 using NINA.Core.Enum;
 using NINA.Core.Locale;
 using NINA.Sequencer.Container;
-using NINA.Sequencer.Conditions;
-using NINA.Sequencer.Trigger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -38,12 +35,42 @@ namespace NINA.Sequencer.Editing {
             if (d is ButtonBase button) button.Command = e.NewValue is ICommand command ? new HistoryCommand(button, command) : null;
         }
 
+        public static readonly DependencyProperty OperationProperty = DependencyProperty.RegisterAttached(
+            "Operation", typeof(SequenceEditOperation), typeof(SequenceEditContext), new PropertyMetadata(SequenceEditOperation.Move));
+        public static SequenceEditOperation GetOperation(DependencyObject element) => (SequenceEditOperation)element.GetValue(OperationProperty);
+        public static void SetOperation(DependencyObject element, SequenceEditOperation value) => element.SetValue(OperationProperty, value);
+
+        internal static ICommand CreateCommand(ISequenceEntity owner, SequenceEditOperation operation, ICommand command) =>
+            new SequenceEditCommand(command, parameter => ExecuteOperation(owner, operation, () => command.Execute(parameter)));
+
+        // A dialog or async operation starts recording itself around the accepted model update.
+        internal static ICommand SelfRecordingCommand(ICommand command) => new SequenceEditCommand(command, command.Execute);
+
+        internal static void ExecuteCommand(ISequenceEntity owner, SequenceEditOperation operation, ICommand command, object parameter) {
+            if (command is SequenceEditCommand) command.Execute(parameter);
+            else ExecuteOperation(owner, operation, () => command.Execute(parameter));
+        }
+        private static void ExecuteOperation(ISequenceEntity owner, SequenceEditOperation operation, Action action) {
+            if (operation == SequenceEditOperation.Toggle) { Toggle(owner, action); return; }
+            string label = operation switch {
+                SequenceEditOperation.Delete => "Lbl_SequenceHistory_DeleteAction",
+                SequenceEditOperation.Duplicate => "Lbl_SequenceHistory_DuplicateAction",
+                SequenceEditOperation.Place => "Lbl_SequenceHistory_PlaceAction",
+                _ => "Lbl_SequenceHistory_MoveAction"
+            };
+            if (operation == SequenceEditOperation.Place) Structure(owner, label, action);
+            else Placement(owner, label, action);
+        }
+
         public static readonly DependencyProperty HistoryProperty = DependencyProperty.RegisterAttached(
             "History", typeof(ISequenceEditHistory), typeof(SequenceEditContext),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
         public static ISequenceEditHistory GetHistory(DependencyObject element) {
             var history = (ISequenceEditHistory)element.GetValue(HistoryProperty);
-            return history is SequenceEditHistory session ? session.ActiveHistory : history;
+            if (history is not SequenceEditHistory session) return history;
+            ISequenceEntity owner = SequenceEditBindingResolver.Ancestors(element).OfType<FrameworkElement>()
+                .Select(view => view.DataContext).OfType<ISequenceEntity>().FirstOrDefault();
+            return owner == null ? session : session.ForOwner(owner);
         }
         public static void SetHistory(DependencyObject element, ISequenceEditHistory value) => element.SetValue(HistoryProperty, value);
 
@@ -68,65 +95,31 @@ namespace NINA.Sequencer.Editing {
             if (entity == null) return null;
             SequenceEditHistory[] active;
             lock (sessions) active = sessions.Select(entry => entry.TryGetTarget(out var value) ? value : null).Where(value => value != null).Reverse().ToArray();
-            foreach (SequenceEditHistory history in active) {
-                for (ISequenceEntity current = entity; current != null; current = current.Parent) {
-                    if (ReferenceEquals(current, history.Root)) return history;
-                }
-            }
-            // Trigger action sets intentionally have a separate execution parent context.
-            return active.FirstOrDefault(history => FindEditorPath(history.Root, entity) != null);
+            return active.FirstOrDefault(history => history.Graph.OwnerPath(entity, false) != null)
+                ?? active.FirstOrDefault(history => history.Graph.OwnerPath(entity) != null);
         }
-        internal static IReadOnlyList<ISequenceEntity> FindEditorPath(ISequenceEntity root, ISequenceEntity target) {
-            var visited = new HashSet<ISequenceEntity>(ReferenceEqualityComparer.Instance);
-            var path = new List<ISequenceEntity>();
-            bool Visit(ISequenceEntity current) {
-                if (!visited.Add(current)) return false;
-                path.Add(current);
-                if (ReferenceEquals(current, target) || EditorChildren(current).Any(Visit)) return true;
-                path.RemoveAt(path.Count - 1);
-                return false;
-            }
-            return Visit(root) ? path : null;
-        }
-        private static IEnumerable<ISequenceEntity> EditorChildren(ISequenceEntity current) {
-            if (current is Trigger.Utility.CustomTrigger { TriggerSource: not null } custom) yield return custom.TriggerSource;
-            if (current is ISequenceTrigger trigger) {
-                foreach (ISequenceContainer actions in EditableTriggerContainers(trigger)) yield return actions;
-            }
-            if (current is ISequenceContainer container) {
-                foreach (ISequenceEntity item in container.GetItemsSnapshot()) yield return item;
-                if (container is IConditionable conditions) foreach (ISequenceEntity condition in conditions.GetConditionsSnapshot()) yield return condition;
-                if (container is ITriggerable triggers) foreach (ISequenceEntity child in triggers.GetTriggersSnapshot()) yield return child;
-            }
-        }
-        internal static IEnumerable<ISequenceContainer> EditableTriggerContainers(ISequenceTrigger trigger) {
-            if (trigger is SequenceTrigger { TriggerRunner: not null } sequence) yield return sequence.TriggerRunner;
-            if (trigger is ISequenceTriggerEditor editor) {
-                foreach (ISequenceContainer container in editor.GetAdditionalEditorContainers()) {
-                    if (container != null) yield return container;
-                }
-            }
-        }
+        internal static void Placement(ISequenceEntity owner, string label, Action action) =>
+            CaptureStructure(Find(owner)?.ForOwner(owner), owner, label, action);
+
         internal static void Structure(ISequenceEntity owner, string label, Action action) {
-            SequenceEditHistory history = Find(owner)?.ForOwner(owner);
+            var session = Find(owner);
+            CaptureStructure(owner is ISequenceContainer container ? session?.ForContents(container) : session?.ForOwner(owner), owner, label, action);
+        }
+        private static void CaptureStructure(SequenceEditHistory history, ISequenceEntity owner, string label, Action action) {
             if (history == null) action();
             else history.CaptureStructure(string.Format(Loc.Instance[label], SequenceEditDetails.Name(owner)), action);
         }
         internal static void Target(ISequenceEntity owner, Action action, Func<SequencePropertyCapture> captureTarget = null) {
             SequenceEditHistory history = Find(owner)?.ForOwner(owner);
             if (history?.IsRecording != true) { action(); return; }
-            history.Flush();
-            SequencePropertyCapture capture = captureTarget != null ? captureTarget() : SequencePropertyCapture.Target(owner);
-            action();
-            history.RecordApplied(capture?.Complete());
+            string description = string.Format(Loc.Instance["Lbl_SequenceHistory_TargetAction"], SequenceEditDetails.Name(owner));
+            history.CaptureEdit(description, () => captureTarget != null ? captureTarget() : SequencePropertyCapture.Target(owner), action);
         }
         internal static void Property<T>(ISequenceEntity owner, string name, Func<T> read, Action<T> write, T value) {
             SequenceEditHistory history = Find(owner)?.ForOwner(owner);
             if (history?.IsRecording != true) { write(value); return; }
-            history.Flush();
-            var capture = SequencePropertyCapture.Capture(string.Format(Loc.Instance["Lbl_SequenceHistory_EditAction"], SequenceEditDetails.Name(owner), name), read, write, context: SequenceEditDetails.Context(owner));
-            write(value);
-            history.RecordApplied(capture.Complete());
+            string description = string.Format(Loc.Instance["Lbl_SequenceHistory_EditAction"], SequenceEditDetails.Name(owner), name);
+            history.CaptureEdit(description, () => SequencePropertyCapture.Capture(description, read, write, context: SequenceEditDetails.Context(owner)), () => write(value));
         }
         internal static void StepExpression(FrameworkElement editor, DependencyProperty property, string definition) {
             BindingExpression binding = BindingOperations.GetBindingExpression(editor, property);
@@ -139,18 +132,12 @@ namespace NINA.Sequencer.Editing {
         }
         internal static void Toggle(ISequenceEntity entity, Action action) {
             SequenceEditHistory history = Find(entity)?.ForOwner(entity);
-            if (history?.IsRecording != true || history.IsCapturingToggle) { action(); return; }
-            history.Flush();
-            var capture = SequencePropertyCapture.Capture(string.Format(Loc.Instance["Lbl_SequenceHistory_ToggleAction"], SequenceEditDetails.Name(entity)),
+            if (history?.IsRecording != true) { action(); return; }
+            string description = string.Format(Loc.Instance["Lbl_SequenceHistory_ToggleAction"], SequenceEditDetails.Name(entity));
+            history.CaptureEdit(description, () => SequencePropertyCapture.Capture(description,
                 () => entity.Status != SequenceEntityStatus.DISABLED,
-                enabled => entity.Status = enabled ? SequenceEntityStatus.CREATED : SequenceEntityStatus.DISABLED, context: SequenceEditDetails.Context(entity),
-                format: enabled => Loc.Instance[enabled ? "LblEnabled" : "LblDisabled"]);
-            history.IsCapturingToggle = true;
-            try { action(); }
-            finally {
-                history.IsCapturingToggle = false;
-                history.RecordApplied(capture.Complete());
-            }
+                enabled => entity.Status = enabled ? SequenceEntityStatus.CREATED : SequenceEntityStatus.DISABLED,
+                context: SequenceEditDetails.Context(entity), format: enabled => Loc.Instance[enabled ? "LblEnabled" : "LblDisabled"]), action);
         }
 
         private sealed class HistoryCommand : ICommand {
@@ -161,20 +148,7 @@ namespace NINA.Sequencer.Editing {
             public bool CanExecute(object parameter) => command.CanExecute(parameter);
             public void Execute(object parameter) {
                 if (element.DataContext is not ISequenceEntity owner) { command.Execute(parameter); return; }
-                BindingExpressionBase binding = BindingOperations.GetBindingExpressionBase(element, CommandProperty);
-                if (binding is PriorityBindingExpression priority) binding = priority.ActiveBindingExpression;
-                string name = (binding as BindingExpression)?.ResolvedSourcePropertyName;
-                // The built-in clear command starts its transaction after its confirmation.
-                if (owner is SequenceRootContainer && name == "DetachCommand") { command.Execute(parameter); return; }
-                if (name == "DisableEnableCommand") Toggle(owner, () => command.Execute(parameter));
-                else {
-                    string label = name switch {
-                        "DetachCommand" => "Lbl_SequenceHistory_DeleteAction",
-                        "AddCloneToParentCommand" => "Lbl_SequenceHistory_DuplicateAction",
-                        _ => "Lbl_SequenceHistory_MoveAction"
-                    };
-                    Structure(owner, label, () => command.Execute(parameter));
-                }
+                ExecuteCommand(owner, GetOperation(element), command, parameter);
             }
         }
     }

@@ -13,29 +13,29 @@
 #endregion "copyright"
 
 using NINA.Core.Locale;
-using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
-using NINA.Sequencer.SequenceItem;
-using NINA.Sequencer.Trigger;
-using NINA.Sequencer.Trigger.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace NINA.Sequencer.Editing {
-    internal sealed class SequenceStructureSnapshot {
+    internal sealed class SequenceStructureSnapshot : ISequenceEditCapture {
+        private readonly string description;
+        private readonly Action<Action> replayScope;
         private readonly ISequenceContainer root;
         private readonly Dictionary<SequenceList, ISequenceEntity[]> before;
         private readonly Dictionary<ISequenceEntity, EditLocation> locations;
         private readonly Dictionary<ISequenceEntity, ISequenceEditSnapshot> attachmentStates = new(ReferenceEqualityComparer.Instance);
-        private SequenceStructureSnapshot(ISequenceContainer root) {
+        private SequenceStructureSnapshot(ISequenceContainer root, string description, Action<Action> replayScope) {
+            this.replayScope = replayScope;
+            this.description = description;
             this.root = root;
             before = ReadTree(root, attachmentStates);
             locations = DescribeLocations(before);
         }
-        public static SequenceStructureSnapshot Capture(ISequenceContainer root) => new(root);
+        public static SequenceStructureSnapshot Capture(ISequenceContainer root, string description, Action<Action> replayScope) => new(root, description, replayScope);
 
-        public ISequenceEdit Complete(string description) {
+        public ISequenceEdit Complete() {
             Dictionary<SequenceList, ISequenceEntity[]> after = ReadTree(root);
             // Detached subtrees remain intact. Their child lists still exist and must not be
             // mistaken for deleted contents merely because they left the displayed tree.
@@ -50,7 +50,9 @@ namespace NINA.Sequencer.Editing {
             var configuration = attachmentStates.Where(pair => !pair.Value.IsCurrent)
                 .Select(pair => new SequenceAttachmentChange(pair.Value, ((ISequenceAttachmentStateProvider)pair.Key).CaptureAttachmentState())).ToArray();
             if (configuration.Any(change => change.After == null)) throw new InvalidOperationException("The entity did not supply the completed attachment snapshot.");
-            return changes.Count == 0 && configuration.Length == 0 ? null : new StructureSequenceEdit(description, changes.ToArray(), configuration, DescribeChanges(after));
+            return changes.Count == 0 && configuration.Length == 0 ? null : new StateSequenceEdit(description,
+                new SequencePlacementState(changes.ToArray(), configuration, true), new SequencePlacementState(changes.ToArray(), configuration, false),
+                DescribeChanges(after), replayScope);
         }
 
         private sealed record EditLocation(SequenceList List, int Index, string Name, string Container) {
@@ -89,7 +91,7 @@ namespace NINA.Sequencer.Editing {
                 } else if (next == null) {
                     if (!current.ContainsKey(old.List.Owner) && !ReferenceEquals(old.List.Owner, root)) continue;
                     details.Add(string.Format(Loc.Instance["Lbl_SequenceHistory_RemovedDetail"], old.Name, old.Display));
-                } else if (old.List != next.List || (old.Index != next.Index && reordered.Contains(old.List))) {
+                } else if (!old.List.Equals(next.List) || (old.Index != next.Index && reordered.Contains(old.List))) {
                     details.Add(string.Format(Loc.Instance["Lbl_SequenceHistory_MovedDetail"], old.Name, old.Display, next.Display));
                 }
             }
@@ -98,97 +100,15 @@ namespace NINA.Sequencer.Editing {
 
         private static Dictionary<SequenceList, ISequenceEntity[]> ReadTree(ISequenceContainer root, Dictionary<ISequenceEntity, ISequenceEditSnapshot> states = null) {
             var result = new Dictionary<SequenceList, ISequenceEntity[]>();
-            var visited = new HashSet<ISequenceContainer>(ReferenceEqualityComparer.Instance);
-            void CaptureAttachmentStates(IEnumerable<ISequenceEntity> entities) {
-                if (states == null) return;
-                foreach (ISequenceEntity entity in entities) {
-                    ISequenceEditSnapshot state = (entity as ISequenceAttachmentStateProvider)?.CaptureAttachmentState();
+            foreach (var (list, children) in SequenceEditorGraph.Read(root)) {
+                if (!list.IsReadOnly) result.Add(list, children);
+                if (states == null) continue;
+                foreach (ISequenceEntity entity in children) {
+                    var state = (entity as ISequenceAttachmentStateProvider)?.CaptureAttachmentState();
                     if (state != null) states[entity] = state;
                 }
             }
-            void VisitTrigger(ISequenceTrigger trigger) {
-                foreach (ISequenceContainer actions in SequenceEditContext.EditableTriggerContainers(trigger)) Visit(actions);
-                if (trigger is CustomTrigger custom) {
-                    var source = new SequenceList(custom, SequenceListKind.TriggerSource);
-                    result[source] = source.Read();
-                    CaptureAttachmentStates(result[source]);
-                    if (custom.TriggerSource is ISequenceTrigger nested) VisitTrigger(nested);
-                }
-            }
-            void Visit(ISequenceContainer container) {
-                if (!visited.Add(container) || container is LinkedTemplateContainer { IsEditing: false }) return;
-                var items = new SequenceList(container, SequenceListKind.Items);
-                result[items] = items.Read();
-                CaptureAttachmentStates(result[items]);
-                foreach (ISequenceContainer child in result[items].OfType<ISequenceContainer>()) Visit(child);
-                if (container is IConditionable) {
-                    var conditions = new SequenceList(container, SequenceListKind.Conditions);
-                    result[conditions] = conditions.Read();
-                    CaptureAttachmentStates(result[conditions]);
-                }
-                if (container is ITriggerable) {
-                    var triggers = new SequenceList(container, SequenceListKind.Triggers);
-                    result[triggers] = triggers.Read();
-                    CaptureAttachmentStates(result[triggers]);
-                    foreach (ISequenceTrigger trigger in result[triggers].OfType<ISequenceTrigger>()) {
-                        VisitTrigger(trigger);
-                    }
-                }
-            }
-            Visit(root);
             return result;
-        }
-    }
-
-    internal enum SequenceListKind { Items, Conditions, Triggers, TriggerSource }
-
-    internal sealed record SequenceList(ISequenceEntity Owner, SequenceListKind Kind) {
-        private ISequenceContainer Container => (ISequenceContainer)Owner;
-        public ISequenceEntity[] Read() => Kind switch {
-            SequenceListKind.Items => Container.GetItemsSnapshot().Cast<ISequenceEntity>().ToArray(),
-            SequenceListKind.Conditions => ((IConditionable)Owner).GetConditionsSnapshot().Cast<ISequenceEntity>().ToArray(),
-            SequenceListKind.TriggerSource => ((CustomTrigger)Owner).TriggerSource is ISequenceTrigger source ? new ISequenceEntity[] { source } : Array.Empty<ISequenceEntity>(),
-            _ => ((ITriggerable)Owner).GetTriggersSnapshot().Cast<ISequenceEntity>().ToArray()
-        };
-        public void Remove(ISequenceEntity entity) {
-            if (Kind == SequenceListKind.TriggerSource) { ((CustomTrigger)Owner).TriggerSource = null; return; }
-            switch (entity) {
-                case ISequenceCondition condition: Container.Remove(condition); break;
-                case ISequenceTrigger trigger: Container.Remove(trigger); break;
-                case ISequenceItem item: Container.Remove(item); break;
-            }
-        }
-        public void Insert(int index, ISequenceEntity entity) {
-            if (Kind == SequenceListKind.TriggerSource) { ((CustomTrigger)Owner).TriggerSource = (ISequenceTrigger)entity; return; }
-            if (Owner is SequenceContainer container) {
-                switch (entity) {
-                    case ISequenceCondition condition: container.InsertIntoSequenceBlocks(index, condition); break;
-                    case ISequenceTrigger trigger: container.InsertIntoSequenceBlocks(index, trigger); break;
-                    case ISequenceItem item: container.InsertIntoSequenceBlocks(index, item); break;
-                }
-            } else {
-                // Direct interface implementations keep their own attachment semantics.
-                switch (entity) {
-                    case ISequenceCondition condition: ((IConditionable)Owner).Add(condition); break;
-                    case ISequenceTrigger trigger: ((ITriggerable)Owner).Add(trigger); break;
-                    case ISequenceItem item: Container.Add(item); break;
-                }
-                Reorder(entity, index);
-            }
-        }
-        public void Reorder(ISequenceEntity entity, int index) {
-            switch (Kind) {
-                case SequenceListKind.Items: Move(Container.Items, (ISequenceItem)entity, index); break;
-                case SequenceListKind.Conditions: Move(((IConditionable)Owner).Conditions, (ISequenceCondition)entity, index); break;
-                case SequenceListKind.Triggers: Move(((ITriggerable)Owner).Triggers, (ISequenceTrigger)entity, index); break;
-            }
-        }
-        private static void Move<T>(IList<T> list, T entity, int index) {
-            int oldIndex = list.IndexOf(entity);
-            if (oldIndex == index) return;
-            if (list is System.Collections.ObjectModel.ObservableCollection<T> observable) { observable.Move(oldIndex, index); return; }
-            list.RemoveAt(oldIndex);
-            list.Insert(index, entity);
         }
     }
 
@@ -196,35 +116,19 @@ namespace NINA.Sequencer.Editing {
 
     internal sealed record SequenceAttachmentChange(ISequenceEditSnapshot Before, ISequenceEditSnapshot After);
 
-    internal sealed class StructureSequenceEdit : ISequenceEdit, ISequenceEditDetails {
+    internal sealed class SequencePlacementState : ISequenceEditSnapshot {
         private readonly SequenceListChange[] changes;
         private readonly SequenceAttachmentChange[] configuration;
-        public StructureSequenceEdit(string description, SequenceListChange[] changes, SequenceAttachmentChange[] configuration, string details) {
-            Details = details;
-            Description = description;
+        private readonly bool before;
+        public SequencePlacementState(SequenceListChange[] changes, SequenceAttachmentChange[] configuration, bool before) {
             this.changes = changes;
             this.configuration = configuration;
+            this.before = before;
         }
-        public string Description { get; }
-        public string Details { get; }
-        public bool CanUndo => Matches(false);
-        public bool CanRedo => Matches(true);
-        private bool Matches(bool before) => changes.All(change => change.List.Read().SequenceEqual(before ? change.Before : change.After, ReferenceEqualityComparer.Instance))
+        public string Description => null;
+        public bool IsCurrent => changes.All(change => change.List.Read().SequenceEqual(before ? change.Before : change.After, ReferenceEqualityComparer.Instance))
             && configuration.All(change => (before ? change.Before : change.After).IsCurrent);
-        public void Undo() => Apply(true);
-        public void Redo() => Apply(false);
-        private void Apply(bool undo) {
-            SequenceContainer.ApplyEditorChange(() => {
-                if (!Matches(!undo)) throw new SequenceEditConflictException();
-                try { Restore(undo); }
-                catch {
-                    try { Restore(!undo); }
-                    catch (Exception ex) { throw new InvalidOperationException("Sequence placement could not be compensated.", ex); }
-                    throw;
-                }
-            });
-        }
-        private void Restore(bool before) {
+        public void Restore() {
             foreach (SequenceListChange change in changes) {
                 var target = new HashSet<ISequenceEntity>(before ? change.Before : change.After, ReferenceEqualityComparer.Instance);
                 foreach (ISequenceEntity entity in change.List.Read()) {
@@ -239,7 +143,6 @@ namespace NINA.Sequencer.Editing {
                 }
             }
             foreach (SequenceAttachmentChange change in configuration) (before ? change.Before : change.After).Restore();
-            if (!Matches(before)) throw new InvalidOperationException("Sequence placement could not be restored.");
         }
     }
 }
