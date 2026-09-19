@@ -24,6 +24,7 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     
     <SelfContained>true</SelfContained>
+    <RuntimeFrameworkVersion>8.0.31</RuntimeFrameworkVersion>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 
     <Deterministic>true</Deterministic>
