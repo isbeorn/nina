@@ -2,7 +2,7 @@
 
 Approved scope: all 96 groups in [the reviewed list](BACKPORT_REVIEW_3.2.md), including the direct-IP Alpaca exception. The [commit review](BACKPORT_REVIEW_3.2_COMMITS.md) records the complete evaluation of develop.
 
-Baseline: `2393eae581145ed5b8114bf07c48ca2580540fd5`. Pinned source: `develop` at `6a83379822e0e015d13591a5ede54574ecc3d0e3`. Target: `release/3.2.x`, version `3.2.1.9001`.
+Baseline: `2393eae581145ed5b8114bf07c48ca2580540fd5`. Pinned source: `develop` at `6a83379822e0e015d13591a5ede54574ecc3d0e3`. Target: `release/3.2.x`, release-candidate seed `3.2.1.3000-rc`. CI's first build increment produces `3.2.1.3001-rc`.
 
 The subsequently requested CI, .NET servicing and selective NuGet updates are recorded separately in [3.2 maintenance verification](BACKPORT_MAINTENANCE_3.2.md). They retain separate topic commits and add published API and compiled-plugin compatibility checks.
 
@@ -131,7 +131,7 @@ Each row is one commit. Multiple upstream commits belonging to the same approved
 
 ## Verification
 
-Final automated verification uses .NET SDK 8.0.425 on Windows x64:
+Application-backport verification used .NET SDK 8.0.425 on Windows x64. Installer/package versions below record the initial local validation before the branch was reset to the release-candidate seed:
 
 - Full regression suite: 3,668 passed, 3 existing skips and no failures.
 - Nine isolated runs: 56 passed. These cover camera capture/live-view behavior, automatic Bayer selection in the real image VM, profile startup and persistence, readout-mode templates, hyperlink views and enable/disable behavior, telescope sync, real Sky Atlas transit searches, modal window construction and direct-IP Alpaca setup bindings.

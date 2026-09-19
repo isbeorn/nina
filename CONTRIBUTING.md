@@ -114,8 +114,10 @@ Run **Build and Release Version** on the selected release branch with operation 
 
 The existing workflow entry point is usable before the new **Prepare Version Release** helper is registered on the default branch:
 
+For the first 3.2 Hotfix 1 candidate, the branch is seeded at `3.2.1.3000` with informational/package version `3.2.1.3000-rc`. Use `build` so CI prepares `3.2.1.3001-rc`; `patch` would advance to `3.2.2.3001-rc`.
+
 ```powershell
-gh workflow run build-and-release.yml --ref release/3.2.x -f operation=prepare -f increment=patch
+gh workflow run build-and-release.yml --ref release/3.2.x -f operation=prepare -f increment=build
 ```
 
 Maintenance branches publish stable releases without replacing the development nightly or beta update feeds. Signing, storage and publication retain their existing protected environments. The application and installer use the .NET 8 SDK selected by `global.json`; the application pins its servicing runtime and WiX derives the runtime-versioned DAC filename from that payload.

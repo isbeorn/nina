@@ -1,6 +1,6 @@
 # 3.2 Hotfix 1 CI and dependency maintenance
 
-This follow-up implements the additional maintenance scope approved after the 96 application backport topics. Target: `release/3.2.x`, version `3.2.1.9001`. Development remains on `develop`.
+This follow-up implements the additional maintenance scope approved after the 96 application backport topics. Target: `release/3.2.x`, release-candidate seed `3.2.1.3000-rc`. Development remains on `develop`.
 
 ## Checklist
 
@@ -37,7 +37,7 @@ Maintenance adaptations:
 - A maintenance release leaves the development nightly and beta update feeds alone. Existing signing, upload and publication environments remain in place.
 - CI builds a fixture against exact published `3.2.0.9001` packages, then loads that unchanged DLL through the production plugin assembly-load context. It also compares all 12 published NINA contract assemblies, including `nikoncswrapper`, with the current build.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md#versioning-in-nina) for the release procedure. The already prepared `3.2.1.9001` version is not incremented again by this maintenance change.
+See [CONTRIBUTING.md](CONTRIBUTING.md#versioning-in-nina) for the release procedure. The branch starts at assembly/file version `3.2.1.3000` and informational/package version `3.2.1.3000-rc`. Run preparation with `increment=build` to produce the first candidate, `3.2.1.3001-rc`. Release notes remain under `3.2 Hotfix 1`. RC publication uses the existing Betas storage channel and does not replace the stable or development update feeds.
 
 ## .NET servicing
 
@@ -89,7 +89,7 @@ Deferral does not assert that these versions are breaking. It avoids expanding t
 
 ## Verification
 
-Local Windows x64 validation after the selected dependency updates:
+Local Windows x64 validation after the selected dependency updates, before the release-candidate seed was selected. The installer/package versions below identify those original validation artifacts:
 
 - Full regression suite: **3,668 passed**, three existing skips and no failures.
 - Nine isolated WPF/integration runs: **56 passed**, including actual view construction and direct-IP Alpaca bindings.
@@ -100,6 +100,8 @@ Local Windows x64 validation after the selected dependency updates:
 - Release managed/WPF build and x64 MSI build passed without a runtime override. Runtime configuration includes .NET and Windows Desktop **8.0.31**.
 - MSI table inspection: product `3.2.1.9001`, **978 files**, the correct `mscordaccore_amd64_amd64_8.0.3126.42015.dll` alias and `REINSTALLMODE=amus` before `CostInitialize` in both UI and execute sequences.
 - All **12 NuGet package/symbol pairs** were generated using the release workflow's explicit `--include-symbols -p:SymbolPackageFormat=snupkg` options. Archive inspection confirmed version `3.2.1.9001` and portable PDBs.
+
+After selecting the `3.2.1.3000-rc` seed, the 25 release-policy tests and all 12 published API comparisons passed again. The unchanged 3.2 plugin fixture also passed against the rebuilt RC assemblies. A dry run on copies of the actual 13 version files produced `3.2.1.3001-rc` and passed the version-only merge gate. No hosted workflow was triggered.
 
 Reproduce the principal checks:
 
