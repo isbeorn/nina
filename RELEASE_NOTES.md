@@ -75,7 +75,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 - Updated the bundled .NET 8 runtime to 8.0.31 and selected dependency patches while retaining the 3.2 plugin interfaces.
 - Installer runtime filenames now follow the packaged .NET servicing version automatically.
-- Backported protected release automation for long-lived maintenance branches, including patch version increments, symbol packages and CI checks against the published 3.2 plugin API.
+- Backported protected release automation for long-lived maintenance branches, including patch version increments and symbol packages.
 
 
 # Version 3.2

@@ -122,7 +122,7 @@ gh workflow run build-and-release.yml --ref release/3.2.x -f operation=prepare -
 
 Maintenance branches publish stable releases without replacing the development nightly or beta update feeds. Signing, storage and publication retain their existing protected environments. The application and installer use the .NET 8 SDK selected by `global.json`; the application pins its servicing runtime and WiX derives the runtime-versioned DAC filename from that payload.
 
-CI checks the published 3.2 API and loads a plugin built against 3.2.0.9001 through the production assembly-load context without recompiling it for the hotfix. Run `.github/scripts/test-plugin-compatibility.ps1` locally after dependency or plugin-contract changes. A passing build or a package's minor/patch version number alone is insufficient evidence of plugin compatibility.
+Compatibility with existing 3.2 plugins is reviewed manually, including changes to public interfaces and shared dependencies. A passing build or a package's minor/patch version number alone is insufficient evidence of plugin compatibility.
 
 MAJOR version increases for big changes, like changing technologies etc.
 

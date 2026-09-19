@@ -35,7 +35,7 @@ Maintenance adaptations:
 - Only the 13 existing assembly/package version files may change in the automated version pull request. The merge job checks its exact tested head, owner-started preparation run, release branch and version-only diff.
 - Publication uses `workflow_dispatch` on the selected branch. The existing **Build and Release Version** entry point can invoke the new preparation helper before that helper is registered on the default branch.
 - A maintenance release leaves the development nightly and beta update feeds alone. Existing signing, upload and publication environments remain in place.
-- CI builds a fixture against exact published `3.2.0.9001` packages, then loads that unchanged DLL through the production plugin assembly-load context. It also compares all 12 published NINA contract assemblies, including `nikoncswrapper`, with the current build.
+- Plugin compatibility was checked locally against exact published `3.2.0.9001` packages and an unchanged compiled plugin. The added CI runner and fixture projects were subsequently removed at the user's request; compatibility review remains manual. The local results are retained below as verification history.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md#versioning-in-nina) for the release procedure. The branch starts at assembly/file version `3.2.1.3000` and informational/package version `3.2.1.3000-rc`. Run preparation with `increment=build` to produce the first candidate, `3.2.1.3001-rc`. Release notes remain under `3.2 Hotfix 1`. RC publication uses the existing Betas storage channel and does not replace the stable or development update feeds.
 
@@ -94,21 +94,20 @@ Local Windows x64 validation after the selected dependency updates, before the r
 - Full regression suite: **3,668 passed**, three existing skips and no failures.
 - Nine isolated WPF/integration runs: **56 passed**, including actual view construction and direct-IP Alpaca bindings.
 - Compiled 3.2 plugin: loaded through the production assembly-load context, composed with MEF, initialized, executed, cloned, canceled and torn down without recompiling it against the hotfix. Its DLL hash remained unchanged.
-- Published API comparison: all **12 contract assemblies passed** against `3.2.0.9001`; all **five updated dependency DLLs passed** against the pre-maintenance baseline. A deliberately incompatible assembly was rejected by the CI gate, which requires positive APICompat success output as well as its exit status.
+- Published API comparison: all **12 contract assemblies passed** against `3.2.0.9001`; all **five updated dependency DLLs passed** against the pre-maintenance baseline. The local check also rejected a deliberately incompatible assembly.
 - Release-policy tests: **25 passed**, including patch resets, all four channels, lower/upper boundaries, overflow rejection, exact version-only diffs and dispatching the selected branch. Four new cases failed before the maintenance adaptations.
 - Actionlint and PowerShell parsing passed for the three changed workflows.
 - Release managed/WPF build and x64 MSI build passed without a runtime override. Runtime configuration includes .NET and Windows Desktop **8.0.31**.
 - MSI table inspection: product `3.2.1.9001`, **978 files**, the correct `mscordaccore_amd64_amd64_8.0.3126.42015.dll` alias and `REINSTALLMODE=amus` before `CostInitialize` in both UI and execute sequences.
 - All **12 NuGet package/symbol pairs** were generated using the release workflow's explicit `--include-symbols -p:SymbolPackageFormat=snupkg` options. Archive inspection confirmed version `3.2.1.9001` and portable PDBs.
 
-After selecting the `3.2.1.3000-rc` seed, the 25 release-policy tests and all 12 published API comparisons passed again. The unchanged 3.2 plugin fixture also passed against the rebuilt RC assemblies. A dry run on copies of the actual 13 version files produced `3.2.1.3001-rc` and passed the version-only merge gate. No hosted workflow was triggered.
+After selecting the `3.2.1.3000-rc` seed, the 25 release-policy tests and all 12 published API comparisons passed again. The unchanged 3.2 plugin fixture also passed against the rebuilt RC assemblies. A dry run on copies of the actual 13 version files produced `3.2.1.3001-rc` and passed the version-only merge gate. No hosted workflow was triggered during that local preparation.
 
 Reproduce the principal checks:
 
 ```powershell
 node --test .github/scripts/merge-version-pull-request.test.js .github/scripts/release-version.test.js
 dotnet test NINA.Test/NINA.Test.csproj -c Debug
-./.github/scripts/test-plugin-compatibility.ps1
 dotnet msbuild NINA.sln -restore -t:NINA_Setup -p:Configuration=Release -p:Platform=x64 -p:RestoreForce=true -m
 ```
 

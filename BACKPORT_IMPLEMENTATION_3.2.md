@@ -4,7 +4,7 @@ Approved scope: all 96 groups in [the reviewed list](BACKPORT_REVIEW_3.2.md), in
 
 Baseline: `2393eae581145ed5b8114bf07c48ca2580540fd5`. Pinned source: `develop` at `6a83379822e0e015d13591a5ede54574ecc3d0e3`. Target: `release/3.2.x`, release-candidate seed `3.2.1.3000-rc`. CI's first build increment produces `3.2.1.3001-rc`.
 
-The subsequently requested CI, .NET servicing and selective NuGet updates are recorded separately in [3.2 maintenance verification](BACKPORT_MAINTENANCE_3.2.md). They retain separate topic commits and add published API and compiled-plugin compatibility checks.
+The subsequently requested CI, .NET servicing and selective NuGet updates are recorded separately in [3.2 maintenance verification](BACKPORT_MAINTENANCE_3.2.md). They retain separate topic commits and include the results of local API and compiled-plugin compatibility verification. Compatibility review is manual; the added CI runner and fixture projects have been removed.
 
 - [x] Implement every approved group, including direct-IP Alpaca and the selective adaptations.
 - [x] Preserve .NET 8, existing plugin interfaces and profile/sequence compatibility.

@@ -47,10 +47,6 @@ jobs:
     - name: Run unit tests
       run: dotnet test NINA.Test/NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64 --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
 
-    - name: Verify published 3.2 plugin compatibility
-      shell: pwsh
-      run: ./.github/scripts/test-plugin-compatibility.ps1
-
     - name: Upload NUnit test results
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
