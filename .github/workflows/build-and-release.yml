@@ -439,7 +439,7 @@ jobs:
     name: Publish Beta Release
     needs: [versioning, build, upload]
     runs-on: ubuntu-latest
-    if: ${{ github.ref_name == 'develop' && (needs.versioning.outputs.release_channel == 'Betas' || needs.versioning.outputs.release_channel == 'Releases') }}
+    if: ${{ (github.ref_name == 'develop' || github.ref_name == 'release/3.2.x') && (needs.versioning.outputs.release_channel == 'Betas' || needs.versioning.outputs.release_channel == 'Releases') }}
     environment:
       name: beta-release
     

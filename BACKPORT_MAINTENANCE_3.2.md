@@ -34,10 +34,10 @@ Maintenance adaptations:
 - Release preparation supports a build increment or a patch increment. For example, `3.2.1.9002` advances to `3.2.2.9001` for a patch release. Channel changes remain manual; build counters cannot roll into another channel.
 - Only the 13 existing assembly/package version files may change in the automated version pull request. The merge job checks its exact tested head, owner-started preparation run, release branch and version-only diff.
 - Publication uses `workflow_dispatch` on the selected branch. The existing **Build and Release Version** entry point can invoke the new preparation helper before that helper is registered on the default branch.
-- A maintenance release leaves the development nightly and beta update feeds alone. Existing signing, upload and publication environments remain in place.
+- Beta/RC and stable builds from `release/3.2.x` update the shared beta feed through the protected `beta-release` environment. Stable builds also update the stable feed. The nightly feed remains restricted to `develop`. Existing signing, upload and publication environments remain in place.
 - Plugin compatibility was checked locally against exact published `3.2.0.9001` packages and an unchanged compiled plugin. The added CI runner and fixture projects were subsequently removed at the user's request; compatibility review remains manual. The local results are retained below as verification history.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md#versioning-in-nina) for the release procedure. The branch starts at assembly/file version `3.2.1.3000` and informational/package version `3.2.1.3000-rc`. Run preparation with `increment=build` to produce the first candidate, `3.2.1.3001-rc`. Release notes remain under `3.2 Hotfix 1`. RC publication uses the existing Betas storage channel and does not replace the stable or development update feeds.
+See [CONTRIBUTING.md](CONTRIBUTING.md#versioning-in-nina) for the release procedure. The branch starts at assembly/file version `3.2.1.3000` and informational/package version `3.2.1.3000-rc`. Run preparation with `increment=build` to produce the first candidate, `3.2.1.3001-rc`. Release notes remain under `3.2 Hotfix 1`. RC publication uses the existing Betas storage channel and shared beta update feed, leaving the stable and nightly feeds unchanged.
 
 ## .NET servicing
 

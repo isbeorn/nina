@@ -120,7 +120,9 @@ For the first 3.2 Hotfix 1 candidate, the branch is seeded at `3.2.1.3000` with 
 gh workflow run build-and-release.yml --ref release/3.2.x -f operation=prepare -f increment=build
 ```
 
-Maintenance branches publish stable releases without replacing the development nightly or beta update feeds. Signing, storage and publication retain their existing protected environments. The application and installer use the .NET 8 SDK selected by `global.json`; the application pins its servicing runtime and WiX derives the runtime-versioned DAC filename from that payload.
+Beta/RC and stable builds from `release/3.2.x` publish to the shared beta update feed through the existing `beta-release` environment. Stable builds also publish to the stable feed. Nightly feed publication remains restricted to `develop`. Signing, storage and publication retain their existing protected environments. The application and installer use the .NET 8 SDK selected by `global.json`; the application pins its servicing runtime and WiX derives the runtime-versioned DAC filename from that payload.
+
+After fixing a release workflow, start a fresh dispatch on the updated branch. Re-running an older run uses its original workflow revision. To publish an already merged version without another version increment, select operation `publish` and provide that version pull request's number and merge SHA. This runs the build/upload/publication stages again for the same source commit and retains the normal environment approvals.
 
 Compatibility with existing 3.2 plugins is reviewed manually, including changes to public interfaces and shared dependencies. A passing build or a package's minor/patch version number alone is insufficient evidence of plugin compatibility.
 
