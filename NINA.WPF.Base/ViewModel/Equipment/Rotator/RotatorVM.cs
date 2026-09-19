@@ -12,27 +12,27 @@
 
 #endregion "copyright"
 
-using NINA.Equipment.Equipment.MyRotator;
+using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.Core.Utility.Extensions;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyRotator;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Profile.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NINA.Astrometry;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Model;
-using NINA.Core.Locale;
-using NINA.Core.MyMessageBox;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.Equipment.Equipment;
-using NINA.Equipment.Interfaces;
-using Nito.AsyncEx;
-using System.Linq;
-using NINA.Core.Utility.Extensions;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
@@ -75,7 +75,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         }
 
         public event EventHandler<RotatorEventArgs> Synced;
+
         public event Func<object, RotatorEventArgs, Task> Moved;
+
         public event Func<object, RotatorEventArgs, Task> MovedMechanical;
 
         public async Task<IList<string>> Rescan() {
@@ -87,8 +89,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
         private void Reverse(object obj) {
             try {
-                if (obj is bool) {
-                    var reverse = (bool)obj;
+                if (obj is bool reverse) {
                     if (Rotator != null && RotatorInfo.Connected) {
                         Logger.Info($"Setting Rotator Reverse flag to {reverse}");
                         Rotator.Reverse = reverse;
@@ -118,7 +119,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     RotatorInfo.Position = Rotator.Position;
                     RotatorInfo.Synced = true;
 
-                    try { Synced?.Invoke(this, new RotatorEventArgs(from, RotatorInfo.Position)); } catch (Exception ex) { Logger.Error(ex); }                    
+                    try { Synced?.Invoke(this, new RotatorEventArgs(from, RotatorInfo.Position)); } catch (Exception ex) { Logger.Error(ex); }
                     BroadcastRotatorInfo();
                 }
             } catch (Exception ex) {
@@ -130,6 +131,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             _moveCts?.Dispose();
             _moveCts = new CancellationTokenSource();
             float pos = float.NaN;
+
             await Task.Run(async () => {
                 try {
                     var from = RotatorInfo.Position;
@@ -138,7 +140,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     var adjustedTargetPosition = GetTargetPosition(requestedPosition);
                     if (Math.Abs(adjustedTargetPosition - requestedPosition) > 0.1) {
                         Logger.Info($"Adjusted rotator target to {adjustedTargetPosition}");
-                        Notification.ShowInformation(String.Format(Loc.Instance["LblRotatorRangeAdjusted"], adjustedTargetPosition));
+                        Notification.ShowInformation(string.Format(Loc.Instance["LblRotatorRangeAdjusted"], adjustedTargetPosition));
                     }
 
                     applicationStatusMediator.StatusUpdate(
@@ -173,6 +175,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     );
                 }
             });
+
             return pos;
         }
 
@@ -184,6 +187,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             _moveCts?.Dispose();
             _moveCts = new CancellationTokenSource();
             float pos = float.NaN;
+
             await Task.Run(async () => {
                 try {
                     var from = RotatorInfo.MechanicalPosition;
@@ -192,7 +196,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     var adjustedTargetPosition = GetTargetMechanicalPosition(requestedPosition);
                     if (Math.Abs(adjustedTargetPosition - requestedPosition) > 0.1) {
                         Logger.Info($"Adjusted rotator mechanical target to {adjustedTargetPosition}");
-                        Notification.ShowInformation(String.Format(Loc.Instance["LblRotatorRangeAdjusted"], adjustedTargetPosition));
+                        Notification.ShowInformation(string.Format(Loc.Instance["LblRotatorRangeAdjusted"], adjustedTargetPosition));
                     }
 
                     applicationStatusMediator.StatusUpdate(
@@ -227,6 +231,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     );
                 }
             });
+
             return pos;
         }
 
@@ -276,7 +281,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             return rotatorValues;
         }
 
-        private DeviceUpdateTimer updateTimer;
+        private readonly DeviceUpdateTimer updateTimer;
         private RotatorInfo rotatorInfo;
 
         public RotatorInfo RotatorInfo {
@@ -306,6 +311,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         }
 
         private IRotator rotator;
+
         public IRotator Rotator {
             get => rotator;
             private set {
@@ -313,8 +319,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 RaisePropertyChanged();
             }
         }
-        private IRotatorMediator rotatorMediator;
-        private IApplicationStatusMediator applicationStatusMediator;
+
+        private readonly IRotatorMediator rotatorMediator;
+        private readonly IApplicationStatusMediator applicationStatusMediator;
 
         public IAsyncCommand ConnectCommand { get; private set; }
         public ICommand CancelConnectCommand { get; private set; }
@@ -330,6 +337,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
         public event Func<object, EventArgs, Task> Connected;
+
         public event Func<object, EventArgs, Task> Disconnected;
 
         public async Task<bool> Connect() {
@@ -484,51 +492,154 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             rotatorMediator.Broadcast(GetDeviceInfo());
         }
 
+        /// <summary>
+        /// Adjusts a requested sky position angle so that the rotator's mechanical angle stays within
+        /// the range allowed by the active profile.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Sky angle and mechanical angle differ by a fixed offset that is established when the rotator
+        /// is synced. The requested sky angle is converted to a mechanical angle using that offset,
+        /// constrained by <see cref="GetTargetMechanicalPosition(float)"/>, then converted back to a sky
+        /// angle, which is what <see cref="IRotator.MoveAbsolute(float, CancellationToken)"/> expects.
+        /// </para>
+        /// <para>
+        /// Under <see cref="RotatorRangeTypeEnum.FULL"/> the constrained angle and its 180-degree
+        /// reciprocal both frame the same field, so the one requiring less travel from the rotator's
+        /// current mechanical position is chosen.
+        /// </para>
+        /// </remarks>
+        /// <param name="position">
+        /// The desired sky position angle, in degrees. The value is normalized to the range [0, 360).
+        /// </param>
+        /// <returns>
+        /// The sky position angle, in degrees in the range [0, 360), that the rotator should be moved to.
+        /// This differs from <paramref name="position"/> whenever the range type forced an adjustment.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// Thrown when the rotator has not been synced. Sync must be performed before calling this method.
+        /// </exception>
         public float GetTargetPosition(float position) {
             if (!Rotator.Synced) {
                 // This indicates a code bug from the caller, so this message is not localized
                 throw new Exception("Rotator not synced!");
             }
 
-            // Focuser position should be in [0, 360)
-            position = AstroUtil.EuclidianModulus(position, 360);
-            var offset = Rotator.MechanicalPosition - Rotator.Position;
-            var mechanicalPosition = AstroUtil.EuclidianModulus(position + offset, 360);
-            var targetMechanicalPosition = GetTargetMechanicalPosition(mechanicalPosition);
+            // Ensure the desired position is in the range of [0, 360)
+            var newSkyPosition = AstroUtil.EuclidianModulus(position, 360);
+
+            var currentMechanicalPosition = Rotator.MechanicalPosition;
+            var currentSkyPosition = Rotator.Position;
+            var offset = currentMechanicalPosition - currentSkyPosition;
+
+            var newMechanicalPosition = AstroUtil.EuclidianModulus(newSkyPosition + offset, 360);
+            var targetMechanicalPosition = GetTargetMechanicalPosition(newMechanicalPosition);
+
+            // Under FULL range the constrained angle and its 180 degree reciprocal frame the same field,
+            // so take whichever is the shorter move from where the rotator currently sits.
+            if (profileService.ActiveProfile.RotatorSettings.RangeType == RotatorRangeTypeEnum.FULL) {
+                var reciprocalPosition = AstroUtil.EuclidianModulus(targetMechanicalPosition + 180, 360);
+
+                var directDistance = Math.Abs(AstroUtil.EuclidianModulus(targetMechanicalPosition - currentMechanicalPosition + 180, 360) - 180);
+                var reciprocalDistance = Math.Abs(AstroUtil.EuclidianModulus(reciprocalPosition - currentMechanicalPosition + 180, 360) - 180);
+
+                if (reciprocalDistance < directDistance) {
+                    targetMechanicalPosition = reciprocalPosition;
+                }
+            }
+
             return AstroUtil.EuclidianModulus(targetMechanicalPosition - offset + 360, 360);
         }
 
+        /// <summary>
+        /// Constrains a mechanical rotator angle to the range permitted by the active profile's
+        /// rotation range type and range start position.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <paramref name="position"/> is normalized to [0, 360) with a Euclidean modulus, and the
+        /// configured <see cref="RotatorRangeTypeEnum"/> then decides what happens to it:
+        /// </para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <term><see cref="RotatorRangeTypeEnum.FULL"/> and <see cref="RotatorRangeTypeEnum.LITERAL"/></term>
+        ///     <description>
+        ///       The normalized angle is returned unchanged. Every mechanical angle is reachable.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <term><see cref="RotatorRangeTypeEnum.HALF"/></term>
+        ///     <description>
+        ///       Restricts travel to the 180 degrees that follow the range start position. Angles within
+        ///       that span are returned unchanged; anything beyond it has 180 degrees added.
+        ///     </description>
+        ///   </item>
+        ///   <item>
+        ///     <term><see cref="RotatorRangeTypeEnum.QUARTER"/></term>
+        ///     <description>
+        ///       Restricts travel to the 90 degrees that follow the range start position. The quadrant the
+        ///       angle lands in relative to the range start selects the offset that folds it back into that
+        ///       span: 0, 270, 180, or 90 degrees for the first through fourth quadrant respectively.
+        ///     </description>
+        ///   </item>
+        /// </list>
+        /// <para>
+        /// A final Euclidean modulus normalizes the result back to [0, 360).
+        /// </para>
+        /// </remarks>
+        /// <param name="position">
+        /// The desired mechanical rotator angle, in degrees. Values outside [0, 360) are accepted and
+        /// will be normalized automatically.
+        /// </param>
+        /// <returns>
+        /// The calculated target mechanical position in degrees, normalized to the range [0, 360).
+        /// </returns>
+        /// <exception cref="NotImplementedException">
+        /// Thrown when the active profile specifies a <see cref="RotatorRangeTypeEnum"/> value that is
+        /// not handled by this method.
+        /// </exception>
         public float GetTargetMechanicalPosition(float position) {
-            // Focuser position should be in [0, 360)
+            // Rotator position should be [0, 360)
             position = AstroUtil.EuclidianModulus(position, 360);
             var rangeType = profileService.ActiveProfile.RotatorSettings.RangeType;
             var rangeStart = profileService.ActiveProfile.RotatorSettings.RangeStartMechanicalPosition;
             float rangeStartDistance = AstroUtil.EuclidianModulus(position - rangeStart + 360, 360);
             float targetMechanicalPosition;
-            if (rangeType == Core.Enum.RotatorRangeTypeEnum.FULL) {
-                targetMechanicalPosition = position;
-            } else if (rangeType == Core.Enum.RotatorRangeTypeEnum.HALF) {
-                if (rangeStartDistance < 180.0) {
+
+            switch (rangeType) {
+                case RotatorRangeTypeEnum.FULL:
+                case RotatorRangeTypeEnum.LITERAL:
                     targetMechanicalPosition = position;
-                } else {
-                    targetMechanicalPosition = position + 180;
-                }
-            } else if (rangeType == Core.Enum.RotatorRangeTypeEnum.QUARTER) {
-                if (rangeStartDistance < 90.0) {
-                    targetMechanicalPosition = position;
-                } else if (rangeStartDistance < 180.0) {
-                    targetMechanicalPosition = position + 270;
-                } else if (rangeStartDistance < 270.0) {
-                    targetMechanicalPosition = position + 180;
-                } else {
-                    targetMechanicalPosition = position + 90;
-                }
-            } else {
-                throw new NotImplementedException();
+                    break;
+
+                case RotatorRangeTypeEnum.HALF:
+                    if (rangeStartDistance < 180.0) {
+                        targetMechanicalPosition = position;
+                    } else {
+                        targetMechanicalPosition = position + 180;
+                    }
+                    break;
+
+                case RotatorRangeTypeEnum.QUARTER:
+                    if (rangeStartDistance < 90.0) {
+                        targetMechanicalPosition = position;
+                    } else if (rangeStartDistance < 180.0) {
+                        targetMechanicalPosition = position + 270;
+                    } else if (rangeStartDistance < 270.0) {
+                        targetMechanicalPosition = position + 180;
+                    } else {
+                        targetMechanicalPosition = position + 90;
+                    }
+                    break;
+
+                default:
+                    throw new NotImplementedException();
             }
 
+            // Ensure the target mechanical angle is within [0, 360)
             return AstroUtil.EuclidianModulus(targetMechanicalPosition, 360);
         }
+
         public IDevice GetDevice() {
             return Rotator;
         }

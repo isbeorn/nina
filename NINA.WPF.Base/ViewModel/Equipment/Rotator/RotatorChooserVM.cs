@@ -12,21 +12,22 @@
 
 #endregion "copyright"
 
-using NINA.Equipment.Equipment.MyRotator;
+using NINA.Core.Locale;
 using NINA.Core.Utility;
+using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyRotator;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Equipment.Utility;
 using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
-using NINA.Core.Locale;
-using NINA.Equipment.Utility;
-using NINA.Equipment.Equipment;
-using NINA.Equipment.Interfaces;
 using System.Threading.Tasks;
-using NINA.Equipment.Interfaces.ViewModel;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
     public class RotatorChooserVM : DeviceChooserVM<IRotator> {
+
         public RotatorChooserVM(IProfileService profileService,
                                 IEquipmentProviders<IRotator> equipmentProviders) : base(profileService, equipmentProviders) {
         }
@@ -37,7 +38,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblNoRotator"]));
-                
+
                 /* Plugin Providers */
                 foreach (var provider in await equipmentProviders.GetProviders()) {
                     try {
@@ -73,7 +74,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 devices.Add(new ManualRotator(profileService));
 
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.RotatorSettings.Id, profileService.ActiveProfile.RotatorSettings.LastDeviceName);
-
             } finally {
                 lockObj.Release();
             }
