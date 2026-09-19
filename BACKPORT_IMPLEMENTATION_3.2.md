@@ -4,6 +4,8 @@ Approved scope: all 96 groups in [the reviewed list](BACKPORT_REVIEW_3.2.md), in
 
 Baseline: `2393eae581145ed5b8114bf07c48ca2580540fd5`. Pinned source: `develop` at `6a83379822e0e015d13591a5ede54574ecc3d0e3`. Target: `release/3.2.x`, version `3.2.1.9001`.
 
+The subsequently requested CI, .NET servicing and selective NuGet updates are recorded separately in [3.2 maintenance verification](BACKPORT_MAINTENANCE_3.2.md). They retain separate topic commits and add published API and compiled-plugin compatibility checks.
+
 - [x] Implement every approved group, including direct-IP Alpaca and the selective adaptations.
 - [x] Preserve .NET 8, existing plugin interfaces and profile/sequence compatibility.
 - [x] Keep one cherry-picked commit per topic, with original source SHA references. Fold topic corrections and regression tests into those commits.
@@ -117,7 +119,7 @@ Each row is one commit. Multiple upstream commits belonging to the same approved
 
 ## Compatibility adaptations
 
-- Kept .NET 8 and the 3.2 device, profile, mediator, sequencing and plugin interfaces. Existing constructor overloads and serialized field types remain available. New enum values are appended. ZstdSharp.Port 0.8.7 is the only new package dependency.
+- Kept .NET 8 and the 3.2 device, profile, mediator, sequencing and plugin interfaces. Existing constructor overloads and serialized field types remain available. New enum values are appended. ZstdSharp.Port is the only new package dependency, initially backported at 0.8.7 and subsequently patched to 0.8.8.
 - Direct-IP Alpaca uses the 3.2 equipment/provider architecture. All ten device types have independent settings per profile, validated IP literals and cancellation/disconnect cleanup. A local HTTP safety-monitor simulator exercises connection, reads, disconnection and reconnection with a nonzero device number.
 - QHY and ZWO retain the 3.2 SDK interfaces and native binaries. ToupTek-family native calls use ordinary .NET 8 locks. Callback dispatch avoids the native-call lock, and disconnect callbacks cancel pending images without closing the native camera from the callback thread.
 - Telescope sync uses the existing timer and configured settle time. Its own cancellation also bounds a stalled timer wait. Driver failure returns immediately; a driver-accepted sync that does not converge logs the timeout, preserving the upstream return policy.
@@ -138,14 +140,14 @@ Final automated verification uses .NET SDK 8.0.425 on Windows x64:
 - Relevant failures were reproduced before fixing camera cancellation/cooling, dome completion, NOVAS/altitude handling, plate solving, ASCOM exposure metadata, profile startup, Bayer offsets, cache orientation, telescope sync and Sky Atlas transit behavior. Detailed red/green results are retained in the local verification artifacts.
 - Bright-star migration: initialized the original database, applied migrations through 14 then 15, repeated 15 and checked integrity. The catalogue grows from 57 to 212 stars and repeating migration 15 preserves identical rows.
 - Release managed/WPF projects, NuGet packages and the x64 MSI compiled successfully. The installer packages 978 files including ZstdSharp and migration 15. MSI table inspection confirmed `REINSTALLMODE=amus` at sequence 799 before `CostInitialize` at 800 in both UI and execute sequences. Product version is 3.2.1.9001.
-- The installer source already pins a versioned runtime filename from .NET 8.0.21. The validation build used `RuntimeFrameworkVersion=8.0.21` to match it. Building with this machine's default 8.0.31 runtime cannot resolve that existing filename. No runtime or installer-layout migration was folded into these backports.
+- The original application-backport validation used `RuntimeFrameworkVersion=8.0.21` to match the old installer filename. The separate maintenance update now pins .NET 8.0.31 and derives that filename from the packaged DLL. The final MSI builds without an override.
 - Existing NU1701, obsolete API, NUnit analyzer and WiX version/language warnings remain. Diff checks account for the repository's existing CRLF files and pass after removing whitespace introduced by the backports.
 
-Reproduction commands (use an SDK 8.0.425 selection file or an SDK 8 build environment):
+Reproduction commands (`global.json` selects SDK 8.0.425):
 
 ```powershell
 dotnet test NINA.Test/NINA.Test.csproj -c Debug
-dotnet msbuild NINA.sln -restore -t:NINA_Setup -p:RestoreForce=true -p:Configuration=Release -p:Platform=x64 -p:RuntimeFrameworkVersion=8.0.21 -m
+dotnet msbuild NINA.sln -restore -t:NINA_Setup -p:RestoreForce=true -p:Configuration=Release -p:Platform=x64 -m
 ```
 
 Fixtures marked `Explicit` explain their isolation requirements. Run each WPF fixture in its own test process; select each long-running timeout test separately. Local TRX results and logs are under `.tmp/hotfix-3.2/test-results` and `.tmp/hotfix-3.2`.

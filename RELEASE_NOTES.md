@@ -71,6 +71,12 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Refreshed translations for retained 3.2 functionality and the backported additions.
 - Installer upgrades and repairs restore packaged files consistently, including missing or modified files.
 
+## Runtime and release maintenance
+
+- Updated the bundled .NET 8 runtime to 8.0.31 and selected dependency patches while retaining the 3.2 plugin interfaces.
+- Installer runtime filenames now follow the packaged .NET servicing version automatically.
+- Backported protected release automation for long-lived maintenance branches, including patch version increments, symbol packages and CI checks against the published 3.2 plugin API.
+
 
 # Version 3.2
 
