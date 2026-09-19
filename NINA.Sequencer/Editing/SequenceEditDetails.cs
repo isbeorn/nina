@@ -53,6 +53,11 @@ namespace NINA.Sequencer.Editing {
 
         public static string Path(ISequenceEntity entity) => string.Join(" > ", Ancestors(entity).Select(Name));
 
+        // The editor presents immutable instruction containers as one item, including all
+        // their implementation children. The sequence root remains a separate editor scope.
+        public static ISequenceEntity VisibleOwner(ISequenceEntity entity) =>
+            Ancestors(entity).FirstOrDefault(ancestor => ancestor is IImmutableContainer and not ISequenceRootContainer) ?? entity;
+
         public static string ShortPath(ISequenceEntity entity, bool includeAncestors = false) {
             var path = Ancestors(entity);
             if (path.Count > 1) path.RemoveAll(part => part is ISequenceRootContainer);
@@ -68,6 +73,7 @@ namespace NINA.Sequencer.Editing {
         }
 
         public static string Context(ISequenceEntity entity, bool compact = false) {
+            entity = VisibleOwner(entity);
             int index = entity switch {
                 ISequenceCondition condition when entity.Parent is IConditionable parent => parent.Conditions.IndexOf(condition),
                 ISequenceTrigger trigger when entity.Parent is ITriggerable parent => parent.Triggers.IndexOf(trigger),

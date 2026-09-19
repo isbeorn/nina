@@ -90,7 +90,10 @@ namespace NINA.Test.Sequencer.Editing {
                 Mock.Of<IGuiderMediator>(x => x.GetInfo() == new GuiderInfo { Connected = true }),
                 Mock.Of<ISafetyMonitorMediator>());
             item.GetSwitchFilter().ComboBoxText = "Red";
-            var root = new SequenceRootContainer();
+            item.Name = "Smart Exposure";
+            var root = new SequenceRootContainer { SequenceTitle = "Night sequence" };
+            root.Add(new SequentialContainer { Name = "First group" });
+            root.Add(new SequentialContainer { Name = "Second group" });
             root.Add(item);
             history = new SequenceEditHistory(root);
             var templates = new NINA.Sequencer.SequenceItem.Imaging.Datatemplates();
@@ -133,6 +136,7 @@ namespace NINA.Test.Sequencer.Editing {
             behavior.Commit();
             expression.Definition.Should().Be("7");
             history.Position.Should().Be(1);
+            AssertCaption("Smart Exposure", 3);
             history.Undo().Should().BeTrue();
             expression.Definition.Should().Be(before);
             box.Text.Should().Be(before);
@@ -163,6 +167,7 @@ namespace NINA.Test.Sequencer.Editing {
             Drain();
             filter.ComboBoxText.Should().Be("Green");
             history.Position.Should().Be(1);
+            if (!standalone) AssertCaption("Smart Exposure", 3);
             history.Undo().Should().BeTrue();
             filter.ComboBoxText.Should().Be("Red");
             filter.XfilterExpression.Definition.Should().Be("Red");
@@ -227,6 +232,8 @@ namespace NINA.Test.Sequencer.Editing {
             exposure.Gain.Should().Be(200);
             exposure.GainExpression.Definition.Should().Be("200");
             history.Position.Should().Be(1);
+            if (instruction == "Smart") AssertCaption("Smart Exposure", 3);
+            if (instruction == "Flat") AssertCaption("Auto Exposure Flat", 4);
 
             cameraInfo.DefaultGain = 200;
             exposure.Validate();
@@ -270,6 +277,7 @@ namespace NINA.Test.Sequencer.Editing {
                 Mock.Of<IImageHistoryVM>(x => x.ImageHistory == new List<ImageHistoryPoint>()),
                 Mock.Of<IFilterWheelMediator>(x => x.GetInfo() == new FilterWheelInfo { Connected = true }),
                 Mock.Of<IFlatDeviceMediator>(x => x.GetInfo() == new FlatDeviceInfo { Connected = true }));
+            flat.Name = "Auto Exposure Flat";
             history.Root.Add(flat);
             var templates = new NINA.Sequencer.SequenceItem.FlatDevice.Datatemplates();
             Application.Current.Resources.MergedDictionaries.Add(templates);
@@ -279,6 +287,15 @@ namespace NINA.Test.Sequencer.Editing {
             Drain();
             history.Position.Should().Be(0);
             return flat.GetExposureItem();
+        }
+
+        private void AssertCaption(string name, int position) {
+            var entry = history.Entries.Last();
+            using (new FluentAssertions.Execution.AssertionScope()) {
+                entry.Description.Should().StartWith($"Edit {name}:");
+                entry.Summary.Should().StartWith("Night sequence" + Environment.NewLine + $"Position {position}" + Environment.NewLine);
+                entry.Details.Should().Contain($"Night sequence > {name} (#{position})");
+            }
         }
 
         private static void SelectGain(ComboBox combo, int index, bool keyboard) {

@@ -63,7 +63,7 @@ namespace NINA.Sequencer.Editing {
                 foreach (PropertyInfo part in path) current = part.GetValue(current);
                 return current;
             }
-            string description = string.Format(Loc.Instance["Lbl_SequenceHistory_EditAction"], SequenceEditDetails.Name(owner), SequenceEditDetails.Field(path ?? Array.Empty<PropertyInfo>(), name));
+            string description = string.Format(Loc.Instance["Lbl_SequenceHistory_EditAction"], SequenceEditDetails.Name(SequenceEditDetails.VisibleOwner(owner)), SequenceEditDetails.Field(path ?? Array.Empty<PropertyInfo>(), name));
             string context = SequenceEditDetails.Context(owner);
             string summaryContext = SequenceEditDetails.Context(owner, compact: true);
             var weakBinding = new WeakReference<BindingExpression>(binding);

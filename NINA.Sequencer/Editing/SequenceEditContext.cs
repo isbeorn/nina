@@ -122,7 +122,7 @@ namespace NINA.Sequencer.Editing {
         internal static void Property<T>(ISequenceEntity owner, string name, Func<T> read, Action<T> write, T value) {
             SequenceEditHistory history = Find(owner)?.ForOwner(owner);
             if (history?.IsRecording != true) { write(value); return; }
-            string description = string.Format(Loc.Instance["Lbl_SequenceHistory_EditAction"], SequenceEditDetails.Name(owner), name);
+            string description = string.Format(Loc.Instance["Lbl_SequenceHistory_EditAction"], SequenceEditDetails.Name(SequenceEditDetails.VisibleOwner(owner)), name);
             history.CaptureEdit(description, () => SequencePropertyCapture.Capture(description, read, write, context: SequenceEditDetails.Context(owner), summaryContext: SequenceEditDetails.Context(owner, compact: true)), () => write(value));
         }
         internal static void StepExpression(FrameworkElement editor, DependencyProperty property, string definition) {

@@ -151,6 +151,51 @@ namespace NINA.Test.Sequencer.Editing {
             history.Entries.Last().Details.Should().Contain("1 -> 30*6");
         }
 
+        [TestCase("Direct", false)]
+        [TestCase("Direct", true)]
+        [TestCase("Mutable", false)]
+        [TestCase("Mutable", true)]
+        [TestCase("Compound", false)]
+        [TestCase("Compound", true)]
+        public void CompoundPluginField_UsesVisibleOwnerForCaptions_AndActualOwnerForReplay(string nesting, bool command) {
+            var root = new SequenceRootContainer { SequenceTitle = "Night sequence" };
+            var compound = new CompoundContainer { Name = "Plugin exposure group" };
+            root.Add(new Item { Name = "Previous item" });
+            root.Add(compound);
+            SequentialContainer parent = compound;
+            if (nesting != "Direct") {
+                parent = nesting == "Compound" ? new CompoundContainer() : new SequentialContainer();
+                parent.Name = "Internal group";
+                compound.Add(parent);
+            }
+            var item = new Item { Name = "Internal exposure", Setting = 60 };
+            parent.Add(item);
+            using var history = new SequenceEditHistory(root);
+            if (command) {
+                SequenceEditContext.Property(item, nameof(item.Setting), () => item.Setting, value => item.Setting = value, 180);
+            } else {
+                var box = new TextBox { DataContext = item };
+                box.SetBinding(TextBox.TextProperty, new Binding(nameof(item.Setting)));
+                var capture = SequencePropertyCapture.Create(item, box.GetBindingExpression(TextBox.TextProperty));
+                item.Setting = 180;
+                history.RecordApplied(capture!.Complete());
+            }
+
+            var entry = history.Entries.Last();
+            entry.Description.Should().Be("Edit Plugin exposure group: Setting");
+            entry.Summary.Should().Be("Night sequence" + Environment.NewLine + "Position 2" + Environment.NewLine + "60 -> 180");
+            entry.Details.Should().Contain("Night sequence > Plugin exposure group (#2)").And.NotContain("Internal");
+            string details = entry.Details;
+            compound.Name = "Renamed group";
+            history.Undo().Should().BeTrue();
+            item.Setting.Should().Be(60);
+            history.Redo().Should().BeTrue();
+            item.Setting.Should().Be(180);
+            parent.Items.Should().ContainSingle().Which.Should().BeSameAs(item);
+            item.Parent.Should().BeSameAs(parent);
+            entry.Details.Should().Be(details);
+        }
+
         [Test]
         public void StructureDetails_NameTheActualItemAndLocations_IgnoreIncidentalIndexShifts() {
             var root = new SequenceRootContainer { SequenceTitle = "Night sequence" };
@@ -326,6 +371,7 @@ namespace NINA.Test.Sequencer.Editing {
         }
 
         public class Option { public string Name { get; set; } = "Luminance"; }
+        private sealed class CompoundContainer : SequentialContainer, IImmutableContainer { }
         private sealed class TargetContainer : SequentialContainer, IDeepSkyObjectContainer {
             public NINA.Astrometry.InputTarget Target { get; set; } = new(NINA.Astrometry.Angle.ByDegree(0), NINA.Astrometry.Angle.ByDegree(0), null);
             public NINA.Astrometry.NighttimeData NighttimeData => null!;
