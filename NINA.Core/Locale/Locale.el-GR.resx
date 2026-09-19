@@ -1290,7 +1290,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Ανατολή</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Η Κάμερα δεν είναι ρυθμισμένη για χειροκίνητη ή λειτουργία bulb! Παρακαλώ ρυθμίστε τη σε χειροκίνητη ή bulb λειτουργία πριν την σύνδεση</value>
+    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Ενεργοποίηση κλιμάκωσης bit</value>
@@ -7063,6 +7063,12 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
     <value>Telescope park has timed out after {0} minutes.</value>
   </data>
+  <data name="LblDomeParkTimeout" xml:space="preserve">
+    <value>Dome park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblDomeParkFailed" xml:space="preserve">
+    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+  </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Telescope unpark has timed out after {0} minutes.</value>
   </data>
@@ -8107,5 +8113,95 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   </data>
   <data name="LblStarSNR" xml:space="preserve">
     <value>Star SNR</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Undo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Redo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Title" xml:space="preserve">
+    <value>Edit history</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Hint" xml:space="preserve">
+    <value>Select a state to undo or redo to it.</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
+    <value>Current</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
+    <value>(saved)</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Initial" xml:space="preserve">
+    <value>Earlier state</value>
+  </data>
+  <data name="Lbl_SequenceHistory_UndoAction" xml:space="preserve">
+    <value>Undo {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_RedoAction" xml:space="preserve">
+    <value>Redo {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_EditAction" xml:space="preserve">
+    <value>Edit {0}: {1}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_MoveAction" xml:space="preserve">
+    <value>Move {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_AddAction" xml:space="preserve">
+    <value>Add {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Position" xml:space="preserve">
+    <value>Position {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_PositionChange" xml:space="preserve">
+    <value>Position {0} -&gt; {1}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_DeleteAction" xml:space="preserve">
+    <value>Delete {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_DuplicateAction" xml:space="preserve">
+    <value>Duplicate {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_PlaceAction" xml:space="preserve">
+    <value>Place item in {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_ToggleAction" xml:space="preserve">
+    <value>Enable/disable {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_ClearAction" xml:space="preserve">
+    <value>Clear sequence</value>
+  </data>
+  <data name="Lbl_SequenceHistory_TargetAction" xml:space="preserve">
+    <value>Change target {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Conflict" xml:space="preserve">
+    <value>This edit cannot be restored because its configuration was changed outside edit history. The sequence has not been changed.</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Failed" xml:space="preserve">
+    <value>Restoring the edit failed. Edit history was cleared. Review the sequence before continuing.</value>
+  </data>
+  <data name="Lbl_SequenceHistory_ValueChange" xml:space="preserve">
+    <value>{0} -&gt; {1}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_NoValue" xml:space="preserve">
+    <value>(empty)</value>
+  </data>
+  <data name="Lbl_SequenceHistory_CoordinateValue" xml:space="preserve">
+    <value>RA {0}, Dec {1}, rotation {2} degrees ({3})</value>
+  </data>
+  <data name="Lbl_SequenceHistory_MoreChanges" xml:space="preserve">
+    <value>+ {0} more changes</value>
+  </data>
+  <data name="Lbl_SequenceHistory_AddedDetail" xml:space="preserve">
+    <value>Added {0} to {1}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_RemovedDetail" xml:space="preserve">
+    <value>Removed {0} from {1}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_MovedDetail" xml:space="preserve">
+    <value>{0}: {1} -&gt; {2}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
+    <value>The edit could not be applied. The previous state and edit history were preserved.</value>
   </data>
 </root>
