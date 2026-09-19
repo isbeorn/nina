@@ -81,7 +81,7 @@
                             Margin="-21,0,0,0"
                             HorizontalAlignment="Stretch">
                             <i:Interaction.Behaviors>
-                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" RecordSequenceStructure="True" />
                             </i:Interaction.Behaviors>
                         </ItemsPresenter>
                     </Grid>
@@ -171,7 +171,7 @@
                                     Margin="0,0,0,15"
                                     HorizontalAlignment="Stretch">
                                     <i:Interaction.Behaviors>
-                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" RecordSequenceStructure="True" />
                                     </i:Interaction.Behaviors>
                                 </ItemsPresenter>
                             </Border>
@@ -955,7 +955,7 @@
                                     DragAboveSize="0"
                                     DragBelowSize="0"
                                     DragOverCenterText="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" RecordSequenceStructure="True" />
                             </i:Interaction.Behaviors>
                         </Grid>
                     </Border>
@@ -1660,7 +1660,7 @@
                                     AllowDragBelow="False"
                                     AllowDragCenter="True"
                                     DragOverCenterText="{ns:Loc Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText}" />
-                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.ISequenceTrigger" OnDropCommand="DropIntoTriggerSourceCommand" />
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.ISequenceTrigger" OnDropCommand="DropIntoTriggerSourceCommand" RecordSequenceStructure="True" />
                             </i:Interaction.Behaviors>
                         </Border>
                         <Border Grid.Column="2" Background="{StaticResource SecondaryBackgroundBrush}">

@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Astrometry;
 using NINA.Core.Model;
 using NINA.Core.Utility;
@@ -25,7 +26,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class CoordinatesInstruction : SequenceItem, IValidatable {
+    public partial class CoordinatesInstruction : SequenceItem, IValidatable, ISequenceCustomPropertyEditProvider, ISequenceAttachmentStateProvider {
 
         public CoordinatesInstruction(ISequenceEntity e) : this() {
         }
@@ -39,6 +40,29 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         protected bool Protect = false;
+
+        // Restore coordinate configuration together: the normal component notifications rewrite
+        // expression definitions. Expressions still evaluate against the current runtime values.
+        private void RestoreEditorCoordinates(SequenceCoordinateState state) {
+            if (state.Inherited) return;
+            SequenceCoordinateState.RestoreCoordinates(Coordinates, RaExpression, DecExpression, state.Value.ToCoordinates(),
+                state.NegativeDec, state.RaDefinition, state.DecDefinition, ref Protect, ref lastRA, ref lastDec);
+            PositionAngleExpression.Definition = state.RotationDefinition;
+            Inherited = false;
+        }
+
+        private ISequenceEditSnapshot CaptureEditorCoordinates() =>
+            new SequenceEditSnapshot<SequenceCoordinateState>(
+                () => SequenceCoordinateState.Capture(Coordinates, RaExpression, DecExpression, PositionAngleExpression, Inherited),
+                RestoreEditorCoordinates, SequenceCoordinateState.Equal, SequenceEditDetails.Coordinates);
+
+        bool ISequenceCustomPropertyEditProvider.TryCapturePropertyState(object source, string propertyName, out ISequenceEditSnapshot snapshot) {
+            snapshot = ReferenceEquals(source, Coordinates) ? CaptureEditorCoordinates() : null;
+            return snapshot != null;
+        }
+
+        ISequenceEditSnapshot ISequenceAttachmentStateProvider.CaptureAttachmentState() =>
+            Coordinates?.Coordinates == null ? null : CaptureEditorCoordinates();
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {

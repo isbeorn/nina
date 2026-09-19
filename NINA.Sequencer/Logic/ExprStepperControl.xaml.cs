@@ -69,13 +69,13 @@ namespace NINA.Sequencer.Logic {
 
         public void AddClick(object sender, RoutedEventArgs e) {
             if (Exp.Value + Step <= Max) {
-                Exp.Definition = (Exp.Value + Step).ToString();
+                Editing.SequenceEditContext.StepExpression(this, ExpProperty, (Exp.Value + Step).ToString());
             }
         }
 
         public void SubtractClick(object sender, RoutedEventArgs e) {
             if (Exp.Value - Step >= Min) {
-                Exp.Definition = (Exp.Value - Step).ToString();
+                Editing.SequenceEditContext.StepExpression(this, ExpProperty, (Exp.Value - Step).ToString());
             }
         }
 

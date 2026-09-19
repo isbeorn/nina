@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Core.Model;
 using NINA.Sequencer.Utility.DateTimeProvider;
 using NINA.Astrometry;
@@ -38,7 +39,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public partial class WaitForTime : SequenceItem, IValidatable {
+    public partial class WaitForTime : SequenceItem, IValidatable, ISequenceCustomPropertyEditProvider {
         private IList<IDateTimeProvider> dateTimeProviders;
         private int hours;
         private int minutes;
@@ -143,6 +144,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 seconds = value;
                 RaisePropertyChanged();
             }
+        }
+
+        bool ISequenceCustomPropertyEditProvider.TryCapturePropertyState(object source, string propertyName, out ISequenceEditSnapshot snapshot) {
+            snapshot = ReferenceEquals(source, this) && propertyName == nameof(SelectedProvider)
+                ? SequenceTimeCapture.Capture(() => SelectedProvider, value => SelectedProvider = value,
+                    () => HasFixedTimeProvider, () => new TimeSpan(Hours, Minutes, Seconds),
+                    value => { Hours = value.Hours; Minutes = value.Minutes; Seconds = value.Seconds; })
+                : null;
+            return snapshot != null;
         }
 
         [JsonProperty]

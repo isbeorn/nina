@@ -61,6 +61,11 @@ namespace NINA.Sequencer.Trigger.Utility {
             AttachTriggerSourceToParent();
         }
 
+        public override IEnumerable<Editing.ISequenceEditorChildList> GetEditorChildLists() {
+            foreach (var list in base.GetEditorChildLists()) yield return list;
+            yield return Editing.SequenceEditorChildList.Slot(nameof(TriggerSource), () => TriggerSource, value => TriggerSource = value);
+        }
+
         public override bool AllowMultiplePerSet => true;
 
         [JsonProperty]
@@ -85,7 +90,7 @@ namespace NINA.Sequencer.Trigger.Utility {
             }
         }
 
-        public ICommand DropIntoTriggerSourceCommand => new RelayCommand<DropIntoParameters>(DropInTriggerSource);
+        public ICommand DropIntoTriggerSourceCommand => Editing.SequenceEditContext.CreateCommand(this, Editing.SequenceEditOperation.Place, new RelayCommand<DropIntoParameters>(DropInTriggerSource));
 
         public IList<string> Issues {
             get => issues;

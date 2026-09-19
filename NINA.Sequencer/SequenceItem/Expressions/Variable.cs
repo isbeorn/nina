@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Core.Model;
 using System;
 using System.ComponentModel.Composition;
@@ -17,7 +18,13 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Symbol")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public partial class Variable : UserSymbol {
+    public partial class Variable : UserSymbol, ISequenceCustomPropertyEditProvider {
+
+        bool ISequenceCustomPropertyEditProvider.TryCapturePropertyState(object source, string propertyName, out ISequenceEditSnapshot snapshot) {
+            snapshot = null;
+            // Current values belong to execution; only OriginalExpr is configuration.
+            return ReferenceEquals(source, Expr) || (ReferenceEquals(source, this) && propertyName == nameof(Expr));
+        }
 
         [ImportingConstructor]
         public Variable() : base() {

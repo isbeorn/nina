@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Core.Model;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Validations;
@@ -43,7 +44,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class SlewScopeToAltAz : SequenceItem, IValidatable {
+    public partial class SlewScopeToAltAz : SequenceItem, IValidatable, ISequenceCustomPropertyEditProvider {
 
         [ImportingConstructor]
         public SlewScopeToAltAz(IProfileService profileService, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) {
@@ -101,6 +102,29 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         private IList<string> issues = new List<string>();
 
         private bool Protect = false;
+
+        bool ISequenceCustomPropertyEditProvider.TryCapturePropertyState(object source, string propertyName, out ISequenceEditSnapshot snapshot) {
+            snapshot = ReferenceEquals(source, Coordinates) ? new SequenceEditSnapshot<SequenceHorizontalCoordinateState>(
+                () => SequenceHorizontalCoordinateState.Capture(Coordinates, AltExpression, AzExpression), RestoreEditorCoordinates,
+                SequenceHorizontalCoordinateState.Equal, value => $"{value.Altitude:0.#######}°, {value.Azimuth:0.#######}°") : null;
+            return snapshot != null;
+        }
+
+        private void RestoreEditorCoordinates(SequenceHorizontalCoordinateState state) {
+            bool previous = Protect;
+            try {
+                AltExpression.Definition = state.AltDefinition;
+                AzExpression.Definition = state.AzDefinition;
+                var restored = Coordinates.Coordinates.Clone();
+                restored.Altitude = Angle.ByDegree(AltExpression.IsExpression && AltExpression.IsValid ? AltExpression.Value : state.Altitude);
+                restored.Azimuth = Angle.ByDegree(AzExpression.IsExpression && AzExpression.IsValid ? AzExpression.Value : state.Azimuth);
+                Protect = true;
+                Coordinates.Coordinates = restored;
+                Coordinates.NegativeAlt = restored.Altitude.Degree == 0 ? state.NegativeAlt : restored.Altitude.Degree < 0;
+                lastAlt = restored.Altitude.Degree;
+                lastAz = restored.Azimuth.Degree;
+            } finally { Protect = previous; }
+        }
 
         public IList<string> Issues {
             get => issues;

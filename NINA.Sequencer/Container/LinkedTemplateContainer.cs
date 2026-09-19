@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Sequencer.Editing;
 using NINA.Astrometry;
 using NINA.Core.Locale;
 using NINA.Core.Model;
@@ -44,7 +45,7 @@ namespace NINA.Sequencer.Container {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Container")]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class LinkedTemplateContainer : SequenceContainer, ISequenceItemPlacementTarget {
+    public class LinkedTemplateContainer : SequenceContainer, ISequenceItemPlacementTarget, ISequenceCustomPropertyEditProvider, ISequenceEditSessionBoundary {
         private const string LinkedTemplateIconResourceKey = "ConnectSVG";
         private readonly ITemplateLinkResolver templateLinkResolver;
         private TemplateReference templateReference = new TemplateReference();
@@ -69,7 +70,7 @@ namespace NINA.Sequencer.Container {
             BeginEditTemplateCommand = new GalaSoft.MvvmLight.Command.RelayCommand(BeginEditTemplate, () => CanEditTemplate && !IsEditing);
             CancelEditTemplateCommand = new GalaSoft.MvvmLight.Command.RelayCommand(CancelEditTemplate, () => IsEditing);
             SaveTemplateCommand = new AsyncCommand<bool>(SaveTemplate, (object o) => CanSaveTemplate);
-            DropTargetCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(DropTarget);
+            DropTargetCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(o => Editing.SequenceEditContext.Target(this, () => DropTarget(o), CaptureTargetEdit));
             EnsureTargetEditor();
         }
 
@@ -178,6 +179,29 @@ namespace NINA.Sequencer.Container {
         public LinkedTemplateTargetOverride TargetOverride {
             get => targetOverride;
             set => SetTargetOverride(value, true);
+        }
+
+        bool ISequenceCustomPropertyEditProvider.TryCapturePropertyState(object source, string propertyName, out ISequenceEditSnapshot snapshot) {
+            snapshot = ReferenceEquals(source, TargetEditor) || ReferenceEquals(source, TargetEditor.InputCoordinates)
+                ? new SequenceEditSnapshot<(SequenceTargetState Override, bool NegativeDec)>(
+                    ReadTargetEditState, RestoreTargetEditState,
+                    format: value => SequenceEditDetails.Target(value.Override))
+                : null;
+            return snapshot != null;
+        }
+
+        private SequencePropertyCapture CaptureTargetEdit() => SequencePropertyCapture.Capture(
+            string.Format(Loc.Instance["Lbl_SequenceHistory_TargetAction"], SequenceEditDetails.Name(this)),
+            ReadTargetEditState, RestoreTargetEditState,
+            context: SequenceEditDetails.Context(this), summaryContext: SequenceEditDetails.Context(this, compact: true), format: value => SequenceEditDetails.Target(value.Override));
+
+        private (SequenceTargetState Override, bool NegativeDec) ReadTargetEditState() =>
+            (SequenceTargetState.Capture(TargetOverride), TargetEditor.InputCoordinates.NegativeDec);
+
+        private void RestoreTargetEditState((SequenceTargetState Override, bool NegativeDec) value) {
+            TargetOverride = value.Override?.ToOverride();
+            // The normal target-copy path normalizes zero; retain the editor's sign intent.
+            TargetEditor.InputCoordinates.NegativeDec = value.NegativeDec;
         }
 
         public InputTarget TargetEditor => EnsureTargetEditor();
@@ -576,6 +600,7 @@ namespace NINA.Sequencer.Container {
             }
 
             IsEditing = true;
+            Editing.SequenceEditContext.Find(this)?.ForContents(this);
         }
 
         private async Task<bool> SaveTemplate(object arg) {
@@ -585,6 +610,7 @@ namespace NINA.Sequencer.Container {
 
             ISequenceContainer templateContainer = Items.OfType<ISequenceContainer>().Single();
             try {
+                Editing.SequenceEditContext.Find(this)?.Flush();
                 await templateLinkResolver.SaveTemplate(TemplateReference, templateContainer, CancellationToken.None);
                 IsEditing = false;
                 TryResolveTemplate();

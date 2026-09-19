@@ -40,7 +40,7 @@ using System.Diagnostics;
 namespace NINA.Sequencer.Container {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public abstract class SequenceContainer : SequenceItem.SequenceItem, ISequenceContainer, IDropContainer, IConditionable, ITriggerable {
+    public abstract class SequenceContainer : SequenceItem.SequenceItem, ISequenceContainer, IDropContainer, IConditionable, ITriggerable, Editing.ISequenceEditorInsertion {
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
@@ -49,6 +49,10 @@ namespace NINA.Sequencer.Container {
 
         private bool isExpanded = true;
         private static object lockObj = new object();
+
+        internal static void ApplyEditorChange(Action change) {
+            lock (lockObj) { change(); }
+        }
 
         [JsonProperty]
         public IExecutionStrategy Strategy { get; }
@@ -69,11 +73,11 @@ namespace NINA.Sequencer.Container {
         [JsonProperty]
         public IList<ISequenceCondition> Conditions { get; protected set; } = new ObservableCollection<ISequenceCondition>();
 
-        public virtual ICommand DropIntoCommand => new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropInSequenceItem);
+        public virtual ICommand DropIntoCommand => Editing.SequenceEditContext.CreateCommand(this, Editing.SequenceEditOperation.Place, new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropInSequenceItem));
 
-        public ICommand DropIntoConditionsCommand => new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropInSequenceCondition);
+        public ICommand DropIntoConditionsCommand => Editing.SequenceEditContext.CreateCommand(this, Editing.SequenceEditOperation.Place, new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropInSequenceCondition));
 
-        public ICommand DropIntoTriggersCommand => new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropInSequenceTrigger);
+        public ICommand DropIntoTriggersCommand => Editing.SequenceEditContext.CreateCommand(this, Editing.SequenceEditOperation.Place, new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropInSequenceTrigger));
 
         [JsonProperty]
         public virtual bool IsExpanded {

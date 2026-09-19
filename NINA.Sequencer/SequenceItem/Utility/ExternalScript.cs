@@ -51,7 +51,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 dialog.Filter = "Any executable command |*.*";
 
                 if (dialog.ShowDialog() == true) {
-                    Script = "\"" + dialog.FileName + "\"";
+                    Editing.SequenceEditContext.Property(this, nameof(Script), () => Script, value => Script = value, "\"" + dialog.FileName + "\"");
                 }
             });
             _symbolBroker = symbolBroker;
