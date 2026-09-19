@@ -25,23 +25,25 @@ namespace NINA.Sequencer.Editing {
     }
 
     internal sealed class PropertySequenceEdit<T> : StateSequenceEdit {
-        public PropertySequenceEdit(string description, Func<T> read, Action<T> write, T before, T after, Func<T, T, bool> equal = null, string details = null)
-            : base(description, new SequenceEditSnapshot<T>(read, write, before, equal), new SequenceEditSnapshot<T>(read, write, after, equal), details) { }
+        public PropertySequenceEdit(string description, Func<T> read, Action<T> write, T before, T after, Func<T, T, bool> equal = null, string details = null, string summary = null)
+            : base(description, new SequenceEditSnapshot<T>(read, write, before, equal), new SequenceEditSnapshot<T>(read, write, after, equal), details, summary: summary) { }
     }
 
     internal class StateSequenceEdit : ISequenceEdit, ISequenceEditDetails {
         private readonly Action<Action> replayScope;
         private readonly ISequenceEditSnapshot before;
         private readonly ISequenceEditSnapshot after;
-        public StateSequenceEdit(string description, ISequenceEditSnapshot before, ISequenceEditSnapshot after, string details = null, Action<Action> replayScope = null) {
+        public StateSequenceEdit(string description, ISequenceEditSnapshot before, ISequenceEditSnapshot after, string details = null, Action<Action> replayScope = null, string summary = null) {
             Description = description;
             Details = details;
+            Summary = summary ?? details;
             this.replayScope = replayScope;
             this.before = before;
             this.after = after;
         }
         public string Description { get; }
         public string Details { get; }
+        public string Summary { get; }
         public bool CanUndo => after.IsCurrent;
         public bool CanRedo => before.IsCurrent;
         public void Undo() => Apply(after, before);
@@ -71,8 +73,10 @@ namespace NINA.Sequencer.Editing {
             Description = description;
             this.edits = edits;
             Details = SequenceEditDetails.Join(edits.Select(edit => (edit as ISequenceEditDetails)?.Details ?? edit.Description));
+            Summary = SequenceEditDetails.Join(edits.Select(edit => SequenceEditDetails.Join(new[] { edit.Description, (edit as ISequenceEditDetails)?.Summary })));
         }
         public string Details { get; }
+        public string Summary { get; }
         public string Description { get; }
         // Check each operation immediately before applying it. Earlier operations in a transaction
         // can establish the preconditions of later ones (including multiple edits of one property).

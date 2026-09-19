@@ -129,13 +129,13 @@ namespace NINA.Sequencer.Editing {
             Refresh();
         }
 
-        internal void CaptureStructure(string description, Action action) {
+        internal void CaptureStructure(string description, Action action, ISequenceEntity subject = null, SequenceEditOperation? operation = null) {
             void Apply(Action change) {
                 try { change(); }
                 finally { Graph.Refresh(); PruneDetachedSessions(); }
             }
             CaptureEdit(description, () => SequenceStructureSnapshot.Capture(Root, description,
-                change => SequenceContainer.ApplyEditorChange(() => Apply(change))), () => Apply(action));
+                change => SequenceContainer.ApplyEditorChange(() => Apply(change)), subject, operation), () => Apply(action));
         }
 
         internal void CaptureEdit(string description, Func<ISequenceEditCapture> capture, Action action) {

@@ -8157,6 +8157,15 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   <data name="Lbl_SequenceHistory_MoveAction" xml:space="preserve">
     <value>Move {0}</value>
   </data>
+  <data name="Lbl_SequenceHistory_AddAction" xml:space="preserve">
+    <value>Add {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_Position" xml:space="preserve">
+    <value>Position {0}</value>
+  </data>
+  <data name="Lbl_SequenceHistory_PositionChange" xml:space="preserve">
+    <value>Position {0} -&gt; {1}</value>
+  </data>
   <data name="Lbl_SequenceHistory_DeleteAction" xml:space="preserve">
     <value>Delete {0}</value>
   </data>

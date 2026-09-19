@@ -24,6 +24,7 @@ namespace NINA.Sequencer.Editing {
             Edit = edit;
             Description = edit?.Description ?? Loc.Instance["Lbl_SequenceHistory_Initial"];
             Details = (edit as ISequenceEditDetails)?.Details;
+            Summary = (edit as ISequenceEditDetails)?.Summary;
             Timestamp = edit == null ? null : DateTime.Now;
         }
 
@@ -31,8 +32,10 @@ namespace NINA.Sequencer.Editing {
         internal ISequenceEdit Edit { get; }
         public string Description { get; }
         public string Details { get; }
+        public string Summary { get; }
         public DateTime? Timestamp { get; }
         public bool HasDetails => !string.IsNullOrWhiteSpace(Details);
+        public bool HasExpandedDetails => HasDetails && Details != Summary;
 
         [ObservableProperty]
         private int position;

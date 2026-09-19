@@ -33,6 +33,8 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -154,6 +156,48 @@ namespace NINA.Test.Sequencer.View {
                 if (result != null) return result;
             }
             return null;
+        }
+
+        [Test]
+        public void HistoryDetails_ExpandIndependentlyOfNavigation_AndStayExpandedDuringReplay() {
+            EnsureApplicationResources();
+            var root = new SequenceRootContainer { SequenceTitle = "Night sequence" };
+            var target = new SequentialContainer { Name = "Soul Nebula" };
+            var item = new NINA.Test.Sequencer.Editing.SequenceEditHistoryTest.PluginItem { Name = "Smart Exposure", Setting = 60 };
+            root.Add(target); target.Add(item);
+            using var history = new SequenceEditHistory(root);
+            var box = new TextBox { DataContext = item };
+            box.SetBinding(TextBox.TextProperty, new Binding(nameof(item.Setting)));
+            var capture = SequencePropertyCapture.Create(item, box.GetBindingExpression(TextBox.TextProperty));
+            item.Setting = 180;
+            history.RecordApplied(capture.Complete());
+            var view = new SequenceEditHistoryView { DataContext = history };
+            view.Measure(new Size(350, 800));
+            view.Arrange(new Rect(0, 0, 350, 800));
+            view.UpdateLayout();
+            var entries = (ItemsControl)view.FindName("HistoryEntries");
+            var presenter = (ContentPresenter)entries.ItemContainerGenerator.ContainerFromIndex(1);
+            var summary = (TextBlock)entries.ItemTemplate.FindName("EditDetails", presenter);
+            var expander = (Expander)entries.ItemTemplate.FindName("FullEditDetails", presenter);
+            summary.Text.Should().Contain("Soul Nebula").And.Contain("60 -> 180").And.NotContain("Night sequence");
+            expander.Visibility.Should().Be(Visibility.Visible);
+            expander.IsExpanded.Should().BeFalse();
+            ((TextBlock)expander.Content).Text.Should().Contain("Night sequence > Soul Nebula > Smart Exposure");
+
+            history.Undo().Should().BeTrue();
+            var header = FindVisualChild<ToggleButton>(expander)!;
+            typeof(ButtonBase).GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(header, null);
+            view.UpdateLayout();
+            expander.IsExpanded.Should().BeTrue();
+            history.Position.Should().Be(0, "expanding a redo entry must not replay it");
+            item.Setting.Should().Be(60);
+            var button = FindVisualChild<Button>(presenter)!;
+            button.Command.Execute(button.CommandParameter);
+            view.UpdateLayout();
+            history.Position.Should().Be(1);
+            item.Setting.Should().Be(180);
+            entries.ItemContainerGenerator.ContainerFromIndex(1).Should().BeSameAs(presenter);
+            expander.IsExpanded.Should().BeTrue();
         }
 
         /// <summary>

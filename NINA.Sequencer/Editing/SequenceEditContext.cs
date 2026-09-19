@@ -15,6 +15,7 @@
 using NINA.Core.Enum;
 using NINA.Core.Locale;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.DragDrop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,25 +42,28 @@ namespace NINA.Sequencer.Editing {
         public static void SetOperation(DependencyObject element, SequenceEditOperation value) => element.SetValue(OperationProperty, value);
 
         internal static ICommand CreateCommand(ISequenceEntity owner, SequenceEditOperation operation, ICommand command) =>
-            new SequenceEditCommand(command, parameter => ExecuteOperation(owner, operation, () => command.Execute(parameter)));
+            new SequenceEditCommand(command, parameter => ExecuteOperation(owner, operation, command, parameter));
 
         // A dialog or async operation starts recording itself around the accepted model update.
         internal static ICommand SelfRecordingCommand(ICommand command) => new SequenceEditCommand(command, command.Execute);
 
         internal static void ExecuteCommand(ISequenceEntity owner, SequenceEditOperation operation, ICommand command, object parameter) {
             if (command is SequenceEditCommand) command.Execute(parameter);
-            else ExecuteOperation(owner, operation, () => command.Execute(parameter));
+            else ExecuteOperation(owner, operation, command, parameter);
         }
-        private static void ExecuteOperation(ISequenceEntity owner, SequenceEditOperation operation, Action action) {
-            if (operation == SequenceEditOperation.Toggle) { Toggle(owner, action); return; }
+        private static void ExecuteOperation(ISequenceEntity owner, SequenceEditOperation operation, ICommand command, object parameter) {
+            void Apply() => command.Execute(parameter);
+            if (operation == SequenceEditOperation.Toggle) { Toggle(owner, Apply); return; }
             string label = operation switch {
                 SequenceEditOperation.Delete => "Lbl_SequenceHistory_DeleteAction",
                 SequenceEditOperation.Duplicate => "Lbl_SequenceHistory_DuplicateAction",
                 SequenceEditOperation.Place => "Lbl_SequenceHistory_PlaceAction",
                 _ => "Lbl_SequenceHistory_MoveAction"
             };
-            if (operation == SequenceEditOperation.Place) Structure(owner, label, action);
-            else Placement(owner, label, action);
+            if (operation == SequenceEditOperation.Place) {
+                var drop = parameter as DropIntoParameters;
+                Structure(owner, label, Apply, drop?.Source as ISequenceEntity, drop?.Duplicate == true ? SequenceEditOperation.Duplicate : operation);
+            } else Placement(owner, label, Apply, operation);
         }
 
         public static readonly DependencyProperty HistoryProperty = DependencyProperty.RegisterAttached(
@@ -98,16 +102,16 @@ namespace NINA.Sequencer.Editing {
             return active.FirstOrDefault(history => history.Graph.OwnerPath(entity, false) != null)
                 ?? active.FirstOrDefault(history => history.Graph.OwnerPath(entity) != null);
         }
-        internal static void Placement(ISequenceEntity owner, string label, Action action) =>
-            CaptureStructure(Find(owner)?.ForOwner(owner), owner, label, action);
+        internal static void Placement(ISequenceEntity owner, string label, Action action, SequenceEditOperation? operation = null) =>
+            CaptureStructure(Find(owner)?.ForOwner(owner), owner, label, action, owner, operation);
 
-        internal static void Structure(ISequenceEntity owner, string label, Action action) {
+        internal static void Structure(ISequenceEntity owner, string label, Action action, ISequenceEntity subject = null, SequenceEditOperation? operation = null) {
             var session = Find(owner);
-            CaptureStructure(owner is ISequenceContainer container ? session?.ForContents(container) : session?.ForOwner(owner), owner, label, action);
+            CaptureStructure(owner is ISequenceContainer container ? session?.ForContents(container) : session?.ForOwner(owner), owner, label, action, subject, operation);
         }
-        private static void CaptureStructure(SequenceEditHistory history, ISequenceEntity owner, string label, Action action) {
+        private static void CaptureStructure(SequenceEditHistory history, ISequenceEntity owner, string label, Action action, ISequenceEntity subject, SequenceEditOperation? operation) {
             if (history == null) action();
-            else history.CaptureStructure(string.Format(Loc.Instance[label], SequenceEditDetails.Name(owner)), action);
+            else history.CaptureStructure(string.Format(Loc.Instance[label], SequenceEditDetails.Name(owner)), action, subject, operation);
         }
         internal static void Target(ISequenceEntity owner, Action action, Func<SequencePropertyCapture> captureTarget = null) {
             SequenceEditHistory history = Find(owner)?.ForOwner(owner);
@@ -119,7 +123,7 @@ namespace NINA.Sequencer.Editing {
             SequenceEditHistory history = Find(owner)?.ForOwner(owner);
             if (history?.IsRecording != true) { write(value); return; }
             string description = string.Format(Loc.Instance["Lbl_SequenceHistory_EditAction"], SequenceEditDetails.Name(owner), name);
-            history.CaptureEdit(description, () => SequencePropertyCapture.Capture(description, read, write, context: SequenceEditDetails.Context(owner)), () => write(value));
+            history.CaptureEdit(description, () => SequencePropertyCapture.Capture(description, read, write, context: SequenceEditDetails.Context(owner), summaryContext: SequenceEditDetails.Context(owner, compact: true)), () => write(value));
         }
         internal static void StepExpression(FrameworkElement editor, DependencyProperty property, string definition) {
             BindingExpression binding = BindingOperations.GetBindingExpression(editor, property);
@@ -137,7 +141,7 @@ namespace NINA.Sequencer.Editing {
             history.CaptureEdit(description, () => SequencePropertyCapture.Capture(description,
                 () => entity.Status != SequenceEntityStatus.DISABLED,
                 enabled => entity.Status = enabled ? SequenceEntityStatus.CREATED : SequenceEntityStatus.DISABLED,
-                context: SequenceEditDetails.Context(entity), format: enabled => Loc.Instance[enabled ? "LblEnabled" : "LblDisabled"]), action);
+                context: SequenceEditDetails.Context(entity), summaryContext: SequenceEditDetails.Context(entity, compact: true), format: enabled => Loc.Instance[enabled ? "LblEnabled" : "LblDisabled"]), action);
         }
 
         private sealed class HistoryCommand : ICommand {

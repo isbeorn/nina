@@ -18,6 +18,7 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/ProfileService.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Brushes.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Expander.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="HistoryEntryButton" TargetType="Button">
                 <Setter Property="Background" Value="Transparent" />
@@ -27,10 +28,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                                BorderThickness="0,0,0,1">
+                            <Border Background="{TemplateBinding Background}">
                                 <ContentPresenter
                                     Margin="{TemplateBinding Padding}"
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
@@ -71,79 +69,102 @@
             <ItemsControl x:Name="HistoryEntries" ItemsSource="{Binding Entries}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button
-                            Command="{Binding DataContext.MoveToCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                            CommandParameter="{Binding}"
-                            Style="{StaticResource HistoryEntryButton}"
-                            ToolTipService.ShowOnDisabled="True">
-                            <Button.ToolTip>
-                                <StackPanel MaxWidth="480">
-                                    <TextBlock FontWeight="SemiBold" Text="{Binding Description}" TextWrapping="Wrap" />
-                                    <TextBlock
-                                        Margin="0,5,0,0"
-                                        Text="{Binding Details}"
-                                        TextWrapping="Wrap"
-                                        Visibility="{Binding HasDetails, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                                </StackPanel>
-                            </Button.ToolTip>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="13" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.Style>
-                                    <Style TargetType="Grid">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsApplied}" Value="False">
-                                                <Setter Property="Opacity" Value="0.45" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-                                <Border
-                                    Width="3"
-                                    HorizontalAlignment="Left"
-                                    Background="{StaticResource ButtonBackgroundBrush}"
-                                    Visibility="{Binding IsCurrent, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+                        <Border BorderBrush="{StaticResource SecondaryBackgroundBrush}" BorderThickness="0,0,0,1">
+                            <StackPanel>
+                                <Button
+                                    Command="{Binding DataContext.MoveToCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource HistoryEntryButton}"
+                                    ToolTipService.ShowOnDisabled="True">
+                                    <Button.ToolTip>
+                                        <StackPanel MaxWidth="480">
+                                            <TextBlock FontWeight="SemiBold" Text="{Binding Description}" TextWrapping="Wrap" />
+                                            <TextBlock
+                                                Margin="0,5,0,0"
+                                                Text="{Binding Details}"
+                                                TextWrapping="Wrap"
+                                                Visibility="{Binding HasDetails, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                        </StackPanel>
+                                    </Button.ToolTip>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="13" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsCurrent}" Value="True">
-                                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                                    <DataTrigger Binding="{Binding IsApplied}" Value="False">
+                                                        <Setter Property="Opacity" Value="0.45" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    <TextBlock
-                                        x:Name="EditDetails"
-                                        MaxHeight="60"
-                                        Margin="0,4,0,0"
-                                        FontSize="11"
-                                        Foreground="{StaticResource PrimaryBrush}"
-                                        Opacity="0.8"
-                                        Text="{Binding Details}"
-                                        TextTrimming="CharacterEllipsis"
-                                        TextWrapping="Wrap"
-                                        Visibility="{Binding HasDetails, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                                    <WrapPanel Margin="0,4,0,0" TextBlock.FontSize="11" TextBlock.Foreground="{StaticResource PrimaryBrush}">
-                                        <TextBlock Opacity="0.65" Text="{Binding Timestamp, StringFormat={}{0:T}}" />
-                                        <TextBlock
-                                            Margin="8,0,0,0"
-                                            Text="{ns:Loc Lbl_SequenceHistory_Current}"
+                                        </Grid.Style>
+                                        <Border
+                                            Width="3"
+                                            HorizontalAlignment="Left"
+                                            Background="{StaticResource ButtonBackgroundBrush}"
                                             Visibility="{Binding IsCurrent, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                                        <TextBlock
-                                            Margin="8,0,0,0"
-                                            Opacity="0.65"
-                                            Text="{ns:Loc Lbl_SequenceHistory_Saved}"
-                                            Visibility="{Binding IsSaved, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                                    </WrapPanel>
-                                </StackPanel>
-                            </Grid>
-                        </Button>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock
+                                                x:Name="EditDetails"
+                                                MaxHeight="60"
+                                                Margin="0,4,0,0"
+                                                FontSize="11"
+                                                Foreground="{StaticResource PrimaryBrush}"
+                                                Opacity="0.8"
+                                                Text="{Binding Summary}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="Wrap"
+                                                Visibility="{Binding HasDetails, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                            <WrapPanel Margin="0,4,0,0" TextBlock.FontSize="11" TextBlock.Foreground="{StaticResource PrimaryBrush}">
+                                                <TextBlock Opacity="0.65" Text="{Binding Timestamp, StringFormat={}{0:T}}" />
+                                                <TextBlock
+                                                    Margin="8,0,0,0"
+                                                    Text="{ns:Loc Lbl_SequenceHistory_Current}"
+                                                    Visibility="{Binding IsCurrent, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                                <TextBlock
+                                                    Margin="8,0,0,0"
+                                                    Opacity="0.65"
+                                                    Text="{ns:Loc Lbl_SequenceHistory_Saved}"
+                                                    Visibility="{Binding IsSaved, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                                <Expander
+                                    x:Name="FullEditDetails"
+                                    Margin="13,0,10,8"
+                                    FontSize="11"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    Header="{ns:Loc LblDetails}"
+                                    Visibility="{Binding HasExpandedDetails, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <Expander.Style>
+                                        <Style TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
+                                            <Setter Property="Opacity" Value="0.8" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsApplied}" Value="False">
+                                                    <Setter Property="Opacity" Value="0.45" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Expander.Style>
+                                    <TextBlock Margin="0,4,0,0" Text="{Binding Details}" TextWrapping="Wrap" />
+                                </Expander>
+                            </StackPanel>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -193,7 +193,7 @@ namespace NINA.Sequencer.Container {
         private SequencePropertyCapture CaptureTargetEdit() => SequencePropertyCapture.Capture(
             string.Format(Loc.Instance["Lbl_SequenceHistory_TargetAction"], SequenceEditDetails.Name(this)),
             ReadTargetEditState, RestoreTargetEditState,
-            context: SequenceEditDetails.Context(this), format: value => SequenceEditDetails.Target(value.Override));
+            context: SequenceEditDetails.Context(this), summaryContext: SequenceEditDetails.Context(this, compact: true), format: value => SequenceEditDetails.Target(value.Override));
 
         private (SequenceTargetState Override, bool NegativeDec) ReadTargetEditState() =>
             (SequenceTargetState.Capture(TargetOverride), TargetEditor.InputCoordinates.NegativeDec);

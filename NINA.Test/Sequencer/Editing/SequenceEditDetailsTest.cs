@@ -14,7 +14,9 @@
 
 using FluentAssertions;
 using NINA.Core.Locale;
+using NINA.Core.Enum;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.DragDrop;
 using NINA.Sequencer.Editing;
 using NINA.Sequencer.Utility;
 using NUnit.Framework;
@@ -25,6 +27,87 @@ using Item = NINA.Test.Sequencer.Editing.SequenceEditHistoryTest.PluginItem;
 namespace NINA.Test.Sequencer.Editing {
     [TestFixture, Apartment(ApartmentState.STA), NonParallelizable]
     public class SequenceEditDetailsTest {
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ReorderDetails_DescribeTheDraggedItemWithoutItsDisplacedNeighbor(bool moveUp) {
+            var root = new SequenceRootContainer { SequenceTitle = "Night sequence" };
+            var target = new SequentialContainer { Name = "Soul Nebula" };
+            var container = new SequentialContainer { Name = "Sequential Instruction Set" };
+            root.Add(target);
+            target.Add(container);
+            var first = new Item { Name = "Smart Exposure" };
+            var second = new Item { Name = "Smart Exposure" };
+            container.Add(first);
+            container.Add(second);
+            using var history = new SequenceEditHistory(root);
+
+            container.DropIntoCommand.Execute(new DropIntoParameters(moveUp ? second : first, moveUp ? first : second,
+                moveUp ? DropTargetEnum.Top : DropTargetEnum.Bottom));
+
+            var entry = history.Entries.Last();
+            entry.Description.Should().Be("Move Smart Exposure");
+            entry.Summary.Should().Be("Soul Nebula > Sequential Instruction Set" + Environment.NewLine + (moveUp ? "Position 2 -> 1" : "Position 1 -> 2"));
+            entry.Details.Should().Contain("Night sequence > Soul Nebula > Sequential Instruction Set");
+            entry.Details.Split(Environment.NewLine).Should().HaveCount(1, "the neighbor only shifts to make room for the dragged item");
+            history.Undo().Should().BeTrue();
+            container.Items.Should().Equal(first, second);
+            history.Redo().Should().BeTrue();
+            container.Items.Should().Equal(second, first);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void MoveButtons_DescribeOnlyTheMovedItem(bool moveUp) {
+            var root = new SequenceRootContainer { SequenceTitle = "Night sequence" };
+            var first = new Item { Name = "First exposure" };
+            var second = new Item { Name = "Second exposure" };
+            root.Add(first);
+            root.Add(second);
+            using var history = new SequenceEditHistory(root);
+
+            if (moveUp) second.MoveUpCommand.Execute(null);
+            else first.MoveDownCommand.Execute(null);
+
+            history.Entries.Last().Description.Should().Be(moveUp ? "Move Second exposure" : "Move First exposure");
+            history.Entries.Last().Details.Should().NotContain(moveUp ? "First exposure" : "Second exposure");
+            history.Undo().Should().BeTrue();
+            root.Items.Should().Equal(first, second);
+            history.Redo().Should().BeTrue();
+            root.Items.Should().Equal(second, first);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CustomMoveCommand_KeepsAdditionalReordersVisible(bool sameContainer) {
+            var root = new SequenceRootContainer();
+            var first = new SequentialContainer { Name = "First group" };
+            var second = new SequentialContainer { Name = "Second group" };
+            root.Add(first); root.Add(second);
+            var item = new Item { Name = "Smart Exposure" };
+            var neighbor = new Item { Name = "Neighbor" };
+            var extraA = new Item { Name = "Extra A" };
+            var extraB = new Item { Name = "Extra B" };
+            first.Add(item); first.Add(neighbor);
+            var additional = sameContainer ? first : second;
+            additional.Add(extraA); additional.Add(extraB);
+            using var history = new SequenceEditHistory(root);
+            var command = new CommunityToolkit.Mvvm.Input.RelayCommand(() => {
+                first.MoveWithinIntoSequenceBlocks(0, 1);
+                additional.MoveWithinIntoSequenceBlocks(additional.Items.IndexOf(extraA), additional.Items.IndexOf(extraB));
+            });
+
+            SequenceEditContext.ExecuteCommand(item, SequenceEditOperation.Move, command, null);
+
+            history.Entries.Last().Details.Should().Contain("Smart Exposure").And.Contain("Extra A").And.Contain("Extra B");
+            if (!sameContainer) history.Entries.Last().Details.Should().NotContain("Neighbor");
+            history.Undo().Should().BeTrue();
+            first.Items[0].Should().BeSameAs(item);
+            additional.Items.Last().Should().BeSameAs(extraB);
+            history.Redo().Should().BeTrue();
+            first.Items[1].Should().BeSameAs(item);
+            additional.Items.Last().Should().BeSameAs(extraA);
+        }
+
         [Test]
         public void FieldEdit_ShowsItemPathPositionAndValues_WithoutFollowingLaterRenames() {
             var root = new SequenceRootContainer { SequenceTitle = "Night sequence" };
@@ -42,12 +125,15 @@ namespace NINA.Test.Sequencer.Editing {
 
             string details = history.Entries.Last().Details;
             details.Should().Contain("Night sequence > M31 > Smart Exposure (#2)").And.Contain("60 -> 180");
+            string summary = history.Entries.Last().Summary;
+            summary.Should().Be("M31" + Environment.NewLine + "Position 2" + Environment.NewLine + "60 -> 180");
             history.Undo().Should().BeTrue();
             history.Redo().Should().BeTrue();
             target.Name = "Renamed target";
             item.Name = "Renamed instruction";
             item.DetachCommand.Execute(null);
             history.Entries[1].Details.Should().Be(details);
+            history.Entries[1].Summary.Should().Be(summary);
         }
 
         [Test]
@@ -78,11 +164,86 @@ namespace NINA.Test.Sequencer.Editing {
             history.CaptureStructure("Move", () => { first.Remove(item); second.Add(item); });
             string details = history.Entries.Last().Details;
             details.Should().Contain("Smart Exposure").And.Contain("M31 (#1) -> Night sequence > M42 (#1)").And.NotContain("Dither");
+            history.Entries.Last().Description.Should().Be("Move Smart Exposure");
+            history.Entries.Last().Summary.Should().Be("M31 -> M42" + Environment.NewLine + "Position 1");
             item.DetachCommand.Execute(null);
             history.Entries.Last().Details.Should().Contain("Removed Smart Exposure").And.Contain("M42 (#1)");
+            history.Entries.Last().Description.Should().Be("Delete Smart Exposure");
+            history.Entries.Last().Summary.Should().Be("M42" + Environment.NewLine + "Position 1");
             history.Undo().Should().BeTrue();
             item.AddCloneToParentCommand.Execute(null);
             history.Entries.Last().Details.Should().Contain("Added").And.Contain("M42 (#2)");
+            history.Entries.Last().Description.Should().StartWith("Duplicate ");
+            history.Entries.Last().Summary.Should().Be("M42" + Environment.NewLine + "Position 2");
+        }
+
+        [Test]
+        public void ShortLocations_DisambiguateMatchingNamesAndRetainTargetContext() {
+            var root = new SequenceRootContainer { SequenceTitle = "Night sequence" };
+            var target = new TargetContainer { Name = "Soul Nebula" };
+            var group = new SequentialContainer { Name = "Filters" };
+            var first = new SequentialContainer { Name = "Sequential Instruction Set" };
+            var second = new SequentialContainer { Name = first.Name };
+            root.Add(target); target.Add(group); group.Add(first); group.Add(second);
+            var item = new Item { Name = "Smart Exposure" };
+            first.Add(item);
+            using var history = new SequenceEditHistory(root);
+
+            second.DropIntoCommand.Execute(new DropIntoParameters(item, second, DropTargetEnum.Center));
+
+            var entry = history.Entries.Last();
+            entry.Summary.Should().Be("Soul Nebula > Sequential Instruction Set (#1) -> Soul Nebula > Sequential Instruction Set (#2)" + Environment.NewLine + "Position 1");
+            entry.Details.Should().Contain("Night sequence > Soul Nebula > Filters > Sequential Instruction Set");
+            history.Undo().Should().BeTrue();
+            first.Items.Should().ContainSingle().Which.Should().BeSameAs(item);
+            history.Redo().Should().BeTrue();
+            second.Items.Should().ContainSingle().Which.Should().BeSameAs(item);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ShortLocations_IncludeAncestorsForMatchingBranches(bool identicalNames) {
+            var root = new SequenceRootContainer { SequenceTitle = "Night sequence" };
+            var item = new Item { Name = "Smart Exposure" };
+            SequentialContainer CreateBranch(string name) {
+                var branch = new SequentialContainer { Name = name };
+                var target = new SequentialContainer { Name = "Soul Nebula" };
+                var container = new SequentialContainer { Name = "Exposures" };
+                root.Add(branch); branch.Add(target); target.Add(container);
+                return container;
+            }
+            var first = CreateBranch(identicalNames ? "Night" : "Night 1");
+            var second = CreateBranch(identicalNames ? "Night" : "Night 2");
+            first.Add(item);
+            using var history = new SequenceEditHistory(root);
+
+            second.DropIntoCommand.Execute(new DropIntoParameters(item, second, DropTargetEnum.Center));
+
+            history.Entries.Last().Summary.Should().Contain(identicalNames ? "Night (#1) > Soul Nebula > Exposures" : "Night 1 > Soul Nebula > Exposures")
+                .And.Contain(identicalNames ? "Night (#2) > Soul Nebula > Exposures" : "Night 2 > Soul Nebula > Exposures")
+                .And.NotContain("Night sequence");
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Insertion_NamesTheInsertedItem_AndRejectedDropsDoNotAddHistory(bool duplicate) {
+            var root = new SequenceRootContainer { SequenceTitle = "Night sequence" };
+            var container = new SequentialContainer { Name = "Targets" };
+            root.Add(container);
+            var prototype = new SequentialContainer { Name = "Exposures" };
+            if (duplicate) container.Add(prototype);
+            using var history = new SequenceEditHistory(root);
+            container.DropIntoCommand.Execute(new DropIntoParameters(prototype, container, DropTargetEnum.Center) { Duplicate = duplicate });
+            var inserted = container.Items.Last();
+            inserted.Should().NotBeSameAs(prototype);
+            history.Entries.Last().Description.Should().Be(duplicate ? "Duplicate Exposures" : "Add Exposures");
+            history.Entries.Last().Summary.Should().Be("Targets" + Environment.NewLine + (duplicate ? "Position 2" : "Position 1"));
+            container.DropIntoCommand.Execute(new DropIntoParameters(inserted, container, DropTargetEnum.Center));
+            history.Entries.Should().HaveCount(2);
+            history.Undo().Should().BeTrue();
+            container.Items.Should().HaveCount(duplicate ? 1 : 0).And.NotContain(inserted);
+            history.Redo().Should().BeTrue();
+            container.Items.Last().Should().BeSameAs(inserted);
         }
 
         [Test]
@@ -165,6 +326,10 @@ namespace NINA.Test.Sequencer.Editing {
         }
 
         public class Option { public string Name { get; set; } = "Luminance"; }
+        private sealed class TargetContainer : SequentialContainer, IDeepSkyObjectContainer {
+            public NINA.Astrometry.InputTarget Target { get; set; } = new(NINA.Astrometry.Angle.ByDegree(0), NINA.Astrometry.Angle.ByDegree(0), null);
+            public NINA.Astrometry.NighttimeData NighttimeData => null!;
+        }
         public class SelectionItem : Item { public Option Option { get; set; } = new(); }
         public class ReadoutItem : Item { public object Mode { get; set; } = new FastReadoutMode(); }
         public class CaptionedMode { public Option Caption { get; set; } = new(); }

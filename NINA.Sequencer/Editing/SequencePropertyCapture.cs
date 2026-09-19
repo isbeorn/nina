@@ -33,15 +33,18 @@ namespace NINA.Sequencer.Editing {
         private SequencePropertyCapture(Func<ISequenceEdit> complete) { this.complete = complete; }
         public ISequenceEdit Complete() => complete();
 
-        internal static SequencePropertyCapture Capture<T>(string description, Func<T> read, Action<T> write, Func<T, T, bool> equal = null, string context = null, Func<T, string> format = null) {
+        internal static SequencePropertyCapture Capture<T>(string description, Func<T> read, Action<T> write, Func<T, T, bool> equal = null, string context = null, Func<T, string> format = null, string summaryContext = null) {
             T before = read();
             format ??= value => SequenceEditDetails.Value(value);
             string beforeText = format(before);
             equal ??= EqualityComparer<T>.Default.Equals;
             return new SequencePropertyCapture(() => {
                 T after = read();
-                return equal(before, after) ? null : new PropertySequenceEdit<T>(description, read, write, before, after, equal,
-                    SequenceEditDetails.Change(context, beforeText, format(after)));
+                if (equal(before, after)) return null;
+                string afterText = format(after);
+                return new PropertySequenceEdit<T>(description, read, write, before, after, equal,
+                    SequenceEditDetails.Change(context, beforeText, afterText),
+                    SequenceEditDetails.Change(summaryContext ?? context, beforeText, afterText));
             });
         }
 
@@ -62,6 +65,7 @@ namespace NINA.Sequencer.Editing {
             }
             string description = string.Format(Loc.Instance["Lbl_SequenceHistory_EditAction"], SequenceEditDetails.Name(owner), SequenceEditDetails.Field(path ?? Array.Empty<PropertyInfo>(), name));
             string context = SequenceEditDetails.Context(owner);
+            string summaryContext = SequenceEditDetails.Context(owner, compact: true);
             var weakBinding = new WeakReference<BindingExpression>(binding);
             void RefreshBinding() {
                 if (!weakBinding.TryGetTarget(out BindingExpression current) || current.Target == null) return;
@@ -84,25 +88,26 @@ namespace NINA.Sequencer.Editing {
                         throw new InvalidOperationException("The entity did not supply the completed edit snapshot.");
                     }
                     return new StateSequenceEdit(description, initial, new BoundSnapshot(after, owner, parent, RefreshBinding),
-                        before.Description == null && after.Description == null ? context : SequenceEditDetails.Change(context, before.Description, after.Description));
+                        before.Description == null && after.Description == null ? context : SequenceEditDetails.Change(context, before.Description, after.Description),
+                        summary: before.Description == null && after.Description == null ? summaryContext : SequenceEditDetails.Change(summaryContext, before.Description, after.Description));
                 });
             }
             if (path == null) return null;
             if (source is InputCoordinates) {
                 return Capture(description, () => SequenceCoordinateValue.Capture((InputCoordinates)Resolve()),
                     value => { value.Restore((InputCoordinates)Resolve()); RefreshBinding(); },
-                    context: context, format: value => SequenceEditDetails.Coordinates(value.ToCoordinates(), value.NegativeDec));
+                    context: context, summaryContext: summaryContext, format: value => SequenceEditDetails.Coordinates(value.ToCoordinates(), value.NegativeDec));
             }
             PropertyInfo property = source.GetType().GetProperty(name);
             if (property?.CanRead != true || property.SetMethod?.IsPublic != true || property.GetIndexParameters().Length != 0) return null;
             if (typeof(Expression).IsAssignableFrom(property.PropertyType)) {
                 return Capture(description, () => ((Expression)property.GetValue(Resolve())).Definition,
-                    value => { ((Expression)property.GetValue(Resolve())).Definition = value; RefreshBinding(); }, context: context);
+                    value => { ((Expression)property.GetValue(Resolve())).Definition = value; RefreshBinding(); }, context: context, summaryContext: summaryContext);
             }
             if (property.IsDefined(typeof(NINA.Sequencer.Generators.IsExpressionAttribute), true)
                 && source.GetType().GetProperty(name + "Expression") is PropertyInfo expressionProperty) {
                 return Capture(description, () => ((Expression)expressionProperty.GetValue(Resolve())).Definition,
-                    value => { ((Expression)expressionProperty.GetValue(Resolve())).Definition = value; RefreshBinding(); }, context: context);
+                    value => { ((Expression)expressionProperty.GetValue(Resolve())).Definition = value; RefreshBinding(); }, context: context, summaryContext: summaryContext);
             }
             Type type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
             // Reference-valued plugin state requires a custom edit, rather than a shallow copy
@@ -114,7 +119,7 @@ namespace NINA.Sequencer.Editing {
             if (!scalar && !selection) return null;
             string displayMemberPath = binding.Target is Selector selector && binding.TargetProperty == Selector.SelectedItemProperty ? selector.DisplayMemberPath : null;
             return Capture<object>(description, () => property.GetValue(Resolve()), value => { property.SetValue(Resolve(), value); RefreshBinding(); },
-                context: context, format: value => SequenceEditDetails.Value(value, displayMemberPath));
+                context: context, summaryContext: summaryContext, format: value => SequenceEditDetails.Value(value, displayMemberPath));
         }
 
         private sealed class BoundSnapshot : ISequenceEditSnapshot {
@@ -145,11 +150,12 @@ namespace NINA.Sequencer.Editing {
         internal static SequencePropertyCapture Target(ISequenceEntity owner) {
             string description = string.Format(Loc.Instance["Lbl_SequenceHistory_TargetAction"], SequenceEditDetails.Name(owner));
             string context = SequenceEditDetails.Context(owner);
+            string summaryContext = SequenceEditDetails.Context(owner, compact: true);
             if (owner is not IDeepSkyObjectContainer dso) return null;
             return Capture(description,
                 () => (dso.Name, Target: SequenceTargetState.Capture(dso.Target)),
                 value => { dso.Name = value.Name; value.Target.Restore(dso.Target); },
-                context: context, format: value => SequenceEditDetails.Target(value.Target));
+                context: context, summaryContext: summaryContext, format: value => SequenceEditDetails.Target(value.Target));
         }
 
         // Search only the selected entity's configuration objects. No traversal of Items,
