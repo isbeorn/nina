@@ -106,8 +106,21 @@ This project is utilizing a standard git flow where it has the following branche
 
 ## Versioning in N.I.N.A.
 
-N.I.N.A. utilizes the versioning scheme MAJOR.MINOR.PATCH.CHANNEL|BUILDNRXXX  
-There is currently no automation used and versions are maintained manually.  
+N.I.N.A. utilizes the versioning scheme MAJOR.MINOR.PATCH.CHANNEL|BUILDNRXXX.
+
+MAJOR, MINOR and CHANNEL transitions are maintained manually. The release workflow can increment BUILDNR or start the next PATCH through a protected version-only pull request. Development remains on `develop`; 3.2 maintenance uses `release/3.2.x`.
+
+Run **Build and Release Version** on the selected release branch with operation `prepare`. Select `build` to retain the patch number or `patch` to increment it and reset the build counter to 001 in the same channel. For example, `3.2.1.9002` becomes `3.2.2.9001`. A build increment cannot cross into a different channel. Approve the resulting bot pull request's pending **Build and Test** run. Its final job checks the exact tested commit and version-only diff, merges it and dispatches publication on that same branch.
+
+The existing workflow entry point is usable before the new **Prepare Version Release** helper is registered on the default branch:
+
+```powershell
+gh workflow run build-and-release.yml --ref release/3.2.x -f operation=prepare -f increment=patch
+```
+
+Maintenance branches publish stable releases without replacing the development nightly or beta update feeds. Signing, storage and publication retain their existing protected environments. The application and installer use the .NET 8 SDK selected by `global.json`; the application pins its servicing runtime and WiX derives the runtime-versioned DAC filename from that payload.
+
+CI checks the published 3.2 API and loads a plugin built against 3.2.0.9001 through the production assembly-load context without recompiling it for the hotfix. Run `.github/scripts/test-plugin-compatibility.ps1` locally after dependency or plugin-contract changes. A passing build or a package's minor/patch version number alone is insufficient evidence of plugin compatibility.
 
 MAJOR version increases for big changes, like changing technologies etc.
 
@@ -207,7 +220,7 @@ This database will be automatically created by the EntityFramework based on the 
 * Add yourself to the AUTHORS file, so you will be given proper credit!  
 * Create **one pull request per feature/fix**
 * Create your pull requests for new features only against the **develop** branch  
-  * Only critical Hotfixes may be created against *master* branch and require a new PATCH version as described in [Versioning in N.I.N.A.]  
+  * Hotfixes for 3.2 target *release/3.2.x* and require a new PATCH version as described in [Versioning in N.I.N.A.]
   
 * Fill out the pull request description template
   

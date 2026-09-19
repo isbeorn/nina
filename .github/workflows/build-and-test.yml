@@ -7,6 +7,14 @@ on:
     branches:
       - master
       - develop
+      - release/3.2.x
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-test-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -18,6 +26,9 @@ jobs:
       uses: nschloe/action-cached-lfs-checkout@v1
       with:
         submodules: recursive
+
+    - name: Test release workflow policy
+      run: node --test .github/scripts/merge-version-pull-request.test.js .github/scripts/release-version.test.js
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
@@ -36,10 +47,51 @@ jobs:
     - name: Run unit tests
       run: dotnet test NINA.Test/NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64 --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
 
-    - name: Publish NUnit test results
-      uses: dorny/test-reporter@v2
+    - name: Verify published 3.2 plugin compatibility
+      shell: pwsh
+      run: ./.github/scripts/test-plugin-compatibility.ps1
+
+    - name: Upload NUnit test results
+      uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: NUnit Tests
-        path: TestResults/test-results.trx
-        reporter: dotnet-trx
+        name: test-results
+        path: TestResults/*.trx
+        if-no-files-found: warn
+
+  merge-version-pull-request:
+    name: Merge Validated Version Pull Request
+    needs: build
+    if: >-
+      ${{
+        needs.build.result == 'success' &&
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.user.login == 'github-actions[bot]' &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        startsWith(github.head_ref, 'automation/version-bump/') &&
+        (
+          github.base_ref == 'develop' ||
+          github.base_ref == 'master' ||
+          startsWith(github.base_ref, 'release/')
+        )
+      }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+
+    steps:
+    - name: Checkout trusted merge policy
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.base.sha }}
+        persist-credentials: false
+        sparse-checkout: .github/scripts
+
+    - name: Validate and merge version pull request
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const mergeVersionPullRequest = require('./.github/scripts/merge-version-pull-request.js');
+          await mergeVersionPullRequest({ github, context, core });

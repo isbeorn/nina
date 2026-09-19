@@ -1,0 +1,142 @@
+name: Prepare Version Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: 'Increment the build counter or start the next patch release'
+        type: choice
+        options: [build, patch]
+        default: build
+        required: true
+
+  workflow_call:
+    inputs:
+      increment:
+        type: string
+        default: build
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: prepare-version-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Create Version Pull Request
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET_BRANCH: ${{ github.ref_name }}
+
+    steps:
+    - name: Validate release owner
+      shell: pwsh
+      run: |
+        if ('${{ github.actor }}' -ne '${{ github.repository_owner }}') {
+            Write-Error 'Only the repository owner can start a version release.'
+            exit 1
+        }
+
+    - name: Validate target branch
+      shell: pwsh
+      run: |
+        if ('${{ github.ref_type }}' -ne 'branch') {
+            Write-Error 'Version releases must be started from a branch.'
+            exit 1
+        }
+
+        $isAllowed = $env:TARGET_BRANCH -eq 'develop' `
+            -or $env:TARGET_BRANCH -eq 'master' `
+            -or $env:TARGET_BRANCH -match '^release/.+$'
+
+        if (-not $isAllowed) {
+            Write-Error "Version releases are only allowed from develop, master, or release/* branches. Selected branch: $env:TARGET_BRANCH"
+            exit 1
+        }
+
+    - name: Checkout selected branch
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref }}
+        fetch-depth: 0
+
+    - name: Ensure no version pull request is already open
+      shell: pwsh
+      run: |
+        $pullRequests = gh pr list `
+            --state open `
+            --base $env:TARGET_BRANCH `
+            --limit 1000 `
+            --json number,headRefName,url
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        $pullRequests = $pullRequests | ConvertFrom-Json
+
+        $existing = $pullRequests | Where-Object { $_.headRefName -like 'automation/version-bump/*' } | Select-Object -First 1
+        if ($existing) {
+            Write-Error "A version pull request is already open for $env:TARGET_BRANCH`: $($existing.url)"
+            exit 1
+        }
+
+    - name: Bump version
+      id: bump_version
+      shell: pwsh
+      env:
+        VERSION_INCREMENT: ${{ inputs.increment }}
+      run: |
+        node .github/scripts/release-version.js --increment "$env:VERSION_INCREMENT" --branch "$env:TARGET_BRANCH"
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        $versionFiles = node -e "console.log([...require('./.github/scripts/release-version').EXPECTED_VERSION_FILES].join('\n'))"
+        git add -- $versionFiles
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+    - name: Commit and push version branch
+      id: push_branch
+      shell: pwsh
+      env:
+        VERSION: ${{ steps.bump_version.outputs.version }}
+      run: |
+        $branch = "automation/version-bump/$env:VERSION-$env:GITHUB_RUN_ID"
+
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git switch -c $branch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        git commit -m "Bump version to $env:VERSION"
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        git push --set-upstream origin $branch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+        "branch=$branch" >> $env:GITHUB_OUTPUT
+
+    - name: Create version pull request
+      id: create_pr
+      shell: pwsh
+      env:
+        VERSION: ${{ steps.bump_version.outputs.version }}
+        VERSION_BRANCH: ${{ steps.push_branch.outputs.branch }}
+      run: |
+        $body = @(
+            "Automated version increment to $env:VERSION."
+            ''
+            "Target branch: ``$env:TARGET_BRANCH``"
+            "Preparation run: $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
+            ''
+            'The repository owner must approve the pending Build and Test workflow. Its final gated job will validate the version-only diff, squash-merge this pull request and publish the merged commit.'
+        ) -join "`n"
+
+        $bodyFile = Join-Path $env:RUNNER_TEMP 'version-pr-body.md'
+        Set-Content -LiteralPath $bodyFile -Value $body -Encoding utf8
+        $pullRequestUrl = gh pr create `
+            --base $env:TARGET_BRANCH `
+            --head $env:VERSION_BRANCH `
+            --title "Bump version to $env:VERSION" `
+            --body-file $bodyFile
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+        "url=$pullRequestUrl" >> $env:GITHUB_OUTPUT
+        "### Version pull request created`n`n$pullRequestUrl`n`nApprove its pending **Build and Test** workflow to validate, merge and publish the release." >> $env:GITHUB_STEP_SUMMARY

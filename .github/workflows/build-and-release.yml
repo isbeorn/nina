@@ -1,40 +1,126 @@
-name: Version Increment and Release
+name: Build and Release Version
 
 on:
   workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Prepare a version PR or publish its validated merge'
+        type: choice
+        options: [prepare, publish]
+        default: prepare
+        required: true
+      increment:
+        description: 'Build counter or next patch (preparation only)'
+        type: choice
+        options: [build, patch]
+        default: build
+        required: true
+      merge_commit_sha:
+        description: 'Merged version-only pull request commit (publication only)'
+        required: false
+        type: string
+      pull_request_number:
+        description: 'Merged version-only pull request number (publication only)'
+        required: false
+        type: string
 
 env:
   BUILD_CONFIG: SignedRelease
 
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: release-${{ github.ref }}-${{ inputs.operation }}
+  cancel-in-progress: false
+
 jobs:
-  versioning:
-    name: Bump Version
-    runs-on: windows-latest
+  prepare:
+    name: Prepare Version Pull Request
+    if: ${{ inputs.operation == 'prepare' }}
     permissions:
       contents: write
+      pull-requests: write
+    uses: ./.github/workflows/prepare-version-release.yml
+    with:
+      increment: ${{ inputs.increment }}
+
+  versioning:
+    name: Validate Release Metadata
+    if: ${{ inputs.operation == 'publish' }}
+    runs-on: windows-latest
     outputs:
-      version: ${{ steps.bump_version.outputs.version }}
-      release_channel: ${{ steps.bump_version.outputs.release_channel }}
-      commit_sha: ${{ steps.bump_version.outputs.commit_sha }}
+      version: ${{ steps.release_metadata.outputs.version }}
+      release_channel: ${{ steps.release_metadata.outputs.release_channel }}
+      commit_sha: ${{ steps.release_metadata.outputs.commit_sha }}
 
     steps:
-    - name: Checkout repository
+    - name: Checkout merged version
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref }}
+        fetch-depth: 0
 
-    - name: Bump and export version in CommonAssemblyInfo.cs
-      id: bump_version
+    - name: Validate release request and export version
+      id: release_metadata
       shell: pwsh
+      env:
+        GH_TOKEN: ${{ github.token }}
+        MERGE_COMMIT_SHA: ${{ inputs.merge_commit_sha }}
+        PULL_REQUEST_NUMBER: ${{ inputs.pull_request_number }}
+        TARGET_BRANCH: ${{ github.ref_name }}
       run: |
-        $file = "CommonAssemblyInfo.cs"
-
-        if (-not (Test-Path $file)) {
-            Write-Error "File not found: $file"
+        if (-not $env:MERGE_COMMIT_SHA -or -not $env:PULL_REQUEST_NUMBER -or -not $env:TARGET_BRANCH) {
+            Write-Error 'The publication dispatch is missing required release metadata.'
             exit 1
         }
 
-        $content = Get-Content $file -Raw
+        if ($env:MERGE_COMMIT_SHA -notmatch '^[0-9a-f]{40}$' -or $env:PULL_REQUEST_NUMBER -notmatch '^\d+$') {
+            Write-Error 'The publication dispatch contains malformed release metadata.'
+            exit 1
+        }
 
-        # Match and increment the version (assuming 1-based indexing)
+        $isAllowedBranch = $env:TARGET_BRANCH -eq 'develop' `
+            -or $env:TARGET_BRANCH -eq 'master' `
+            -or $env:TARGET_BRANCH -match '^release/.+$'
+        if (-not $isAllowedBranch) {
+            Write-Error "Invalid release target branch: $env:TARGET_BRANCH"
+            exit 1
+        }
+
+        $pullRequestJson = gh api "repos/$env:GITHUB_REPOSITORY/pulls/$env:PULL_REQUEST_NUMBER"
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Unable to load pull request #$env:PULL_REQUEST_NUMBER."
+            exit 1
+        }
+        $pullRequest = $pullRequestJson | ConvertFrom-Json
+
+        $isValidPullRequest = $pullRequest.merged `
+            -and $pullRequest.user.login -eq 'github-actions[bot]' `
+            -and $pullRequest.head.repo.full_name -eq $env:GITHUB_REPOSITORY `
+            -and $pullRequest.head.ref.StartsWith('automation/version-bump/') `
+            -and $pullRequest.base.ref -eq $env:TARGET_BRANCH `
+            -and $pullRequest.merge_commit_sha -eq $env:MERGE_COMMIT_SHA
+        if (-not $isValidPullRequest) {
+            Write-Error "Pull request #$env:PULL_REQUEST_NUMBER is not a valid merged version pull request."
+            exit 1
+        }
+
+        $targetRefspec = "+refs/heads/$($env:TARGET_BRANCH):refs/remotes/origin/$($env:TARGET_BRANCH)"
+        git fetch origin $targetRefspec
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        git merge-base --is-ancestor $env:MERGE_COMMIT_SHA "origin/$env:TARGET_BRANCH"
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Merge commit $env:MERGE_COMMIT_SHA is not contained in $env:TARGET_BRANCH."
+            exit 1
+        }
+
+        git checkout --detach $env:MERGE_COMMIT_SHA
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+        $file = 'CommonAssemblyInfo.cs'
+        $content = Get-Content $file -Raw
         $versionPattern = '\[assembly: AssemblyVersion\("(\d+)\.(\d+)\.(\d+)\.(\d+)"\)\]'
         $match = [regex]::Match($content, $versionPattern)
         if (-not $match.Success) {
@@ -45,10 +131,13 @@ jobs:
         $major = $match.Groups[1].Value
         $minor = $match.Groups[2].Value
         $patch = $match.Groups[3].Value
-        $build = [int]$match.Groups[4].Value + 1
+        $build = [int]$match.Groups[4].Value
         $releaseVersion = "$major.$minor.$patch.$build"
 
-        $channelDigit = $build.ToString().Substring(0,1)
+        node .github/scripts/release-version.js --validate "$releaseVersion" --branch "$env:TARGET_BRANCH"
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+        $channelDigit = $build.ToString().Substring(0, 1)
         switch ($channelDigit) {
             '1' { $assemblyPostfix = '-nightly' }
             '2' { $assemblyPostfix = '-beta' }
@@ -60,67 +149,28 @@ jobs:
             }
         }
         switch ($channelDigit) {
-          '1' { $channelName = 'Nightlies' }
-          '2' { $channelName = 'Betas' }
-          '3' { $channelName = 'Betas' }
-          '9' { $channelName = 'Releases' }
+            '1' { $channelName = 'Nightlies' }
+            '2' { $channelName = 'Betas' }
+            '3' { $channelName = 'Betas' }
+            '9' { $channelName = 'Releases' }
             default {
-            Write-Error "Unknown channel digit: $channelDigit"
+                Write-Error "Unknown channel digit: $channelDigit"
+                exit 1
+            }
+        }
+
+        $fileVersionPattern = '\[assembly: AssemblyFileVersion\("' + [regex]::Escape($releaseVersion) + '"\)\]'
+        $informationalVersionPattern = '\[assembly: AssemblyInformationalVersion\("' + [regex]::Escape("$releaseVersion$assemblyPostfix") + '"\)\]'
+        if ($content -notmatch $fileVersionPattern -or $content -notmatch $informationalVersionPattern) {
+            Write-Error 'The assembly version attributes are inconsistent.'
             exit 1
-            }
         }
 
-        # Replace all relevant lines
-        $content = $content -replace '\[assembly: AssemblyVersion\(".*?"\)\]', "[assembly: AssemblyVersion(`"$releaseVersion`")]"
-        $content = $content -replace '\[assembly: AssemblyFileVersion\(".*?"\)\]', "[assembly: AssemblyFileVersion(`"$releaseVersion`")]"
-        $content = $content -replace '\[assembly: AssemblyInformationalVersion\(".*?"\)\]', "[assembly: AssemblyInformationalVersion(`"$releaseVersion$assemblyPostfix`")]"
+        "version=$releaseVersion" >> $env:GITHUB_OUTPUT
+        "release_channel=$channelName" >> $env:GITHUB_OUTPUT
+        "commit_sha=$env:MERGE_COMMIT_SHA" >> $env:GITHUB_OUTPUT
 
-        Set-Content -Path $file -Value $content -Encoding UTF8
-        
-        $csprojFiles = Get-ChildItem -Path . -Filter *.csproj -Recurse | Where-Object { $_.Name -like 'NINA*' -or $_.Name -eq 'nikoncswrapper.csproj' }
-        foreach ($csproj in $csprojFiles) {
-            [xml]$proj = Get-Content $csproj.FullName
-
-            # No namespace case (SDK-style projects):
-            if ($proj.Project.PropertyGroup) {
-                $changed = $false
-                foreach ($pg in $proj.Project.PropertyGroup) {
-                    if ($pg.Version) {
-                        $pg.Version = "$releaseVersion$assemblyPostfix"
-                        $changed = $true
-                    }
-                }
-                if ($changed) {
-                    $proj.Save($csproj.FullName)
-                    Write-Host "🔄 Updated <Version> in $($csproj.Name) to $releaseVersion$assemblyPostfix"
-                    git add $csproj.FullName
-                }
-            }
-        }
-
-        echo "✅ Bumped to version $releaseVersion"
-        echo "VERSION=$releaseVersion" >> $env:GITHUB_ENV
-        echo "RELEASE_CHANNEL=$channelName" >> $env:GITHUB_ENV
-        echo "release_channel=$channelName" >> $env:GITHUB_OUTPUT
-        echo "version=$releaseVersion" >> $env:GITHUB_OUTPUT
-
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        git add $file
-        git commit -m "Bump version to $releaseVersion"
-        git push
-
-        $commitSha = git rev-parse HEAD
-        echo "commit_sha=$commitSha" >> $env:GITHUB_OUTPUT
-
-
-    - name: Show version
-      shell: pwsh
-      run: echo "✅ Version is $env:VERSION"
-
-    - name: Show release channel
-      shell: pwsh
-      run: echo "✅ Release channel is $env:RELEASE_CHANNEL"
+        "### Validated release`n`n- Version: $releaseVersion`n- Channel: $channelName`n- Target: $env:TARGET_BRANCH`n- Commit: $env:MERGE_COMMIT_SHA" >> $env:GITHUB_STEP_SUMMARY
 
   build:
     name: Build and Prepare Setup
@@ -159,15 +209,18 @@ jobs:
     - name: Install MkDocs and plugins
       run: |
         python -m pip install --upgrade pip
-        pip install mkdocs mkdocs-material
+        pip install mkdocs==1.6.1 mkdocs-material==9.7.1
 
     - name: Install WiX Toolset 4 CLI and extensions
       run: |
         dotnet tool install --global wix --version 4.0.5
         wix --version
     
-    - name: Install Pandoc
-      run: choco install pandoc -y
+    - name: Set up Pandoc
+      uses: pandoc/actions/setup@v1
+
+    - name: Verify Pandoc
+      run: pandoc --version
 
     - name: Restore NuGet packages
       run: dotnet restore NINA.sln
@@ -228,19 +281,21 @@ jobs:
         }
       
     - name: Pack all nugets
+      shell: pwsh
       run: |
-        dotnet pack .\nikoncswrapper\nikoncswrapper.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.Core\NINA.Core.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.Astrometry\NINA.Astrometry.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.Equipment\NINA.Equipment.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.Image\NINA.Image.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.MGEN\NINA.MGEN.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.PlateSolving\NINA.PlateSolving.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.Profile\NINA.Profile.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.Sequencer\NINA.Sequencer.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.WPF.Base\NINA.WPF.Base.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.CustomControlLibrary\NINA.CustomControlLibrary.csproj -c ${{ env.BUILD_CONFIG }} --output publish
-        dotnet pack .\NINA.Plugin\NINA.Plugin.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        $PSNativeCommandUseErrorActionPreference = $true
+        dotnet pack .\nikoncswrapper\nikoncswrapper.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.Core\NINA.Core.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.Astrometry\NINA.Astrometry.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.Equipment\NINA.Equipment.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.Image\NINA.Image.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.MGEN\NINA.MGEN.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.PlateSolving\NINA.PlateSolving.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.Profile\NINA.Profile.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.Sequencer\NINA.Sequencer.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.WPF.Base\NINA.WPF.Base.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.CustomControlLibrary\NINA.CustomControlLibrary.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
+        dotnet pack .\NINA.Plugin\NINA.Plugin.csproj -c ${{ env.BUILD_CONFIG }} --output publish --include-symbols -p:SymbolPackageFormat=snupkg
 
     - name: Create ZIP files
       run: |
@@ -357,6 +412,7 @@ jobs:
   
   publish-nightly:
     name: Publish Nightly Release
+    if: ${{ github.ref_name == 'develop' }}
     needs: [versioning, build, upload]
     runs-on: ubuntu-latest
     environment:
@@ -383,7 +439,7 @@ jobs:
     name: Publish Beta Release
     needs: [versioning, build, upload]
     runs-on: ubuntu-latest
-    if: ${{ needs.versioning.outputs.release_channel == 'Betas' || needs.versioning.outputs.release_channel == 'Releases' }}
+    if: ${{ github.ref_name == 'develop' && (needs.versioning.outputs.release_channel == 'Betas' || needs.versioning.outputs.release_channel == 'Releases') }}
     environment:
       name: beta-release
     
