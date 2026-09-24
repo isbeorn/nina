@@ -23,6 +23,11 @@ using System.Threading.Tasks;
 
 namespace NINA.Image.ImageAnalysis {
 
+    /// <summary>
+    /// Bit-exact Bayer demosaic with a fast interior path. Border pixels stay on the simple
+    /// reference-style code path, while fully surrounded pixels use a sliding 3x3 window and row
+    /// parallelism to reduce repeated work without changing the produced RGB or LRGB buffers.
+    /// </summary>
     public class BayerFilter16bpp : BayerFilter {
 
         public BayerFilter16bpp() : base() {
@@ -353,7 +358,9 @@ namespace NINA.Image.ImageAnalysis {
                 bool saveColor = SaveColorChannels;
                 bool saveLum = SaveLumChannel;
 
-                Parallel.For(0, height, y => {
+                // Each row writes to a disjoint packed slice of the output planes, so extraction can
+                // run independently per row without changing the legacy B/G/R buffer layout or lum math.
+                Parallel.For(0, height, new ParallelOptions { MaxDegreeOfParallelism = Math.Max(1, Environment.ProcessorCount - 1) }, y => {
                     // Start from the beginning of the source RGB row using the padded stride.
                     // This keeps odd-width rows aligned with GDI+ padding rules.
                     ushort* rowStart = rgbSrcPtr + (y * rgbSrcStride);
