@@ -570,8 +570,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             // we start at exposure + 1, as DetermineExposureTime is already saving an exposure
             GetIterations().CompletedIterations++;
             for (var i = 1; i < GetIterations().Iterations; i++) {
-                GetIterations().CompletedIterations++;
-
                 var filter = GetSwitchFilterItem().Filter;
                 var time = exposureDetermination.GetNextExposureTime();
 
@@ -579,13 +577,13 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                     Notification.ShowWarning(String.Format(Loc.Instance["LblExposureOverMax"], Math.Round(time,5)));
                         
                     Logger.Warning($"Predicted exposure {time} is longer than {MaxExposure} - Stopping");
-                    break;
+                    throw new SequenceEntityFailedException(string.Format(Loc.Instance["LblExposureOverMax"], Math.Round(time, 5)));
                 }
                 if (time < MinExposure) {
                     Notification.ShowWarning(String.Format(Loc.Instance["LblExposureUnderMin"], Math.Round(time, 5)));
 
                     Logger.Warning($"Predicted exposure {time} is shorter than {MinExposure} - Stopping");
-                    break;
+                    throw new SequenceEntityFailedException(string.Format(Loc.Instance["LblExposureUnderMin"], Math.Round(time, 5)));
                 }
 
                 var sequence = new CaptureSequence(time, CaptureSequence.ImageTypes.FLAT, filter, GetExposureItem().Binning, GetIterations().Iterations) { Gain = GetExposureItem().Gain, Offset = GetExposureItem().Offset };
@@ -629,6 +627,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                         cameraIsLinear = false;
                             
                         exposureDetermination = await DetermineExposureTime(MinExposure, MaxExposure, progress, token, time);
+                        GetIterations().CompletedIterations++;
                         continue;
                 }
                 exposureDetermination.TargetADU = (Math.Pow(2, imageData.Properties.BitDepth) - 1) * HistogramTargetPercentage;
@@ -638,6 +637,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
                 FillTargetMetaData(imageData.MetaData);
                 await imageSaveMediator.Enqueue(imageData, prepTask, progress, token);
+                GetIterations().CompletedIterations++;
 
                 progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblSavingImage"] });
             }

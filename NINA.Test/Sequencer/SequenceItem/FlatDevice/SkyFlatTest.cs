@@ -15,6 +15,8 @@
 using FluentAssertions;
 using Moq;
 using NINA.Astrometry.Interfaces;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
@@ -281,6 +283,187 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
                 It.IsAny<CancellationToken>()), Times.Exactly(3));
         }
 
+        [TestCase(38565.52392488801, "LblExposureUnderMin")]
+        [TestCase(30000, "LblExposureOverMax")]
+        public async Task Execute_PredictionOutsideLimits_FailsWithoutCountingUncapturedFrame(double mean, string messageKey) {
+            SkyFlat sut = CreateCapturingSut();
+            SetupImageCaptureMeans(mean);
+
+            Func<Task> act = () => sut.Execute(default, CancellationToken.None);
+
+            double predictedExposure = 0.5 * (32767.5 / mean);
+            await act.Should().ThrowAsync<SequenceEntityFailedException>()
+                .WithMessage(string.Format(Loc.Instance[messageKey], Math.Round(predictedExposure, 5)));
+            sut.GetIterations().CompletedIterations.Should().Be(1);
+            VerifyCaptureAndSaveCalls(1, 1);
+        }
+
+        [TestCase(38565.52392488801)]
+        [TestCase(30000)]
+        public async Task Run_PersistentExposureLimitFailure_ExhaustsAttemptsInsteadOfSkipping(double mean) {
+            SkyFlat sut = CreateCapturingSut();
+            sut.Attempts = 3;
+            SetupImageCaptureMeans(mean, mean, mean);
+
+            await sut.Run(default, CancellationToken.None);
+
+            sut.Status.Should().Be(SequenceEntityStatus.FAILED);
+            sut.GetIterations().CompletedIterations.Should().Be(1);
+            VerifyCaptureAndSaveCalls(3, 3);
+        }
+
+        [TestCase(38565.52392488801)]
+        [TestCase(30000)]
+        public async Task Run_ExposureLimitFailureThenRecovery_CompletesNewAttempt(double mean) {
+            SkyFlat sut = CreateCapturingSut();
+            sut.Attempts = 3;
+            SetupImageCaptureMeans(mean, 32767.5, 32767.5);
+
+            await sut.Run(default, CancellationToken.None);
+
+            sut.Status.Should().Be(SequenceEntityStatus.FINISHED);
+            sut.GetIterations().CompletedIterations.Should().Be(2);
+            VerifyCaptureAndSaveCalls(3, 3);
+        }
+
+        [TestCase(3.99999, false)]
+        [TestCase(4, true)]
+        [TestCase(4.00001, true)]
+        [TestCase(5.99999, true)]
+        [TestCase(6, true)]
+        [TestCase(6.00001, false)]
+        public async Task Execute_PredictedExposure_RespectsInclusiveLimits(double predictedExposure, bool allowed) {
+            SkyFlat sut = CreateCapturingSut(4, 6);
+            SetupImageCaptureMeans(32767.5 * (5 / predictedExposure), 32767.5);
+
+            Func<Task> act = () => sut.Execute(default, CancellationToken.None);
+
+            if (allowed) {
+                await act.Should().NotThrowAsync();
+                sut.GetIterations().CompletedIterations.Should().Be(2);
+                VerifyCaptureAndSaveCalls(2, 2);
+                imagingMediatorMock.Verify(x => x.CaptureImage(
+                    It.Is<CaptureSequence>(sequence => Math.Abs(sequence.ExposureTime - predictedExposure) < 0.0000001),
+                    It.IsAny<CancellationToken>(),
+                    It.IsAny<IProgress<ApplicationStatus>>(),
+                    It.IsAny<string>()), Times.Once);
+            } else {
+                await act.Should().ThrowAsync<SequenceEntityFailedException>();
+                sut.GetIterations().CompletedIterations.Should().Be(1);
+                VerifyCaptureAndSaveCalls(1, 1);
+            }
+        }
+
+        [TestCase(10000)]
+        [TestCase(60000)]
+        public async Task Execute_RejectedFrame_CountsOnlySavedReplacementAndRemainingFrames(double rejectedMean) {
+            SkyFlat sut = CreateCapturingSut(iterations: 3);
+            SetupImageCaptureMeans(32767.5, rejectedMean, 32767.5, 32767.5);
+            List<int> progressBeforeSave = new List<int>();
+            imageSaveMediatorMock.Setup(x => x.Enqueue(
+                    It.IsAny<IImageData>(),
+                    It.IsAny<Task<IRenderedImage>>(),
+                    It.IsAny<IProgress<ApplicationStatus>>(),
+                    It.IsAny<CancellationToken>()))
+                .Callback(() => progressBeforeSave.Add(sut.GetIterations().CompletedIterations))
+                .Returns(Task.CompletedTask);
+
+            await sut.Execute(default, CancellationToken.None);
+
+            progressBeforeSave.Should().Equal(0, 1, 2);
+            sut.GetIterations().CompletedIterations.Should().Be(3);
+            VerifyCaptureAndSaveCalls(4, 3);
+        }
+
+        [Test]
+        public async Task Execute_CaptureFailure_DoesNotAdvanceProgress() {
+            SkyFlat sut = CreateCapturingSut();
+            SetupImageCaptureMeans();
+            imagingMediatorMock.SetupSequence(x => x.CaptureImage(
+                    It.IsAny<CaptureSequence>(),
+                    It.IsAny<CancellationToken>(),
+                    It.IsAny<IProgress<ApplicationStatus>>(),
+                    It.IsAny<string>()))
+                .ReturnsAsync(CreateExposureData(32767.5))
+                .ThrowsAsync(new InvalidOperationException("Capture failed"));
+
+            Func<Task> act = () => sut.Execute(default, CancellationToken.None);
+
+            await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Capture failed");
+            sut.GetIterations().CompletedIterations.Should().Be(1);
+            VerifyCaptureAndSaveCalls(2, 1);
+        }
+
+        [TestCase(10000)]
+        [TestCase(60000)]
+        public async Task Execute_RedeterminationFailure_DoesNotCountRejectedFrame(double rejectedMean) {
+            SkyFlat sut = CreateCapturingSut();
+            SetupImageCaptureMeans(32767.5, rejectedMean, rejectedMean);
+
+            Func<Task> act = () => sut.Execute(default, CancellationToken.None);
+
+            await act.Should().ThrowAsync<SequenceEntityFailedException>();
+            sut.GetIterations().CompletedIterations.Should().Be(1);
+            VerifyCaptureAndSaveCalls(3, 1);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task Execute_SaveEnqueueFailure_DoesNotAdvanceProgress(bool replacementFrame) {
+            SkyFlat sut = CreateCapturingSut();
+            SetupImageCaptureMeans(replacementFrame ? [32767.5, 60000, 32767.5] : [32767.5, 32767.5]);
+            imageSaveMediatorMock.SetupSequence(x => x.Enqueue(
+                    It.IsAny<IImageData>(),
+                    It.IsAny<Task<IRenderedImage>>(),
+                    It.IsAny<IProgress<ApplicationStatus>>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .ThrowsAsync(new InvalidOperationException("Save enqueue failed"));
+
+            Func<Task> act = () => sut.Execute(default, CancellationToken.None);
+
+            await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Save enqueue failed");
+            sut.GetIterations().CompletedIterations.Should().Be(1);
+            VerifyCaptureAndSaveCalls(replacementFrame ? 3 : 2, 2);
+        }
+
+        [TestCase(38565.52392488801)]
+        [TestCase(30000)]
+        public async Task Execute_SingleRequestedFrame_CompletesWithAcceptedDeterminationFrame(double mean) {
+            SkyFlat sut = CreateCapturingSut(iterations: 1);
+            SetupImageCaptureMeans(mean);
+
+            await sut.Execute(default, CancellationToken.None);
+
+            sut.GetIterations().CompletedIterations.Should().Be(1);
+            VerifyCaptureAndSaveCalls(1, 1);
+        }
+
+        [Test]
+        public async Task Run_CancelledDuringCapture_DoesNotRetryOrAdvanceProgress() {
+            SkyFlat sut = CreateCapturingSut();
+            sut.Attempts = 3;
+            using CancellationTokenSource cancellation = new CancellationTokenSource();
+            SetupImageCaptureMeans();
+            imagingMediatorMock.SetupSequence(x => x.CaptureImage(
+                    It.IsAny<CaptureSequence>(),
+                    It.IsAny<CancellationToken>(),
+                    It.IsAny<IProgress<ApplicationStatus>>(),
+                    It.IsAny<string>()))
+                .ReturnsAsync(CreateExposureData(32767.5))
+                .Returns(() => {
+                    cancellation.Cancel();
+                    return Task.FromCanceled<IExposureData>(cancellation.Token);
+                });
+
+            Func<Task> act = () => sut.Run(default, cancellation.Token);
+
+            await act.Should().ThrowAsync<OperationCanceledException>();
+            sut.Status.Should().Be(SequenceEntityStatus.CREATED);
+            sut.GetIterations().CompletedIterations.Should().Be(1);
+            VerifyCaptureAndSaveCalls(2, 1);
+        }
+
         /// <summary>
         /// Verifies the Test Linearity Detects Linear And Non Linear Exposure Response scenario for the sequencer behavior under test.
         /// </summary>
@@ -349,6 +532,31 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
                 filterWheelMediatorMock.Object,
                 twilightCalculatorMock.Object,
                 symbolBrokerMock.Object);
+        }
+
+        private SkyFlat CreateCapturingSut(double minExposure = 0.5, double maxExposure = 0.5, int iterations = 2) {
+            SkyFlat sut = CreateSut();
+            // A fixed range makes the initial accepted exposure land exactly on the boundary.
+            sut.MinExposure = minExposure;
+            sut.MaxExposure = maxExposure;
+            sut.HistogramTolerancePercentage = 0.3;
+            sut.GetIterations().Iterations = iterations;
+            twilightCalculatorMock.Setup(x => x.GetTwilightDuration(It.IsAny<DateTime>(), It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+                .Returns(TimeSpan.FromMinutes(30));
+            return sut;
+        }
+
+        private void VerifyCaptureAndSaveCalls(int captures, int saves) {
+            imagingMediatorMock.Verify(x => x.CaptureImage(
+                It.IsAny<CaptureSequence>(),
+                It.IsAny<CancellationToken>(),
+                It.IsAny<IProgress<ApplicationStatus>>(),
+                It.IsAny<string>()), Times.Exactly(captures));
+            imageSaveMediatorMock.Verify(x => x.Enqueue(
+                It.IsAny<IImageData>(),
+                It.IsAny<Task<IRenderedImage>>(),
+                It.IsAny<IProgress<ApplicationStatus>>(),
+                It.IsAny<CancellationToken>()), Times.Exactly(saves));
         }
 
         private void SetupImageCaptureMeans(params double[] means) {
