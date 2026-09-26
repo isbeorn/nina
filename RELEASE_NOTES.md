@@ -13,6 +13,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Apply the readout mode before gain and offset for captures and live view. QHY cameras now retain the correct gain and offset across read-mode changes.
 - Improved QHY cooling and sensor-worker shutdown, failed filter-wheel discovery cleanup and firmware-version reporting.
 - Serialized QHY, ZWO and ToupTek-family native camera calls. ToupTek-family callbacks are retained safely and device-disconnect events cancel pending images without closing the camera from inside a native callback.
+- Fixed missing synchronization in native FTDI and SBIG SDK calls to prevent overlapping operations during driver queries and image readout.
 - Improved ToupTek-family camera initialization, binning, fan controls and temperature settings. ZWO camera properties are now queried by camera ID.
 - Limited ASCOM binning choices to valid values. ASCOM V1 cameras and mounts can connect when newer optional capabilities are unavailable.
 - Use valid ASCOM exposure timestamps and durations in image metadata, with fallback when drivers omit or return invalid values. Automatic debayering now respects Bayer offsets while retaining explicit pattern overrides.

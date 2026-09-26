@@ -460,16 +460,19 @@ namespace NINA.Equipment.SDK.CameraSDKs.SBIGSDK {
         /// <param name="deviceId">The connected device to operate on</param>
         /// <returns>The queried temperature status</returns>
         public SBIG.QueryTemperatureStatusResults2 QueryTemperatureStatus(SBIG.DeviceType deviceId) {
-            return this.queryTemperatureStatusCache.GetOrAdd(
-                deviceId.ToString(),
-                () => {
-                    using (var driver = EnsureActiveDriver(deviceId)) {
-                        return UnivDrvCommand<SBIG.QueryTemperatureStatusParams, SBIG.QueryTemperatureStatusResults2>(
-                            SBIG.Cmd.CC_QUERY_TEMPERATURE_STATUS,
-                            new SBIG.QueryTemperatureStatusParams(SBIG.TempStatusRequest.TEMP_STATUS_ADVANCED2));
-                    }
-                },
-                TimeSpan.FromSeconds(5));
+            // Acquire the driver lock before the cache lock, including during readout.
+            lock (driverLock) {
+                return this.queryTemperatureStatusCache.GetOrAdd(
+                    deviceId.ToString(),
+                    () => {
+                        using (var driver = EnsureActiveDriver(deviceId)) {
+                            return UnivDrvCommand<SBIG.QueryTemperatureStatusParams, SBIG.QueryTemperatureStatusResults2>(
+                                SBIG.Cmd.CC_QUERY_TEMPERATURE_STATUS,
+                                new SBIG.QueryTemperatureStatusParams(SBIG.TempStatusRequest.TEMP_STATUS_ADVANCED2));
+                        }
+                    },
+                    TimeSpan.FromSeconds(5));
+            }
         }
 
         /// <summary>
@@ -725,79 +728,82 @@ namespace NINA.Equipment.SDK.CameraSDKs.SBIGSDK {
         public SBIGExposureData DownloadExposure(SBIG.DeviceType deviceId, SBIG.CCD ccd, CancellationToken ct) {
             Logger.Trace($"SBIGSDK: Start DownloadExposure DeviceId={deviceId}, Ccd={ccd}");
             lock (readoutLock) {
-                var connectedDevice = GetConnectedDevice(deviceId);
-                var exposureParams = ccd == SBIG.CCD.Imaging ? connectedDevice.latestStartExposureParams : connectedDevice.latestStartTrackingExposureParams;
-                using (var driver = EnsureActiveDriver(deviceId)) {
-                    var pinnedParams = default(GCHandle);
-                    var dataGcHandle = default(GCHandle);
-                    var tempStatus = QueryTemperatureStatus(deviceId);
-                    bool coolingEnabled = tempStatus.coolingEnabled > 0;
-                    if (coolingEnabled) {
-                        SetTemperatureRegulationState(deviceId, ccd, SBIG.TemperatureRegulation.Freeze);
-                    }
+                // Keep the selected driver active through readout, cleanup and restoration.
+                lock (driverLock) {
+                    var connectedDevice = GetConnectedDevice(deviceId);
+                    var exposureParams = ccd == SBIG.CCD.Imaging ? connectedDevice.latestStartExposureParams : connectedDevice.latestStartTrackingExposureParams;
+                    using (var driver = EnsureActiveDriver(deviceId)) {
+                        var pinnedParams = default(GCHandle);
+                        var dataGcHandle = default(GCHandle);
+                        var tempStatus = QueryTemperatureStatus(deviceId);
+                        bool coolingEnabled = tempStatus.coolingEnabled > 0;
+                        if (coolingEnabled) {
+                            SetTemperatureRegulationState(deviceId, ccd, SBIG.TemperatureRegulation.Freeze);
+                        }
 
-                    var readoutParams = new SBIG.StartReadoutParams() {
-                        ccd = ccd,
-                        readoutMode = exposureParams.readoutMode,
-                        left = exposureParams.left,
-                        top = exposureParams.top,
-                        width = exposureParams.width,
-                        height = exposureParams.height,
-                    };
-
-                    ushort[] data = null;
-                    try { 
-                        UnivDrvCommand(SBIG.Cmd.CC_START_READOUT, readoutParams);
-
-                        data = new ushort[exposureParams.width * exposureParams.height];
-                        dataGcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-                        var pinnedPtr = dataGcHandle.AddrOfPinnedObject();
-                        var readoutLineParams = new SBIG.ReadoutLineParams() {
+                        var readoutParams = new SBIG.StartReadoutParams() {
                             ccd = ccd,
-                            pixelStart = exposureParams.left,
-                            pixelLength = exposureParams.width,
-                            readoutMode = exposureParams.readoutMode
+                            readoutMode = exposureParams.readoutMode,
+                            left = exposureParams.left,
+                            top = exposureParams.top,
+                            width = exposureParams.width,
+                            height = exposureParams.height,
                         };
 
-                        pinnedParams = GCHandle.Alloc(readoutLineParams, GCHandleType.Pinned);
-                        for (int i = 0; i < exposureParams.height; i++) {
-                            if (ct.IsCancellationRequested) {
-                                throw new OperationCanceledException();
-                            }
-                            UnivDrvCommandDirect(SBIG.Cmd.CC_READOUT_LINE, pinnedParams.AddrOfPinnedObject(), pinnedPtr + (i * exposureParams.width * sizeof(ushort)));
-                        }
-                    } catch (Exception e) {
-                        Logger.Error("SBIGSDK: DownloadExposure failed", e);
-                        throw;
-                    } finally {
-                        Logger.Trace($"SBIGSDK: End DownloadExposure DeviceId={deviceId}, Ccd={ccd}");
-                        if (pinnedParams != default(GCHandle)) {
-                            pinnedParams.Free();
-                        }
-                        if (dataGcHandle != default(GCHandle)) {
-                            dataGcHandle.Free();
-                        }
-
+                        ushort[] data = null;
                         try {
-                            UnivDrvCommand(SBIG.Cmd.CC_END_READOUT, readoutParams);
-                        } catch (Exception e) {
-                            Logger.Error($"SBIGSDK: Failed to end readout for {deviceId} {ccd}", e);
-                        }
+                            UnivDrvCommand(SBIG.Cmd.CC_START_READOUT, readoutParams);
 
-                        try {
-                            if (coolingEnabled) {
-                                SetTemperatureRegulationState(deviceId, ccd, SBIG.TemperatureRegulation.Unfreeze);
+                            data = new ushort[exposureParams.width * exposureParams.height];
+                            dataGcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+                            var pinnedPtr = dataGcHandle.AddrOfPinnedObject();
+                            var readoutLineParams = new SBIG.ReadoutLineParams() {
+                                ccd = ccd,
+                                pixelStart = exposureParams.left,
+                                pixelLength = exposureParams.width,
+                                readoutMode = exposureParams.readoutMode
+                            };
+
+                            pinnedParams = GCHandle.Alloc(readoutLineParams, GCHandleType.Pinned);
+                            for (int i = 0; i < exposureParams.height; i++) {
+                                if (ct.IsCancellationRequested) {
+                                    throw new OperationCanceledException();
+                                }
+                                UnivDrvCommandDirect(SBIG.Cmd.CC_READOUT_LINE, pinnedParams.AddrOfPinnedObject(), pinnedPtr + (i * exposureParams.width * sizeof(ushort)));
                             }
                         } catch (Exception e) {
-                            Logger.Error($"SBIGSDK: Failed to unfreeze TEC {deviceId} {ccd}", e);
+                            Logger.Error("SBIGSDK: DownloadExposure failed", e);
+                            throw;
+                        } finally {
+                            Logger.Trace($"SBIGSDK: End DownloadExposure DeviceId={deviceId}, Ccd={ccd}");
+                            if (pinnedParams != default(GCHandle)) {
+                                pinnedParams.Free();
+                            }
+                            if (dataGcHandle != default(GCHandle)) {
+                                dataGcHandle.Free();
+                            }
+
+                            try {
+                                UnivDrvCommand(SBIG.Cmd.CC_END_READOUT, readoutParams);
+                            } catch (Exception e) {
+                                Logger.Error($"SBIGSDK: Failed to end readout for {deviceId} {ccd}", e);
+                            }
+
+                            try {
+                                if (coolingEnabled) {
+                                    SetTemperatureRegulationState(deviceId, ccd, SBIG.TemperatureRegulation.Unfreeze);
+                                }
+                            } catch (Exception e) {
+                                Logger.Error($"SBIGSDK: Failed to unfreeze TEC {deviceId} {ccd}", e);
+                            }
                         }
+
+                        return new SBIGExposureData() {
+                            Data = data,
+                            Width = exposureParams.width,
+                            Height = exposureParams.height
+                        };
                     }
-
-                    return new SBIGExposureData() {
-                        Data = data,
-                        Width = exposureParams.width,
-                        Height = exposureParams.height
-                    };
                 }
             }
         }

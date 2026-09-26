@@ -72,7 +72,9 @@ namespace FTD2XX_NET {
         private static extern FT_STATUS FT_Write(IntPtr handle, byte[] buffer, uint bytesToWrite, out uint bytesWritten);
 
         public FT_STATUS GetDriverVersion(out uint driverVersion) {
-            return FT_GetDriverVersion(this.handle, out driverVersion);
+            lock (lockObj) {
+                return FT_GetDriverVersion(this.handle, out driverVersion);
+            }
         }
 
         public FT_STATUS Close() {
