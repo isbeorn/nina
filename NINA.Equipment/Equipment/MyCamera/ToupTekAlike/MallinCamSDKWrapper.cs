@@ -194,10 +194,12 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
         }
 
         public bool AAF(ToupTekAlikeAAF action, int outVal, out int inVal) {
+            using var _ = lockObj.EnterScope();
             return sdk.AAF(action.ToMallinCam(), outVal, out inVal);
         }
 
         public bool AAF(ToupTekAlikeAAF action, int outVal) {
+            using var _ = lockObj.EnterScope();
             return sdk.AAF(action.ToMallinCam(), outVal);
         }
 

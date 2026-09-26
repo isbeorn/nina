@@ -32,6 +32,8 @@ namespace MoravianCameraSDK {
 
         public void Release(UIntPtr handle) {
             using var scope = global.EnterScope();
+            // Wait for calls using this instance's handle before releasing it.
+            using var localScope = local.EnterScope();
             Gxusb.Release(handle);
         }
 
