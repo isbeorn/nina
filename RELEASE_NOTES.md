@@ -43,6 +43,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 ## Images, sequences and profiles
 
+- Sky Flats now honors retry and error settings when a predicted exposure exceeds the configured limits, and incomplete captures no longer count as completed frames.
 - Added Zstandard compression for XISF, with optional byte shuffling.
 - FITS filenames containing brackets or parentheses are handled literally. Corrected FITS site metadata and SBIG electrons-per-ADU metadata.
 - XISF readers detect incomplete reads and preserve corrected metadata values and Bayer-offset keywords.
