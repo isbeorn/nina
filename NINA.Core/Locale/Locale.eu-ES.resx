@@ -7741,16 +7741,16 @@ Esposizio-kopurua garrantzitsua ez bazaizu, gaitu aukera hau exekuzio baten ondo
     <value>Ikurrak</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Defines a global variable for expressions anywhere in this sequence. Its initial value is assigned when this instruction runs, so place it before instructions that use it. Use Set Variable to change it later.</value>
+    <value>Sekuentzia honetako edozein adierazpenetan erabil daitekeen aldagai global bat definitzen du. Hasierako balioa instrukzio hau exekutatzean esleitzen zaio, beraz jarri hura erabiltzen duten instrukzioen aurretik. Geroago aldatzeko, erabili Ezarri aldagaia.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
-    <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
+    <value>Instrukzio-multzo honetan eta honen habiaratutako instrukzio-multzoetan adierazpenetarako erabil daitekeen aldagai bat definitzen du. Hasierako balioa instrukzio hau exekutatzean esleitzen zaio. Geroago aldatzeko, erabili Ezarri aldagaia. Ez da ikusgai guraso- edo maila bereko instrukzio-multzoetan.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
     <value>Definitu aldagaia</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
+    <value>Sekuentzia honetako edozein adierazpenetan erabil daitekeen izendun balio global bat definitzen du. Sekuentzia abiarazi aurretik dago erabilgarri. Editatu instrukzio hau haren balioa aldatzeko; Ezarri aldagaiak ezin du konstante bat aldatu.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
     <value>Definitu konstantea</value>
