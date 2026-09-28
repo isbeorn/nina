@@ -169,7 +169,7 @@ namespace NINA.Sequencer.Container {
             set {
                 bool wasExpanded = base.IsExpanded;
                 base.IsExpanded = value;
-                if (!isDeserializing && value && !wasExpanded && !IsEditing) {
+                if (!isDeserializing && value && !wasExpanded && !IsEditing && !IsMaterialized) {
                     TryResolveTemplate();
                 }
             }

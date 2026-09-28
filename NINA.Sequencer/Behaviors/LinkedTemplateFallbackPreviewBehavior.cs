@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -165,8 +166,18 @@ namespace NINA.Sequencer.Behaviors {
         }
 
         private void StoreHitTestState(UIElement element) {
-            bool isHitTestVisible = element.IsHitTestVisible;
-            previewStates.Add(new PreviewState(() => element.IsHitTestVisible = isHitTestVisible));
+            // The effective value can already be coerced to false by a preview-only ancestor.
+            object localValue = element.ReadLocalValue(UIElement.IsHitTestVisibleProperty);
+            BindingBase binding = BindingOperations.GetBindingBase(element, UIElement.IsHitTestVisibleProperty);
+            previewStates.Add(new PreviewState(() => {
+                if (binding != null) {
+                    BindingOperations.SetBinding(element, UIElement.IsHitTestVisibleProperty, binding);
+                } else if (localValue == DependencyProperty.UnsetValue) {
+                    element.ClearValue(UIElement.IsHitTestVisibleProperty);
+                } else {
+                    element.SetValue(UIElement.IsHitTestVisibleProperty, localValue);
+                }
+            }));
         }
 
         private void StoreOpacityState(UIElement element) {
@@ -274,9 +285,18 @@ namespace NINA.Sequencer.Behaviors {
             observedGenerators.Clear();
         }
 
-        private static IEnumerable<DependencyObject> EnumerateSelfAndDescendants(DependencyObject root) {
+        private IEnumerable<DependencyObject> EnumerateSelfAndDescendants(DependencyObject root) {
             if (root == null) {
                 yield break;
+            }
+
+            // Do not overwrite state managed by a nested link's own preview behavior.
+            if (root is FrameworkElement element && !ReferenceEquals(element, AssociatedObject)) {
+                foreach (Behavior behavior in Interaction.GetBehaviors(element)) {
+                    if (behavior is LinkedTemplateFallbackPreviewBehavior) {
+                        yield break;
+                    }
+                }
             }
 
             yield return root;

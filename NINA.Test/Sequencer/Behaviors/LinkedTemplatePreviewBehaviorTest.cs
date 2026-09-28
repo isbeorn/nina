@@ -24,11 +24,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Markup;
 using System.Windows.Threading;
 
 namespace NINA.Test.Sequencer.Behaviors {
 
-    [TestFixture]
+    [TestFixture, NonParallelizable]
     public class LinkedTemplatePreviewBehaviorTest {
 
         [Test]
@@ -101,6 +103,92 @@ namespace NINA.Test.Sequencer.Behaviors {
             dragDropBehavior.IsEnabled.Should().BeTrue();
             dragOverBehavior.Enabled.Should().BeTrue();
             dropIntoBehavior.IsEnabled.Should().BeTrue();
+        }
+
+        [TestCase(false, "Unset")]
+        [TestCase(false, "True")]
+        [TestCase(false, "False")]
+        [TestCase(false, "Binding")]
+        [TestCase(true, "Unset")]
+        [TestCase(true, "True")]
+        [TestCase(true, "False")]
+        [TestCase(true, "Binding")]
+        [Apartment(ApartmentState.STA)]
+        public void ApplyPreviewState_RestoresInstructionInputState(bool fallback, string originalState) {
+            TextBox parameter = new TextBox();
+            Button delete = new Button();
+            CheckBox source = new CheckBox { IsChecked = true };
+            Binding binding = new Binding(nameof(CheckBox.IsChecked)) { Source = source };
+            if (originalState == "Binding") {
+                parameter.SetBinding(UIElement.IsHitTestVisibleProperty, binding);
+            } else if (originalState != "Unset") {
+                parameter.IsHitTestVisible = bool.Parse(originalState);
+            }
+            StackPanel editors = new StackPanel { Children = { parameter, delete } };
+            Behavior<FrameworkElement> behavior;
+            FrameworkElement host;
+            FrameworkElement view;
+            TreeViewItem? linked = null;
+            if (fallback) {
+                // RangeBase and its template's input controls are both suppressed by the fallback behavior.
+                Slider slider = new Slider {
+                    Template = (ControlTemplate)XamlReader.Parse(
+                        "<ControlTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" TargetType=\"Slider\"><ContentPresenter x:Name=\"Editors\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\" /></ControlTemplate>")
+                };
+                slider.ApplyTemplate();
+                ((ContentPresenter)slider.Template.FindName("Editors", slider)).Content = editors;
+                host = view = slider;
+                behavior = new LinkedTemplateFallbackPreviewBehavior();
+            } else {
+                host = new Border();
+                linked = new TreeViewItem { Header = host, IsExpanded = true };
+                TreeViewItem container = new TreeViewItem { DataContext = new SequentialContainer(), IsExpanded = true };
+                container.Items.Add(new TreeViewItem { DataContext = new object(), Header = editors });
+                linked.Items.Add(container);
+                TreeView tree = new TreeView();
+                tree.Items.Add(linked);
+                view = tree;
+                behavior = new LinkedTemplatePreviewBehavior();
+            }
+            view.Measure(new Size(400, 300));
+            view.Arrange(new Rect(0, 0, 400, 300));
+            view.UpdateLayout();
+            behavior.Attach(host);
+            if (linked != null) SetPrivateField(behavior, "linkedTemplateTreeViewItem", linked);
+            DependencyProperty editingProperty = fallback
+                ? LinkedTemplateFallbackPreviewBehavior.IsEditingProperty
+                : LinkedTemplatePreviewBehavior.IsEditingProperty;
+            try {
+                for (int i = 0; i < 2; i++) {
+                    behavior.SetValue(editingProperty, false);
+                    InvokePrivate(behavior, "ApplyPreviewState");
+                    InvokePrivate(behavior, "ApplyPreviewState");
+                    parameter.IsHitTestVisible.Should().BeFalse();
+                    delete.IsHitTestVisible.Should().BeFalse();
+
+                    behavior.SetValue(editingProperty, true);
+                    InvokePrivate(behavior, "ApplyPreviewState");
+                    parameter.IsHitTestVisible.Should().Be(originalState != "False");
+                    delete.IsHitTestVisible.Should().BeTrue();
+                    if (originalState == "Unset") {
+                        parameter.ReadLocalValue(UIElement.IsHitTestVisibleProperty).Should().BeSameAs(DependencyProperty.UnsetValue);
+                    } else if (originalState == "Binding") {
+                        BindingOperations.GetBindingBase(parameter, UIElement.IsHitTestVisibleProperty).Should().BeSameAs(binding);
+                        source.IsChecked = false;
+                        parameter.IsHitTestVisible.Should().BeFalse();
+                        source.IsChecked = true;
+                        parameter.IsHitTestVisible.Should().BeTrue();
+                    } else {
+                        parameter.ReadLocalValue(UIElement.IsHitTestVisibleProperty).Should().Be(bool.Parse(originalState));
+                    }
+                    host.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
+                    host.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+                    DrainDispatcher();
+                }
+            } finally {
+                behavior.Detach();
+                DrainDispatcher();
+            }
         }
 
         [Test]

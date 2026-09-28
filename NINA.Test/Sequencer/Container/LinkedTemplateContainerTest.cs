@@ -191,6 +191,58 @@ namespace NINA.Test.Sequencer.Container {
             sut.LinkState.Should().Be(TemplateLinkState.Resolved);
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task IsExpanded_DuringRunPreservesExecutingContent(bool nested) {
+            TemplateLinkResolver resolver = new TemplateLinkResolver();
+            TemplateReference reference = CreateReference("Running.template.json", "Running");
+            BlockingProbe probe = new BlockingProbe();
+            TemplatedSequenceContainer template = CreateTemplate(reference, "Running", new BlockingInstruction(probe));
+            List<TemplatedSequenceContainer> templates = new List<TemplatedSequenceContainer> { template };
+            if (nested) {
+                TemplateReference outerReference = CreateReference("Outer.template.json", "Outer");
+                templates.Add(CreateTemplate(outerReference, "Outer", new LinkedTemplateContainer(resolver) {
+                    TemplateReference = reference
+                }));
+                reference = outerReference;
+            }
+            resolver.UpdateTemplates(templates, true, null);
+            LinkedTemplateContainer sut = new LinkedTemplateContainer(resolver) { TemplateReference = reference };
+            Task run = sut.Run(Mock.Of<IProgress<ApplicationStatus>>(), CancellationToken.None);
+            try {
+                BlockingInstruction executing = await probe.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                ISequenceContainer content = (ISequenceContainer)sut.Items.Single();
+                ISequenceContainer executingParent = executing.Parent;
+                LinkedTemplateContainer inner = nested ? (LinkedTemplateContainer)content.Items.Single() : sut;
+                IList<ISequenceItem> items = sut.Items;
+                bool sameContent = true;
+                for (int i = 0; i < 3; i++) {
+                    sut.IsExpanded = true;
+                    inner.IsExpanded = true;
+                    sameContent &= ReferenceEquals(sut.Items, items)
+                        && ReferenceEquals(sut.Items.Single(), content)
+                        && ReferenceEquals(inner.Items.Single(), executingParent)
+                        && ReferenceEquals(executingParent.Items.Single(), executing);
+                    sut.IsExpanded = false;
+                    inner.IsExpanded = false;
+                }
+                using (new FluentAssertions.Execution.AssertionScope()) {
+                    sameContent.Should().BeTrue("view expansion must keep the executing objects displayed");
+                    executing.Status.Should().Be(SequenceEntityStatus.RUNNING);
+                    executingParent.Status.Should().Be(SequenceEntityStatus.RUNNING);
+                    sut.Status.Should().Be(SequenceEntityStatus.RUNNING);
+                    probe.Release.TrySetResult(true);
+                    await run.WaitAsync(TimeSpan.FromSeconds(5));
+                    probe.Executions.Should().Be(1);
+                    executing.Status.Should().Be(SequenceEntityStatus.FINISHED);
+                    sut.Items.Single().Should().BeSameAs(content);
+                }
+            } finally {
+                probe.Release.TrySetResult(true);
+                await run.WaitAsync(TimeSpan.FromSeconds(5));
+            }
+        }
+
         [Test]
         public void SequenceJsonConverter_RoundTripsLinkedTemplateReferenceWithoutPreviewContent() {
             TemplateReference reference = CreateReference("RoundTrip.template.json", "RoundTrip");
@@ -555,6 +607,29 @@ namespace NINA.Test.Sequencer.Container {
 
         private sealed class ExecutionProbe {
             public int Executions { get; set; }
+        }
+
+        private sealed class BlockingProbe {
+            public readonly TaskCompletionSource<BlockingInstruction> Started = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            public readonly TaskCompletionSource<bool> Release = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            public int Executions;
+        }
+
+        private sealed class BlockingInstruction : SequenceItemBase {
+            private readonly BlockingProbe probe;
+
+            public BlockingInstruction(BlockingProbe probe) {
+                this.probe = probe;
+                Name = "Blocking instruction";
+            }
+
+            public override object Clone() => new BlockingInstruction(probe);
+
+            public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+                Interlocked.Increment(ref probe.Executions);
+                probe.Started.TrySetResult(this);
+                await probe.Release.Task.WaitAsync(token);
+            }
         }
 
         private sealed class ProbeInstruction : SequenceItemBase {
