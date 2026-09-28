@@ -7762,16 +7762,16 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
     <value>Símbolos</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Defines a global variable for expressions anywhere in this sequence. Its initial value is assigned when this instruction runs, so place it before instructions that use it. Use Set Variable to change it later.</value>
+    <value>Define una variable global para expresiones en cualquier parte de esta secuencia. Su valor inicial se asigna cuando se ejecuta esta instrucción, por lo que debes colocarla antes de las instrucciones que la utilicen. Utiliza «Set Variable» para modificarla más adelante.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
-    <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
+    <value>Define una variable para las expresiones en este conjunto de instrucciones y sus conjuntos de instrucciones anidados. Su valor inicial se asigna cuando se ejecuta esta instrucción. Usa «Set Variable» para cambiarlo más tarde. No es visible en los conjuntos de instrucciones de nivel superior ni en los de mismo nivel.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
     <value>Definir variable</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
+    <value>Define un valor con nombre global para las expresiones en cualquier lugar de esta secuencia. Está disponible antes de que la secuencia se ejecute. Edita esta instrucción para cambiar su valor; «Set Variable» no puede cambiar una constante.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
     <value>Definir una Constante</value>
