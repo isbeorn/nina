@@ -8216,4 +8216,13 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
     <value>The edit could not be applied. The previous state and edit history were preserved.</value>
   </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
+    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
+    <value>Waiting for the template to finish saving.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
+    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
+  </data>
 </root>
