@@ -295,7 +295,7 @@
                     Margin="5,5,0,0"
                     Padding="8,6,8,6">
                     <i:Interaction.Behaviors>
-                        <behaviors:LinkedTemplatePreviewBehavior IsEditing="{Binding IsEditing}" />
+                        <behaviors:LinkedTemplatePreviewBehavior IsEditing="{Binding CanEditContents}" />
                     </i:Interaction.Behaviors>
                     <Border.Background>
                         <SolidColorBrush Opacity="0.1" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
@@ -654,7 +654,7 @@
                             Visibility="Collapsed">
                             <i:Interaction.Behaviors>
                                 <behaviors:LinkedTemplateFallbackVisibilityBehavior />
-                                <behaviors:LinkedTemplateFallbackPreviewBehavior IsEditing="{Binding IsEditing}" />
+                                <behaviors:LinkedTemplateFallbackPreviewBehavior IsEditing="{Binding CanEditContents}" />
                             </i:Interaction.Behaviors>
                             <ItemsControl.Resources>
                                 <DataTemplate DataType="{x:Type seqItem:SequenceItem}">

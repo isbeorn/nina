@@ -42,7 +42,7 @@ using SequenceItemBase = NINA.Sequencer.SequenceItem.SequenceItem;
 namespace NINA.Test.Sequencer.Container {
 
     [TestFixture]
-    public class LinkedTemplateContainerTest {
+    public partial class LinkedTemplateContainerTest {
         private NINA.Profile.Profile profile;
         private Mock<IProfileService> profileServiceMock;
 
@@ -609,6 +609,65 @@ namespace NINA.Test.Sequencer.Container {
             public int Executions { get; set; }
         }
 
+        [Test]
+        public async Task Run_RejectsEditingUntilExecutionEnds() {
+            var reference = CreateReference("RunningEdit.template.json", "Running edit");
+            var resolver = new TemplateLinkResolver();
+            var probe = new BlockingProbe();
+            resolver.UpdateTemplates(new[] { CreateTemplate(reference, "Running edit", new BlockingInstruction(probe)) }, true, null);
+            var linked = new LinkedTemplateContainer(resolver) { TemplateReference = reference };
+            Task run = linked.Run(Mock.Of<IProgress<ApplicationStatus>>(), CancellationToken.None);
+            try {
+                await probe.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                linked.BeginEditTemplateCommand.CanExecute(null).Should().BeFalse();
+                linked.BeginEditTemplateCommand.Execute(null);
+                linked.IsEditing.Should().BeFalse();
+            } finally {
+                probe.Release.TrySetResult(true);
+                await run.WaitAsync(TimeSpan.FromSeconds(5));
+            }
+            linked.BeginEditTemplateCommand.CanExecute(null).Should().BeTrue();
+            probe.Executions.Should().Be(1);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task Run_OpenEditorWaitsForSaveOrCancel(bool save) {
+            var reference = CreateReference("WaitingEdit.template.json", "Waiting edit");
+            var resolver = new TemplateLinkResolver();
+            var probe = new BlockingProbe();
+            resolver.UpdateTemplates(new[] { CreateTemplate(reference, "Waiting edit", new BlockingInstruction(probe)) }, true,
+                (_, content, _) => {
+                    resolver.UpdateTemplates(new[] { CreateTemplate(reference, (ISequenceContainer)content.Clone()) }, true, null);
+                    return Task.CompletedTask;
+                });
+            var linked = new LinkedTemplateContainer(resolver) { TemplateReference = reference };
+            linked.TryResolveTemplate();
+            linked.BeginEditTemplateCommand.Execute(null);
+            ((ISequenceContainer)linked.Items.Single()).Items.Single().Name = "Edited";
+            using var cancellation = new CancellationTokenSource();
+            Task run = linked.Run(Mock.Of<IProgress<ApplicationStatus>>(), cancellation.Token);
+            try {
+                await LinkedTemplateTestClock.Until(() => linked.IsWaitingForEdits || probe.Started.Task.IsCompleted);
+                probe.Started.Task.IsCompleted.Should().BeFalse("execution must wait for the open editor");
+                linked.IsEditing.Should().BeTrue();
+                linked.SaveTemplateCommand.CanExecute(null).Should().BeTrue();
+                linked.CancelEditTemplateCommand.CanExecute(null).Should().BeTrue();
+                if (save) await linked.SaveTemplateCommand.ExecuteAsync(null);
+                else linked.CancelEditTemplateCommand.Execute(null);
+                var executing = await probe.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                executing.Name.Should().Be(save ? "Edited" : "Blocking instruction");
+                linked.IsEditing.Should().BeFalse();
+                probe.Release.TrySetResult(true);
+                await run.WaitAsync(TimeSpan.FromSeconds(5));
+                probe.Executions.Should().Be(1);
+            } finally {
+                cancellation.Cancel();
+                probe.Release.TrySetResult(true);
+                try { await run.WaitAsync(TimeSpan.FromSeconds(5)); } catch (OperationCanceledException) { }
+            }
+        }
+
         private sealed class BlockingProbe {
             public readonly TaskCompletionSource<BlockingInstruction> Started = new(TaskCreationOptions.RunContinuationsAsynchronously);
             public readonly TaskCompletionSource<bool> Release = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -623,7 +682,7 @@ namespace NINA.Test.Sequencer.Container {
                 Name = "Blocking instruction";
             }
 
-            public override object Clone() => new BlockingInstruction(probe);
+            public override object Clone() => new BlockingInstruction(probe) { Name = Name };
 
             public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
                 Interlocked.Increment(ref probe.Executions);

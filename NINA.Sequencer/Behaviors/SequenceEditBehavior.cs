@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Microsoft.Xaml.Behaviors;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.Editing;
 using static NINA.Sequencer.Editing.SequenceEditBindingResolver;
 using System;
@@ -82,6 +83,7 @@ namespace NINA.Sequencer.Behaviors {
         private void GotFocus(object sender, KeyboardFocusChangedEventArgs e) => Begin(e.NewFocus as DependencyObject);
         private void LostFocus(object sender, KeyboardFocusChangedEventArgs e) => ScheduleCommit();
         private void MouseDown(object sender, MouseButtonEventArgs e) {
+            if (!AcceptTemplateInput(e)) return;
             if (Editor != null && !IsWithin(e.OriginalSource as DependencyObject, Editor)) Commit();
             Begin(e.OriginalSource as DependencyObject);
             if (Editor is not TextBoxBase && !IsTextEditor(e.OriginalSource as DependencyObject)) MarkInteracted();
@@ -90,6 +92,7 @@ namespace NINA.Sequencer.Behaviors {
             if (Editor != null && Editor is not TextBoxBase && Editor is not ComboBox { IsEditable: true }) ScheduleCommit();
         }
         private void KeyDown(object sender, KeyEventArgs e) {
+            if (!AcceptTemplateInput(e)) return;
             if (History is not SequenceEditHistory history) return;
             bool textEditor = IsTextEditor(e.OriginalSource as DependencyObject);
             if (!textEditor && Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && (e.Key == Key.Z || e.Key == Key.Y)) {
@@ -110,20 +113,36 @@ namespace NINA.Sequencer.Behaviors {
         private bool IsComboSelectionKey(Key key) => Editor is ComboBox && key is Key.Up or Key.Down or Key.PageUp or Key.PageDown;
         private static bool IsTextEditor(DependencyObject source) => Ancestors(source).Any(x => x is TextBoxBase);
         private void MouseWheel(object sender, MouseWheelEventArgs e) {
+            if (!AcceptTemplateInput(e)) return;
             Begin(e.OriginalSource as DependencyObject);
             MarkInteracted();
             pending?.CommitAfterWheelGesture();
         }
         private void TextInput(object sender, TextCompositionEventArgs e) {
+            if (!AcceptTemplateInput(e)) return;
             Begin(e.OriginalSource as DependencyObject);
             MarkInteracted();
         }
         private void EditingCommand(object sender, ExecutedRoutedEventArgs e) {
             if (e.Command == ApplicationCommands.Paste || e.Command == ApplicationCommands.Cut
                 || e.Command == ApplicationCommands.Undo || e.Command == ApplicationCommands.Redo) {
+                if (!AcceptTemplateInput(e)) return;
                 Begin(e.OriginalSource as DependencyObject);
                 MarkInteracted();
             }
+        }
+        private static bool AcceptTemplateInput(RoutedEventArgs e) {
+            var owner = Ancestors(e.OriginalSource as DependencyObject).OfType<FrameworkElement>()
+                .Select(view => view.DataContext).OfType<ISequenceEntity>().FirstOrDefault();
+            for (var entity = owner; entity != null; entity = entity.Parent) {
+                if (entity is not LinkedTemplateContainer { IsEditing: true } linked) continue;
+                if (!linked.CanEditContents) {
+                    e.Handled = true;
+                    return false;
+                }
+                linked.NotifyEditingActivity();
+            }
+            return true;
         }
         private void MarkInteracted() => pending?.MarkInteracted();
         private void SelectionChanged(object sender, SelectionChangedEventArgs e) {
