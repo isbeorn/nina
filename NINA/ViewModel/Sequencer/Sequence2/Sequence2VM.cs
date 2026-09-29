@@ -251,7 +251,9 @@ namespace NINA.ViewModel.Sequencer {
                 return;
             }
 
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => ResolveLinkedTemplates()));
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                if (!IsRunning) ResolveLinkedTemplates();
+            }));
         }
 
         private void ResolveLinkedTemplates(bool materializeAll = false) {
@@ -268,7 +270,9 @@ namespace NINA.ViewModel.Sequencer {
                 return;
             }
 
-            if (container is LinkedTemplateContainer linkedTemplateContainer && !linkedTemplateContainer.IsEditing) {
+            if (container is LinkedTemplateContainer linkedTemplateContainer) {
+                // Startup and queued refreshes must preserve the entire graph owned by open editors.
+                if (linkedTemplateContainer.HasOpenEdits) return;
                 if (materializeAll || linkedTemplateContainer.IsMaterialized) {
                     linkedTemplateContainer.TryResolveTemplate();
                 } else {

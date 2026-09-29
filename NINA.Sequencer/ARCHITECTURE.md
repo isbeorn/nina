@@ -77,6 +77,10 @@ Two controllers manage user-authored sequence assets:
 
 Both controllers use `SequenceJsonConverter` and `FileSystemWatcher`, so folder layout and file naming are part of the runtime contract.
 
+`LinkedTemplateContainer` reserves its subtree before resolving or executing it. An existing editor delays execution; new editors cannot open during the reservation. Save and Cancel finish persistence/restoration and editor-history cleanup before waking execution. Parent editors cannot close while descendant editors remain open. Startup resolution preserves these subtrees and queued template refreshes recheck whether the sequencer is running.
+
+The wait uses a five-minute monotonic inactivity deadline. Deliberate routed input within the blocking editor resets it, including input in nested editors; focus, pointer movement and background updates do not. Timeout restores saved templates from the innermost open editor outward and warns once. Save has priority once accepted, failed Save restarts the deadline and Stop preserves edits. Restoration failure goes through normal sequencer failure handling without executing unfinished content. Each edit session owns one completion outcome, published after cleanup or on restoration failure. Property notifications only refresh the UI; the countdown is derived from its activity timestamp. The handoff uses the existing structural-edit lock without changing execution strategies or serialized state.
+
 ## Expression And Symbol Infrastructure
 
 The `Logic/` area is a distinct subsystem:

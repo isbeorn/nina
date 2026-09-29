@@ -266,7 +266,7 @@ namespace NINA.Sequencer.Behaviors {
                 current = VisualTreeHelper.GetParent(current);
                 if (current is TreeViewItem treeViewItem
                     && TryGetLinkedTemplateContainer(treeViewItem, out LinkedTemplateContainer linkedTemplateContainer)
-                    && !linkedTemplateContainer.IsEditing) {
+                    && !linkedTemplateContainer.CanEditContents) {
                     return true;
                 }
             }
