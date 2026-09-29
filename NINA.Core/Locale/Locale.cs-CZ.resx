@@ -7771,13 +7771,16 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
     <value>Symboly</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Vytvoří Proměnnou, jejíž hodnotu lze použít ve Výrazech</value>
+    <value>Definuje globální proměnnou pro výrazy kdekoli v této sekvenci. Její počáteční hodnota se přiřazuje při provedení tohoto příkazu, proto ji umístěte před příkazy, které ji používají. Chcete-li ji později změnit, použijte příkaz „Nastavit proměnnou“.</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
+    <value>Definuje proměnnou pro výrazy v této sadě instrukcí a v jejích vnořených sadách instrukcí. Její počáteční hodnota je přiřazena při provedení této instrukce. K její pozdější změně použijte příkaz „Nastavit proměnnou“. V nadřazených ani souběžných sadách instrukcí není viditelná.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
     <value>Definovat Proměnnou</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Vytvoří Konstantu, jejíž hodnotu lze použít ve Výrazech</value>
+    <value>Definuje globální pojmenovanou hodnotu pro výrazy kdekoli v této sekvenci. Je k dispozici ještě před spuštěním sekvence. Chcete-li změnit její hodnotu, upravte tento příkaz; příkaz „Nastavit proměnnou“ nemůže změnit konstantu.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
     <value>Definovat Konstantu</value>
@@ -8208,5 +8211,14 @@ To se hodí v případě, že vestavěný spouštěč má sice požadované nač
   </data>
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
     <value>Úpravu nebylo možné provést. Původní stav a historie úprav zůstaly zachovány.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
+    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
+    <value>Waiting for the template to finish saving.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
+    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
   </data>
 </root>

@@ -7741,13 +7741,16 @@ Esposizio-kopurua garrantzitsua ez bazaizu, gaitu aukera hau exekuzio baten ondo
     <value>Ikurrak</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Adierazpenetan erabil daitekeen balioa duen aldagai bat sortzen du</value>
+    <value>Sekuentzia honetako edozein adierazpenetan erabil daitekeen aldagai global bat definitzen du. Hasierako balioa instrukzio hau exekutatzean esleitzen zaio, beraz jarri hura erabiltzen duten instrukzioen aurretik. Geroago aldatzeko, erabili Ezarri aldagaia.</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
+    <value>Instrukzio-multzo honetan eta honen habiaratutako instrukzio-multzoetan adierazpenetarako erabil daitekeen aldagai bat definitzen du. Hasierako balioa instrukzio hau exekutatzean esleitzen zaio. Geroago aldatzeko, erabili Ezarri aldagaia. Ez da ikusgai guraso- edo maila bereko instrukzio-multzoetan.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
     <value>Definitu aldagaia</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Adierazpenetan erabil daitekeen balioa duen konstante bat sortzen du</value>
+    <value>Sekuentzia honetako edozein adierazpenetan erabil daitekeen izendun balio global bat definitzen du. Sekuentzia abiarazi aurretik dago erabilgarri. Editatu instrukzio hau haren balioa aldatzeko; Ezarri aldagaiak ezin du konstante bat aldatu.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
     <value>Definitu konstantea</value>
@@ -8178,5 +8181,14 @@ Hau erabilgarria da barneko abiarazle batek behar duzun denbora-unea duenean, ba
   </data>
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
     <value>Edizioa ezin izan da aplikatu. Aurreko egoera eta edizio-historia mantendu dira.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
+    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
+    <value>Waiting for the template to finish saving.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
+    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
   </data>
 </root>
