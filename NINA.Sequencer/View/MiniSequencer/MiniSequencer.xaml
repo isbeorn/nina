@@ -80,6 +80,18 @@
                 DataType="{x:Type cont:SequenceContainer}"
                 ItemsSource="{Binding Items}">
                 <Grid>
+                    <Grid.Resources>
+                        <Style x:Key="ContainerDetailsStyle" TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsExpanded}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.DISABLED}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Resources>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="20" />
                         <RowDefinition />
@@ -87,16 +99,53 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Viewbox Grid.Column="0" HorizontalAlignment="Left">
+                    <ToggleButton
+                        Width="20"
+                        Height="20"
+                        AutomationProperties.Name="{Binding Name}"
+                        Focusable="False"
+                        IsChecked="{Binding IsExpanded, Mode=TwoWay}">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border Background="Transparent">
+                                                <Path
+                                                    x:Name="Arrow"
+                                                    Width="8"
+                                                    Height="8"
+                                                    Data="{StaticResource ArrowRightSVG}"
+                                                    Fill="{StaticResource PrimaryBrush}"
+                                                    Stretch="Uniform" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="Arrow" Property="Data" Value="{StaticResource ArrowDownSVG}" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.DISABLED}">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    <Viewbox Grid.Column="1" HorizontalAlignment="Left">
                         <ContentPresenter Content="{Binding}" Style="{StaticResource ProgressPresenter}" />
                     </Viewbox>
                     <Path
                         Grid.Row="0"
-                        Grid.Column="1"
+                        Grid.Column="2"
                         Width="16"
                         Height="16"
                         Margin="5,0,0,0"
@@ -116,7 +165,7 @@
                         </Path.Style>
                     </Path>
                     <TextBlock
-                        Grid.Column="2"
+                        Grid.Column="3"
                         Margin="5,0,0,0"
                         HorizontalAlignment="Left"
                         Text="{Binding Name}">
@@ -137,8 +186,8 @@
                     <Grid
                         Grid.Row="1"
                         Grid.Column="1"
-                        Grid.ColumnSpan="2"
-                        Visibility="{Binding Status, Converter={StaticResource DisabledStatusToInvisibleConverter}}">
+                        Grid.ColumnSpan="3"
+                        Style="{StaticResource ContainerDetailsStyle}">
                         <Border BorderBrush="Transparent" Visibility="{Binding Conditions.Count, Converter={StaticResource ZeroToVisibilityConverter}}">
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,0.5">
                                 <ItemsControl ItemTemplateSelector="{StaticResource ConditionsAndTriggerSelector}" ItemsSource="{Binding Conditions}" />
@@ -148,8 +197,8 @@
                     <Grid
                         Grid.Row="2"
                         Grid.Column="1"
-                        Grid.ColumnSpan="2"
-                        Visibility="{Binding Status, Converter={StaticResource DisabledStatusToInvisibleConverter}}">
+                        Grid.ColumnSpan="3"
+                        Style="{StaticResource ContainerDetailsStyle}">
                         <Border BorderBrush="Transparent" Visibility="{Binding Triggers.Count, Converter={StaticResource ZeroToVisibilityConverter}}">
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,0.5">
                                 <ItemsControl ItemTemplateSelector="{StaticResource ConditionsAndTriggerSelector}" ItemsSource="{Binding Triggers}" />
@@ -168,6 +217,7 @@
         </Grid.Resources>
 
         <TreeView
+            x:Name="SequenceTree"
             Margin="-20,0,0,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -176,7 +226,6 @@
             ItemsSource="{Binding Items}"
             ScrollViewer.CanContentScroll="True"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
-            SelectedItemChanged="TreeView_SelectedItemChanged"
             VirtualizingPanel.IsVirtualizing="True"
             VirtualizingPanel.IsVirtualizingWhenGrouping="True"
             VirtualizingPanel.ScrollUnit="Pixel"
@@ -184,6 +233,7 @@
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="Focusable" Value="False" />
+                    <Setter Property="IsExpanded" Value="True" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="Template">
@@ -221,33 +271,23 @@
                                         HorizontalAlignment="Stretch" />
                                 </Grid>
                                 <ControlTemplate.Triggers>
-                                    <!--<Trigger Property="IsSelected" Value="true">
-                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                                    </Trigger>
-                                    <MultiTrigger>
-                                        <MultiTrigger.Conditions>
-                                            <Condition Property="IsSelected" Value="true" />
-                                            <Condition Property="IsSelectionActive" Value="false" />
-                                        </MultiTrigger.Conditions>
-                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-                                    </MultiTrigger>-->
                                     <Trigger Property="IsEnabled" Value="false">
                                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                                     </Trigger>
-                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.DISABLED}">
-                                        <Setter Property="IsExpanded" Value="False" />
+                                    <Trigger Property="IsExpanded" Value="False">
                                         <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.RUNNING}">
-                                        <Setter Property="IsSelected" Value="True" />
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.DISABLED}">
+                                        <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
+                        <Trigger Property="HasItems" Value="True">
+                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=OneWay}" />
+                        </Trigger>
                         <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
                             <Setter Property="ItemsPanel">
                                 <Setter.Value>

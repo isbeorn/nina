@@ -102,12 +102,12 @@ Use these when the changed file is under the matching sequencer subtree:
 
 ## Sequencer And WPF Process Groups
 
-When shared sequencer or expression changes require broad coverage, use these four commands as separate test processes after building. Do not combine their filters into one invocation: the Application/dispatcher and static resource lifetimes can survive fixture teardown even when tests run STA and nonparallel. These are local verification groups; CI configuration is unchanged.
+When shared sequencer or expression changes require broad coverage, use these five commands as separate test processes after building. Do not combine their filters into one invocation: the Application/dispatcher and static resource lifetimes can survive fixture teardown even when tests run STA and nonparallel. These are local verification groups; CI configuration is unchanged.
 
 Engine, expressions, generator diagnostics and entity contracts, excluding the WPF fixtures below:
 
 ```powershell
-dotnet test NINA.Test/NINA.Test.csproj --no-build --no-restore --filter 'FullyQualifiedName~NINA.Test.Sequencer&FullyQualifiedName!~NINA.Test.Sequencer.Editing&FullyQualifiedName!~TemplateControllerTest&FullyQualifiedName!~SequenceViewCodeBehindTest&FullyQualifiedName!~LoadImagingLayoutDataTemplateTest&FullyQualifiedName!~AltitudeExpressionLifecycleTest.CompiledTemplate' -v minimal -- NUnit.AssemblySelectLimit=10000
+dotnet test NINA.Test/NINA.Test.csproj --no-build --no-restore --filter 'FullyQualifiedName~NINA.Test.Sequencer&FullyQualifiedName!~NINA.Test.Sequencer.Editing&FullyQualifiedName!~TemplateControllerTest&FullyQualifiedName!~SequenceViewCodeBehindTest&FullyQualifiedName!~MiniSequencerViewTest&FullyQualifiedName!~LoadImagingLayoutDataTemplateTest&FullyQualifiedName!~AltitudeExpressionLifecycleTest.CompiledTemplate' -v minimal -- NUnit.AssemblySelectLimit=10000
 ```
 
 Editor history, app sequence views and Sun/Moon expression templates:
@@ -116,9 +116,11 @@ Editor history, app sequence views and Sun/Moon expression templates:
 dotnet test NINA.Test/NINA.Test.csproj --no-build --no-restore --filter 'FullyQualifiedName~NINA.Test.Sequencer.Editing|FullyQualifiedName~SequenceViewCodeBehindTest|FullyQualifiedName~AltitudeExpressionLifecycleTest.CompiledTemplate' -v minimal -- NUnit.AssemblySelectLimit=10000
 ```
 
-Imaging-layout template and template controller, each in its own process:
+Mini-sequencer view, imaging-layout template and template controller, each in its own process:
 
 ```powershell
+dotnet test NINA.Test/NINA.Test.csproj --no-build --no-restore --filter 'FullyQualifiedName~MiniSequencerViewTest' -v minimal
+
 dotnet test NINA.Test/NINA.Test.csproj --no-build --no-restore --filter 'FullyQualifiedName~LoadImagingLayoutDataTemplateTest' -v minimal
 dotnet test NINA.Test/NINA.Test.csproj --no-build --no-restore --filter 'FullyQualifiedName~NINA.Test.Sequencer.TemplateControllerTest' -v minimal
 ```
