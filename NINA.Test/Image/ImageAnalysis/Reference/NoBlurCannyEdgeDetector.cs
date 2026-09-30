@@ -12,26 +12,21 @@
 
 #endregion "copyright"
 
-using Accord.Imaging;
-using Accord.Imaging.Filters;
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Threading.Tasks;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
 
-namespace NINA.Image.ImageAnalysis {
-    /// <summary>
-    /// Legacy no-blur Canny implementation. The extracted static overload keeps the optimized core in
-    /// this file so the blurred detector can reuse it without changing the no-blur algorithm shape.
-    /// </summary>
+namespace NINA.Tests {
+
     public class NoBlurCannyEdgeDetector : BaseUsingCopyPartialFilter {
         private byte lowThreshold = 20;
         private byte highThreshold = 100;
 
         // private format translation dictionary
-        private readonly Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -100,15 +95,6 @@ namespace NINA.Image.ImageAnalysis {
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
         protected override unsafe void ProcessFilter(UnmanagedImage source, UnmanagedImage destination, Rectangle rect) {
-            ProcessFilter(source, destination, rect, lowThreshold, highThreshold);
-        }
-
-        // Shared no-blur Canny core. The extracted overload keeps the original processing layout and
-        // comments close to the legacy source, while the optimized implementation still parallelizes the
-        // read-only stages internally.
-        internal static unsafe void ProcessFilter(UnmanagedImage source, UnmanagedImage destination, Rectangle rect, byte lowThreshold, byte highThreshold) {
-            Debug.Assert(rect.Width >= 2 && rect.Height >= 2, "CannyEdgeDetector expects a processing rectangle with at least 2x2 pixels.");
-
             // processing start and stop X,Y positions
             int startX = rect.Left + 1;
             int startY = rect.Top + 1;
@@ -124,54 +110,44 @@ namespace NINA.Image.ImageAnalysis {
             int dstOffset = dstStride - rect.Width + 2;
             int srcOffset = srcStride - rect.Width + 2;
 
-            int sourceWidth = source.Width;
+            // pixel's value and gradients
+            int gx, gy;
+            //
+            double orientation, toAngle = 180.0 / System.Math.PI;
+            float leftPixel = 0, rightPixel = 0;
 
             // orientation array
             byte[] orients = new byte[width * height];
             // gradients array
-            // kept flattened for performance, but still indexed in row-major order
-            float[] gradients = new float[sourceWidth * source.Height];
-            // per-row maxima are reduced after the parallel pass to preserve the legacy global scaling
-            float[] rowMaxima = new float[height];
-            var parallelRows = new ParallelOptions { MaxDegreeOfParallelism = Math.Max(1, Environment.ProcessorCount - 1) };
+            float[,] gradients = new float[source.Width, source.Height];
+            float maxGradient = float.NegativeInfinity;
 
-            byte* srcBase = (byte*)source.ImageData.ToPointer();
+            // do the job
+            byte* src = (byte*)source.ImageData.ToPointer();
+            // allign pointer
+            src += srcStride * startY + startX;
 
             // STEP 1 - calculate magnitude and edge orientation
+            int p = 0;
+
             // for each line
-            Parallel.For(0, height, parallelRows, row => {
-                int y = startY + row;
-                int p = row * width;
-                int gradientRow = y * sourceWidth;
-                float maxGradient = float.NegativeInfinity;
-                double toAngle = 180.0 / System.Math.PI;
-
-                // do the job
-                byte* src = srcBase;
-
-                // allign pointer
-                src += srcStride * startY + startX;
-                src += row * (width + srcOffset);
-
+            for (int y = startY; y < stopY; y++) {
                 // for each pixel
                 for (int x = startX; x < stopX; x++, src++, p++) {
-                    int gx = src[-srcStride + 1] + src[srcStride + 1]
+                    gx = src[-srcStride + 1] + src[srcStride + 1]
                        - src[-srcStride - 1] - src[srcStride - 1]
                        + 2 * (src[1] - src[-1]);
 
-                    int gy = src[-srcStride - 1] + src[-srcStride + 1]
+                    gy = src[-srcStride - 1] + src[-srcStride + 1]
                        - src[srcStride - 1] - src[srcStride + 1]
                        + 2 * (src[-srcStride] - src[srcStride]);
 
                     // get gradient value
-                    float gradient = (float)System.Math.Sqrt(gx * gx + gy * gy);
-                    gradients[gradientRow + x] = gradient;
-                    if (gradient > maxGradient) {
-                        maxGradient = gradient;
-                    }
+                    gradients[x, y] = (float)Math.Sqrt(gx * gx + gy * gy);
+                    if (gradients[x, y] > maxGradient)
+                        maxGradient = gradients[x, y];
 
                     // --- get orientation
-                    double orientation;
                     if (gx == 0) {
                         // can not divide by zero
                         orientation = (gy == 0) ? 0 : 90;
@@ -181,99 +157,75 @@ namespace NINA.Image.ImageAnalysis {
                         // handle angles of the 2nd and 4th quads
                         if (div < 0) {
                             orientation = 180 - System.Math.Atan(-div) * toAngle;
-                        } else {
-                            // handle angles of the 1st and 3rd quads
+                        }
+                        // handle angles of the 1st and 3rd quads
+                        else {
                             orientation = System.Math.Atan(div) * toAngle;
                         }
 
                         // get closest angle from 0, 45, 90, 135 set
-                        if (orientation < 22.5) {
+                        if (orientation < 22.5)
                             orientation = 0;
-                        } else if (orientation < 67.5) {
+                        else if (orientation < 67.5)
                             orientation = 45;
-                        } else if (orientation < 112.5) {
+                        else if (orientation < 112.5)
                             orientation = 90;
-                        } else if (orientation < 157.5) {
+                        else if (orientation < 157.5)
                             orientation = 135;
-                        } else {
-                            orientation = 0;
-                        }
+                        else orientation = 0;
                     }
 
                     // save orientation
                     orients[p] = (byte)orientation;
                 }
-
-                rowMaxima[row] = maxGradient;
-            });
-
-            // Reduce the per-row maxima after the parallel pass so the final normalization uses the same
-            // single global maximum as the legacy serial implementation.
-            float maxGradient = float.NegativeInfinity;
-            for (int i = 0; i < rowMaxima.Length; i++) {
-                if (rowMaxima[i] > maxGradient) {
-                    maxGradient = rowMaxima[i];
-                }
+                src += srcOffset;
             }
 
-            byte* dstBase = (byte*)destination.ImageData.ToPointer();
+            // STEP 2 - suppres non maximums
+            byte* dst = (byte*)destination.ImageData.ToPointer();
+            // allign pointer
+            dst += dstStride * startY + startX;
 
-            // STEP 2 - suppress non maximums
+            p = 0;
+
             // for each line
-            Parallel.For(0, height, parallelRows, row => {
-                int y = startY + row;
-                int p = row * width;
-                int gradientRow = y * sourceWidth;
-                int gradientRowAbove = gradientRow - sourceWidth;
-                int gradientRowBelow = gradientRow + sourceWidth;
-                float leftPixel = 0;
-                float rightPixel = 0;
-
-                // do the job
-                byte* dst = dstBase;
-
-                // allign pointer
-                dst += dstStride * startY + startX;
-                dst += row * (width + dstOffset);
-
+            for (int y = startY; y < stopY; y++) {
                 // for each pixel
                 for (int x = startX; x < stopX; x++, dst++, p++) {
                     // get two adjacent pixels
                     switch (orients[p]) {
                         case 0:
-                            leftPixel = gradients[gradientRow + x - 1];
-                            rightPixel = gradients[gradientRow + x + 1];
+                            leftPixel = gradients[x - 1, y];
+                            rightPixel = gradients[x + 1, y];
                             break;
 
                         case 45:
-                            leftPixel = gradients[gradientRowBelow + x - 1];
-                            rightPixel = gradients[gradientRowAbove + x + 1];
+                            leftPixel = gradients[x - 1, y + 1];
+                            rightPixel = gradients[x + 1, y - 1];
                             break;
 
                         case 90:
-                            leftPixel = gradients[gradientRowBelow + x];
-                            rightPixel = gradients[gradientRowAbove + x];
+                            leftPixel = gradients[x, y + 1];
+                            rightPixel = gradients[x, y - 1];
                             break;
 
                         case 135:
-                            leftPixel = gradients[gradientRowBelow + x + 1];
-                            rightPixel = gradients[gradientRowAbove + x - 1];
+                            leftPixel = gradients[x + 1, y + 1];
+                            rightPixel = gradients[x - 1, y - 1];
                             break;
                     }
-
                     // compare current pixels value with adjacent pixels
-                    float gradient = gradients[gradientRow + x];
-                    if ((gradient < leftPixel) || (gradient < rightPixel)) {
+                    if ((gradients[x, y] < leftPixel) || (gradients[x, y] < rightPixel)) {
                         *dst = 0;
                     } else {
-                        *dst = (byte)(gradient / maxGradient * 255);
+                        *dst = (byte)(gradients[x, y] / maxGradient * 255);
                     }
                 }
-            });
+                dst += dstOffset;
+            }
 
             // STEP 3 - hysteresis
-            byte* dst = dstBase;
-
+            dst = (byte*)destination.ImageData.ToPointer();
             // allign pointer
             dst += dstStride * startY + startX;
 
@@ -307,6 +259,9 @@ namespace NINA.Image.ImageAnalysis {
             // (this needs to be done for those cases, when filter is applied "in place" -
             //  source image is modified instead of creating new copy)
             Drawing.Rectangle(destination, rect, Color.Black);
+
+            // release blurred image
+            source.Dispose();
         }
     }
 }

@@ -27,6 +27,10 @@ Build shape:
 
 Run benchmarks in Release mode and treat results as machine-specific comparisons. Keep functional and numerical assertions in `NINA.Test`; benchmarks prove cost, not correctness.
 
+## Imaging Benchmarks
+
+`ImagingBenchmarks` compares the current debayer and Canny implementations with linked reference implementations from `NINA.Test`. Its configuration adds a comparison text exporter only to the imaging benchmark classes. The exporter groups successful results by class and case, calculates each job's baseline ratios, and writes the complete tables to `NINA.Benchmark/Results/benchmark-results.txt`. The imaging configuration also directs BenchmarkDotNet's standard artifacts to `NINA.Benchmark/BenchmarkDotNet.Artifacts`. These paths are based on the benchmark project's output location, so they do not change with the launch directory. `Program.cs` lists the sky-map benchmark first and the three imaging classes last; add future benchmark classes there to keep them discoverable.
+
 ## Contribution Notes
 
 - Benchmark production code directly where possible instead of maintaining a second optimized implementation in this project.

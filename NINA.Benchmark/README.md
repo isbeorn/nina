@@ -1,3 +1,5 @@
+BenchmarkDotNet is an MIT-licensed development-only dependency of `NINA.Benchmark`; it is not included in NINA's application or installer output.
+
 # NINA benchmarks
 
 Run the offline sky-map comparison from the repository root in Release mode:
@@ -34,4 +36,16 @@ Software-only interaction release gate on the same AMD Ryzen 9 7950X, .NET 10.0.
 
 The materialized software drag preview must remain below 16.67 ms on this machine to preserve a 60 FPS interaction budget. Production drag invalidations are coalesced to one preview per 60 Hz interval in both WPF rendering modes so mouse input cannot build a backlog of frames. The preparation and presentation-only cases keep regressions in either half of the path easy to identify.
 
-BenchmarkDotNet is an MIT-licensed development-only dependency of `NINA.Benchmark`; it is not included in NINA's application or installer output.
+## Imaging benchmarks
+
+The interactive benchmark list and `--list` show `SkyMapRenderingBenchmark` first, followed by the three imaging benchmark classes.
+
+Run the imaging comparisons through the same project:
+
+```powershell
+dotnet run --project NINA.Benchmark\NINA.Benchmark.csproj -c Release -- --filter *Benchmarks*
+```
+
+The debayer, blurred Canny and no-blur Canny classes save their comparison tables together in `NINA.Benchmark\Results\benchmark-results.txt`, regardless of the directory from which the command is run. The report contains the thread count, method, mean, error, standard deviation, median, baseline ratios and allocation columns. BenchmarkDotNet's standard imaging reports are saved under `NINA.Benchmark\BenchmarkDotNet.Artifacts\results` by default.
+
+Each imaging benchmark runs at one worker, the midpoint between one and the maximum worker count, and the maximum, with duplicate counts removed. A 1- or 2-processor machine runs only 1; 4 processors run 1, 2, 3; 8 run 1, 4, 7; and 16 run 1, 8, 15. The maximum is `ProcessorCount - 1`, matching the production imaging code. Each benchmark job exposes one more logical processor than its requested worker count.
