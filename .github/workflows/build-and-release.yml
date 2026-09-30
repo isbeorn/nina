@@ -193,14 +193,8 @@ jobs:
         pandoc RELEASE_NOTES.md -f markdown -t rtf -s -o RELEASE_NOTES.rtf
         pandoc RELEASE_NOTES.md -f markdown -t html -s -o RELEASE_NOTES.html --template md-template.html --metadata title="Nighttime Imaging 'N' Astronomy"
 
-    - name: Build NINA project
-      run: dotnet build NINA\NINA.csproj -c ${{ env.BUILD_CONFIG }} -r win-x64
-
-    - name: Copy Canon and Nikon DLLs to build output
-      shell: cmd
-      run: |
-        xcopy NINA\External\x64\Canon NINA\bin\${{ env.BUILD_CONFIG }}\net10.0-windows\win-x64\External\x64\Canon /h/i/c/k/e/r/y
-        xcopy NINA\External\x64\Nikon NINA\bin\${{ env.BUILD_CONFIG }}\net10.0-windows\win-x64\External\x64\Nikon /h/i/c/k/e/r/y
+    - name: Publish and sign NINA with ReadyToRun
+      run: .github/scripts/publish-application.ps1 -Configuration ${{ env.BUILD_CONFIG }} -Mode ReadyToRun -OutputDirectory "$env:RUNNER_TEMP\nina-publish" -Sign
 
     - name: Build MkDocs documentation
       run: |
@@ -209,16 +203,16 @@ jobs:
     - name: Copy MkDocs output to setup target dir
       shell: cmd
       run: |
-        mkdir NINA\bin\${{ env.BUILD_CONFIG }}\net10.0-windows\win-x64\docs
-        xcopy "NINA.Docs\site" "NINA\bin\${{ env.BUILD_CONFIG }}\net10.0-windows\win-x64\docs" /h/i/c/k/e/r/y
+        mkdir "%RUNNER_TEMP%\nina-publish\docs"
+        xcopy "NINA.Docs\site" "%RUNNER_TEMP%\nina-publish\docs" /h/i/c/k/e/r/y
 
     - name: Build WiX Setup Bundle
-      run: dotnet msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=${{ env.BUILD_CONFIG }} /p:Platform=x64 /p:AllowUnsafeBlocks=true
+      run: dotnet msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=${{ env.BUILD_CONFIG }} /p:Platform=x64 /p:AllowUnsafeBlocks=true "/p:NinaPublishDir=$env:RUNNER_TEMP\nina-publish"
 
     - name: Copy .pdb files to setup output folder
       run: |
         $solutionDir = "$(Resolve-Path .)"
-        $pdbSource = "$solutionDir\NINA\bin\${{ env.BUILD_CONFIG }}\net10.0-windows\win-x64"
+        $pdbSource = "$env:RUNNER_TEMP\nina-publish"
         $pdbTarget = "$solutionDir\NINA.SetupBundle\bin\x64\${{ env.BUILD_CONFIG }}"
 
         Remove-Item "$solutionDir\RELEASE_NOTES.rtf" -Force -ErrorAction SilentlyContinue

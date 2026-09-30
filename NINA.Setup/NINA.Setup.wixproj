@@ -54,7 +54,29 @@
     <Content Include="Logo_Nina.ico" />
     <Content Include="NINASetup.wax" />
   </ItemGroup>
-  <ItemGroup>
+  <!-- A published payload is complete and must not be mixed with project build output. -->
+  <PropertyGroup Condition="'$(NinaPublishDir)' != ''">
+    <_NinaPublishRoot>$([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::GetFullPath('$(NinaPublishDir)'))))</_NinaPublishRoot>
+    <DefineConstants>$(DefineConstants);NinaPublishDir=$(_NinaPublishRoot)</DefineConstants>
+    <DefineConstants Condition="Exists('$(_NinaPublishRoot)NINA.r2r.dll')">$(DefineConstants);NinaCompositeReadyToRun=true</DefineConstants>
+  </PropertyGroup>
+  <Target Name="ValidateNinaPublishDirectory" BeforeTargets="PrepareForBuild" Condition="'$(NinaPublishDir)' != ''">
+    <Error Condition="!Exists('$(_NinaPublishRoot)NINA.exe')" Text="NinaPublishDir must contain a complete published NINA application." />
+    <Error Condition="!Exists('$(_NinaPublishRoot)docs\index.html')" Text="Copy the generated MkDocs site into NinaPublishDir\docs before packaging." />
+  </Target>
+  <!-- WiX tracks file timestamps but does not invalidate on changed preprocessor values.
+       Track the selected payload so switching modes cannot silently reuse a previous MSI. -->
+  <Target Name="TrackNinaPublishInputs" BeforeTargets="HarvestDirectory;CoreCompile">
+    <WriteLinesToFile File="$(IntermediateOutputPath)NinaPublishInputs.txt"
+                      Lines="$(NinaPublishDir);$(DefineConstants)"
+                      Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <Content Include="$(IntermediateOutputPath)NinaPublishInputs.txt" />
+      <_HarvestDirectoryContent Include="$(IntermediateOutputPath)NinaPublishInputs.txt" />
+      <FileWrites Include="$(IntermediateOutputPath)NinaPublishInputs.txt" />
+    </ItemGroup>
+  </Target>
+  <ItemGroup Condition="'$(NinaPublishDir)' == ''">
     <ProjectReference Include="..\nikoncswrapper\nikoncswrapper.csproj">
       <Name>nikoncswrapper</Name>
       <Project>{aade1df5-4c46-4760-b72b-474d90336f5b}</Project>
@@ -184,16 +206,18 @@
   <PropertyGroup>
     <HarvestDirectorySuppressUniqueIds>true</HarvestDirectorySuppressUniqueIds>
     <HarvestFileSuppressUniqueIds>true</HarvestFileSuppressUniqueIds>
+    <NinaDocumentationDir Condition="'$(NinaPublishDir)' == ''">..\NINA\bin\$(Configuration)\net10.0-windows\win-x64\docs</NinaDocumentationDir>
+    <NinaDocumentationDir Condition="'$(NinaPublishDir)' != ''">$(_NinaPublishRoot)docs</NinaDocumentationDir>
   </PropertyGroup>
   <ItemGroup>
-    <HarvestDirectory Include="..\NINA\bin\$(Configuration)\net10.0-windows\win-x64\docs">
+    <HarvestDirectory Include="$(NinaDocumentationDir)">
       <ComponentGroupName>DocumentationComponent</ComponentGroupName>
       <DirectoryRefId>DocumentationDirectory</DirectoryRefId>
       <SuppressRootDirectory>true</SuppressRootDirectory>
       <SuppressRegistry>true</SuppressRegistry>
       <SuppressCom>true</SuppressCom>
     </HarvestDirectory>
-    <BindPath Include="..\NINA\bin\$(Configuration)\net10.0-windows\win-x64\docs" />
+    <BindPath Include="$(NinaDocumentationDir)" />
   </ItemGroup>
   <!-- /Harvest Documentation  -->
 </Project>

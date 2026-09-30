@@ -15,6 +15,22 @@
   <?define Win64 = "always32" ?>
   <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
   <?endif?>
+  <?ifdef NinaPublishDir?>
+  <?define NINA_ProjectDir=$(var.NinaPublishDir)?>
+  <?define NINA_TargetDir=$(var.NinaPublishDir)?>
+  <?define nikoncswrapper_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.CustomControlLibrary_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.MGEN_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.Core_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.Equipment_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.PlateSolving_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.Profile_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.Sequencer_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.Astrometry_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.Image_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.WPF.Base_TargetDir=$(var.NinaPublishDir)?>
+  <?define NINA.Plugin_TargetDir=$(var.NinaPublishDir)?>
+  <?else?>
   <?define NINA_ProjectDir=$(var.NINA.ProjectDir)?>
   <?define NINA_TargetDir=$(var.NINA.TargetDir)?>
   <?define nikoncswrapper_TargetDir=$(var.nikoncswrapper.TargetDir)?>
@@ -29,6 +45,7 @@
   <?define NINA.Image_TargetDir=$(var.NINA.Image.TargetDir)?>
   <?define NINA.WPF.Base_TargetDir=$(var.NINA.WPF.Base.TargetDir)?>
   <?define NINA.Plugin_TargetDir=$(var.NINA.Plugin.TargetDir)?>
+  <?endif?>
 
   <Package Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="!(bind.fileVersion.NINA.exe)" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A" InstallerVersion="200">
     
@@ -546,6 +563,11 @@
       <Component Id="NINA.dll" Guid="851E33E7-B0CF-47A7-B31D-B3C32D134D6A" Bitness="$(var.Win64)">
         <File Id="NINA.dll" Name="NINA.dll" Source="$(var.NINA_TargetDir)NINA.dll" />
       </Component>
+      <?ifdef NinaCompositeReadyToRun?>
+      <Component Id="NINA.r2r.dll" Guid="*" Bitness="$(var.Win64)">
+        <File Id="NINA.r2r.dll" Name="NINA.r2r.dll" Source="$(var.NINA_TargetDir)NINA.r2r.dll" />
+      </Component>
+      <?endif?>
       <Component Id="NINA.dll.config" Guid="64E67D41-A82C-437A-B910-A51B34A9C6D0" Bitness="$(var.Win64)">
         <File Id="NINA.dll.config" Name="NINA.dll.config" Source="$(var.NINA_TargetDir)NINA.dll.config" />
       </Component>
@@ -719,25 +741,25 @@
       
       <!-- VCRedist Dependencies -->
       <Component Id="External_x64_VCRedis_msvcp100.dll" Guid="d214e6a8-0654-4a85-8096-1b7ff9a672c0" Bitness="$(var.Win64)">
-        <File Id="External_x64_VCRedis_msvcp100.dll" Name="msvcp100.dll" Source="$(var.NINA_ProjectDir)External\x64\VCRedis\msvcp100.dll" />
+        <File Id="External_x64_VCRedis_msvcp100.dll" Name="msvcp100.dll" Source="$(var.NINA_TargetDir)msvcp100.dll" />
       </Component>
       <Component Id="External_x64_VCRedis_msvcp140.dll" Guid="A7EB3D21-2D07-46AC-8F1B-3D8539E43CFD" Bitness="$(var.Win64)">
-        <File Id="External_x64_VCRedis_msvcp140.dll" Name="msvcp140.dll" Source="$(var.NINA_ProjectDir)External\x64\VCRedis\msvcp140.dll" />
+        <File Id="External_x64_VCRedis_msvcp140.dll" Name="msvcp140.dll" Source="$(var.NINA_TargetDir)msvcp140.dll" />
       </Component>
       <Component Id="External_x64_VCRedis_msvcr100.dll" Guid="02CB55BE-6D62-47AA-8D05-F6A626D1D8C3" Bitness="$(var.Win64)">
-        <File Id="External_x64_VCRedis_msvcr100.dll" Name="msvcr100.dll" Source="$(var.NINA_ProjectDir)External\x64\VCRedis\msvcr100.dll" />
+        <File Id="External_x64_VCRedis_msvcr100.dll" Name="msvcr100.dll" Source="$(var.NINA_TargetDir)msvcr100.dll" />
       </Component>
       <Component Id="External_x64_VCRedis_msvcr120.dll" Guid="ABD36695-F2E3-417D-A862-32B04E905E98" Bitness="$(var.Win64)">
-        <File Id="External_x64_VCRedis_msvcr120.dll" Name="msvcr120.dll" Source="$(var.NINA_ProjectDir)External\x64\VCRedis\msvcr120.dll" />
+        <File Id="External_x64_VCRedis_msvcr120.dll" Name="msvcr120.dll" Source="$(var.NINA_TargetDir)msvcr120.dll" />
       </Component>
       <Component Id="External_x64_VCRedis_vcruntime140.dll" Guid="27F9ADDA-59DB-4ABE-AB7B-4DC74DBF128B" Bitness="$(var.Win64)">
-        <File Id="External_x64_VCRedis_vcruntime140.dll" Name="vcruntime140.dll" Source="$(var.NINA_ProjectDir)External\x64\VCRedis\vcruntime140.dll" />
+        <File Id="External_x64_VCRedis_vcruntime140.dll" Name="vcruntime140.dll" Source="$(var.NINA_TargetDir)vcruntime140.dll" />
       </Component>
       <Component Id="External_x64_VCRedis_vcruntime140_1.dll" Guid="EFCC3E8B-DA53-4385-8282-D78E66860A54" Bitness="$(var.Win64)">
-        <File Id="External_x64_VCRedis_vcruntime140_1.dll" Name="vcruntime140_1.dll" Source="$(var.NINA_ProjectDir)External\x64\VCRedis\vcruntime140_1.dll" />
+        <File Id="External_x64_VCRedis_vcruntime140_1.dll" Name="vcruntime140_1.dll" Source="$(var.NINA_TargetDir)vcruntime140_1.dll" />
       </Component>
       <Component Id="External_x64_VCRedis_vcomp140.dll" Guid="3A262497-11B7-4996-9526-48424A269C23" Bitness="$(var.Win64)">
-        <File Id="External_x64_VCRedis_vcomp140.dll" Name="vcomp140.dll" Source="$(var.NINA_ProjectDir)External\x64\VCRedis\vcomp140.dll" />
+        <File Id="External_x64_VCRedis_vcomp140.dll" Name="vcomp140.dll" Source="$(var.NINA_TargetDir)vcomp140.dll" />
       </Component>
 
       <!-- .NET Runtime Dependencies (for self-contained app) -->
