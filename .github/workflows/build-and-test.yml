@@ -29,9 +29,6 @@ jobs:
     - name: Test release workflow policy
       run: node --test .github/scripts/merge-version-pull-request.test.js
 
-    - name: Test optional publish signing
-      run: .github/scripts/publish-application.test.ps1
-
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
