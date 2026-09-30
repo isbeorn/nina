@@ -27,6 +27,10 @@ Build shape:
 
 Run benchmarks in Release mode and treat results as machine-specific comparisons. Keep functional and numerical assertions in `NINA.Test`; benchmarks prove cost, not correctness.
 
+## Published Application Startup
+
+`Measure-Startup.ps1` separately benchmarks published applications. Its `StartupProbe` project is excluded from the BenchmarkDotNet executable and loaded only through `DOTNET_STARTUP_HOOKS` in the child process. It redirects NINA's existing storage seam to an isolated directory and substitutes an in-memory settings provider. It records the first `MainWindow.ContentRendered` event, process CPU, JIT counters and memory, then publishes an atomic result so the runner can stop the test process without waiting for native SDK shutdown. It does not add hooks to production startup code. See `README.md` for the controlled workload and limitations.
+
 ## Contribution Notes
 
 - Benchmark production code directly where possible instead of maintaining a second optimized implementation in this project.

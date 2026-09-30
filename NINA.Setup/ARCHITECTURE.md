@@ -66,6 +66,16 @@ The file layout in the MSI mirrors the runtime layout expected by the executable
 
 Those references use `DoNotHarvest=True`, so the WiX authoring stays explicit. Documentation is the notable exception: the project uses `HarvestDirectory` to package `NINA/bin/<configuration>/net10.0-windows/win-x64/docs`.
 
+## Published Payloads And ReadyToRun
+
+The release workflow runs `.github/scripts/publish-application.ps1` in `ReadyToRun` mode, signs the final rewritten NINA assemblies and copies the generated documentation into the publish directory. It passes that absolute directory as `NinaPublishDir` to the bundle build. The MSI then skips its application project references and takes every runtime file from the published payload. This prevents an installer rebuild from substituting ordinary IL assemblies for the prepared native images. Without `NinaPublishDir`, the existing project-output packaging path remains available.
+
+The publisher requires an empty destination and accepts `Baseline`, `ReadyToRun` or `ReadyToRunComposite`. It preserves the private Canon and Nikon SDK assets. `ReadyToRunComposite` remains an experimental publishing option; the installer includes `NINA.r2r.dll` whenever that file exists in the selected payload. Its component assemblies and native image must always come from the same publish operation.
+
+The MSI records the selected publish path and preprocessor values in an incremental-build input. WiX otherwise checks file timestamps without noticing a changed publish directory, which can reuse a previous mode's MSI. The input also invalidates documentation harvesting when the selected payload changes.
+
+For a local unsigned package, publish with `-Configuration Release`, copy the MkDocs site into `<publish>/docs` and build `NINA.Setup/NINA.Setup.wixproj` with `-p:Configuration=Release -p:Platform=x64 -p:NinaPublishDir=<absolute-publish-directory>`. For release signing, use `-Configuration SignedRelease -Sign` with the configured Sectigo certificate and `signtool.exe` available. Signing before publishing alone is insufficient because ReadyToRun rewrites the DLLs.
+
 ## Dependency Position
 
 This project sits at the packaging edge of the solution:
