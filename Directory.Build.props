@@ -1,0 +1,6 @@
+<Project>
+  <!-- The SDK only optimizes Release by default. SignedRelease must also be optimized on every platform. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'SignedRelease'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+</Project>

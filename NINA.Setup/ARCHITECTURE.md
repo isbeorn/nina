@@ -14,6 +14,8 @@ Build shape from `NINA.Setup.wixproj`:
 
 The package definition is centered in `Product.wxs`.
 
+`Directory.Build.props` enables optimization for `SignedRelease` on every platform. The release workflow builds the installer project directly with `Platform=x64`, so its C# project references inherit `x64` rather than the solution's `Any CPU` mappings. Optimization must not depend on those mappings.
+
 From the code, the MSI is responsible for:
 
 - installing the application under Program Files
