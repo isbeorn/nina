@@ -193,7 +193,7 @@ jobs:
         pandoc RELEASE_NOTES.md -f markdown -t rtf -s -o RELEASE_NOTES.rtf
         pandoc RELEASE_NOTES.md -f markdown -t html -s -o RELEASE_NOTES.html --template md-template.html --metadata title="Nighttime Imaging 'N' Astronomy"
 
-    - name: Publish and sign NINA with ReadyToRun
+    - name: Publish NINA with ReadyToRun and optional signing
       run: .github/scripts/publish-application.ps1 -Configuration ${{ env.BUILD_CONFIG }} -Mode ReadyToRun -OutputDirectory "$env:RUNNER_TEMP\nina-publish" -Sign
 
     - name: Build MkDocs documentation

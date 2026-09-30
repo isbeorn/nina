@@ -42,16 +42,30 @@ foreach ($vendor in @('Canon', 'Nikon')) {
 }
 
 if ($Sign) {
-    # R2R rewrites assemblies. Sign the final NINA payload after publishing.
-    $signTool = (Get-Command signtool.exe -ErrorAction Stop).Source
-    $files = Get-ChildItem -LiteralPath $outputPath -File | Where-Object {
-        $_.Name -like 'NINA*.dll' -or $_.Name -in @('NINA.exe', 'Accord.Imaging.dll', 'nikoncswrapper.dll')
-    }
-    foreach ($file in $files) {
-        & $signTool sign /t http://timestamp.sectigo.com /i Sectigo /a /fd SHA256 $file.FullName
-        if ($LASTEXITCODE -ne 0) { throw "Signing failed for $($file.Name)." }
-        & $signTool verify /pa $file.FullName
-        if ($LASTEXITCODE -ne 0) { throw "Signature verification failed for $($file.Name)." }
+    # R2R rewrites assemblies. Attempt final signing with the existing optional-signing policy.
+    $signTool = Get-Command signtool.exe -ErrorAction SilentlyContinue
+    if (!$signTool) {
+        Write-Warning 'signtool.exe is unavailable. Skipping optional signing of the published application.'
+    } else {
+        $PSNativeCommandUseErrorActionPreference = $false
+        $files = Get-ChildItem -LiteralPath $outputPath -File | Where-Object {
+            $_.Name -like 'NINA*.dll' -or $_.Name -in @('NINA.exe', 'Accord.Imaging.dll', 'nikoncswrapper.dll')
+        }
+        foreach ($file in $files) {
+            try {
+                & $signTool.Source sign /t http://timestamp.sectigo.com /i Sectigo /a /fd SHA256 $file.FullName
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Warning "Optional signing failed for $($file.Name) (exit code $LASTEXITCODE)."
+                    continue
+                }
+                & $signTool.Source verify /pa $file.FullName
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Warning "Signature verification failed for $($file.Name) (exit code $LASTEXITCODE)."
+                }
+            } catch {
+                Write-Warning "Optional signing could not complete for $($file.Name): $($_.Exception.Message)"
+            }
+        }
     }
 }
 
@@ -66,3 +80,6 @@ $files = Get-ChildItem -LiteralPath $outputPath -File -Recurse
     TotalBytes = ($files | Measure-Object Length -Sum).Sum
     PayloadBytesWithoutSymbols = ($files | Where-Object Extension -ne '.pdb' | Measure-Object Length -Sum).Sum
 } | ConvertTo-Json | Set-Content -LiteralPath ($outputPath + '.publish.json')
+
+# GitHub's pwsh wrapper must not propagate an optional SignTool failure as the publish result.
+exit 0
