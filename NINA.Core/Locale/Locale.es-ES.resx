@@ -8203,12 +8203,12 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
     <value>La modificación no ha podido aplicarse. El estado anterior y el historial de edición se han conservado.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
-    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+    <value>Esperando a la edición de plantillas. Las ediciones sin guardar serán descartadas en {0}, luego se ejecutará la plantilla guardada. "Guardar" o "Cancelar" para continuar ahora.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
-    <value>Waiting for the template to finish saving.</value>
+    <value>Esperando a la plantilla para terminar de guardar.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
-    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
+    <value>Las ediciones no guardadas de la plantilla enlazada '{0}' fueron descartadas después de cinco minutos de inactividad. Continuando con la plantilla guardada.</value>
   </data>
 </root>
