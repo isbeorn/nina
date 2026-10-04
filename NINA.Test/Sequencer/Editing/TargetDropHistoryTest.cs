@@ -24,9 +24,11 @@ using NINA.Sequencer.Editing;
 using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.SequenceItem.Utility;
 using NUnit.Framework;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using static NINA.Test.Sequencer.Editing.CoreEditorTestScope;
 
@@ -102,22 +104,27 @@ namespace NINA.Test.Sequencer.Editing {
             GC.Collect();
         }
 
-        [TestCase(false)]
-        [TestCase(true)]
-        public void CompiledDsoTargetDrop_AfterCollection_UpdatesTargetAndSupportsUndoRedo(bool clone) {
+        [TestCase(false, 1, 20, 10, 3, -40, 50)]
+        [TestCase(true, 1, 20, 10, 3, -40, 50)]
+        [TestCase(false, 0, 0, 0, 3, -40, 0)]
+        [TestCase(true, 0, 0, 0, 3, -40, 0)]
+        [TestCase(false, 1, 20, 0, 0, 0, 0)]
+        [TestCase(true, 1, 20, 0, 0, 0, 0)]
+        public void CompiledDsoTargetDrop_AfterCollection_UpdatesTargetAndSupportsUndoRedo(
+            bool clone, double beforeRa, double beforeDec, double beforeRotation, double afterRa, double afterDec, double afterRotation) {
             using var scope = new CoreEditorTestScope();
             var target = (DeepSkyObjectContainer)scope.Create(typeof(DeepSkyObjectContainer));
             target.Name = "Before";
             target.Target.TargetName = "Before";
-            target.Target.InputCoordinates.Coordinates = new Coordinates(1, 20, Epoch.J2000, Coordinates.RAType.Hours);
-            target.Target.PositionAngle = 10;
+            target.Target.InputCoordinates.Coordinates = new Coordinates(beforeRa, beforeDec, Epoch.J2000, Coordinates.RAType.Hours);
+            target.Target.PositionAngle = beforeRotation;
             if (clone) target = (DeepSkyObjectContainer)target.Clone();
             var slew = (SlewScopeToRaDec)scope.Create(typeof(SlewScopeToRaDec));
             target.Add(slew);
             var source = (DeepSkyObjectContainer)scope.Create(typeof(DeepSkyObjectContainer));
             source.Target.TargetName = "After";
-            source.Target.InputCoordinates.Coordinates = new Coordinates(3, -40, Epoch.J2000, Coordinates.RAType.Hours);
-            source.Target.PositionAngle = 50;
+            source.Target.InputCoordinates.Coordinates = new Coordinates(afterRa, afterDec, Epoch.J2000, Coordinates.RAType.Hours);
+            source.Target.PositionAngle = afterRotation;
             var saved = new TargetSequenceContainer((IProfileService)Application.Current.Resources["ProfileService"], source);
             scope.Show(target);
             var drop = Descendants<FrameworkElement>(scope.Host)
@@ -130,18 +137,18 @@ namespace NINA.Test.Sequencer.Editing {
             GC.Collect();
             drop.ExecuteDropInto(new DropIntoParameters(saved));
 
-            AssertTarget("After", 3, -40, 50);
+            AssertTarget("After", afterRa, afterDec, afterRotation);
             target.Target.InputCoordinates.Should().NotBeSameAs(source.Target.InputCoordinates);
             scope.History.Position.Should().Be(1);
             for (int repeat = 0; repeat < 2; repeat++) {
                 scope.History.Undo().Should().BeTrue();
-                AssertTarget("Before", 1, 20, 10);
+                AssertTarget("Before", beforeRa, beforeDec, beforeRotation);
                 scope.History.Redo().Should().BeTrue();
-                AssertTarget("After", 3, -40, 50);
+                AssertTarget("After", afterRa, afterDec, afterRotation);
             }
             source.Target.TargetName.Should().Be("After");
-            source.Target.InputCoordinates.Coordinates.RA.Should().Be(3);
-            source.Target.InputCoordinates.Coordinates.Dec.Should().Be(-40);
+            source.Target.InputCoordinates.Coordinates.RA.Should().Be(afterRa);
+            source.Target.InputCoordinates.Coordinates.Dec.Should().Be(afterDec);
 
             void AssertTarget(string name, double ra, double dec, double rotation) {
                 Drain();
@@ -156,6 +163,10 @@ namespace NINA.Test.Sequencer.Editing {
                 slew.Coordinates.Coordinates.RA.Should().Be(ra);
                 slew.Coordinates.Coordinates.Dec.Should().Be(dec);
                 Descendants<TextBlock>(scope.Host).Should().Contain(text => text.Text == target.Target.InputCoordinates.Coordinates.RAString);
+                Descendants<TextBlock>(scope.Host).Should().Contain(text => text.Text == target.Target.InputCoordinates.Coordinates.DecString);
+                Descendants<TextBox>(scope.Host).Single(text => ReferenceEquals(text.DataContext, target.Target.InputCoordinates)
+                    && BindingOperations.GetBinding(text, TextBox.TextProperty)?.Path.Path == nameof(InputCoordinates.RAHours))
+                    .Text.Should().Be(target.Target.InputCoordinates.RAHours.ToString(CultureInfo.CurrentCulture));
             }
         }
     }
