@@ -66,6 +66,14 @@ namespace NINA.Sequencer {
                     foreach (var item in mainContainer.GetItemsSnapshot()){
                         item.Detach();
                     }
+                    if (mainContainer is IConditionable conditions) {
+                        foreach (var condition in conditions.GetConditionsSnapshot()) {
+                            condition.Detach();
+                        }
+                    }
+                    foreach (var trigger in mainContainer.GetTriggersSnapshot()) {
+                        trigger.Detach();
+                    }
                     mainContainer.HasChanges[SequenceEntityINPC.defaultChangeSet] = saveChangeStatus;
                 }
                 mainContainer = value;
@@ -85,9 +93,9 @@ namespace NINA.Sequencer {
                     await MainContainer.Run(progress, token);
                 } catch (OperationCanceledException) {
                     Logger.Info("Sequence run was cancelled");
+                } finally {
+                    Teardown(MainContainer);
                 }
-
-                Teardown(MainContainer);
 
                 return true;
             });

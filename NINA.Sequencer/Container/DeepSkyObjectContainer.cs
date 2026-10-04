@@ -91,7 +91,8 @@ namespace NINA.Sequencer.Container {
             Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
             CoordsToFramingCommand = new GalaSoft.MvvmLight.Command.RelayCommand(SendCoordinatesToFraming);
             CoordsFromPlanetariumCommand = new GalaSoft.MvvmLight.Command.RelayCommand(GetCoordsFromPlanetarium);
-            DropTargetCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(o => Editing.SequenceEditContext.Target(this, () => DropTarget(o)));
+            // Bind the weak command to the container, not a temporary constructor closure.
+            DropTargetCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(DropTargetWithHistory);
             DeleteExposureInfoCommand = new GalaSoft.MvvmLight.Command.RelayCommand<ExposureInfo>(DeleteExposureInfo);
 
             WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.LocationChanged), ProfileService_LocationChanged);
@@ -118,6 +119,10 @@ namespace NINA.Sequencer.Container {
 
         private void ProfileService_LocationChanged(object sender, EventArgs e) {
             Target?.SetPosition(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude));
+        }
+
+        private void DropTargetWithHistory(object obj) {
+            Editing.SequenceEditContext.Target(this, () => DropTarget(obj));
         }
 
         private void DropTarget(object obj) {

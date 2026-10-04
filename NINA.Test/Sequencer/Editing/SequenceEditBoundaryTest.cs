@@ -57,7 +57,7 @@ namespace NINA.Test.Sequencer.Editing {
         }
 
         [Test]
-        public void LinkedTargetDrop_UndoPreservesEditorNegativeZero() {
+        public void LinkedTargetDrop_AfterCollection_UndoPreservesEditorNegativeZero() {
             using var scope = new CoreEditorTestScope();
             var linked = new LinkedTemplateContainer();
             var target = (DeepSkyObjectContainer)scope.Create(typeof(DeepSkyObjectContainer));
@@ -69,7 +69,11 @@ namespace NINA.Test.Sequencer.Editing {
             linked.TargetEditor.InputCoordinates.NegativeDec = true;
             target.Target.TargetName = "After";
             target.Target.InputCoordinates.Coordinates = new Coordinates(2, 0, Epoch.J2000, Coordinates.RAType.Hours);
-            linked.DropTargetCommand.Execute(target);
+            var drop = linked.DropTargetCommand;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            drop.Execute(target);
             scope.History.Undo().Should().BeTrue();
             linked.TargetEditor.InputCoordinates.NegativeDec.Should().BeTrue();
             scope.History.Redo().Should().BeTrue();

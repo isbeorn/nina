@@ -79,6 +79,8 @@ namespace NINA.Sequencer.Logic {
         }
 
         protected ISequenceContainer LastSParent { get; set; }
+        private bool wasAttachedToRoot;
+        private bool suppressDetachedRegistration;
 
         [JsonProperty]
         public Expression Expr {
@@ -127,7 +129,10 @@ namespace NINA.Sequencer.Logic {
 
                 _identifier = value;
 
-                if (value.Length == 0) return;
+                if (value.Length == 0) {
+                    if (cached != null) RemoveScopeIfEmpty(sParent, cached);
+                    return;
+                }
 
                 // Store the symbol in the SymbolCache for this Parent
                 if (Parent != null) {
@@ -382,23 +387,20 @@ namespace NINA.Sequencer.Logic {
             }
 
             ISequenceContainer sParent = SParent();
-            if (sParent == LastSParent) {
+            bool attachedToRoot = IsAttachedToRoot(Parent);
+            // Removing an ancestor keeps the immediate scope unchanged but must release its registration.
+            if (sParent == LastSParent && attachedToRoot == wasAttachedToRoot) {
                 return;
             }
+            wasAttachedToRoot = attachedToRoot;
+            suppressDetachedRegistration |= attachedToRoot;
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
             // Make sure adler's problem sequence works here (fixed in Powerups)
             bool isGlobal = this is GlobalVariable || this is GlobalConstant;
-            if (!IsAttachedToRoot(Parent) && (Parent != GlobalSymbols) && (!isGlobal || LastSParent != null)) {
-                if (Expr != null) {
+            if (!attachedToRoot && (Parent != GlobalSymbols) && (!isGlobal || LastSParent != null || suppressDetachedRegistration)) {
+                if (LastSParent != null) {
                     // We've deleted this Symbol
                     SymbolDictionary cached;
-                    if (LastSParent == null) {
-                        if (Debugging) {
-                            Warn("Removed symbol " + this + " has no LastSParent?");
-                        }
-                        // We're saving a template?
-                        return;
-                    }
                     if (SymbolCache.TryGetValue(LastSParent, out cached)) {
                         if (RemoveCachedSymbol(LastSParent, cached, Identifier, this, out _)) {
                             SymbolDirty(this);
@@ -409,6 +411,7 @@ namespace NINA.Sequencer.Logic {
                         Warn("Deleting " + this + " but SParent has no cache?");
                     }
                 }
+                LastSParent = null;
                 return;
             }
             LastSParent = sParent;
@@ -480,6 +483,16 @@ namespace NINA.Sequencer.Logic {
         public override void ReleaseExpressionConsumers() {
             base.ReleaseExpressionConsumers();
             Expr?.ReleaseConsumers();
+            if (!IsAttachedToRoot(Parent)) {
+                // Library previews and save copies keep their tree, but must not own live symbol registrations.
+                var scope = LastSParent ?? SParent();
+                if (scope != null && SymbolCache.TryGetValue(scope, out var cached)
+                    && RemoveCachedSymbol(scope, cached, Identifier, this, out _)) {
+                    SymbolDirty(this);
+                }
+                LastSParent = null;
+                suppressDetachedRegistration = true;
+            }
         }
 
         private static bool RemoveCachedSymbol(ISequenceContainer scope, SymbolDictionary cached, string identifier, UserSymbol expected, out UserSymbol symbol) {

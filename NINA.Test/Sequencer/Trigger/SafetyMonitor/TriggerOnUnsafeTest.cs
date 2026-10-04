@@ -34,6 +34,34 @@ namespace NINA.Test.Sequencer.Trigger.SafetyMonitor {
 
     [TestFixture]
     public class TriggerOnUnsafeTest {
+        [Test]
+        public void RemovingAndReattachingAncestor_ReleasesAndRestoresSafetySubscriptions() {
+            var handlers = new List<Delegate>();
+            safetyMonitorMediatorMock.SetupAdd(x => x.Connected += It.IsAny<Func<object, EventArgs, Task>>())
+                .Callback<Func<object, EventArgs, Task>>(handler => handlers.Add(handler));
+            safetyMonitorMediatorMock.SetupRemove(x => x.Connected -= It.IsAny<Func<object, EventArgs, Task>>())
+                .Callback<Func<object, EventArgs, Task>>(handler => handlers.Remove(handler));
+            safetyMonitorMediatorMock.SetupAdd(x => x.Disconnected += It.IsAny<Func<object, EventArgs, Task>>())
+                .Callback<Func<object, EventArgs, Task>>(handler => handlers.Add(handler));
+            safetyMonitorMediatorMock.SetupRemove(x => x.Disconnected -= It.IsAny<Func<object, EventArgs, Task>>())
+                .Callback<Func<object, EventArgs, Task>>(handler => handlers.Remove(handler));
+            safetyMonitorMediatorMock.SetupAdd(x => x.IsSafeChanged += It.IsAny<EventHandler<IsSafeEventArgs>>())
+                .Callback<EventHandler<IsSafeEventArgs>>(handler => handlers.Add(handler));
+            safetyMonitorMediatorMock.SetupRemove(x => x.IsSafeChanged -= It.IsAny<EventHandler<IsSafeEventArgs>>())
+                .Callback<EventHandler<IsSafeEventArgs>>(handler => handlers.Remove(handler));
+            var root = new SequenceRootContainer();
+            var parent = new SequentialContainer { Status = SequenceEntityStatus.RUNNING };
+            parent.Add(sut);
+            for (int cycle = 0; cycle < 2; cycle++) {
+                root.Add(parent);
+                handlers.Should().HaveCount(3);
+                parent.Detach();
+                handlers.Should().BeEmpty();
+                parent.AfterParentChanged();
+                handlers.Should().BeEmpty();
+            }
+        }
+
         private Mock<ISafetyMonitorMediator> safetyMonitorMediatorMock;
         private Mock<IApplicationResourceDictionary> resourceDictionaryMock;
         private SafetyMonitorInfo safetyMonitorInfo;

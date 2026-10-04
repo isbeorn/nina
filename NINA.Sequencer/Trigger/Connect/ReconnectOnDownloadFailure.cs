@@ -50,21 +50,17 @@ namespace NINA.Sequencer.Trigger.Connect {
 
         public override void AfterParentChanged() {
             var root = ItemUtility.GetRootContainer(this.Parent);
-            if (root == null) {
-                if (failureHook != null) {
-                    failureHook.FailureEvent -= Root_FailureEvent;
+            if (root == null || root != failureHook) {
+                SequenceBlockTeardown();
+                if (root != null && this.Parent.Status == SequenceEntityStatus.RUNNING) {
+                    SequenceBlockInitialize();
                 }
-                cameraMediator.DownloadTimeout -= CameraMediator_DownloadTimeout;
-                failureHook = null;
-            } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
-                failureHook = root;
-                failureHook.FailureEvent += Root_FailureEvent;
-                cameraMediator.DownloadTimeout += CameraMediator_DownloadTimeout;
             }
             base.AfterParentChanged();
         }
 
         public override void SequenceBlockInitialize() {
+            SequenceBlockTeardown();
             failureHook = ItemUtility.GetRootContainer(this.Parent);
             if (failureHook != null) {
                 failureHook.FailureEvent += Root_FailureEvent;
@@ -75,9 +71,9 @@ namespace NINA.Sequencer.Trigger.Connect {
 
         public override void SequenceBlockTeardown() {
             // Unregister failure event when the parent context ends
-            failureHook = ItemUtility.GetRootContainer(this.Parent);
             if (failureHook != null) {
                 failureHook.FailureEvent -= Root_FailureEvent;
+                failureHook = null;
             }
             cameraMediator.DownloadTimeout -= CameraMediator_DownloadTimeout;
         }

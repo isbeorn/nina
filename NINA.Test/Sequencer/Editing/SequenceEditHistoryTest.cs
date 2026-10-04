@@ -261,7 +261,7 @@ namespace NINA.Test.Sequencer.Editing {
         }
 
         [Test]
-        public void Commands_DuplicateDeleteAndMoveBothDirections_PreserveInstances() {
+        public void Commands_AfterCollection_DuplicateDeleteAndMoveBothDirections_PreserveInstances() {
             var root = new SequenceRootContainer();
             var container = new SequentialContainer();
             root.Add(container);
@@ -270,22 +270,32 @@ namespace NINA.Test.Sequencer.Editing {
             container.Add(first);
             container.Add(second);
             using var history = new SequenceEditHistory(root);
-            first.MoveUpCommand.Execute(null);
+            var moveUp = first.MoveUpCommand;
+            var moveDown = first.MoveDownCommand;
+            var duplicate = first.AddCloneToParentCommand;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            moveUp.Execute(null);
             // At the boundary this moves into the root before its parent container.
             history.Undo();
             container.Items.Should().Equal(first, second);
-            first.MoveDownCommand.Execute(null);
+            moveDown.Execute(null);
             container.Items.Should().Equal(second, first);
             history.Undo().Should().BeTrue();
             container.Items.Should().Equal(first, second);
             history.Redo().Should().BeTrue();
             container.Items.Should().Equal(second, first);
-            first.AddCloneToParentCommand.Execute(null);
+            duplicate.Execute(null);
             ISequenceItem clone = container.Items.Last();
+            var detach = clone.DetachCommand;
             history.Undo().Should().BeTrue();
             history.Redo().Should().BeTrue();
             container.Items.Last().Should().BeSameAs(clone);
-            clone.DetachCommand.Execute(null);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            detach.Execute(null);
             history.Undo().Should().BeTrue();
             container.Items.Last().Should().BeSameAs(clone);
             clone.Parent.Should().BeSameAs(container);
@@ -308,20 +318,29 @@ namespace NINA.Test.Sequencer.Editing {
         }
 
         [Test]
-        public void EnableDisable_BothDirections_DoNotRecordRuntimeStatus() {
+        public void EnableDisable_AfterCollection_BothDirections_DoNotRecordRuntimeStatus() {
             var root = new SequenceRootContainer();
             var item = new PluginItem { Status = SequenceEntityStatus.FINISHED };
             root.Add(item);
             using var history = new SequenceEditHistory(root);
-            item.DisableEnableCommand.Execute(null);
+            var toggle = item.DisableEnableCommand;
+            var menu = item.ShowMenuCommand;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            menu.CanExecute(null).Should().BeTrue();
+            toggle.Execute(null);
             item.Status.Should().Be(SequenceEntityStatus.DISABLED);
+            menu.CanExecute(null).Should().BeFalse();
             history.Undo().Should().BeTrue();
             item.Status.Should().Be(SequenceEntityStatus.CREATED);
             item.Status = SequenceEntityStatus.RUNNING;
             history.Position.Should().Be(0);
             history.Redo().Should().BeTrue();
             item.Status.Should().Be(SequenceEntityStatus.DISABLED);
-            item.DisableEnableCommand.Execute(null);
+            toggle.Execute(null);
+            item.Status.Should().Be(SequenceEntityStatus.CREATED);
+            menu.CanExecute(null).Should().BeTrue();
             history.Undo().Should().BeTrue();
             item.Status.Should().Be(SequenceEntityStatus.DISABLED);
         }

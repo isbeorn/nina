@@ -313,7 +313,7 @@ namespace NINA.Sequencer.Trigger.SafetyMonitor {
         public override void AfterParentChanged() {
             AttachInstructionSetsToContext(Parent);
 
-            if (Parent == null) {
+            if (!ItemUtility.IsInRootContainer(Parent)) {
                 SequenceBlockTeardown();
             } else if (Parent.Status == SequenceEntityStatus.RUNNING) {
                 SequenceBlockInitialize();

@@ -34,6 +34,35 @@ namespace NINA.Test.Sequencer.Trigger.Connect {
 
     [TestFixture]
     public class ReconnectTriggerTest {
+        [Test]
+        public async Task ReconnectOnDownloadFailure_RepeatedInitializationAndReparentingReleaseBothPublishers() {
+            var sut = CreateReconnectOnDownloadFailure();
+            var firstRoot = new SequenceRootContainer();
+            var secondRoot = new SequenceRootContainer();
+            var parent = new SequentialContainer { Status = NINA.Core.Enum.SequenceEntityStatus.RUNNING };
+            firstRoot.Add(parent);
+            parent.Add(sut);
+            for (int cycle = 0; cycle < 2; cycle++) {
+                sut.SequenceBlockInitialize();
+                sut.SequenceBlockInitialize();
+                downloadTimeoutHandlers.GetInvocationList().Should().HaveCount(1);
+                sut.SequenceBlockTeardown();
+                sut.SequenceBlockTeardown();
+                downloadTimeoutHandlers.Should().BeNull();
+                await firstRoot.RaiseFailureEvent(Mock.Of<ISequenceItem>(), new CameraDownloadFailedException("after teardown"));
+                sut.ShouldTrigger(null, null).Should().BeFalse();
+            }
+
+            sut.SequenceBlockInitialize();
+            secondRoot.Add(parent);
+            await firstRoot.RaiseFailureEvent(Mock.Of<ISequenceItem>(), new CameraDownloadFailedException("old root"));
+            sut.ShouldTrigger(null, null).Should().BeFalse();
+            await secondRoot.RaiseFailureEvent(Mock.Of<ISequenceItem>(), new CameraDownloadFailedException("new root"));
+            sut.ShouldTrigger(null, null).Should().BeTrue();
+            parent.Detach();
+            downloadTimeoutHandlers.Should().BeNull();
+        }
+
         private NINA.Profile.Profile profile;
         private Mock<IProfileService> profileServiceMock;
         private Mock<ICameraMediator> cameraMediatorMock;

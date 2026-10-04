@@ -41,9 +41,8 @@ namespace NINA.Sequencer.Container.ExecutionStrategy {
             var root = ItemUtility.GetRootContainer(context);
 
             context.Iterations = 0;
-            InitializeBlock(context);
-
             try {
+                InitializeBlock(context);
                 while (((next, canContinue) = GetNextItem(context, previous)).next != null && canContinue) {
                     StartBlock(context);
 

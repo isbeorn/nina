@@ -92,6 +92,7 @@ namespace NINA.Sequencer {
                     try {
                         var container = sequenceJsonConverter.Deserialize(File.ReadAllText(file), file);
                         if (container is ISequenceRootContainer) continue;
+                        container.AttachNewParent(null);
                         TemplateReference reference = CreateTemplateReference(TemplateReferenceSourceKind.Default, defaultTemplatePath, file, container.Name);
                         Templates.Add(new TemplatedSequenceContainer(profileService, DefaultTemplatesGroup, container, reference, templateLinkResolver));
                     } catch (Exception ex) {
@@ -195,6 +196,7 @@ namespace NINA.Sequencer {
                             try {
                                 var container = sequenceJsonConverter.Deserialize(File.ReadAllText(file), file);
                                 if (container is ISequenceRootContainer) continue;
+                                container.AttachNewParent(null);
                                 var fileInfo = new FileInfo(file);
                                 container.Name = fileInfo.Name.Replace(TemplateFileExtension, "");
                                 TemplateReference reference = CreateTemplateReference(TemplateReferenceSourceKind.User, userTemplatePath, file, container.Name);

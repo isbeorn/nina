@@ -651,6 +651,8 @@ namespace NINA.Test.Sequencer.Logic {
             GlobalVariable detachedGlobal = CreateGlobalVariable("sharedGlobal", "2");
 
             detachedContainer.Add(detachedGlobal);
+            detachedContainer.AttachNewParent(null);
+            detachedContainer.AfterParentChanged();
 
             UserSymbol.SymbolCache[UserSymbol.GlobalSymbols]["sharedGlobal"].Should().BeSameAs(activeGlobal);
             UserSymbol.FindGlobalSymbol("sharedGlobal").Should().BeSameAs(activeGlobal);
@@ -936,6 +938,104 @@ namespace NINA.Test.Sequencer.Logic {
 
             original.Consumers.Should().NotContainKey(expression);
             replacement.Consumers.Should().ContainKey(expression);
+        }
+
+        [TestCase(typeof(Variable))]
+        [TestCase(typeof(Constant))]
+        [TestCase(typeof(GlobalVariable))]
+        [TestCase(typeof(GlobalConstant))]
+        public void ReleasingDetachedPreview_RemovesRegistrationAndAllowsRootAttachment(Type type) {
+            var container = CreateContainer("Preview");
+            var symbol = (UserSymbol)Activator.CreateInstance(type)!;
+            symbol.Expr = new Expression("10", symbol);
+            container.Add(symbol);
+            symbol.Identifier = "preview_symbol";
+            var scope = symbol.SParent();
+            UserSymbol.SymbolCache[scope][symbol.Identifier].Should().BeSameAs(symbol);
+
+            container.AttachNewParent(null);
+            container.AfterParentChanged();
+            container.AfterParentChanged();
+            UserSymbol.SymbolCache.Should().NotContainKey(scope);
+
+            var root = new SequenceRootContainer();
+            root.Add(container);
+            container.ReleaseExpressionConsumers();
+            UserSymbol.SymbolCache[scope][symbol.Identifier].Should().BeSameAs(symbol, "releasing consumers must preserve an attached symbol's registration");
+            container.Detach();
+            UserSymbol.SymbolCache.Should().NotContainKey(scope);
+        }
+
+        [TestCase(typeof(Variable), false)]
+        [TestCase(typeof(Variable), true)]
+        [TestCase(typeof(Constant), false)]
+        [TestCase(typeof(Constant), true)]
+        [TestCase(typeof(GlobalVariable), false)]
+        [TestCase(typeof(GlobalVariable), true)]
+        [TestCase(typeof(GlobalConstant), false)]
+        [TestCase(typeof(GlobalConstant), true)]
+        public void SymbolDetachment_ReleasesRegistrationAndReattachesWithoutRenaming(Type type, bool removeContainer) {
+            var root = new SequenceRootContainer();
+            var container = CreateContainer("Scope");
+            root.Add(container);
+            var symbol = (UserSymbol)Activator.CreateInstance(type)!;
+            symbol.SymbolBroker = _symbolBroker.Object;
+            symbol.Expr = new Expression("10", symbol);
+            container.Add(symbol);
+            symbol.Identifier = "lifetime_symbol";
+            var cacheScope = symbol.SParent();
+            for (int repeat = 0; repeat < 2; repeat++) {
+                UserSymbol.SymbolCache[cacheScope][symbol.Identifier].Should().BeSameAs(symbol);
+                if (removeContainer) root.Remove(container);
+                else container.Remove(symbol);
+                UserSymbol.SymbolCache.Should().NotContainKey(cacheScope);
+
+                // Containers can notify descendants again while detached, for example after a target edit.
+                container.AfterParentChanged();
+                symbol.AfterParentChanged();
+                UserSymbol.SymbolCache.Should().NotContainKey(cacheScope);
+
+                if (removeContainer) root.Add(container);
+                else container.Add(symbol);
+                symbol.Identifier.Should().Be("lifetime_symbol");
+            }
+            UserSymbol.SymbolCache[cacheScope][symbol.Identifier].Should().BeSameAs(symbol);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ClearingSymbolName_ReleasesEmptyScopeAndCanRegisterAgain(bool hasSibling) {
+            var container = CreateContainer();
+            var variable = CreateVariable("before", "1", container);
+            var sibling = hasSibling ? CreateVariable("sibling", "2", container) : null;
+
+            variable.Identifier = "";
+
+            if (hasSibling) UserSymbol.SymbolCache[container].Should().ContainSingle().Which.Value.Should().BeSameAs(sibling);
+            else UserSymbol.SymbolCache.Should().NotContainKey(container);
+            variable.Identifier = "after";
+            UserSymbol.SymbolCache[container]["after"].Should().BeSameAs(variable);
+        }
+
+        [TestCase(typeof(Variable))]
+        [TestCase(typeof(Constant))]
+        [TestCase(typeof(GlobalVariable))]
+        [TestCase(typeof(GlobalConstant))]
+        public void RemovingSymbolWithClearedExpression_ReleasesRegistration(Type type) {
+            var root = new SequenceRootContainer();
+            var container = CreateContainer();
+            root.Add(container);
+            var symbol = (UserSymbol)Activator.CreateInstance(type)!;
+            symbol.Expr = new Expression("10", symbol);
+            container.Add(symbol);
+            symbol.Identifier = "cleared_expression";
+            var scope = symbol.SParent();
+            UserSymbol.SymbolCache[scope][symbol.Identifier].Should().BeSameAs(symbol);
+
+            symbol.Expr = null;
+            symbol.Detach();
+
+            UserSymbol.SymbolCache.Should().NotContainKey(scope);
         }
 
         [Test]

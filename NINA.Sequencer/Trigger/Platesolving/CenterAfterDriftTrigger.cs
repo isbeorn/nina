@@ -229,9 +229,11 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         }
 
         public override void AfterParentChanged() {
-            if (Parent == null) {
+            bool attachedToRoot = ItemUtility.IsInRootContainer(Parent);
+            if (!attachedToRoot) {
                 SequenceBlockTeardown();
-            } else {
+            }
+            if (Parent != null) {
                 var contextCoordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
                 if (contextCoordinates != null) {
                     Coordinates.Coordinates = contextCoordinates.Coordinates;
@@ -240,7 +242,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
                     Inherited = false;
                 }
                 Validate();
-                if (Parent.Status == SequenceEntityStatus.RUNNING) {
+                if (attachedToRoot && Parent.Status == SequenceEntityStatus.RUNNING) {
                     SequenceBlockInitialize();
                 }
             }

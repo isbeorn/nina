@@ -29,10 +29,41 @@ using NINA.WPF.Base.Interfaces.Mediator;
 using NUnit.Framework;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace NINA.Test.Sequencer.Editing {
     [TestFixture, Apartment(ApartmentState.STA), NonParallelizable]
     public class SequenceEditLifecycleTest {
+        [Test]
+        public void RootReplacement_ReleasesPreviousRootChildrenAndHistory() {
+            using var profile = new NINA.Profile.Profile();
+            var profiles = new Mock<IProfileService>();
+            profiles.SetupGet(x => x.ActiveProfile).Returns(profile);
+            using var vm = new Sequence2VM(profiles.Object, Mock.Of<ICommandLineOptions>(), Mock.Of<ISequenceMediator>(),
+                Mock.Of<IApplicationMediator>(), Mock.Of<IApplicationStatusMediator>(), Mock.Of<ICameraMediator>(),
+                Mock.Of<ISequencerFactory>(), Mock.Of<ISymbolBroker>(), Mock.Of<ITemplateLinkResolver>());
+            var references = ReplaceRootWithHistory(vm);
+
+            SequencerLifetimeTest.AssertCollected(references);
+            GC.KeepAlive(vm);
+            GC.KeepAlive(profiles);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static (string, WeakReference)[] ReplaceRootWithHistory(Sequence2VM vm) {
+            var root = new SequenceRootContainer();
+            var item = new NINA.Sequencer.SequenceItem.Utility.WaitForTimeSpan();
+            root.Add(item);
+            var sequencer = new NINA.Sequencer.Sequencer(root);
+            typeof(Sequence2VM).GetProperty(nameof(vm.Sequencer))!.SetValue(vm, sequencer);
+            var history = vm.EditHistory;
+            item.DetachCommand.Execute(null);
+            history.Position.Should().Be(1);
+            sequencer.MainContainer = new SequenceRootContainer();
+            return new[] { ("previous root", new WeakReference(root)), ("deleted item", new WeakReference(item)),
+                ("previous history", new WeakReference(history)) };
+        }
+
         [Test]
         public void RootReplacementAndLocking_ManageOneSessionWhileRunAndViewChangesPreserveIt() {
             using var profile = new NINA.Profile.Profile();
