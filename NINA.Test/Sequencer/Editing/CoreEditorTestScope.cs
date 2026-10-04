@@ -90,16 +90,18 @@ namespace NINA.Test.Sequencer.Editing {
             Window.Show();
         }
 
-        public ISequenceEntity Create(Type type) {
+        public ISequenceEntity Create(Type type, bool useRealWatchdog = false) {
             ConstructorInfo constructor = type.GetConstructors().Single(c => c.IsDefined(typeof(ImportingConstructorAttribute)));
             var entity = (ISequenceEntity)constructor.Invoke(constructor.GetParameters().Select(p => services.Get(p.ParameterType)).ToArray());
             entity.Name = type.Name;
-            if (entity is SequenceCondition condition) condition.ConditionWatchdog = Moq.Mock.Of<NINA.Sequencer.Interfaces.IConditionWatchdog>();
+            if (entity is SequenceCondition condition && !useRealWatchdog) condition.ConditionWatchdog = Moq.Mock.Of<NINA.Sequencer.Interfaces.IConditionWatchdog>();
             if (entity is NINA.Sequencer.Logic.UserSymbol symbol && symbol.Expr == null) {
                 symbol.Expr = new NINA.Sequencer.Logic.Expression("1", symbol);
             }
             return entity;
         }
+
+        public void ClearServiceInvocations() => services.ClearInvocations();
 
         public void Show(ISequenceEntity entity) {
             if (entity is ISequenceCondition condition) Root.Add(condition);
@@ -134,6 +136,16 @@ namespace NINA.Test.Sequencer.Editing {
 
         private sealed class Services : DefaultValueProvider {
             private readonly Dictionary<Type, object?> values = new();
+            public void ClearInvocations() {
+                foreach (var value in values.Values) {
+                    if (value is IMocked mocked) mocked.Mock.Invocations.Clear();
+                    if (value is IList<IDateTimeProvider> providers) {
+                        foreach (var provider in providers) {
+                            if (provider is IMocked mockedProvider) mockedProvider.Mock.Invocations.Clear();
+                        }
+                    }
+                }
+            }
             public Services(IProfile profile) {
                 values[typeof(IProfileService)] = Moq.Mock.Of<IProfileService>(s => s.ActiveProfile == profile && s.Profiles == new AsyncObservableCollection<ProfileMeta> {
                     new ProfileMeta { Id = Guid.NewGuid(), Name = "First" }, new ProfileMeta { Id = Guid.NewGuid(), Name = "Second" }

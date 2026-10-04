@@ -25,6 +25,71 @@ namespace NINA.Test.AstrometryTest {
     [TestFixture]
     public class InputCoordinatesTest {
 
+        [TestCase(false, -40)]
+        [TestCase(false, 40)]
+        [TestCase(true, -40)]
+        [TestCase(true, 40)]
+        public void ResetToZeroAndBack_NotifiesObservers(bool replaceCoordinates, double dec) {
+            var input = new InputCoordinates(new Coordinates(3, dec, Epoch.J2000, Coordinates.RAType.Hours));
+            var notifications = new List<(double RA, double Dec)>();
+            var properties = new List<string>();
+            input.CoordinatesChanged += (_, _) => notifications.Add((input.Coordinates.RA, input.Coordinates.Dec));
+            input.PropertyChanged += (_, e) => properties.Add(e.PropertyName);
+
+            if (replaceCoordinates) {
+                input.Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Hours);
+            } else {
+                input.RAHours = 0;
+                notifications.Clear();
+                properties.Clear();
+                input.DecDegrees = 0;
+            }
+
+            notifications.Should().Equal((0d, 0d));
+            properties.Should().Contain(new[] { nameof(InputCoordinates.Coordinates), nameof(InputCoordinates.RAHours),
+                nameof(InputCoordinates.RAMinutes), nameof(InputCoordinates.RASeconds), nameof(InputCoordinates.DecDegrees),
+                nameof(InputCoordinates.DecMinutes), nameof(InputCoordinates.DecSeconds) });
+            input.NegativeDec.Should().Be(dec < 0, "zero must preserve the selected declination sign");
+
+            input.Coordinates = new Coordinates(3, dec, Epoch.J2000, Coordinates.RAType.Hours);
+
+            notifications.Should().Equal((0d, 0d), (3d, dec));
+            input.NegativeDec.Should().Be(dec < 0);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void DeserializeZeroCoordinates_NotifiesOnceWithFinalValueAndPreservesSign(bool negativeDec) {
+            var input = new InputCoordinates(new Coordinates(3, -40, Epoch.J2000, Coordinates.RAType.Hours));
+            var expected = new InputCoordinates { NegativeDec = negativeDec };
+            var notifications = new List<(double RA, double Dec, bool NegativeDec)>();
+            input.CoordinatesChanged += (_, _) => notifications.Add((input.Coordinates.RA, input.Coordinates.Dec, input.NegativeDec));
+
+            JsonConvert.PopulateObject(JsonConvert.SerializeObject(expected), input);
+
+            notifications.Should().Equal((0d, 0d, negativeDec));
+            input.NegativeDec.Should().Be(negativeDec);
+        }
+
+        [TestCase(0, 0)]
+        [TestCase(3, -40)]
+        public void DeserializeTarget_BatchesCoordinateNotifications(double ra, double dec) {
+            var target = new InputTarget(Angle.Zero, Angle.Zero, null);
+            var saved = new InputTarget(Angle.Zero, Angle.Zero, null) {
+                TargetName = "Saved target",
+                PositionAngle = 25
+            };
+            saved.InputCoordinates.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours);
+            var notifications = new List<(string Name, double RA, double Dec, double Rotation)>();
+            target.CoordinatesChanged += (_, _) => notifications.Add((target.TargetName,
+                target.DeepSkyObject.Coordinates.RA, target.DeepSkyObject.Coordinates.Dec, target.PositionAngle));
+
+            JsonConvert.PopulateObject(JsonConvert.SerializeObject(saved), target);
+
+            notifications.Should().Equal(new[] { ("Saved target", ra, dec, 25d) },
+                "target loading must publish only the completed target, including when its coordinates are zero");
+        }
+
         /// <summary>
         /// Verifies interactive alt-az entry for a target below the horizon, including the special
         /// negative-zero degree case used for small negative altitudes such as -0 degrees 30 minutes.

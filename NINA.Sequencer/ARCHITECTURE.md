@@ -97,6 +97,14 @@ NCalc is an internal expression-engine implementation detail. Public and plugin-
 
 Releasing an expression's symbol consumers must also discard its cached parameter inputs under the same lock. The next evaluation then resolves symbols in the current scope instead of accepting values from a former scope. Release itself does not evaluate or invoke value-change validators. Single-reference invalidation preserves the other references and their inputs.
 
+Symbols must unregister when an ancestor loses its sequence root and register again when that ancestor returns. Remove empty symbol-cache scopes as well, since the static cache otherwise retains their containers. Replacing a sequence root must detach its items, conditions and triggers so their watchdogs and expression consumers are released. The lifetime tests keep services, live clones and models alive while checking that deleted entities and unloaded editors can be collected.
+
+Cleanup must tolerate repeated parent notifications and symbols whose expression has been cleared. Never-rooted global definitions retain their existing registration behavior, but a removed global must stay unregistered until reattached.
+
+Template and target loaders explicitly release registrations on detached library previews. `ReleaseExpressionConsumers()` also releases a detached symbol's own cache registration, without changing identifiers or removing the graph's children. Root attachment registers the symbols again. Library reload tests keep the controllers and resolver alive while checking collection of the previous graphs. The broker, advanced sequencer view model and sidebar controllers themselves live for the application session.
+
+Sequence and block initialization belong inside their cleanup `try/finally`, including partial initialization failures. Runtime triggers must release external event subscriptions when any ancestor loses its root, even if their immediate parent remains present or has a running status. Initialization and teardown must tolerate repeated calls and root changes without duplicate subscriptions.
+
 ## Editor History
 
 `Editing/` owns an in-memory journal for configuration edits, with lifetime managed by `Sequence2VM`. It records field and structural changes through the WPF editor and preserves current runtime inputs during replay. Undo does not reverse equipment actions.

@@ -172,18 +172,19 @@ namespace NINA.Astrometry {
 
         private void RaiseCoordinatesChanged() {
             if (!deserializing) {
+                // Preserve the selected sign at zero, but still refresh coordinate consumers.
                 if (Coordinates?.RA != 0 || Coordinates?.Dec != 0) {
                     NegativeDec = Coordinates?.Dec < 0;
-                    RaisePropertyChanged(nameof(Coordinates));
-                    RaisePropertyChanged(nameof(RAHours));
-                    RaisePropertyChanged(nameof(RAMinutes));
-                    RaisePropertyChanged(nameof(RASeconds));
-                    RaisePropertyChanged(nameof(DecDegrees));
-                    RaisePropertyChanged(nameof(DecMinutes));
-                    RaisePropertyChanged(nameof(DecSeconds));
-
-                    this.CoordinatesChanged?.Invoke(this, new EventArgs());
                 }
+                RaisePropertyChanged(nameof(Coordinates));
+                RaisePropertyChanged(nameof(RAHours));
+                RaisePropertyChanged(nameof(RAMinutes));
+                RaisePropertyChanged(nameof(RASeconds));
+                RaisePropertyChanged(nameof(DecDegrees));
+                RaisePropertyChanged(nameof(DecMinutes));
+                RaisePropertyChanged(nameof(DecSeconds));
+
+                this.CoordinatesChanged?.Invoke(this, new EventArgs());
             }
         }
 

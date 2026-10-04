@@ -22,6 +22,8 @@ This allows you to safely return to a stable release if needed.
 - The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
 
 ## Bugfixes
+- Dropping a saved target onto a DSO container now reliably updates its coordinates and target details, including after the container has been open for some time.
+- Removed symbol containers and replaced sequences now release cached scopes and background condition checks. Symbols also register correctly when restored after deletion.
 - Validation issues for Loop, Loop While and Moon Illumination conditions now start with an empty list and notify the UI when validation results change.
 - Take Many Exposures now rejects invalid iteration expressions. Explicit subframe dimensions and absolute focuser moves now read current expression values when executed.
 - Sky Flats now honors retry and error settings when a predicted exposure exceeds the configured limits, and incomplete captures no longer count as completed frames.

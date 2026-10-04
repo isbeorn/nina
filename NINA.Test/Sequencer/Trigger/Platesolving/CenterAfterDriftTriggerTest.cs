@@ -41,6 +41,22 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
 
     [TestFixture]
     public class CenterAfterDriftTriggerTest {
+        [Test]
+        public void RemovingAndReattachingAncestor_ReleasesAndRestoresImageSubscription() {
+            var root = new SequenceRootContainer();
+            var parent = new SequentialContainer { Status = SequenceEntityStatus.RUNNING };
+            var sut = CreateSut();
+            parent.Add(sut);
+            for (int cycle = 0; cycle < 2; cycle++) {
+                root.Add(parent);
+                imageSavedHandlers.GetInvocationList().Should().HaveCount(1);
+                parent.Detach();
+                imageSavedHandlers.Should().BeNull();
+                parent.AfterParentChanged();
+                imageSavedHandlers.Should().BeNull();
+            }
+        }
+
         private Mock<IProfileService> profileServiceMock;
         private Mock<ITelescopeMediator> telescopeMediatorMock;
         private Mock<IGuiderMediator> guiderMediatorMock;
