@@ -23,6 +23,7 @@ using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.DragDrop;
 using NINA.Sequencer.Editing;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.View.Sequencer;
@@ -84,6 +85,32 @@ namespace NINA.Test.Sequencer.View {
 
             root.Should().NotBeNull();
             InvokeHitTest(view).VisualHit.Should().BeSameAs(view);
+        }
+
+        [TestCase(false, 0)]
+        [TestCase(false, 1)]
+        [TestCase(true, 0)]
+        [TestCase(true, 1)]
+        public void Sidebar_MouseDownOnSymbolOrFunction_CopiesDottedName(bool function, int column) {
+            EnsureApplicationResources();
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/NINA.Sequencer;component/SequenceItem/Expressions/DataTemplates.xaml", UriKind.Relative) });
+            var sidebar = new SequenceSidebar();
+            var list = (ListBox)sidebar.FindName(function ? "SymbolFunctionsList" : "SymbolsList");
+            var row = (Grid)list.ItemTemplate.LoadContent();
+            row.DataContext = function
+                ? new SymbolFunction("Sensor_Value", "My_Plugin", "Description", "", _ => 1)
+                : new Symbol("Sensor_Value", 1, "My_Plugin", null, Symbol.SymbolType.SYMBOL_NORMAL);
+            var text = (TextBlock)row.Children[column];
+            var previousClipboard = Clipboard.GetDataObject();
+            try {
+                text.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) {
+                    RoutedEvent = Mouse.MouseDownEvent
+                });
+                Clipboard.GetText().Should().Be("My_Plugin.Sensor_Value");
+            } finally {
+                if (previousClipboard != null) Clipboard.SetDataObject(previousClipboard, true);
+                else Clipboard.Clear();
+            }
         }
 
         [TestCase(800)]

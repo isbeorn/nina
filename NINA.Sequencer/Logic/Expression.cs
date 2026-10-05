@@ -197,7 +197,7 @@ namespace NINA.Sequencer.Logic {
                     IsExpression = true;
 
                     // Evaluate just so that we can parse the expression
-                    NCalc.Expression e = new NCalc.Expression(value, NCalc.ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
+                    NCalc.Expression e = NCalcExpressionAdapter.Create(value);
                     IsSyntaxError = false;
                     try {
                         e.Evaluate();
@@ -631,7 +631,7 @@ namespace NINA.Sequencer.Logic {
                                     StringBuilder sb = new StringBuilder("'" + a.Key + "' " + Loc.Instance["LblIsAmbiguous"]);
                                     Symbol[] symbols = a.Symbols;
                                     for (int i = 0; i < symbols.Length; i++) {
-                                        sb.Append(" " + symbols[i].Category + '_' + symReference);
+                                        sb.Append(" " + symbols[i].Category + Logic.SymbolBroker.QUALIFIED_DELIMITER + symbols[i].Key);
                                         if (i < symbols.Length - 1) {
                                             sb.Append("; ");
                                         }
@@ -650,7 +650,7 @@ namespace NINA.Sequencer.Logic {
                     if (_cachedNCalcExpression != null) {
                         e = _cachedNCalcExpression;
                     } else {
-                        e = new NCalc.Expression(Definition, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
+                        e = NCalcExpressionAdapter.Create(Definition);
                         e.EvaluateFunction += ExtensionFunction;
                         _cachedNCalcExpression = e;
                     }
@@ -659,7 +659,8 @@ namespace NINA.Sequencer.Logic {
                         e.Parameters[parameter.Key] = parameter.Value;
                     }
 
-                    if (e.HasErrors()) {
+                    // HasErrors reparses the text, discarding any restored qualified names.
+                    if (e.LogicalExpression == null && e.HasErrors()) {
                         Error = Loc.Instance["LblSyntaxError"];
                         return;
                     }
