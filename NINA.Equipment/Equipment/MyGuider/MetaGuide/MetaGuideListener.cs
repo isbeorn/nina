@@ -187,7 +187,7 @@ namespace NINA.Equipment.Equipment.MyGuider.MetaGuide {
                     consumerTask?.WaitWithoutException(new CancellationTokenSource(METAGUIDE_QUEUE_TIMEOUT_MS).Token);
                     this.OnDisconnected?.Invoke();
                 }
-            }, ct);
+            }, ct).ConfigureAwait(false);
         }
     }
 }

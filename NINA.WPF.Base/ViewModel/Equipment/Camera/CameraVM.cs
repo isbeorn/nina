@@ -76,7 +76,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 return Task.Run(() => WarmCamera(TimeSpan.FromMinutes(WarmingDuration), new Progress<ApplicationStatus>(p => Status = p), _cancelChangeTemperatureCts.Token));
             }, (object o) => !TempChangeRunning);
             CancelCoolCamCommand = new Core.Utility.RelayCommand(CancelCoolCamera);
-            RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Task.Run(Rescan); return true; }, o => !CameraInfo.Connected);
+            RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !CameraInfo.Connected);
             _ = RescanDevicesCommand.ExecuteAsync(null);
 
             TempChangeRunning = false;

@@ -167,34 +167,32 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Task Initialize() {
-            return Task.Run(async () => {
-                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                    var targetArea = factory.GetContainer<TargetAreaContainer>();
-                    var rootContainer = factory.GetContainer<SequenceRootContainer>();
-                    rootContainer.Name = Loc.Instance["LblTargetSetTitle"];
-                    rootContainer.Add(new SimpleStartContainer(factory, profileService, cameraMediator));
-                    rootContainer.Add(targetArea);
-                    rootContainer.Add(new SimpleEndContainer(factory, profileService, cameraMediator));
-                    (targetArea.Items as ObservableCollection<ISequenceItem>).CollectionChanged += SimpleSequenceVM_CollectionChanged;
-                    Sequencer = new NINA.Sequencer.Sequencer(
-                        rootContainer
-                    );
+        public async Task Initialize() {
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                var targetArea = factory.GetContainer<TargetAreaContainer>();
+                var rootContainer = factory.GetContainer<SequenceRootContainer>();
+                rootContainer.Name = Loc.Instance["LblTargetSetTitle"];
+                rootContainer.Add(new SimpleStartContainer(factory, profileService, cameraMediator));
+                rootContainer.Add(targetArea);
+                rootContainer.Add(new SimpleEndContainer(factory, profileService, cameraMediator));
+                (targetArea.Items as ObservableCollection<ISequenceItem>).CollectionChanged += SimpleSequenceVM_CollectionChanged;
+                Sequencer = new NINA.Sequencer.Sequencer(
+                    rootContainer
+                );
 
-                    this.FlipTrigger = factory.GetTrigger<MeridianFlipTrigger>();
-                    DoMeridianFlip = profileService.ActiveProfile.SequenceSettings.DoMeridianFlip;
+                this.FlipTrigger = factory.GetTrigger<MeridianFlipTrigger>();
+                DoMeridianFlip = profileService.ActiveProfile.SequenceSettings.DoMeridianFlip;
 
-                    EstimatedDownloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
+                EstimatedDownloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
 
-                    ClearHasChanged();
+                ClearHasChanged();
 
-                    autoUpdateTimer = new DispatcherTimer(DispatcherPriority.Background);
-                    autoUpdateTimer.Interval = TimeSpan.FromSeconds(1);
-                    autoUpdateTimer.IsEnabled = true;
-                    autoUpdateTimer.Tick += (sender, args) => CalculateETA();
-                    autoUpdateTimer.Start();
-                }));
-            });
+                autoUpdateTimer = new DispatcherTimer(DispatcherPriority.Background);
+                autoUpdateTimer.Interval = TimeSpan.FromSeconds(1);
+                autoUpdateTimer.IsEnabled = true;
+                autoUpdateTimer.Tick += (sender, args) => CalculateETA();
+                autoUpdateTimer.Start();
+            })).Task.ConfigureAwait(false);
         }
 
         private void SimpleSequenceVM_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {

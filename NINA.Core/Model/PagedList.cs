@@ -32,7 +32,14 @@ namespace NINA.Core.Model {
                 Pages.Add(counter++);
             }
 
-            LoadFirstPage().Wait();
+            // Construction is synchronous, so the first in-memory page must not await its caller's context.
+            if (_items.Count > 0) {
+                ItemPage = new AsyncObservableCollection<T>(_items.GetRange(0, Math.Min(_items.Count, PageSize)));
+                CurrentPage = 1;
+                RaisePropertyChanged(nameof(Count));
+                RaisePropertyChanged(nameof(PageStartIndex));
+                RaisePropertyChanged(nameof(PageEndIndex));
+            }
 
             FirstPageCommand = new AsyncCommand<bool>(LoadFirstPage, (object o) => { return CurrentPage > 1; });
             PrevPageCommand = new AsyncCommand<bool>(LoadPrevPage, (object o) => { return CurrentPage > 1; });

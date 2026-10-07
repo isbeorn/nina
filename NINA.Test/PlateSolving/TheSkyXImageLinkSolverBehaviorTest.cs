@@ -24,11 +24,79 @@ using NINA.PlateSolving.Solvers;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Collections.Concurrent;
+using System.Windows.Threading;
 
 namespace NINA.Test.PlateSolving {
 
     [TestFixture]
     public class TheSkyXImageLinkSolverBehaviorTest {
+
+        [TestCase(false, false)]
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        [TestCase(true, true)]
+        [NonParallelizable]
+        public async Task SolveAsync_ServerIsWaiting_KeepsDispatcherResponsiveAndProgressOnCaller(bool delayedSave, bool serverFails) {
+            using var listener = new TcpListener(IPAddress.Loopback, 0);
+            listener.Start();
+            var responses = serverFails
+                ? new[] { "TypeError: Failed solve Error = 12|No Error" }
+                : new[] { "0|No Error", "{\"succeeded\":true,\"imageScale\":0.97,\"imageCenterRAJ2000\":12.5,\"imageCenterDecJ2000\":-22.25}|No Error" };
+            var received = responses.Select(_ => new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously)).ToArray();
+            var releaseResponse = responses.Select(_ => new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously)).ToArray();
+            var saveStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var releaseSave = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            Task<List<string>> server = ServeResponses(listener, async index => {
+                received[index].SetResult();
+                await releaseResponse[index].Task;
+            }, responses);
+            var solver = new TestableTheSkyXImageLinkSolver("127.0.0.1", ((IPEndPoint)listener.LocalEndpoint).Port);
+            IImageData source = CreateImageData("ResponsiveDispatcher", delayedSave ? releaseSave.Task : null, () => saveStarted.SetResult());
+            var parameter = new PlateSolveParameter { FocalLength = 600, PixelSize = 3.76, DisableNotifications = true };
+            var progressThreads = new ConcurrentQueue<int>();
+            var progress = new CallbackProgress<ApplicationStatus>(_ => progressThreads.Enqueue(Environment.CurrentManagedThreadId));
+            var dispatcherReady = new TaskCompletionSource<Dispatcher>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var thread = new Thread(() => {
+                Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
+                SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(dispatcher));
+                dispatcherReady.SetResult(dispatcher);
+                Dispatcher.Run();
+            }) { IsBackground = true };
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            Dispatcher caller = await dispatcherReady.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Task<PlateSolveResult> solve = caller.InvokeAsync(() => solver.SolveAsync(source, parameter, progress, CancellationToken.None)).Task.Unwrap();
+            var responsive = new List<bool>();
+
+            try {
+                await saveStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                releaseSave.TrySetResult();
+                for (int index = 0; index < responses.Length; index++) {
+                    await received[index].Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    Task heartbeat = caller.InvokeAsync(() => { }).Task;
+                    responsive.Add(await Task.WhenAny(heartbeat, Task.Delay(TimeSpan.FromSeconds(2))) == heartbeat);
+                    releaseResponse[index].TrySetResult();
+                }
+                PlateSolveResult result = await solve.WaitAsync(TimeSpan.FromSeconds(5));
+                await server.WaitAsync(TimeSpan.FromSeconds(5));
+
+                Assert.That(responsive, Is.All.True, "socket exchanges must not block the caller's dispatcher, even when saving completed synchronously");
+                Assert.That(result.Success, Is.EqualTo(!serverFails));
+                Assert.That(progressThreads, Is.Not.Empty.And.All.EqualTo(thread.ManagedThreadId), "custom progress callbacks must retain their calling context");
+                Assert.That(Directory.GetFiles(solver.WorkingDirectory), Is.Empty);
+            } finally {
+                releaseSave.TrySetResult();
+                foreach (var response in releaseResponse) response.TrySetResult();
+                try {
+                    await solve.WaitAsync(TimeSpan.FromSeconds(5));
+                    await server.WaitAsync(TimeSpan.FromSeconds(5));
+                } finally {
+                    caller.BeginInvokeShutdown(DispatcherPriority.Send);
+                    Assert.That(thread.Join(TimeSpan.FromSeconds(5)), Is.True, "the test dispatcher must shut down");
+                }
+            }
+        }
 
         /// <summary>
         /// Verifies TheSkyX ImageLink solver sends solve/result scripts, parses a successful result, computes radius, and cleans the temporary FITS file.
@@ -69,7 +137,11 @@ namespace NINA.Test.PlateSolving {
             statuses.Should().Contain(x => x.Status == "Plate solve completed.");
         }
 
-        private static async Task<List<string>> ServeResponses(TcpListener listener, params string[] responses) {
+        private static Task<List<string>> ServeResponses(TcpListener listener, params string[] responses) {
+            return ServeResponses(listener, _ => Task.CompletedTask, responses);
+        }
+
+        private static async Task<List<string>> ServeResponses(TcpListener listener, Func<int, Task> beforeResponse, params string[] responses) {
             var requests = new List<string>();
             foreach (string response in responses) {
                 using TcpClient client = await listener.AcceptTcpClientAsync();
@@ -77,13 +149,14 @@ namespace NINA.Test.PlateSolving {
                 var buffer = new byte[8192];
                 int bytesRead = await stream.ReadAsync(buffer);
                 requests.Add(Encoding.UTF8.GetString(buffer, 0, bytesRead));
+                await beforeResponse(requests.Count - 1);
                 byte[] responseBytes = Encoding.UTF8.GetBytes(response);
                 await stream.WriteAsync(responseBytes);
             }
             return requests;
         }
 
-        private static IImageData CreateImageData(string targetName) {
+        private static IImageData CreateImageData(string targetName, Task? saveGate = null, Action? onSave = null) {
             var metadata = new ImageMetaData();
             metadata.Target.Name = targetName;
             metadata.Telescope.Coordinates = new Coordinates(Angle.ByDegree(187.5), Angle.ByDegree(-22.25), Epoch.J2000);
@@ -93,11 +166,13 @@ namespace NINA.Test.PlateSolving {
             imageData.SetupGet(x => x.Properties).Returns(new ImageProperties(300, 200, 16, false, 0, 0));
             imageData
                 .Setup(x => x.SaveToDisk(It.IsAny<FileSaveInfo>(), It.IsAny<CancellationToken>(), true))
-                .Returns((FileSaveInfo fileSaveInfo, CancellationToken _, bool _) => {
+                .Returns(async (FileSaveInfo fileSaveInfo, CancellationToken _, bool _) => {
                     Directory.CreateDirectory(fileSaveInfo.FilePath);
                     string path = Path.Combine(fileSaveInfo.FilePath, $"{Guid.NewGuid():N}.fit");
                     File.WriteAllText(path, "synthetic image");
-                    return Task.FromResult(path);
+                    onSave?.Invoke();
+                    if (saveGate != null) await saveGate;
+                    return path;
                 });
             return imageData.Object;
         }
@@ -125,6 +200,10 @@ namespace NINA.Test.PlateSolving {
             public void Report(T value) {
                 values.Add(value);
             }
+        }
+
+        private sealed class CallbackProgress<T>(Action<T> callback) : IProgress<T> {
+            public void Report(T value) => callback(value);
         }
     }
 }

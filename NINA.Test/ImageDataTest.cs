@@ -18,6 +18,7 @@ using NUnit.Framework;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using NINA.Image.Interfaces;
 using NINA.Image.FileFormat;
@@ -91,6 +92,63 @@ namespace NINA.Test {
             MetaData.Image.RecordedRMS.SetScale(5);
             dataFactoryUtility = new ImageDataFactoryTestUtility();
             dataFactoryUtility.ProfileServiceMock.SetupGet(x => x.ActiveProfile.CameraSettings.ASCOMCreate32BitData).Returns(false);
+        }
+
+        [Test]
+        public void Statistics_StartsLazilyOnWorkerAndCachesResult() {
+            var callerThreadId = Environment.CurrentManagedThreadId;
+            var calculationThreadId = 0;
+            using var calculationStarted = new ManualResetEventSlim();
+            using var releaseCalculation = new ManualResetEventSlim();
+            var imageArray = new Mock<IImageArray>();
+            imageArray.SetupGet(x => x.FlatArray).Returns(() => {
+                calculationThreadId = Environment.CurrentManagedThreadId;
+                calculationStarted.Set();
+                if (!releaseCalculation.Wait(TimeSpan.FromSeconds(5))) {
+                    throw new TimeoutException("The test did not release the statistics calculation.");
+                }
+                return new ushort[] { 100, 200, 300, 400 };
+            });
+            var sut = dataFactoryUtility.ImageDataFactory.CreateBaseImageData(imageArray.Object, 2, 2, 16, false, new ImageMetaData());
+            Task<IImageStatistics>? statistics = null;
+
+            try {
+                sut.Statistics.IsStarted.Should().BeFalse();
+                imageArray.VerifyGet(x => x.FlatArray, Times.Never);
+
+                statistics = sut.Statistics.Task;
+                sut.Statistics.Task.Should().BeSameAs(statistics);
+                calculationStarted.Wait(TimeSpan.FromSeconds(5)).Should().BeTrue();
+                calculationThreadId.Should().NotBe(callerThreadId);
+                statistics.IsCompleted.Should().BeFalse();
+
+                releaseCalculation.Set();
+                statistics.Wait(TimeSpan.FromSeconds(5)).Should().BeTrue();
+                statistics.Result.Mean.Should().Be(250);
+                sut.Statistics.Task.Result.Should().BeSameAs(statistics.Result);
+                imageArray.VerifyGet(x => x.FlatArray, Times.Once);
+            } finally {
+                releaseCalculation.Set();
+                if (statistics != null) {
+                    // Observe completion without masking an assertion with a worker exception.
+                    Task.WhenAny(statistics, Task.Delay(TimeSpan.FromSeconds(5))).GetAwaiter().GetResult();
+                }
+            }
+        }
+
+        [Test]
+        public void Statistics_CachesCalculationFailure() {
+            var imageArray = new Mock<IImageArray>();
+            var failure = new IOException("The image array could not be read.");
+            imageArray.SetupGet(x => x.FlatArray).Throws(failure);
+            var sut = dataFactoryUtility.ImageDataFactory.CreateBaseImageData(imageArray.Object, 2, 2, 16, false, new ImageMetaData());
+
+            var statistics = sut.Statistics.Task;
+            Action observe = () => statistics.WaitAsync(TimeSpan.FromSeconds(5)).GetAwaiter().GetResult();
+
+            observe.Should().Throw<IOException>().Which.Should().BeSameAs(failure);
+            sut.Statistics.Task.Should().BeSameAs(statistics);
+            imageArray.VerifyGet(x => x.FlatArray, Times.Once);
         }
 
         [Test]

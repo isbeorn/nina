@@ -51,11 +51,11 @@ namespace NINA.Core.Utility.Http {
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(CoreUtil.UserAgent);
 
-                using var response = await httpClient.GetAsync(formattedUrl, ct);
+                using var response = await httpClient.GetAsync(formattedUrl, ct).ConfigureAwait(false);
 
                 response.EnsureSuccessStatusCode();
 
-                result = await response.Content.ReadAsStringAsync();
+                result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             } catch (OperationCanceledException) {
                 ct.ThrowIfCancellationRequested();
             } catch (Exception ex) {

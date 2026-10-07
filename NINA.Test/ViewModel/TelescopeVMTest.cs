@@ -3,6 +3,7 @@ using Moq;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Model;
+using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyDome;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces;
@@ -213,6 +214,47 @@ namespace NINA.Test.ViewModel {
             telescope.VerifySet(x => x.TrackingEnabled = true, Times.Once);
             telescope.Verify(x => x.SendCommandString("START", true), Times.Once);
             telescope.Verify(x => x.DestinationSideOfPier(destination), Times.Once);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task RescanCommand_KeepsDeviceDiscoveryOffCallerThread(bool deferredDiscovery) {
+            int callerThread = Environment.CurrentManagedThreadId;
+            TelescopeVM vm = CreateVm();
+            var command = (AsyncCommandBase)vm.RescanDevicesCommand;
+            using (var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5))) {
+                while (!command.CanExecute(null)) {
+                    await Task.Delay(10, timeout.Token);
+                }
+            }
+            deviceChooser.Invocations.Clear();
+            var started = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            int resultThread = callerThread;
+            deviceChooser.Setup(x => x.GetEquipment()).Returns(() => {
+                started.TrySetResult(Environment.CurrentManagedThreadId);
+                return deferredDiscovery ? release.Task : Task.CompletedTask;
+            });
+            deviceChooser.SetupGet(x => x.Devices).Returns(() => {
+                resultThread = Environment.CurrentManagedThreadId;
+                return new List<IDevice>();
+            });
+
+            Task execution = command.ExecuteAsync(null);
+            try {
+                (await started.Task.WaitAsync(TimeSpan.FromSeconds(5))).Should().NotBe(callerThread);
+                if (deferredDiscovery) {
+                    command.CanExecute(null).Should().BeFalse();
+                }
+                release.TrySetResult();
+                await execution.WaitAsync(TimeSpan.FromSeconds(5));
+                resultThread.Should().NotBe(callerThread);
+                command.CanExecute(null).Should().BeTrue();
+                deviceChooser.Verify(x => x.GetEquipment(), Times.Once);
+            } finally {
+                release.TrySetResult();
+                await execution.WaitAsync(TimeSpan.FromSeconds(5));
+            }
         }
 
         private TelescopeVM CreateVm() {

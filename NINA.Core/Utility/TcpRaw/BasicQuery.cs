@@ -43,7 +43,7 @@ namespace NINA.Core.Utility.TcpRaw {
             using (var client = new TcpClient()) {
                 try {
                     Logger.Trace($"TcpRaw: Connecting to {Address}:{Port}");
-                    await client.ConnectAsync(Address, Port, token);
+                    await client.ConnectAsync(Address, Port, token).ConfigureAwait(false);
                 } catch(OperationCanceledException) {
                     throw;
                 } catch (Exception ex) {
@@ -62,7 +62,7 @@ namespace NINA.Core.Utility.TcpRaw {
                         bool waitDone = false;
 
                         while (!waitDone) {
-                            length = await stream.ReadAsync(buffer, 0, buffer.Length, token);
+                            length = await stream.ReadAsync(buffer, 0, buffer.Length, token).ConfigureAwait(false);
                             response = Encoding.ASCII.GetString(buffer, 0, length);
                             Logger.Trace($"TcpRaw: Received message: {ToLiteral(response)}");
 
@@ -73,10 +73,10 @@ namespace NINA.Core.Utility.TcpRaw {
                     // Send command
                     Logger.Trace($"TcpRaw: Sending command: {ToLiteral(Command)}");
                     var data = Encoding.ASCII.GetBytes($"{Command}");
-                    await stream.WriteAsync(data, 0, data.Length, token);
+                    await stream.WriteAsync(data, 0, data.Length, token).ConfigureAwait(false);
 
                     // Read response
-                    length = await stream.ReadAsync(buffer, 0, buffer.Length, token);
+                    length = await stream.ReadAsync(buffer, 0, buffer.Length, token).ConfigureAwait(false);
                     response = Encoding.ASCII.GetString(buffer, 0, length);
 
 

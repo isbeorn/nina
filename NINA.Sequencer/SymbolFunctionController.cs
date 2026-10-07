@@ -63,7 +63,7 @@ namespace NINA.Sequencer {
             try {
                 await RefreshOnceAsync(token).ConfigureAwait(false);
 
-                while (await timer.WaitForNextTickAsync(token)) {
+                while (await timer.WaitForNextTickAsync(token).ConfigureAwait(false)) {
                     try {
                         await RefreshOnceAsync(token).ConfigureAwait(false);
                     } catch (OperationCanceledException) {

@@ -43,9 +43,9 @@ namespace NINA.Core.Utility.Http {
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(CoreUtil.UserAgent);
 
-                using var data = await httpClient.GetStreamAsync(formattedUrl, ct);
+                using var data = await httpClient.GetStreamAsync(formattedUrl, ct).ConfigureAwait(false);
                 using var ms = new MemoryStream();
-                await data.CopyToAsync(ms, ct);
+                await data.CopyToAsync(ms, ct).ConfigureAwait(false);
                 ms.Seek(0, SeekOrigin.Begin);
 
                 var bitmap = new BitmapImage();

@@ -41,11 +41,11 @@ namespace NINA.Core.Utility.Http {
                 var content = new StringContent(Body);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(ContentType);
 
-                using var response = await httpClient.PostAsync(Url, content, ct);
+                using var response = await httpClient.PostAsync(Url, content, ct).ConfigureAwait(false);
 
                 response.EnsureSuccessStatusCode();
 
-                result = await response.Content.ReadAsStringAsync();
+                result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             } catch (OperationCanceledException) {
                 ct.ThrowIfCancellationRequested();
             } catch (Exception ex) {

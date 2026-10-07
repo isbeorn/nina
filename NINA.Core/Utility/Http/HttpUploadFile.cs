@@ -58,10 +58,10 @@ namespace NINA.Core.Utility.Http {
 
                 form.Add(fileContent, ParamName, Path.GetFileName(File.Name));
 
-                using var response = await httpClient.PostAsync(Url, form, ct);
+                using var response = await httpClient.PostAsync(Url, form, ct).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
 
-                result = await response.Content.ReadAsStringAsync(ct);
+                result = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
             } catch (OperationCanceledException) {
                 ct.ThrowIfCancellationRequested();
             } catch (Exception ex) {
