@@ -408,14 +408,12 @@ namespace NINA.Test.ViewModel {
         }
 
         private static void EnsureApplicationResources() {
-            if (Application.Current == null) {
-                _ = new Application {
-                    ShutdownMode = ShutdownMode.OnExplicitShutdown
-                };
-            }
+            var application = Application.Current ?? new Application {
+                ShutdownMode = ShutdownMode.OnExplicitShutdown
+            };
 
-            Application.Current.Resources["PuzzlePieceSVG"] = new GeometryGroup();
-            Application.Current.Resources["CameraSVG"] = new GeometryGroup();
+            application.Resources["PuzzlePieceSVG"] = new GeometryGroup();
+            application.Resources["CameraSVG"] = new GeometryGroup();
         }
     }
 }

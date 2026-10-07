@@ -32,7 +32,7 @@ namespace NINA.Test.AstrometryTest {
         public void ResetToZeroAndBack_NotifiesObservers(bool replaceCoordinates, double dec) {
             var input = new InputCoordinates(new Coordinates(3, dec, Epoch.J2000, Coordinates.RAType.Hours));
             var notifications = new List<(double RA, double Dec)>();
-            var properties = new List<string>();
+            var properties = new List<string?>();
             input.CoordinatesChanged += (_, _) => notifications.Add((input.Coordinates.RA, input.Coordinates.Dec));
             input.PropertyChanged += (_, e) => properties.Add(e.PropertyName);
 
@@ -195,7 +195,7 @@ namespace NINA.Test.AstrometryTest {
 
             var json = JsonConvert.SerializeObject(coordinates);
 
-            var sut = JsonConvert.DeserializeObject<InputCoordinates>(json);
+            var sut = JsonConvert.DeserializeObject<InputCoordinates>(json).Should().BeOfType<InputCoordinates>().Subject;
 
             sut.RAHours.Should().Be(raHours);
             sut.RAMinutes.Should().Be(raMinutes);

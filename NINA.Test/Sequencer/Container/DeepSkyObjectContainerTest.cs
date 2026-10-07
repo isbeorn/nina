@@ -544,28 +544,32 @@ namespace NINA.Test.Sequencer.Container {
         }
 
         private static async Task<T> InvokePrivateTask<T>(object target, string methodName) {
-            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-            method.Should().NotBeNull();
-            Task<T> task = (Task<T>)method.Invoke(target, Array.Empty<object>());
+            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
+            Task<T> task = method.Invoke(target, Array.Empty<object>()).Should().BeAssignableTo<Task<T>>().Which;
             return await task;
         }
 
-        private static object InvokePrivate(object target, string methodName, params object[] args) {
-            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-            method.Should().NotBeNull();
+        private static object? InvokePrivate(object target, string methodName, params object[] args) {
+            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
             return method.Invoke(target, args);
         }
 
         private static void SetPrivateField(object target, string fieldName, object value) {
-            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            field.Should().NotBeNull();
+            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
             field.SetValue(target, value);
         }
 
         private static T GetPrivateField<T>(object target, string fieldName) {
-            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            field.Should().NotBeNull();
-            return (T)field.GetValue(target);
+            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
+            return field.GetValue(target).Should().BeOfType<T>().Which;
         }
     }
 }

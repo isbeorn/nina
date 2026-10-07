@@ -61,7 +61,7 @@ namespace NINA.Test.PlateSolving {
             var plateSolver = new Mock<IPlateSolver>();
             var blindSolver = new Mock<IPlateSolver>();
             var source = Mock.Of<IImageData>();
-            PlateSolveParameter blindParameter = null;
+            PlateSolveParameter? blindParameter = null;
             var originalCoordinates = new Coordinates(Angle.ByDegree(15), Angle.ByDegree(-10), Epoch.J2000);
             var parameter = new PlateSolveParameter {
                 FocalLength = 700,
@@ -84,13 +84,13 @@ namespace NINA.Test.PlateSolving {
             PlateSolveResult result = await sut.Solve(source, parameter, default, CancellationToken.None);
 
             result.Success.Should().BeTrue();
-            blindParameter.Should().NotBeNull();
-            blindParameter.Should().NotBeSameAs(parameter);
-            blindParameter.Coordinates.Should().BeNull();
-            blindParameter.FocalLength.Should().Be(parameter.FocalLength);
-            blindParameter.PixelSize.Should().Be(parameter.PixelSize);
-            blindParameter.SearchRadius.Should().Be(parameter.SearchRadius);
-            blindParameter.DisableNotifications.Should().BeTrue();
+            var capturedParameter = blindParameter.Should().BeOfType<PlateSolveParameter>().Subject;
+            capturedParameter.Should().NotBeSameAs(parameter);
+            capturedParameter.Coordinates.Should().BeNull();
+            capturedParameter.FocalLength.Should().Be(parameter.FocalLength);
+            capturedParameter.PixelSize.Should().Be(parameter.PixelSize);
+            capturedParameter.SearchRadius.Should().Be(parameter.SearchRadius);
+            capturedParameter.DisableNotifications.Should().BeTrue();
             parameter.Coordinates.Should().NotBeNull();
             parameter.Coordinates.RADegrees.Should().BeApproximately(originalCoordinates.RADegrees, 1e-10);
             parameter.Coordinates.Dec.Should().BeApproximately(originalCoordinates.Dec, 1e-10);

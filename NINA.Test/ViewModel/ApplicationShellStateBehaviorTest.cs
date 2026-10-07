@@ -48,7 +48,7 @@ namespace NINA.Test.ViewModel {
                 }
                 """;
 
-            VersionCheckVM.VersionInfo sut = JsonConvert.DeserializeObject<VersionCheckVM.VersionInfo>(json);
+            VersionCheckVM.VersionInfo sut = JsonConvert.DeserializeObject<VersionCheckVM.VersionInfo>(json).Should().BeOfType<VersionCheckVM.VersionInfo>().Subject;
 
             sut.GetChangelogUrl().Should().Be("https://nighttime-imaging.eu/changelog/test");
             if (DllLoader.IsX86()) {

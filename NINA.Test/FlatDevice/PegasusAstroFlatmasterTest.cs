@@ -80,7 +80,7 @@ namespace NINA.Test.FlatDevice {
         [TestCase(true, true, "E:1", "E:1\n")]
         [TestCase(false, false, "E:0", "E:0\n")]
         public async Task TestLightOn(bool lightOn, bool expected, string response, string expectedCommand) {
-            string actual = null;
+            string? actual = null;
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
                 .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "OK_FM" }));
@@ -111,7 +111,7 @@ namespace NINA.Test.FlatDevice {
         [TestCase(true, "E:1\n")]
         [TestCase(false, "E:0\n")]
         public async Task TestLightOnInvalidResponse(bool lightOn, string expectedCommand) {
-            string actual = null;
+            string? actual = null;
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
                 .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "OK_FM" }));
@@ -135,8 +135,8 @@ namespace NINA.Test.FlatDevice {
         [TestCase(220, 220, "L:020", "L:020\n")]
         [TestCase(50, 50, "L:190", "L:190\n")]
         [TestCase(100, 100, "L:140", "L:140\n")]
-        public async Task TestBrightness(int expected, int brightness, string response = null, string expectedCommand = null) {
-            string actual = null;
+        public async Task TestBrightness(int expected, int brightness, string response, string expectedCommand) {
+            string? actual = null;
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
                 .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "OK_FM" }));
@@ -157,7 +157,7 @@ namespace NINA.Test.FlatDevice {
 
         [Test]
         public async Task TestBrightnessInvalidResponse() {
-            string actual = null;
+            string? actual = null;
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
                 .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "OK_FM" }));

@@ -34,7 +34,7 @@ namespace NINA.Test.Sequencer.Conditions {
     public class SequenceConditionTest {
 
         private class SeuqenceConditionImpl : SequenceCondition {
-            public Action CheckAction { get; set; }
+            public Action? CheckAction { get; set; }
             public int CheckCount { get; private set; }
             public bool CheckResult { get; set; }
 

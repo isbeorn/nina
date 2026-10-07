@@ -121,7 +121,7 @@ namespace NINA.Test.Plugin {
             string title,
             string description,
             string company,
-            string fileVersion,
+            string? fileVersion,
             IDictionary<string, string> metadata) {
             var assemblyName = new AssemblyName("NINA.Test.Plugin.PluginBaseFixture" + Guid.NewGuid().ToString("N"));
             AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);

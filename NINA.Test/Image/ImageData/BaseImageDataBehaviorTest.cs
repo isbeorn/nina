@@ -216,7 +216,7 @@ namespace NINA.Test.Image.ImageData {
                 DetectedStars = 5,
                 StarList = new System.Collections.Generic.List<DetectedStar>()
             };
-            StarDetectionParams capturedParams = null;
+            StarDetectionParams? capturedParams = null;
             int capturedMaxStars = 0;
 
             var starDetection = new Mock<IStarDetection>();
@@ -263,7 +263,7 @@ namespace NINA.Test.Image.ImageData {
                 noiseReduction: NoiseReductionEnum.Median);
 
             returned.Should().BeSameAs(rendered);
-            capturedParams.Should().NotBeNull();
+            capturedParams = capturedParams.Should().BeOfType<StarDetectionParams>().Subject;
             capturedParams.Sensitivity.Should().Be(StarSensitivityEnum.High);
             capturedParams.NoiseReduction.Should().Be(NoiseReductionEnum.Median);
             capturedParams.UseROI.Should().BeTrue();
@@ -275,7 +275,7 @@ namespace NINA.Test.Image.ImageData {
             starAnnotator.Verify(x => x.GetAnnotatedImage(capturedParams, detectionResult, rendered.OriginalImage, 200, It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        private static BaseImageData CreateImageData(ImageMetaData metadata, double hfr, int detectedStars, IImageArray imageArray = null) {
+        private static BaseImageData CreateImageData(ImageMetaData metadata, double hfr, int detectedStars, IImageArray? imageArray = null) {
             var analysis = new StarDetectionAnalysisStub {
                 HFR = hfr,
                 DetectedStars = detectedStars

@@ -89,10 +89,10 @@ namespace NINA.Test {
             data.ReferenceDate.Should().Be(new DateTime(2024, 3, 20, 12, 0, 0, DateTimeKind.Utc));
             data.SunRiseAndSet.Set.Should().NotBeNull();
             data.SunRiseAndSet.Rise.Should().NotBeNull();
-            data.CivilTwilightRiseAndSet.Set.Should().BeBefore(data.NauticalTwilightRiseAndSet.Set.Value);
-            data.NauticalTwilightRiseAndSet.Set.Should().BeBefore(data.TwilightRiseAndSet.Set.Value);
-            data.TwilightRiseAndSet.Rise.Should().BeBefore(data.NauticalTwilightRiseAndSet.Rise.Value);
-            data.NauticalTwilightRiseAndSet.Rise.Should().BeBefore(data.CivilTwilightRiseAndSet.Rise.Value);
+            data.CivilTwilightRiseAndSet.Set.Should().BeBefore(data.NauticalTwilightRiseAndSet.Set ?? throw new AssertionException("Expected nautical sunset."));
+            data.NauticalTwilightRiseAndSet.Set.Should().BeBefore(data.TwilightRiseAndSet.Set ?? throw new AssertionException("Expected astronomical sunset."));
+            data.TwilightRiseAndSet.Rise.Should().BeBefore(data.NauticalTwilightRiseAndSet.Rise ?? throw new AssertionException("Expected nautical sunrise."));
+            data.NauticalTwilightRiseAndSet.Rise.Should().BeBefore(data.CivilTwilightRiseAndSet.Rise ?? throw new AssertionException("Expected civil sunrise."));
             data.Illumination.Should().BeInRange(0.0, 1.0);
             data.ReferenceDateSpan.Should().HaveCount(2);
             data.NightDuration.Should().HaveCount(2);

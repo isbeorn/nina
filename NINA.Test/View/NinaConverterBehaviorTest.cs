@@ -110,7 +110,7 @@ namespace NINA.Test.View {
             converter.Convert(new object[] { modes, DependencyProperty.UnsetValue, (short)1 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be("11M Mode");
             converter.Convert(new object[] { modes, (short)-1, (short)0 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be(string.Empty);
             converter.Convert(new object[] { modes, (short)2, (short)0 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be(string.Empty);
-            converter.Convert(new object[] { null, (short)0, (short)0 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be(string.Empty);
+            converter.Convert(new object[] { null!, (short)0, (short)0 }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be(string.Empty);
             converter.Convert(new object[] { DependencyProperty.UnsetValue, DependencyProperty.UnsetValue, DependencyProperty.UnsetValue }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be(string.Empty);
 
             Action convertBack = () => converter.ConvertBack("Fast", new[] { typeof(string), typeof(short), typeof(short) }, null, CultureInfo.InvariantCulture);

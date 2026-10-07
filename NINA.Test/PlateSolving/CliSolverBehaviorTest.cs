@@ -144,9 +144,9 @@ namespace NINA.Test.PlateSolving {
             public bool ArgumentsSeen { get; private set; }
             public bool OutputExistsDuringRead { get; private set; }
             public bool ReadResultCalled { get; private set; }
-            public string ImagePathSeen { get; private set; }
-            public string OutputPathSeen { get; private set; }
-            public string SidecarPathSeen { get; private set; }
+            public string? ImagePathSeen { get; private set; }
+            public string? OutputPathSeen { get; private set; }
+            public string? SidecarPathSeen { get; private set; }
             public string FailedDirectory => FAILED_DIRECTORY;
             public string FailedFilePrefix => FAILED_FILENAME;
 
@@ -167,7 +167,7 @@ namespace NINA.Test.PlateSolving {
             protected override PlateSolveResult ReadResult(string outputFilePath, PlateSolveParameter parameter, PlateSolveImageProperties imageProperties) {
                 ReadResultCalled = true;
                 File.WriteAllText(outputFilePath, "solver output");
-                File.WriteAllText(SidecarPathSeen, "sidecar output");
+                File.WriteAllText(SidecarPathSeen ?? throw new AssertionException("Solver arguments must establish the sidecar path before reading results."), "sidecar output");
                 OutputExistsDuringRead = File.Exists(outputFilePath);
                 return new PlateSolveResult { Success = ShouldSucceed };
             }

@@ -22,7 +22,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -69,12 +68,7 @@ namespace NINA.Test.MGEN.Commands {
             var sut = new StartGuidingCommand();
             Action act = () => sut.Execute(ftdiMock.Object);
 
-            TestDelegate test = new TestDelegate(act);
-
-            MethodInfo method = typeof(Assert).GetMethod("Throws", new[] { typeof(TestDelegate) });
-            MethodInfo generic = method.MakeGenericMethod(ex);
-
-            generic.Invoke(this, new object[] { test });
+            Assert.Throws(ex, new TestDelegate(act));
         }
     }
 }

@@ -313,20 +313,23 @@ namespace NINA.Test.Sequencer.Behaviors {
         }
 
         private static void SetPrivateField(object target, string fieldName, object value) {
-            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            field.Should().NotBeNull();
+            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
             field.SetValue(target, value);
         }
 
         private static void InvokePrivate(object target, string methodName) {
-            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-            method.Should().NotBeNull();
+            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
             method.Invoke(target, null);
         }
 
         private static void InvokePrivate(object target, string methodName, params object[] args) {
-            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-            method.Should().NotBeNull();
+            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
             method.Invoke(target, args);
         }
 

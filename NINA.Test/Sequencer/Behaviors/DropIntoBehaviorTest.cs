@@ -73,10 +73,10 @@ namespace NINA.Test.Sequencer.Behaviors {
 
             sut.ExecuteDropInto(new DropIntoParameters(source));
 
-            target.ReceivedParameter.Should().NotBeNull();
-            target.ReceivedParameter.Source.Should().BeSameAs(source);
-            target.ReceivedParameter.Target.Should().BeSameAs(target);
-            target.ReceivedParameter.Position.Should().Be(DropTargetEnum.Center);
+            DropIntoParameters receivedParameter = target.ReceivedParameter.Should().BeOfType<DropIntoParameters>().Which;
+            receivedParameter.Source.Should().BeSameAs(source);
+            receivedParameter.Target.Should().BeSameAs(target);
+            receivedParameter.Position.Should().Be(DropTargetEnum.Center);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace NINA.Test.Sequencer.Behaviors {
         }
 
         private sealed class CommandContainer : SequentialContainer {
-            public DropIntoParameters ReceivedParameter { get; private set; }
+            public DropIntoParameters? ReceivedParameter { get; private set; }
 
             public ICommand DropCommand => new CaptureCommand(parameter => ReceivedParameter = (DropIntoParameters)parameter);
         }

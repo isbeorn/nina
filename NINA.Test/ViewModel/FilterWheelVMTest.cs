@@ -152,7 +152,7 @@ namespace NINA.Test.ViewModel {
             focuserSettings.Object.UseFilterWheelOffsets = true;
             guiderMediator.Setup(x => x.StopGuiding(It.IsAny<CancellationToken>())).ReturnsAsync(true);
             deviceChooser.SetupGet(x => x.SelectedDevice).Returns(filterWheel.Object);
-            FilterChangedEventArgs raisedArgs = null;
+            FilterChangedEventArgs? raisedArgs = null;
             vm.FilterChanged += (_, args) => {
                 raisedArgs = args;
                 return Task.CompletedTask;
@@ -164,9 +164,9 @@ namespace NINA.Test.ViewModel {
             selected.Should().BeSameAs(red);
             filterWheel.Object.Position.Should().Be(1);
             vm.FilterWheelInfo.SelectedFilter.Should().BeSameAs(red);
-            raisedArgs.Should().NotBeNull();
-            raisedArgs.From.Should().BeSameAs(luminance);
-            raisedArgs.To.Should().BeSameAs(red);
+            var filterChanged = raisedArgs.Should().BeOfType<FilterChangedEventArgs>().Subject;
+            filterChanged.From.Should().BeSameAs(luminance);
+            filterChanged.To.Should().BeSameAs(red);
             focuserMediator.Verify(x => x.MoveFocuserRelative(25, It.IsAny<CancellationToken>()), Times.Once);
             guiderMediator.Verify(x => x.StopGuiding(It.IsAny<CancellationToken>()), Times.Once);
             guiderMediator.Verify(x => x.StartGuiding(false, It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -299,14 +299,12 @@ namespace NINA.Test.ViewModel {
         }
 
         private static void EnsureApplicationResources() {
-            if (Application.Current == null) {
-                _ = new Application {
-                    ShutdownMode = ShutdownMode.OnExplicitShutdown
-                };
-            }
+            var application = Application.Current ?? new Application {
+                ShutdownMode = ShutdownMode.OnExplicitShutdown
+            };
 
-            Application.Current.Resources["PuzzlePieceSVG"] = new GeometryGroup();
-            Application.Current.Resources["FWSVG"] = new GeometryGroup();
+            application.Resources["PuzzlePieceSVG"] = new GeometryGroup();
+            application.Resources["FWSVG"] = new GeometryGroup();
         }
     }
 }

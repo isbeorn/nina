@@ -571,7 +571,7 @@ namespace NINA.Test.View {
             app.Resources[resourcesLoadedMarker] = true;
         }
 
-        private static string BindingPath(DependencyObject target, DependencyProperty property) {
+        private static string? BindingPath(DependencyObject target, DependencyProperty property) {
             return BindingOperations.GetBinding(target, property)?.Path?.Path;
         }
 

@@ -207,8 +207,8 @@ namespace NINA.Test.View {
                 "/NINA;component/Resources/Styles/Oxyplot.xaml",
                 "/NINA;component/Resources/Styles/Markdown.xaml"
             ];
-            ResourceDictionary hyperlinkResources = null;
-            ResourceDictionary markdownResources = null;
+            ResourceDictionary? hyperlinkResources = null;
+            ResourceDictionary? markdownResources = null;
             foreach (string resourceSource in resourceSources) {
                 ResourceDictionary resources = LoadResources(resourceSource);
                 application.Resources.MergedDictionaries.Add(resources);
@@ -219,8 +219,8 @@ namespace NINA.Test.View {
                 }
             }
 
-            hyperlinkResources.Should().NotBeNull();
-            markdownResources.Should().NotBeNull();
+            hyperlinkResources = hyperlinkResources.Should().BeOfType<ResourceDictionary>().Subject;
+            markdownResources = markdownResources.Should().BeOfType<ResourceDictionary>().Subject;
 
             Style applicationStyle = hyperlinkResources["ApplicationHyperlinkStyle"].Should().BeOfType<Style>().Subject;
             Style implicitStyle = hyperlinkResources[typeof(Hyperlink)].Should().BeOfType<Style>().Subject;
@@ -260,7 +260,8 @@ namespace NINA.Test.View {
                 MarkdownStyle = markdownResources["MarkdownStyle"].Should().BeOfType<Style>().Subject,
                 Markdown = "[N.I.N.A.](https://nighttime-imaging.eu/)"
             };
-            Hyperlink markdownHyperlink = viewer.Document.Blocks
+            FlowDocument markdownDocument = viewer.Document ?? throw new AssertionException("Expected a rendered Markdown document.");
+            Hyperlink markdownHyperlink = markdownDocument.Blocks
                 .OfType<Paragraph>()
                 .SelectMany(paragraph => paragraph.Inlines.OfType<Hyperlink>())
                 .Single();
@@ -288,8 +289,7 @@ namespace NINA.Test.View {
                     BindingFlags.Instance | BindingFlags.NonPublic,
                     binder: null,
                     [typeof(object), typeof(bool)],
-                    modifiers: null);
-            constructor.Should().NotBeNull();
+                    modifiers: null) ?? throw new AssertionException("Expected the WPF context-menu event constructor.");
             ContextMenuEventArgs args = (ContextMenuEventArgs)constructor.Invoke([hyperlink, true]);
             args.RoutedEvent = ContextMenuService.ContextMenuOpeningEvent;
             hyperlink.RaiseEvent(args);
@@ -323,7 +323,7 @@ namespace NINA.Test.View {
         }
 
         private static void WithRestoredClipboard(Action action) {
-            IDataObject previousClipboard = Clipboard.GetDataObject();
+            IDataObject? previousClipboard = Clipboard.GetDataObject();
             try {
                 action();
             } finally {
@@ -341,18 +341,18 @@ namespace NINA.Test.View {
                 this.canExecute = canExecute;
             }
 
-            public List<object> Executions { get; } = new List<object>();
+            public List<object?> Executions { get; } = new List<object?>();
 
-            public event EventHandler CanExecuteChanged {
+            public event EventHandler? CanExecuteChanged {
                 add { }
                 remove { }
             }
 
-            public bool CanExecute(object parameter) {
+            public bool CanExecute(object? parameter) {
                 return canExecute;
             }
 
-            public void Execute(object parameter) {
+            public void Execute(object? parameter) {
                 Executions.Add(parameter);
             }
         }

@@ -142,7 +142,7 @@ namespace NINA.Test.ProfileTest {
             File.Exists(location).Should().BeFalse();
         }
 
-        private static ProfileModel SaveProfile(string name, Action<ProfileModel> configure = null) {
+        private static ProfileModel SaveProfile(string name, Action<ProfileModel>? configure = null) {
             ProfileModel profile = new ProfileModel(name);
             configure?.Invoke(profile);
             profile.Save();

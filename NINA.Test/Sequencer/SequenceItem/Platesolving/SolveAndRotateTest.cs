@@ -276,7 +276,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
         public async Task Execute_PassesPlateSolveGainToRotationCapture() {
             var service = new Mock<IWindowService>();
             var coordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(20), Epoch.J2000);
-            CaptureSequence rotationSequence = null;
+            CaptureSequence? rotationSequence = null;
 
             var captureSolver = new Mock<ICaptureSolver>();
             captureSolver
@@ -305,7 +305,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
             sut.PositionAngle = 260;
             await sut.Execute(default, CancellationToken.None);
 
-            rotationSequence.Gain.Should().Be(123);
+            rotationSequence.Should().BeOfType<CaptureSequence>().Which.Gain.Should().Be(123);
         }
 
         [Test]

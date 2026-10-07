@@ -213,7 +213,7 @@ namespace NINA.Test.Sequencer.Logic {
         private SequencerExpression Evaluate(string definition) {
             Mock<ISequenceEntity> context = new Mock<ISequenceEntity>();
             context.SetupGet(x => x.SymbolBroker).Returns(broker);
-            context.SetupGet(x => x.Parent).Returns((ISequenceContainer)null);
+            context.SetupGet<ISequenceContainer?>(x => x.Parent).Returns((ISequenceContainer?)null);
             context.SetupGet(x => x.Name).Returns("Function Test Context");
 
             SequencerExpression expression = new SequencerExpression(definition, context.Object) {

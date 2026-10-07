@@ -63,6 +63,7 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -187,7 +188,7 @@ namespace NINA.Test.Sequencer {
                 var replacement = new Expression(original, null) {
                     Definition = values[property.Name].ToString(CultureInfo.InvariantCulture)
                 };
-                entityType.GetProperty(property.Name + "Expression").SetValue(entity, replacement);
+                GetScalarProperty(entityType, property.Name + "Expression").SetValue(entity, replacement);
                 replacement.Context.Should().BeSameAs(entity, "replacement must bind immediately, before attachment can repair it");
             }
 
@@ -348,7 +349,7 @@ namespace NINA.Test.Sequencer {
         public void ValidationIssues_UseMutableListsAndReplaceThemOnValidation(Type entityType) {
             var entity = CreateEntity(entityType);
             var assigned = new List<string> { "device unavailable" };
-            entityType.GetProperty(nameof(IValidatable.Issues)).SetValue(entity, assigned);
+            GetScalarProperty(entityType, nameof(IValidatable.Issues)).SetValue(entity, assigned);
             var validation = (IValidatable)entity;
             validation.Issues.Should().BeSameAs(assigned);
             assigned.Clear();
@@ -389,7 +390,7 @@ namespace NINA.Test.Sequencer {
                 expression.AutoValue.Should().Be(double.NaN);
             }
 
-            double[] expectedRange = GetExpectedRange(attribute);
+            double[]? expectedRange = GetExpectedRange(attribute);
             if (expectedRange != null) {
                 expression.Range.Should().Equal(expectedRange);
             } else {
@@ -427,7 +428,10 @@ namespace NINA.Test.Sequencer {
                 expectedValues[scalarProperty.Name] = expectedValue;
             }
 
-            object clone = entityType.GetMethod(nameof(ISequenceEntity.Clone)).Invoke(entity, Array.Empty<object>());
+            MethodInfo cloneMethod = entityType.GetMethod(nameof(ISequenceEntity.Clone))
+                ?? throw new AssertionException($"Expected Clone method on {entityType.Name} was not found.");
+            object clone = cloneMethod.Invoke(entity, Array.Empty<object>())
+                ?? throw new AssertionException("Clone must return an entity.");
 
             clone.Should().NotBeSameAs(entity);
             clone.GetType().Should().Be(entityType);
@@ -535,27 +539,29 @@ namespace NINA.Test.Sequencer {
         }
 
         private static object CreateEntity(Type entityType) {
-            EntityFactories.TryGetValue(entityType.Name, out Func<object> factory).Should().BeTrue($"a factory is required for {entityType.FullName}");
+            if (!EntityFactories.TryGetValue(entityType.Name, out Func<object>? factory)) {
+                throw new AssertionException($"A factory is required for {entityType.FullName}.");
+            }
             return factory();
         }
 
         private static PropertyInfo GetScalarProperty(Type entityType, string propertyName) {
-            return entityType.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+            return entityType.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance)
+                ?? throw new AssertionException($"Expected property {entityType.Name}.{propertyName} was not found.");
         }
 
         private static Expression GetExpression(object entity, string propertyName) {
-            PropertyInfo expressionProperty = entity.GetType().GetProperty($"{propertyName}Expression", BindingFlags.Public | BindingFlags.Instance);
-            expressionProperty.Should().NotBeNull($"{entity.GetType().Name}.{propertyName} should have a generated Expression property");
-            return expressionProperty.GetValue(entity) as Expression;
+            PropertyInfo expressionProperty = GetScalarProperty(entity.GetType(), $"{propertyName}Expression");
+            return expressionProperty.GetValue(entity).Should().BeOfType<Expression>().Which;
         }
 
-        private static PropertyInfo GetDefinitionProperty(Type entityType, string propertyName) {
-            PropertyInfo definitionProperty = entityType.GetProperty($"{propertyName}Definition", BindingFlags.Public | BindingFlags.Instance);
+        private static PropertyInfo? GetDefinitionProperty(Type entityType, string propertyName) {
+            PropertyInfo? definitionProperty = entityType.GetProperty($"{propertyName}Definition", BindingFlags.Public | BindingFlags.Instance);
             return definitionProperty;
         }
 
         private static void SetExpressionDefinition(object entity, string propertyName, string definition) {
-            PropertyInfo definitionProperty = GetDefinitionProperty(entity.GetType(), propertyName);
+            PropertyInfo? definitionProperty = GetDefinitionProperty(entity.GetType(), propertyName);
             if (definitionProperty != null) {
                 definitionProperty.SetValue(entity, definition);
                 return;
@@ -582,12 +588,12 @@ namespace NINA.Test.Sequencer {
             return scalarType.Name;
         }
 
-        private static double[] GetExpectedRange(CustomAttributeData attribute) {
+        private static double[]? GetExpectedRange(CustomAttributeData attribute) {
             if (!TryGetNamedArgument(attribute, "Range", out CustomAttributeNamedArgument rangeArgument)) {
                 return null;
             }
 
-            IReadOnlyCollection<CustomAttributeTypedArgument> typedValues = (IReadOnlyCollection<CustomAttributeTypedArgument>)rangeArgument.TypedValue.Value;
+            IReadOnlyCollection<CustomAttributeTypedArgument> typedValues = rangeArgument.TypedValue.Value.Should().BeAssignableTo<IReadOnlyCollection<CustomAttributeTypedArgument>>().Which;
             List<double> values = typedValues.Select(v => Convert.ToDouble(v.Value, CultureInfo.InvariantCulture)).ToList();
             while (values.Count < 3) {
                 values.Add(0);
@@ -596,10 +602,10 @@ namespace NINA.Test.Sequencer {
             return values.ToArray();
         }
 
-        private static bool TryGetNamedArgument<T>(CustomAttributeData attribute, string name, out T value) {
+        private static bool TryGetNamedArgument<T>(CustomAttributeData attribute, string name, [MaybeNullWhen(false)] out T value) {
             foreach (CustomAttributeNamedArgument argument in attribute.NamedArguments) {
                 if (argument.MemberName == name) {
-                    value = (T)Convert.ChangeType(argument.TypedValue.Value, typeof(T), CultureInfo.InvariantCulture);
+                    value = Convert.ChangeType(argument.TypedValue.Value, typeof(T), CultureInfo.InvariantCulture).Should().BeOfType<T>().Which;
                     return true;
                 }
             }
@@ -621,7 +627,7 @@ namespace NINA.Test.Sequencer {
         }
 
         private static double ChooseValidValue(PropertyInfo scalarProperty) {
-            double[] expectedRange = GetExpectedRange(GetIsExpressionAttribute(scalarProperty));
+            double[]? expectedRange = GetExpectedRange(GetIsExpressionAttribute(scalarProperty));
             if (expectedRange == null) {
                 return scalarProperty.PropertyType == typeof(int) ? 7 : 7.5;
             }
@@ -663,7 +669,8 @@ namespace NINA.Test.Sequencer {
         }
 
         private static double GetNumericScalarValue(object entity, PropertyInfo scalarProperty) {
-            object value = scalarProperty.GetValue(entity);
+            object value = scalarProperty.GetValue(entity)
+                ?? throw new AssertionException($"Expected a numeric value for {scalarProperty.Name}.");
             return Convert.ToDouble(value, CultureInfo.InvariantCulture);
         }
 

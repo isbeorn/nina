@@ -235,8 +235,8 @@ namespace NINA.Test {
             public double Eccentricity { get; set; }
             public double HFRStDev { get; set; }
             public int DetectedStars { get; set; }
-            public List<DetectedStar> StarList { get; set; }
-            public event PropertyChangedEventHandler PropertyChanged {
+            public List<DetectedStar>? StarList { get; set; }
+            public event PropertyChangedEventHandler? PropertyChanged {
                 add { }
                 remove { }
             }

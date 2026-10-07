@@ -5,7 +5,6 @@ using Microsoft.Win32.SafeHandles;
 #if !(NETFX_CORE || WINDOWS_UWP)
 
 using System.Security.Permissions;
-using System.Runtime.ConstrainedExecution;
 
 #endif
 
@@ -3558,9 +3557,7 @@ public class Nncam : IDisposable {
             : base(true) {
         }
 
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         override protected bool ReleaseHandle() {
-            // Here, we must obey all rules for constrained execution regions.
             Nncam_Close(handle);
             return true;
         }
