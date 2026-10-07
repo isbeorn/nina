@@ -148,11 +148,11 @@ namespace NINA.ViewModel.FramingAssistant {
             };
 
             InitializeCommands();
-            Task.Run(() => {
+            Task.Run(async () => {
                 this.NighttimeData = this.nighttimeCalculator.Calculate(SelectedNightReferenceDate);
                 nighttimeCalculator.OnReferenceDayChanged += NighttimeCalculator_OnReferenceDayChanged;
                 InitializeCache();
-                LoadHipsSkyMaps().Wait();
+                await LoadHipsSkyMaps();
             });
 
             this.OverlapUnits = new List<string> { "%", "px" };
@@ -1696,30 +1696,28 @@ namespace NINA.ViewModel.FramingAssistant {
 
         private List<HipsSkyMaps> allHipsSkyMaps = new List<HipsSkyMaps>();
 
-        private Task LoadHipsSkyMaps() {
-            return Task.Run(async () => {
-                try {
-                    var db = new DatabaseInteraction();
-                    allHipsSkyMaps = await db.GetHipsSkyMaps();
+        private async Task LoadHipsSkyMaps() {
+            try {
+                var db = new DatabaseInteraction();
+                allHipsSkyMaps = await db.GetHipsSkyMaps();
 
-                    if (hipsSkyMaps == null) {
-                        hipsSkyMaps = new List<HipsSkyMaps>();
-                    }
-
-                    hipsSkyMaps.Clear();
-
-                    foreach (var map in allHipsSkyMaps) {
-                        hipsSkyMaps.Add(map);
-                    }
-
-                    if (SelectedHipsSkyMap == null) {
-                        SelectedHipsSkyMap = hipsSkyMaps.FirstOrDefault();
-                    }
-
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                if (hipsSkyMaps == null) {
+                    hipsSkyMaps = new List<HipsSkyMaps>();
                 }
-            });
+
+                hipsSkyMaps.Clear();
+
+                foreach (var map in allHipsSkyMaps) {
+                    hipsSkyMaps.Add(map);
+                }
+
+                if (SelectedHipsSkyMap == null) {
+                    SelectedHipsSkyMap = hipsSkyMaps.FirstOrDefault();
+                }
+
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
 
         public void Dispose() {

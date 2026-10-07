@@ -79,7 +79,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             }));
             SetParkPositionCommand = new AsyncCommand<bool>(() => Task.Run(SetParkPosition));
             SlewToCoordinatesCommand = new AsyncCommand<bool>((p) => Task.Run(() => SlewToCoordinatesInternal(p)));
-            RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Task.Run(Rescan); return true; }, o => !TelescopeInfo.Connected);
+            RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !TelescopeInfo.Connected);
             _ = RescanDevicesCommand.ExecuteAsync(null);
             FindHomeCommand = new AsyncCommand<bool>(() => Task.Run(() => {
                 InitCancelSlewTelescope();

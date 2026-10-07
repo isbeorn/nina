@@ -18,11 +18,69 @@ using NUnit.Framework;
 using OxyPlot;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Test.AstrometryTest {
 
     [TestFixture]
     public class SkyObjectBaseTest {
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Image_LoadsOnWorkerAndPublishesFrozenImage(bool deferredResult) {
+            var callerThreadId = Environment.CurrentManagedThreadId;
+            var factoryThreadId = 0;
+            var factoryCalls = 0;
+            using var factoryEntered = new ManualResetEventSlim();
+            using var releaseFactory = new ManualResetEventSlim();
+            var imageReady = new TaskCompletionSource<BitmapSource>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var imagePublished = new TaskCompletionSource<BitmapSource>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var source = BitmapSource.Create(2, 2, 96, 96, PixelFormats.Gray8, null, new byte[] { 10, 20, 30, 40 }, 2);
+            source.Freeze();
+            var sut = new DeepSkyObject(
+                "M31",
+                new Coordinates(0.712, 41.269, Epoch.J2000, Coordinates.RAType.Hours),
+                _ => {
+                    Interlocked.Increment(ref factoryCalls);
+                    factoryThreadId = Environment.CurrentManagedThreadId;
+                    factoryEntered.Set();
+                    if (deferredResult) {
+                        return imageReady.Task;
+                    }
+                    if (!releaseFactory.Wait(TimeSpan.FromSeconds(5))) {
+                        throw new TimeoutException("The test did not release the image factory.");
+                    }
+                    return Task.FromResult(source);
+                },
+                null);
+            sut.PropertyChanged += (_, e) => {
+                if (e.PropertyName == nameof(SkyObjectBase.Image)) {
+                    imagePublished.TrySetResult(sut.Image);
+                }
+            };
+
+            try {
+                factoryCalls.Should().Be(0);
+                sut.Image.Should().BeNull("the getter must return while the factory is still pending");
+                factoryEntered.Wait(TimeSpan.FromSeconds(5)).Should().BeTrue();
+                factoryThreadId.Should().NotBe(callerThreadId);
+
+                releaseFactory.Set();
+                imageReady.TrySetResult(source);
+                imagePublished.Task.Wait(TimeSpan.FromSeconds(5)).Should().BeTrue();
+                imagePublished.Task.Result.Should().BeSameAs(source);
+                imagePublished.Task.Result.IsFrozen.Should().BeTrue();
+                sut.Image.Should().BeSameAs(source);
+                factoryCalls.Should().Be(1);
+            } finally {
+                releaseFactory.Set();
+                imageReady.TrySetResult(source);
+                imagePublished.Task.Wait(TimeSpan.FromSeconds(5));
+            }
+        }
 
         [Test]
         public void SetDateAndPosition_RefreshesBoundAltitudeData() {

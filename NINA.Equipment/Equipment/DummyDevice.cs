@@ -46,8 +46,8 @@ namespace NINA.Equipment.Equipment {
 
         public event PropertyChangedEventHandler PropertyChanged { add { } remove { } }
 
-        public async Task<bool> Connect(CancellationToken token) {
-            return await Task.Run(() => false, token);
+        public Task<bool> Connect(CancellationToken token) {
+            return token.IsCancellationRequested ? Task.FromCanceled<bool>(token) : Task.FromResult(false);
         }
 
         public void Disconnect() {

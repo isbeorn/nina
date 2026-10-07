@@ -155,6 +155,28 @@ namespace NINA.Test.FlatDevice {
         }
 
         [Test]
+        public async Task TestDisconnectedOpenAndCloseReturnFalse() {
+            Assert.That(await _sut.Open(CancellationToken.None), Is.False);
+            Assert.That(await _sut.Close(CancellationToken.None), Is.False);
+            _mockSdk.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public async Task TestDisconnectedOpenPreservesCanceledTaskAndCloseReturnsFalse() {
+            using var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+
+            Task<bool> opening = _sut.Open(cancellation.Token);
+            Func<Task> completion = () => opening;
+            var exception = await completion.Should().ThrowAsync<TaskCanceledException>();
+
+            exception.Which.CancellationToken.Should().Be(cancellation.Token);
+            Assert.That(opening.IsCanceled, Is.True);
+            Assert.That(await _sut.Close(cancellation.Token), Is.False);
+            _mockSdk.VerifyNoOtherCalls();
+        }
+
+        [Test]
         public async Task TestOpen() {
             Assert.That(await _sut.Connect(new CancellationToken()), Is.True);
             _mockSdk.Setup(m => m.SendCommand<OpenResponse>(It.IsAny<OpenCommand>()))

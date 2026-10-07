@@ -74,7 +74,7 @@ namespace NINA.Core.Utility {
         public async Task Stop() {
             try { cts?.Cancel(); } catch { }
             while (!task?.IsCompleted == true) {
-                await Task.Delay(100);
+                await Task.Delay(100).ConfigureAwait(false);
             }
         }
 
@@ -82,7 +82,7 @@ namespace NINA.Core.Utility {
             var now = DateTimeOffset.UtcNow;
             var destination = now + TimeSpan.FromSeconds(Interval);
             while (!ct.IsCancellationRequested && !task?.IsCompleted == true && LastUpdate < destination) {
-                await Task.Delay(50, ct);
+                await Task.Delay(50, ct).ConfigureAwait(false);
             }
         }
 
@@ -127,7 +127,7 @@ namespace NINA.Core.Utility {
                     UpdateValuesFunc(values);
                 }
             });
-            await task;
+            await task.ConfigureAwait(false);
         }
     }
 }

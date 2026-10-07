@@ -126,6 +126,28 @@ namespace NINA.Test.Database {
             }
         }
 
+        [Test]
+        public async Task FilterQueries_ReturnDistinctValuesAndPreserveCancellation() {
+            var databasePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"dso-filters-{Guid.NewGuid():N}.sqlite");
+            try {
+                CreateMinimalDsoDatabase(databasePath);
+                var databaseInteraction = new DatabaseInteraction($"Data Source={databasePath};Pooling=False;");
+
+                (await databaseInteraction.GetConstellations(CancellationToken.None)).Should().Equal("ORI");
+                (await databaseInteraction.GetObjectTypes(CancellationToken.None)).Should().Equal("GALAXY");
+
+                using var cancellation = new CancellationTokenSource();
+                cancellation.Cancel();
+                (await databaseInteraction.GetConstellations(cancellation.Token)).Should().BeEmpty();
+                (await databaseInteraction.GetObjectTypes(cancellation.Token)).Should().BeEmpty();
+            } finally {
+                SQLiteConnection.ClearAllPools();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                if (File.Exists(databasePath)) File.Delete(databasePath);
+            }
+        }
+
         private static void CreateMinimalDsoDatabase(string databasePath) {
             using var connection = new SQLiteConnection($"Data Source={databasePath};Pooling=False;");
             connection.Open();
