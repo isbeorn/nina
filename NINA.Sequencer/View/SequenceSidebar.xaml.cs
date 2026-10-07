@@ -38,10 +38,10 @@ namespace NINA.View.Sequencer {
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e) {
             if (sender is FrameworkElement fe && fe.DataContext is Symbol item) { 
-                Clipboard.SetText((item.Category?.ToString() ?? string.Empty) + SymbolBroker.DELIMITER + (item.Key?.ToString() ?? string.Empty));
+                Clipboard.SetText((item.Category?.ToString() ?? string.Empty) + SymbolBroker.QUALIFIED_DELIMITER + (item.Key?.ToString() ?? string.Empty));
             }
             if (sender is FrameworkElement fe1 && fe1.DataContext is SymbolFunction fn) {
-                Clipboard.SetText((fn.Category?.ToString() ?? string.Empty) + SymbolBroker.DELIMITER + (fn.Key?.ToString() ?? string.Empty));
+                Clipboard.SetText((fn.Category?.ToString() ?? string.Empty) + SymbolBroker.QUALIFIED_DELIMITER + (fn.Key?.ToString() ?? string.Empty));
             }
         }
     }
