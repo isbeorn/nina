@@ -83,40 +83,38 @@ namespace NINA.ViewModel {
         }
 
         private void ImageSaveMediator_ImageSaved(object sender, ImageSavedEventArgs e) {
-            AddThumbnail(e);
+            _ = AddThumbnail(e);
         }
 
-        private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
+        private Dispatcher _dispatcher = System.Windows.Application.Current.Dispatcher;
 
-        private Task<bool> AddThumbnail(ImageSavedEventArgs msg) {
-            return Task.Run(async () => {
-                if (msg.Image != null) {
-                    var factor = 100 / msg.Image.Width;
+        private async Task<bool> AddThumbnail(ImageSavedEventArgs msg) {
+            if (msg.Image != null) {
+                await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                    try {
+                        // WPF rendering resources are released with their owning dispatcher.
+                        var factor = 100 / msg.Image.Width;
+                        var scaledBitmap = CreateResizedImage(msg.Image, (int)(msg.Image.Width * factor), (int)(msg.Image.Height * factor), 0);
+                        scaledBitmap.Freeze();
 
-                    var scaledBitmap = CreateResizedImage(msg.Image, (int)(msg.Image.Width * factor), (int)(msg.Image.Height * factor), 0);
-                    scaledBitmap.Freeze();
-
-                    await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                        try {
-                            var thumbnail = new Thumbnail(imageDataFactory) {
-                                ThumbnailImage = scaledBitmap,
-                                ImagePath = msg.PathToImage,
-                                FileType = msg.FileType,
-                                Duration = msg.Duration,
-                                ImageStatistics = msg.Statistics,
-                                StarDetectionAnalysis = msg.StarDetectionAnalysis,
-                                Filter = msg.Filter,
-                                IsBayered = msg.IsBayered
-                            };
-                            Thumbnails.Add(thumbnail);
-                            SelectedThumbnail = thumbnail;
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        }
-                    }));
-                }
-                return true;
-            });
+                        var thumbnail = new Thumbnail(imageDataFactory) {
+                            ThumbnailImage = scaledBitmap,
+                            ImagePath = msg.PathToImage,
+                            FileType = msg.FileType,
+                            Duration = msg.Duration,
+                            ImageStatistics = msg.Statistics,
+                            StarDetectionAnalysis = msg.StarDetectionAnalysis,
+                            Filter = msg.Filter,
+                            IsBayered = msg.IsBayered
+                        };
+                        Thumbnails.Add(thumbnail);
+                        SelectedThumbnail = thumbnail;
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                    }
+                }));
+            }
+            return true;
         }
 
         private static BitmapFrame CreateResizedImage(ImageSource source, int width, int height, int margin) {

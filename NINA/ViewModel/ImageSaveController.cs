@@ -55,10 +55,10 @@ namespace NINA.ViewModel {
         public event EventHandler<ImageSavedEventArgs> ImageSaved;
         public event Func<object, ImageSaveFailedEventArgs, Task> ImageSaveFailed;
 
-        public Task Enqueue(IImageData imageData, Task<IRenderedImage> prepareTask, IProgress<ApplicationStatus> progress, CancellationToken token) {
-            var mergedCts = CancellationTokenSource.CreateLinkedTokenSource(token, workerCTS.Token);
+        public async Task Enqueue(IImageData imageData, Task<IRenderedImage> prepareTask, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            using var mergedCts = CancellationTokenSource.CreateLinkedTokenSource(token, workerCTS.Token);
             Logger.Debug($"Enqueuing image to be saved with id {imageData.MetaData.Image.Id}");
-            return queue.EnqueueAsync(new PrepareSaveItem(imageData, prepareTask), mergedCts.Token);
+            await queue.EnqueueAsync(new PrepareSaveItem(imageData, prepareTask), mergedCts.Token).ConfigureAwait(false);
         }
 
         private async Task DoWork() {
@@ -154,6 +154,7 @@ namespace NINA.ViewModel {
                         Notification.ShowError(Loc.Instance["LblSaveFileFailed"]);
                         Logger.Error("Writing file timed out");
                     }
+                    writeTimeoutCts?.Dispose();
                     applicationStatusMediator.StatusUpdate(new ApplicationStatus() { Source = Loc.Instance["LblSave"], Status = string.Empty });
                 }
             }

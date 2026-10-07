@@ -13,14 +13,17 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.ViewModel;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
     public partial class AberrationInspectorVM : BaseVM {
+        private static readonly SemaphoreSlim renderGate = new SemaphoreSlim(1, 1);
 
         public AberrationInspectorVM(IProfileService profileService) : base(profileService) {
             Columns = 3;
@@ -28,8 +31,30 @@ namespace NINA.ViewModel {
             CellSize = 256;
         }
 
-        public Task Initialize(BitmapSource source) {
-            return Task.Run(() => RenderMosaicImage(source));
+        public async Task Initialize(BitmapSource source) {
+            await renderGate.WaitAsync().ConfigureAwait(false);
+            try {
+                var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                // Save shutdown can wait on preparation while the UI is blocked. Own this
+                // rendering thread and finish its WPF cleanup before completing preparation.
+                var renderer = new Thread(() => {
+                    try {
+                        try {
+                            RenderMosaicImage(source);
+                        } finally {
+                            Dispatcher.FromThread(Thread.CurrentThread)?.InvokeShutdown();
+                        }
+                        completion.SetResult();
+                    } catch (Exception ex) {
+                        completion.SetException(ex);
+                    }
+                }) { IsBackground = true, Name = "NINA aberration rendering" };
+                renderer.SetApartmentState(ApartmentState.STA);
+                renderer.Start();
+                await completion.Task.ConfigureAwait(false);
+            } finally {
+                renderGate.Release();
+            }
         }
 
         private void RenderMosaicImage(BitmapSource source) {
