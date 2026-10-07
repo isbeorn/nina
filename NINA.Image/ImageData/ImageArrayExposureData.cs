@@ -87,9 +87,7 @@ namespace NINA.Image.ImageData {
             } else if (source.Format == PixelFormats.Gray8 || source.Format == PixelFormats.Indexed8) {
                 return ArrayFrom8BitSource(source);
             } else if (source.Format == PixelFormats.Bgr24 || source.Format == PixelFormats.Bgr32 || source.Format == PixelFormats.Pbgra32) {
-                WriteableBitmap convertedSource = new WriteableBitmap(
-                   (BitmapSource)(new FormatConvertedBitmap(source, PixelFormats.Gray8, null, 0))
-                );
+                var convertedSource = new FormatConvertedBitmap(source, PixelFormats.Gray8, null, 0);
                 return ArrayFrom8BitSource(convertedSource);
             } else {
                 throw new FormatException(string.Format("Pixelformat {0} not supported", source.Format));

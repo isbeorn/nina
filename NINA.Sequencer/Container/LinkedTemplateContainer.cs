@@ -24,6 +24,7 @@ using NINA.Sequencer.DragDrop;
 using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.ObjectModel;
@@ -53,6 +54,7 @@ namespace NINA.Sequencer.Container {
         private LinkedTemplateTargetOverride targetOverride;
         private InputTarget targetEditor;
         private InputTarget observedMaterializedTarget;
+        private readonly EventHandler materializedTargetCoordinatesChangedHandler;
         private bool suppressTargetEditorUpdate;
         private bool suppressMaterializedTargetUpdate;
         private bool isDeserializing;
@@ -61,6 +63,8 @@ namespace NINA.Sequencer.Container {
         [ImportingConstructor]
         public LinkedTemplateContainer(ITemplateLinkResolver templateLinkResolver) : base(new SequentialStrategy()) {
             this.templateLinkResolver = templateLinkResolver;
+            materializedTargetCoordinatesChangedHandler = new InputTargetCoordinatesChangedHandler<LinkedTemplateContainer>(
+                this, static (owner, sender, args) => owner.MaterializedTarget_OnCoordinatesChanged(sender, args)).Handle;
             IsExpanded = false;
             Name = Loc.Instance["Lbl_SequenceContainer_LinkedTemplateContainer_Name"];
             Description = Loc.Instance["Lbl_SequenceContainer_LinkedTemplateContainer_Description"];
@@ -521,13 +525,13 @@ namespace NINA.Sequencer.Container {
 
         private void ObserveMaterializedTarget(IDeepSkyObjectContainer deepSkyObjectContainer) {
             if (observedMaterializedTarget != null) {
-                WeakEventManager<InputTarget, EventArgs>.RemoveHandler(observedMaterializedTarget, nameof(InputTarget.CoordinatesChanged), MaterializedTarget_OnCoordinatesChanged);
+                observedMaterializedTarget.CoordinatesChanged -= materializedTargetCoordinatesChangedHandler;
                 observedMaterializedTarget = null;
             }
 
             observedMaterializedTarget = deepSkyObjectContainer?.Target;
             if (observedMaterializedTarget != null) {
-                WeakEventManager<InputTarget, EventArgs>.AddHandler(observedMaterializedTarget, nameof(InputTarget.CoordinatesChanged), MaterializedTarget_OnCoordinatesChanged);
+                observedMaterializedTarget.CoordinatesChanged += materializedTargetCoordinatesChangedHandler;
             }
         }
 

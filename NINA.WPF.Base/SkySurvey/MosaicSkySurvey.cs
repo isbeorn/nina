@@ -17,8 +17,10 @@ using NINA.WPF.Base.Exceptions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace NINA.WPF.Base.SkySurvey {
 
@@ -160,39 +162,45 @@ namespace NINA.WPF.Base.SkySurvey {
                 * * * * * * * * * *
              */
             var tmpImages = await Task.WhenAll(topLeftTask, topTask, topRightTask, leftTask, centerTask, rightTask, bottomLeftTask, bottomTask, bottomRightTask);
-            BitmapSource[] images = new BitmapSource[tmpImages.Length];
-            for (var i = 0; i < tmpImages.Length; i++) {
-                double factor = 1;
-                if (centerTask.Result.PixelWidth > 640) {
-                    factor = 640.0d / centerTask.Result.PixelWidth;
+            foreach (var image in tmpImages) {
+                image.Freeze();
+            }
+            // WriteableBitmap and visual rendering both create dispatcher-owned WPF resources.
+            return await Application.Current.Dispatcher.InvokeAsync(() => {
+                BitmapSource[] images = new BitmapSource[tmpImages.Length];
+                for (var i = 0; i < tmpImages.Length; i++) {
+                    double factor = 1;
+                    if (centerTask.Result.PixelWidth > 640) {
+                        factor = 640.0d / centerTask.Result.PixelWidth;
+                    }
+                    var scaled = new WriteableBitmap(new TransformedBitmap(tmpImages[i], new ScaleTransform(factor, factor)));
+                    images[i] = scaled;
                 }
-                var scaled = new WriteableBitmap(new TransformedBitmap(tmpImages[i], new ScaleTransform(factor, factor)));
-                images[i] = scaled;
-            }
 
-            var mosaicWidth = images[0].PixelWidth + images[1].PixelWidth + images[2].PixelWidth;
-            var mosaicHeight = images[0].PixelHeight + images[3].PixelHeight + images[6].PixelHeight;
+                var mosaicWidth = images[0].PixelWidth + images[1].PixelWidth + images[2].PixelWidth;
+                var mosaicHeight = images[0].PixelHeight + images[3].PixelHeight + images[6].PixelHeight;
 
-            DrawingVisual drawingVisual = new DrawingVisual();
-            using (DrawingContext drawingContext = drawingVisual.RenderOpen()) {
-                drawingContext.DrawImage(images[0], new System.Windows.Rect(0, 0, images[0].PixelWidth, images[0].PixelHeight));
-                drawingContext.DrawImage(images[1], new System.Windows.Rect(images[0].PixelWidth, 0, images[1].PixelWidth, images[1].PixelHeight));
-                drawingContext.DrawImage(images[2], new System.Windows.Rect(images[0].PixelWidth + images[1].PixelWidth, 0, images[2].PixelWidth, images[2].PixelHeight));
+                DrawingVisual drawingVisual = new DrawingVisual();
+                using (DrawingContext drawingContext = drawingVisual.RenderOpen()) {
+                    drawingContext.DrawImage(images[0], new System.Windows.Rect(0, 0, images[0].PixelWidth, images[0].PixelHeight));
+                    drawingContext.DrawImage(images[1], new System.Windows.Rect(images[0].PixelWidth, 0, images[1].PixelWidth, images[1].PixelHeight));
+                    drawingContext.DrawImage(images[2], new System.Windows.Rect(images[0].PixelWidth + images[1].PixelWidth, 0, images[2].PixelWidth, images[2].PixelHeight));
 
-                drawingContext.DrawImage(images[3], new System.Windows.Rect(0, images[0].PixelHeight, images[3].PixelWidth, images[3].PixelHeight));
-                drawingContext.DrawImage(images[4], new System.Windows.Rect(images[0].PixelWidth, images[0].PixelHeight, images[4].PixelWidth, images[4].PixelHeight));
-                drawingContext.DrawImage(images[5], new System.Windows.Rect(images[0].PixelWidth + images[1].PixelWidth, images[0].PixelHeight, images[5].PixelWidth, images[5].PixelHeight));
+                    drawingContext.DrawImage(images[3], new System.Windows.Rect(0, images[0].PixelHeight, images[3].PixelWidth, images[3].PixelHeight));
+                    drawingContext.DrawImage(images[4], new System.Windows.Rect(images[0].PixelWidth, images[0].PixelHeight, images[4].PixelWidth, images[4].PixelHeight));
+                    drawingContext.DrawImage(images[5], new System.Windows.Rect(images[0].PixelWidth + images[1].PixelWidth, images[0].PixelHeight, images[5].PixelWidth, images[5].PixelHeight));
 
-                drawingContext.DrawImage(images[6], new System.Windows.Rect(0, images[0].PixelHeight + images[3].PixelHeight, images[6].PixelWidth, images[6].PixelHeight));
-                drawingContext.DrawImage(images[7], new System.Windows.Rect(images[0].PixelWidth, images[0].PixelHeight + images[3].PixelHeight, images[7].PixelWidth, images[7].PixelHeight));
-                drawingContext.DrawImage(images[8], new System.Windows.Rect(images[0].PixelWidth + images[1].PixelWidth, images[0].PixelHeight + images[3].PixelHeight, images[8].PixelWidth, images[8].PixelHeight));
-            }
+                    drawingContext.DrawImage(images[6], new System.Windows.Rect(0, images[0].PixelHeight + images[3].PixelHeight, images[6].PixelWidth, images[6].PixelHeight));
+                    drawingContext.DrawImage(images[7], new System.Windows.Rect(images[0].PixelWidth, images[0].PixelHeight + images[3].PixelHeight, images[7].PixelWidth, images[7].PixelHeight));
+                    drawingContext.DrawImage(images[8], new System.Windows.Rect(images[0].PixelWidth + images[1].PixelWidth, images[0].PixelHeight + images[3].PixelHeight, images[8].PixelWidth, images[8].PixelHeight));
+                }
 
-            // Converts the Visual (DrawingVisual) into a BitmapSource
-            RenderTargetBitmap bmp = new RenderTargetBitmap(mosaicWidth, mosaicHeight, 96, 96, PixelFormats.Pbgra32);
-            bmp.Render(drawingVisual);
-            bmp.Freeze();
-            return bmp;
+                // Converts the Visual (DrawingVisual) into a BitmapSource
+                RenderTargetBitmap bmp = new RenderTargetBitmap(mosaicWidth, mosaicHeight, 96, 96, PixelFormats.Pbgra32);
+                bmp.Render(drawingVisual);
+                bmp.Freeze();
+                return bmp;
+            }, DispatcherPriority.Normal, ct);
         }
 
         protected abstract Task<BitmapSource> GetSingleImage(Coordinates coordinates, double fovW, double fovH, CancellationToken ct, int width, int height);

@@ -10,10 +10,51 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Test.Image {
     [TestFixture]
     public class ExposureDataFactoryTest {
+
+        [TestCase("Bgr24")]
+        [TestCase("Bgr32")]
+        [TestCase("Pbgra32")]
+        public async Task CreateImageArrayExposureDataFromBitmapSource_ColorFormats_PreserveGray8Pixels(string formatName) {
+            PixelFormat format = formatName switch {
+                "Bgr24" => PixelFormats.Bgr24,
+                "Bgr32" => PixelFormats.Bgr32,
+                _ => PixelFormats.Pbgra32
+            };
+            Color[] colors = [Colors.Black, Colors.White, Colors.Red, Colors.Lime, Colors.Blue, Colors.Gray, Colors.Cyan, Color.FromRgb(37, 149, 211)];
+            const int width = 4;
+            const int height = 2;
+            int bytesPerPixel = format.BitsPerPixel / 8;
+            byte[] pixels = new byte[colors.Length * bytesPerPixel];
+            for (int index = 0; index < colors.Length; index++) {
+                int offset = index * bytesPerPixel;
+                pixels[offset] = colors[index].B;
+                pixels[offset + 1] = colors[index].G;
+                pixels[offset + 2] = colors[index].R;
+                if (bytesPerPixel == 4) {
+                    pixels[offset + 3] = colors[index].A;
+                }
+            }
+            BitmapSource source = BitmapSource.Create(width, height, 96, 96, format, null, pixels, width * bytesPerPixel);
+            source.Freeze();
+            byte[] expectedGrayPixels = new byte[width * height];
+            new FormatConvertedBitmap(source, PixelFormats.Gray8, null, 0).CopyPixels(expectedGrayPixels, width, 0);
+            ImageDataFactoryTestUtility factories = new ImageDataFactoryTestUtility();
+
+            IExposureData exposure = await factories.ExposureDataFactory.CreateImageArrayExposureDataFromBitmapSource(source);
+            IImageData image = await exposure.ToImageData();
+
+            image.Data.FlatArray.Should().Equal(expectedGrayPixels.Select(value => (ushort)(value * 257)));
+            image.Properties.Width.Should().Be(width);
+            image.Properties.Height.Should().Be(height);
+            image.Properties.BitDepth.Should().Be(format.BitsPerPixel);
+            image.Properties.IsBayered.Should().BeFalse();
+        }
 
         [Test]
         public async Task CreateFlipped2DExposureData_Given2DArrayInt32_ReturnsCorrectlyFlippedImageData() {
