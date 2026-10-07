@@ -797,6 +797,8 @@
                     </Style.Triggers>
                 </Style>
                 <Style x:Key="ContainerStyle" TargetType="{x:Type TreeViewItem}">
+                    <!--  Retain visited container headers to avoid repeated hierarchical size estimation while scrolling. Instruction lists still virtualize.  -->
+                    <Setter Property="VirtualizingPanel.IsContainerVirtualizable" Value="False" />
                     <Setter Property="ItemsControl.AlternationCount" Value="1024" />
                     <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
                     <Setter Property="Focusable" Value="False" />
