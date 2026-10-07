@@ -65,11 +65,11 @@ namespace NINA.PlateSolving.Solvers {
 
                     // Execute the TSX script
                     progress?.Report(new ApplicationStatus() { Status = "Solving image with TheSkyX Imagelink..." });
-                    imageLink.Execute(imagePath.Replace(@"\", "/"), imageScale: imageProperties.ArcSecPerPixel, isUnknownScale: true);
+                    await Task.Run(() => imageLink.Execute(imagePath.Replace(@"\", "/"), imageScale: imageProperties.ArcSecPerPixel, isUnknownScale: true), cancelToken);
 
                     // Get the results of the last ImageLInk
                     progress?.Report(new ApplicationStatus() { Status = $"Retrieving results for requested image..." });
-                    var imageLinkResults = imageLink.GetLastImageLinkResults();
+                    var imageLinkResults = await Task.Run(imageLink.GetLastImageLinkResults, cancelToken);
 
                     if ((imageLinkResults != null) && (imageLinkResults.Succeeded)) {
                         result.Success = true;

@@ -734,7 +734,7 @@ namespace NINA.Test.Sequencer.Container {
                 }
             }
 
-            public NighttimeData NighttimeData => null;
+            public NighttimeData? NighttimeData => null;
 
             private void Target_OnCoordinatesChanged(object? sender, EventArgs e) {
                 AfterParentChanged();
@@ -746,9 +746,9 @@ namespace NINA.Test.Sequencer.Container {
                     Name = Name,
                     Category = Category,
                     Description = Description,
-                    Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem)),
-                    Triggers = new ObservableCollection<ISequenceTrigger>(Triggers.Select(t => t.Clone() as ISequenceTrigger)),
-                    Conditions = new ObservableCollection<ISequenceCondition>(Conditions.Select(c => c.Clone() as ISequenceCondition)),
+                    Items = new ObservableCollection<ISequenceItem>(Items.Select(i => (ISequenceItem)i.Clone())),
+                    Triggers = new ObservableCollection<ISequenceTrigger>(Triggers.Select(t => (ISequenceTrigger)t.Clone())),
+                    Conditions = new ObservableCollection<ISequenceCondition>(Conditions.Select(c => (ISequenceCondition)c.Clone())),
                     Target = CloneTarget(Target)
                 };
 

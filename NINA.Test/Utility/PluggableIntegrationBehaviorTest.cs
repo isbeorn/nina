@@ -39,7 +39,7 @@ namespace NINA.Test.Utility {
             var defaultBehavior = new TestBehavior("Default", "nina-default");
             var pluginBehavior = new TestBehavior("Plugin", "plugin-behavior");
             var sut = new PluggableBehaviorSelector<ITestBehavior, TestBehavior>(profileService.Object, defaultBehavior);
-            var changed = new List<string>();
+            var changed = new List<string?>();
             sut.PropertyChanged += (_, args) => changed.Add(args.PropertyName);
 
             sut.SelectedBehavior.Should().BeSameAs(defaultBehavior);
@@ -48,8 +48,9 @@ namespace NINA.Test.Utility {
 
             sut.Behaviors.Should().ContainInOrder(defaultBehavior, pluginBehavior);
             sut.SelectedBehavior.Should().BeSameAs(pluginBehavior);
+            string behaviorTypeName = typeof(ITestBehavior).FullName ?? throw new AssertionException("The test behavior must have a full type name.");
             settings.SelectedPluggableBehaviors.Should().ContainSingle()
-                .Which.Should().Be(new KeyValuePair<string, string>(typeof(ITestBehavior).FullName, pluginBehavior.ContentId));
+                .Which.Should().Be(new KeyValuePair<string, string>(behaviorTypeName, pluginBehavior.ContentId));
             sut.GetBehavior("missing-plugin").Should().BeSameAs(defaultBehavior);
             changed.Should().Contain(nameof(PluggableBehaviorSelector<ITestBehavior, TestBehavior>.Behaviors));
             changed.Should().Contain(nameof(PluggableBehaviorSelector<ITestBehavior, TestBehavior>.SelectedBehavior));
@@ -85,10 +86,11 @@ namespace NINA.Test.Utility {
             var sut = new PluggableBehaviorSelector<ITestBehavior, TestBehavior>(profileService.Object, new TestBehavior("Default", "nina-default"));
             int selectedChanges = 0;
             sut.SelectedBehaviorChanged += (_, _) => selectedChanges++;
+            string behaviorTypeName = typeof(ITestBehavior).FullName ?? throw new AssertionException("The test behavior must have a full type name.");
 
-            settings.SelectedPluggableBehaviors.Add(new KeyValuePair<string, string>(typeof(ITestBehavior).FullName, "plugin-a"));
+            settings.SelectedPluggableBehaviors.Add(new KeyValuePair<string, string>(behaviorTypeName, "plugin-a"));
             settings.SelectedPluggableBehaviors.Clear();
-            settings.SelectedPluggableBehaviors.Add(new KeyValuePair<string, string>(typeof(ITestBehavior).FullName, "plugin-a"));
+            settings.SelectedPluggableBehaviors.Add(new KeyValuePair<string, string>(behaviorTypeName, "plugin-a"));
 
             selectedChanges.Should().Be(3);
         }

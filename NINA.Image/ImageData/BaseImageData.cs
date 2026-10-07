@@ -60,7 +60,7 @@ namespace NINA.Image.ImageData {
             MetaData = metaData;
             Properties = new ImageProperties(width: width, height: height, bitDepth: bitDepth, isBayered: isBayered, gain: metaData.Camera.Gain, offset: metaData.Camera.Offset);
             StarDetectionAnalysis = starDetection.CreateAnalysis();
-            Statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => await Task.Run(() => ImageStatistics.Create(this)));
+            Statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(() => Task.FromResult(ImageStatistics.Create(this)));
             this.profileService = profileService;
             this.starDetection = starDetection;
             this.starAnnotator = starAnnotator;

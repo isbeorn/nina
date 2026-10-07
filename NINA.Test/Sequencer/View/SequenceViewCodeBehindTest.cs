@@ -30,7 +30,7 @@ using NINA.View.Sequencer;
 using NUnit.Framework;
 using System;
 using System.Reflection;
-using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -81,7 +81,7 @@ namespace NINA.Test.Sequencer.View {
         public void RootAndMainViews_ConstructAndExposeHitTestBehavior() {
             EnsureApplicationResources();
             SequenceRootContainerView root = new SequenceRootContainerView();
-            SequenceView view = (SequenceView)FormatterServices.GetUninitializedObject(typeof(SequenceView));
+            SequenceView view = (SequenceView)RuntimeHelpers.GetUninitializedObject(typeof(SequenceView));
 
             root.Should().NotBeNull();
             InvokeHitTest(view).VisualHit.Should().BeSameAs(view);
@@ -244,7 +244,7 @@ namespace NINA.Test.Sequencer.View {
 
             sut.SelectTemplate(new SequentialContainer(), new FrameworkElement()).Should().BeSameAs(containerTemplate);
             sut.SelectTemplate(new ParallelContainer(), new FrameworkElement()).Should().BeSameAs(parallelTemplate);
-            sut.SelectTemplate(FormatterServices.GetUninitializedObject(typeof(DeepSkyObjectContainer)), new FrameworkElement()).Should().BeSameAs(dsoTemplate);
+            sut.SelectTemplate(RuntimeHelpers.GetUninitializedObject(typeof(DeepSkyObjectContainer)), new FrameworkElement()).Should().BeSameAs(dsoTemplate);
             sut.SelectTemplate(new StartAreaContainer(), new FrameworkElement()).Should().BeSameAs(containerTemplate);
             sut.SelectTemplate(new UnknownSequenceItem("missing"), new FrameworkElement()).Should().BeNull();
         }
@@ -341,8 +341,9 @@ namespace NINA.Test.Sequencer.View {
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null,
                 new[] { typeof(PointHitTestParameters) },
-                null);
-            return (HitTestResult)method.Invoke(element, new object[] { new PointHitTestParameters(new Point(10, 20)) });
+                null) ?? throw new AssertionException("Expected HitTestCore method was not found.");
+            return method.Invoke(element, new object[] { new PointHitTestParameters(new Point(10, 20)) })
+                .Should().BeAssignableTo<HitTestResult>().Which;
         }
 
         private static void InvokeMenuDropHandlers(object view, SequenceContainer container) {
@@ -366,7 +367,8 @@ namespace NINA.Test.Sequencer.View {
         }
 
         private static void InvokePrivate(object instance, string methodName, params object[] parameters) {
-            MethodInfo method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
             method.Invoke(instance, parameters);
         }
 
@@ -384,7 +386,7 @@ namespace NINA.Test.Sequencer.View {
         private static TargetSequenceContainer CreateTargetSequenceContainer(IProfileService profileService) {
             Mock<IDeepSkyObjectContainer> sourceContainerMock = new Mock<IDeepSkyObjectContainer>();
             Mock<IDeepSkyObjectContainer> cloneContainerMock = new Mock<IDeepSkyObjectContainer>();
-            cloneContainerMock.SetupGet(x => x.Parent).Returns((ISequenceContainer)null);
+            cloneContainerMock.SetupGet<ISequenceContainer?>(x => x.Parent).Returns((ISequenceContainer?)null);
             sourceContainerMock.SetupGet(x => x.Name).Returns("Target");
             sourceContainerMock.Setup(x => x.Clone()).Returns(cloneContainerMock.Object);
             return new TargetSequenceContainer(profileService, sourceContainerMock.Object);
@@ -403,8 +405,9 @@ namespace NINA.Test.Sequencer.View {
         }
 
         private static ContentPresenter GetContentPresenter(object view) {
-            FieldInfo field = view.GetType().GetField("Content", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-            return (ContentPresenter)field.GetValue(view);
+            FieldInfo field = view.GetType().GetField("ContainerContentPresenter", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+            return field.GetValue(view).Should().BeOfType<ContentPresenter>().Which;
         }
 
         private static void EnsureApplicationResources() {
@@ -432,17 +435,20 @@ namespace NINA.Test.Sequencer.View {
         }
 
         private class CaptureCommand : ICommand {
-            public object ReceivedParameter { get; private set; }
+            public object? ReceivedParameter { get; private set; }
 
-            public bool CanExecute(object parameter) {
+            public bool CanExecute(object? parameter) {
                 return true;
             }
 
-            public void Execute(object parameter) {
+            public void Execute(object? parameter) {
                 ReceivedParameter = parameter;
             }
 
-            public event EventHandler CanExecuteChanged;
+            public event EventHandler? CanExecuteChanged {
+                add { }
+                remove { }
+            }
         }
     }
 }

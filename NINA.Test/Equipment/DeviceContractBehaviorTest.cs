@@ -94,6 +94,21 @@ namespace NINA.Test.Equipment {
             device.Invoking(x => x.SendCommandBlind("noop", raw: false)).Should().Throw<NotImplementedException>();
         }
 
+        [Test]
+        public async Task DummyDevice_PreCanceledConnectReturnsCanceledTask() {
+            var device = new DummyDevice("None");
+            using var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+
+            Task<bool> connection = device.Connect(cancellation.Token);
+            Func<Task> completion = () => connection;
+            var exception = await completion.Should().ThrowAsync<TaskCanceledException>();
+
+            exception.Which.CancellationToken.Should().Be(cancellation.Token);
+            connection.IsCanceled.Should().BeTrue();
+            device.Connected.Should().BeFalse();
+        }
+
         /// <summary>
         /// Verifies offline placeholders preserve missing-device identity and fail connection attempts with an actionable message.
         /// </summary>

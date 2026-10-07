@@ -109,6 +109,8 @@ Template and target loaders explicitly release registrations on detached library
 
 Sequence and block initialization belong inside their cleanup `try/finally`, including partial initialization failures. Runtime triggers must release external event subscriptions when any ancestor loses its root, even if their immediate parent remains present or has a running status. Initialization and teardown must tolerate repeated calls and root changes without duplicate subscriptions.
 
+InputTarget coordinate subscriptions in deep-sky and linked-template containers use a thread-independent weak listener. Construction, cloning and target replacement can run on library or execution workers, so these subscriptions must not depend on WPF's thread-local weak-event table or synchronously dispatch to the UI. Replacing or clearing a target must remove the old handler while an externally retained target must not keep its former container alive.
+
 ## Editor History
 
 `Editing/` owns an in-memory journal for configuration edits, with lifetime managed by `Sequence2VM`. It records field and structural changes through the WPF editor and preserves current runtime inputs during replay. Undo does not reverse equipment actions.

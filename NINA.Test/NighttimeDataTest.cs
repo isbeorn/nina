@@ -64,13 +64,17 @@ namespace NINA.Test {
             if (twilightRiseAndSet == null) {
                 return new List<OxyPlot.DataPoint>();
             }
-            var twilightSet = twilightRiseAndSet.Set.Value > twilightRiseAndSet.Rise.Value ? twilightRiseAndSet.Set.Value.AddDays(-1) : twilightRiseAndSet.Set.Value;
+            DateTime twilightSetTime = twilightRiseAndSet.Set ?? throw new AssertionException("Expected twilight sunset.");
+            DateTime twilightRiseTime = twilightRiseAndSet.Rise ?? throw new AssertionException("Expected twilight sunrise.");
+            var twilightSet = twilightSetTime > twilightRiseTime ? twilightSetTime.AddDays(-1) : twilightSetTime;
             if (sunRiseAndSet == null) {
                 return new List<OxyPlot.DataPoint>() {
                     new OxyPlot.DataPoint(Axis.ToDouble(twilightSet), 90),
                     new OxyPlot.DataPoint(Axis.ToDouble(twilightRiseAndSet.Rise), 90) };
             }
-            var sunRiseSet = sunRiseAndSet.Set.Value > sunRiseAndSet.Rise.Value ? sunRiseAndSet.Set.Value.AddDays(-1) : sunRiseAndSet.Set.Value;
+            DateTime sunSetTime = sunRiseAndSet.Set ?? throw new AssertionException("Expected sunset.");
+            DateTime sunRiseTime = sunRiseAndSet.Rise ?? throw new AssertionException("Expected sunrise.");
+            var sunRiseSet = sunSetTime > sunRiseTime ? sunSetTime.AddDays(-1) : sunSetTime;
             return new List<OxyPlot.DataPoint>() {
                 new OxyPlot.DataPoint(Axis.ToDouble(twilightSet), 90),
                 new OxyPlot.DataPoint(Axis.ToDouble(sunRiseSet), 90),
@@ -84,7 +88,9 @@ namespace NINA.Test {
             if (twilightRiseAndSet == null) {
                 return new List<OxyPlot.DataPoint>();
             }
-            var twilightSet = twilightRiseAndSet.Set.Value > twilightRiseAndSet.Rise.Value ? twilightRiseAndSet.Set.Value.AddDays(-1) : twilightRiseAndSet.Set.Value;
+            DateTime twilightSetTime = twilightRiseAndSet.Set ?? throw new AssertionException("Expected twilight sunset.");
+            DateTime twilightRiseTime = twilightRiseAndSet.Rise ?? throw new AssertionException("Expected twilight sunrise.");
+            var twilightSet = twilightSetTime > twilightRiseTime ? twilightSetTime.AddDays(-1) : twilightSetTime;
             return new List<OxyPlot.DataPoint>() {
                 new OxyPlot.DataPoint(Axis.ToDouble(twilightRiseAndSet.Rise), 90),
                 new OxyPlot.DataPoint(Axis.ToDouble(twilightSet), 90) };

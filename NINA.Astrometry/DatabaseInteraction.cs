@@ -58,7 +58,7 @@ namespace NINA.Astrometry {
         public async Task<ICollection<string>> GetConstellations(CancellationToken token) {
             try {
                 using (var context = new NINADbContext(connectionString)) {
-                    return await context.DsoDetailSet.Select(x => x.constellation).Distinct().ToListAsync(token);
+                    return await context.DsoDetailSet.Select(x => x.constellation).Distinct().ToListAsync(token).ConfigureAwait(false);
                 }
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
@@ -73,7 +73,7 @@ namespace NINA.Astrometry {
         public async Task<ICollection<string>> GetObjectTypes(CancellationToken token) {
             try {
                 using (var context = new NINADbContext(connectionString)) {
-                    return await context.DsoDetailSet.Select(x => x.dsotype).Distinct().ToListAsync(token);
+                    return await context.DsoDetailSet.Select(x => x.dsotype).Distinct().ToListAsync(token).ConfigureAwait(false);
                 }
             } catch (OperationCanceledException) {
             } catch (Exception ex) {

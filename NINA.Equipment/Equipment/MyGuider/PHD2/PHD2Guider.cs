@@ -450,7 +450,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         }
 
         public async Task<LockPosition> GetLockPosition() {
-            return await GetLockPositionInternal(5000);
+            return await GetLockPositionInternal(5000).ConfigureAwait(false);
         }
 
         private async Task<LockPosition> GetLockPositionInternal(
@@ -458,7 +458,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             var msg = new Phd2GetLockPosition();
             var lockPositionResponse = await SendMessage<GetLockPositionResponse>(
                 msg,
-                receiveTimeout);
+                receiveTimeout).ConfigureAwait(false);
             if (lockPositionResponse?.result != null && lockPositionResponse.result.Length == 2) {
                 return new LockPosition(lockPositionResponse.result[0], lockPositionResponse.result[1]);
             }

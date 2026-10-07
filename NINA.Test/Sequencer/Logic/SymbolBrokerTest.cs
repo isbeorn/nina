@@ -159,11 +159,12 @@ namespace NINA.Test.Sequencer.Logic {
                 .Should().BeNull();
 
             PropertyInfo instanceProperty = typeof(SymbolBroker)
-                .GetProperty(nameof(SymbolBroker.Instance), BindingFlags.NonPublic | BindingFlags.Static);
+                .GetProperty(nameof(SymbolBroker.Instance), BindingFlags.NonPublic | BindingFlags.Static)
+                ?? throw new AssertionException("Expected internal Instance property was not found.");
 
             instanceProperty.Should().NotBeNull();
-            instanceProperty.GetMethod.IsAssembly.Should().BeTrue();
-            instanceProperty.SetMethod.IsPrivate.Should().BeTrue();
+            instanceProperty.GetMethod.Should().BeAssignableTo<MethodInfo>().Which.IsAssembly.Should().BeTrue();
+            instanceProperty.SetMethod.Should().BeAssignableTo<MethodInfo>().Which.IsPrivate.Should().BeTrue();
             SymbolBroker.Instance.Should().BeSameAs(broker);
         }
 
@@ -209,7 +210,7 @@ namespace NINA.Test.Sequencer.Logic {
 
             Mock<ISequenceEntity> context = new Mock<ISequenceEntity>();
             context.SetupGet(x => x.SymbolBroker).Returns(broker);
-            context.SetupGet(x => x.Parent).Returns((ISequenceContainer)null);
+            context.SetupGet<ISequenceContainer?>(x => x.Parent).Returns((ISequenceContainer?)null);
             context.SetupGet(x => x.Name).Returns("SymbolBroker Test Context");
 
             Expression expr = new Expression("TemporalTest_TimeOnly + 30", context.Object) {
@@ -1226,7 +1227,7 @@ namespace NINA.Test.Sequencer.Logic {
         private WeakReference<IImageData> PublishImageWithGatedStatistics(
             int frameId,
             Task statisticsCompletion,
-            TaskCompletionSource<bool> statisticsStarted = null) {
+            TaskCompletionSource<bool>? statisticsStarted = null) {
             var statisticsMock = new Mock<IImageStatistics>();
             statisticsMock.SetupGet(x => x.Mean).Returns(frameId);
 
@@ -1273,7 +1274,7 @@ namespace NINA.Test.Sequencer.Logic {
                 set => throw new InvalidOperationException("Legacy eccentricity is only available as a concrete property.");
             }
 
-            public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged {
+            public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged {
                 add { }
                 remove { }
             }

@@ -499,7 +499,7 @@ namespace NINA.Test.SkySurvey {
             double rotation,
             double customHorizonAmplitude) {
             DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
-            Func<double, double> customHorizon = customHorizonAmplitude == 0
+            Func<double, double>? customHorizon = customHorizonAmplitude == 0
                 ? null
                 : azimuth => customHorizonAmplitude * Math.Sin(AstroUtil.ToRadians(azimuth * 2));
             SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(50, at, 16.5, customHorizon);

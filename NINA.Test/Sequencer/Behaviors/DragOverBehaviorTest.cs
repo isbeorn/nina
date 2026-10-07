@@ -190,7 +190,7 @@ namespace NINA.Test.Sequencer.Behaviors {
 
             SetPrivateField(behavior, "hitElement", hitElement);
 
-            bool result = (bool)InvokePrivate(behavior, "HasNestedCompatibleDropTarget", typeof(object));
+            bool result = InvokePrivate(behavior, "HasNestedCompatibleDropTarget", typeof(object)).Should().BeOfType<bool>().Which;
 
             result.Should().BeTrue();
         }
@@ -216,7 +216,7 @@ namespace NINA.Test.Sequencer.Behaviors {
         [Test]
         [Apartment(ApartmentState.STA)]
         public void GetVisibleHeight_WithoutScrollViewerReturnsElementHeight() {
-            double height = (double)InvokePrivate("GetVisibleHeight", element);
+            double height = InvokePrivate("GetVisibleHeight", element).Should().BeOfType<double>().Which;
 
             height.Should().Be(element.ActualHeight);
         }
@@ -244,14 +244,15 @@ namespace NINA.Test.Sequencer.Behaviors {
             return new DragDropAdorner(dragDropBehavior, layoutParent, bitmap);
         }
 
-        private T GetPrivateField<T>(string fieldName) {
+        private T? GetPrivateField<T>(string fieldName) {
             return GetPrivateField<T>(sut, fieldName);
         }
 
-        private static T GetPrivateField<T>(DragOverBehavior behavior, string fieldName) {
-            FieldInfo field = typeof(DragOverBehavior).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            field.Should().NotBeNull();
-            return (T)field.GetValue(behavior);
+        private static T? GetPrivateField<T>(DragOverBehavior behavior, string fieldName) {
+            FieldInfo field = typeof(DragOverBehavior).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
+            return (T?)field.GetValue(behavior);
         }
 
         private void SetPrivateField(string fieldName, object value) {
@@ -259,18 +260,20 @@ namespace NINA.Test.Sequencer.Behaviors {
         }
 
         private static void SetPrivateField(DragOverBehavior behavior, string fieldName, object value) {
-            FieldInfo field = typeof(DragOverBehavior).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            field.Should().NotBeNull();
+            FieldInfo field = typeof(DragOverBehavior).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
             field.SetValue(behavior, value);
         }
 
-        private object InvokePrivate(string methodName, params object[] args) {
+        private object? InvokePrivate(string methodName, params object[] args) {
             return InvokePrivate(sut, methodName, args);
         }
 
-        private static object InvokePrivate(DragOverBehavior behavior, string methodName, params object[] args) {
-            MethodInfo method = typeof(DragOverBehavior).GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-            method.Should().NotBeNull();
+        private static object? InvokePrivate(DragOverBehavior behavior, string methodName, params object[] args) {
+            MethodInfo method = typeof(DragOverBehavior).GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
             return method.Invoke(behavior, args);
         }
     }

@@ -149,15 +149,15 @@ namespace NINA.Test.ProfileTest {
             int localeChangedCount = 0;
             int locationChangedCount = 0;
             int horizonChangedCount = 0;
-            ProfileChangedEventArgs lastProfileChangedArgs = null;
-            service.BeforeProfileChanging += (object sender, EventArgs args) => beforeChangingCount++;
-            service.ProfileChanged += (object sender, EventArgs args) => {
+            ProfileChangedEventArgs? lastProfileChangedArgs = null;
+            service.BeforeProfileChanging += (object? sender, EventArgs args) => beforeChangingCount++;
+            service.ProfileChanged += (object? sender, EventArgs args) => {
                 profileChangedCount++;
                 lastProfileChangedArgs = (ProfileChangedEventArgs)args;
             };
-            service.LocaleChanged += (object sender, EventArgs args) => localeChangedCount++;
-            service.LocationChanged += (object sender, EventArgs args) => locationChangedCount++;
-            service.HorizonChanged += (object sender, EventArgs args) => horizonChangedCount++;
+            service.LocaleChanged += (object? sender, EventArgs args) => localeChangedCount++;
+            service.LocationChanged += (object? sender, EventArgs args) => locationChangedCount++;
+            service.HorizonChanged += (object? sender, EventArgs args) => horizonChangedCount++;
 
             service.SelectProfile(first).Should().BeTrue();
             IProfile oldProfile = service.ActiveProfile;
@@ -168,8 +168,9 @@ namespace NINA.Test.ProfileTest {
             localeChangedCount.Should().Be(2);
             locationChangedCount.Should().Be(2);
             horizonChangedCount.Should().Be(2);
-            lastProfileChangedArgs.OldProfile.Should().BeSameAs(oldProfile);
-            lastProfileChangedArgs.NewProfile.Should().BeSameAs(service.ActiveProfile);
+            ProfileChangedEventArgs profileChangedArgs = lastProfileChangedArgs.Should().BeOfType<ProfileChangedEventArgs>().Subject;
+            profileChangedArgs.OldProfile.Should().BeSameAs(oldProfile);
+            profileChangedArgs.NewProfile.Should().BeSameAs(service.ActiveProfile);
             first.IsActive.Should().BeFalse();
             second.IsActive.Should().BeTrue();
             service.ActiveProfile.Name.Should().Be("Second");
@@ -189,9 +190,9 @@ namespace NINA.Test.ProfileTest {
             int localeChangedCount = 0;
             int locationChangedCount = 0;
             int horizonChangedCount = 0;
-            service.LocaleChanged += (object sender, EventArgs args) => localeChangedCount++;
-            service.LocationChanged += (object sender, EventArgs args) => locationChangedCount++;
-            service.HorizonChanged += (object sender, EventArgs args) => horizonChangedCount++;
+            service.LocaleChanged += (object? sender, EventArgs args) => localeChangedCount++;
+            service.LocationChanged += (object? sender, EventArgs args) => locationChangedCount++;
+            service.HorizonChanged += (object? sender, EventArgs args) => horizonChangedCount++;
 
             service.ChangeLocale(new CultureInfo("de-DE"));
             service.ChangeLatitude(52.52d);
@@ -323,7 +324,7 @@ namespace NINA.Test.ProfileTest {
             return service;
         }
 
-        private static ProfileMeta SaveProfile(string name, Action<ProfileModel> configure = null) {
+        private static ProfileMeta SaveProfile(string name, Action<ProfileModel>? configure = null) {
             using ProfileModel profile = new ProfileModel(name);
             configure?.Invoke(profile);
             profile.Save();

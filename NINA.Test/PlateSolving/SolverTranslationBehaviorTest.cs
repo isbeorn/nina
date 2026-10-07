@@ -289,7 +289,7 @@ namespace NINA.Test.PlateSolving {
             blindArgs.Should().NotContain("--radius");
         }
 
-        private static PlateSolveParameter CreateParameter(Coordinates coordinates = null, int downSampleFactor = 2) {
+        private static PlateSolveParameter CreateParameter(Coordinates? coordinates = null, int downSampleFactor = 2) {
             return new PlateSolveParameter {
                 FocalLength = 600,
                 PixelSize = 3.76,

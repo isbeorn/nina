@@ -191,12 +191,12 @@ namespace NINA.Test.Autofocus {
             imagingMediatorMock
                 .SetupSequence(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()))
                 .ReturnsAsync(renderedTestImage)
-                .ReturnsAsync((IExposureData)null)
+                .ReturnsAsync((IExposureData)null!)
                 .ReturnsAsync(blurredRenderedImage2)
                 .ReturnsAsync(blurredRenderedImage1)
                 .ReturnsAsync(renderedTestImage)
-                .ReturnsAsync((IExposureData)null)
-                .ReturnsAsync((IExposureData)null)
+                .ReturnsAsync((IExposureData)null!)
+                .ReturnsAsync((IExposureData)null!)
                 .ReturnsAsync(blurredRenderedImage1)
                 .ReturnsAsync(blurredRenderedImage2)
                 .ReturnsAsync(renderedTestImage);

@@ -37,7 +37,7 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
         [Test]
         public async Task BeforeImageSaved_IgnoresNonLightFramesAndCountsLightFramesUntilThreshold() {
             Mock<IImageSaveMediator> imageSaveMediatorMock = new Mock<IImageSaveMediator>();
-            Func<object, BeforeImageSavedEventArgs, Task> handler = null;
+            Func<object, BeforeImageSavedEventArgs, Task>? handler = null;
             imageSaveMediatorMock
                 .SetupAdd(x => x.BeforeImageSaved += It.IsAny<Func<object, BeforeImageSavedEventArgs, Task>>())
                 .Callback<Func<object, BeforeImageSavedEventArgs, Task>>(h => handler += h);
@@ -54,11 +54,11 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
                 AfterExposures = 3
             };
 
-            await handler.Invoke(this, CreateArgs("DARK"));
+            await handler.Should().BeOfType<Func<object, BeforeImageSavedEventArgs, Task>>().Which.Invoke(this, CreateArgs("DARK"));
             sut.ProgressExposures.Should().Be(0);
 
-            await handler.Invoke(this, CreateArgs("LIGHT"));
-            await handler.Invoke(this, CreateArgs("LIGHT"));
+            await handler.Should().BeOfType<Func<object, BeforeImageSavedEventArgs, Task>>().Which.Invoke(this, CreateArgs("LIGHT"));
+            await handler.Should().BeOfType<Func<object, BeforeImageSavedEventArgs, Task>>().Which.Invoke(this, CreateArgs("LIGHT"));
 
             sut.ProgressExposures.Should().Be(2);
 
@@ -103,7 +103,7 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
             imageMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData {
                 Image = new ImageParameter { ImageType = imageType }
             });
-            return new BeforeImageSavedEventArgs(imageMock.Object, Task.FromResult<IRenderedImage>(null));
+            return new BeforeImageSavedEventArgs(imageMock.Object, Task.FromResult<IRenderedImage?>(null));
         }
     }
 }

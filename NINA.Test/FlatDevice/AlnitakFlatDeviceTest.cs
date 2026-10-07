@@ -129,7 +129,7 @@ namespace NINA.Test.FlatDevice {
         [TestCase(300, ">B255\r", "*B99255")]
         public async Task TestSetBrightness(int brightness, string command, string response) {
             Assert.That(await _sut.Connect(new CancellationToken()), Is.True);
-            string actual = null;
+            string? actual = null;
 
             _mockSdk.Setup(m => m.SendCommand<SetBrightnessResponse>(It.IsAny<SetBrightnessCommand>()))
                 .Callback<ISerialCommand>(arg => actual = arg.CommandString)
@@ -146,12 +146,34 @@ namespace NINA.Test.FlatDevice {
         [TestCase(-1, null!)]
         [TestCase(256, null!)]
         public void TestSetBrightnessDisconnected(int brightness, string command) {
-            string actual = null;
+            string? actual = null;
             _mockSdk.Setup(m => m.SendCommand<SetBrightnessResponse>(It.IsAny<SetBrightnessCommand>()))
                 .Callback<ISerialCommand>(arg => actual = arg.CommandString);
 
             _sut.Brightness = brightness;
             Assert.That(actual, Is.EqualTo(command));
+        }
+
+        [Test]
+        public async Task TestDisconnectedOpenAndCloseReturnFalse() {
+            Assert.That(await _sut.Open(CancellationToken.None), Is.False);
+            Assert.That(await _sut.Close(CancellationToken.None), Is.False);
+            _mockSdk.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public async Task TestDisconnectedOpenPreservesCanceledTaskAndCloseReturnsFalse() {
+            using var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+
+            Task<bool> opening = _sut.Open(cancellation.Token);
+            Func<Task> completion = () => opening;
+            var exception = await completion.Should().ThrowAsync<TaskCanceledException>();
+
+            exception.Which.CancellationToken.Should().Be(cancellation.Token);
+            Assert.That(opening.IsCanceled, Is.True);
+            Assert.That(await _sut.Close(cancellation.Token), Is.False);
+            _mockSdk.VerifyNoOtherCalls();
         }
 
         [Test]
@@ -204,7 +226,7 @@ namespace NINA.Test.FlatDevice {
         public async Task TestSetLightOn() {
             Assert.That(await _sut.Connect(new CancellationToken()), Is.True);
 
-            string actual = null;
+            string? actual = null;
             _mockSdk.Setup(m => m.SendCommand<LightOnResponse>(It.IsAny<LightOnCommand>()))
                 .Callback<ISerialCommand>(arg => actual = arg.CommandString)
                 .Returns(Task.FromResult(new LightOnResponse { DeviceResponse = "*L99OOO" }));
@@ -216,7 +238,7 @@ namespace NINA.Test.FlatDevice {
         public async Task TestSetLightOnInvalidResponse() {
             Assert.That(await _sut.Connect(new CancellationToken()), Is.True);
 
-            string actual = null;
+            string? actual = null;
             _mockSdk.Setup(m => m.SendCommand<LightOnResponse>(It.IsAny<LightOnCommand>()))
                 .Callback<ISerialCommand>(arg => actual = arg.CommandString)
                 .Throws(new InvalidDeviceResponseException());
@@ -228,7 +250,7 @@ namespace NINA.Test.FlatDevice {
         public async Task TestSetLightOff() {
             Assert.That(await _sut.Connect(new CancellationToken()), Is.True);
 
-            string actual = null;
+            string? actual = null;
             _mockSdk.Setup(m => m.SendCommand<LightOffResponse>(It.IsAny<LightOffCommand>()))
                 .Callback<ISerialCommand>(arg => actual = arg.CommandString)
                 .Returns(Task.FromResult(new LightOffResponse { DeviceResponse = "*D99OOO" }));
@@ -240,7 +262,7 @@ namespace NINA.Test.FlatDevice {
         public async Task TestSetLightOffInvalidResponse() {
             Assert.That(await _sut.Connect(new CancellationToken()), Is.True);
 
-            string actual = null;
+            string? actual = null;
             _mockSdk.Setup(m => m.SendCommand<LightOffResponse>(It.IsAny<LightOffCommand>()))
                 .Callback<ISerialCommand>(arg => actual = arg.CommandString)
                 .Throws(new InvalidDeviceResponseException());

@@ -62,7 +62,7 @@ namespace NINA.Test.Sequencer {
             var itemMock = new Mock<ISequenceItem>();
             var validatableItemMock = itemMock.As<IValidatable>();
             validatableItemMock.Setup(x => x.Validate()).Returns(true);
-            validatableItemMock.SetupGet(x => x.Issues).Returns((IList<string>)null);
+            validatableItemMock.SetupGet<IList<string>?>(x => x.Issues).Returns((IList<string>?)null);
 
             rootMock.Setup(x => x.GetItemsSnapshot()).Returns(new List<ISequenceItem>() { itemMock.Object });
             rootMock.Setup(x => x.GetTriggersSnapshot()).Returns(new List<ISequenceTrigger>());

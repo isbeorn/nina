@@ -23,12 +23,16 @@ namespace NINA.Test.Plugin {
         private readonly Task serverTask;
         private readonly byte[] body;
         private readonly string contentType;
-        private readonly string fileName;
+        private readonly string? fileName;
+        private readonly Task? responseGate;
+        private readonly int statusCode;
 
-        public LoopbackHttpServer(byte[] body, string contentType = "application/octet-stream", string fileName = null) {
+        public LoopbackHttpServer(byte[] body, string contentType = "application/octet-stream", string? fileName = null, Task? responseGate = null, int statusCode = 200) {
             this.body = body;
             this.contentType = contentType;
             this.fileName = fileName;
+            this.responseGate = responseGate;
+            this.statusCode = statusCode;
             listener = new TcpListener(IPAddress.Loopback, 0);
             listener.Start();
             int port = ((IPEndPoint)listener.LocalEndpoint).Port;
@@ -51,10 +55,11 @@ namespace NINA.Test.Plugin {
                 using TcpClient client = await listener.AcceptTcpClientAsync();
                 await using NetworkStream stream = client.GetStream();
                 await ReadHeaders(stream);
+                if (responseGate != null) await responseGate;
 
                 string contentDisposition = string.IsNullOrEmpty(fileName) ? string.Empty : $"Content-Disposition: attachment; filename=\"{fileName}\"\r\n";
                 string headers =
-                    "HTTP/1.1 200 OK\r\n" +
+                    $"HTTP/1.1 {statusCode} Test response\r\n" +
                     $"Content-Length: {body.Length}\r\n" +
                     $"Content-Type: {contentType}\r\n" +
                     contentDisposition +
@@ -70,13 +75,26 @@ namespace NINA.Test.Plugin {
 
         private static async Task ReadHeaders(NetworkStream stream) {
             var buffer = new byte[1];
+            var headers = new StringBuilder();
             var recentBytes = new Queue<byte>(4);
             while (await stream.ReadAsync(buffer.AsMemory(0, 1)) == 1) {
+                headers.Append((char)buffer[0]);
                 recentBytes.Enqueue(buffer[0]);
                 while (recentBytes.Count > 4) {
                     recentBytes.Dequeue();
                 }
                 if (recentBytes.Count == 4 && recentBytes.SequenceEqual(new byte[] { 13, 10, 13, 10 })) {
+                    string? contentLength = headers.ToString().Split("\r\n")
+                        .FirstOrDefault(line => line.StartsWith("Content-Length:", StringComparison.OrdinalIgnoreCase));
+                    if (contentLength != null) {
+                        int remaining = int.Parse(contentLength.Split(':', 2)[1].Trim());
+                        var bodyBuffer = new byte[4096];
+                        while (remaining > 0) {
+                            int read = await stream.ReadAsync(bodyBuffer.AsMemory(0, Math.Min(remaining, bodyBuffer.Length)));
+                            if (read == 0) throw new EndOfStreamException();
+                            remaining -= read;
+                        }
+                    }
                     return;
                 }
             }

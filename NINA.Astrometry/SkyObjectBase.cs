@@ -240,7 +240,7 @@ namespace NINA.Astrometry {
                 if (_image == null) {
                     if(imageFactory != null) {
                         _ = Task.Run(async () => {
-                            _image = await Task.Run(() => imageFactory(this));
+                            _image = await imageFactory(this);
                             _image.Freeze();
                             RaisePropertyChanged(nameof(Image));
                         });

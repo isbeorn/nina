@@ -44,8 +44,8 @@ namespace NINA.Test.Utility {
         public async Task WatchTaskAsync_TaskCompletes_RaisesCompletionNotifications() {
             TaskCompletionSource<string> source = new TaskCompletionSource<string>();
             NotifyTaskCompletion<string> completion = new NotifyTaskCompletion<string>(source.Task);
-            List<string> changedProperties = new List<string>();
-            completion.PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs args) => changedProperties.Add(args.PropertyName);
+            List<string?> changedProperties = new List<string?>();
+            completion.PropertyChanged += (object? sender, System.ComponentModel.PropertyChangedEventArgs args) => changedProperties.Add(args.PropertyName);
 
             source.SetResult("done");
             await completion.TaskCompletion;
@@ -64,8 +64,8 @@ namespace NINA.Test.Utility {
         public async Task WatchTaskAsync_TaskFaults_ExposesErrorMessage() {
             TaskCompletionSource<int> source = new TaskCompletionSource<int>();
             NotifyTaskCompletion<int> completion = new NotifyTaskCompletion<int>(source.Task);
-            List<string> changedProperties = new List<string>();
-            completion.PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs args) => changedProperties.Add(args.PropertyName);
+            List<string?> changedProperties = new List<string?>();
+            completion.PropertyChanged += (object? sender, System.ComponentModel.PropertyChangedEventArgs args) => changedProperties.Add(args.PropertyName);
 
             source.SetException(new InvalidOperationException("camera offline"));
             await completion.TaskCompletion;

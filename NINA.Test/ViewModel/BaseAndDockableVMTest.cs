@@ -65,7 +65,7 @@ namespace NINA.Test.ViewModel {
             Mock<IProfileService> profileService = new Mock<IProfileService>();
             EnsurePuzzlePieceResourceIfApplicationExists();
             DockableVM vm = new DockableVM(profileService.Object);
-            List<string> changedProperties = new List<string>();
+            List<string?> changedProperties = new List<string?>();
             vm.PropertyChanged += (_, args) => changedProperties.Add(args.PropertyName);
 
             profileService.Raise(x => x.LocationChanged += null, EventArgs.Empty);
@@ -82,7 +82,7 @@ namespace NINA.Test.ViewModel {
             Mock<IProfileService> profileService = new Mock<IProfileService>();
             EnsurePuzzlePieceResourceIfApplicationExists();
             DockableVM vm = new DockableVM(profileService.Object);
-            List<string> changedProperties = new List<string>();
+            List<string?> changedProperties = new List<string?>();
             GeometryGroup geometry = new GeometryGroup();
             vm.PropertyChanged += (_, args) => changedProperties.Add(args.PropertyName);
 

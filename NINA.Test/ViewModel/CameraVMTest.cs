@@ -337,6 +337,47 @@ namespace NINA.Test.ViewModel {
             setPoints.Should().Equal(targetTemperature, currentTemperature);
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task RescanCommand_KeepsDeviceDiscoveryOffCallerThread(bool deferredDiscovery) {
+            int callerThread = Environment.CurrentManagedThreadId;
+            CameraVM vm = CreateVm();
+            var command = (AsyncCommandBase)vm.RescanDevicesCommand;
+            using (var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5))) {
+                while (!command.CanExecute(null)) {
+                    await Task.Delay(10, timeout.Token);
+                }
+            }
+            deviceChooser.Invocations.Clear();
+            var started = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            int resultThread = callerThread;
+            deviceChooser.Setup(x => x.GetEquipment()).Returns(() => {
+                started.TrySetResult(Environment.CurrentManagedThreadId);
+                return deferredDiscovery ? release.Task : Task.CompletedTask;
+            });
+            deviceChooser.SetupGet(x => x.Devices).Returns(() => {
+                resultThread = Environment.CurrentManagedThreadId;
+                return new List<IDevice>();
+            });
+
+            Task execution = command.ExecuteAsync(null);
+            try {
+                (await started.Task.WaitAsync(TimeSpan.FromSeconds(5))).Should().NotBe(callerThread);
+                if (deferredDiscovery) {
+                    command.CanExecute(null).Should().BeFalse();
+                }
+                release.TrySetResult();
+                await execution.WaitAsync(TimeSpan.FromSeconds(5));
+                resultThread.Should().NotBe(callerThread);
+                command.CanExecute(null).Should().BeTrue();
+                deviceChooser.Verify(x => x.GetEquipment(), Times.Once);
+            } finally {
+                release.TrySetResult();
+                await execution.WaitAsync(TimeSpan.FromSeconds(5));
+            }
+        }
+
         private CameraVM CreateVm() {
             return new CameraVM(profileService.Object, cameraMediator.Object, filterWheelMediator.Object, applicationStatusMediator.Object, deviceChooser.Object);
         }
@@ -408,14 +449,12 @@ namespace NINA.Test.ViewModel {
         }
 
         private static void EnsureApplicationResources() {
-            if (Application.Current == null) {
-                _ = new Application {
-                    ShutdownMode = ShutdownMode.OnExplicitShutdown
-                };
-            }
+            var application = Application.Current ?? new Application {
+                ShutdownMode = ShutdownMode.OnExplicitShutdown
+            };
 
-            Application.Current.Resources["PuzzlePieceSVG"] = new GeometryGroup();
-            Application.Current.Resources["CameraSVG"] = new GeometryGroup();
+            application.Resources["PuzzlePieceSVG"] = new GeometryGroup();
+            application.Resources["CameraSVG"] = new GeometryGroup();
         }
     }
 }

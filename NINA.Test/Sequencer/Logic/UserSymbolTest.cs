@@ -47,7 +47,7 @@ namespace NINA.Test.Sequencer.Logic {
             UserSymbol.ClearUserSymbols();
         }
 
-        private Variable CreateVariable(string identifier, string definition = "0", ISequenceContainer parent = null) {
+        private Variable CreateVariable(string identifier, string definition = "0", ISequenceContainer? parent = null) {
             var variable = new Variable {
                 SymbolBroker = _symbolBroker.Object
             };
@@ -64,7 +64,7 @@ namespace NINA.Test.Sequencer.Logic {
             return variable;
         }
 
-        private Constant CreateConstant(string identifier, string definition = "0", ISequenceContainer parent = null) {
+        private Constant CreateConstant(string identifier, string definition = "0", ISequenceContainer? parent = null) {
             var constant = new Constant {
                 SymbolBroker = _symbolBroker.Object
             };

@@ -277,7 +277,9 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
         public IWindowService WindowService { get; set; } = new WindowService();
 
         public async Task<bool> Open(CancellationToken ct, int delay = 300) {
-            if (!Connected) return await Task.Run(() => false, ct);
+            if (!Connected) {
+                return ct.IsCancellationRequested ? await Task.FromCanceled<bool>(ct) : false;
+            }
             return await Task.Run(async () => {
                 var command = new OpenCommand();
                 try {

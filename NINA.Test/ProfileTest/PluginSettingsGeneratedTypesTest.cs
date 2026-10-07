@@ -78,7 +78,7 @@ namespace NINA.Test.ProfileTest {
         public void SetValue_RaisesPluginScopedPropertyNameAndSkipsIdenticalTypedValue() {
             Guid pluginId = Guid.Parse("72d11817-07ef-4b72-b0ce-74f7be59f5c2");
             PluginSettings settings = new PluginSettings();
-            List<string> propertyNames = CapturePropertyChanges(settings);
+            List<string?> propertyNames = CapturePropertyChanges(settings);
 
             settings.SetValue(pluginId, "gain", 120);
             settings.SetValue(pluginId, "gain", 120);
@@ -97,7 +97,7 @@ namespace NINA.Test.ProfileTest {
             DateTime timestamp = new DateTime(2026, 4, 17, 21, 15, 0, DateTimeKind.Utc);
             Guid storedGuid = Guid.Parse("039ac49a-77c5-4fa7-806a-c992412b3b94");
             SeedGeneratedPrimitiveValues(settings, pluginId, timestamp, storedGuid);
-            List<string> propertyNames = CapturePropertyChanges(settings);
+            List<string?> propertyNames = CapturePropertyChanges(settings);
 
             SeedGeneratedPrimitiveValues(settings, pluginId, timestamp, storedGuid);
 
@@ -116,7 +116,7 @@ namespace NINA.Test.ProfileTest {
                 pluginId,
                 new DateTime(2026, 4, 17, 21, 15, 0, DateTimeKind.Utc),
                 Guid.Parse("7c6d9a1d-88cb-479a-9e3b-a7e37e419f5b"));
-            List<string> propertyNames = CapturePropertyChanges(settings);
+            List<string?> propertyNames = CapturePropertyChanges(settings);
 
             settings.SetValue(pluginId, "bool", false);
             settings.SetValue(pluginId, "byte", (byte)252);
@@ -191,9 +191,9 @@ namespace NINA.Test.ProfileTest {
             settings.SetValue(pluginId, "guid", storedGuid);
         }
 
-        private static List<string> CapturePropertyChanges(INotifyPropertyChanged source) {
-            List<string> propertyNames = new List<string>();
-            source.PropertyChanged += (object sender, PropertyChangedEventArgs args) => propertyNames.Add(args.PropertyName);
+        private static List<string?> CapturePropertyChanges(INotifyPropertyChanged source) {
+            List<string?> propertyNames = new List<string?>();
+            source.PropertyChanged += (object? sender, PropertyChangedEventArgs args) => propertyNames.Add(args.PropertyName);
             return propertyNames;
         }
     }

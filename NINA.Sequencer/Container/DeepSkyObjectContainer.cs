@@ -65,6 +65,7 @@ namespace NINA.Sequencer.Container {
         private bool exposureInfoListExpanded;
         private AsyncObservableCollection<ExposureInfo> exposureInfoList;
         private readonly ISymbolBroker symbolBroker;
+        private readonly EventHandler targetCoordinatesChangedHandler;
 
         private InputTarget target;
 
@@ -86,6 +87,8 @@ namespace NINA.Sequencer.Container {
             this.cameraMediator = cameraMediator;
             this.filterWheelMediator = filterWheelMediator;
             this.symbolBroker = symbolBroker;
+            targetCoordinatesChangedHandler = new InputTargetCoordinatesChangedHandler<DeepSkyObjectContainer>(
+                this, static (owner, sender, args) => owner.Target_OnCoordinatesChanged(sender, args)).Handle;
             Task.Run(() => NighttimeData = nighttimeCalculator.Calculate());
             ExposureInfoList = new AsyncObservableCollection<ExposureInfo>();
             Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
@@ -157,11 +160,11 @@ namespace NINA.Sequencer.Container {
             set {
                 if (ReferenceEquals(target, value)) return;
                 if (target != null) {
-                    WeakEventManager<InputTarget, EventArgs>.RemoveHandler(target, nameof(InputTarget.CoordinatesChanged), Target_OnCoordinatesChanged);
+                    target.CoordinatesChanged -= targetCoordinatesChangedHandler;
                 }
                 target = value;
                 if (target != null) {
-                    WeakEventManager<InputTarget, EventArgs>.AddHandler(target, nameof(InputTarget.CoordinatesChanged), Target_OnCoordinatesChanged);
+                    target.CoordinatesChanged += targetCoordinatesChangedHandler;
                 }
                 RaisePropertyChanged();
             }

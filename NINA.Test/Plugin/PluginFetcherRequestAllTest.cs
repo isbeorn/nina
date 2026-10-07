@@ -87,7 +87,7 @@ namespace NINA.Test.Plugin {
             string value = typeof(PluginLoader).Assembly
                 .GetCustomAttributes<AssemblyMetadataAttribute>()
                 .Single(x => x.Key == "PluginMinimumApplicationVersion")
-                .Value;
+                .Value ?? throw new AssertionException("PluginMinimumApplicationVersion metadata must have a value.");
             return new Version(value);
         }
 

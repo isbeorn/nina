@@ -44,12 +44,13 @@ namespace NINA.Test.PlateSolving {
             result.Success.Should().BeTrue();
             solver.ValidateCalled.Should().BeTrue();
             solver.SolveImplCalled.Should().BeTrue();
-            solver.SeenImageProperties.FocalLength.Should().Be(600);
-            solver.SeenImageProperties.PixelSize.Should().BeApproximately(7.52, 1e-10);
-            solver.SeenImageProperties.ImageWidth.Should().Be(640);
-            solver.SeenImageProperties.ImageHeight.Should().Be(480);
-            solver.SeenImageProperties.ArcSecPerPixel.Should().BeGreaterThan(0);
-            solver.SeenImageProperties.FoVW.Should().BeGreaterThan(solver.SeenImageProperties.FoVH);
+            var imageProperties = solver.SeenImageProperties.Should().BeOfType<PlateSolveImageProperties>().Subject;
+            imageProperties.FocalLength.Should().Be(600);
+            imageProperties.PixelSize.Should().BeApproximately(7.52, 1e-10);
+            imageProperties.ImageWidth.Should().Be(640);
+            imageProperties.ImageHeight.Should().Be(480);
+            imageProperties.ArcSecPerPixel.Should().BeGreaterThan(0);
+            imageProperties.FoVW.Should().BeGreaterThan(imageProperties.FoVH);
         }
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace NINA.Test.PlateSolving {
             public bool ValidateCalled { get; private set; }
             public bool SolveImplCalled { get; private set; }
             public bool ThrowDuringValidation { get; set; }
-            public PlateSolveImageProperties SeenImageProperties { get; private set; }
+            public PlateSolveImageProperties? SeenImageProperties { get; private set; }
 
             protected override void EnsureSolverValid(PlateSolveParameter parameter) {
                 ValidateCalled = true;

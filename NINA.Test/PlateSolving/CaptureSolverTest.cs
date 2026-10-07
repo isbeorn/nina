@@ -153,7 +153,7 @@ namespace NINA.Test.PlateSolving {
 
             imagingMediatorMock
                 .Setup(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
-                .ReturnsAsync((IRenderedImage)null);
+                .ReturnsAsync((IRenderedImage)null!);
             imageSolverMock
                 .Setup(x => x.Solve(imageDataMock.Object, It.IsAny<PlateSolveParameter>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(testResult);
@@ -206,7 +206,7 @@ namespace NINA.Test.PlateSolving {
             var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 1 };
             imagingMediatorMock
                 .Setup(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
-                .ReturnsAsync((IRenderedImage)null);
+                .ReturnsAsync((IRenderedImage)null!);
 
             var sut = new CaptureSolver(plateSolverMock.Object, blindSolverMock.Object, imagingMediatorMock.Object, filterMediatorMock.Object);
             sut.ImageSolver = imageSolverMock.Object;
