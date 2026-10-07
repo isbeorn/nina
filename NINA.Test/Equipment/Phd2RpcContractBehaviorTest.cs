@@ -41,13 +41,13 @@ namespace NINA.Test.Equipment {
 
             JObject json = JObject.Parse(JsonConvert.SerializeObject(request));
 
-            json["method"].Value<string>().Should().Be("guide");
-            Guid.TryParse(json["id"].Value<string>(), out _).Should().BeTrue();
-            json["params"]["recalibrate"].Value<bool>().Should().BeTrue();
-            json["params"]["roi"].Values<int>().Should().Equal(10, 20, 300, 400);
-            json["params"]["settle"]["pixels"].Value<double>().Should().Be(1.25);
-            json["params"]["settle"]["time"].Value<int>().Should().Be(8);
-            json["params"]["settle"]["timeout"].Value<int>().Should().Be(45);
+            (json["method"]?.Value<string>()).Should().Be("guide");
+            Guid.TryParse(json.Value<string>("id"), out _).Should().BeTrue();
+            (json["params"]?["recalibrate"]?.Value<bool>()).Should().BeTrue();
+            (json["params"]?["roi"]?.Values<int>()).Should().Equal(10, 20, 300, 400);
+            (json["params"]?["settle"]?["pixels"]?.Value<double>()).Should().Be(1.25);
+            (json["params"]?["settle"]?["time"]?.Value<int>()).Should().Be(8);
+            (json["params"]?["settle"]?["timeout"]?.Value<int>()).Should().Be(45);
         }
 
         /// <summary>
@@ -77,14 +77,14 @@ namespace NINA.Test.Equipment {
             JObject ditherJson = JObject.Parse(JsonConvert.SerializeObject(dither));
             JObject lockShiftJson = JObject.Parse(JsonConvert.SerializeObject(lockShift));
 
-            ditherJson["method"].Value<string>().Should().Be("dither");
-            ditherJson["params"]["amount"].Value<double>().Should().Be(3.5);
-            ditherJson["params"]["raOnly"].Value<bool>().Should().BeTrue();
-            ditherJson["params"]["settle"]["pixels"].Value<double>().Should().Be(0.7);
-            lockShiftJson["method"].Value<string>().Should().Be("set_lock_shift_params");
-            lockShiftJson["params"]["rate"].Values<double>().Should().Equal(0.2, -0.1);
-            lockShiftJson["params"]["units"].Value<string>().Should().Be("arcsec/hr");
-            lockShiftJson["params"]["axes"].Value<string>().Should().Be("RA/Dec");
+            (ditherJson["method"]?.Value<string>()).Should().Be("dither");
+            (ditherJson["params"]?["amount"]?.Value<double>()).Should().Be(3.5);
+            (ditherJson["params"]?["raOnly"]?.Value<bool>()).Should().BeTrue();
+            (ditherJson["params"]?["settle"]?["pixels"]?.Value<double>()).Should().Be(0.7);
+            (lockShiftJson["method"]?.Value<string>()).Should().Be("set_lock_shift_params");
+            (lockShiftJson["params"]?["rate"]?.Values<double>()).Should().Equal(0.2, -0.1);
+            (lockShiftJson["params"]?["units"]?.Value<string>()).Should().Be("arcsec/hr");
+            (lockShiftJson["params"]?["axes"]?.Value<string>()).Should().Be("RA/Dec");
         }
 
         /// <summary>
@@ -116,14 +116,14 @@ namespace NINA.Test.Equipment {
         [TestCase(typeof(Phd2SaveImage), "save_image")]
         [TestCase(typeof(Phd2Shutdown), "shutdown")]
         public void Phd2ZeroArgumentMethods_SerializeStableMethodNames(Type methodType, string expectedMethod) {
-            var first = (Phd2Method)Activator.CreateInstance(methodType);
-            var second = (Phd2Method)Activator.CreateInstance(methodType);
+            var first = Activator.CreateInstance(methodType).Should().BeAssignableTo<Phd2Method>().Subject;
+            var second = Activator.CreateInstance(methodType).Should().BeAssignableTo<Phd2Method>().Subject;
 
             JObject json = JObject.Parse(JsonConvert.SerializeObject(first));
 
             first.Method.Should().Be(expectedMethod);
-            json["method"].Value<string>().Should().Be(expectedMethod);
-            Guid.TryParse(json["id"].Value<string>(), out _).Should().BeTrue();
+            (json["method"]?.Value<string>()).Should().Be(expectedMethod);
+            Guid.TryParse(json.Value<string>("id"), out _).Should().BeTrue();
             first.Id.Should().NotBe(second.Id);
         }
 
@@ -137,10 +137,10 @@ namespace NINA.Test.Equipment {
             const string lockShiftJson = """{"jsonrpc":"2.0","id":"3","result":{"enabled":true,"rate":[0.1,-0.2],"units":"arcsec/hr","axes":"RA/Dec"}}""";
             const string errorJson = """{"jsonrpc":"2.0","id":"4","error":{"code":-32602,"message":"Invalid params"}}""";
 
-            GetProfileResponse profile = JsonConvert.DeserializeObject<GetProfileResponse>(profileJson);
-            GetProfilesResponse profiles = JsonConvert.DeserializeObject<GetProfilesResponse>(profilesJson);
-            GetLockShiftParamsResponse lockShift = JsonConvert.DeserializeObject<GetLockShiftParamsResponse>(lockShiftJson);
-            GenericPhdMethodResponse error = JsonConvert.DeserializeObject<GenericPhdMethodResponse>(errorJson);
+            GetProfileResponse profile = JsonConvert.DeserializeObject<GetProfileResponse>(profileJson).Should().BeOfType<GetProfileResponse>().Subject;
+            GetProfilesResponse profiles = JsonConvert.DeserializeObject<GetProfilesResponse>(profilesJson).Should().BeOfType<GetProfilesResponse>().Subject;
+            GetLockShiftParamsResponse lockShift = JsonConvert.DeserializeObject<GetLockShiftParamsResponse>(lockShiftJson).Should().BeOfType<GetLockShiftParamsResponse>().Subject;
+            GenericPhdMethodResponse error = JsonConvert.DeserializeObject<GenericPhdMethodResponse>(errorJson).Should().BeOfType<GenericPhdMethodResponse>().Subject;
 
             profile.result.id.Should().Be(7);
             profile.result.name.Should().Be("OAG profile");

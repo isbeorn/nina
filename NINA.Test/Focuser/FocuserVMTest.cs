@@ -128,7 +128,7 @@ namespace NINA.Test.Focuser {
 
         [Test]
         public async Task ConnectNullFocuser() {
-            mockFocuserChooserVm.Setup(m => m.SelectedDevice).Returns((IDevice)null);
+            mockFocuserChooserVm.Setup(m => m.SelectedDevice).Returns((IDevice)null!);
 
             var result = await sut.Connect();
 

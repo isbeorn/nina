@@ -67,7 +67,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ContentPresenter x:Name="Content" Content="{Binding}">
+    <ContentPresenter x:Name="ContainerContentPresenter" Content="{Binding}">
         <ContentPresenter.Resources>
             <utility:BindingProxy x:Key="ViewModel" Data="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SequenceView}}, Path=DataContext}" />
 

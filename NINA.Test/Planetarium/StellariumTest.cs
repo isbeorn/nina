@@ -52,7 +52,7 @@ namespace NINA.Test.Planetarium {
         public void TestSellariumViewDeSerialization() {
             const string response = "{ \"altAz\":[-0.952086, 0.188428, 0.240887],\"j2000\":[0.266389, -0.258249, 0.928625],\"jNow\":[0.264699, -0.256746, 0.929525]}";
 
-            var result = JObject.Parse(response).ToObject<Stellarium.StellariumView>();
+            var result = JObject.Parse(response).ToObject<Stellarium.StellariumView>().Should().BeOfType<Stellarium.StellariumView>().Subject;
 
             result.Should().NotBeNull();
             result.AltAz[0].Should().Be(-0.952086);

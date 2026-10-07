@@ -470,9 +470,10 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
         [Test]
         public void TestLinearity_DetectsLinearAndNonLinearExposureResponse() {
             SkyFlat sut = CreateSut();
-            MethodInfo method = typeof(SkyFlat).GetMethod("TestLinearity", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo method = typeof(SkyFlat).GetMethod("TestLinearity", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected TestLinearity method was not found.");
 
-            bool linear = (bool)method.Invoke(sut, new object[] {
+            object? linear = method.Invoke(sut, new object[] {
                 new List<(double exposure, double adu)> {
                     (1, 100),
                     (2, 200),
@@ -480,7 +481,7 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
                 }
             });
 
-            bool nonLinear = (bool)method.Invoke(sut, new object[] {
+            object? nonLinear = method.Invoke(sut, new object[] {
                 new List<(double exposure, double adu)> {
                     (1, 100),
                     (2, 150),
@@ -488,8 +489,8 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
                 }
             });
 
-            linear.Should().BeTrue();
-            nonLinear.Should().BeFalse();
+            linear.Should().BeOfType<bool>().Which.Should().BeTrue();
+            nonLinear.Should().BeOfType<bool>().Which.Should().BeFalse();
         }
 
         /// <summary>

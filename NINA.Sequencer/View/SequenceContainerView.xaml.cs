@@ -156,7 +156,7 @@ namespace NINA.View.Sequencer {
         private void TemplateContainerButton_Click(object sender, RoutedEventArgs e) {
             if (sender is Control ctrl) {
                 if (ctrl.DataContext is ISequenceContainer container) {
-                    if (Content.Resources["ViewModel"] is BindingProxy proxy) {
+                    if (ContainerContentPresenter.Resources["ViewModel"] is BindingProxy proxy) {
                         var prop = proxy.Data.GetType().GetProperty("AddTemplateCommand");
 
                         var value = prop.GetValue(proxy.Data) as ICommand;
@@ -173,7 +173,7 @@ namespace NINA.View.Sequencer {
         private void TargetContainerButton_Click(object sender, RoutedEventArgs e) {
             if (sender is Control ctrl) {
                 if (ctrl.DataContext is IDeepSkyObjectContainer container) {
-                    if (Content.Resources["ViewModel"] is BindingProxy proxy) {
+                    if (ContainerContentPresenter.Resources["ViewModel"] is BindingProxy proxy) {
                         var prop = proxy.Data.GetType().GetProperty("AddTargetToControllerCommand");
 
                         var value = prop.GetValue(proxy.Data) as ICommand;

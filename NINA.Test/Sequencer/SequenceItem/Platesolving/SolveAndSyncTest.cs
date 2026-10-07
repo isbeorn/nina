@@ -194,7 +194,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
             var service = new Mock<IWindowService>();
             var captureSolver = new Mock<ICaptureSolver>();
             var coordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(20), Epoch.J2000);
-            CaptureSequence captureSequence = null;
+            CaptureSequence? captureSequence = null;
             captureSolver
                 .Setup(x => x.Solve(It.IsAny<CaptureSequence>(), It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
                 .Callback<CaptureSequence, CaptureSolverParameter, IProgress<PlateSolveProgress>, IProgress<ApplicationStatus>, CancellationToken>((seq, _, _, _, _) => captureSequence = seq)
@@ -217,7 +217,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
 
             await sut.Execute(default, CancellationToken.None);
 
-            captureSequence.Gain.Should().Be(456);
+            captureSequence.Should().BeOfType<CaptureSequence>().Which.Gain.Should().Be(456);
         }
 
         [Test]

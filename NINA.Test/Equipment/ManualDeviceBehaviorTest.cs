@@ -120,11 +120,11 @@ namespace NINA.Test.Equipment {
                 Task = task;
             }
 
-            public Dispatcher Dispatcher => null;
+            public Dispatcher? Dispatcher => null;
             public DispatcherPriority Priority { get; set; }
             public DispatcherOperationStatus Status => Task.IsCompleted ? DispatcherOperationStatus.Completed : DispatcherOperationStatus.Pending;
             public Task Task { get; }
-            public object Result => null;
+            public object? Result => null;
             public TaskAwaiter GetAwaiter() => Task.GetAwaiter();
             public DispatcherOperationStatus Wait() => Status;
             public DispatcherOperationStatus Wait(TimeSpan timeout) => Status;

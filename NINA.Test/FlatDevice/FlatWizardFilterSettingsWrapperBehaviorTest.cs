@@ -37,7 +37,7 @@ namespace NINA.Test.FlatDevice {
                 FlatWizardFilterSettings = settings
             };
             var sut = new FlatWizardFilterSettingsWrapper(filter, settings, bitDepth: 16, new CameraInfo(), new FlatDeviceInfo());
-            var changed = new List<string>();
+            var changed = new List<string?>();
             sut.PropertyChanged += (_, args) => changed.Add(args.PropertyName);
 
             sut.HistogramMeanTargetADU.Should().Be(HistogramMath.HistogramMeanAndCameraBitDepthToAdu(0.5, 16).ToString("0"));
@@ -70,7 +70,7 @@ namespace NINA.Test.FlatDevice {
                 FlatWizardFilterSettings = original
             };
             var sut = new FlatWizardFilterSettingsWrapper(filter, original, bitDepth: 14, new CameraInfo(), new FlatDeviceInfo());
-            var changed = new List<string>();
+            var changed = new List<string?>();
             sut.PropertyChanged += (_, args) => changed.Add(args.PropertyName);
 
             sut.IsChecked = true;

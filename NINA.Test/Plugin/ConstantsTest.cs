@@ -32,7 +32,7 @@ namespace NINA.Test.Plugin {
             string expectedMinimumApplicationVersion = typeof(PluginLoader).Assembly
                 .GetCustomAttributes<AssemblyMetadataAttribute>()
                 .Single(x => x.Key == "PluginMinimumApplicationVersion")
-                .Value;
+                .Value ?? throw new AssertionException("PluginMinimumApplicationVersion metadata must have a value.");
             var expectedVersion = new Version(expectedMinimumApplicationVersion);
             string expectedVersionFolder = $"{expectedVersion.Major}.{expectedVersion.Minor}.{expectedVersion.Build}";
 

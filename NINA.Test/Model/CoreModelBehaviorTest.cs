@@ -80,8 +80,8 @@ namespace NINA.Test.Model {
         [Test]
         public void ApplicationStatus_SetProperties_RaisesExpectedNotifications() {
             ApplicationStatus status = new ApplicationStatus();
-            List<string> changedProperties = new List<string>();
-            status.PropertyChanged += (object sender, PropertyChangedEventArgs args) => changedProperties.Add(args.PropertyName);
+            List<string?> changedProperties = new List<string?>();
+            status.PropertyChanged += (object? sender, PropertyChangedEventArgs args) => changedProperties.Add(args.PropertyName);
 
             status.Source = "Capture";
             status.Status = "Exposing";

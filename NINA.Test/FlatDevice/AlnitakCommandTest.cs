@@ -9,6 +9,7 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #endregion "copyright"
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 using NINA.Core.Utility.SerialCommunication;
@@ -29,8 +30,8 @@ namespace NINA.Test.FlatDevice {
         [TestCase("State", "SOOO")]
         [TestCase("FirmwareVersion", "VOOO")]
         public void TestCommand(string commandName, string commandString) {
-            var sut = (ISerialCommand)Activator.CreateInstance("NINA.Equipment",
-                $"NINA.Equipment.SDK.FlatDeviceSDKs.AlnitakSDK.{commandName}Command").Unwrap();
+            var sut = (Activator.CreateInstance("NINA.Equipment",
+                $"NINA.Equipment.SDK.FlatDeviceSDKs.AlnitakSDK.{commandName}Command")?.Unwrap()).Should().BeAssignableTo<ISerialCommand>().Subject;
             Assert.That(sut.CommandString, Is.EqualTo($">{commandString}\r"));
             Assert.That(sut.HasResponse, Is.True);
         }

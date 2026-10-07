@@ -261,7 +261,7 @@ namespace NINA.Test.Sequencer.SequenceItem {
                 epoch: Epoch.J2000);
             (SlewScopeToRaDec instruction, Mock<ITelescopeMediator> telescopeMediatorMock) = CreateExecutableSlewScopeToRaDec();
             CustomTrigger customTrigger = CreateCustomTrigger();
-            Coordinates slewedCoordinates = null;
+            Coordinates? slewedCoordinates = null;
 
             telescopeMediatorMock
                 .Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>()))
@@ -275,9 +275,9 @@ namespace NINA.Test.Sequencer.SequenceItem {
             await customTrigger.Execute(target, progress: new Progress<ApplicationStatus>(), token: CancellationToken.None);
 
             instruction.Inherited.Should().BeTrue();
-            slewedCoordinates.Should().NotBeNull();
-            slewedCoordinates.RADegrees.Should().BeApproximately(targetCoordinates.RADegrees, Tolerance);
-            slewedCoordinates.Dec.Should().BeApproximately(targetCoordinates.Dec, Tolerance);
+            Coordinates actualCoordinates = slewedCoordinates.Should().BeOfType<Coordinates>().Which;
+            actualCoordinates.RADegrees.Should().BeApproximately(targetCoordinates.RADegrees, Tolerance);
+            actualCoordinates.Dec.Should().BeApproximately(targetCoordinates.Dec, Tolerance);
             AssertTriggerRunnerContext(
                 customTrigger: customTrigger,
                 sourceCoordinates: targetCoordinates,
@@ -346,7 +346,7 @@ namespace NINA.Test.Sequencer.SequenceItem {
             (SlewScopeToRaDec instruction, Mock<ITelescopeMediator> telescopeMediatorMock) = CreateExecutableSlewScopeToRaDec();
             TriggerOnUnsafe triggerOnUnsafe = CreateTriggerOnUnsafe();
             SequentialContainer instructionSet = useBeforeWaitForSafe ? triggerOnUnsafe.BeforeWaitForSafe : triggerOnUnsafe.AfterWaitForSafe;
-            Coordinates slewedCoordinates = null;
+            Coordinates? slewedCoordinates = null;
 
             telescopeMediatorMock
                 .Setup(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>(), It.IsAny<CancellationToken>()))
@@ -360,9 +360,9 @@ namespace NINA.Test.Sequencer.SequenceItem {
             await triggerOnUnsafe.Execute(target, progress: new Progress<ApplicationStatus>(), token: CancellationToken.None);
 
             instruction.Inherited.Should().BeTrue();
-            slewedCoordinates.Should().NotBeNull();
-            slewedCoordinates.RADegrees.Should().BeApproximately(targetCoordinates.RADegrees, Tolerance);
-            slewedCoordinates.Dec.Should().BeApproximately(targetCoordinates.Dec, Tolerance);
+            Coordinates actualCoordinates = slewedCoordinates.Should().BeOfType<Coordinates>().Which;
+            actualCoordinates.RADegrees.Should().BeApproximately(targetCoordinates.RADegrees, Tolerance);
+            actualCoordinates.Dec.Should().BeApproximately(targetCoordinates.Dec, Tolerance);
             AssertTriggerRunnerContext(
                 container: instructionSet,
                 sourceCoordinates: targetCoordinates,

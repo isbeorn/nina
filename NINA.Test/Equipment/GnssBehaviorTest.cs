@@ -90,7 +90,7 @@ namespace NINA.Test.Equipment {
         public void TpvMessage_DeserializesGpsdWireNames() {
             const string json = """{"class":"TPV","mode":3,"lat":12.5,"lon":-45.25,"altMSL":1234.5}""";
 
-            Gpsd.TpvMessage message = JsonConvert.DeserializeObject<Gpsd.TpvMessage>(json);
+            Gpsd.TpvMessage message = JsonConvert.DeserializeObject<Gpsd.TpvMessage>(json).Should().BeOfType<Gpsd.TpvMessage>().Subject;
 
             message.Class.Should().Be("TPV");
             message.Mode.Should().Be(3);

@@ -24,7 +24,7 @@ namespace NINA.Core.Utility.Converters {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value is DataPoint dataPoint) {
-                var time = DateTimeAxis.ToDateTime(dataPoint.X);
+                var time = DateTimeAxis.ToDateTime(dataPoint.X, DateTimeAxis.DefaultPrecision);
                 var altitude = dataPoint.Y;
                 return $"{altitude:0}°\n{time:HH:mm}";
             }

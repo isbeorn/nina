@@ -11,6 +11,7 @@
 #endregion "copyright"
 using NINA.Core.Utility.SerialCommunication;
 using NINA.Equipment.SDK.FlatDeviceSDKs.PegasusAstroSDK;
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 
@@ -24,8 +25,8 @@ namespace NINA.Test.FlatDevice {
         [TestCase("OnOff", "E:1")]
         [TestCase("SetBrightness", "L:20")]
         public void TestValidResponse(string responseName, string response) {
-            var sut = (Response)Activator.CreateInstance("NINA.Equipment",
-                $"NINA.Equipment.SDK.FlatDeviceSDKs.PegasusAstroSDK.{responseName}Response").Unwrap();
+            var sut = (Activator.CreateInstance("NINA.Equipment",
+                $"NINA.Equipment.SDK.FlatDeviceSDKs.PegasusAstroSDK.{responseName}Response")?.Unwrap()).Should().BeAssignableTo<Response>().Subject;
             sut.DeviceResponse = response;
         }
 
@@ -40,8 +41,8 @@ namespace NINA.Test.FlatDevice {
         [TestCase("SetBrightness", null!)]
         [TestCase("SetBrightness", "")]
         public void TestInvalidResponse(string responseName, string response) {
-            var sut = (Response)Activator.CreateInstance("NINA.Equipment",
-                $"NINA.Equipment.SDK.FlatDeviceSDKs.PegasusAstroSDK.{responseName}Response").Unwrap();
+            var sut = (Activator.CreateInstance("NINA.Equipment",
+                $"NINA.Equipment.SDK.FlatDeviceSDKs.PegasusAstroSDK.{responseName}Response")?.Unwrap()).Should().BeAssignableTo<Response>().Subject;
             Assert.That(() => sut.DeviceResponse = response, Throws.TypeOf<InvalidDeviceResponseException>());
         }
 

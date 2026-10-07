@@ -24,7 +24,7 @@ namespace NINA.Test.Sequencer.Logic {
             _symbolBroker = new Mock<ISymbolBroker>();
 
             _context.SetupGet(c => c.SymbolBroker).Returns(_symbolBroker.Object);
-            _context.SetupGet(c => c.Parent).Returns((ISequenceContainer)null);
+            _context.SetupGet<ISequenceContainer?>(c => c.Parent).Returns((ISequenceContainer?)null);
             _context.SetupGet(c => c.Name).Returns("TestContext");
         }
 
@@ -388,7 +388,7 @@ namespace NINA.Test.Sequencer.Logic {
                     It.IsAny<ISymbolFunctionArguments>(),
                     out It.Ref<object>.IsAny,
                     out It.Ref<bool>.IsAny))
-                .Callback((string name, ISymbolFunctionArguments args, out object result, out bool isVolatile) => {
+                .Callback((string name, ISymbolFunctionArguments args, out object? result, out bool isVolatile) => {
                     result = null;
                     isVolatile = false;
                     throw new InvalidOperationException("Boom");

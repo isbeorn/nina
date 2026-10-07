@@ -61,7 +61,7 @@ namespace NINA.Test.Utility {
             ObservableItem item = new ObservableItem();
             ObserveAllCollection<ObservableItem> collection = new ObserveAllCollection<ObservableItem>();
             List<NotifyCollectionChangedAction> actions = new List<NotifyCollectionChangedAction>();
-            collection.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs args) => actions.Add(args.Action);
+            collection.CollectionChanged += (object? sender, NotifyCollectionChangedEventArgs args) => actions.Add(args.Action);
 
             collection.Add(item);
             item.Value = 5;
@@ -78,7 +78,7 @@ namespace NINA.Test.Utility {
             ObservableItem item = new ObservableItem();
             ObserveAllCollection<ObservableItem> collection = new ObserveAllCollection<ObservableItem> { item };
             List<NotifyCollectionChangedAction> actions = new List<NotifyCollectionChangedAction>();
-            collection.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs args) => actions.Add(args.Action);
+            collection.CollectionChanged += (object? sender, NotifyCollectionChangedEventArgs args) => actions.Add(args.Action);
 
             collection.Remove(item);
             item.Value = 7;
@@ -97,7 +97,7 @@ namespace NINA.Test.Utility {
                 }
             }
 
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged;
         }
     }
 }

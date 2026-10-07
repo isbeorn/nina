@@ -232,7 +232,7 @@ namespace NINA.Test.Sequencer.Behaviors {
             element.Measure(new Size(80, 40));
             element.Arrange(new Rect(0, 0, 80, 40));
 
-            RenderTargetBitmap bitmap = (RenderTargetBitmap)InvokePrivate("RenderClone", element);
+            RenderTargetBitmap bitmap = InvokePrivate("RenderClone", element).Should().BeOfType<RenderTargetBitmap>().Which;
 
             bitmap.Should().NotBeNull();
             bitmap.PixelWidth.Should().Be(80);
@@ -250,7 +250,7 @@ namespace NINA.Test.Sequencer.Behaviors {
             child.Child = grandchild;
             parent.Children.Add(child);
 
-            List<DependencyObject> result = (List<DependencyObject>)InvokePrivate("AllChildren", parent);
+            List<DependencyObject> result = InvokePrivate("AllChildren", parent).Should().BeOfType<List<DependencyObject>>().Which;
 
             result.Should().Contain(child).And.Contain(grandchild);
         }
@@ -268,9 +268,9 @@ namespace NINA.Test.Sequencer.Behaviors {
             DragOverBehavior originalDragOver = new DragOverBehavior(mainGrid);
             DropIntoBehavior originalDropInto = new DropIntoBehavior();
             GetPrivateField<List<Tuple<DependencyObject, Behavior>>>("detachedForeignBehaviors")
-                .Add(new Tuple<DependencyObject, Behavior>(foreign, foreignBehavior));
+                .Should().BeOfType<List<Tuple<DependencyObject, Behavior>>>().Which.Add(new Tuple<DependencyObject, Behavior>(foreign, foreignBehavior));
             GetPrivateField<List<Tuple<DependencyObject, Behavior>>>("detachedOwnChildrenBehaviors")
-                .Add(new Tuple<DependencyObject, Behavior>(ownChild, ownChildBehavior));
+                .Should().BeOfType<List<Tuple<DependencyObject, Behavior>>>().Which.Add(new Tuple<DependencyObject, Behavior>(ownChild, ownChildBehavior));
             SetPrivateField("dragOverBehavior", originalDragOver);
             SetPrivateField("dropIntoBehavior", originalDropInto);
             sut.OriginalParentedObject = element;
@@ -339,7 +339,7 @@ namespace NINA.Test.Sequencer.Behaviors {
         [Apartment(ApartmentState.STA)]
         public void GetFirstDraggedOverBehaviorElementBelowMyself_HandlesSelfAndDragOverAncestor() {
             FrameworkElement selfChild = new FrameworkElement();
-            GetPrivateField<List<DependencyObject>>("selfAndChildren").Add(selfChild);
+            GetPrivateField<List<DependencyObject>>("selfAndChildren").Should().BeOfType<List<DependencyObject>>().Which.Add(selfChild);
             sut.GetFirstDraggedOverBehaviorElementBelowMyself(new PointHitTestResult(selfChild, new Point()))
                 .Should().Be(HitTestResultBehavior.Stop);
 
@@ -375,7 +375,7 @@ namespace NINA.Test.Sequencer.Behaviors {
         public void GetFirstDropIntoBehaviorBelowMyself_HandlesDraggedChildrenAndMissingBehavior() {
             FrameworkElement selfChild = new FrameworkElement();
             FrameworkElement plain = new FrameworkElement();
-            GetPrivateField<List<DependencyObject>>("selfAndChildren").Add(selfChild);
+            GetPrivateField<List<DependencyObject>>("selfAndChildren").Should().BeOfType<List<DependencyObject>>().Which.Add(selfChild);
 
             sut.GetFirstDropIntoBehaviorBelowMyself(new PointHitTestResult(selfChild, new Point()))
                 .Should().Be(HitTestResultBehavior.Stop);
@@ -391,34 +391,38 @@ namespace NINA.Test.Sequencer.Behaviors {
             element.DataContext = provider;
             sut.OriginalParentedObject = element;
 
-            IDroppable result = (IDroppable)InvokePrivate("GetDropSource");
+            IDroppable result = InvokePrivate("GetDropSource").Should().BeAssignableTo<IDroppable>().Which;
 
             result.Should().BeSameAs(source);
             provider.Modifiers.Should().Be(Keyboard.Modifiers);
         }
 
-        private T GetPrivateField<T>(string fieldName) {
-            FieldInfo field = typeof(DragDropBehavior).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            field.Should().NotBeNull();
-            return (T)field.GetValue(sut);
+        private T? GetPrivateField<T>(string fieldName) {
+            FieldInfo field = typeof(DragDropBehavior).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
+            return (T?)field.GetValue(sut);
         }
 
         private void SetPrivateField(string fieldName, object value) {
-            FieldInfo field = typeof(DragDropBehavior).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            field.Should().NotBeNull();
+            FieldInfo field = typeof(DragDropBehavior).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
             field.SetValue(sut, value);
         }
 
-        private object InvokePrivate(string methodName, params object[] args) {
-            MethodInfo method = typeof(DragDropBehavior).GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-            method.Should().NotBeNull();
+        private object? InvokePrivate(string methodName, params object[] args) {
+            MethodInfo method = typeof(DragDropBehavior).GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
             return method.Invoke(sut, args);
         }
 
-        private static DependencyObject GetAssociatedObject(Behavior behavior) {
-            PropertyInfo property = typeof(Behavior).GetProperty("AssociatedObject", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            property.Should().NotBeNull();
-            return (DependencyObject)property.GetValue(behavior);
+        private static DependencyObject? GetAssociatedObject(Behavior behavior) {
+            PropertyInfo property = typeof(Behavior).GetProperty("AssociatedObject", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                ?? throw new AssertionException("Expected reflected member was not found.");
+
+            return (DependencyObject?)property.GetValue(behavior);
         }
 
         private sealed class TestSourceProvider : IDroppableSourceProvider {

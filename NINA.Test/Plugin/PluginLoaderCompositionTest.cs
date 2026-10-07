@@ -461,10 +461,10 @@ namespace NINA.Test.Plugin {
         private static PluginManifest InvokeCreateFailedPluginManifest(
             string file,
             IReadOnlyDictionary<string, string> metadata,
-            string fileVersion,
+            string? fileVersion,
             string message) {
             MethodInfo method = typeof(PluginLoader).GetMethod("CreateFailedPluginManifest", BindingFlags.Static | BindingFlags.NonPublic)!;
-            return (PluginManifest)method.Invoke(null, new object[] { file, metadata, fileVersion, message })!;
+            return (PluginManifest)method.Invoke(null, new object?[] { file, metadata, fileVersion, message })!;
         }
 
         private static IList<ISequenceItem> InvokeAssignSequenceEntity(
@@ -605,7 +605,7 @@ namespace NINA.Test.Plugin {
             public string Name { get; set; } = string.Empty;
             public SequenceUpgradeStage Stages => SequenceUpgradeStage.AfterPopulate;
 
-            public object Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object? current) {
+            public object? Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object? current) {
                 return current;
             }
         }

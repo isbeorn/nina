@@ -456,7 +456,7 @@ namespace NINA.Test.Sequencer.Trigger.MeridianFlip {
             MeridianFlipTrigger sut = CreateSUT();
             Coordinates currentPosition = new Coordinates(Angle.ByHours(10), Angle.ByDegree(20), Epoch.JNOW);
             TimeSpan capturedDelay = TimeSpan.MinValue;
-            Coordinates capturedTarget = null;
+            Coordinates? capturedTarget = null;
             Mock<IMeridianFlipVM> meridianFlipVmMock = new Mock<IMeridianFlipVM>();
             meridianFlipVmMock.Setup(x => x.MeridianFlip(It.IsAny<Coordinates>(), It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>()))
                 .Callback<Coordinates, TimeSpan, CancellationToken>((target, delay, token) => {

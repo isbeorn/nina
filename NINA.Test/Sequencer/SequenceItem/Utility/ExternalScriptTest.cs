@@ -127,7 +127,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
             // Setup symbol Broker to return false for unknown symbols
             symbolBrokerMock.Setup(x => x.TryGetValue(It.IsAny<string>(), out It.Ref<object>.IsAny))
-                .Returns((string key, out object value) => {
+                .Returns((string key, out object? value) => {
                     value = null;
                     return false;
                 });
@@ -216,8 +216,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         public async Task ExternalScript_Execute_HandlesNullProvider_Gracefully() {
             // Arrange
             symbolBrokerMock.As<ISymbolBrokerProviderApi>()
-                .Setup(x => x.GetInternalProvider("NINA"))
-                .Returns((ISymbolProvider)null);
+                .Setup<ISymbolProvider?>(x => x.GetInternalProvider("NINA"))
+                .Returns((ISymbolProvider?)null);
 
             var sut = new ExternalScript(symbolBrokerMock.Object);
             sut.Script = HeadlessSuccessCommand;

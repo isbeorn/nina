@@ -993,10 +993,10 @@ namespace NINA.Test.AstrometryTest {
             RiseAndSetEvent nautical = AstroUtil.GetNauticalNightTimes(referenceDate, 51.4769, 0.0, 46.0);
             RiseAndSetEvent astronomical = AstroUtil.GetNightTimes(referenceDate, 51.4769, 0.0, 46.0);
 
-            civil.Set.Should().BeBefore(nautical.Set.Value);
-            nautical.Set.Should().BeBefore(astronomical.Set.Value);
-            astronomical.Rise.Should().BeBefore(nautical.Rise.Value);
-            nautical.Rise.Should().BeBefore(civil.Rise.Value);
+            civil.Set.Should().BeBefore(nautical.Set ?? throw new AssertionException("Expected nautical sunset."));
+            nautical.Set.Should().BeBefore(astronomical.Set ?? throw new AssertionException("Expected astronomical sunset."));
+            astronomical.Rise.Should().BeBefore(nautical.Rise ?? throw new AssertionException("Expected nautical sunrise."));
+            nautical.Rise.Should().BeBefore(civil.Rise ?? throw new AssertionException("Expected civil sunrise."));
         }
 
         /// <summary>
@@ -1076,8 +1076,8 @@ namespace NINA.Test.AstrometryTest {
 
             moon.Rise.Should().NotBeNull();
             moon.Set.Should().NotBeNull();
-            moon.Rise.Value.Should().BeAfter(referenceDate);
-            moon.Set.Value.Should().BeAfter(referenceDate);
+            moon.Rise.Should().BeAfter(referenceDate);
+            moon.Set.Should().BeAfter(referenceDate);
         }
 
         /// <summary>
@@ -1372,9 +1372,7 @@ namespace NINA.Test.AstrometryTest {
         }
 
         private static void AssertCloseToTime(DateTime? actual, DateTime expected, TimeSpan tolerance) {
-            actual.Should().NotBeNull();
-            TimeSpan difference = (actual.Value - expected).Duration();
-            difference.Should().BeLessThanOrEqualTo(tolerance);
+            actual.Should().BeCloseTo(expected, tolerance);
         }
 
         private static TempEarthRotationDatabase CreateEarthRotationDatabase(params (DateTime Date, double Ut1MinusUtc)[] rows) {
@@ -1403,7 +1401,7 @@ namespace NINA.Test.AstrometryTest {
             typeof(AstroUtil).GetField("DeltaUTTomorrow", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
             typeof(AstroUtil).GetField("DeltaUTReference", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, default(DateTime));
 
-            FieldInfo cacheField = typeof(AstroUtil).GetField("DeltaUTCache", BindingFlags.NonPublic | BindingFlags.Static);
+            FieldInfo? cacheField = typeof(AstroUtil).GetField("DeltaUTCache", BindingFlags.NonPublic | BindingFlags.Static);
             cacheField?.SetValue(null, new ConcurrentDictionary<DateTime, double>());
         }
 
