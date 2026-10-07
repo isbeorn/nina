@@ -29,8 +29,8 @@ namespace NINA.Test.FlatDevice {
         [TestCase("LightOn", "*L99OOO")]
         [TestCase("LightOff", "*D99OOO")]
         public void TestIsValidResponse(string responseName, string response) {
-            var sut = (AlnitakResponse)Activator.CreateInstance("NINA.Equipment",
-                $"NINA.Equipment.SDK.FlatDeviceSDKs.AlnitakSDK.{responseName}Response").Unwrap();
+            var sut = (Activator.CreateInstance("NINA.Equipment",
+                $"NINA.Equipment.SDK.FlatDeviceSDKs.AlnitakSDK.{responseName}Response")?.Unwrap()).Should().BeAssignableTo<AlnitakResponse>().Subject;
             Action act = () => sut.DeviceResponse = response;
             act.Should().NotThrow();
         }
@@ -55,8 +55,8 @@ namespace NINA.Test.FlatDevice {
         [TestCase("LightOff", null!)]
         [TestCase("LightOff", "")]
         public void TestIsInvalidResponse(string responseName, string response) {
-            var sut = (AlnitakResponse)Activator.CreateInstance("NINA.Equipment",
-                $"NINA.Equipment.SDK.FlatDeviceSDKs.AlnitakSDK.{responseName}Response").Unwrap();
+            var sut = (Activator.CreateInstance("NINA.Equipment",
+                $"NINA.Equipment.SDK.FlatDeviceSDKs.AlnitakSDK.{responseName}Response")?.Unwrap()).Should().BeAssignableTo<AlnitakResponse>().Subject;
             Action act = () => sut.DeviceResponse = response;
             act.Should().Throw<InvalidDeviceResponseException>();
         }

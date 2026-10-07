@@ -47,7 +47,7 @@ namespace NINA.Test.Sequencer.Logic {
         public void ExpandableString_TrimsExpandsCachesAndInvalidates() {
             Mock<ISymbolBroker> symbolBrokerMock = new Mock<ISymbolBroker>();
             ExpandableString sut = new ExpandableString("  gain {2 + 1.5}  ");
-            List<string> changedProperties = new List<string>();
+            List<string?> changedProperties = new List<string?>();
             sut.PropertyChanged += (sender, args) => changedProperties.Add(args.PropertyName);
 
             sut.SetSymbolBroker(symbolBrokerMock.Object);
@@ -75,7 +75,7 @@ namespace NINA.Test.Sequencer.Logic {
         [Test]
         public void ExpandableString_ValueChangesRaiseDependentNotificationsAndHandleEmptyValues() {
             ExpandableString sut = new ExpandableString();
-            List<string> changedProperties = new List<string>();
+            List<string?> changedProperties = new List<string?>();
             sut.PropertyChanged += (sender, args) => changedProperties.Add(args.PropertyName);
 
             sut.Value = "  first  ";
@@ -117,7 +117,7 @@ namespace NINA.Test.Sequencer.Logic {
             sut.Convert(new object[] { arithmetic }, typeof(string), null, CultureInfo.InvariantCulture).Should().Be("{3}");
 
             Expression combo = new Expression("1", numericContextMock.Object) { ForceAnnotated = true };
-            sut.Convert(new object[] { combo, null, new List<string> { "L", "Ha" } }, typeof(string), null, CultureInfo.InvariantCulture)
+            sut.Convert(new object?[] { combo, null, new List<string> { "L", "Ha" } }, typeof(string), null, CultureInfo.InvariantCulture)
                 .Should().Be("{Filter_Ha}");
 
             Mock<ISequenceEntity> trueFalseContextMock = new Mock<ISequenceEntity>();

@@ -28,12 +28,12 @@ namespace NINA.Test.ProfileTest {
         public void PersistedSettingsProperty_WhenChanged_RaisesOwnPropertyChangedSignal(SettingPropertyScenario scenario) {
             object settings = scenario.CreateSettings();
             object newValue = scenario.CreateValue(settings);
-            List<string> propertyNames = CapturePropertyChanges((INotifyPropertyChanged)settings);
+            List<string?> propertyNames = CapturePropertyChanges((INotifyPropertyChanged)settings);
 
             scenario.Property.SetValue(settings, newValue);
 
             propertyNames.Should().Contain(scenario.Property.Name);
-            object actualValue = scenario.Property.GetValue(settings);
+            object? actualValue = scenario.Property.GetValue(settings);
             AssertReadbackValue(scenario.Property, newValue, actualValue);
         }
 
@@ -43,7 +43,7 @@ namespace NINA.Test.ProfileTest {
         [Test]
         public void CameraSettings_AscomCreate32BitData_RemainsDisabledForCompatibility() {
             CameraSettings settings = new CameraSettings();
-            List<string> propertyNames = CapturePropertyChanges(settings);
+            List<string?> propertyNames = CapturePropertyChanges(settings);
 
             settings.ASCOMCreate32BitData = true;
 
@@ -163,7 +163,7 @@ namespace NINA.Test.ProfileTest {
                 throw new NotSupportedException("TimeSpanInTicks is a serialization proxy; EstimatedDownloadTime is the notifying runtime property.");
             }
 
-            Type nullableType = Nullable.GetUnderlyingType(propertyType);
+            Type? nullableType = Nullable.GetUnderlyingType(propertyType);
             if (nullableType != null) {
                 return CreateNonNullableSampleValue(settings, property, nullableType);
             }
@@ -235,7 +235,7 @@ namespace NINA.Test.ProfileTest {
             }
             if (valueType == typeof(ColorSchema)) {
                 ColorSchemaSettings colorSettings = (ColorSchemaSettings)settings;
-                ColorSchema current = (ColorSchema)property.GetValue(settings);
+                ColorSchema? current = (ColorSchema?)property.GetValue(settings);
                 return colorSettings.ColorSchemas.Items.First(schema => current == null || schema.Name != current.Name);
             }
             if (valueType == typeof(List<string>)) {
@@ -243,20 +243,20 @@ namespace NINA.Test.ProfileTest {
             }
             if (valueType.IsEnum) {
                 Array values = Enum.GetValues(valueType);
-                object current = property.GetValue(settings);
+                object? current = property.GetValue(settings);
                 return values.Cast<object>().First(value => !Equals(value, current));
             }
             if (valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(AsyncObservableCollection<>)) {
-                return Activator.CreateInstance(valueType);
+                return Activator.CreateInstance(valueType) ?? throw new AssertionException($"Could not create a sample for {valueType.FullName}.");
             }
             if (valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(ObserveAllCollection<>)) {
-                return Activator.CreateInstance(valueType);
+                return Activator.CreateInstance(valueType) ?? throw new AssertionException($"Could not create a sample for {valueType.FullName}.");
             }
 
             throw new NotSupportedException($"No sample value is defined for {valueType.FullName}");
         }
 
-        private static void AssertReadbackValue(PropertyInfo property, object expectedValue, object actualValue) {
+        private static void AssertReadbackValue(PropertyInfo property, object expectedValue, object? actualValue) {
             if (expectedValue is IEnumerable expectedEnumerable && expectedValue is not string && actualValue is IEnumerable actualEnumerable) {
                 actualEnumerable.Cast<object>().Should().Equal(expectedEnumerable.Cast<object>());
                 return;
@@ -270,9 +270,9 @@ namespace NINA.Test.ProfileTest {
             actualValue.Should().Be(expectedValue);
         }
 
-        private static List<string> CapturePropertyChanges(INotifyPropertyChanged source) {
-            List<string> propertyNames = new List<string>();
-            source.PropertyChanged += (object sender, PropertyChangedEventArgs args) => propertyNames.Add(args.PropertyName);
+        private static List<string?> CapturePropertyChanges(INotifyPropertyChanged source) {
+            List<string?> propertyNames = new List<string?>();
+            source.PropertyChanged += (object? sender, PropertyChangedEventArgs args) => propertyNames.Add(args.PropertyName);
             return propertyNames;
         }
 

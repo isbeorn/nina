@@ -133,7 +133,7 @@ namespace NINA.Test.AstrometryTest {
             typeof(AstroUtil).GetField("DeltaUTTomorrow", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
             typeof(AstroUtil).GetField("DeltaUTReference", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, default(DateTime));
 
-            FieldInfo cacheField = typeof(AstroUtil).GetField("DeltaUTCache", BindingFlags.NonPublic | BindingFlags.Static);
+            FieldInfo? cacheField = typeof(AstroUtil).GetField("DeltaUTCache", BindingFlags.NonPublic | BindingFlags.Static);
             cacheField?.SetValue(null, new ConcurrentDictionary<DateTime, double>());
         }
 

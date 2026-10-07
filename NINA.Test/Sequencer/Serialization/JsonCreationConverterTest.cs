@@ -83,10 +83,9 @@ namespace NINA.Test.Sequencer.Serialization {
                 }
                 """;
 
-            ISequenceItem result = JsonConvert.DeserializeObject<ISequenceItem>(json, sut);
+            ISequenceItem? result = JsonConvert.DeserializeObject<ISequenceItem>(json, sut);
 
-            result.Should().BeOfType<TestSequenceItem>();
-            ((TestSequenceItem)result).SerializedName.Should().Be("Created Name");
+            result.Should().BeOfType<TestSequenceItem>().Which.SerializedName.Should().Be("Created Name");
         }
 
         /// <summary>
@@ -105,10 +104,9 @@ namespace NINA.Test.Sequencer.Serialization {
                 }
                 """;
 
-            ISequenceItem result = JsonConvert.DeserializeObject<ISequenceItem>(json, sut);
+            ISequenceItem? result = JsonConvert.DeserializeObject<ISequenceItem>(json, sut);
 
-            result.Should().BeOfType<TestSequenceItem>();
-            ((TestSequenceItem)result).SerializedName.Should().Be("BeforeCreate-AfterPopulate");
+            result.Should().BeOfType<TestSequenceItem>().Which.SerializedName.Should().Be("BeforeCreate-AfterPopulate");
             upgrader.SeenStages.Should().Equal(
                 SequenceUpgradeStage.BeforeCreate,
                 SequenceUpgradeStage.Create,
@@ -130,10 +128,9 @@ namespace NINA.Test.Sequencer.Serialization {
                 }
                 """;
 
-            ISequenceItem result = JsonConvert.DeserializeObject<ISequenceItem>(json, sut);
+            ISequenceItem? result = JsonConvert.DeserializeObject<ISequenceItem>(json, sut);
 
-            result.Should().BeOfType<UnknownSequenceItem>();
-            result.Name.Should().Contain(typeof(TestSequenceItem).FullName);
+            result.Should().BeOfType<UnknownSequenceItem>().Which.Name.Should().Contain(typeof(TestSequenceItem).FullName);
         }
 
         /// <summary>
@@ -351,7 +348,7 @@ namespace NINA.Test.Sequencer.Serialization {
 
         private sealed class TestSequenceItem : global::NINA.Sequencer.SequenceItem.SequenceItem {
             [JsonProperty]
-            public string SerializedName { get; set; }
+            public string? SerializedName { get; set; }
 
             public override object Clone() {
                 return new TestSequenceItem {
@@ -413,13 +410,14 @@ namespace NINA.Test.Sequencer.Serialization {
                     };
                 }
 
+                TestSequenceItem item = current.Should().BeOfType<TestSequenceItem>().Which;
                 if (stage == SequenceUpgradeStage.AfterCreate) {
-                    ((TestSequenceItem)current).SerializedName = "AfterCreate";
-                    return current;
+                    item.SerializedName = "AfterCreate";
+                    return item;
                 }
 
-                ((TestSequenceItem)current).SerializedName = $"{((TestSequenceItem)current).SerializedName}-AfterPopulate";
-                return current;
+                item.SerializedName = $"{item.SerializedName}-AfterPopulate";
+                return item;
             }
         }
 
@@ -432,35 +430,39 @@ namespace NINA.Test.Sequencer.Serialization {
             public IList<ISequenceCondition> Conditions { get; } = new List<ISequenceCondition>();
             public IList<ISequenceContainer> Container { get; } = new List<ISequenceContainer>();
             public IList<ISequenceItem> Items { get; } = new List<ISequenceItem>();
-            public ICollectionView ItemsView => null;
-            public ICollectionView InstructionsView => null;
-            public ICollectionView ConditionsView => null;
-            public ICollectionView TriggersView => null;
+            public ICollectionView? ItemsView => null;
+            public ICollectionView? InstructionsView => null;
+            public ICollectionView? ConditionsView => null;
+            public ICollectionView? TriggersView => null;
             public IList<ISequenceTrigger> Triggers { get; } = new List<ISequenceTrigger>();
             public IList<IDateTimeProvider> DateTimeProviders { get; } = new List<IDateTimeProvider>();
             public IList<ISequenceEntityUpgrader> Upgraders { get; } = new List<ISequenceEntityUpgrader>();
-            public string ViewFilter { get; set; }
+            public string? ViewFilter { get; set; }
 
+            [return: System.Diagnostics.CodeAnalysis.MaybeNull]
             public T GetCondition<T>() where T : ISequenceCondition {
-                return ConditionsByType.TryGetValue(typeof(T), out ISequenceCondition condition)
+                return ConditionsByType.TryGetValue(typeof(T), out ISequenceCondition? condition)
                     ? (T)condition
                     : default;
             }
 
+            [return: System.Diagnostics.CodeAnalysis.MaybeNull]
             public T GetContainer<T>() where T : ISequenceContainer {
-                return ContainersByType.TryGetValue(typeof(T), out ISequenceContainer container)
+                return ContainersByType.TryGetValue(typeof(T), out ISequenceContainer? container)
                     ? (T)container
                     : default;
             }
 
+            [return: System.Diagnostics.CodeAnalysis.MaybeNull]
             public T GetItem<T>() where T : ISequenceItem {
-                return ItemsByType.TryGetValue(typeof(T), out ISequenceItem item)
+                return ItemsByType.TryGetValue(typeof(T), out ISequenceItem? item)
                     ? (T)item
                     : default;
             }
 
+            [return: System.Diagnostics.CodeAnalysis.MaybeNull]
             public T GetTrigger<T>() where T : ISequenceTrigger {
-                return TriggersByType.TryGetValue(typeof(T), out ISequenceTrigger trigger)
+                return TriggersByType.TryGetValue(typeof(T), out ISequenceTrigger? trigger)
                     ? (T)trigger
                     : default;
             }

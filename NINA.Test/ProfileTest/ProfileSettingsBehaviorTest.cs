@@ -61,7 +61,7 @@ namespace NINA.Test.ProfileTest {
             CameraSettings settings = new CameraSettings {
                 MaxFlatExposureTime = 5d
             };
-            List<string> propertyNames = CapturePropertyChanges(settings);
+            List<string?> propertyNames = CapturePropertyChanges(settings);
 
             settings.MinFlatExposureTime = 12d;
             settings.ReadoutMode = 2;
@@ -172,7 +172,7 @@ namespace NINA.Test.ProfileTest {
         [Test]
         public void ApplicationSettings_SelectedPluggableBehaviors_MaintainsLookupOnCollectionChanges() {
             ApplicationSettings settings = new ApplicationSettings();
-            List<string> propertyNames = CapturePropertyChanges(settings);
+            List<string?> propertyNames = CapturePropertyChanges(settings);
 
             settings.SelectedPluggableBehaviors.Add(new KeyValuePair<string, string>("guider", "PHD2"));
             settings.SelectedPluggableBehaviors.Add(new KeyValuePair<string, string>("rotator", "Falcon"));
@@ -370,14 +370,14 @@ namespace NINA.Test.ProfileTest {
             document.Save(stream);
             stream.Position = 0;
 
-            GuiderSettings deserialized = (GuiderSettings)serializer.ReadObject(stream);
+            GuiderSettings deserialized = serializer.ReadObject(stream).Should().BeOfType<GuiderSettings>().Subject;
 
             deserialized.MountDitherMinimumPixels.Should().Be(0.0);
         }
 
-        private static List<string> CapturePropertyChanges(INotifyPropertyChanged source) {
-            List<string> propertyNames = new List<string>();
-            source.PropertyChanged += (object sender, PropertyChangedEventArgs args) => propertyNames.Add(args.PropertyName);
+        private static List<string?> CapturePropertyChanges(INotifyPropertyChanged source) {
+            List<string?> propertyNames = new List<string?>();
+            source.PropertyChanged += (object? sender, PropertyChangedEventArgs args) => propertyNames.Add(args.PropertyName);
             return propertyNames;
         }
 
@@ -386,7 +386,7 @@ namespace NINA.Test.ProfileTest {
             using MemoryStream stream = new MemoryStream();
             serializer.WriteObject(stream, value);
             stream.Position = 0;
-            return (T)serializer.ReadObject(stream);
+            return serializer.ReadObject(stream).Should().BeOfType<T>().Subject;
         }
     }
 }

@@ -218,7 +218,7 @@ namespace NINA.Test.Sequencer.Trigger {
         }
 
         private class TestTrigger : SequenceTrigger {
-            public Action ExecuteAction { get; set; }
+            public Action? ExecuteAction { get; set; }
             public int ExecuteCount { get; private set; }
 
             public override object Clone() {

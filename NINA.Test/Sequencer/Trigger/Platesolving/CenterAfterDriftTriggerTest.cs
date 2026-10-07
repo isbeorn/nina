@@ -49,7 +49,7 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
             parent.Add(sut);
             for (int cycle = 0; cycle < 2; cycle++) {
                 root.Add(parent);
-                imageSavedHandlers.GetInvocationList().Should().HaveCount(1);
+                imageSavedHandlers.Should().BeOfType<Func<object, BeforeImageSavedEventArgs, Task>>().Which.GetInvocationList().Should().HaveCount(1);
                 parent.Detach();
                 imageSavedHandlers.Should().BeNull();
                 parent.AfterParentChanged();
@@ -68,7 +68,7 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
         private Mock<IDomeMediator> domeMediatorMock;
         private Mock<IDomeFollower> domeFollowerMock;
         private Mock<ISafetyMonitorMediator> safetyMonitorMediatorMock;
-        private Func<object, BeforeImageSavedEventArgs, Task> imageSavedHandlers;
+        private Func<object, BeforeImageSavedEventArgs, Task>? imageSavedHandlers;
 
         [SetUp]
         public void Setup() {
@@ -178,7 +178,7 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
                 secondTrigger.SequenceBlockInitialize();
 
                 imageSavedHandlers.Should().NotBeNull();
-                await imageSavedHandlers.Invoke(this, CreateImageSavedArgs("LIGHT"));
+                await imageSavedHandlers.Should().BeOfType<Func<object, BeforeImageSavedEventArgs, Task>>().Which.Invoke(this, CreateImageSavedArgs("LIGHT"));
 
                 firstTrigger.ProgressExposures.Should().Be(0);
                 secondTrigger.ProgressExposures.Should().Be(1);
@@ -237,10 +237,10 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
             for (int i = 0; i < triggers.Length; i++) {
                 targets[i].Status = SequenceEntityStatus.RUNNING;
                 triggers[i].SequenceBlockInitialize();
-                imageSavedHandlers.GetInvocationList().Should().HaveCount(1);
+                imageSavedHandlers.Should().BeOfType<Func<object, BeforeImageSavedEventArgs, Task>>().Which.GetInvocationList().Should().HaveCount(1);
 
                 triggers[i].SequenceBlockInitialize();
-                imageSavedHandlers.GetInvocationList().Should().HaveCount(1);
+                imageSavedHandlers.Should().BeOfType<Func<object, BeforeImageSavedEventArgs, Task>>().Which.GetInvocationList().Should().HaveCount(1);
 
                 triggers[i].SequenceBlockTeardown();
                 imageSavedHandlers.Should().BeNull();
@@ -276,7 +276,7 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
                 target.Status = parentStatus;
                 sut.SequenceBlockInitialize();
 
-                await imageSavedHandlers.Invoke(this, CreateImageSavedArgs("LIGHT"));
+                await imageSavedHandlers.Should().BeOfType<Func<object, BeforeImageSavedEventArgs, Task>>().Which.Invoke(this, CreateImageSavedArgs("LIGHT"));
 
                 sut.ProgressExposures.Should().Be(0);
             } finally {
@@ -302,7 +302,7 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
                 sut.Status = SequenceEntityStatus.DISABLED;
                 sut.SequenceBlockInitialize();
 
-                await imageSavedHandlers.Invoke(this, CreateImageSavedArgs("LIGHT"));
+                await imageSavedHandlers.Should().BeOfType<Func<object, BeforeImageSavedEventArgs, Task>>().Which.Invoke(this, CreateImageSavedArgs("LIGHT"));
 
                 sut.ProgressExposures.Should().Be(0);
             } finally {
@@ -326,15 +326,17 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
         }
 
         private static void SetLastDistanceArcMinutes(CenterAfterDriftTrigger sut, double distanceArcMinutes) {
-            typeof(CenterAfterDriftTrigger)
+            FieldInfo field = typeof(CenterAfterDriftTrigger)
                 .GetField("lastDistanceArcMinutes", BindingFlags.Instance | BindingFlags.NonPublic)
-                .SetValue(sut, distanceArcMinutes);
+                ?? throw new AssertionException("Expected lastDistanceArcMinutes field was not found.");
+            field.SetValue(sut, distanceArcMinutes);
         }
 
         private static PlatesolvingImageFollower GetImageFollower(CenterAfterDriftTrigger sut) {
-            return (PlatesolvingImageFollower)typeof(CenterAfterDriftTrigger)
+            FieldInfo field = typeof(CenterAfterDriftTrigger)
                 .GetField("platesolvingImageFollower", BindingFlags.Instance | BindingFlags.NonPublic)
-                .GetValue(sut);
+                ?? throw new AssertionException("Expected platesolvingImageFollower field was not found.");
+            return field.GetValue(sut).Should().BeOfType<PlatesolvingImageFollower>().Which;
         }
 
         private static BeforeImageSavedEventArgs CreateImageSavedArgs(string imageType) {
@@ -342,7 +344,7 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
             imageMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData {
                 Image = new ImageParameter { ImageType = imageType }
             });
-            return new BeforeImageSavedEventArgs(imageMock.Object, Task.FromResult<IRenderedImage>(null));
+            return new BeforeImageSavedEventArgs(imageMock.Object, Task.FromResult<IRenderedImage?>(null));
         }
     }
 }

@@ -487,7 +487,7 @@ namespace NINA.Test {
             using (var stream = new MemoryStream(byteArray)) {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(Coordinates));
 
-                var sut = (Coordinates)xmlSerializer.Deserialize(stream);
+                var sut = xmlSerializer.Deserialize(stream).Should().BeOfType<Coordinates>().Subject;
 
                 sut.DateTime.Should().NotBeNull();
                 sut.RA.Should().Be(12);

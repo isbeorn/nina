@@ -11,6 +11,7 @@
 #endregion "copyright"
 using NINA.Core.Utility.SerialCommunication;
 using NINA.Equipment.SDK.FlatDeviceSDKs.PegasusAstroSDK;
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 
@@ -23,8 +24,8 @@ namespace NINA.Test.FlatDevice {
         [TestCase("Status", "#")]
         [TestCase("FirmwareVersion", "V")]
         public void TestCommand(string commandName, string commandString) {
-            var sut = (ISerialCommand)Activator.CreateInstance("NINA.Equipment",
-                $"NINA.Equipment.SDK.FlatDeviceSDKs.PegasusAstroSDK.{commandName}Command").Unwrap();
+            var sut = (Activator.CreateInstance("NINA.Equipment",
+                $"NINA.Equipment.SDK.FlatDeviceSDKs.PegasusAstroSDK.{commandName}Command")?.Unwrap()).Should().BeAssignableTo<ISerialCommand>().Subject;
             Assert.That(sut.CommandString, Is.EqualTo($"{commandString}\n"));
             Assert.That(sut.HasResponse, Is.True);
         }

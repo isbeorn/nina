@@ -46,7 +46,7 @@ namespace NINA.Test.SerialCommunication {
     }
 
     [TestFixture]
-    internal class ResponseTests {
+    internal abstract class ResponseTests {
         private TestResponse _sut;
 
         [SetUp]
@@ -99,6 +99,10 @@ namespace NINA.Test.SerialCommunication {
             Assert.That(_sut.GetLongFromResponse(response, out var result), Is.EqualTo(valid));
             Assert.That(result, Is.EqualTo(expectedResult));
         }
+    }
+
+    [TestFixture]
+    internal class DefaultCultureResponseTests : ResponseTests {
     }
 
     [TestFixture]

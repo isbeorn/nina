@@ -549,7 +549,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Expressions {
             return resetVariable;
         }
 
-        private SequencerExpression CreateExpression(string definition, ISequenceEntity context) {
+        private SequencerExpression CreateExpression(string definition, ISequenceEntity? context) {
             return new SequencerExpression(definition, context) {
                 SymbolBroker = symbolBrokerMock.Object,
                 IsExpression = true

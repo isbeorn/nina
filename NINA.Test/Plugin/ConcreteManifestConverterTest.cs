@@ -50,7 +50,7 @@ namespace NINA.Test.Plugin {
             };
 
             string json = JsonConvert.SerializeObject(manifest);
-            PluginManifest roundTrip = JsonConvert.DeserializeObject<PluginManifest>(json);
+            PluginManifest roundTrip = JsonConvert.DeserializeObject<PluginManifest>(json).Should().BeOfType<PluginManifest>().Subject;
 
             json.Should().Contain("\"Major\":2");
             roundTrip.Version.Should().BeOfType<PluginVersion>();

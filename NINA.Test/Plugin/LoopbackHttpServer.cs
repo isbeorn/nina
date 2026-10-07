@@ -23,9 +23,9 @@ namespace NINA.Test.Plugin {
         private readonly Task serverTask;
         private readonly byte[] body;
         private readonly string contentType;
-        private readonly string fileName;
+        private readonly string? fileName;
 
-        public LoopbackHttpServer(byte[] body, string contentType = "application/octet-stream", string fileName = null) {
+        public LoopbackHttpServer(byte[] body, string contentType = "application/octet-stream", string? fileName = null) {
             this.body = body;
             this.contentType = contentType;
             this.fileName = fileName;

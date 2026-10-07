@@ -79,7 +79,7 @@ namespace NINA.Test.ViewModel {
             var sut = new ExtendedPluginManifest(new PluginManifest {
                 Name = "Plugin"
             });
-            var changed = new List<string>();
+            var changed = new List<string?>();
             sut.PropertyChanged += (_, args) => changed.Add(args.PropertyName);
 
             sut.State = PluginState.UpdateAvailable;

@@ -33,8 +33,8 @@ namespace NINA.Test.Utility {
             ObservableLimitedSizedStack<int> stack = new ObservableLimitedSizedStack<int>(3);
             int collectionNotifications = 0;
             int countNotifications = 0;
-            stack.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs args) => collectionNotifications++;
-            stack.PropertyChanged += (object sender, PropertyChangedEventArgs args) => {
+            stack.CollectionChanged += (object? sender, NotifyCollectionChangedEventArgs args) => collectionNotifications++;
+            stack.PropertyChanged += (object? sender, PropertyChangedEventArgs args) => {
                 if (args.PropertyName == nameof(ObservableLimitedSizedStack<int>.Count)) {
                     countNotifications++;
                 }

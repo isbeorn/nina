@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,7 +40,7 @@ namespace NINA.Core.Utility {
                 return elem.IsValueType && IsBlittableImpl(elem);
             }
             try {
-                object instance = FormatterServices.GetUninitializedObject(type);
+                object instance = RuntimeHelpers.GetUninitializedObject(type);
                 GCHandle.Alloc(instance, GCHandleType.Pinned).Free();
                 return true;
             } catch (Exception) {

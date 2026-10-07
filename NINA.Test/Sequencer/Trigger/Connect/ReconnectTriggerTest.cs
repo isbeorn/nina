@@ -45,7 +45,7 @@ namespace NINA.Test.Sequencer.Trigger.Connect {
             for (int cycle = 0; cycle < 2; cycle++) {
                 sut.SequenceBlockInitialize();
                 sut.SequenceBlockInitialize();
-                downloadTimeoutHandlers.GetInvocationList().Should().HaveCount(1);
+                downloadTimeoutHandlers.Should().BeOfType<Func<object, EventArgs, Task>>().Which.GetInvocationList().Should().HaveCount(1);
                 sut.SequenceBlockTeardown();
                 sut.SequenceBlockTeardown();
                 downloadTimeoutHandlers.Should().BeNull();
@@ -78,7 +78,7 @@ namespace NINA.Test.Sequencer.Trigger.Connect {
         private Mock<ISafetyMonitorMediator> safetyMonitorMediatorMock;
         private Mock<ISequenceMediator> sequenceMediatorMock;
         private CameraInfo cameraInfo;
-        private Func<object, EventArgs, Task> downloadTimeoutHandlers;
+        private Func<object, EventArgs, Task>? downloadTimeoutHandlers;
 
         [SetUp]
         public void SetUp() {
@@ -172,7 +172,7 @@ namespace NINA.Test.Sequencer.Trigger.Connect {
             ReconnectOnDownloadFailure sut = CreateReconnectOnDownloadFailure();
 
             sut.SequenceBlockInitialize();
-            await downloadTimeoutHandlers.Invoke(this, EventArgs.Empty);
+            await downloadTimeoutHandlers.Should().BeOfType<Func<object, EventArgs, Task>>().Which.Invoke(this, EventArgs.Empty);
 
             sut.ShouldTrigger(Mock.Of<ISequenceItem>(), Mock.Of<ISequenceItem>()).Should().BeTrue();
 

@@ -5,7 +5,6 @@ using Microsoft.Win32.SafeHandles;
 #if !(NETFX_CORE || WINDOWS_UWP)
 
 using System.Security.Permissions;
-using System.Runtime.ConstrainedExecution;
 
 #endif
 
@@ -3611,9 +3610,7 @@ namespace Altair {
                 : base(true) {
             }
 
-            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             override protected bool ReleaseHandle() {
-                // Here, we must obey all rules for constrained execution regions.
                 Altaircam_Close(handle);
                 return true;
             }

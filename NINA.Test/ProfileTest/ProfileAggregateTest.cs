@@ -59,7 +59,7 @@ namespace NINA.Test.ProfileTest {
         [Test]
         public void NameAndDescription_RaiseOwnPropertyAndSettingsOnlyWhenValueChanges() {
             ProfileModel profile = new ProfileModel("Original");
-            List<string> propertyNames = CapturePropertyChanges(profile);
+            List<string?> propertyNames = CapturePropertyChanges(profile);
 
             profile.Name = "Science Rig";
             profile.Description = "Backyard narrowband profile";
@@ -79,7 +79,7 @@ namespace NINA.Test.ProfileTest {
         [Test]
         public void ChildSettingChange_RaisesProfileSettingsNotification() {
             ProfileModel profile = new ProfileModel("Observatory");
-            List<string> propertyNames = CapturePropertyChanges(profile);
+            List<string?> propertyNames = CapturePropertyChanges(profile);
 
             profile.CameraSettings.PixelSize = 4.63d;
             profile.FilterWheelSettings.FilterWheelFilters.Add(new FilterInfo("Ha", -20, 3));
@@ -128,9 +128,9 @@ namespace NINA.Test.ProfileTest {
             originalCalibrationFrames.Should().Be(25);
         }
 
-        private static List<string> CapturePropertyChanges(INotifyPropertyChanged source) {
-            List<string> propertyNames = new List<string>();
-            source.PropertyChanged += (object sender, PropertyChangedEventArgs args) => propertyNames.Add(args.PropertyName);
+        private static List<string?> CapturePropertyChanges(INotifyPropertyChanged source) {
+            List<string?> propertyNames = new List<string?>();
+            source.PropertyChanged += (object? sender, PropertyChangedEventArgs args) => propertyNames.Add(args.PropertyName);
             return propertyNames;
         }
     }

@@ -41,7 +41,7 @@ namespace NINA.Test.Equipment {
         [Test]
         public void CameraInfo_DefaultsAndCapabilityUpdatesAreObservable() {
             var sut = new CameraInfo();
-            var changed = new List<string>();
+            var changed = new List<string?>();
             sut.PropertyChanged += (_, args) => changed.Add(args.PropertyName);
             var binning = new AsyncObservableCollection<BinningMode> {
                 new BinningMode(1, 1),
@@ -95,7 +95,7 @@ namespace NINA.Test.Equipment {
         [Test]
         public void TelescopeInfo_AstrometryAndMountCapabilitiesRoundTrip() {
             var sut = new TelescopeInfo();
-            var changed = new List<string>();
+            var changed = new List<string?>();
             sut.PropertyChanged += (_, args) => changed.Add(args.PropertyName);
             var coordinates = new Coordinates(5.59175, -5.39111, Epoch.J2000, Coordinates.RAType.Hours);
             var trackingRate = new TrackingRate {
@@ -141,7 +141,7 @@ namespace NINA.Test.Equipment {
         [Test]
         public void DomeInfo_FollowingAndAngleDisplayUseDependentProperties() {
             var sut = new DomeInfo();
-            var changed = new List<string>();
+            var changed = new List<string?>();
             sut.PropertyChanged += (_, args) => changed.Add(args.PropertyName);
 
             sut.FollowingType.Should().Be(Loc.Instance["LblOff"]);
@@ -169,7 +169,7 @@ namespace NINA.Test.Equipment {
         [Test]
         public void FlatDeviceInfo_LocalizedDependentStateTracksCoverAndLight() {
             var sut = new FlatDeviceInfo();
-            var changed = new List<string>();
+            var changed = new List<string?>();
             sut.PropertyChanged += (_, args) => changed.Add(args.PropertyName);
 
             sut.CoverState = CoverState.Open;

@@ -91,8 +91,8 @@ namespace NINA.Test.Model {
         [Test]
         public void SelectedItem_Set_RaisesPropertyChanged() {
             PagedList<string> pagedList = new PagedList<string>(2, new[] { "Lum", "Red" });
-            List<string> changedProperties = new List<string>();
-            pagedList.PropertyChanged += (object sender, PropertyChangedEventArgs args) => changedProperties.Add(args.PropertyName);
+            List<string?> changedProperties = new List<string?>();
+            pagedList.PropertyChanged += (object? sender, PropertyChangedEventArgs args) => changedProperties.Add(args.PropertyName);
 
             pagedList.SelectedItem = "Red";
 

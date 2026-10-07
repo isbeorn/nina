@@ -30,7 +30,7 @@ namespace NINA.Test.Utility {
         public void AddAndIndexerUpdate_ChangesDictionary_RaisesNotifications() {
             ObservableDictionary<string, int> dictionary = new ObservableDictionary<string, int>();
             int notifications = 0;
-            dictionary.PropertyChanged += (object sender, PropertyChangedEventArgs args) => notifications++;
+            dictionary.PropertyChanged += (object? sender, PropertyChangedEventArgs args) => notifications++;
 
             dictionary.Add("gain", 100);
             dictionary["offset"] = 25;
@@ -52,7 +52,7 @@ namespace NINA.Test.Utility {
             ObservableDictionary<string, string> dictionary = new ObservableDictionary<string, string>();
             dictionary.Add("filter", "Lum");
             int notifications = 0;
-            dictionary.PropertyChanged += (object sender, PropertyChangedEventArgs args) => notifications++;
+            dictionary.PropertyChanged += (object? sender, PropertyChangedEventArgs args) => notifications++;
 
             dictionary["filter"] = "Lum";
 
@@ -66,10 +66,10 @@ namespace NINA.Test.Utility {
         public void NullKeyOrValueOperations_ThrowArgumentNullException() {
             ObservableDictionary<string, string> dictionary = new ObservableDictionary<string, string>();
 
-            Assert.Throws<ArgumentNullException>(() => dictionary.Add(null, "Lum"));
-            Assert.Throws<ArgumentNullException>(() => dictionary[null] = "Lum");
-            Assert.Throws<ArgumentNullException>(() => dictionary["filter"] = null);
-            Assert.Throws<ArgumentNullException>(() => dictionary.TryGetValue(null, out string _));
+            Assert.Throws<ArgumentNullException>(() => dictionary.Add(null!, "Lum"));
+            Assert.Throws<ArgumentNullException>(() => dictionary[null!] = "Lum");
+            Assert.Throws<ArgumentNullException>(() => dictionary["filter"] = null!);
+            Assert.Throws<ArgumentNullException>(() => dictionary.TryGetValue(null!, out string _));
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace NINA.Test.Utility {
             dictionary.Add("a", 1);
             dictionary.Add("b", 2);
             int notifications = 0;
-            dictionary.PropertyChanged += (object sender, PropertyChangedEventArgs args) => notifications++;
+            dictionary.PropertyChanged += (object? sender, PropertyChangedEventArgs args) => notifications++;
 
             bool removedExisting = dictionary.Remove("a");
             bool removedMissing = dictionary.Remove("missing");

@@ -171,19 +171,23 @@ namespace NINA.Test.ViewModel {
 
         private static string CreateLayoutXml(Orientation orientation) {
             var document = XDocument.Parse(NINA.Properties.Resources.avalondock);
-            document.Root.Element("RootPanel").SetAttributeValue("Orientation", orientation);
+            var rootPanel = document.Root?.Element("RootPanel") ?? throw new AssertionException("Layout must contain a root panel.");
+            rootPanel.SetAttributeValue("Orientation", orientation);
             return document.ToString();
         }
 
         private static Orientation ReadLayoutOrientation(string filePath) {
             var document = XDocument.Load(filePath);
-            return Enum.Parse<Orientation>(document.Root.Element("RootPanel").Attribute("Orientation").Value);
+            var orientation = document.Root?.Element("RootPanel")?.Attribute("Orientation")
+                ?? throw new AssertionException("Layout must specify the root panel orientation.");
+            return Enum.Parse<Orientation>(orientation.Value);
         }
 
         private static List<NINA.Equipment.Interfaces.ViewModel.IDockableVM> CreateLayoutDockables() {
             return XDocument.Parse(NINA.Properties.Resources.avalondock)
                 .Descendants()
                 .Select(x => x.Attribute("ContentId")?.Value)
+                .OfType<string>()
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Distinct()
                 .Select(x => {

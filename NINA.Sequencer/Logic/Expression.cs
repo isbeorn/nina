@@ -328,7 +328,9 @@ namespace NINA.Sequencer.Logic {
         ///
         /// This field is optional; if null, no range checking occurs.
         /// </summary>
+#nullable enable annotations
         public double[]? Range { get; set; }
+#nullable restore annotations
 
         public IReadOnlyCollection<string> References {
             get {
@@ -444,6 +446,7 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+#nullable enable annotations
         public string? RangeString(double? value) {
             if (Range?.Length < 3) { return null; }
 
@@ -481,6 +484,7 @@ namespace NINA.Sequencer.Logic {
             }
             return string.Format(CultureInfo.InvariantCulture, Loc.Instance[msgKey], Range[0], Range[1]);
         }
+#nullable restore annotations
         private void ExtensionFunction(string name, FunctionEventArgs args) {
             try {
                 SymbolBroker.InvokeFunction(name, new NCalcSymbolFunctionArguments(args.Parameters), out var result, out var isVolatile);
