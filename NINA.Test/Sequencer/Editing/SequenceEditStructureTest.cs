@@ -128,45 +128,114 @@ namespace NINA.Test.Sequencer.Editing {
 
         [TestCase(false)]
         [TestCase(true)]
-        public void ClearSequence_RecordsOnlyConfirmedChangeAndDoesNotRepeatDialog(bool confirm) {
-            Application app = Application.Current ?? new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-            Window previous = app.MainWindow;
-            var window = new Window { Width = 300, Height = 200, Left = -32000, Top = -32000, ShowActivated = false, ShowInTaskbar = false };
-            foreach (string name in new[] { "ProfileService", "SVGDictionary", "Brushes", "Converters" }) {
-                app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri($"/NINA.WPF.Base;component/Resources/StaticResources/{name}.xaml", UriKind.Relative) });
+        public void ClearSequence_ClearsContentsAndHistoryOnlyWhenConfirmed(bool confirm) {
+            using var scope = new CoreEditorTestScope();
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary {
+                Source = new Uri("/NINA.WPF.Base;component/Resources/Styles/Path.xaml", UriKind.Relative)
+            });
+            var root = scope.Root;
+            root.SequenceTitle = "My sequence";
+            SequenceContainer[] areas = { new StartAreaContainer(), new TargetAreaContainer(), new EndAreaContainer() };
+            foreach (var area in areas) {
+                root.Add(area);
+                area.Add(new SequenceEditHistoryTest.PluginItem());
+                area.Add(new NINA.Sequencer.Conditions.LoopCondition());
+                area.Add(new UnknownSequenceTrigger("Area trigger"));
             }
-            app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/NINA.WPF.Base;component/Resources/Styles/Button.xaml", UriKind.Relative) });
-            app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/NINA.WPF.Base;component/Resources/Styles/Path.xaml", UriKind.Relative) });
-            var root = new SequenceRootContainer { SequenceTitle = "My sequence" };
-            var areas = new[] { new SequentialContainer(), new SequentialContainer(), new SequentialContainer() };
-            var item = new SequenceEditHistoryTest.PluginItem();
-            foreach (var area in areas) root.Add(area);
-            areas[1].Add(item);
-            var trigger = new UnknownSequenceTrigger("Root trigger");
-            root.Add(trigger);
-            using var history = new SequenceEditHistory(root);
-            try {
-                app.MainWindow = window;
-                window.Show();
-                window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => {
-                    var dialog = app.Windows.OfType<NINA.Core.MyMessageBox.MyMessageBoxView>().FirstOrDefault();
-                    if (dialog != null) dialog.DialogResult = confirm;
-                }));
-                root.DetachCommand.Execute(null);
-                history.Position.Should().Be(confirm ? 1 : 0);
-                if (confirm) {
-                    areas[1].Items.Should().BeEmpty();
-                    root.Triggers.Should().BeEmpty();
-                    history.Undo().Should().BeTrue();
-                    areas[1].Items.Should().ContainSingle().Which.Should().BeSameAs(item);
-                    root.Triggers.Single().Should().BeSameAs(trigger);
-                    root.SequenceTitle.Should().Be("My sequence");
-                    history.Redo().Should().BeTrue();
-                    areas[1].Items.Should().BeEmpty();
-                } else {
-                    areas[1].Items.Single().Should().BeSameAs(item);
+            root.Add(new NINA.Sequencer.Conditions.LoopCondition());
+            root.Add(new UnknownSequenceTrigger("Root trigger"));
+            var item = (SequenceEditHistoryTest.PluginItem)areas[1].Items.Single();
+            var history = scope.History;
+            item.DisableEnableCommand.Execute(null);
+            item.DisableEnableCommand.Execute(null);
+            history.Undo().Should().BeTrue();
+            var entries = history.Entries.ToArray();
+            root.SetChanged("Exposures");
+            root.DoesHaveChanges(SequenceEntityINPC.defaultChangeSet).Should().BeTrue();
+            history.CanUndo.Should().BeTrue();
+            history.CanRedo.Should().BeTrue();
+
+            scope.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => {
+                var dialog = Application.Current.Windows.OfType<NINA.Core.MyMessageBox.MyMessageBoxView>().FirstOrDefault();
+                if (dialog != null) dialog.DialogResult = confirm;
+            }));
+            root.DetachCommand.Execute(null);
+
+            root.Items.Should().Equal(areas);
+            if (confirm) {
+                root.Conditions.Should().BeEmpty();
+                root.Triggers.Should().BeEmpty();
+                root.HasChanges.Values.Should().OnlyContain(changed => !changed);
+                foreach (var area in areas) {
+                    area.Items.Should().BeEmpty();
+                    area.Conditions.Should().BeEmpty();
+                    area.Triggers.Should().BeEmpty();
                 }
-            } finally { window.Close(); app.MainWindow = previous; }
+                history.Entries.Should().ContainSingle();
+                history.Position.Should().Be(0);
+                history.CanUndo.Should().BeFalse();
+                history.CanRedo.Should().BeFalse();
+                history.Undo().Should().BeFalse();
+                history.Redo().Should().BeFalse();
+
+                var replacement = new SequenceEditHistoryTest.PluginItem();
+                areas[1].Add(replacement);
+                replacement.DisableEnableCommand.Execute(null);
+                root.DoesHaveChanges(SequenceEntityINPC.defaultChangeSet).Should().BeTrue();
+                history.Undo().Should().BeTrue("the existing root and editor history remain usable");
+                replacement.Status.Should().Be(NINA.Core.Enum.SequenceEntityStatus.CREATED);
+                history.Redo().Should().BeTrue();
+                replacement.Status.Should().Be(NINA.Core.Enum.SequenceEntityStatus.DISABLED);
+            } else {
+                root.SequenceTitle.Should().Be("My sequence");
+                root.DoesHaveChanges(SequenceEntityINPC.defaultChangeSet).Should().BeTrue();
+                root.DoesHaveChanges("Exposures").Should().BeTrue();
+                root.Conditions.Should().ContainSingle();
+                root.Triggers.Should().ContainSingle();
+                foreach (var area in areas) {
+                    area.Items.Should().ContainSingle();
+                    area.Conditions.Should().ContainSingle();
+                    area.Triggers.Should().ContainSingle();
+                }
+                areas[1].Items.Single().Should().BeSameAs(item);
+                history.Entries.Should().Equal(entries);
+                history.Position.Should().Be(1);
+                history.CanUndo.Should().BeTrue();
+                history.CanRedo.Should().BeTrue();
+            }
+        }
+
+        [TestCase(false, false)]
+        [TestCase(false, true)]
+        [TestCase(true, false)]
+        [TestCase(true, true)]
+        public void ClearSequence_EmptySequenceStartsCleanOnlyWhenConfirmed(bool confirm, bool initiallyChanged) {
+            using var scope = new CoreEditorTestScope();
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary {
+                Source = new Uri("/NINA.WPF.Base;component/Resources/Styles/Path.xaml", UriKind.Relative)
+            });
+            var root = scope.Root;
+            root.Add(new StartAreaContainer());
+            root.Add(new TargetAreaContainer());
+            root.Add(new EndAreaContainer());
+            root.SequenceTitle = "Saved empty sequence";
+            scope.History.MarkSaved();
+            root.HasChanges[SequenceEntityINPC.defaultChangeSet] = initiallyChanged;
+            root.HasChanges["Exposures"] = initiallyChanged;
+
+            scope.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => {
+                var dialog = Application.Current.Windows.OfType<NINA.Core.MyMessageBox.MyMessageBoxView>().FirstOrDefault();
+                if (dialog != null) dialog.DialogResult = confirm;
+            }));
+            root.DetachCommand.Execute(null);
+
+            root.SequenceTitle.Should().Be(confirm
+                ? NINA.Core.Locale.Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_Name"]
+                : "Saved empty sequence");
+            root.DoesHaveChanges(SequenceEntityINPC.defaultChangeSet).Should().Be(!confirm && initiallyChanged);
+            root.DoesHaveChanges("Exposures").Should().Be(!confirm && initiallyChanged);
+            scope.History.CanUndo.Should().BeFalse();
+            scope.History.CanRedo.Should().BeFalse();
         }
 
         [TestCase(false)]

@@ -19,6 +19,7 @@ using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Extensions;
 using NINA.Sequencer.Container.ExecutionStrategy;
+using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
@@ -64,20 +65,26 @@ namespace NINA.Sequencer.Container {
         public override ICommand DetachCommand => Editing.SequenceEditContext.SelfRecordingCommand(new GalaSoft.MvvmLight.Command.RelayCommand<object>(
             (o) => {
                 if (MyMessageBox.Show(Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_ClearPrompt"], Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_ClearCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
-                    Editing.SequenceEditContext.Structure(this, "Lbl_SequenceHistory_ClearAction", () => {
-                        var history = Editing.SequenceEditContext.Find(this);
-                        var title = Editing.SequencePropertyCapture.Capture(Loc.Instance["Lbl_SequenceHistory_ClearAction"], () => SequenceTitle, value => SequenceTitle = value);
+                    var history = Editing.SequenceEditContext.Find(this);
+                    history?.Flush();
+                    try {
                         foreach (var trigger in GetTriggersSnapshot()) {
                             trigger.Detach();
+                        }
+                        foreach (var condition in GetConditionsSnapshot()) {
+                            condition.Detach();
                         }
                         SequenceTitle = Loc.Instance["Lbl_SequenceContainer_SequenceRootContainer_Name"];
                         ClearContainer(Items[0] as ISequenceContainer);
                         ClearContainer(Items[1] as ISequenceContainer);
                         ClearContainer(Items[2] as ISequenceContainer);
                         UserSymbol.ClearUserSymbols();
-                        GC.Collect(2);
-                        history?.RecordApplied(title.Complete());
-                    });
+                        foreach (string key in HasChanges.Keys) {
+                            HasChanges[key] = false;
+                        }
+                    } finally {
+                        history?.ResetAfterSequenceClear();
+                    }
                 }
             }
         ));
@@ -85,6 +92,16 @@ namespace NINA.Sequencer.Container {
         private void ClearContainer(ISequenceContainer container) {
             foreach (var item in container.GetItemsSnapshot()) {
                 item.Detach();
+            }
+            if (container is IConditionable conditions) {
+                foreach (var condition in conditions.GetConditionsSnapshot()) {
+                    condition.Detach();
+                }
+            }
+            if (container is ITriggerable triggers) {
+                foreach (var trigger in triggers.GetTriggersSnapshot()) {
+                    trigger.Detach();
+                }
             }
         }
 

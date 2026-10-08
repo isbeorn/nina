@@ -202,6 +202,13 @@ namespace NINA.Sequencer.Editing {
             Refresh();
         }
 
+        internal void ResetAfterSequenceClear() {
+            DisposeTemplateHistories();
+            Graph.Refresh();
+            Clear();
+            OnPropertyChanged(nameof(ActiveHistory));
+        }
+
         public void Clear() {
             entries.Clear();
             entries.Add(new SequenceEditEntry(++nextState));

@@ -29,6 +29,8 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
 using static NINA.Test.Sequencer.Editing.CoreEditorTestScope;
 
 namespace NINA.Test.Sequencer.Editing {
@@ -281,6 +283,96 @@ namespace NINA.Test.Sequencer.Editing {
             sequencer.MainContainer = new SequenceRootContainer();
             scope.ClearServiceInvocations();
             return (sequencer, new[] { ("old root", new WeakReference(root)), ("watchdog condition", new WeakReference(condition)) });
+        }
+
+        [Test]
+        public void ClearSequence_ReleasesRemovedGraphViewsAndTemplateHistoryWhileEditorRemainsAlive() {
+            using var scope = new CoreEditorTestScope();
+            var references = ClearSequenceWithOpenEditors(scope);
+
+            AssertCollected(references, scope.ClearServiceInvocations);
+
+            scope.History.Entries.Should().ContainSingle();
+            scope.History.CanUndo.Should().BeFalse();
+            scope.History.CanRedo.Should().BeFalse();
+            scope.History.HasPendingEdit.Should().BeFalse();
+            scope.Host.Content.Should().BeOfType<NINA.View.Sequencer.SequenceView>();
+            GC.KeepAlive(scope);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static (string, WeakReference)[] ClearSequenceWithOpenEditors(CoreEditorTestScope scope) {
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary {
+                Source = new Uri("/NINA.WPF.Base;component/Resources/Styles/Path.xaml", UriKind.Relative)
+            });
+            var area = new TargetAreaContainer();
+            scope.Root.Add(new StartAreaContainer());
+            scope.Root.Add(area);
+            scope.Root.Add(new EndAreaContainer());
+            var group = new SequentialContainer { Name = "Removed group", IsExpanded = true };
+            var exposure = (NINA.Sequencer.SequenceItem.Imaging.TakeExposure)scope.Create(typeof(NINA.Sequencer.SequenceItem.Imaging.TakeExposure));
+            group.Add(exposure);
+            area.Add(group);
+            var deleted = new NINA.Sequencer.SequenceItem.Utility.WaitForTimeSpan();
+            area.Add(deleted);
+            deleted.DetachCommand.Execute(null);
+            scope.History.Position.Should().Be(1);
+
+            var template = new SequentialContainer();
+            template.Add(new NINA.Sequencer.SequenceItem.Utility.WaitForTimeSpan());
+            var resolver = new TemplateLinkResolver();
+            var saved = new TemplatedSequenceContainer((IProfileService)Application.Current.Resources["ProfileService"], "Test", template,
+                new TemplateReference { SourceKind = TemplateReferenceSourceKind.User, RelativePath = "clear-lifetime.template.json", DisplayName = "Clear lifetime" }, resolver);
+            resolver.UpdateTemplates(new[] { saved }, true, null);
+            var linked = new LinkedTemplateContainer(resolver);
+            linked.MaterializeFromTemplate(saved, true);
+            area.Add(linked);
+            linked.BeginEditTemplateCommand.Execute(null);
+            linked.IsEditing.Should().BeTrue();
+            var session = scope.History.ForContents(linked);
+            var contents = (SequenceContainer)linked.Items.Single();
+            contents.DisableEnableCommand.Execute(null);
+            session.Position.Should().Be(1);
+
+            var view = new NINA.View.Sequencer.SequenceView {
+                DataContext = new { Sequencer = new { Items = new[] { scope.Root } }, IsLocked = false, CanDragAndDrop = true }
+            };
+            scope.Host.Content = view;
+            view.UpdateLayout();
+            Drain();
+            exposure.ShowMenu = true;
+            view.UpdateLayout();
+            Drain();
+            var block = Descendants<NINA.View.Sequencer.SequenceBlockView>(view).Single(element => ReferenceEquals(element.DataContext, exposure));
+            var attempts = Descendants<TextBox>(block).Single(box =>
+                box.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path == nameof(exposure.Attempts));
+            attempts.RaiseEvent(new TextCompositionEventArgs(Keyboard.PrimaryDevice,
+                new TextComposition(InputManager.Current, attempts, "3")) { RoutedEvent = TextCompositionManager.PreviewTextInputEvent });
+            attempts.SetCurrentValue(TextBox.TextProperty, "3");
+            scope.History.HasPendingEdit.Should().BeTrue();
+            scope.History.ForContents(linked).Should().BeSameAs(session);
+            Descendants<TabItem>(view).Single(tab => tab.Name == "EditHistoryTab").IsSelected = true;
+            view.UpdateLayout();
+            Drain();
+            var historyView = Descendants<NINA.View.Sequencer.SequenceEditHistoryView>(view).Single();
+            historyView.DataContext.Should().BeSameAs(session);
+
+            scope.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => {
+                var dialog = Application.Current.Windows.OfType<NINA.Core.MyMessageBox.MyMessageBoxView>().FirstOrDefault();
+                if (dialog != null) dialog.DialogResult = true;
+            }));
+            scope.Root.DetachCommand.Execute(null);
+            view.UpdateLayout();
+            Drain();
+            area.Items.Should().BeEmpty();
+            exposure.Attempts.Should().Be(3, "Clear flushes the pending input before releasing its editor");
+            scope.History.ActiveHistory.Should().BeSameAs(scope.History);
+            historyView.DataContext.Should().BeSameAs(scope.History, "the visible sidebar must release its old template session");
+            scope.ClearServiceInvocations();
+            return new[] { ("removed group", new WeakReference(group)), ("removed exposure", new WeakReference(exposure)),
+                ("removed editor", new WeakReference(block)), ("pending editor", new WeakReference(attempts)),
+                ("previous history item", new WeakReference(deleted)), ("template", new WeakReference(linked)),
+                ("template contents", new WeakReference(contents)), ("template history", new WeakReference(session)) };
         }
 
         [Test]
