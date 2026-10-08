@@ -20,6 +20,7 @@ using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -35,6 +36,10 @@ namespace NINA.Sequencer.Container.ExecutionStrategy {
         }
 
         public async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            const int rapidIterationLimit = 10;
+            var rapidIterationThreshold = TimeSpan.FromMilliseconds(100);
+            var pacedIterationDuration = TimeSpan.FromMilliseconds(250);
+            var rapidIterations = 0;
             ISequenceItem previous = null;
             ISequenceItem next = null;
             bool canContinue = true;
@@ -44,6 +49,7 @@ namespace NINA.Sequencer.Container.ExecutionStrategy {
             try {
                 InitializeBlock(context);
                 while (((next, canContinue) = GetNextItem(context, previous)).next != null && canContinue) {
+                    var iterationStarted = Stopwatch.GetTimestamp();
                     StartBlock(context);
 
                     (next, canContinue) = GetNextItem(context, previous);
@@ -60,6 +66,16 @@ namespace NINA.Sequencer.Container.ExecutionStrategy {
                     FinishBlock(context);
 
                     if (CanContinue(context, previous, next)) {
+                        var iterationDuration = Stopwatch.GetElapsedTime(iterationStarted);
+                        rapidIterations = iterationDuration < rapidIterationThreshold
+                            ? Math.Min(rapidIterations + 1, rapidIterationLimit)
+                            : 0;
+                        if (rapidIterations == rapidIterationLimit) {
+                            // Bound sustained rapid repeats without changing condition or reset semantics.
+                            // Exclude this wait from the next iteration's measured work.
+                            await Task.Delay(pacedIterationDuration - iterationDuration, token);
+                        }
+
                         foreach (var item in context.GetItemsSnapshot()) {
                             if (item is ISequenceContainer) {
                                 (item as ISequenceContainer).ResetAll();
