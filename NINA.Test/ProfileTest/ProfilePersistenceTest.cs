@@ -32,6 +32,33 @@ namespace NINA.Test.ProfileTest {
             }
         }
 
+        [TestCase(false, false)]
+        [TestCase(false, true)]
+        [TestCase(true, false)]
+        [TestCase(true, true)]
+        public void ImageFileSettings_LoadAndCloneRefreshUnpersistedPathValidity(bool initiallyExists, bool clone) {
+            string imageDirectory = Path.Combine(testRoot, "images");
+            if (initiallyExists) Directory.CreateDirectory(imageDirectory);
+            using var original = new ProfileModel("Output path validity");
+            original.ImageFileSettings.FilePath = imageDirectory;
+            original.ImageFileSettings.IsFilePathValid().Should().Be(initiallyExists);
+            original.Save();
+            if (!clone) original.Dispose();
+            if (initiallyExists) Directory.Delete(imageDirectory);
+            else Directory.CreateDirectory(imageDirectory);
+
+            using IProfile restored = clone ? ProfileModel.Clone(original) : ProfileModel.Load(original.Location);
+
+            restored.ImageFileSettings.Should().NotBeSameAs(original.ImageFileSettings);
+            restored.ImageFileSettings.FilePath.Should().Be(imageDirectory);
+            if (initiallyExists) Directory.CreateDirectory(imageDirectory);
+            else Directory.Delete(imageDirectory);
+            restored.ImageFileSettings.IsFilePathValid().Should().Be(!initiallyExists,
+                "deserialization must refresh the result before its first consumer reads it");
+            original.ImageFileSettings.IsFilePathValid().Should().Be(initiallyExists,
+                "the original settings retain their own result until their path changes");
+        }
+
         /// <summary>
         /// Verifies that Save, Peek, and Load preserve profile metadata, profile settings, and plugin-specific values.
         /// </summary>

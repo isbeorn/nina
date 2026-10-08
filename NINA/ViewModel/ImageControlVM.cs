@@ -523,8 +523,11 @@ namespace NINA.ViewModel {
             }
             _prepImageCancellationSource?.Dispose();
             _prepImageCancellationSource = new CancellationTokenSource();
-            if (RenderedImage != null) {
-                _prepImageTask = ProcessAndUpdateImage(RenderedImage.ReRender(), new PrepareImageParameters(), _prepImageCancellationSource.Token);
+            var renderedImage = RenderedImage;
+            var token = _prepImageCancellationSource.Token;
+            if (renderedImage != null) {
+                // Image processing can run synchronously even when it returns a Task.
+                _prepImageTask = Task.Run(() => ProcessAndUpdateImage(renderedImage.ReRender(), new PrepareImageParameters(), token), token);
                 await _prepImageTask;
             }
             return true;

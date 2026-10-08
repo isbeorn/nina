@@ -31,6 +31,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             filePath = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "N.I.N.A");
+            FilePathExists = Directory.Exists(filePath);
             filePattern = "$$DATEMINUS12$$\\$$IMAGETYPE$$\\$$DATETIME$$_$$FILTER$$_$$SENSORTEMP$$_$$EXPOSURETIME$$s_$$FRAMENR$$";
             filePatternDARK = "";
             filePatternBIAS = "";
@@ -47,12 +48,16 @@ namespace NINA.Profile {
 
         private string filePath;
 
+        [field: NonSerialized]
+        internal bool FilePathExists { get; private set; }
+
         [DataMember]
         public string FilePath {
             get => filePath;
             set {
                 if (filePath != value) {
                     filePath = value;
+                    FilePathExists = Directory.Exists(value);
                     RaisePropertyChanged();
                 }
             }

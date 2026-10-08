@@ -16,14 +16,18 @@ using FluentAssertions;
 using Moq;
 using NINA.Astrometry;
 using NINA.Core.Enum;
+using NINA.Core.Model;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
+using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.ViewModel;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.SkySurvey;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -45,6 +49,104 @@ namespace NINA.Test.ViewModel {
             application.Dispatcher.CheckAccess().Should().BeTrue();
             application.Resources["PuzzlePieceSVG"] = new GeometryGroup();
             application.Resources["HistorySVG"] = new GeometryGroup();
+            application.Resources["PictureSVG"] = new GeometryGroup();
+        }
+
+        [TestCase(true, true, true)]
+        [TestCase(true, true, false)]
+        [TestCase(true, false, true)]
+        [TestCase(false, false, false)]
+        public void PrepareImageCommand_FromDispatcher_ProcessesOffThreadAndPreservesOptions(
+            bool autoStretch, bool detectStars, bool annotateImage) {
+            var settings = new ImageSettings {
+                AutoStretch = autoStretch,
+                DetectStars = detectStars,
+                AnnotateImage = annotateImage,
+                AutoStretchFactor = 0.3,
+                BlackClipping = -3,
+                StarSensitivity = StarSensitivityEnum.Highest,
+                NoiseReduction = NoiseReductionEnum.High
+            };
+            using ImageControlVM sut = CreateImageControl(settings);
+            int dispatcherThread = Environment.CurrentManagedThreadId;
+            var processingThreads = new List<int>();
+            BitmapSource originalPixels = CreateImage(8, 8, (_, _) => Colors.Red);
+            BitmapSource stretchedPixels = CreateImage(8, 8, (_, _) => Colors.Lime);
+            BitmapSource annotatedPixels = CreateImage(8, 8, (_, _) => Colors.Blue);
+            var rawData = new Mock<IImageData>();
+            rawData.SetupGet(x => x.Properties).Returns(new ImageProperties(8, 8, 16, false, 0, 0));
+            var original = new Mock<IRenderedImage>();
+            var rerendered = new Mock<IRenderedImage>();
+            rerendered.SetupGet(x => x.RawImageData).Returns(rawData.Object);
+            rerendered.SetupGet(x => x.Image).Returns(originalPixels);
+            var stretched = new Mock<IRenderedImage>();
+            stretched.SetupGet(x => x.Image).Returns(stretchedPixels);
+            var annotated = new Mock<IRenderedImage>();
+            annotated.SetupGet(x => x.Image).Returns(annotatedPixels);
+            original.Setup(x => x.ReRender()).Callback(() => processingThreads.Add(Environment.CurrentManagedThreadId))
+                .Returns(rerendered.Object);
+            rerendered.Setup(x => x.Stretch(0.3, -3, false))
+                .Callback(() => processingThreads.Add(Environment.CurrentManagedThreadId))
+                .ReturnsAsync(stretched.Object);
+            stretched.Setup(x => x.DetectStars(annotateImage, StarSensitivityEnum.Highest, NoiseReductionEnum.High,
+                    It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .Callback(() => processingThreads.Add(Environment.CurrentManagedThreadId))
+                .ReturnsAsync(annotateImage ? annotated.Object : stretched.Object);
+            sut.RenderedImage = original.Object;
+            ImagePreparedEventArgs? prepared = null;
+            sut.ImagePrepared += (_, args) => prepared = args;
+
+            ExecutePrepareImageCommand(sut);
+
+            sut.PrepareImageCommand.Execution.IsSuccessfullyCompleted.Should().BeTrue();
+            processingThreads.Should().HaveCount(1 + (autoStretch ? 1 : 0) + (detectStars ? 1 : 0));
+            processingThreads.Should().NotContain(dispatcherThread, "manual preview processing must leave the dispatcher available");
+            IRenderedImage expected = detectStars && annotateImage ? annotated.Object : autoStretch ? stretched.Object : rerendered.Object;
+            sut.RenderedImage.Should().BeSameAs(expected);
+            sut.Image.Should().BeSameAs(expected.Image);
+            prepared.Should().NotBeNull();
+            prepared!.RenderedImage.Should().BeSameAs(rerendered.Object);
+            original.Verify(x => x.ReRender(), Times.Once);
+            rerendered.Verify(x => x.Stretch(0.3, -3, false), autoStretch ? Times.Once() : Times.Never());
+            stretched.Verify(x => x.DetectStars(annotateImage, StarSensitivityEnum.Highest, NoiseReductionEnum.High,
+                It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), detectStars ? Times.Once() : Times.Never());
+        }
+
+        [Test]
+        public void PrepareImageCommand_WithoutImage_CompletesWithoutPublishingPreview() {
+            using ImageControlVM sut = CreateImageControl(new ImageSettings());
+            int prepared = 0;
+            sut.ImagePrepared += (_, _) => prepared++;
+
+            ExecutePrepareImageCommand(sut);
+
+            sut.PrepareImageCommand.Execution.IsSuccessfullyCompleted.Should().BeTrue();
+            sut.PrepareImageCommand.Execution.Result.Should().BeTrue();
+            sut.RenderedImage.Should().BeNull();
+            sut.Image.Should().BeNull();
+            prepared.Should().Be(0);
+        }
+
+        [Test]
+        public void PrepareImageCommand_WhenRenderingFails_ExposesFailureWithoutReplacingPreview() {
+            using ImageControlVM sut = CreateImageControl(new ImageSettings());
+            var failure = new InvalidOperationException("Rendering failed");
+            var original = new Mock<IRenderedImage>();
+            original.Setup(x => x.ReRender()).Throws(failure);
+            BitmapSource originalPixels = CreateImage(8, 8, (_, _) => Colors.Red);
+            sut.RenderedImage = original.Object;
+            sut.Image = originalPixels;
+            int prepared = 0;
+            sut.ImagePrepared += (_, _) => prepared++;
+
+            ExecutePrepareImageCommand(sut);
+
+            sut.PrepareImageCommand.Execution.IsFaulted.Should().BeTrue();
+            sut.PrepareImageCommand.Execution.InnerException.Should().BeSameAs(failure);
+            sut.PrepareImageCommand.IsRunning.Should().BeFalse();
+            sut.RenderedImage.Should().BeSameAs(original.Object);
+            sut.Image.Should().BeSameAs(originalPixels);
+            prepared.Should().Be(0);
         }
 
         [Test]
@@ -250,6 +352,21 @@ namespace NINA.Test.ViewModel {
 
             Action observe = () => imageTask.GetAwaiter().GetResult();
             observe.Should().Throw<OperationCanceledException>();
+        }
+
+        private static ImageControlVM CreateImageControl(ImageSettings settings) {
+            var profile = new Mock<IProfile>();
+            profile.SetupGet(x => x.ImageSettings).Returns(settings);
+            var profileService = new Mock<IProfileService>();
+            profileService.SetupGet(x => x.ActiveProfile).Returns(profile.Object);
+            return new ImageControlVM(profileService.Object, Mock.Of<ICameraMediator>(), Mock.Of<ITelescopeMediator>(),
+                Mock.Of<IImagingMediator>(), Mock.Of<IApplicationStatusMediator>());
+        }
+
+        private static void ExecutePrepareImageCommand(ImageControlVM imageControl) {
+            Task command = Dispatcher.CurrentDispatcher.InvokeAsync(() => imageControl.PrepareImageCommand.ExecuteAsync(null)).Task.Unwrap();
+            PumpUntil(() => command.IsCompleted);
+            command.GetAwaiter().GetResult();
         }
 
         private static Uri ImagePath(int index) {

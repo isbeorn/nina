@@ -22,10 +22,12 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Utility;
-using System.Collections.Generic;
+using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
@@ -39,22 +41,22 @@ namespace NINA.Sequencer {
             PropertyChanged += OnPropertyChanged;
         }
 
-        private Dictionary<string, System.Reflection.PropertyInfo> propertyInfoByname = new Dictionary<string, System.Reflection.PropertyInfo>();
+        private static readonly ConcurrentDictionary<(Type Type, string Name), (PropertyInfo Property, bool IsSerialized)> propertyMetadata = new();
+
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            System.Reflection.PropertyInfo propInf;
             if (e?.PropertyName == null) { return; }
-            if (propertyInfoByname.ContainsKey(e.PropertyName)) {
-                propInf = propertyInfoByname[e.PropertyName];
-            } else {
-                propInf = GetType().GetProperty(e.PropertyName);
-                propertyInfoByname.Add(e.PropertyName, propInf);
+            var key = (Type: GetType(), Name: e.PropertyName);
+            if (!propertyMetadata.TryGetValue(key, out var metadata)) {
+                var property = key.Type.GetProperty(key.Name);
+                if (property == null) { return; }
+                metadata = propertyMetadata.GetOrAdd(key, (property, property.IsDefined(typeof(JsonPropertyAttribute), true)));
             }
 
-            if (propInf?.GetCustomAttributes(typeof(JsonPropertyAttribute), true)?.Length > 0) {
+            if (metadata.IsSerialized) {
                 ISequenceRootContainer root = GetSequenceRootContainer();
 
                 if (root != null && !(root.HasChanges?[defaultChangeSet] ?? false)) { 
-                    object[] hasChangedSets = propInf.GetCustomAttributes(typeof(NINA.Core.Model.HasChangedSetAttribute), true);
+                    object[] hasChangedSets = metadata.Property.GetCustomAttributes(typeof(NINA.Core.Model.HasChangedSetAttribute), true);
                     if (hasChangedSets.Length > 0) {
                         foreach (object item in hasChangedSets) {
                             HasChangedSetAttribute att = (HasChangedSetAttribute)item;

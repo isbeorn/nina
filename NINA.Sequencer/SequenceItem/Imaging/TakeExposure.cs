@@ -14,6 +14,7 @@
 
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Validations;
@@ -23,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.WPF.Base.Interfaces.Mediator;
@@ -282,7 +282,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
             if (string.IsNullOrWhiteSpace(fileSettings.FilePath)) {
                 issues.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathEmpty"]);
-            } else if (!Directory.Exists(fileSettings.FilePath)) {
+            } else if (!fileSettings.IsFilePathValid()) {
                 issues.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
         }

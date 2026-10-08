@@ -1,8 +1,10 @@
 using FluentAssertions;
+using Moq;
 using NINA.Core.Enum;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Profile;
+using NINA.Profile.Interfaces;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,101 @@ namespace NINA.Test.ProfileTest {
 
     [TestFixture]
     public class ProfileSettingsBehaviorTest {
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ImageFileSettings_DefaultAndMissingPersistedPathInitializeCurrentValidity(bool missingPersistedPath) {
+            string expectedPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "N.I.N.A");
+            ImageFileSettings settings;
+            if (missingPersistedPath) {
+                var serializer = new DataContractSerializer(typeof(ImageFileSettings));
+                using var stream = new MemoryStream();
+                serializer.WriteObject(stream, new ImageFileSettings { FilePath = "old-custom-output-path" });
+                stream.Position = 0;
+                var document = XDocument.Load(stream);
+                document.Descendants().Single(element => element.Name.LocalName == nameof(ImageFileSettings.FilePath)).Remove();
+                stream.SetLength(0);
+                document.Save(stream);
+                stream.Position = 0;
+                settings = serializer.ReadObject(stream).Should().BeOfType<ImageFileSettings>().Subject;
+            } else {
+                settings = new ImageFileSettings();
+            }
+
+            settings.FilePath.Should().Be(expectedPath);
+            settings.IsFilePathValid().Should().Be(Directory.Exists(expectedPath));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ImageFileSettings_PathNotificationObservesUpdatedValidity(bool initiallyExists) {
+            string directory = Path.Combine(Path.GetTempPath(), "nina-path-notification-" + Guid.NewGuid().ToString("N"));
+            string validPath = Path.Combine(directory, "existing");
+            string invalidPath = Path.Combine(directory, "missing");
+            Directory.CreateDirectory(validPath);
+            try {
+                var settings = new ImageFileSettings { FilePath = initiallyExists ? validPath : invalidPath };
+                var observed = new List<bool>();
+                settings.PropertyChanged += (_, args) => {
+                    if (args.PropertyName == nameof(ImageFileSettings.FilePath)) observed.Add(settings.IsFilePathValid());
+                };
+
+                settings.FilePath = initiallyExists ? invalidPath : validPath;
+                settings.FilePath = initiallyExists ? validPath : invalidPath;
+
+                observed.Should().Equal(!initiallyExists, initiallyExists);
+            } finally {
+                Directory.Delete(validPath);
+                Directory.Delete(directory);
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ImageFileSettings_CustomImplementationUsesFreshFilesystemFallback(bool initiallyExists) {
+            string directory = Path.Combine(Path.GetTempPath(), "nina-custom-output-path-" + Guid.NewGuid().ToString("N"));
+            string? selectedPath = directory;
+            if (initiallyExists) Directory.CreateDirectory(directory);
+            var settings = new Mock<IImageFileSettings>();
+            settings.SetupGet(x => x.FilePath).Returns(() => selectedPath!);
+            try {
+                settings.Object.IsFilePathValid().Should().Be(initiallyExists);
+                if (initiallyExists) Directory.Delete(directory);
+                else Directory.CreateDirectory(directory);
+                settings.Object.IsFilePathValid().Should().Be(!initiallyExists);
+
+                foreach (string? emptyPath in new[] { null, "", "   " }) {
+                    selectedPath = emptyPath;
+                    settings.Object.IsFilePathValid().Should().BeFalse();
+                }
+            } finally {
+                if (Directory.Exists(directory)) Directory.Delete(directory);
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ImageFileSettings_DerivedInterfacePathUsesFreshFilesystemFallback(bool initiallyExists) {
+            string directory = Path.Combine(Path.GetTempPath(), "nina-derived-output-path-" + Guid.NewGuid().ToString("N"));
+            string validPath = Path.Combine(directory, "existing");
+            string invalidPath = Path.Combine(directory, "missing");
+            Directory.CreateDirectory(validPath);
+            try {
+                IImageFileSettings settings = new DerivedImageFileSettings {
+                    FilePath = initiallyExists ? invalidPath : validPath,
+                    InterfacePath = initiallyExists ? validPath : invalidPath
+                };
+
+                settings.IsFilePathValid().Should().Be(initiallyExists);
+                if (initiallyExists) Directory.Delete(validPath);
+                else Directory.CreateDirectory(invalidPath);
+                settings.IsFilePathValid().Should().Be(!initiallyExists);
+            } finally {
+                if (Directory.Exists(validPath)) Directory.Delete(validPath);
+                if (Directory.Exists(invalidPath)) Directory.Delete(invalidPath);
+                Directory.Delete(directory);
+            }
+        }
 
         /// <summary>
         /// Verifies that image file naming uses image-type-specific overrides only when the override is non-empty.
@@ -373,6 +470,14 @@ namespace NINA.Test.ProfileTest {
             GuiderSettings deserialized = serializer.ReadObject(stream).Should().BeOfType<GuiderSettings>().Subject;
 
             deserialized.MountDitherMinimumPixels.Should().Be(0.0);
+        }
+
+        private sealed class DerivedImageFileSettings : ImageFileSettings, IImageFileSettings {
+            public string InterfacePath { get; set; } = string.Empty;
+            string IImageFileSettings.FilePath {
+                get => InterfacePath;
+                set => InterfacePath = value;
+            }
         }
 
         private static List<string?> CapturePropertyChanges(INotifyPropertyChanged source) {

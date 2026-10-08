@@ -31,7 +31,7 @@ The baseline catalog exercises 267 input instances. The linked-template target t
 | Conditions, root/container triggers and custom trigger sources | Same structural capture, including trigger-source placement and coordinate-condition attachment side effects | Structure/history tests, repeated coordinate-condition moves and existing trigger view tests |
 | Trigger-runner contents and programmable flip actions | Explicit editor-owned action containers in graph discovery | History tests and both programmable flip action-set cases |
 | Enable/disable | `SequenceEditContext.Toggle` records enabled intent | Both directions tested independently of execution status |
-| Clear sequence | Capture starts after confirmation; title and lists form one transaction | Confirm/cancel and replay-without-dialog tests |
+| Clear sequence | Confirmed destructive unload discards root/template journals and resets change flags; cancel preserves state | Confirm/cancel, dirty state, editor reuse and removed-model/view lifetime tests |
 | Target/template insertion and target drop | Structural or whole-target capture around the accepted model update | Structure/drop tests; target override tests |
 | Planetarium target assignment | Whole-target capture after the async lookup | Code-inspected adapter; actual planetarium interaction is outside the automated audit |
 | Script/layout/save-sequence file picker | Accepted path is applied with `SequenceEditContext.Property` | Path text bindings tested; native picker accept/cancel remains a manual integration check |

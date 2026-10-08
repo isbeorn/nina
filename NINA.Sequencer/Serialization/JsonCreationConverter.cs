@@ -13,8 +13,11 @@
 #endregion "copyright"
 
 using System;
+using System.Collections.Concurrent;
+using System.Runtime.Loader;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using NINA.Core.Utility;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.SequenceItem;
@@ -26,6 +29,33 @@ namespace NINA.Sequencer.Serialization {
 
         public JsonCreationConverter(ISequencerFactory factory) {
             Factory = factory;
+            reuseOwnedTokens = IsBuiltInConverter(GetType());
+        }
+
+        private static bool IsBuiltInConverter(Type converterType) =>
+            converterType == typeof(SequenceContainerCreationConverter)
+                || converterType == typeof(SequenceItemCreationConverter)
+                || converterType == typeof(SequenceConditionCreationConverter)
+                || converterType == typeof(SequenceTriggerCreationConverter)
+                || converterType == typeof(SequenceDateTimeProviderCreationConverter);
+
+        private readonly bool reuseOwnedTokens;
+        private const int MaxCachedTypeNames = 256;
+        private readonly ConcurrentDictionary<string, Type> resolvedBuiltInTypes = new(StringComparer.Ordinal);
+        private static readonly IContractResolver DefaultResolver = JsonSerializer.Create().ContractResolver;
+        private static readonly AssemblyLoadContext TypeResolutionContext = AssemblyLoadContext.GetLoadContext(typeof(SequenceJsonConverter).Assembly);
+
+        private static bool HasDefaultJsonHooks(JsonSerializer serializer) {
+            // Additional converters or resolver hooks can retain the reader's DOM even
+            // when the entity itself is built in. Keep their original detached input.
+            if (JsonConvert.DefaultSettings != null || !ReferenceEquals(serializer.ContractResolver, DefaultResolver)) return false;
+            var converters = serializer.Converters;
+            for (int i = 0; i < converters.Count; i++) {
+                var converter = converters[i];
+                if (!IsBuiltInConverter(converter.GetType()) || (converter is SequenceItemCreationConverter item
+                    && !item.UsesBuiltInContainerConverter)) return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -91,8 +121,24 @@ namespace NINA.Sequencer.Serialization {
                                          JsonSerializer serializer) {
             if (reader.TokenType == JsonToken.Null) return null;
 
-            // Load JObject from stream
-            JObject jObject = JObject.Load(reader);
+            using var customSerialization = HasDefaultJsonHooks(serializer) ? null : SequenceDeserializationScope.Suspend();
+
+            // Only built-in converters may reuse our own DOM. External readers and custom
+            // converters keep the detached copy that Create implementations can retain.
+            bool reuseTokens = reuseOwnedTokens && HasDefaultJsonHooks(serializer) && (this is not SequenceItemCreationConverter itemConverter
+                || itemConverter.UsesBuiltInContainerConverter);
+            var ownedObject = reuseTokens && reader is OwnedSequenceTokenReader ownedReader
+                && reader.TokenType == JsonToken.StartObject ? ownedReader.CurrentToken as JObject : null;
+            JObject streamHeader = null;
+            ISequenceEntityUpgrader streamUpgrader = null;
+            if (reuseTokens && reader is SequenceFileJsonReader fileReader && fileReader.TryGetEnvelope(out var header)) {
+                streamUpgrader = GetUpgraderForPlugin(ExtractPluginName((string)header["$type"]));
+                if (streamUpgrader == NoUpgrader) streamHeader = header;
+            }
+            bool streamEnvelope = streamHeader != null;
+            int sourceDepth = reader.Depth;
+            JObject jObject = streamHeader ?? ownedObject ?? JObject.Load(reader);
+            if (ownedObject != null) reader.Skip();
             T target = default(T);
 
             try {
@@ -107,11 +153,13 @@ namespace NINA.Sequencer.Serialization {
 
                         // Extract plugin name and get upgrader
                         string pluginName = ExtractPluginName(originalType);
-                        ISequenceEntityUpgrader upgrader = GetUpgraderForPlugin(pluginName);
+                        ISequenceEntityUpgrader upgrader = streamUpgrader ?? GetUpgraderForPlugin(pluginName);
+                        using var pluginUpgrade = upgrader == NoUpgrader ? null : SequenceDeserializationScope.Suspend();
 
                         // Only create upgradeContext if an upgrader exists
                         SequenceUpgradeContext upgradeContext = null;
                         if (upgrader != NoUpgrader) {
+                            if (ownedObject != null) jObject = (JObject)jObject.DeepClone();
                             upgradeContext = new SequenceUpgradeContext {
                                 Serializer = serializer,
                                 RequestedType = objectType,
@@ -133,37 +181,56 @@ namespace NINA.Sequencer.Serialization {
                             }
                         }
 
-                        // Create stage
-                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.Create)) {
-                            try {
-                                var createResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.Create, target);
-                                if (createResult != null && createResult is T typedResult) {
-                                    target = typedResult;
-                                } else {
-                                    target = Create(objectType, jObject);
+                        // Prototype cloning keeps its usual eager attachment behavior.
+                        using (SequenceDeserializationScope.Suspend()) {
+                            // Create stage
+                            if (upgrader.Stages.HasFlag(SequenceUpgradeStage.Create)) {
+                                try {
+                                    var createResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.Create, target);
+                                    if (createResult != null && createResult is T typedResult) {
+                                        target = typedResult;
+                                    } else {
+                                        target = Create(objectType, jObject);
+                                    }
+                                } catch (Exception ex) {
+                                    Logger.Warning($"Create upgrade failed for type {originalType}: {ex.Message}");
                                 }
-                            } catch (Exception ex) {
-                                Logger.Warning($"Create upgrade failed for type {originalType}: {ex.Message}");
+                            } else {
+                                // Create target object (uses the potentially modified jObject)
+                                target = Create(objectType, jObject);
                             }
-                        } else {
-                            // Create target object (uses the potentially modified jObject)
-                            target = Create(objectType, jObject);
-                        }
 
-                        // AfterCreate stage
-                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.AfterCreate)) {
-                            try {
-                                var afterCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterCreate, target);
-                                if (afterCreateResult != null && afterCreateResult is T typedResult) {
-                                    target = typedResult;
+                            // AfterCreate stage
+                            if (upgrader.Stages.HasFlag(SequenceUpgradeStage.AfterCreate)) {
+                                try {
+                                    var afterCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterCreate, target);
+                                    if (afterCreateResult != null && afterCreateResult is T typedResult) {
+                                        target = typedResult;
+                                    }
+                                } catch (Exception ex) {
+                                    Logger.Warning($"AfterCreate upgrade failed for type {originalType}: {ex.Message}");
                                 }
-                            } catch (Exception ex) {
-                                Logger.Warning($"AfterCreate upgrade failed for type {originalType}: {ex.Message}");
                             }
                         }
-
-                        // Populate the object properties
-                        serializer.Populate(jObject.CreateReader(), target);
+                        // Upgraders and custom converters can observe their JSON after population,
+                        // so child migrations must still operate on independent copies there.
+                        if (streamEnvelope && target?.GetType() != GetType(originalType)) {
+                            // A custom factory may return a subtype with additional JSON behavior.
+                            // Keep the instance already created but restore its ordinary DOM input.
+                            jObject = JObject.Load(reader);
+                            streamEnvelope = false;
+                        }
+                        if (target != null && target.GetType().Assembly != typeof(SequenceJsonConverter).Assembly) {
+                            // Plugin properties can have converters that retain their reader's DOM.
+                            // Preserve the detached snapshot and isolate later child migrations.
+                            if (ReferenceEquals(jObject, ownedObject)) jObject = (JObject)jObject.DeepClone();
+                            reuseTokens = false;
+                        }
+                        using (var pluginPopulation = target != null && target.GetType().Assembly != typeof(SequenceJsonConverter).Assembly
+                            ? SequenceDeserializationScope.Suspend() : null) {
+                            serializer.Populate(streamEnvelope ? reader : reuseTokens && upgrader == NoUpgrader
+                                ? new OwnedSequenceTokenReader(jObject) : jObject.CreateReader(), target);
+                        }
 
                         // AfterPopulate stage
                         if (upgrader.Stages.HasFlag(SequenceUpgradeStage.AfterPopulate)) {
@@ -188,6 +255,7 @@ namespace NINA.Sequencer.Serialization {
 
                 return target;
             } catch (Exception ex) {
+                if (streamEnvelope) SequenceFileJsonReader.FinishObject(reader, sourceDepth);
                 var sourcePath = GetSourcePath(serializer);
                 Logger.Error($"Deserialize failed. File='{sourcePath}', Error={ex.Message}");
                 var unknownEntityName = "";
@@ -210,6 +278,12 @@ namespace NINA.Sequencer.Serialization {
         }
 
         protected Type GetType(string typeString) {
+            var context = AssemblyLoadContext.CurrentContextualReflectionContext;
+            bool useCache = context == null || ReferenceEquals(context, TypeResolutionContext);
+            if (useCache && typeString != null && resolvedBuiltInTypes.TryGetValue(typeString, out var cachedType)) {
+                return cachedType;
+            }
+
             var t = Type.GetType(typeString);
             if (t == null) {
                 //Migration from Versions prior to the module split
@@ -221,7 +295,19 @@ namespace NINA.Sequencer.Serialization {
                     }
                 }
             }
+            // Keep plugin types and unresolved names dynamic, and bound alternate spellings
+            // retained by converters that are reused across multiple sequence loads.
+            if (useCache && t?.Assembly == typeof(SequenceJsonConverter).Assembly && !t.IsCollectible) {
+                lock (resolvedBuiltInTypes) {
+                    if (resolvedBuiltInTypes.Count < MaxCachedTypeNames) resolvedBuiltInTypes.TryAdd(typeString, t);
+                }
+            }
             return t;
         }
+    }
+
+    internal sealed class OwnedSequenceTokenReader : JTokenReader {
+        // Keep reader paths relative to this entity even when its token has a parent.
+        public OwnedSequenceTokenReader(JObject value) : base(value, string.Empty) { }
     }
 }

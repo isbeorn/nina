@@ -144,6 +144,59 @@ namespace NINA.Test.AstrometryTest {
             Assert.That(alt, Is.EqualTo(expectedAltitude).Within(ANGLE_TOLERANCE));
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        [Explicit("Requires optimized assemblies and DOTNET_TieredCompilation=0 for deterministic JIT allocation checks.")]
+        public void GetAltitude_OptimizedCodeAllocatesOnlyReturnedAngle(bool useAngles) {
+            typeof(Angle).Assembly.GetCustomAttribute<System.Diagnostics.DebuggableAttribute>()!
+                .IsJITOptimizerDisabled.Should().BeFalse("this is an optimized-code regression test");
+            Environment.GetEnvironmentVariable("DOTNET_TieredCompilation").Should().Be("0",
+                "the process must start with fully optimized code instead of depending on tier promotion timing");
+
+            var latitude = Angle.ByDegree(51.5);
+            var declination = Angle.ByDegree(-23.44);
+            var inputs = new Angle[1000];
+            var results = new Angle[inputs.Length];
+            double expectedSum = 0;
+            for (int i = 0; i < inputs.Length; i++) {
+                inputs[i] = Angle.ByDegree(i * 0.1);
+                expectedSum += AstroUtil.GetAltitude(inputs[i].Degree, latitude.Degree, declination.Degree);
+            }
+            double expectedLast = AstroUtil.GetAltitude(inputs[^1], latitude, declination).Degree;
+
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            for (int i = 0; i < results.Length; i++) results[i] = Angle.ByRadians(i);
+            long returnedAnglesAllocation = GC.GetAllocatedBytesForCurrentThread() - before;
+
+            // Measure the Angle-returning entry point without importing its expression
+            // into the harness loop. The scalar path also exercises a real sampling loop.
+            var angleCalculator = typeof(AstroUtil).GetMethod(nameof(AstroUtil.GetAltitude),
+                new[] { typeof(Angle), typeof(Angle), typeof(Angle) })!
+                .CreateDelegate<Func<Angle, Angle, Angle, Angle>>();
+            double sum = 0;
+            long allocated;
+            if (useAngles) {
+                before = GC.GetAllocatedBytesForCurrentThread();
+                for (int i = 0; i < results.Length; i++) results[i] = angleCalculator(inputs[i], latitude, declination);
+                allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+            } else {
+                allocated = MeasureScalarAltitudeAllocations(inputs, latitude, declination, out sum);
+            }
+
+            TestContext.Progress.WriteLine($"Altitude ({(useAngles ? "Angle" : "double")}): {allocated:N0} bytes; returned Angle objects: {returnedAnglesAllocation:N0} bytes.");
+            allocated.Should().BeLessThan((useAngles ? returnedAnglesAllocation : 0) + 1024);
+            if (useAngles) results[^1].Degree.Should().Be(expectedLast);
+            else sum.Should().Be(expectedSum);
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+        private static long MeasureScalarAltitudeAllocations(Angle[] inputs, Angle latitude, Angle declination, out double sum) {
+            sum = 0;
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            for (int i = 0; i < inputs.Length; i++) sum += AstroUtil.GetAltitude(inputs[i].Degree, latitude.Degree, declination.Degree);
+            return GC.GetAllocatedBytesForCurrentThread() - before;
+        }
+
         [Test]
         [TestCase(0, 10, 0, 0, 270)]
         [TestCase(360, 20, 0, 10, 79.350963258685638)]

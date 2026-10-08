@@ -42,6 +42,7 @@ namespace NINA.Sequencer.Conditions {
     public partial class AltitudeCondition : LoopForAltitudeBase, IValidatable, ISequenceCustomPropertyEditProvider, ISequenceAttachmentStateProvider {
         private double lastRA;
         private double lastDec;
+        private Epoch lastEpoch;
         private bool hasDsoParent;
 
         [ImportingConstructor]
@@ -79,7 +80,7 @@ namespace NINA.Sequencer.Conditions {
         [IsExpression(Default = 30, Range = [-90, 90], Proxy = "Data.Offset")]
         public partial double Offset { get; set; }
 
-        private void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void Coordinates_CoordinatesChanged(object sender, EventArgs e) {
             // When coordinates change, we change the decimal value
             InputCoordinates ic = (InputCoordinates)sender;
             Coordinates c = ic.Coordinates;
@@ -95,6 +96,7 @@ namespace NINA.Sequencer.Conditions {
 
             lastRA = c.RA;
             lastDec = c.Dec;
+            lastEpoch = c.Epoch;
             CalculateExpectedTime();
         }
 
@@ -110,7 +112,12 @@ namespace NINA.Sequencer.Conditions {
         public override void AfterParentChanged() {
             var coordinates = RetrieveContextCoordinates(this.Parent);
             if (coordinates != null) {
-                Data.Coordinates.Coordinates = coordinates.Coordinates;
+                var inheritedCoordinates = coordinates.Coordinates;
+                // Ancestor attachment repeats during loading; only changed coordinate state needs a new prediction.
+                if (!ReferenceEquals(Data.Coordinates.Coordinates, inheritedCoordinates)
+                    || inheritedCoordinates.RA != lastRA || inheritedCoordinates.Dec != lastDec || inheritedCoordinates.Epoch != lastEpoch) {
+                    Data.Coordinates.Coordinates = inheritedCoordinates;
+                }
                 PositionAngle = coordinates.PositionAngle;
                 HasDsoParent = true;
             } else {
@@ -118,10 +125,12 @@ namespace NINA.Sequencer.Conditions {
             }
 
             if (Data.Coordinates != null) {
-                Data.Coordinates.PropertyChanged -= Coordinates_PropertyChanged;
+                // Use the aggregate event because one coordinate change raises several property notifications.
+                Data.Coordinates.CoordinatesChanged -= Coordinates_CoordinatesChanged;
                 lastRA = Data.Coordinates.Coordinates.RA;
                 lastDec = Data.Coordinates.Coordinates.Dec;
-                Data.Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+                lastEpoch = Data.Coordinates.Coordinates.Epoch;
+                Data.Coordinates.CoordinatesChanged += Coordinates_CoordinatesChanged;
             }
             Validate();
             RunWatchdogIfInsideSequenceRoot();

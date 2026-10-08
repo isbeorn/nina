@@ -13,6 +13,8 @@
 #endregion "copyright"
 
 using FluentAssertions;
+using System.Collections.Generic;
+using System.Globalization;
 using Moq;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
@@ -38,22 +40,193 @@ namespace NINA.Test.Sequencer.Conditions {
         [Test]
         public void FirstDeclinationComponentEdit_UpdatesDeclinationExpression() {
             var sut = CreateConditionWithCoordinates();
+            var altitudeUpdates = ObserveAltitudeUpdates(sut);
 
             sut.Data.Coordinates.DecDegrees = 45;
 
             sut.Data.Coordinates.Coordinates.Dec.Should().Be(45);
             sut.RaExpression.Definition.Should().Be("5 + 5");
             sut.DecExpression.Definition.Should().Be("45");
+            altitudeUpdates.Should().ContainSingle().Which.Should().Be(sut.Data.CurrentAltitude);
         }
 
         [Test]
-        public void ReplacingBothCoordinates_UpdatesBothExpressions() {
+        public void FirstRightAscensionComponentEdit_UpdatesRightAscensionExpression() {
             var sut = CreateConditionWithCoordinates();
+            var altitudeUpdates = ObserveAltitudeUpdates(sut);
 
-            sut.Data.Coordinates.Coordinates = new Coordinates(Angle.ByHours(12), Angle.ByDegree(60), Epoch.J2000);
+            sut.Data.Coordinates.RAHours = 12;
 
+            sut.Data.Coordinates.Coordinates.RA.Should().Be(12);
             sut.RaExpression.Definition.Should().Be("12");
-            sut.DecExpression.Definition.Should().Be("60");
+            sut.DecExpression.Definition.Should().Be("20");
+            altitudeUpdates.Should().ContainSingle().Which.Should().Be(sut.Data.CurrentAltitude);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void SettingCoordinates_UpdatesBothExpressionsAndRefreshesAltitudeOnce(bool reuseCoordinates) {
+            var sut = CreateConditionWithCoordinates();
+            var altitudeUpdates = ObserveAltitudeUpdates(sut);
+            var coordinates = reuseCoordinates ? sut.Data.Coordinates.Coordinates : new Coordinates(Angle.Zero, Angle.Zero, Epoch.J2000);
+            coordinates.RA = 12;
+            coordinates.Dec = -60;
+
+            sut.Data.Coordinates.Coordinates = coordinates;
+
+            sut.Data.Coordinates.Coordinates.Should().BeSameAs(coordinates);
+            sut.RaExpression.Definition.Should().Be("12");
+            sut.DecExpression.Definition.Should().Be("-60");
+            altitudeUpdates.Should().ContainSingle().Which.Should().Be(sut.Data.CurrentAltitude);
+        }
+
+        [Test]
+        public void ParentChanges_KeepOneCoordinateSubscription() {
+            var sut = CreateConditionWithCoordinates();
+            var firstParent = new Mock<IDeepSkyObjectContainer>();
+            firstParent.SetupGet(x => x.Target).Returns(new InputTarget(Angle.Zero, Angle.Zero, null) {
+                InputCoordinates = new InputCoordinates(new Coordinates(Angle.ByHours(5), Angle.ByDegree(30), Epoch.J2000))
+            });
+            var secondParent = new Mock<IDeepSkyObjectContainer>();
+            secondParent.SetupGet(x => x.Target).Returns(new InputTarget(Angle.Zero, Angle.Zero, null) {
+                InputCoordinates = new InputCoordinates(new Coordinates(Angle.ByHours(8), Angle.ByDegree(40), Epoch.J2000))
+            });
+            var altitudeUpdates = ObserveAltitudeUpdates(sut);
+
+            foreach (var parent in new ISequenceContainer?[] { firstParent.Object, secondParent.Object, null, firstParent.Object }) {
+                var expected = ((parent as IDeepSkyObjectContainer)?.Target.InputCoordinates.Coordinates
+                    ?? sut.Data.Coordinates.Coordinates).Clone();
+                sut.AttachNewParent(parent);
+                sut.HasDsoParent.Should().Be(parent != null);
+                sut.Data.Coordinates.Coordinates.RA.Should().Be(expected.RA);
+                sut.Data.Coordinates.Coordinates.Dec.Should().Be(expected.Dec);
+                sut.RaExpression.Definition.Should().Be(expected.RA.ToString(CultureInfo.InvariantCulture));
+                sut.DecExpression.Definition.Should().Be(expected.Dec.ToString(CultureInfo.InvariantCulture));
+
+                altitudeUpdates.Clear();
+                sut.AfterParentChanged();
+
+                altitudeUpdates.Should().BeEmpty("repeated parent notifications must not recalculate unchanged coordinates");
+                sut.Data.Coordinates.Coordinates.RA.Should().Be(expected.RA);
+                sut.Data.Coordinates.Coordinates.Dec.Should().Be(expected.Dec);
+                sut.RaExpression.Definition.Should().Be(expected.RA.ToString(CultureInfo.InvariantCulture));
+                sut.DecExpression.Definition.Should().Be(expected.Dec.ToString(CultureInfo.InvariantCulture));
+                altitudeUpdates.Clear();
+
+                sut.Data.Coordinates.RAHours = 11;
+
+                sut.RaExpression.Definition.Should().Be("11");
+                altitudeUpdates.Should().ContainSingle();
+            }
+        }
+
+        [TestCase("RightAscension")]
+        [TestCase("Declination")]
+        [TestCase("Epoch")]
+        [TestCase("Replacement")]
+        public void InheritedCoordinates_RefreshOnlyForChangedState(string change) {
+            var sut = CreateConditionWithCoordinates();
+            var target = new InputTarget(Angle.Zero, Angle.Zero, null) {
+                InputCoordinates = new InputCoordinates(new Coordinates(Angle.ByHours(5), Angle.ByDegree(30), Epoch.J2000))
+            };
+            var parent = new Mock<IDeepSkyObjectContainer>();
+            parent.SetupGet(x => x.Target).Returns(target);
+            sut.AttachNewParent(parent.Object);
+            var altitudeUpdates = ObserveAltitudeUpdates(sut);
+
+            for (int direction = 0; direction < 2; direction++) {
+                var coordinates = target.InputCoordinates.Coordinates;
+                switch (change) {
+                    case "RightAscension": coordinates.RA = direction == 0 ? 12 : 5; break;
+                    case "Declination": coordinates.Dec = direction == 0 ? -45 : 30; break;
+                    case "Epoch": coordinates.Epoch = direction == 0 ? Epoch.JNOW : Epoch.J2000; break;
+                    case "Replacement": target.InputCoordinates.Coordinates = coordinates.Clone(); break;
+                }
+                coordinates = target.InputCoordinates.Coordinates;
+                double expectedRa = coordinates.RA;
+                double expectedDec = coordinates.Dec;
+                var expectedEpoch = coordinates.Epoch;
+
+                sut.AfterParentChanged();
+
+                sut.Data.Coordinates.Coordinates.Should().BeSameAs(coordinates);
+                sut.Data.Coordinates.Coordinates.Epoch.Should().Be(expectedEpoch);
+                sut.RaExpression.Definition.Should().Be(expectedRa.ToString(CultureInfo.InvariantCulture));
+                sut.DecExpression.Definition.Should().Be(expectedDec.ToString(CultureInfo.InvariantCulture));
+                altitudeUpdates.Should().ContainSingle("changed inherited coordinate state must refresh the prediction");
+                altitudeUpdates.Clear();
+
+                sut.AfterParentChanged();
+                sut.AfterParentChanged();
+
+                altitudeUpdates.Should().BeEmpty("repeated ancestor notifications must not recalculate unchanged coordinates");
+            }
+        }
+
+        [Test]
+        public void InheritedCoordinates_DetachAndReattachStillUpdatesWatchdogAndSubscription() {
+            var sut = CreateConditionWithCoordinates();
+            var watchdog = new Mock<IConditionWatchdog>();
+            sut.ConditionWatchdog = watchdog.Object;
+            var parent = new Mock<IDeepSkyObjectContainer>();
+            parent.SetupGet(x => x.Target).Returns(new InputTarget(Angle.Zero, Angle.Zero, null) {
+                InputCoordinates = new InputCoordinates(new Coordinates(Angle.ByHours(10), Angle.ByDegree(20), Epoch.J2000))
+            });
+            parent.SetupGet(x => x.Parent).Returns(Mock.Of<ISequenceRootContainer>());
+            var altitudeUpdates = ObserveAltitudeUpdates(sut);
+
+            for (int cycle = 0; cycle < 2; cycle++) {
+                watchdog.Invocations.Clear();
+                sut.AttachNewParent(parent.Object);
+                sut.HasDsoParent.Should().BeTrue();
+                watchdog.Verify(x => x.Start(), Times.Once);
+                watchdog.Verify(x => x.Cancel(), Times.Never);
+                altitudeUpdates.Clear();
+                sut.AfterParentChanged();
+                altitudeUpdates.Should().BeEmpty();
+
+                watchdog.Invocations.Clear();
+                sut.AttachNewParent(null);
+                sut.HasDsoParent.Should().BeFalse();
+                watchdog.Verify(x => x.Start(), Times.Never);
+                watchdog.Verify(x => x.Cancel(), Times.Once);
+                altitudeUpdates.Clear();
+                sut.Data.Coordinates.DecDegrees = cycle == 0 ? 45 : 20;
+                altitudeUpdates.Should().ContainSingle("detached coordinate editing must retain one subscription");
+            }
+        }
+
+        [Test]
+        public void Clone_CoordinateEditsRefreshOnlyTheirOwnAltitude() {
+            var sut = CreateConditionWithCoordinates();
+            var clone = (AltitudeCondition)sut.Clone();
+            clone.AfterParentChanged();
+            var originalUpdates = ObserveAltitudeUpdates(sut);
+            var cloneUpdates = ObserveAltitudeUpdates(clone);
+
+            clone.Data.Coordinates.RAHours = 12;
+
+            cloneUpdates.Should().ContainSingle();
+            originalUpdates.Should().BeEmpty();
+            clone.RaExpression.Definition.Should().Be("12");
+            sut.RaExpression.Definition.Should().Be("5 + 5");
+
+            sut.Data.Coordinates.DecDegrees = 45;
+
+            originalUpdates.Should().ContainSingle();
+            cloneUpdates.Should().ContainSingle();
+            sut.DecExpression.Definition.Should().Be("45");
+            clone.DecExpression.Definition.Should().Be("20");
+        }
+
+        private static List<double> ObserveAltitudeUpdates(AltitudeCondition condition) {
+            var updates = new List<double>();
+            condition.Data.PropertyChanged += (_, e) => {
+                if (e.PropertyName == nameof(condition.Data.CurrentAltitude)) {
+                    updates.Add(condition.Data.CurrentAltitude);
+                }
+            };
+            return updates;
         }
 
         private AltitudeCondition CreateConditionWithCoordinates() {

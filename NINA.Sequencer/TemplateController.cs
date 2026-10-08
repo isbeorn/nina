@@ -90,7 +90,7 @@ namespace NINA.Sequencer {
                 }
                 foreach (var file in Directory.GetFiles(defaultTemplatePath, "*" + TemplateFileExtension)) {
                     try {
-                        var container = sequenceJsonConverter.Deserialize(File.ReadAllText(file), file);
+                        var container = sequenceJsonConverter.DeserializeFromFile(file);
                         if (container is ISequenceRootContainer) continue;
                         container.AttachNewParent(null);
                         TemplateReference reference = CreateTemplateReference(TemplateReferenceSourceKind.Default, defaultTemplatePath, file, container.Name);
@@ -194,7 +194,7 @@ namespace NINA.Sequencer {
 
                         foreach (var file in files) {
                             try {
-                                var container = sequenceJsonConverter.Deserialize(File.ReadAllText(file), file);
+                                var container = sequenceJsonConverter.DeserializeFromFile(file);
                                 if (container is ISequenceRootContainer) continue;
                                 container.AttachNewParent(null);
                                 var fileInfo = new FileInfo(file);

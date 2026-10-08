@@ -588,8 +588,12 @@ namespace NINA.Test.Sequencer.View.MiniSequencer {
             }
         }
 
-        [Test]
-        public void UnloadedView_IsNotRetainedByTheLiveSequence() {
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task UnloadedView_IsNotRetainedByTheLiveSequence(bool expanded) {
+            // Earlier views can leave externally retained UI Automation peers in the process.
+            if (await IsolatedTestProcess.RunCurrentTest()) return;
+            group.IsExpanded = expanded;
             WeakReference detached = CreateAndUnloadView();
 
             GC.Collect();
@@ -607,6 +611,9 @@ namespace NINA.Test.Sequencer.View.MiniSequencer {
             window.Show();
             Drain();
             window.Content = null;
+            // Closing the host releases UI Automation peers that can otherwise retain
+            // disconnected visuals independently of the live sequence.
+            window.Close();
             Drain();
             return new WeakReference(detached);
         }

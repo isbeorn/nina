@@ -590,7 +590,7 @@ namespace NINA.Sequencer.Logic {
 
                     StringValue = null;
 
-                    if (Parameters.Count < Resolved.Count) {
+                    if (parameters.Count < resolved.Count) {
                         parameters.Clear();
                         ReleaseConsumersNoLock();
                     }
@@ -610,7 +610,7 @@ namespace NINA.Sequencer.Logic {
                         //if (!ImageVolatile && symReference.StartsWith("Image_")) {
                         //    ImageVolatile = true;
                         //}
-                        bool found = Resolved.TryGetValue(symReference, out sym);
+                        bool found = resolved.TryGetValue(symReference, out sym);
                         if (!found || sym == null) {
                             // !found -> couldn't find it; sym == null -> it's a DataSymbol
                             if (!found) {
@@ -671,10 +671,10 @@ namespace NINA.Sequencer.Logic {
 
                     Error = null;
                     try {
-                        if (Parameters.Count != References.Count) {
+                        if (parameters.Count != references.Count) {
                             foreach (string r in References) {
                                 string symReference = r;
-                                if (!Parameters.ContainsKey(symReference)) {
+                                if (!parameters.ContainsKey(symReference)) {
                                     // Not defined or evaluated
                                     UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                                     if (s is Variable sv && !sv.Executed) {
@@ -817,10 +817,12 @@ namespace NINA.Sequencer.Logic {
         }
 
         private void ReleaseConsumersNoLock() {
-            foreach (UserSymbol symbol in resolved.Values.Where(symbol => symbol != null).Distinct()) {
-                symbol.RemoveConsumer(this);
+            if (resolved.Count > 0) {
+                foreach (UserSymbol symbol in resolved.Values.Where(symbol => symbol != null).Distinct()) {
+                    symbol.RemoveConsumer(this);
+                }
+                resolved.Clear();
             }
-            resolved.Clear();
             parameters.Clear();
         }
 
@@ -863,7 +865,7 @@ namespace NINA.Sequencer.Logic {
                 }
             } else if (double.IsNaN(Value) && Definition?.Length > 0) {
                 Error = Loc.Instance["LblNotEvaluated"];
-            } else if (Resolved.Count != References.Count) {
+            } else if (HasUnresolvedReferences()) {
                 // Why would this happen... track down?
                 Evaluate();
             } else if (Definition.Length != 0 && Value == Default && Error == null) {
@@ -874,6 +876,12 @@ namespace NINA.Sequencer.Logic {
 
         public void Validate() {
             Validate(null);
+        }
+
+        private bool HasUnresolvedReferences() {
+            lock (this) {
+                return resolved.Count != references.Count;
+            }
         }
     }
 }

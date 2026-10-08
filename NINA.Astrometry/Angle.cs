@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace NINA.Astrometry {
 
@@ -24,17 +25,20 @@ namespace NINA.Astrometry {
             return new Angle(degree, AstroUtil.ToRadians(degree), hours);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle ByDegree(double degree) {
             return new Angle(degree, AstroUtil.ToRadians(degree), AstroUtil.DegreesToHours(degree));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle ByRadians(double radians) {
             var degree = AstroUtil.ToDegree(radians);
-            return new Angle(AstroUtil.ToDegree(radians), radians, AstroUtil.DegreesToHours(degree));
+            return new Angle(degree, radians, AstroUtil.DegreesToHours(degree));
         }
 
         public static Angle Zero { get; } = Angle.ByDegree(0);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Angle(double degree, double radians, double hours) {
             this.Degree = degree;
             this.Radians = radians;
@@ -52,14 +56,17 @@ namespace NINA.Astrometry {
             return AstroUtil.DegreesToDMS(Degree);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Angle Sin() {
             return Angle.ByRadians(Math.Sin(this.Radians));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Angle Asin() {
             return Angle.ByRadians(Math.Asin(this.Radians));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Angle Cos() {
             return Angle.ByRadians(Math.Cos(this.Radians));
         }
@@ -135,6 +142,7 @@ namespace NINA.Astrometry {
             return Angle.ByRadians(-a.Radians);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle operator +(Angle a, Angle b) {
             return Angle.ByRadians(a.Radians + b.Radians);
         }
@@ -159,6 +167,7 @@ namespace NINA.Astrometry {
             return Angle.ByRadians(a.Radians - b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle operator *(Angle a, Angle b) {
             return Angle.ByRadians(a.Radians * b.Radians);
         }

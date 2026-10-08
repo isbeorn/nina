@@ -29,6 +29,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -331,8 +335,327 @@ namespace NINA.Test.Sequencer.Serialization {
                 .Which.Name.Should().Contain(nameof(ReconnectTrigger));
         }
 
+        [Test]
+        public void NestedContainers_DoNotCopyLeafJsonAtEveryAncestor() {
+            var factory = CreateCloningFactory();
+            var converter = new SequenceJsonConverter(factory);
+            string shallow = NestedDocument(1, 512).ToString(Formatting.None);
+            string deep = NestedDocument(8, 512).ToString(Formatting.None);
+            converter.Deserialize(shallow);
+            converter.Deserialize(deep);
+
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            var shallowResult = converter.Deserialize(shallow);
+            long shallowBytes = GC.GetAllocatedBytesForCurrentThread() - before;
+            before = GC.GetAllocatedBytesForCurrentThread();
+            var result = converter.Deserialize(deep);
+            long deepBytes = GC.GetAllocatedBytesForCurrentThread() - before;
+
+            shallowResult.Items.Should().HaveCount(512);
+            for (int i = 1; i < 8; i++) result = (ISequenceContainer)result.Items.Single();
+            result.Items.Should().HaveCount(512);
+            TestContext.Progress.WriteLine($"Shallow allocation: {shallowBytes}; deep allocation: {deepBytes}");
+            deepBytes.Should().BeLessThan(shallowBytes * 2, "adding container levels must not copy every leaf's JSON at each level");
+        }
+
+        [Test]
+        public void ReadJson_PreservesCallerOwnedTokensWhileMigratingNestedEntities() {
+            var factory = CreateCloningFactory();
+            var item = ItemDocument("exposure");
+            item["ImageType"] = "DARKFLAT";
+            var document = ContainerDocument(item, LinkedDocument());
+            var original = document.DeepClone();
+            var containerConverter = new SequenceContainerCreationConverter(factory);
+            var serializer = JsonSerializer.CreateDefault(new JsonSerializerSettings {
+                Converters = { containerConverter, new SequenceItemCreationConverter(factory, containerConverter) }
+            });
+
+            using var reader = document.CreateReader();
+            var result = serializer.Deserialize<ISequenceContainer>(reader)!;
+
+            result.Items[0].Should().BeOfType<TestSequenceItem>().Which.ImageType.Should().Be("DARK");
+            result.Items[1].Should().BeOfType<LinkedTemplateContainer>().Which.Items.Should().BeEmpty();
+            JToken.DeepEquals(document, original).Should().BeTrue("ReadJson must not mutate an external reader's document");
+        }
+
+        [Test]
+        public void ReadJson_PreservesSiblingsAndParentReferencesAcrossNestedContainers() {
+            var converter = new SequenceJsonConverter(CreateCloningFactory());
+            var source = new SequentialContainer();
+            var nested = new SequentialContainer();
+            source.Add(nested);
+            var first = new TestSequenceItem { SerializedName = "first" };
+            nested.Add(first);
+            nested.Add(new TestSequenceItem { SerializedName = "second" });
+            nested.Items.Add(first);
+            source.Add(new TestSequenceItem { SerializedName = "following sibling" });
+
+            var result = converter.Deserialize(converter.Serialize(source));
+
+            result.Items.Should().HaveCount(2);
+            var child = result.Items[0].Should().BeOfType<SequentialContainer>().Subject;
+            child.Parent.Should().BeSameAs(result);
+            child.Items.Should().HaveCount(3);
+            child.Items[0].Parent.Should().BeSameAs(child);
+            child.Items[0].Should().BeSameAs(child.Items[2]);
+            child.Items[1].Should().BeOfType<TestSequenceItem>().Which.SerializedName.Should().Be("second");
+            result.Items[1].Should().BeOfType<TestSequenceItem>().Which.SerializedName.Should().Be("following sibling");
+        }
+
+        [Test]
+        public void ReadJson_KeepsUpgraderJsonDetachedAndIsolatedFromChildMigrations() {
+            var factory = CreateCloningFactory();
+            var upgrader = new InspectingUpgrader();
+            factory.Upgraders.Add(upgrader);
+            var parent = ItemDocument("parent");
+            parent["Child"] = LinkedDocument();
+
+            var result = new SequenceJsonConverter(factory).Deserialize(ContainerDocument(parent).ToString());
+
+            var item = result.Items.Single().Should().BeOfType<TestSequenceItem>().Subject;
+            item.SerializedName.Should().Be("upgraded");
+            item.Child.Should().BeOfType<LinkedTemplateContainer>().Which.Items.Should().BeEmpty();
+            upgrader.JsonWasDetached.Should().BeTrue();
+            upgrader.JsonAfterPopulate!["Child"]!["Items"]!.Count().Should().Be(1,
+                "a child's migration must not modify the parent's upgrade context");
+        }
+
+        [Test]
+        public void ReadJson_KeepsCustomConverterJsonDetachedAndIsolatedFromChildMigrations() {
+            var factory = CreateCloningFactory();
+            var containerConverter = new SequenceContainerCreationConverter(factory);
+            var customConverter = new InspectingItemCreationConverter(factory, containerConverter);
+            var parent = ItemDocument("parent");
+            parent["Child"] = LinkedDocument();
+
+            var result = JsonConvert.DeserializeObject<ISequenceContainer>(ContainerDocument(parent).ToString(),
+                containerConverter, customConverter)!;
+
+            result.Items.Single().Should().BeOfType<TestSequenceItem>().Which.Child
+                .Should().BeOfType<LinkedTemplateContainer>().Which.Items.Should().BeEmpty();
+            customConverter.JsonWasDetached.Should().BeTrue();
+            customConverter.ParentJson!["Child"]!["Items"]!.Count().Should().Be(1,
+                "custom Create implementations may retain their detached JSON through population");
+        }
+
+        [Test]
+        public void ReadJson_KeepsDelegatedCustomContainerJsonDetachedAndIsolated() {
+            var factory = CreateCloningFactory();
+            var containerConverter = new SequenceContainerCreationConverter(factory);
+            var delegatedConverter = new InspectingContainerCreationConverter(factory);
+            var itemConverter = new SequenceItemCreationConverter(factory, delegatedConverter);
+            var child = ContainerDocument(LinkedDocument());
+            child["Name"] = "custom child";
+
+            var result = JsonConvert.DeserializeObject<ISequenceContainer>(ContainerDocument(child).ToString(),
+                containerConverter, itemConverter)!;
+
+            result.Items.Single().Should().BeOfType<SequentialContainer>().Which.Items.Single()
+                .Should().BeOfType<LinkedTemplateContainer>().Which.Items.Should().BeEmpty();
+            delegatedConverter.JsonWasDetached.Should().BeTrue();
+            delegatedConverter.ChildJson!["Items"]![0]!["Items"]!.Count().Should().Be(1,
+                "an item converter's custom container delegate also owns its JSON snapshot");
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void TypeResolution_RepeatedBuiltInNamesAvoidReflectionAllocations(bool legacyName) {
+            using var context = AssemblyLoadContext.GetLoadContext(typeof(SequenceJsonConverter).Assembly)!.EnterContextualReflection();
+            var sut = new TestItemCreationConverter(new TestSequencerFactory());
+            string typeName = legacyName
+                ? $"{typeof(SequentialContainer).FullName}, NINA"
+                : typeof(SequentialContainer).AssemblyQualifiedName!;
+            for (int i = 0; i < 8; i++) sut.ResolveType(typeName);
+
+            Type? result = null;
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            for (int i = 0; i < 1024; i++) result = sut.ResolveType(typeName);
+            long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+            result.Should().Be(typeof(SequentialContainer));
+            TestContext.Progress.WriteLine($"Repeated type resolution (legacy={legacyName}): {allocated:N0} bytes.");
+            allocated.Should().BeLessThan(16 * 1024, "successful built-in names should reuse their resolved type");
+            sut.ResolveType(typeName.Replace(nameof(SequentialContainer), nameof(SequentialContainer).ToLowerInvariant()))
+                .Should().BeNull("serialized type names remain case sensitive");
+        }
+
+        [Test]
+        public void TypeResolution_ConcurrentCurrentAndLegacyNamesReturnCorrectTypes() {
+            var sut = new TestItemCreationConverter(new TestSequencerFactory());
+            var types = new[] { typeof(SequentialContainer), typeof(SequenceRootContainer), typeof(LoopCondition), typeof(LinkedTemplateContainer) };
+            var results = new Type?[256];
+
+            Parallel.For(0, results.Length, i => {
+                Type type = types[i % types.Length];
+                string typeName = i % 2 == 0 ? type.AssemblyQualifiedName! : $"{type.FullName}, NINA";
+                results[i] = sut.ResolveType(typeName);
+            });
+
+            for (int i = 0; i < results.Length; i++) results[i].Should().Be(types[i % types.Length]);
+        }
+
+        [Test]
+        [NonParallelizable]
+        public void TypeResolution_MissingAndExternalTypesKeepUsingResolutionHooks() {
+            var sut = new TestItemCreationConverter(new TestSequencerFactory());
+            string typeName = typeof(TestSequenceItem).FullName!;
+            Assembly? availableAssembly = null;
+            int resolutions = 0;
+            ResolveEventHandler resolver = (_, args) => {
+                if (args.Name != typeName) return null;
+                resolutions++;
+                return availableAssembly;
+            };
+            AppDomain.CurrentDomain.TypeResolve += resolver;
+            try {
+                sut.ResolveType(typeName).Should().BeNull();
+
+                availableAssembly = typeof(TestSequenceItem).Assembly;
+                sut.ResolveType(typeName).Should().Be(typeof(TestSequenceItem), "an earlier miss must not hide a newly available plugin type");
+                int previousResolutions = resolutions;
+                sut.ResolveType(typeName).Should().Be(typeof(TestSequenceItem));
+                resolutions.Should().BeGreaterThan(previousResolutions, "external type resolution remains observable on every call");
+
+                availableAssembly = null;
+                sut.ResolveType(typeName).Should().BeNull("the converter must not retain external resolution results");
+            } finally {
+                AppDomain.CurrentDomain.TypeResolve -= resolver;
+            }
+        }
+
+        [Test]
+        public async Task TypeResolution_ContextualReflectionDoesNotUseOrPopulateDefaultCache() {
+            // A second sequencer assembly would replace WPF's process-wide resource cache.
+            if (await IsolatedTestProcess.RunCurrentTest()) return;
+            var warmed = new TestItemCreationConverter(new TestSequencerFactory());
+            var cold = new TestItemCreationConverter(new TestSequencerFactory());
+            string typeName = typeof(SequentialContainer).AssemblyQualifiedName!;
+            warmed.ResolveType(typeName).Should().Be(typeof(SequentialContainer));
+            var context = new AssemblyLoadContext("sequence-type-resolution", isCollectible: true);
+            try {
+                var assembly = context.LoadFromAssemblyPath(typeof(SequentialContainer).Assembly.Location);
+                var contextualType = assembly.GetType(typeof(SequentialContainer).FullName!)!;
+                contextualType.Should().NotBe(typeof(SequentialContainer));
+
+                using (context.EnterContextualReflection()) {
+                    warmed.ResolveType(typeName).Should().Be(contextualType);
+                    cold.ResolveType(typeName).Should().Be(contextualType);
+                }
+
+                warmed.ResolveType(typeName).Should().Be(typeof(SequentialContainer));
+                cold.ResolveType(typeName).Should().Be(typeof(SequentialContainer));
+            } finally {
+                context.Unload();
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void TypeResolution_AlternateBuiltInSpellingsHaveBoundedRetention(bool concurrent) {
+            var sut = new TestItemCreationConverter(new TestSequencerFactory());
+            var names = new WeakReference[512];
+            if (concurrent) Parallel.For(0, names.Length, i => names[i] = ResolveAlternateTypeName(sut, i));
+            else for (int i = 0; i < names.Length; i++) names[i] = ResolveAlternateTypeName(sut, i);
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            int retainedNames = names.Count(name => name.IsAlive);
+            GC.KeepAlive(sut);
+
+            retainedNames.Should().BeLessThanOrEqualTo(256,
+                "a converter reused across files must not retain every alternate spelling of a built-in type");
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static WeakReference ResolveAlternateTypeName(TestItemCreationConverter converter, int spaces) {
+            string typeName = $"{typeof(SequentialContainer).FullName},{new string(' ', spaces)}NINA.Sequencer";
+            converter.ResolveType(typeName).Should().Be(typeof(SequentialContainer));
+            return new WeakReference(typeName);
+        }
+
+        private static TestSequencerFactory CreateCloningFactory() {
+            var factory = new TestSequencerFactory { CloneEntities = true };
+            factory.ContainersByType[typeof(SequentialContainer)] = new SequentialContainer();
+            factory.ContainersByType[typeof(LinkedTemplateContainer)] = new LinkedTemplateContainer();
+            factory.ItemsByType[typeof(TestSequenceItem)] = new TestSequenceItem();
+            return factory;
+        }
+
+        private static JObject ItemDocument(string name) => new JObject {
+            ["$type"] = typeof(TestSequenceItem).AssemblyQualifiedName,
+            ["SerializedName"] = name
+        };
+
+        private static JObject ContainerDocument(params JObject[] children) => new JObject {
+            ["$type"] = typeof(SequentialContainer).AssemblyQualifiedName,
+            ["Strategy"] = new JObject { ["$type"] = typeof(NINA.Sequencer.Container.ExecutionStrategy.SequentialStrategy).AssemblyQualifiedName },
+            ["Items"] = new JArray(children)
+        };
+
+        private static JObject LinkedDocument() {
+            var document = ContainerDocument(ItemDocument("runtime contents"));
+            document["$type"] = typeof(LinkedTemplateContainer).AssemblyQualifiedName;
+            return document;
+        }
+
+        private static JObject NestedDocument(int depth, int leafCount) {
+            var document = ContainerDocument(Enumerable.Range(0, leafCount).Select(i => ItemDocument($"leaf-{i}")).ToArray());
+            for (int i = 1; i < depth; i++) document = ContainerDocument(document);
+            return document;
+        }
+
+        private sealed class InspectingUpgrader : ISequenceEntityUpgrader {
+            public string Name { get; set; } = "Inspecting";
+            public SequenceUpgradeStage Stages => SequenceUpgradeStage.BeforeCreate | SequenceUpgradeStage.AfterPopulate;
+            public bool JsonWasDetached { get; private set; }
+            public JObject? JsonAfterPopulate { get; private set; }
+
+            public object Upgrade(SequenceUpgradeContext context, SequenceUpgradeStage stage, object? entity) {
+                if (stage == SequenceUpgradeStage.BeforeCreate) {
+                    JsonWasDetached = context.Json.Parent == null && ReferenceEquals(context.Json.Root, context.Json);
+                    context.Json["SerializedName"] = "upgraded";
+                } else {
+                    JsonAfterPopulate = context.Json;
+                }
+                return entity!;
+            }
+        }
+
+        private sealed class InspectingItemCreationConverter : SequenceItemCreationConverter {
+            public bool JsonWasDetached { get; private set; }
+            public JObject? ParentJson { get; private set; }
+
+            public InspectingItemCreationConverter(ISequencerFactory factory, SequenceContainerCreationConverter containers) : base(factory, containers) { }
+
+            public override ISequenceItem Create(Type objectType, JObject jObject) {
+                if ((string?)jObject["SerializedName"] == "parent") {
+                    JsonWasDetached = jObject.Parent == null && ReferenceEquals(jObject.Root, jObject);
+                    ParentJson = jObject;
+                }
+                return base.Create(objectType, jObject);
+            }
+        }
+
+        private sealed class InspectingContainerCreationConverter : SequenceContainerCreationConverter {
+            public bool JsonWasDetached { get; private set; }
+            public JObject? ChildJson { get; private set; }
+
+            public InspectingContainerCreationConverter(ISequencerFactory factory) : base(factory) { }
+
+            public override ISequenceContainer Create(Type objectType, JObject jObject) {
+                if ((string?)jObject["Name"] == "custom child") {
+                    JsonWasDetached = jObject.Parent == null && ReferenceEquals(jObject.Root, jObject);
+                    ChildJson = jObject;
+                }
+                return base.Create(objectType, jObject);
+            }
+        }
+
         private sealed class TestItemCreationConverter : JsonCreationConverter<ISequenceItem> {
             public bool ThrowOnCreate { get; set; }
+
+            public Type? ResolveType(string typeName) => GetType(typeName);
 
             public TestItemCreationConverter(ISequencerFactory factory) : base(factory) {
             }
@@ -349,6 +672,12 @@ namespace NINA.Test.Sequencer.Serialization {
         private sealed class TestSequenceItem : global::NINA.Sequencer.SequenceItem.SequenceItem {
             [JsonProperty]
             public string? SerializedName { get; set; }
+
+            [JsonProperty]
+            public string? ImageType { get; set; }
+
+            [JsonProperty]
+            public ISequenceItem? Child { get; set; }
 
             public override object Clone() {
                 return new TestSequenceItem {
@@ -422,6 +751,7 @@ namespace NINA.Test.Sequencer.Serialization {
         }
 
         private sealed class TestSequencerFactory : ISequencerFactory {
+            public bool CloneEntities { get; set; }
             public IDictionary<Type, ISequenceItem> ItemsByType { get; } = new Dictionary<Type, ISequenceItem>();
             public IDictionary<Type, ISequenceContainer> ContainersByType { get; } = new Dictionary<Type, ISequenceContainer>();
             public IDictionary<Type, ISequenceCondition> ConditionsByType { get; } = new Dictionary<Type, ISequenceCondition>();
@@ -449,14 +779,14 @@ namespace NINA.Test.Sequencer.Serialization {
             [return: System.Diagnostics.CodeAnalysis.MaybeNull]
             public T GetContainer<T>() where T : ISequenceContainer {
                 return ContainersByType.TryGetValue(typeof(T), out ISequenceContainer? container)
-                    ? (T)container
+                    ? (T)(CloneEntities ? container.Clone() : container)
                     : default;
             }
 
             [return: System.Diagnostics.CodeAnalysis.MaybeNull]
             public T GetItem<T>() where T : ISequenceItem {
                 return ItemsByType.TryGetValue(typeof(T), out ISequenceItem? item)
-                    ? (T)item
+                    ? (T)(CloneEntities ? item.Clone() : item)
                     : default;
             }
 

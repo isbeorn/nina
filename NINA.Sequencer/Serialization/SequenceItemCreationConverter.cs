@@ -28,6 +28,8 @@ namespace NINA.Sequencer.Serialization {
             this.sequenceContainerCreationConverter = sequenceContainerCreationConverter;
         }
 
+        internal bool UsesBuiltInContainerConverter => sequenceContainerCreationConverter?.GetType() == typeof(SequenceContainerCreationConverter);
+
         public override ISequenceItem Create(Type objectType, JObject jObject) {
             if (jObject.SelectToken("Strategy.$type") != null) {
                 return sequenceContainerCreationConverter.Create(objectType, jObject);

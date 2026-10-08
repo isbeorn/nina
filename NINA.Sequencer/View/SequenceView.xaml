@@ -38,8 +38,12 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Brushes.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Expander.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/SequenceContainerStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converter:TreeViewDepthToColorConverter x:Key="TreeViewDepthToColorConverter" />
+            <converter:StrategyEvaluatesConditionsAndTriggersToVisibilityConverter x:Key="StrategyEvaluatesConditionsAndTriggersToVisibilityConverter" />
+            <converter:IsLinkedTemplateContainerConverter x:Key="IsLinkedTemplateContainerConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -64,13 +68,156 @@
             ScrollViewer.CanContentScroll="True"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
-            VirtualizingPanel.CacheLength="2000"
+            VirtualizingPanel.CacheLength="144"
             VirtualizingPanel.CacheLengthUnit="Pixel"
             VirtualizingPanel.IsVirtualizing="True"
             VirtualizingPanel.IsVirtualizingWhenGrouping="True"
             VirtualizingPanel.ScrollUnit="Pixel"
             VirtualizingPanel.VirtualizationMode="Standard">
             <TreeView.Resources>
+                <DataTemplate x:Key="SequenceHeaderPreview">
+                    <Border
+                        MinHeight="25"
+                        Background="{StaticResource SecondaryBackgroundBrush}"
+                        IsHitTestVisible="False">
+                        <!-- Match the instruction body and its bottom separator before the editor is realized. -->
+                        <Grid MinHeight="35" Margin="0,0,0,1" VerticalAlignment="Top" Background="{StaticResource TertiaryBackgroundBrush}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Path
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                Data="{Binding Icon}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="10,0,5,0"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{Binding Name}"
+                                TextTrimming="CharacterEllipsis" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+                <DataTemplate x:Key="SequenceTargetDetailsPreview">
+                    <StackPanel Margin="5,0,0,0">
+                        <ninactrl:DetachingExpander IsExpanded="{Binding Target.Expanded, Mode=OneWay}" Style="{DynamicResource DSOExpander}" Focusable="False">
+                            <ninactrl:DetachingExpander.Header>
+                                <Border MinHeight="25">
+                                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblTarget}" />
+                                </Border>
+                            </ninactrl:DetachingExpander.Header>
+                            <!-- Reserve the altitude chart's minimum height without constructing its editor. -->
+                            <Border Height="120" />
+                        </ninactrl:DetachingExpander>
+                        <ninactrl:DetachingExpander IsExpanded="{Binding ExposureInfoListExpanded, Mode=OneWay}" Style="{DynamicResource ExposureInfoExpander}" Focusable="False">
+                            <ninactrl:DetachingExpander.Header>
+                                <Border MinHeight="25">
+                                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc Lbl_SequenceContainer_DeepSkyObjectContainer_ExposureInfo}" />
+                                </Border>
+                            </ninactrl:DetachingExpander.Header>
+                        </ninactrl:DetachingExpander>
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="SequenceContainerDetailsPreview">
+                    <StackPanel>
+                        <ContentControl Content="{Binding}" Focusable="False" HorizontalContentAlignment="Stretch">
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Converter={StaticResource DataTypeToStringConverter}}" Value="{x:Type cont:DeepSkyObjectContainer}">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource SequenceTargetDetailsPreview}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+                        </ContentControl>
+                        <StackPanel Visibility="{Binding Converter={StaticResource StrategyEvaluatesConditionsAndTriggersToVisibilityConverter}}">
+                            <ninactrl:HitTestGroupBox Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
+                                <GroupBox.Header>
+                                    <StackPanel MinHeight="35" Orientation="Horizontal">
+                                        <Path Width="15" Height="15" Margin="5" Data="{StaticResource ThunderSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
+                                        <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblTriggers}" />
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <ItemsControl ItemsSource="{Binding Triggers}" ItemTemplate="{StaticResource SequenceHeaderPreview}" />
+                            </ninactrl:HitTestGroupBox>
+                            <Border BorderBrush="{StaticResource TertiaryBackgroundBrush}" BorderThickness="0,1,0,1">
+                                <ninactrl:HitTestGroupBox Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
+                                    <GroupBox.Header>
+                                        <StackPanel MinHeight="35" Orientation="Horizontal">
+                                            <Path Width="15" Height="15" Margin="5" Data="{StaticResource NotepadSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
+                                            <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc Lbl_SequenceContainer_Conditions_Header}" />
+                                        </StackPanel>
+                                    </GroupBox.Header>
+                                    <ItemsControl ItemsSource="{Binding Conditions}" ItemTemplate="{StaticResource SequenceHeaderPreview}" />
+                                </ninactrl:HitTestGroupBox>
+                            </Border>
+                        </StackPanel>
+                        <ninactrl:HitTestGroupBox MinHeight="40" Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
+                            <GroupBox.Header>
+                                <StackPanel MinHeight="35" Orientation="Horizontal">
+                                    <Path Width="15" Height="15" Margin="5" Data="{StaticResource SequenceSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
+                                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblInstructions}" />
+                                </StackPanel>
+                            </GroupBox.Header>
+                        </ninactrl:HitTestGroupBox>
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="SequenceContainerHeaderPreview">
+                    <Border Background="{StaticResource BackgroundBrush}" IsHitTestVisible="False">
+                        <DockPanel Margin="0,5,0,5">
+                            <ToggleButton
+                                DockPanel.Dock="Top"
+                                VerticalAlignment="Top"
+                                Focusable="False"
+                                IsChecked="{Binding IsExpanded, Mode=OneWay}"
+                                Style="{StaticResource SequenceContainerHeaderExpanderStyle}">
+                                <TextBlock
+                                    MinWidth="200"
+                                    Height="35"
+                                    Padding="5"
+                                    VerticalAlignment="Center"
+                                    FontSize="10pt"
+                                    Foreground="{StaticResource ButtonForegroundBrush}"
+                                    Text="{Binding Name}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </ToggleButton>
+                            <!-- Keep the frame continuous through estimated or cached preview space. -->
+                            <Border BorderBrush="{StaticResource SecondaryBackgroundBrush}" BorderThickness="10,0,0,0" Visibility="{Binding IsExpanded, Converter={StaticResource VisibilityConverter}}">
+                                <ContentControl Content="{Binding}" Focusable="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top">
+                                    <ContentControl.Style>
+                                        <Style TargetType="ContentControl">
+                                            <Setter Property="ContentTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate />
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding IsExpanded}" Value="True" />
+                                                        <Condition Binding="{Binding Converter={StaticResource IsLinkedTemplateContainerConverter}}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="ContentTemplate" Value="{StaticResource SequenceContainerDetailsPreview}" />
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContentControl.Style>
+                                </ContentControl>
+                            </Border>
+                        </DockPanel>
+                    </Border>
+                </DataTemplate>
                 <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
                     <local:SequenceBlockView />
                 </DataTemplate>
@@ -163,7 +310,77 @@
                                 <Grid IsEnabled="{Binding DataContext.IsLocked, ElementName=UC, Converter={StaticResource InverseBooleanConverter}}">
                                     <Grid.Resources>
                                         <ResourceDictionary>
-                                            <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
+                                            <DataTemplate x:Key="SequenceContainerDetailsPreview">
+                    <Border BorderBrush="{StaticResource SecondaryBackgroundBrush}" BorderThickness="10,0,0,0">
+                        <StackPanel>
+                            <ninactrl:HitTestGroupBox Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Width="15" Height="15" Margin="5" Data="{StaticResource ThunderSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTriggers}" />
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <ItemsControl ItemsSource="{Binding Triggers}" ItemTemplate="{StaticResource SequenceHeaderPreview}" />
+                            </ninactrl:HitTestGroupBox>
+                            <Border BorderBrush="{StaticResource TertiaryBackgroundBrush}" BorderThickness="0,1,0,1">
+                                <ninactrl:HitTestGroupBox Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
+                                    <GroupBox.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Width="15" Height="15" Margin="5" Data="{StaticResource NotepadSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
+                                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceContainer_Conditions_Header}" />
+                                        </StackPanel>
+                                    </GroupBox.Header>
+                                    <ItemsControl ItemsSource="{Binding Conditions}" ItemTemplate="{StaticResource SequenceHeaderPreview}" />
+                                </ninactrl:HitTestGroupBox>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+                <DataTemplate x:Key="SequenceContainerHeaderPreview">
+                    <Border Background="{StaticResource BackgroundBrush}" IsHitTestVisible="False">
+                        <DockPanel VerticalAlignment="Top">
+                        <ToggleButton
+                                DockPanel.Dock="Top"
+                            Margin="0,5,0,5"
+                            VerticalAlignment="Top"
+                            Focusable="False"
+                            IsChecked="{Binding IsExpanded, Mode=OneWay}"
+                            Style="{StaticResource SequenceContainerHeaderExpanderStyle}">
+                            <TextBlock
+                                MinWidth="200"
+                                Height="35"
+                                Padding="5"
+                                VerticalAlignment="Center"
+                                FontSize="10pt"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{Binding Name}"
+                                TextTrimming="CharacterEllipsis" />
+                        </ToggleButton>
+                        <ContentControl Content="{Binding}" Focusable="False" HorizontalContentAlignment="Stretch">
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsExpanded}" Value="True" />
+                                                <Condition Binding="{Binding Converter={StaticResource StrategyEvaluatesConditionsAndTriggersToVisibilityConverter}}" Value="Visible" />
+                                                <Condition Binding="{Binding Converter={StaticResource IsLinkedTemplateContainerConverter}}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="ContentTemplate" Value="{StaticResource SequenceContainerDetailsPreview}" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+                        </ContentControl>
+                        </DockPanel>
+                    </Border>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
                                                 <local:SequenceBlockView />
                                             </DataTemplate>
                                             <DataTemplate DataType="{x:Type cont:SequenceContainer}">
@@ -745,8 +962,9 @@
                                         BorderBrush="{TemplateBinding BorderBrush}"
                                         BorderThickness="{TemplateBinding BorderThickness}"
                                         SnapsToDevicePixels="true">
-                                        <ContentPresenter
+                                        <local:DeferredSequenceHeader
                                             x:Name="PART_Header"
+                                            PreviewTemplate="{StaticResource SequenceHeaderPreview}"
                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                             ContentSource="Header"
                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -797,6 +1015,8 @@
                     </Style.Triggers>
                 </Style>
                 <Style x:Key="ContainerStyle" TargetType="{x:Type TreeViewItem}">
+                    <!--  Retain instruction container headers for stable scrolling. Offscreen targets release their complete subtree.  -->
+                    <Setter Property="VirtualizingPanel.IsContainerVirtualizable" Value="False" />
                     <Setter Property="ItemsControl.AlternationCount" Value="1024" />
                     <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
                     <Setter Property="Focusable" Value="False" />
@@ -830,8 +1050,9 @@
                                                 <Binding Path="(ItemsControl.AlternationIndex)" RelativeSource="{RelativeSource TemplatedParent}" />
                                             </MultiBinding>
                                         </Border.BorderBrush>
-                                        <ContentPresenter
+                                        <local:DeferredSequenceHeader
                                             x:Name="PART_Header"
+                                            PreviewTemplate="{StaticResource SequenceContainerHeaderPreview}"
                                             Margin="-1,-5,0,-5"
                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                             ContentSource="Header"
@@ -939,6 +1160,9 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding Converter={StaticResource DataTypeToStringConverter}}" Value="{x:Type cont:DeepSkyObjectContainer}">
+                            <Setter Property="VirtualizingPanel.IsContainerVirtualizable" Value="True" />
+                        </DataTrigger>
                         <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
                             <Setter Property="ItemsPanel">
                                 <Setter.Value>

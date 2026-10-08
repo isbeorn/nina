@@ -143,8 +143,9 @@ namespace NINA.Test.Sequencer.Serialization {
         /// the current symbol-aware serializers without culture-dependent parsing, unknown fallbacks,
         /// scalar value drift, or expression-definition drift after a current-version save round-trip.
         /// </summary>
-        [Test]
-        public void LegacyMasterCorpus_MigratesUnderNonInvariantCultureWithoutUnknownEntitiesOrValueDrift() {
+        [TestCase(false)]
+        [TestCase(true)]
+        public void LegacyMasterCorpus_MigratesUnderNonInvariantCultureWithoutUnknownEntitiesOrValueDrift(bool loadFromFile) {
             CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
             CultureInfo originalUICulture = Thread.CurrentThread.CurrentUICulture;
 
@@ -160,7 +161,9 @@ namespace NINA.Test.Sequencer.Serialization {
                     JObject legacyJson = ReadJsonObject(corpus.SequencePath);
                     IReadOnlyList<JsonEntityNode> legacyNodes = TraverseJsonEntities(legacyJson).ToList();
 
-                    ISequenceContainer migrated = converter.Deserialize(legacyJsonText, corpus.SequencePath);
+                    ISequenceContainer migrated = loadFromFile
+                        ? converter.DeserializeFromFile(corpus.SequencePath)
+                        : converter.Deserialize(legacyJsonText, corpus.SequencePath);
                     IReadOnlyList<EntityNode> migratedNodes = TraverseEntities(migrated).ToList();
 
                     AssertNoUnknownEntities(migratedNodes, "every built-in 3.2 entity should resolve to a current sequencer type");

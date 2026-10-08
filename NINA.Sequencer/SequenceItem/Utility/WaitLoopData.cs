@@ -190,9 +190,9 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public double GetTargetAltitudeWithHorizon(DateTime when) {
             if (Coordinates == null) return 0;
-            var altaz = Coordinates.Coordinates.Transform(Angle.ByDegree(Latitude), Angle.ByDegree(Longitude), Elevation, when);
             var horizonAltitude = 0d;
             if (Horizon != null) {
+                var altaz = Coordinates.Coordinates.Transform(Angle.ByDegree(Latitude), Angle.ByDegree(Longitude), Elevation, when);
                 horizonAltitude = Horizon.GetAltitude(altaz.Azimuth.Degree);
             }
             return Math.Round(horizonAltitude + Offset, 2);

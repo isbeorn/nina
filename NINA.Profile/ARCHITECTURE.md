@@ -51,6 +51,12 @@ Responsibilities that are explicit in the code:
 
 This is also why many higher-level components subscribe to `ProfileChanged` instead of caching settings references indefinitely.
 
+## Output-Path Validation
+
+`ImageFileSettings` checks directory existence when its default output path is initialized and whenever `FilePath` changes. The result is ready before the `FilePath` notification and is not serialized; loading or cloning a profile checks the path again. Reassigning an unchanged path does not check again. Filesystem changes alone do not refresh this result, including for relative paths.
+
+`ImageFileSettingsExtensions.IsFilePathValid` exposes the result through the existing `IImageFileSettings` contract without adding an interface member. Custom interface implementations retain direct filesystem validation. Consumers should read the active profile's settings each time rather than retaining an old profile's result. Actual image saving still performs its own filesystem operations and error handling.
+
 ## Generated Plugin Settings Support
 
 `PluginSettingsTemplate.tt` generates strongly-typed storage and accessor code for plugin settings:
