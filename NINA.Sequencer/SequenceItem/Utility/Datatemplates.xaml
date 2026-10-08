@@ -294,7 +294,7 @@
         <TextBlock
             Margin="5,0,0,0"
             VerticalAlignment="Center"
-            Text="{Binding CurrentAltitude}"
+            Text="{Binding CurrentAltitude, StringFormat={}{0:0.##}}"
             ToolTip="Current Altitude" />
         <TextBlock VerticalAlignment="Center" Text="°" />
         <TextBlock VerticalAlignment="Center" Text="{Binding RisingSettingDisplay}" />

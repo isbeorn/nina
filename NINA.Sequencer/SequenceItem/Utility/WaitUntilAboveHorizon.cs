@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -73,15 +73,16 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             do {
-                Data.SetTargetAltitudeWithHorizon();
+                if (OffsetExpression.Definition.Length > 0) {
+                    _ = Offset;
+                }
 
-                var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(Data.Latitude), Angle.ByDegree(Data.Longitude), Data.Elevation);
-                Data.CurrentAltitude = altaz.Altitude.Degree;
+                var valid = Data.UpdateCurrentTargetPosition(Data.Coordinates.Coordinates.DateTime.Now);
                 progress?.Report(new ApplicationStatus() {
                     Status = string.Format(Loc.Instance["Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_Progress"], Math.Round(Data.CurrentAltitude, 2), Math.Round(Data.TargetAltitude, 2))
                 });
 
-                if (Data.CurrentAltitude > Data.GetTargetAltitudeWithHorizon(DateTime.Now)) {
+                if (valid && Data.CurrentAltitude > Data.TargetAltitude) {
                     Logger.Info("WaitUntilAboveHorizon finished: " + Data.CurrentAltitude + " > " + Data.TargetAltitude + " Offset = " + Data.Offset);
                     break;
                 } else {
@@ -96,8 +97,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public void CalculateExpectedTime() {
-            Data.CurrentAltitude = GetCurrentAltitude(DateTime.Now, Data.Observer);
-            CalculateExpectedTimeCommon(Data, until: true, 90, GetCurrentAltitude);
+            if (OffsetExpression.Definition.Length > 0) {
+                _ = Offset;
+            }
+
+            Data.CalculateTargetExpectedTime(DateTime.Now, TargetCrossingComparison.AboveStrict);
         }
 
 

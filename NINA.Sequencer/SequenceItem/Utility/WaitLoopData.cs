@@ -9,6 +9,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     using NINA.Astrometry;
     using NINA.Core.Enum;
     using NINA.Core.Model;
+    using NINA.Core.Locale;
     using NINA.Core.Utility;
     using NINA.Profile.Interfaces;
 
@@ -24,6 +25,143 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private DateTime expectedDateTime = DateTime.Now;
         private ComparisonOperatorEnum comparator;
         private IProfileService profileService;
+        private static readonly TimeSpan TargetCrossingLifetime = TimeSpan.FromMinutes(5);
+
+        private TargetCrossingRequest cachedRequest;
+        private readonly object cacheLock = new();
+        private DateTime cacheCreatedUtc;
+        private DateTime cacheLastUsedUtc;
+        private DateTime cachedEventUtc;
+
+        private bool TryGetTargetCrossing(TargetCrossingRequest request, DateTime utc, out DateTime time) {
+            lock (cacheLock) {
+                time = cachedEventUtc;
+                if (request.SameInputs(cachedRequest) && utc >= cacheLastUsedUtc && utc < cachedEventUtc
+                    && utc - cacheCreatedUtc < TargetCrossingLifetime) {
+                    cacheLastUsedUtc = utc;
+                    return true;
+                }
+
+                cachedRequest = null;
+                return false;
+            }
+        }
+
+        private void CacheTargetCrossing(TargetCrossingRequest request, DateTime utc, TargetCrossingResult result) {
+            lock (cacheLock) {
+                cachedRequest = result.Status == TargetCrossingStatus.Found && result.Time > utc ? request : null;
+                cacheCreatedUtc = utc;
+                cacheLastUsedUtc = utc;
+                cachedEventUtc = result.Time;
+            }
+        }
+
+        private TargetCrossingRequest TargetRequest(TargetCrossingComparison comparison) =>
+            new(
+                Coordinates.Coordinates,
+                Observer.Latitude,
+                Observer.Longitude,
+                Observer.Elevation,
+                UseCustomHorizon ? Horizon : null,
+                Offset,
+                comparison);
+
+        private void ClearCurrentTargetPosition() {
+            CurrentAltitude = double.NaN;
+            TargetAltitude = double.NaN;
+            IsRising = false;
+        }
+
+        private void ClearTargetPrediction(DateTime utc) {
+            ClearCurrentTargetPosition();
+            CacheTargetCrossing(null, utc, default);
+            ExpectedDateTime = DateTime.MinValue;
+            ExpectedTime = "--";
+            SetApproximate(false);
+        }
+
+        private void SetCurrentTargetPosition(TargetCrossingRequest request, TargetPosition current) {
+            CurrentAltitude = current.Altitude;
+            IsRising = current.IsRising;
+            TargetAltitude = request.TargetAltitude(current);
+        }
+
+        internal bool UpdateCurrentTargetPosition(DateTime time) {
+            if (Coordinates?.Coordinates == null) {
+                return false;
+            }
+
+            var request = TargetRequest(TargetCrossingComparison.AboveInclusive);
+            if (!request.Valid) {
+                ClearCurrentTargetPosition();
+                return false;
+            }
+
+            var position = request.Position(time.ToUniversalTime());
+            if (!position.IsFinite) {
+                ClearCurrentTargetPosition();
+                return false;
+            }
+
+            SetCurrentTargetPosition(request, position);
+            return true;
+        }
+
+        internal TargetCrossingResult CalculateTargetExpectedTime(DateTime time, TargetCrossingComparison comparison) {
+            if (Coordinates?.Coordinates == null) {
+                ClearTargetPrediction(time.ToUniversalTime());
+
+                return new TargetCrossingResult(TargetCrossingStatus.Exhausted, default, 0);
+            }
+
+            var utc = time.ToUniversalTime();
+            var request = TargetRequest(comparison);
+            if (!request.Valid) {
+                ClearTargetPrediction(utc);
+                Logger.Debug($"{Name}: target crossing unresolved because its inputs are invalid");
+
+                return new TargetCrossingResult(TargetCrossingStatus.Exhausted, default, 0);
+            }
+
+            var current = request.Position(utc);
+            if (!current.IsFinite) {
+                ClearTargetPrediction(utc);
+                Logger.Debug($"{Name}: target crossing unresolved because the coordinate transform is not finite");
+
+                return new TargetCrossingResult(TargetCrossingStatus.Exhausted, default, 1);
+            }
+
+            SetCurrentTargetPosition(request, current);
+            SetApproximate(false);
+            TargetCrossingResult result;
+            // Live state always wins over the cached future prediction.
+            if (request.Qualifies(current)) {
+                result = new TargetCrossingResult(TargetCrossingStatus.AlreadySatisfied, utc, 1);
+                CacheTargetCrossing(request, utc, result);
+            } else if (TryGetTargetCrossing(request, utc, out var cachedTime)) {
+                result = new TargetCrossingResult(TargetCrossingStatus.Found, cachedTime, 1);
+            } else {
+                var calculator = new TargetCrossingCalculator(request, TargetCrossingCalculator.MaximumEvaluations - 1);
+                result = calculator.Find(utc, current);
+                result = result with { Evaluations = result.Evaluations + 1 };
+                CacheTargetCrossing(request, utc, result);
+            }
+
+            if (result.Status is TargetCrossingStatus.AlreadySatisfied or TargetCrossingStatus.Found) {
+                ExpectedDateTime = result.Time.ToLocalTime();
+                if (result.Status == TargetCrossingStatus.AlreadySatisfied) {
+                    ExpectedTime = Loc.Instance["LblNow"];
+                }
+            } else {
+                ExpectedDateTime = DateTime.MinValue;
+                ExpectedTime = "--";
+                if (result.Status == TargetCrossingStatus.Exhausted) {
+                    Logger.Debug($"{Name}: target crossing unresolved after {result.Evaluations} coordinate evaluations");
+                }
+            }
+
+            return result;
+        }
 
         public WaitLoopData(IProfileService profileService, bool useCustomHorizon, string name) {
             this.profileService = profileService;
@@ -65,6 +203,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public double Offset {
             get => offset;
             set {
+                if (offset == value) {
+                    return;
+                }
+
                 offset = value;
                 if (UseCustomHorizon) {
                     SetTargetAltitudeWithHorizon();
@@ -151,7 +293,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public double CurrentAltitude {
             get => currentAltitude;
             set {
-                currentAltitude = Math.Round(value, 2);
+                currentAltitude = value;
                 RaisePropertyChanged();
             }
         }
@@ -189,16 +331,21 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public double GetTargetAltitudeWithHorizon(DateTime when) {
+            return Math.Round(CalculateTargetAltitudeWithHorizon(when), 2);
+        }
+
+        private double CalculateTargetAltitudeWithHorizon(DateTime when) {
             if (Coordinates == null) return 0;
             var horizonAltitude = 0d;
             if (Horizon != null) {
                 var altaz = Coordinates.Coordinates.Transform(Angle.ByDegree(Latitude), Angle.ByDegree(Longitude), Elevation, when);
                 horizonAltitude = Horizon.GetAltitude(altaz.Azimuth.Degree);
             }
-            return Math.Round(horizonAltitude + Offset, 2);
+            return horizonAltitude + Offset;
         }
+
         public void SetTargetAltitudeWithHorizon(DateTime when) {
-            TargetAltitude = GetTargetAltitudeWithHorizon(when);
+            TargetAltitude = CalculateTargetAltitudeWithHorizon(when);
         }
     }
 }

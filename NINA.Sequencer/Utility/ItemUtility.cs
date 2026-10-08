@@ -365,41 +365,37 @@ namespace NINA.Sequencer.Utility {
         }
 
         public static RiseSetMeridian CalculateTimeAtAltitude(Coordinates coord, double latitude, double longitude, double elevation, double targetAltitude, DateTime time) {
-            int tzoHours = new DateTimeOffset(time).Offset.Hours;
-            double ra = coord.RADegrees;
-            double dec = coord.Dec;
-            var altaz = coord.Transform(Angle.ByDegree(latitude), Angle.ByDegree(longitude), elevation, time);
-            double currentAltitude = altaz.Altitude.Degree;
-            bool isRising = altaz.AltitudeSite == Core.Enum.AltitudeSite.EAST;
+            // Keep the legacy result shape, anchored to the supplied civil day. UTC elapsed-time
+            // arithmetic retains fractional offsets and handles DST transitions at presentation.
+            var day = time.Date.ToUniversalTime();
+            var request = new TargetCrossingRequest(coord, latitude, longitude, elevation, null, targetAltitude, TargetCrossingComparison.AboveInclusive);
+            if (!request.Valid) {
+                return new RiseSetMeridian(DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, double.NaN, false);
+            }
 
-            // Determine when the star is in the south (meridian)
-            double gmst0 = Rev(180.0 + 356.0470 + 282.9404 + (0.9856002585 + 4.70935E-5) * ReferenceDays(longitude));
-            double meridian = AstroUtil.DegreesToHours(ra - gmst0 - longitude);
-            double meridianLocal = meridian + tzoHours;
-            if (meridianLocal < 0) meridianLocal += 24;
+            var current = request.Position(time.ToUniversalTime());
+            var midnight = request.Position(day);
+            if (!current.IsFinite || !midnight.IsFinite) {
+                return new RiseSetMeridian(DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, current.Altitude, current.IsRising);
+            }
 
-            //cos−1(sec(dec)sec(lat)(sin(el)−sin(dec)sin(lat)))
-            double hourAngle = Math.Acos(1.0 / Cos(dec) * 1.0 / Cos(latitude) * (Sin(targetAltitude) - (Sin(dec) * Sin(latitude))));
-            double hourAngleDegrees = ToDegrees(hourAngle);
-            double hourAngleHours = ToHours(hourAngleDegrees);
+            var radians = Math.PI / 180;
+            var cosine = (Math.Sin(targetAltitude * radians) - Math.Sin(midnight.Declination * radians) * Math.Sin(latitude * radians))
+                / (Math.Cos(midnight.Declination * radians) * Math.Cos(latitude * radians));
+            const double rate = 360 * 1.00273781191135448 / 86400;
+            var meridian = day.AddSeconds(AstroUtil.EuclidianModulus(-midnight.HourAngle, 360) / rate).ToLocalTime();
+            if (!double.IsFinite(cosine) || Math.Abs(cosine) > 1) {
+                return new RiseSetMeridian(DateTime.MinValue, DateTime.MinValue, meridian, current.Altitude, current.IsRising);
+            }
 
-            // If the target altitude can't be reached, just return
-            if (double.IsNaN(hourAngleHours)) return new RiseSetMeridian(DateTime.MinValue, DateTime.MinValue, DateTime.Today.AddHours(meridianLocal), currentAltitude, isRising);
+            var angle = Math.Acos(cosine) / radians;
+            var rise = day.AddSeconds(AstroUtil.EuclidianModulus(-angle - midnight.HourAngle, 360) / rate).ToLocalTime();
+            var set = day.AddSeconds(AstroUtil.EuclidianModulus(angle - midnight.HourAngle, 360) / rate).ToLocalTime();
+            if (set < rise) {
+                set = set.ToUniversalTime().AddSeconds(360 / rate).ToLocalTime();
+            }
 
-            double riseHours = meridian - hourAngleHours + tzoHours;
-            if (riseHours < 0) riseHours += 24;
-            double setHours = meridian + hourAngleHours + tzoHours;
-            if (setHours < 0) setHours += 24;
-
-            // Time the object is rising to this altitude
-            DateTime risingTime = DateTime.Today.AddHours(riseHours);
-            // Time the object is setting to this altitude
-            DateTime settingTime = DateTime.Today.AddHours(setHours);
-            if (settingTime < risingTime) settingTime = settingTime.AddHours(24);
-            // Time the object transits the meridian
-            DateTime meridianTime = DateTime.Today.AddHours(meridianLocal);
-
-            return new RiseSetMeridian(risingTime, settingTime, meridianTime, currentAltitude, isRising);
+            return new RiseSetMeridian(rise, set, meridian, current.Altitude, current.IsRising);
         }
 
         [Obsolete]

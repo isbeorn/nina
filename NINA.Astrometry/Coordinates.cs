@@ -53,6 +53,10 @@ namespace NINA.Astrometry {
         /// </summary>
         public double RADegrees => raAngle.Degree;
 
+        internal double RARadians => raAngle.Radians;
+
+        internal double DecRadians => decAngle.Radians;
+
         /// <summary>
         /// Declination in Degrees
         /// </summary>

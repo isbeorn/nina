@@ -27,6 +27,14 @@ Build shape:
 
 Run benchmarks in Release mode and treat results as machine-specific comparisons. Keep functional and numerical assertions in `NINA.Test`; benchmarks prove cost, not correctness.
 
+## Target Crossing Prediction
+
+`TargetPredictionColdBenchmark` and `TargetPredictionUpdateBenchmark` compare the production prediction adapter with the preserved `LegacyTargetPrediction` implementation. They separate cold calculations, cache hits and repeated updates. Workloads are fixed independently of the solver; setup uses isolated EOP data and the production x64 native libraries.
+
+`HorizonFilePredictionBenchmark` accepts optional horizon files and locates reference crossings through the full coordinate transform. Input loading and reference searches are outside measurements. Personal inputs and results stay in ignored artifacts.
+
+See [README.md](README.md#target-crossing-prediction) for commands, measurement scope, performance targets and results. Unresolved predictions must not count as successful optimizations.
+
 ## Published Application Startup
 
 `Measure-Startup.ps1` separately benchmarks published applications. Its `StartupProbe` project is excluded from the BenchmarkDotNet executable and loaded only through `DOTNET_STARTUP_HOOKS` in the child process. It redirects NINA's existing storage seam to an isolated directory and substitutes an in-memory settings provider. It records the first `MainWindow.ContentRendered` event, process CPU, JIT counters and memory, then publishes an atomic result so the runner can stop the test process without waiting for native SDK shutdown. It does not add hooks to production startup code. See `README.md` for the controlled workload and limitations.

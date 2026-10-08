@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -34,6 +34,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("537a7a82-8c12-45e9-abad-b6b3729d6cb1")]
 
 [assembly: InternalsVisibleTo("NINA.Test")]
+[assembly: InternalsVisibleTo("NINA.Benchmark")]
 [assembly: InternalsVisibleTo("NINA")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 

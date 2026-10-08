@@ -77,7 +77,7 @@ namespace NINA.Sequencer.Conditions {
 
         public override void CalculateExpectedTime() {
             _ = Offset; // Refresh the target consumed by the shared altitude calculator.
-            Data.CurrentAltitude = AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer);
+            Data.CurrentAltitude = Math.Round(AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer), 2);
             if (!Check(null, null, true)) {
                 Data.ExpectedDateTime = DateTime.Now;
                 Data.ExpectedTime = Loc.Instance["LblNow"];

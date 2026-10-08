@@ -105,7 +105,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override void CalculateExpectedTime() {
             // Refraction correction is omitted here. The altitude would otherwise jump when going below the horizon, as refraction modeling breaks down below the horizon.
-            Data.CurrentAltitude = AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer);
+            Data.CurrentAltitude = Math.Round(AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer), 2);
 
             if (!MustWait()) {
                 Data.ExpectedDateTime = DateTime.Now;
