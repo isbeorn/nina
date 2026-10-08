@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Media3D;
 
@@ -317,6 +318,9 @@ namespace NINA.Astrometry {
         /// <param name="latitude">   in degrees</param>
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
+        // Keep Angle temporaries inside this method so the JIT can eliminate them even
+        // when the caller samples altitudes in a loop.
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static double GetAltitude(double hourAngle, double latitude, double declination) {
             return GetAltitude(Angle.ByDegree(hourAngle), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Degree;
         }
@@ -328,6 +332,7 @@ namespace NINA.Astrometry {
         /// <param name="latitude"></param>
         /// <param name="declination"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle GetAltitude(Angle hourAngle, Angle latitude, Angle declination) {
             return (declination.Sin() * latitude.Sin() + declination.Cos() * latitude.Cos() * hourAngle.Cos()).Asin();
         }
