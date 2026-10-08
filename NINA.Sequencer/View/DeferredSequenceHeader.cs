@@ -142,9 +142,9 @@ namespace NINA.View.Sequencer {
             if (!realized) {
                 var previewSize = base.MeasureOverride(constraint);
                 // Keep navigation identity visible while reserving room for the full editor.
-                estimatedHeight = Content != null && sizes.TryGetValue(Content, out var previous)
+                estimatedHeight = Content != null && sizes.TryGetValue(Content, out var previous) && previous.ExpansionState == GetTargetExpansionState()
                     ? previous.Size.Height
-                    : Content is DeepSkyObjectContainer ? 350 : 30;
+                    : 30;
                 estimatedHeight = Math.Max(estimatedHeight, previewSize.Height);
                 return new Size(Math.Max(1, previewSize.Width), estimatedHeight);
             }
@@ -153,12 +153,19 @@ namespace NINA.View.Sequencer {
             if (Content != null) {
                 var size = sizes.GetOrCreateValue(Content);
                 size.Size = result;
+                size.ExpansionState = GetTargetExpansionState();
             }
             return result;
         }
 
+        private (bool Container, bool Target, bool ExposureInfo)? GetTargetExpansionState() =>
+            Content is DeepSkyObjectContainer target
+                ? (target.IsExpanded, target.Target.Expanded, target.ExposureInfoListExpanded)
+                : null;
+
         private sealed class HeaderSize {
             public Size Size;
+            public (bool Container, bool Target, bool ExposureInfo)? ExpansionState;
         }
     }
 }

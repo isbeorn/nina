@@ -398,6 +398,37 @@ namespace NINA.Test.Sequencer.View {
 
         [TestCase(false)]
         [TestCase(true)]
+        public void CompiledSequenceView_TargetPreviewReservesExpandedPanelHeight(bool expanded) {
+            using var scope = new CoreEditorTestScope();
+            scope.Root.Add(new StartAreaContainer());
+            var area = new TargetAreaContainer();
+            scope.Root.Add(area);
+            scope.Root.Add(new EndAreaContainer());
+            var target = (DeepSkyObjectContainer)scope.Create(typeof(DeepSkyObjectContainer));
+            target.Target.Expanded = expanded;
+            target.ExposureInfoListExpanded = false;
+            target.Add((TakeExposure)scope.Create(typeof(TakeExposure)));
+            area.Add(target);
+            foreach (bool state in new[] { expanded, !expanded, expanded }) {
+                target.Target.Expanded = state;
+                var view = new SequenceView { DataContext = new { Sequencer = new { Items = new[] { scope.Root } }, IsLocked = false, CanDragAndDrop = true } };
+                scope.Host.Content = view;
+                LayoutBeforeBackground(scope);
+                var header = Descendants<DeferredSequenceHeader>(view).Single(item => ReferenceEquals(item.Content, target));
+                Descendants<HierarchicalSequenceContainerView>(header).Should().BeEmpty();
+                double previewHeight = header.ActualHeight;
+                double previewCaptionY = Descendants<TextBlock>(header).Single(text => text.Text == NINA.Core.Locale.Loc.Instance["LblInstructions"]).TranslatePoint(new Point(), header).Y;
+                Settle(scope);
+                header.ActualHeight.Should().BeApproximately(previewHeight, 0.5, "target details must fit the reserved space even after changing expansion state between realizations");
+                Descendants<TextBlock>(header).Single(text => text.Text == NINA.Core.Locale.Loc.Instance["LblInstructions"]).TranslatePoint(new Point(), header).Y
+                    .Should().BeApproximately(previewCaptionY, 0.5, "the section headings must not move when target details appear");
+                scope.Host.Content = null;
+                Settle(scope);
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
         public void CompiledSequenceView_PreviewFrameStaysContinuousAcrossReservedHeightWhileScrolling(bool coloredBorders) {
             using var scope = new CoreEditorTestScope();
             var profiles = (NINA.Profile.Interfaces.IProfileService)Application.Current.FindResource("ProfileService");

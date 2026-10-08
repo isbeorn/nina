@@ -103,8 +103,44 @@
                         </Grid>
                     </Border>
                 </DataTemplate>
+                <DataTemplate x:Key="SequenceTargetDetailsPreview">
+                    <StackPanel Margin="5,0,0,0">
+                        <ninactrl:DetachingExpander IsExpanded="{Binding Target.Expanded, Mode=OneWay}" Style="{DynamicResource DSOExpander}" Focusable="False">
+                            <ninactrl:DetachingExpander.Header>
+                                <Border MinHeight="25">
+                                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblTarget}" />
+                                </Border>
+                            </ninactrl:DetachingExpander.Header>
+                            <!-- Reserve the altitude chart's minimum height without constructing its editor. -->
+                            <Border Height="120" />
+                        </ninactrl:DetachingExpander>
+                        <ninactrl:DetachingExpander IsExpanded="{Binding ExposureInfoListExpanded, Mode=OneWay}" Style="{DynamicResource ExposureInfoExpander}" Focusable="False">
+                            <ninactrl:DetachingExpander.Header>
+                                <Border MinHeight="25">
+                                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc Lbl_SequenceContainer_DeepSkyObjectContainer_ExposureInfo}" />
+                                </Border>
+                            </ninactrl:DetachingExpander.Header>
+                        </ninactrl:DetachingExpander>
+                    </StackPanel>
+                </DataTemplate>
                 <DataTemplate x:Key="SequenceContainerDetailsPreview">
                     <StackPanel>
+                        <ContentControl Content="{Binding}" Focusable="False" HorizontalContentAlignment="Stretch">
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Converter={StaticResource DataTypeToStringConverter}}" Value="{x:Type cont:DeepSkyObjectContainer}">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource SequenceTargetDetailsPreview}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+                        </ContentControl>
                         <StackPanel Visibility="{Binding Converter={StaticResource StrategyEvaluatesConditionsAndTriggersToVisibilityConverter}}">
                             <ninactrl:HitTestGroupBox Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
                                 <GroupBox.Header>
