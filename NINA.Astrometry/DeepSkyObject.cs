@@ -171,11 +171,11 @@ namespace NINA.Astrometry {
             for (double angle = hourAngle; angle < hourAngle + 24; angle += 0.1) {
                 var degAngle = AstroUtil.HoursToDegrees(angle);
                 var altitude = AstroUtil.GetAltitude(degAngle, _latitude, Coordinates.Dec);
-                var azimuth = AstroUtil.GetAzimuth(degAngle, altitude, _latitude, Coordinates.Dec);
 
                 Altitudes.Add(new DataPoint(DateTimeAxis.ToDouble(start), altitude));
 
                 if (customHorizon != null) {
+                    var azimuth = AstroUtil.GetAzimuth(degAngle, altitude, _latitude, Coordinates.Dec);
                     var horizonAltitude = customHorizon.GetAltitude(azimuth);
                     Horizon.Add(new DataPoint(DateTimeAxis.ToDouble(start), horizonAltitude));
                 }
