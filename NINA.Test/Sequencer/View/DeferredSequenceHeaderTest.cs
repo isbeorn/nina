@@ -396,6 +396,65 @@ namespace NINA.Test.Sequencer.View {
                 "the next instruction must not jump when its preceding preview is replaced");
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CompiledSequenceView_PreviewFrameStaysContinuousAcrossReservedHeightWhileScrolling(bool coloredBorders) {
+            using var scope = new CoreEditorTestScope();
+            var profiles = (NINA.Profile.Interfaces.IProfileService)Application.Current.FindResource("ProfileService");
+            profiles.ActiveProfile.ApplicationSettings.ColoredContainerBorders = coloredBorders;
+            scope.Root.Add(new StartAreaContainer());
+            var area = new TargetAreaContainer();
+            scope.Root.Add(area);
+            scope.Root.Add(new EndAreaContainer());
+            for (int index = 0; index < 12; index++) {
+                var target = (DeepSkyObjectContainer)scope.Create(typeof(DeepSkyObjectContainer));
+                target.IsExpanded = true;
+                target.Target.Expanded = false;
+                target.ExposureInfoListExpanded = false;
+                for (int instruction = 0; instruction < 8; instruction++) target.Add((TakeExposure)scope.Create(typeof(TakeExposure)));
+                area.Add(target);
+            }
+            var view = new SequenceView { DataContext = new { Sequencer = new { Items = new[] { scope.Root } }, IsLocked = false, CanDragAndDrop = true } };
+            scope.Host.Content = view;
+            LayoutBeforeBackground(scope);
+            CheckPreviewFrames();
+            Settle(scope);
+            var tree = ((Grid)view.Content).Children.OfType<TreeView>().Single();
+            var scroll = Descendants<ScrollViewer>(tree).First();
+            scroll.ScrollToBottom();
+            LayoutBeforeBackground(scope);
+            CheckPreviewFrames();
+            Settle(scope);
+            scroll.ScrollToTop();
+            LayoutBeforeBackground(scope);
+            CheckPreviewFrames();
+            Settle(scope);
+
+            void CheckPreviewFrames() {
+                var headers = Descendants<DeferredSequenceHeader>(view)
+                    .Where(header => header.Content is DeepSkyObjectContainer && header.ActualHeight > 70
+                        && !Descendants<HierarchicalSequenceContainerView>(header).Any()).ToArray();
+                headers.Should().NotBeEmpty("scrolling must exercise cold and recreated target previews");
+                var color = ((System.Windows.Media.SolidColorBrush)view.FindResource("SecondaryBackgroundBrush")).Color;
+                foreach (var header in headers) {
+                    int width = (int)Math.Ceiling(header.ActualWidth);
+                    int height = (int)Math.Ceiling(header.ActualHeight);
+                    var drawing = new System.Windows.Media.DrawingVisual();
+                    using (var context = drawing.RenderOpen()) {
+                        context.DrawRectangle(new System.Windows.Media.VisualBrush(header), null, new Rect(0, 0, width, height));
+                    }
+                    var bitmap = new System.Windows.Media.Imaging.RenderTargetBitmap(width, height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+                    bitmap.Render(drawing);
+                    var pixel = new byte[4];
+                    for (int y = 60; y < height - 10; y++) {
+                        bitmap.CopyPixels(new Int32Rect(5, y, 1, 1), pixel, 4, 0);
+                        pixel.Should().Equal(new[] { color.B, color.G, color.R, color.A },
+                            $"the gray left frame must cover the reserved preview height at y={y}, with colored borders={coloredBorders}");
+                    }
+                }
+            }
+        }
+
         [Test]
         public void CompiledSequenceView_ThumbFarJumpsReachStablePositionsWithCorrectEditorsInBothDirections() {
             using var scope = new CoreEditorTestScope();

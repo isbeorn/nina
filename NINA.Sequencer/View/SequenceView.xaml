@@ -104,47 +104,44 @@
                     </Border>
                 </DataTemplate>
                 <DataTemplate x:Key="SequenceContainerDetailsPreview">
-                    <Border BorderBrush="{StaticResource SecondaryBackgroundBrush}" BorderThickness="10,0,0,0">
-                        <StackPanel>
-                            <StackPanel Visibility="{Binding Converter={StaticResource StrategyEvaluatesConditionsAndTriggersToVisibilityConverter}}">
+                    <StackPanel>
+                        <StackPanel Visibility="{Binding Converter={StaticResource StrategyEvaluatesConditionsAndTriggersToVisibilityConverter}}">
+                            <ninactrl:HitTestGroupBox Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
+                                <GroupBox.Header>
+                                    <StackPanel MinHeight="35" Orientation="Horizontal">
+                                        <Path Width="15" Height="15" Margin="5" Data="{StaticResource ThunderSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
+                                        <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblTriggers}" />
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <ItemsControl ItemsSource="{Binding Triggers}" ItemTemplate="{StaticResource SequenceHeaderPreview}" />
+                            </ninactrl:HitTestGroupBox>
+                            <Border BorderBrush="{StaticResource TertiaryBackgroundBrush}" BorderThickness="0,1,0,1">
                                 <ninactrl:HitTestGroupBox Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
                                     <GroupBox.Header>
                                         <StackPanel MinHeight="35" Orientation="Horizontal">
-                                            <Path Width="15" Height="15" Margin="5" Data="{StaticResource ThunderSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
-                                            <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblTriggers}" />
+                                            <Path Width="15" Height="15" Margin="5" Data="{StaticResource NotepadSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
+                                            <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc Lbl_SequenceContainer_Conditions_Header}" />
                                         </StackPanel>
                                     </GroupBox.Header>
-                                    <ItemsControl ItemsSource="{Binding Triggers}" ItemTemplate="{StaticResource SequenceHeaderPreview}" />
+                                    <ItemsControl ItemsSource="{Binding Conditions}" ItemTemplate="{StaticResource SequenceHeaderPreview}" />
                                 </ninactrl:HitTestGroupBox>
-                                <Border BorderBrush="{StaticResource TertiaryBackgroundBrush}" BorderThickness="0,1,0,1">
-                                    <ninactrl:HitTestGroupBox Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
-                                        <GroupBox.Header>
-                                            <StackPanel MinHeight="35" Orientation="Horizontal">
-                                                <Path Width="15" Height="15" Margin="5" Data="{StaticResource NotepadSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
-                                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc Lbl_SequenceContainer_Conditions_Header}" />
-                                            </StackPanel>
-                                        </GroupBox.Header>
-                                        <ItemsControl ItemsSource="{Binding Conditions}" ItemTemplate="{StaticResource SequenceHeaderPreview}" />
-                                    </ninactrl:HitTestGroupBox>
-                                </Border>
-                            </StackPanel>
-                            <ninactrl:HitTestGroupBox MinHeight="40" Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
-                                <GroupBox.Header>
-                                    <StackPanel MinHeight="35" Orientation="Horizontal">
-                                        <Path Width="15" Height="15" Margin="5" Data="{StaticResource SequenceSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
-                                        <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblInstructions}" />
-                                    </StackPanel>
-                                </GroupBox.Header>
-                            </ninactrl:HitTestGroupBox>
+                            </Border>
                         </StackPanel>
-                    </Border>
+                        <ninactrl:HitTestGroupBox MinHeight="40" Background="{StaticResource BackgroundBrush}" BorderBrush="Transparent">
+                            <GroupBox.Header>
+                                <StackPanel MinHeight="35" Orientation="Horizontal">
+                                    <Path Width="15" Height="15" Margin="5" Data="{StaticResource SequenceSVG}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
+                                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblInstructions}" />
+                                </StackPanel>
+                            </GroupBox.Header>
+                        </ninactrl:HitTestGroupBox>
+                    </StackPanel>
                 </DataTemplate>
                 <DataTemplate x:Key="SequenceContainerHeaderPreview">
                     <Border Background="{StaticResource BackgroundBrush}" IsHitTestVisible="False">
-                        <DockPanel VerticalAlignment="Top">
+                        <DockPanel Margin="0,5,0,5">
                             <ToggleButton
                                 DockPanel.Dock="Top"
-                                Margin="0,5,0,5"
                                 VerticalAlignment="Top"
                                 Focusable="False"
                                 IsChecked="{Binding IsExpanded, Mode=OneWay}"
@@ -159,26 +156,29 @@
                                     Text="{Binding Name}"
                                     TextTrimming="CharacterEllipsis" />
                             </ToggleButton>
-                            <ContentControl Content="{Binding}" Focusable="False" HorizontalContentAlignment="Stretch">
-                                <ContentControl.Style>
-                                    <Style TargetType="ContentControl">
-                                        <Setter Property="ContentTemplate">
-                                            <Setter.Value>
-                                                <DataTemplate />
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding IsExpanded}" Value="True" />
-                                                    <Condition Binding="{Binding Converter={StaticResource IsLinkedTemplateContainerConverter}}" Value="False" />
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="ContentTemplate" Value="{StaticResource SequenceContainerDetailsPreview}" />
-                                            </MultiDataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ContentControl.Style>
-                            </ContentControl>
+                            <!-- Keep the frame continuous through estimated or cached preview space. -->
+                            <Border BorderBrush="{StaticResource SecondaryBackgroundBrush}" BorderThickness="10,0,0,0" Visibility="{Binding IsExpanded, Converter={StaticResource VisibilityConverter}}">
+                                <ContentControl Content="{Binding}" Focusable="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top">
+                                    <ContentControl.Style>
+                                        <Style TargetType="ContentControl">
+                                            <Setter Property="ContentTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate />
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding IsExpanded}" Value="True" />
+                                                        <Condition Binding="{Binding Converter={StaticResource IsLinkedTemplateContainerConverter}}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="ContentTemplate" Value="{StaticResource SequenceContainerDetailsPreview}" />
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContentControl.Style>
+                                </ContentControl>
+                            </Border>
                         </DockPanel>
                     </Border>
                 </DataTemplate>
