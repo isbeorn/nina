@@ -121,6 +121,8 @@ namespace NINA.Sequencer.Serialization {
                                          JsonSerializer serializer) {
             if (reader.TokenType == JsonToken.Null) return null;
 
+            using var customSerialization = HasDefaultJsonHooks(serializer) ? null : SequenceDeserializationScope.Suspend();
+
             // Only built-in converters may reuse our own DOM. External readers and custom
             // converters keep the detached copy that Create implementations can retain.
             bool reuseTokens = reuseOwnedTokens && HasDefaultJsonHooks(serializer) && (this is not SequenceItemCreationConverter itemConverter
@@ -152,6 +154,7 @@ namespace NINA.Sequencer.Serialization {
                         // Extract plugin name and get upgrader
                         string pluginName = ExtractPluginName(originalType);
                         ISequenceEntityUpgrader upgrader = streamUpgrader ?? GetUpgraderForPlugin(pluginName);
+                        using var pluginUpgrade = upgrader == NoUpgrader ? null : SequenceDeserializationScope.Suspend();
 
                         // Only create upgradeContext if an upgrader exists
                         SequenceUpgradeContext upgradeContext = null;
@@ -178,35 +181,37 @@ namespace NINA.Sequencer.Serialization {
                             }
                         }
 
-                        // Create stage
-                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.Create)) {
-                            try {
-                                var createResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.Create, target);
-                                if (createResult != null && createResult is T typedResult) {
-                                    target = typedResult;
-                                } else {
-                                    target = Create(objectType, jObject);
+                        // Prototype cloning keeps its usual eager attachment behavior.
+                        using (SequenceDeserializationScope.Suspend()) {
+                            // Create stage
+                            if (upgrader.Stages.HasFlag(SequenceUpgradeStage.Create)) {
+                                try {
+                                    var createResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.Create, target);
+                                    if (createResult != null && createResult is T typedResult) {
+                                        target = typedResult;
+                                    } else {
+                                        target = Create(objectType, jObject);
+                                    }
+                                } catch (Exception ex) {
+                                    Logger.Warning($"Create upgrade failed for type {originalType}: {ex.Message}");
                                 }
-                            } catch (Exception ex) {
-                                Logger.Warning($"Create upgrade failed for type {originalType}: {ex.Message}");
+                            } else {
+                                // Create target object (uses the potentially modified jObject)
+                                target = Create(objectType, jObject);
                             }
-                        } else {
-                            // Create target object (uses the potentially modified jObject)
-                            target = Create(objectType, jObject);
-                        }
 
-                        // AfterCreate stage
-                        if (upgrader.Stages.HasFlag(SequenceUpgradeStage.AfterCreate)) {
-                            try {
-                                var afterCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterCreate, target);
-                                if (afterCreateResult != null && afterCreateResult is T typedResult) {
-                                    target = typedResult;
+                            // AfterCreate stage
+                            if (upgrader.Stages.HasFlag(SequenceUpgradeStage.AfterCreate)) {
+                                try {
+                                    var afterCreateResult = upgrader.Upgrade(upgradeContext, SequenceUpgradeStage.AfterCreate, target);
+                                    if (afterCreateResult != null && afterCreateResult is T typedResult) {
+                                        target = typedResult;
+                                    }
+                                } catch (Exception ex) {
+                                    Logger.Warning($"AfterCreate upgrade failed for type {originalType}: {ex.Message}");
                                 }
-                            } catch (Exception ex) {
-                                Logger.Warning($"AfterCreate upgrade failed for type {originalType}: {ex.Message}");
                             }
                         }
-
                         // Upgraders and custom converters can observe their JSON after population,
                         // so child migrations must still operate on independent copies there.
                         if (streamEnvelope && target?.GetType() != GetType(originalType)) {
@@ -221,8 +226,11 @@ namespace NINA.Sequencer.Serialization {
                             if (ReferenceEquals(jObject, ownedObject)) jObject = (JObject)jObject.DeepClone();
                             reuseTokens = false;
                         }
-                        serializer.Populate(streamEnvelope ? reader : reuseTokens && upgrader == NoUpgrader
-                            ? new OwnedSequenceTokenReader(jObject) : jObject.CreateReader(), target);
+                        using (var pluginPopulation = target != null && target.GetType().Assembly != typeof(SequenceJsonConverter).Assembly
+                            ? SequenceDeserializationScope.Suspend() : null) {
+                            serializer.Populate(streamEnvelope ? reader : reuseTokens && upgrader == NoUpgrader
+                                ? new OwnedSequenceTokenReader(jObject) : jObject.CreateReader(), target);
+                        }
 
                         // AfterPopulate stage
                         if (upgrader.Stages.HasFlag(SequenceUpgradeStage.AfterPopulate)) {

@@ -72,6 +72,8 @@ Built-in creation converters reuse nested tokens only from internally owned read
 
 Creation converters retain a bounded cache of successfully resolved built-in sequencer type names, including legacy names. Missing and external types remain dynamically resolved, collectible types are not retained and contextual reflection into another load context bypasses the cache. The legacy assembly fallback order is unchanged.
 
+Sequence loading batches built-in container parent notifications while JSON is populated. After population, one root parent refresh establishes context and a final root validation resolves forward references. During that refresh, the base container omits its redundant per-child validation pass; concrete item callbacks keep their existing behavior. Core watchdog starts wait until final validation. Ordinary attachment, cloning, editor commands and explicit validation remain eager. Custom serializer hooks, external entity population and plugin upgraders keep their original eager callbacks. No plugin API or concrete item callback needs a lifecycle migration.
+
 Dirty-tracking property metadata is shared by runtime type and property name. Root lookup and named change-set evaluation remain per notification; the cache must never retain entity instances or cache their dirty state.
 
 ## Target And Template Storage

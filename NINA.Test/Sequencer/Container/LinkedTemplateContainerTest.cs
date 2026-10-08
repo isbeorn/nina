@@ -34,6 +34,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -276,8 +277,9 @@ namespace NINA.Test.Sequencer.Container {
             linkedTemplateContainer.Items.OfType<ISequenceContainer>().Single().Name.Should().Be("RoundTrip");
         }
 
-        [Test]
-        public void SequenceJsonConverter_IgnoresLegacyLinkedTemplatePreviewContent() {
+        [TestCase(false)]
+        [TestCase(true)]
+        public void SequenceJsonConverter_IgnoresLegacyLinkedTemplatePreviewContent(bool loadFromFile) {
             TemplateReference reference = CreateReference("LegacyRoundTrip.template.json", "LegacyRoundTrip");
             TemplateLinkResolver resolver = new TemplateLinkResolver();
             resolver.UpdateTemplates(new[] { CreateTemplate(reference, "LegacyRoundTrip", "Current item") }, true, null);
@@ -300,7 +302,18 @@ namespace NINA.Test.Sequencer.Container {
             });
             legacyJson.Should().Contain(nameof(NamedInstruction));
 
-            ISequenceContainer roundTripped = converter.Deserialize(legacyJson);
+            ISequenceContainer roundTripped;
+            if (loadFromFile) {
+                string path = Path.GetTempFileName();
+                try {
+                    File.WriteAllText(path, legacyJson);
+                    roundTripped = converter.DeserializeFromFile(path);
+                } finally {
+                    File.Delete(path);
+                }
+            } else {
+                roundTripped = converter.Deserialize(legacyJson);
+            }
 
             LinkedTemplateContainer linkedTemplateContainer = roundTripped.Should().BeOfType<LinkedTemplateContainer>().Subject;
             linkedTemplateContainer.Items.Should().BeEmpty();

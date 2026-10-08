@@ -22,6 +22,7 @@ using NINA.Sequencer.DragDrop;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Validations;
+using NINA.Sequencer.Serialization;
 using NINA.Core.Utility;
 using NINA.ViewModel.Sequencer;
 using System;
@@ -44,7 +45,14 @@ namespace NINA.Sequencer.Container {
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
-            AfterParentChanged();
+            if (Items == null || Conditions == null || Triggers == null
+                || Items.Contains(null) || Conditions.Contains(null) || Triggers.Contains(null)) {
+                // Keep malformed-child failures inside the converter's existing Unknown fallback.
+                using var compatibility = SequenceDeserializationScope.Suspend();
+                AfterParentChanged();
+            } else if (!SequenceDeserializationScope.TryDeferParentChange(this)) {
+                AfterParentChanged();
+            }
         }
 
         private bool isExpanded = true;
@@ -214,12 +222,14 @@ namespace NINA.Sequencer.Container {
         }
 
         public override void AfterParentChanged() {
+            if (SequenceDeserializationScope.TryDeferParentChange(this)) return;
+            using var compatibility = GetType().Assembly != typeof(SequenceContainer).Assembly ? SequenceDeserializationScope.Suspend() : null;
             lock (lockObj) {
                 foreach (var item in Items) {
-                    item.AfterParentChanged();
+                    SequenceDeserializationScope.NotifyParentChanged(item);
 
                     IValidatable validatable = (item as IValidatable);
-                    if (validatable != null) {
+                    if (validatable != null && !SequenceDeserializationScope.IsFinalParentRefresh) {
                         try {
                             validatable.Validate();
                         } catch (Exception ex) {
@@ -228,10 +238,10 @@ namespace NINA.Sequencer.Container {
                     }
                 }
                 foreach (var condition in Conditions) {
-                    condition.AfterParentChanged();
+                    SequenceDeserializationScope.NotifyParentChanged(condition);
 
                     IValidatable validatable = (condition as IValidatable);
-                    if (validatable != null) {
+                    if (validatable != null && !SequenceDeserializationScope.IsFinalParentRefresh) {
                         try {
                             validatable.Validate();
                         } catch (Exception ex) {
@@ -240,10 +250,10 @@ namespace NINA.Sequencer.Container {
                     }
                 }
                 foreach (var trigger in Triggers) {
-                    trigger.AfterParentChanged();
+                    SequenceDeserializationScope.NotifyParentChanged(trigger);
 
                     IValidatable validatable = (trigger as IValidatable);
-                    if (validatable != null) {
+                    if (validatable != null && !SequenceDeserializationScope.IsFinalParentRefresh) {
                         try {
                             validatable.Validate();
                         } catch (Exception ex) {

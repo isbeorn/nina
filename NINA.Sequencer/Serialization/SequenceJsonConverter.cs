@@ -55,18 +55,25 @@ namespace NINA.Sequencer.Serialization {
         }
 
         public ISequenceContainer Deserialize(string sequenceJSON, string sourcePath) {
-            return JsonConvert.DeserializeObject<ISequenceContainer>(sequenceJSON, CreateSettings(sourcePath));
+            using var update = new SequenceDeserializationScope();
+            using var compatibility = JsonConvert.DefaultSettings != null ? SequenceDeserializationScope.Suspend() : null;
+            var container = JsonConvert.DeserializeObject<ISequenceContainer>(sequenceJSON, CreateSettings(sourcePath));
+            update.Complete(container);
+            return container;
         }
 
         public ISequenceContainer DeserializeFromFile(string sourcePath) {
             // Custom defaults may depend on JsonConvert's reader and content-checking behavior.
             if (JsonConvert.DefaultSettings != null) return Deserialize(File.ReadAllText(sourcePath), sourcePath);
 
+            using var update = new SequenceDeserializationScope();
             using var jsonReader = SequenceFileJsonReader.Open(sourcePath);
             var settings = CreateSettings(sourcePath);
             settings.CheckAdditionalContent = true;
             var serializer = JsonSerializer.CreateDefault(settings);
-            return serializer.Deserialize<ISequenceContainer>(jsonReader);
+            var container = serializer.Deserialize<ISequenceContainer>(jsonReader);
+            update.Complete(container);
+            return container;
         }
 
         private JsonSerializerSettings CreateSettings(string sourcePath) {

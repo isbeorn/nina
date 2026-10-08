@@ -18,6 +18,7 @@ using NINA.Core.Model;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
+using NINA.Sequencer.Serialization;
 using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
@@ -89,7 +90,7 @@ namespace NINA.Sequencer.Conditions {
         protected void RunWatchdogIfInsideSequenceRoot() {
             if (ConditionWatchdog != null) {
                 if (ItemUtility.IsInRootContainer(Parent)) {
-                    ConditionWatchdog.Start();
+                    if (!SequenceDeserializationScope.TryDeferWatchdog(this)) ConditionWatchdog.Start();
                 } else {
                     try { ConditionWatchdog?.Cancel(); } catch { }
                 }
