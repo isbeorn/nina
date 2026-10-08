@@ -38,6 +38,65 @@ namespace NINA.Test.Sequencer.Logic {
 
 
         [Test]
+        public void Validate_ResolvedConstantDoesNotAllocateSymbolSnapshots() {
+            var expression = CreateExpression("42");
+            expression.Evaluate(ignoreRoot: true);
+            expression.Validate();
+
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            for (int i = 0; i < 1000; i++) expression.Validate();
+            long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+            expression.Error.Should().BeNull();
+            expression.Value.Should().Be(42);
+            allocated.Should().BeLessThan(1024, "checking resolved reference counts must not copy symbol dictionaries");
+        }
+
+        [Test]
+        public void SymbolSnapshots_RemainIndependentAfterDefinitionChanges() {
+            object value = 3.0;
+            _symbolBroker.Setup(b => b.TryGetValue("a", out value)).Returns(true);
+            var expression = CreateExpression("a + 2");
+            expression.Evaluate(ignoreRoot: true);
+            var parameters = expression.Parameters;
+            var resolved = expression.Resolved;
+            var references = expression.References;
+
+            expression.Definition = "";
+            expression.Evaluate(ignoreRoot: true);
+
+            expression.Value.Should().Be(double.NaN);
+            expression.Parameters.Should().BeEmpty();
+            expression.Resolved.Should().BeEmpty();
+            expression.References.Should().BeEmpty();
+            parameters.Should().Contain("a", 3.0);
+            resolved.Should().ContainKey("a");
+            references.Should().Equal("a");
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ReleaseConsumers_WithoutResolvedSymbolsDoesNotAllocate(bool dispose) {
+            var expression = CreateExpression("42");
+            expression.Evaluate(ignoreRoot: true);
+            expression.ReleaseConsumers();
+
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            for (int i = 0; i < 1000; i++) {
+                if (dispose) expression.Dispose();
+                else expression.ReleaseConsumers();
+            }
+            long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+            TestContext.Progress.WriteLine($"Empty expression cleanup (dispose={dispose}): {allocated:N0} bytes per 1000 calls.");
+            allocated.Should().BeLessThan(1024, "releasing an expression with no symbol consumers needs no iterators");
+            expression.Parameters.Should().BeEmpty();
+            expression.Resolved.Should().BeEmpty();
+            expression.Definition.Should().Be("42");
+            expression.Value.Should().Be(42, "cleanup must not evaluate or change the expression's result");
+        }
+
+        [Test]
         public void Expression_Evaluate_LiteralNumericDefinition_ShouldNotBeExpression_AndKeepValue() {
             // arrange
             var expr = CreateExpression("123.45");
