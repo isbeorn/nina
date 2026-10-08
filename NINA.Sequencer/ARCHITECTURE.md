@@ -70,6 +70,8 @@ File loaders use `SequenceJsonConverter.DeserializeFromFile` to avoid retaining 
 
 Built-in creation converters reuse nested tokens only from internally owned readers and serializers without custom hooks. External readers, custom converters, plugin entity types and plugin upgraders retain detached JSON copies so migrations cannot change caller-owned documents or a parent's retained upgrade context.
 
+Creation converters retain a bounded cache of successfully resolved built-in sequencer type names, including legacy names. Missing and external types remain dynamically resolved, collectible types are not retained and contextual reflection into another load context bypasses the cache. The legacy assembly fallback order is unchanged.
+
 Dirty-tracking property metadata is shared by runtime type and property name. Root lookup and named change-set evaluation remain per notification; the cache must never retain entity instances or cache their dirty state.
 
 ## Target And Template Storage

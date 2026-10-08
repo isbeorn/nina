@@ -30,6 +30,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -454,6 +457,121 @@ namespace NINA.Test.Sequencer.Serialization {
                 "an item converter's custom container delegate also owns its JSON snapshot");
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void TypeResolution_RepeatedBuiltInNamesAvoidReflectionAllocations(bool legacyName) {
+            using var context = AssemblyLoadContext.GetLoadContext(typeof(SequenceJsonConverter).Assembly)!.EnterContextualReflection();
+            var sut = new TestItemCreationConverter(new TestSequencerFactory());
+            string typeName = legacyName
+                ? $"{typeof(SequentialContainer).FullName}, NINA"
+                : typeof(SequentialContainer).AssemblyQualifiedName!;
+            for (int i = 0; i < 8; i++) sut.ResolveType(typeName);
+
+            Type? result = null;
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            for (int i = 0; i < 1024; i++) result = sut.ResolveType(typeName);
+            long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+            result.Should().Be(typeof(SequentialContainer));
+            TestContext.Progress.WriteLine($"Repeated type resolution (legacy={legacyName}): {allocated:N0} bytes.");
+            allocated.Should().BeLessThan(16 * 1024, "successful built-in names should reuse their resolved type");
+            sut.ResolveType(typeName.Replace(nameof(SequentialContainer), nameof(SequentialContainer).ToLowerInvariant()))
+                .Should().BeNull("serialized type names remain case sensitive");
+        }
+
+        [Test]
+        public void TypeResolution_ConcurrentCurrentAndLegacyNamesReturnCorrectTypes() {
+            var sut = new TestItemCreationConverter(new TestSequencerFactory());
+            var types = new[] { typeof(SequentialContainer), typeof(SequenceRootContainer), typeof(LoopCondition), typeof(LinkedTemplateContainer) };
+            var results = new Type?[256];
+
+            Parallel.For(0, results.Length, i => {
+                Type type = types[i % types.Length];
+                string typeName = i % 2 == 0 ? type.AssemblyQualifiedName! : $"{type.FullName}, NINA";
+                results[i] = sut.ResolveType(typeName);
+            });
+
+            for (int i = 0; i < results.Length; i++) results[i].Should().Be(types[i % types.Length]);
+        }
+
+        [Test]
+        [NonParallelizable]
+        public void TypeResolution_MissingAndExternalTypesKeepUsingResolutionHooks() {
+            var sut = new TestItemCreationConverter(new TestSequencerFactory());
+            string typeName = typeof(TestSequenceItem).FullName!;
+            Assembly? availableAssembly = null;
+            int resolutions = 0;
+            ResolveEventHandler resolver = (_, args) => {
+                if (args.Name != typeName) return null;
+                resolutions++;
+                return availableAssembly;
+            };
+            AppDomain.CurrentDomain.TypeResolve += resolver;
+            try {
+                sut.ResolveType(typeName).Should().BeNull();
+
+                availableAssembly = typeof(TestSequenceItem).Assembly;
+                sut.ResolveType(typeName).Should().Be(typeof(TestSequenceItem), "an earlier miss must not hide a newly available plugin type");
+                int previousResolutions = resolutions;
+                sut.ResolveType(typeName).Should().Be(typeof(TestSequenceItem));
+                resolutions.Should().BeGreaterThan(previousResolutions, "external type resolution remains observable on every call");
+
+                availableAssembly = null;
+                sut.ResolveType(typeName).Should().BeNull("the converter must not retain external resolution results");
+            } finally {
+                AppDomain.CurrentDomain.TypeResolve -= resolver;
+            }
+        }
+
+        [Test]
+        public void TypeResolution_ContextualReflectionDoesNotUseOrPopulateDefaultCache() {
+            var warmed = new TestItemCreationConverter(new TestSequencerFactory());
+            var cold = new TestItemCreationConverter(new TestSequencerFactory());
+            string typeName = typeof(SequentialContainer).AssemblyQualifiedName!;
+            warmed.ResolveType(typeName).Should().Be(typeof(SequentialContainer));
+            var context = new AssemblyLoadContext("sequence-type-resolution", isCollectible: true);
+            try {
+                var assembly = context.LoadFromAssemblyPath(typeof(SequentialContainer).Assembly.Location);
+                var contextualType = assembly.GetType(typeof(SequentialContainer).FullName!)!;
+                contextualType.Should().NotBe(typeof(SequentialContainer));
+
+                using (context.EnterContextualReflection()) {
+                    warmed.ResolveType(typeName).Should().Be(contextualType);
+                    cold.ResolveType(typeName).Should().Be(contextualType);
+                }
+
+                warmed.ResolveType(typeName).Should().Be(typeof(SequentialContainer));
+                cold.ResolveType(typeName).Should().Be(typeof(SequentialContainer));
+            } finally {
+                context.Unload();
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void TypeResolution_AlternateBuiltInSpellingsHaveBoundedRetention(bool concurrent) {
+            var sut = new TestItemCreationConverter(new TestSequencerFactory());
+            var names = new WeakReference[512];
+            if (concurrent) Parallel.For(0, names.Length, i => names[i] = ResolveAlternateTypeName(sut, i));
+            else for (int i = 0; i < names.Length; i++) names[i] = ResolveAlternateTypeName(sut, i);
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            int retainedNames = names.Count(name => name.IsAlive);
+            GC.KeepAlive(sut);
+
+            retainedNames.Should().BeLessThanOrEqualTo(256,
+                "a converter reused across files must not retain every alternate spelling of a built-in type");
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static WeakReference ResolveAlternateTypeName(TestItemCreationConverter converter, int spaces) {
+            string typeName = $"{typeof(SequentialContainer).FullName},{new string(' ', spaces)}NINA.Sequencer";
+            converter.ResolveType(typeName).Should().Be(typeof(SequentialContainer));
+            return new WeakReference(typeName);
+        }
+
         private static TestSequencerFactory CreateCloningFactory() {
             var factory = new TestSequencerFactory { CloneEntities = true };
             factory.ContainersByType[typeof(SequentialContainer)] = new SequentialContainer();
@@ -534,6 +652,8 @@ namespace NINA.Test.Sequencer.Serialization {
 
         private sealed class TestItemCreationConverter : JsonCreationConverter<ISequenceItem> {
             public bool ThrowOnCreate { get; set; }
+
+            public Type? ResolveType(string typeName) => GetType(typeName);
 
             public TestItemCreationConverter(ISequencerFactory factory) : base(factory) {
             }

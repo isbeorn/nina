@@ -13,6 +13,8 @@
 #endregion "copyright"
 
 using System;
+using System.Collections.Concurrent;
+using System.Runtime.Loader;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -38,7 +40,10 @@ namespace NINA.Sequencer.Serialization {
                 || converterType == typeof(SequenceDateTimeProviderCreationConverter);
 
         private readonly bool reuseOwnedTokens;
+        private const int MaxCachedTypeNames = 256;
+        private readonly ConcurrentDictionary<string, Type> resolvedBuiltInTypes = new(StringComparer.Ordinal);
         private static readonly IContractResolver DefaultResolver = JsonSerializer.Create().ContractResolver;
+        private static readonly AssemblyLoadContext TypeResolutionContext = AssemblyLoadContext.GetLoadContext(typeof(SequenceJsonConverter).Assembly);
 
         private static bool HasDefaultJsonHooks(JsonSerializer serializer) {
             // Additional converters or resolver hooks can retain the reader's DOM even
@@ -265,6 +270,12 @@ namespace NINA.Sequencer.Serialization {
         }
 
         protected Type GetType(string typeString) {
+            var context = AssemblyLoadContext.CurrentContextualReflectionContext;
+            bool useCache = context == null || ReferenceEquals(context, TypeResolutionContext);
+            if (useCache && typeString != null && resolvedBuiltInTypes.TryGetValue(typeString, out var cachedType)) {
+                return cachedType;
+            }
+
             var t = Type.GetType(typeString);
             if (t == null) {
                 //Migration from Versions prior to the module split
@@ -274,6 +285,13 @@ namespace NINA.Sequencer.Serialization {
                     if (t == null) {
                         t = Type.GetType(typeString.Replace(", NINA", ", NINA.Astrometry"));
                     }
+                }
+            }
+            // Keep plugin types and unresolved names dynamic, and bound alternate spellings
+            // retained by converters that are reused across multiple sequence loads.
+            if (useCache && t?.Assembly == typeof(SequenceJsonConverter).Assembly && !t.IsCollectible) {
+                lock (resolvedBuiltInTypes) {
+                    if (resolvedBuiltInTypes.Count < MaxCachedTypeNames) resolvedBuiltInTypes.TryAdd(typeString, t);
                 }
             }
             return t;
