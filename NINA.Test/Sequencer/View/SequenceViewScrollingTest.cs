@@ -94,11 +94,13 @@ namespace NINA.Test.Sequencer.View {
 
             JumpToEnd(view, scroll, bottom: true);
             Row(container.Items[count - 1]).Should().NotBeNull();
+            WaitForCleanup(view, () => Row(container.Items[0]) == null);
             Row(container.Items[0]).Should().BeNull("offscreen instructions must still be virtualized inside a retained container");
             RealizedInstructions().Should().BeLessThan(count / 2);
 
             JumpToEnd(view, scroll, bottom: false);
             Row(container.Items[0]).Should().NotBeNull();
+            WaitForCleanup(view, () => Row(container.Items[count - 1]) == null);
             Row(container.Items[count - 1]).Should().BeNull();
             RealizedInstructions().Should().BeLessThan(count / 2);
         }
