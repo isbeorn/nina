@@ -6,7 +6,7 @@
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
 
     <GeometryGroup x:Key="CameraSVG">
         <PathGeometry Figures="M 18.1613,34.8547L 4.53067,12.2307C 1.672,16.46 0,21.5533 0,27.032C 0,29.7507 0.412,32.3813 1.18267,34.8547" />
@@ -77,11 +77,11 @@
         <PathGeometry Figures="M 0 6 L 12 6 L 6 0 Z" />
     </GeometryGroup>
 
-    <GeometryGroup x:Key="ArrowDownSVG">
+    <GeometryGroup x:Key="ArrowDownSVG" options:Freeze="True">
         <PathGeometry Figures="M 0 0 L 6 6 L 12 0 Z" />
     </GeometryGroup>
 
-    <GeometryGroup x:Key="ArrowRightSVG">
+    <GeometryGroup x:Key="ArrowRightSVG" options:Freeze="True">
         <PathGeometry Figures="M -1.01725e-005,514.667L 0.0773315,257.479L 0.161326,0.286621L 445.547,257.62L 222.771,386.145 Z" />
     </GeometryGroup>
 

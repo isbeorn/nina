@@ -446,20 +446,28 @@ namespace NINA.Test.Sequencer.View {
                 area.Add(target);
             }
             var view = new SequenceView { DataContext = new { Sequencer = new { Items = new[] { scope.Root } }, IsLocked = false, CanDragAndDrop = true } };
-            scope.Host.Content = view;
-            LayoutBeforeBackground(scope);
-            CheckPreviewFrames();
-            Settle(scope);
-            var tree = ((Grid)view.Content).Children.OfType<TreeView>().Single();
-            var scroll = Descendants<ScrollViewer>(tree).First();
-            scroll.ScrollToBottom();
-            LayoutBeforeBackground(scope);
-            CheckPreviewFrames();
-            Settle(scope);
-            scroll.ScrollToTop();
-            LayoutBeforeBackground(scope);
-            CheckPreviewFrames();
-            Settle(scope);
+            var frameBrush = (System.Windows.Media.SolidColorBrush)view.FindResource("SecondaryBackgroundBrush");
+            var originalColor = frameBrush.Color;
+            try {
+                // Use the actual shared brush with an opaque color for pixel coverage.
+                frameBrush.SetCurrentValue(System.Windows.Media.SolidColorBrush.ColorProperty, System.Windows.Media.Colors.Gray);
+                scope.Host.Content = view;
+                LayoutBeforeBackground(scope);
+                CheckPreviewFrames();
+                Settle(scope);
+                var tree = ((Grid)view.Content).Children.OfType<TreeView>().Single();
+                var scroll = Descendants<ScrollViewer>(tree).First();
+                scroll.ScrollToBottom();
+                LayoutBeforeBackground(scope);
+                CheckPreviewFrames();
+                Settle(scope);
+                scroll.ScrollToTop();
+                LayoutBeforeBackground(scope);
+                CheckPreviewFrames();
+                Settle(scope);
+            } finally {
+                frameBrush.SetCurrentValue(System.Windows.Media.SolidColorBrush.ColorProperty, originalColor);
+            }
 
             void CheckPreviewFrames() {
                 var headers = Descendants<DeferredSequenceHeader>(view)

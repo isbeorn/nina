@@ -524,7 +524,9 @@ namespace NINA.Test.Sequencer.Serialization {
         }
 
         [Test]
-        public void TypeResolution_ContextualReflectionDoesNotUseOrPopulateDefaultCache() {
+        public async Task TypeResolution_ContextualReflectionDoesNotUseOrPopulateDefaultCache() {
+            // A second sequencer assembly would replace WPF's process-wide resource cache.
+            if (await IsolatedTestProcess.RunCurrentTest()) return;
             var warmed = new TestItemCreationConverter(new TestSequencerFactory());
             var cold = new TestItemCreationConverter(new TestSequencerFactory());
             string typeName = typeof(SequentialContainer).AssemblyQualifiedName!;
