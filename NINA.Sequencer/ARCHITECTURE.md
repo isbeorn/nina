@@ -66,6 +66,12 @@ Important characteristics:
 
 The deserialization flow is factory-based, so sequence entities are reconstructed from registered prototypes rather than arbitrary reflection alone.
 
+File loaders use `SequenceJsonConverter.DeserializeFromFile` to avoid retaining a complete UTF-16 copy of the input. For ordinary files, a bounded preflight validates the document and identifies canonical built-in root and target-area containers before any models are created. A second pass over the same open file populates those containers incrementally, keeping individual target subtrees on the existing converter path. New serialized properties on either envelope need corresponding eligibility and compatibility-test updates in `SequenceFileJsonReader`. Noncanonical envelopes use DOM loading; custom `JsonConvert.DefaultSettings` retain the original string-loading behavior. The sequence model is still constructed eagerly; UI virtualization only bounds the realized controls.
+
+Built-in creation converters reuse nested tokens only from internally owned readers and serializers without custom hooks. External readers, custom converters, plugin entity types and plugin upgraders retain detached JSON copies so migrations cannot change caller-owned documents or a parent's retained upgrade context.
+
+Dirty-tracking property metadata is shared by runtime type and property name. Root lookup and named change-set evaluation remain per notification; the cache must never retain entity instances or cache their dirty state.
+
 ## Target And Template Storage
 
 Two controllers manage user-authored sequence assets:

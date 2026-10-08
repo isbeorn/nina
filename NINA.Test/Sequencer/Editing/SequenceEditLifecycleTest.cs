@@ -101,6 +101,54 @@ namespace NINA.Test.Sequencer.Editing {
         }
 
         [Test]
+        public void LoadFromFile_DoesNotAllocateTheWholeFileAsText() {
+            using var profile = new NINA.Profile.Profile();
+            var profiles = new Mock<IProfileService>();
+            profiles.SetupGet(x => x.ActiveProfile).Returns(profile);
+            var factory = new Mock<ISequencerFactory>();
+            factory.SetupGet(x => x.Upgraders).Returns(new List<ISequenceEntityUpgrader>());
+            factory.Setup(x => x.GetContainer<SequenceRootContainer>()).Returns(() => new SequenceRootContainer());
+            factory.Setup(x => x.GetContainer<SequentialContainer>()).Returns(() => new SequentialContainer());
+            using var vm = new Sequence2VM(profiles.Object, Mock.Of<ICommandLineOptions>(), Mock.Of<ISequenceMediator>(),
+                Mock.Of<IApplicationMediator>(), Mock.Of<IApplicationStatusMediator>(), Mock.Of<ICameraMediator>(),
+                factory.Object, Mock.Of<ISymbolBroker>(), Mock.Of<ITemplateLinkResolver>());
+            typeof(Sequence2VM).GetProperty(nameof(vm.Sequencer))!.SetValue(vm, new NINA.Sequencer.Sequencer(new SequenceRootContainer()));
+            var converter = new SequenceJsonConverter(factory.Object);
+            typeof(Sequence2VM).GetProperty(nameof(vm.SequenceJsonConverter))!.SetValue(vm, converter);
+            var load = typeof(Sequence2VM).GetMethod("LoadSequenceFromFile", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            var source = new SequenceRootContainer();
+            source.Add(new SequentialContainer { Name = "Target \u03b1", IsExpanded = false });
+            string json = converter.Serialize(source);
+            string file = Path.Combine(Path.GetTempPath(), "NINA-stream-load-" + Guid.NewGuid().ToString("N") + ".json");
+            object[] arguments = { file };
+            try {
+                File.WriteAllText(file, json);
+                load.Invoke(vm, arguments); // Warm up serializer contracts and the view-model load path.
+                var previousRoot = vm.Sequencer.MainContainer;
+                using (var writer = new StreamWriter(file, false, new System.Text.UTF8Encoding(true))) {
+                    writer.Write(json);
+                    string padding = new string(' ', 4096);
+                    for (int i = 0; i < 1024; i++) writer.Write(padding);
+                }
+
+                long before = GC.GetAllocatedBytesForCurrentThread();
+                load.Invoke(vm, arguments);
+                long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+                vm.Sequencer.MainContainer.Should().NotBeSameAs(previousRoot);
+                vm.Sequencer.MainContainer.Items.Should().ContainSingle();
+                var target = vm.Sequencer.MainContainer.Items[0].Should().BeOfType<SequentialContainer>().Subject;
+                target.Name.Should().Be("Target \u03b1");
+                target.IsExpanded.Should().BeFalse();
+                target.Parent.Should().BeSameAs(vm.Sequencer.MainContainer);
+                vm.SavePath.Should().Be(file);
+                vm.EditHistory.Root.Should().BeSameAs(vm.Sequencer.MainContainer);
+                allocated.Should().BeLessThan(4 * 1024 * 1024,
+                    "reading a padded sequence should use bounded buffers, not allocate a string for the complete file");
+            } finally { File.Delete(file); }
+        }
+
+        [Test]
         public void Save_PreservesJournalMarksPositionAndLeavesDirtyTrackingAuthoritative() {
             using var profile = new NINA.Profile.Profile();
             var profiles = new Mock<IProfileService>();

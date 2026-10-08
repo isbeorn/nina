@@ -64,7 +64,7 @@
             ScrollViewer.CanContentScroll="True"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
-            VirtualizingPanel.CacheLength="2000"
+            VirtualizingPanel.CacheLength="0"
             VirtualizingPanel.CacheLengthUnit="Pixel"
             VirtualizingPanel.IsVirtualizing="True"
             VirtualizingPanel.IsVirtualizingWhenGrouping="True"
@@ -797,7 +797,7 @@
                     </Style.Triggers>
                 </Style>
                 <Style x:Key="ContainerStyle" TargetType="{x:Type TreeViewItem}">
-                    <!--  Retain visited container headers to avoid repeated hierarchical size estimation while scrolling. Instruction lists still virtualize.  -->
+                    <!--  Retain instruction container headers for stable scrolling. Offscreen targets release their complete subtree.  -->
                     <Setter Property="VirtualizingPanel.IsContainerVirtualizable" Value="False" />
                     <Setter Property="ItemsControl.AlternationCount" Value="1024" />
                     <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
@@ -941,6 +941,9 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding Converter={StaticResource DataTypeToStringConverter}}" Value="{x:Type cont:DeepSkyObjectContainer}">
+                            <Setter Property="VirtualizingPanel.IsContainerVirtualizable" Value="True" />
+                        </DataTrigger>
                         <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
                             <Setter Property="ItemsPanel">
                                 <Setter.Value>

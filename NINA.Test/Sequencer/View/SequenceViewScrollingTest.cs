@@ -103,6 +103,80 @@ namespace NINA.Test.Sequencer.View {
             RealizedInstructions().Should().BeLessThan(count / 2);
         }
 
+        [Test]
+        public void Targets_EvictOffscreenViewsAndPreserveExpansionAndEditingWhenRecreated() {
+            using var scope = new CoreEditorTestScope();
+            var area = AddAreas(scope);
+            var targets = new List<DeepSkyObjectContainer>();
+            for (int index = 0; index < 8; index++) {
+                var target = (DeepSkyObjectContainer)scope.Create(typeof(DeepSkyObjectContainer));
+                target.Name = $"Target {index}";
+                target.Target.Expanded = false;
+                target.ExposureInfoListExpanded = false;
+                var container = new SequentialContainer { IsExpanded = true };
+                target.Add(container);
+                for (int instruction = 0; instruction < 12; instruction++) container.Add((TakeExposure)scope.Create(typeof(TakeExposure)));
+                area.Add(target);
+                targets.Add(target);
+            }
+            var first = targets[0];
+            var nested = (SequentialContainer)first.Items[0];
+            var exposure = (TakeExposure)nested.Items[0];
+            exposure.ExposureTimeExpression.Definition = "5+5";
+            var otherExposure = (TakeExposure)nested.Items[1];
+            string otherDefinition = otherExposure.ExposureTimeExpression.Definition;
+            var (view, tree, scroll) = ShowSequence(scope);
+            HierarchicalSequenceContainerView? Header(object entity) => Descendants<HierarchicalSequenceContainerView>(tree)
+                .SingleOrDefault(header => ReferenceEquals(header.DataContext, entity));
+            DetachingExpander NestedExpander() => Descendants<DetachingExpander>(Header(nested)!).Single();
+            void ExpandNested(bool expanded) {
+                var expander = NestedExpander();
+                ((ToggleButton)expander.Template.FindName("HeaderSite", expander)).SetCurrentValue(ToggleButton.IsCheckedProperty, expanded);
+                Refresh(view);
+                nested.IsExpanded.Should().Be(expanded);
+            }
+            TextBox ExposureEditor() {
+                for (int step = 0; step < 40; step++) {
+                    var editor = Descendants<TextBox>(tree).SingleOrDefault(box => ReferenceEquals(box.GetBindingExpression(TextBox.TextProperty)?.ResolvedSource, exposure.ExposureTimeExpression));
+                    if (editor != null) return editor;
+                    scroll.ScrollToVerticalOffset(scroll.VerticalOffset + 48);
+                    Refresh(view);
+                }
+                throw new AssertionException("The first exposure editor should become visible while scrolling through its target.");
+            }
+
+            var originalHeader = Header(first)!;
+            ExpandNested(false);
+            ScrollInSteps(view, scroll, down: true);
+            WaitForCleanup(view, () => Header(first) == null);
+            Header(first).Should().BeNull("offscreen targets must release their complete visual subtree");
+            PresentationSource.FromVisual(originalHeader).Should().BeNull();
+            ScrollInSteps(view, scroll, down: false);
+            Header(first).Should().NotBeNull().And.NotBeSameAs(originalHeader);
+            NestedExpander().IsExpanded.Should().BeFalse("the model expansion state must survive view eviction");
+            ExpandNested(true);
+
+            var nestedHeader = Header(nested);
+            var editor = ExposureEditor();
+            Header(nested).Should().BeSameAs(nestedHeader, "instruction containers inside a visible target should keep their existing header");
+            CoreEditorHistoryTest.TypeText(editor, "42");
+            scope.Behavior.Commit();
+            exposure.ExposureTimeExpression.Definition.Should().Be("42");
+
+            ScrollInSteps(view, scroll, down: true);
+            WaitForCleanup(view, () => Header(first) == null);
+            Header(first).Should().BeNull();
+            scope.History.Undo().Should().BeTrue();
+            exposure.ExposureTimeExpression.Definition.Should().Be("5+5");
+            scope.History.Redo().Should().BeTrue();
+            ScrollInSteps(view, scroll, down: false);
+            NestedExpander().IsExpanded.Should().BeTrue();
+            exposure.ExposureTimeExpression.Definition.Should().Be("42");
+            otherExposure.ExposureTimeExpression.Definition.Should().Be(otherDefinition);
+            editor = ExposureEditor();
+            editor.Text.Should().Be("42");
+        }
+
         private static TargetAreaContainer AddAreas(CoreEditorTestScope scope) {
             var area = new TargetAreaContainer();
             scope.Root.Add(new StartAreaContainer());
@@ -147,6 +221,22 @@ namespace NINA.Test.Sequencer.View {
             view.UpdateLayout();
             Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.SystemIdle);
             view.UpdateLayout();
+        }
+
+        private static void WaitForCleanup(FrameworkElement view, Func<bool> completed) {
+            // WPF retries hierarchical cleanup on a 500ms dispatcher timer.
+            var frame = new DispatcherFrame();
+            var elapsed = System.Diagnostics.Stopwatch.StartNew();
+            var timer = new DispatcherTimer(DispatcherPriority.Background) { Interval = TimeSpan.FromMilliseconds(50) };
+            timer.Tick += (_, _) => {
+                if (completed() || elapsed.Elapsed >= TimeSpan.FromSeconds(5)) {
+                    timer.Stop();
+                    frame.Continue = false;
+                }
+            };
+            timer.Start();
+            Dispatcher.PushFrame(frame);
+            Refresh(view);
         }
     }
 }

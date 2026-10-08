@@ -12,6 +12,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:NINA.WPF.Base.View"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Contrib.Wpf"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
@@ -35,13 +36,14 @@
         <Grid.Resources>
             <util:BindingProxy x:Key="proxy" Data="{Binding ElementName=UC, Path=NighttimeData}" />
         </Grid.Resources>
-        <oxy:Plot
+        <local:CachedPlot
+            Style="{DynamicResource {x:Type oxy:Plot}}"
             MinHeight="75"
             VerticalAlignment="Stretch"
             Background="{StaticResource BackgroundBrush}"
             PlotAreaBackground="{StaticResource BackgroundBrush}"
             PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
-            <oxy:Plot.Axes>
+            <local:CachedPlot.Axes>
                 <oxy:LinearAxis
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     EndPosition="1"
@@ -70,8 +72,8 @@
                     StringFormat="HH"
                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
-            </oxy:Plot.Axes>
-            <oxy:Plot.Series>
+            </local:CachedPlot.Axes>
+            <local:CachedPlot.Series>
                 <oxy:AreaSeries
                     Color2="Transparent"
                     DataFieldX="Key"
@@ -131,8 +133,8 @@
                     Visibility="{Binding Moon.DisplayMoon, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
                     Color="{Binding Moon.Color}" />
 
-            </oxy:Plot.Series>
-            <oxy:Plot.Annotations>
+            </local:CachedPlot.Series>
+            <local:CachedPlot.Annotations>
                 <oxy:LineAnnotation
                     MaximumY="90"
                     Text="{ns:Loc LblNow}"
@@ -173,8 +175,8 @@
                         </MultiBinding>
                     </oxy:PointAnnotation.Text>
                 </oxy:PointAnnotation>
-            </oxy:Plot.Annotations>
-        </oxy:Plot>
+            </local:CachedPlot.Annotations>
+        </local:CachedPlot>
 
         <Grid
             Margin="{Binding MoonMargin, ElementName=UC}"
