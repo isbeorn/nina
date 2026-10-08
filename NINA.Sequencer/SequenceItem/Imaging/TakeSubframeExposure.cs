@@ -22,6 +22,7 @@ using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
 using NINA.Image.Interfaces;
+using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Generators;
@@ -39,7 +40,6 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Data.Entity.Core.Common.CommandTrees;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
@@ -400,7 +400,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
             if (string.IsNullOrWhiteSpace(fileSettings.FilePath)) {
                 issues.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeSubframeExposure_Validation_FilePathEmpty"]);
-            } else if (!Directory.Exists(fileSettings.FilePath)) {
+            } else if (!fileSettings.IsFilePathValid()) {
                 issues.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeSubframeExposure_Validation_FilePathInvalid"]);
             }
         }
