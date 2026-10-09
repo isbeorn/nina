@@ -64,5 +64,42 @@ namespace NINA.Test.AstrometryTest {
 
             duration.Should().Be(TimeSpan.Zero);
         }
+
+        [TestCase(-1)]
+        [TestCase(1)]
+        public void TwilightCalculator_NearDawn_PairsDawnWithTheUpcomingSunrise(int minutesAfterDawn) {
+            var date = new DateTime(2026, 10, 8, 0, 0, 0, DateTimeKind.Utc);
+            var dawn = AstroUtil.GetNightTimes(date, 52.0, 13.0, 0.0).Rise ?? throw new AssertionException("Expected dawn.");
+            var sunrise = AstroUtil.GetSunRiseAndSet(date, 52.0, 13.0, 0.0).Rise ?? throw new AssertionException("Expected sunrise.");
+
+            var duration = new TwilightCalculator().GetTwilightDuration(dawn.AddMinutes(minutesAfterDawn), 52.0, 13.0, 0.0);
+
+            duration.Should().BeCloseTo(sunrise - dawn, TimeSpan.FromSeconds(30));
+            duration.Should().BeGreaterThan(TimeSpan.Zero);
+        }
+
+        [Test]
+        public void TwilightCalculator_NoAstronomicalDawn_UsesThePrecedingSunset() {
+            var date = new DateTime(2026, 6, 21, 0, 0, 0, DateTimeKind.Utc);
+            var sunrise = AstroUtil.GetSunRiseAndSet(date, 52.0, 13.0, 0.0).Rise ?? throw new AssertionException("Expected sunrise.");
+            var sunset = AstroUtil.GetSunRiseAndSet(sunrise.AddDays(-1), 52.0, 13.0, 0.0).Set ?? throw new AssertionException("Expected preceding sunset.");
+            AstroUtil.GetNightTimes(sunrise.AddDays(-1), 52.0, 13.0, 0.0).Rise.Should().BeNull();
+
+            var duration = new TwilightCalculator().GetTwilightDuration(date, 52.0, 13.0, 0.0);
+
+            duration.Should().BeCloseTo(sunrise - sunset, TimeSpan.FromSeconds(30));
+            duration.Should().BeGreaterThan(TimeSpan.Zero);
+        }
+
+        [Test]
+        public void TwilightCalculator_LocalAndUtcRepresentations_ReturnTheSameDuration() {
+            var date = new DateTime(2026, 10, 25, 0, 30, 0, DateTimeKind.Utc);
+            var calculator = new TwilightCalculator();
+
+            var utc = calculator.GetTwilightDuration(date, 52.0, 13.0, 0.0);
+            var local = calculator.GetTwilightDuration(date.ToLocalTime(), 52.0, 13.0, 0.0);
+
+            local.Should().Be(utc);
+        }
     }
 }
