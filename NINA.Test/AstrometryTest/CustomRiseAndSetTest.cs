@@ -53,6 +53,20 @@ namespace NINA.Test.AstrometryTest {
 
         [TestCase(1.0)]
         [TestCase(-1.0)]
+        public void Compute_ExtremumBeyondThreshold_DoesNotRefineAnUnnecessaryExtremum(double direction) {
+            var events = new SampledRiseAndSet(hour => direction * ((hour - 1.0) * (hour - 1.0) - 5.0));
+
+            events.Compute().Should().BeTrue();
+
+            (direction > 0.0 ? events.Rise : events.Set).Should().BeCloseTo(
+                events.Date.AddHours(1.0 + Math.Sqrt(5.0)), TimeSpan.FromSeconds(0.1));
+            (direction > 0.0 ? events.Set : events.Rise).Should().BeNull();
+            events.SampleCount.Should().BeLessThanOrEqualTo(53,
+                "an extremum already beyond the threshold needs only coarse samples, bounded proposals and bisection fallback");
+        }
+
+        [TestCase(1.0)]
+        [TestCase(-1.0)]
         public void Compute_RepeatedCalculation_RemovesEarlierEvents(double direction) {
             var events = new SampledRiseAndSet(hour => direction * (hour - 2.0));
             events.Compute().Should().BeTrue();
@@ -80,6 +94,51 @@ namespace NINA.Test.AstrometryTest {
 
             (direction > 0 ? events.Rise : events.Set).Should().Be(events.Date.AddHours(hour));
             (direction > 0 ? events.Set : events.Rise).Should().BeNull();
+        }
+
+        [TestCase(1.0)]
+        [TestCase(-1.0)]
+        public void Compute_NarrowCrossingsBetweenCoarseSamples_RefinesBothEvents(double direction) {
+            // A narrow excursion whose two true roots differ markedly from the fitted quadratic.
+            var events = new SampledRiseAndSet(hour => direction * (Math.Pow(hour - 0.31, 4) - Math.Pow(0.002, 4)));
+
+            events.Compute().Should().BeTrue();
+
+            (direction > 0 ? events.Set : events.Rise).Should().BeCloseTo(events.Date.AddHours(0.308), TimeSpan.FromSeconds(0.1));
+            (direction > 0 ? events.Rise : events.Set).Should().BeCloseTo(events.Date.AddHours(0.312), TimeSpan.FromSeconds(0.1));
+        }
+
+        [TestCase(1.0)]
+        [TestCase(-1.0)]
+        public void Compute_CoarsePolynomialPredictsCrossingButBodyNeverCrosses_ReturnsNoEvents(double direction) {
+            var events = new SampledRiseAndSet(hour => direction * (Math.Pow(hour - 0.31, 4) + 1e-9));
+
+            events.Compute().Should().BeFalse();
+
+            events.Rise.Should().BeNull();
+            events.Set.Should().BeNull();
+        }
+
+        [TestCase(1.0)]
+        [TestCase(-1.0)]
+        public void Compute_TangentAtSampleTime_DoesNotReportACrossing(double direction) {
+            var events = new SampledRiseAndSet(hour => direction * (hour - 1.0) * (hour - 1.0));
+
+            events.Compute().Should().BeFalse();
+
+            events.Rise.Should().BeNull();
+            events.Set.Should().BeNull();
+        }
+
+        [TestCase(double.NaN)]
+        [TestCase(double.PositiveInfinity)]
+        [TestCase(double.NegativeInfinity)]
+        public void Compute_NonfiniteAltitude_ReportsCalculationFailure(double altitude) {
+            var events = new SampledRiseAndSet(_ => altitude);
+
+            Action calculate = () => events.Compute();
+
+            calculate.Should().Throw<InvalidOperationException>().WithMessage("*altitude*2026*");
         }
 
         private sealed class SampledRiseAndSet(Func<double, double> altitude) : SunCustomRiseAndSet(
