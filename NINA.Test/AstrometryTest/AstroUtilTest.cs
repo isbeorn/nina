@@ -1202,6 +1202,71 @@ namespace NINA.Test.AstrometryTest {
             altitude.Should().BeGreaterThan(20.0);
         }
 
+        [TestCase(NOVAS.Body.Moon, 2016, 12, 31, 23)]
+        [TestCase(NOVAS.Body.Sun, 2016, 12, 31, 23)]
+        [TestCase(NOVAS.Body.Moon, 2017, 1, 1, 0)]
+        [TestCase(NOVAS.Body.Sun, 2017, 1, 1, 0)]
+        [TestCase(NOVAS.Body.Moon, 2024, 4, 8, 18)]
+        [TestCase(NOVAS.Body.Sun, 2024, 4, 8, 18)]
+        public void BodyTimePreparation_PositionAltitudeAndBasicBody_MatchIndependentNovas(NOVAS.Body bodyNumber, int year, int month, int day, int hour) {
+            var date = new DateTime(year, month, day, hour, 59, 59, DateTimeKind.Utc).AddTicks(1_234_567);
+            var observer = new ObserverInfo { Latitude = -33, Longitude = 151, Elevation = 2800, Temperature = -12, Pressure = 780 };
+            var expected = GetNativeBodyReference(date, observer, bodyNumber);
+            var position = bodyNumber == NOVAS.Body.Moon ? AstroUtil.GetMoonPosition(date, observer) : AstroUtil.GetSunPosition(date, observer);
+            position.RA.Should().BeApproximately(expected.Position.RA, 1e-11);
+            position.Dec.Should().BeApproximately(expected.Position.Dec, 1e-10);
+            position.Dis.Should().BeApproximately(expected.Position.Dis, 1e-12);
+
+            foreach (var instant in new[] { date, date.ToLocalTime() }) {
+                double altitude = bodyNumber == NOVAS.Body.Moon ? AstroUtil.GetMoonAltitude(instant, observer) : AstroUtil.GetSunAltitude(instant, observer);
+                altitude.Should().BeApproximately(expected.Altitude, 1e-9);
+                var pair = AstroUtil.GetMoonAndSunPosition(instant, observer);
+                var paired = bodyNumber == NOVAS.Body.Moon ? pair.Item1 : pair.Item2;
+                paired.RA.Should().BeApproximately(expected.Position.RA, 1e-11);
+                paired.Dec.Should().BeApproximately(expected.Position.Dec, 1e-10);
+                paired.Dis.Should().BeApproximately(expected.Position.Dis, 1e-12);
+            }
+
+            // BasicBody's observer contract supplies zero pressure and temperature.
+            observer.Temperature = observer.Pressure = 0;
+            expected = GetNativeBodyReference(date, observer, bodyNumber);
+            BasicBody body = bodyNumber == NOVAS.Body.Moon
+                ? new Moon(date, observer.Latitude, observer.Longitude, observer.Elevation)
+                : new Sun(date, observer.Latitude, observer.Longitude, observer.Elevation);
+            body.Calculate();
+            body.Altitude.Should().BeApproximately(expected.Altitude, 1e-9);
+            body.Distance.Should().BeApproximately(expected.Position.Dis * 149597870.7, 1e-6);
+        }
+
+        private static (NOVAS.SkyPosition Position, double Altitude) GetNativeBodyReference(DateTime date, ObserverInfo observerInfo, NOVAS.Body bodyNumber) {
+            var tt = AstroUtil.GetJulianDateTTParts(date);
+            var deltaT = AstroUtil.DeltaT(date);
+            var observer = new NOVAS.Observer {
+                Where = (short)NOVAS.ObserverLocation.EarthSurface,
+                OnSurf = new NOVAS.OnSurface {
+                    Latitude = observerInfo.Latitude, Longitude = observerInfo.Longitude, Height = observerInfo.Elevation,
+                    Temperature = observerInfo.Temperature, Pressure = observerInfo.Pressure
+                }
+            };
+            var target = new NOVAS.CelestialObject {
+                Name = bodyNumber == NOVAS.Body.Moon ? "Moon" : "Sun", Number = (short)bodyNumber,
+                Type = (short)NOVAS.ObjectType.MajorPlanetSunOrMoon, Star = new NOVAS.CatalogueEntry()
+            };
+            var position = new NOVAS.SkyPosition();
+            NOVAS.Place(tt.Item1 + tt.Item2, target, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate,
+                NOVAS.Accuracy.Full, ref position).Should().Be(0);
+            var utHigh = (long)tt.Item1;
+            var utLow = (tt.Item1 - utHigh) + tt.Item2 - deltaT / 86400;
+            double gast = 0;
+            NOVAS.SiderealTime(utHigh, utLow, deltaT, NOVAS.GstType.GreenwichApparentSiderealTime,
+                NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref gast).Should().Be(0);
+            double latitude = observerInfo.Latitude * Math.PI / 180;
+            double declination = position.Dec * Math.PI / 180;
+            double hourAngle = ((gast - position.RA) * 15 + observerInfo.Longitude) * Math.PI / 180;
+            double sine = Math.Sin(declination) * Math.Sin(latitude) + Math.Cos(declination) * Math.Cos(latitude) * Math.Cos(hourAngle);
+            return (position, Math.Asin(Math.Clamp(sine, -1, 1)) * 180 / Math.PI);
+        }
+
         /// <summary>
         /// Verifies legacy latitude/longitude solar and lunar altitude overloads delegate to the
         /// current ObserverInfo overloads for deterministic historical callers.
