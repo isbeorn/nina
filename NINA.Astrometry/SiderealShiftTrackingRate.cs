@@ -30,7 +30,8 @@ namespace NINA.Astrometry {
         }
 
         public static SiderealShiftTrackingRate Create(Coordinates start, Coordinates end, TimeSpan between) {
-            var raDiff = end.RADegrees - start.RADegrees;
+            // Choose the shortest signed path, with the exactly opposite direction resolved to -180.
+            var raDiff = AstroUtil.EuclidianModulus(end.RADegrees - start.RADegrees + 180.0d, 360.0d) - 180.0d;
             var decDiff = end.Dec - start.Dec;
             var hoursDiff = between.TotalSeconds / 3600.0d;
             return new SiderealShiftTrackingRate(true, raDiff / hoursDiff, decDiff / hoursDiff);
