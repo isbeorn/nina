@@ -101,6 +101,46 @@ namespace NINA.Test {
             data.CivilTwilightDuration.Should().HaveCount(6);
         }
 
+        [Test]
+        public void Calculate_ElevationChanges_UsesMatchingObserverAndReusesOriginalNight() {
+            var profile = CreateProfileService(52, 13, 0);
+            var settings = Mock.Get(profile.Object.ActiveProfile.AstrometrySettings);
+            var elevation = 0.0;
+            settings.SetupGet(x => x.Elevation).Returns(() => elevation);
+            var calculator = new NighttimeCalculator(profile.Object);
+            var date = new DateTime(2026, 3, 20, 12, 0, 0, DateTimeKind.Utc);
+            var seaLevel = calculator.Calculate(date);
+            elevation = 3000;
+            var mountain = calculator.Calculate(date);
+            try {
+                mountain.Should().NotBeSameAs(seaLevel);
+                mountain.SunRiseAndSet.Elevation.Should().Be(3000);
+                var expected = AstroUtil.GetSunRiseAndSet(date, 52, 13, 3000);
+                mountain.SunRiseAndSet.Rise.Should().Be(expected.Rise);
+                mountain.SunRiseAndSet.Set.Should().Be(expected.Set);
+                elevation = 0;
+                calculator.Calculate(date).Should().BeSameAs(seaLevel);
+            } finally {
+                seaLevel.Ticker.Stop();
+                mountain.Ticker.Stop();
+            }
+        }
+
+        [TestCase(DateTimeKind.Local)]
+        [TestCase(DateTimeKind.Unspecified)]
+        public void Calculate_DateKindChanges_DoesNotReuseUtcEventRepresentation(DateTimeKind kind) {
+            var calculator = new NighttimeCalculator(CreateProfileService(52, 13, 0).Object);
+            var date = new DateTime(2026, 3, 20, 12, 0, 0, DateTimeKind.Utc);
+            var utc = calculator.Calculate(date);
+            var other = calculator.Calculate(DateTime.SpecifyKind(date, kind));
+            utc.Ticker.Stop();
+            other.Ticker.Stop();
+            other.Should().NotBeSameAs(utc);
+            (other.SunRiseAndSet.Rise ?? throw new AssertionException("Expected sunrise.")).Kind.Should().Be(kind);
+            (other.SunRiseAndSet.Set ?? throw new AssertionException("Expected sunset.")).Kind.Should().Be(kind);
+            calculator.Calculate(date).Should().BeSameAs(utc);
+        }
+
         private static Mock<IProfileService> CreateProfileService(double latitude, double longitude, double elevation) {
             Mock<IAstrometrySettings> astrometrySettings = new Mock<IAstrometrySettings>();
             astrometrySettings.SetupGet(x => x.Latitude).Returns(latitude);

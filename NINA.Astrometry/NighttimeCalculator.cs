@@ -17,7 +17,6 @@ using NINA.Core.Utility;
 using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Timers;
 
 namespace NINA.Astrometry {
@@ -29,7 +28,7 @@ namespace NINA.Astrometry {
 
         public NighttimeCalculator(IProfileService profile) {
             profileService = profile;
-            Cache = new Dictionary<string, NighttimeData>();
+            Cache = new Dictionary<(DateTime, DateTimeKind, double, double, double, TimeZoneInfo), NighttimeData>();
 
             LastReferenceDate = GetReferenceDate(DateTime.Now);
             ReferenceDateTimer = new Timer(10 * 60 * 1000);
@@ -45,7 +44,7 @@ namespace NINA.Astrometry {
             }
         }
 
-        private IDictionary<string, NighttimeData> Cache;
+        private IDictionary<(DateTime Date, DateTimeKind Kind, double Latitude, double Longitude, double Elevation, TimeZoneInfo Zone), NighttimeData> Cache;
 
         private object lockObj = new object();
 
@@ -59,7 +58,7 @@ namespace NINA.Astrometry {
                 var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
                 var elevation = profileService.ActiveProfile.AstrometrySettings.Elevation;
 
-                var key = $"{referenceDate:yyyy-MM-dd-HH-mm-ss}_{latitude.ToString("0.000000", CultureInfo.InvariantCulture)}_{longitude.ToString("0.000000", CultureInfo.InvariantCulture)}";
+                var key = (referenceDate, referenceDate.Kind, latitude, longitude, elevation, TimeZoneInfo.Local);
 
                 if (Cache.TryGetValue(key, out var nighttimeData)) {
                     return nighttimeData;
