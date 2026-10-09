@@ -579,7 +579,7 @@ able to compensate for ambient temperature variations</value>
     <value>Change</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>Expozíciók száma</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
     <value>The sequence has been modified since it was last saved (changes to {0}).
@@ -1178,10 +1178,10 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Typical number of pixels to dither by. Dithering follows a normal distribution centered at the target, which this value as the standard deviation. 67% of dithers will be within this distance</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>Minimális bolygatási mozgás</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>A kamerapixelek mozgatásának minimális száma az egymást követő mechanikabolygatási pozíciók között. Állítsa 0-ra, a meglévő, véletlenszerű működés megtartásához. Az érték nem haladhatja meg a Bolygatás Pixel mértéke értékét.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dither RA Only</value>
@@ -1298,13 +1298,13 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>East</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
+    <value>A kamera nincs Manuális vagy Bulb módba állítva. Állítsa a módválasztó tárcsát Manuális vagy Bulb helyzetbe. Ha a kamerán van Videó/Fotó kapcsoló, állítsa azt Fotó állásba.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Enable bit scaling</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>8/10/12/14 bites képek mentése 16 bitre skálázva. Kizárólag Altair, Moravian, Omegon, RisingCam, SVBony és ToupTek kamerák esetén releváns, a natív driver használatakor.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Enabled</value>
@@ -1607,16 +1607,16 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>The size of one focus step used for auto focusing. One step should be less than the critical focus point tolerance</value>
   </data>
   <data name="LblManualStepSmallMultiplier" xml:space="preserve">
-    <value>Small Step Multiplier</value>
+    <value>Kis lépésköz szorzója</value>
   </data>
   <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+    <value>A fókuszáló manuális kis lépésközének szorzója (alapértelmezett: 0,5)</value>
   </data>
   <data name="LblManualStepLargeMultiplier" xml:space="preserve">
-    <value>Large Step Multiplier</value>
+    <value>Nagy lépésköz szorzója</value>
   </data>
   <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+    <value>A fókuszáló manuális nagy lépésközének szorzója (alapértelmezett: 5,0)</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Backlash IN/OUT</value>
@@ -2467,7 +2467,7 @@ Calculated HFR: {2}
     <value>Planetarium Preferences</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Import the currently selected planetarium object to update name and coordinates</value>
+    <value>Importálja a jelenleg kiválasztott planetárium objektumot a név és a koordináták frissítéséhez</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Coordinates from selected object</value>
@@ -2500,7 +2500,7 @@ Calculated HFR: {2}
     <value>Delay, in minutes, between two plate solve attempts</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>A középre igazítás sikertelen {0} korrekciós kísérlet után</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Plate solve current image</value>
@@ -2635,7 +2635,7 @@ Calculated HFR: {2}
     <value>Raw converter</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>A DSLR raw fájlok konvertálása a LibRaw programkönyvtárral történik.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Read noise in e</value>
@@ -2644,7 +2644,7 @@ Calculated HFR: {2}
     <value>Mode</value>
   </data>
   <data name="LblReadout" xml:space="preserve">
-    <value>Readout</value>
+    <value>Kiolvasás</value>
   </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>A numeric value corresponding to your camera's readout mode</value>
@@ -2785,10 +2785,10 @@ Calculated HFR: {2}
     <value>This setting is ignored for DSLRs when using the native driver. The camera's RAW format will be saved instead!</value>
   </data>
   <data name="LblSaveNativeCameraRaw" xml:space="preserve">
-    <value>Save native camera RAW</value>
+    <value>Kamera saját RAW fájljának mentése</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>Ha engedélyezve van, a natív Nikon és Canon kameraképek a fényképezőgép saját RAW fájljaiként mentődnek el. Ha ki van kapcsolva, a képek mentése a Beállítások > Képalkotás > Fájlbeállítások menüpont szerint történik.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Save selected profile and don't ask again next time</value>
@@ -3367,13 +3367,13 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <value>Transit South</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
-    <value>North</value>
+    <value>Észak</value>
   </data>
   <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
+    <value>Dél</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>Delelés időpontja</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Trends and Hyperbolic</value>
@@ -3521,7 +3521,7 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <value>URL</value>
   </data>
   <data name="LblCopyURL" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>URL másolása</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB Limit</value>
@@ -4340,10 +4340,10 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>A feltételes utasításkészlethez meg kell adni egy kifejezést.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>Feltételes utasításkészlet</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>All instructions in this instruction set are run in parallel. This instruction set will not evaluate any conditions or triggers until all instructions are finished.</value>
@@ -4526,7 +4526,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>AF After HFR Increase</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-    <value>HFR trend per filter</value>
+    <value>HFR trend szűrőnként</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
     <value>When disabled, the HFR trend is evaluated across all filters combined. 
@@ -5054,37 +5054,37 @@ Best used in conjunction with another loop condition to not end up in an infinit
     <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
-    <value>Editing the source template. Saving updates the template for every linked use.</value>
+    <value>A forrássablon szerkesztése. A mentéssel a sablon minden olyan helyen frissül, ahol összekapcsoltként használják.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
-    <value>Waiting for template "{0}" to finish loading.</value>
+    <value>Várakozás az „{0}” sablon betöltésének befejezésére.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
-    <value>Template "{0}" could not be found.</value>
+    <value>Az „{0}” sablon nem található.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
-    <value>This linked template does not have a valid source template.</value>
+    <value>Ez az összekapcsolt sablon nem rendelkezik érvényes forrássablonnal.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
-    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+    <value>Az alapértelmezett sablonok közvetlenül nem szerkeszthetők. Először mentse a sablont felhasználói sablonként.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
-    <value>Edit Template</value>
+    <value>Sablon szerkesztése</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
-    <value>Save Template</value>
+    <value>Sablon mentése</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
-    <value>Cancel Template Editing</value>
+    <value>Sablon szerkesztésének elvetése</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
-    <value>Target: {0}</value>
+    <value>Célpont: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
-    <value>No target selected. Drop a target here or enter target details below.</value>
+    <value>Nincs célpont kiválasztva. Húzzon ide egy célpontot, vagy adja meg a részleteit alább.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
-    <value>Use this target with the linked template</value>
+    <value>Ezen célpont használata az összekapcsolt sablonnal</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
     <value>Select a target for this linked template before running the sequence.</value>
@@ -5548,7 +5548,7 @@ For quickly changing conditions a smaller sample size will help to respond more 
     <value>Moves the rotator to the specified mechanical angle</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotate to mechanical angle</value>
+    <value>Forgatás mechanikai szögbe</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridian</value>
@@ -6132,7 +6132,7 @@ Once successfully solved, the rotation will be set for framing.</value>
     <value>Failed to save image</value>
   </data>
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+    <value>Nem sikerült menteni a képet. Előfordulhat, hogy a célmeghajtón elfogyott a szabad lemezterület.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Get coordinates from the current scope position</value>
@@ -6289,19 +6289,19 @@ Please check if there is an update available.</value>
     <value>Date</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>Nap</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>Hónap</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>Év</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
     <value>Observation</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>Az észlelési dátum és idő visszaállítása a jelenlegi időre</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>Command</value>
