@@ -512,6 +512,27 @@ namespace NINA.Test {
             }
         }
 
+        [TestCase(15, 0.015)]
+        [TestCase(15, 0.021)]
+        [TestCase(15, 89.999)]
+        [TestCase(15, -89.999)]
+        public void Separation_IdenticalCoordinates_IsExactlyZero(double ra, double dec) {
+            var coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+            (coordinates - coordinates.Clone()).Distance.Radians.Should().Be(0);
+        }
+
+        [TestCase(0, 0.0000001, 0.0000001)]
+        [TestCase(359.9999999, 0, 0.0000001)]
+        [TestCase(0, 180, 180)]
+        [TestCase(0, 179.9999999, 179.9999999)]
+        public void Separation_EquatorialOffsets_ResolvesTinyAndAntipodalAngles(double ra1, double ra2, double expectedDegrees) {
+            var a = new Coordinates(ra1, 0, Epoch.J2000, Coordinates.RAType.Degrees);
+            var b = new Coordinates(ra2, 0, Epoch.J2000, Coordinates.RAType.Degrees);
+            (a - b).Distance.Degree.Should().BeApproximately(expectedDegrees, 1e-12);
+            (b - a).Distance.Degree.Should().BeApproximately(expectedDegrees, 1e-12);
+            (a - b).RA.Degree.Should().BeApproximately(ra1 - ra2, 1e-12);
+        }
+
         private const double ArcSecondToleranceInDegrees = 1.0 / 3600.0;
 
         /// <summary>

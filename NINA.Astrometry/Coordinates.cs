@@ -539,7 +539,7 @@ namespace NINA.Astrometry {
 
             var raDiff = a.raAngle - b.raAngle;
             var decDiff = a.decAngle - b.decAngle;
-            var distance = (a.decAngle.Sin() * b.decAngle.Sin() + a.decAngle.Cos() * b.decAngle.Cos() * raDiff.Cos()).Acos();
+            var distance = Angle.ByRadians(SOFA.Seps(a.raAngle.Radians, a.decAngle.Radians, b.raAngle.Radians, b.decAngle.Radians));
 
             var y = raDiff.Sin() * b.decAngle.Cos();
             var x = a.decAngle.Cos() * b.decAngle.Sin() - a.decAngle.Sin() * b.decAngle.Cos() * raDiff.Cos();
