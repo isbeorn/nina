@@ -20,6 +20,20 @@ namespace NINA.Test.AstrometryTest {
     public class SiderealShiftTrackingRateTest {
         private const double AngleTolerance = 1e-10;
 
+        [TestCase(359.9, 0.1, 0.2)]
+        [TestCase(0.1, 359.9, -0.2)]
+        [TestCase(0, 360, 0)]
+        [TestCase(360, 0, 0)]
+        [TestCase(0, 180, -180)]
+        [TestCase(180, 0, -180)]
+        public void Create_CrossesRaBoundary_UsesSignedShortestDifference(double startRa, double endRa, double expectedRate) {
+            var start = new Coordinates(startRa, 20, Epoch.J2000, Coordinates.RAType.Degrees);
+            var end = new Coordinates(endRa, 18, Epoch.J2000, Coordinates.RAType.Degrees);
+            var rate = SiderealShiftTrackingRate.Create(start, end, TimeSpan.FromHours(1));
+            rate.RADegreesPerHour.Should().BeApproximately(expectedRate, AngleTolerance);
+            rate.DecDegreesPerHour.Should().Be(-2);
+        }
+
         /// <summary>
         /// Verifies sidereal shift tracking converts an ephemeris delta into per-hour and
         /// per-second rates without losing the sidereal-second conversion needed by mount tracking.

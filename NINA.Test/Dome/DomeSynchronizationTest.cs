@@ -35,6 +35,27 @@ namespace NINA.Test.Dome {
         private DatabaseInteraction db;
         private static Angle DEGREES_EPSILON = Angle.ByDegree(0.1);
 
+        [TestCase(4, 30)]
+        [TestCase(20, 30)]
+        [TestCase(8, -30)]
+        [TestCase(16, -30)]
+        [TestCase(6, 0)]
+        [TestCase(18, 0)]
+        [TestCase(0, 90)]
+        [TestCase(12, -90)]
+        public void CenteredScope_AltitudePreservesElevationAndSign(double siderealHours, double expectedAltitude) {
+            var profile = new Mock<IProfileService>();
+            profile.SetupGet(x => x.ActiveProfile.DomeSettings.MountType).Returns(MountTypeEnum.EQUATORIAL);
+            profile.SetupGet(x => x.ActiveProfile.DomeSettings.DomeRadius_mm).Returns(1000);
+            var synchronization = new DomeSynchronization(profile.Object);
+            var coordinates = new Coordinates(0, 0, Epoch.JNOW, Coordinates.RAType.Hours);
+            foreach (var side in new[] { PierSide.pierEast, PierSide.pierWest }) {
+                var result = synchronization.TargetDomeCoordinates(coordinates, siderealHours,
+                    Angle.ByDegree(0), Angle.ByDegree(0), 0, side);
+                Assert.That(result.Altitude.Degree, Is.EqualTo(expectedAltitude).Within(0.001));
+            }
+        }
+
         [SetUp]
         public void Init() {
             var ninaDbPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"NINA.sqlite");
@@ -205,8 +226,11 @@ namespace NINA.Test.Dome {
             Assert.That(eastResult.Azimuth.Equals(Angle.ByRadians(expectedAzimuth), DEGREES_EPSILON), Is.True);
             Assert.That(westResult.Azimuth.Equals(Angle.ByRadians(-expectedAzimuth), DEGREES_EPSILON), Is.True);
 
-            Assert.That(eastResult.Altitude.Equals(Angle.ByDegree(this.siteLatitude), DEGREES_EPSILON), Is.True);
-            Assert.That(westResult.Altitude.Equals(Angle.ByDegree(this.siteLatitude), DEGREES_EPSILON), Is.True);
+            // The lateral aperture offset shortens the ray to the sphere, so its intersection
+            // has a smaller elevation than the telescope's pointing direction.
+            var expectedAltitude = Math.Asin(distanceFromScopeOrigin * Math.Sin(Angle.ByDegree(siteLatitude).Radians) / domeRadius);
+            Assert.That(eastResult.Altitude.Equals(Angle.ByRadians(expectedAltitude), DEGREES_EPSILON), Is.True);
+            Assert.That(westResult.Altitude.Equals(Angle.ByRadians(expectedAltitude), DEGREES_EPSILON), Is.True);
         }
 
         [Test]

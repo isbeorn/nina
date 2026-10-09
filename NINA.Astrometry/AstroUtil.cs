@@ -18,12 +18,13 @@ using NINA.Core.Utility;
 using NINA.Profile;
 using Nito.AsyncEx;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Media3D;
 
@@ -136,15 +137,22 @@ namespace NINA.Astrometry {
             return date.Second + (date.Ticks % TimeSpan.TicksPerSecond) / (double)TimeSpan.TicksPerSecond;
         }
 
+        private static int sofaDateWarningLogged;
+
         public static (double, double) GetJulianDateUTCParts(DateTime date) {
             var utcDate = date.ToUniversalTime();
             double utc1 = 0, utc2 = 0;
-            SOFA.Dtf2d(
+            var status = SOFA.Dtf2d(
                 "UTC",
                 utcDate.Year, utcDate.Month, utcDate.Day,
                 utcDate.Hour, utcDate.Minute,
                 GetSecondOfMinuteWithFraction(utcDate),
                 ref utc1, ref utc2);
+            // DateTime supplies valid calendar fields. Positive status warns about UTC
+            // outside its time model or day limits; SOFA still returns an estimate.
+            if (status > 0 && Interlocked.Exchange(ref sofaDateWarningLogged, 1) == 0) {
+                Logger.Warning($"SOFA UTC conversion for {utcDate:O} returned warning {status}; using the installed time-model estimate.");
+            }
             return (utc1, utc2);
         }
 
@@ -155,17 +163,8 @@ namespace NINA.Astrometry {
 
 
         public static (double, double) GetJulianDateTTParts(DateTime date) {
-            var utcDate = date.ToUniversalTime();
+            var (utc1, utc2) = GetJulianDateUTCParts(date);
             double tai1 = 0, tai2 = 0, tt1 = 0, tt2 = 0;
-
-            double utc1 = 0, utc2 = 0;
-            SOFA.Dtf2d(
-                "UTC",
-                utcDate.Year, utcDate.Month, utcDate.Day,
-                utcDate.Hour, utcDate.Minute,
-                GetSecondOfMinuteWithFraction(utcDate),
-                ref utc1, ref utc2);
-
             SOFA.UtcTai(utc1, utc2, ref tai1, ref tai2);
             SOFA.TaiTt(tai1, tai2, ref tt1, ref tt2);
 
@@ -184,107 +183,64 @@ namespace NINA.Astrometry {
         /// <param name="date">Date to retrieve DeltaT for</param>
         /// <returns>DeltaT at given date</returns>
         public static double DeltaT(DateTime date, DatabaseInteraction db = null) {
-            var utcDate = date.ToUniversalTime();
-            double utc1 = 0, utc2 = 0, tai1 = 0, tai2 = 0;
-
-            SOFA.Dtf2d("UTC", utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, GetSecondOfMinuteWithFraction(utcDate), ref utc1, ref utc2);
-            SOFA.UtcTai(utc1, utc2, ref tai1, ref tai2);
-
-            var utc = utc1 + utc2;
-            var tai = tai1 + tai2;
-            var deltaT = 32.184 + DaysToSeconds((tai - utc)) - DeltaUT(utcDate, db);
-            return deltaT;
+            return 32.184 - GetEarthRotationOffset(date, db, relativeToTai: true);
         }
 
-        private static double? DeltaUTToday;
-        private static double? DeltaUTYesterday;
-        private static double? DeltaUTTomorrow;
-        private static ConcurrentDictionary<DateTime, double> DeltaUTCache = new ConcurrentDictionary<DateTime, double>();
-        private static DateTime DeltaUTReference;
+        internal static double DeltaT(DateTime date, double tt1, double tt2) =>
+            32.184 - GetEarthRotationOffset(date, null, relativeToTai: true, (tt1, tt2));
+
+        private static readonly DatabaseInteraction EarthRotationDatabase = new DatabaseInteraction();
+
+        internal static double AtomicUtcOffset(DateTime date) {
+            var utc = date.ToUniversalTime();
+            double offset = 0;
+            SOFA.Dat(utc.Year, utc.Month, utc.Day, utc.TimeOfDay.TotalDays, ref offset);
+            return offset;
+        }
 
         /// <summary>
-        /// Retrieve UT1 - UTC approximation to adjust DeltaT
+        /// Returns interpolated UT1 minus UTC in seconds. Missing Earth rotation data remains NaN.
+        /// Interpolation takes place in UT1 minus TAI to preserve UTC leap-second discontinuities.
         /// </summary>
-        /// <param name="date"></param>
-        /// <returns>UT1 - UTC in seconds</returns>
-        /// <remarks>https://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html</remarks>
         public static double DeltaUT(DateTime date, DatabaseInteraction db = null) {
-            if (DeltaUTReference != DateTime.UtcNow.Date) {
-                // Clear the cache when a app is open longer than a day
-                DeltaUTReference = DateTime.UtcNow.Date;
-                DeltaUTYesterday = null;
-                DeltaUTToday = null;
-                DeltaUTTomorrow = null;
-            }
+            return GetEarthRotationOffset(date, db, relativeToTai: false);
+        }
 
-            var utcDate = date.ToUniversalTime();
-
-            if (utcDate.Date == DateTime.UtcNow.Date) {
-                if (DeltaUTToday.HasValue) {
-                    return DeltaUTToday.Value;
-                }
-            }
-
-            if (utcDate.Date == DateTime.UtcNow.Date - TimeSpan.FromDays(1)) {
-                if (DeltaUTYesterday.HasValue) {
-                    return DeltaUTYesterday.Value;
-                }
-            }
-
-            if (utcDate.Date == DateTime.UtcNow.Date + TimeSpan.FromDays(1)) {
-                if (DeltaUTTomorrow.HasValue) {
-                    return DeltaUTTomorrow.Value;
-                }
-            }
-
-            var deltaUT = 0d;
-            if (DeltaUTCache.TryGetValue(utcDate.Date, out var cached)) {
-                return cached;
-            }
-
-            db = db ?? new DatabaseInteraction();
+        private static double GetEarthRotationOffset(DateTime date, DatabaseInteraction db, bool relativeToTai, (double, double)? tt = null) {
             try {
-                deltaUT = AsyncContext.Run(() => db.GetUT1_UTC(utcDate, default));
+                var correction = (db ?? EarthRotationDatabase).GetUT1Offset(date.ToUniversalTime(), default, relativeToTai, tt);
+                return correction.IsCompletedSuccessfully ? correction.Result : AwaitEarthRotationOffset(correction);
             } catch (Exception ex) {
                 Logger.Error(ex);
+                return double.NaN;
             }
+        }
 
-            if (utcDate.Date == DateTime.UtcNow.Date) {
-                DeltaUTToday = deltaUT;
-            }
-
-            if (utcDate.Date == DateTime.UtcNow.Date - TimeSpan.FromDays(1)) {
-                DeltaUTYesterday = deltaUT;
-            }
-
-            if (utcDate.Date == DateTime.UtcNow.Date + TimeSpan.FromDays(1)) {
-                DeltaUTTomorrow = deltaUT;
-            }
-
-            try {
-                DeltaUTCache.AddOrUpdate(utcDate.Date, deltaUT, (a, b) => b);
-            } catch(Exception) { }
-            
-
-            return deltaUT;
+        private static double AwaitEarthRotationOffset(ValueTask<double> correction) {
+            return AsyncContext.Run(() => correction.AsTask());
         }
 
         /// <summary>
+        /// Returns local apparent sidereal time in hours from UT1 and TT, retaining split dates.
         /// </summary>
-        /// <param name="date">     </param>
-        /// <param name="longitude"></param>
-        /// <returns>Sidereal Time in hours</returns>
         public static double GetLocalSiderealTime(DateTime date, double longitude, DatabaseInteraction db = null) {
-            var deltaT = DeltaT(date, db);
             var (tt1, tt2) = GetJulianDateTTParts(date);
+            return GetLocalSiderealTime(date, longitude, tt1, tt2, db);
+        }
 
-            var ut_high = (long)tt1;
-            var ut_low = (tt1 - ut_high) + tt2 - SecondsToDays(deltaT);
+        internal static double GetLocalSiderealTime(DateTime date, double longitude, double tt1, double tt2, DatabaseInteraction db = null) {
+            var deltaT = 32.184 - GetEarthRotationOffset(date, db, relativeToTai: true, (tt1, tt2));
+            return GetLocalSiderealTime(longitude, tt1, tt2, deltaT);
+        }
+
+        internal static double GetLocalSiderealTime(double longitude, double tt1, double tt2, double deltaT) {
+            if (!double.IsFinite(deltaT)) return double.NaN;
+            var utHigh = (long)tt1;
+            var utLow = (tt1 - utHigh) + tt2 - SecondsToDays(deltaT);
             double lst = 0;
-            NOVAS.SiderealTime(ut_high, ut_low, deltaT, NOVAS.GstType.GreenwichApparentSiderealTime, NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref lst);
-            lst = lst + DegreesToHours(longitude);
-
-            return lst;
+            NOVAS.SiderealTime(utHigh, utLow, deltaT, NOVAS.GstType.GreenwichApparentSiderealTime,
+                NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref lst);
+            return lst + DegreesToHours(longitude);
         }
 
         /// <summary>
@@ -293,7 +249,8 @@ namespace NINA.Astrometry {
         /// <param name="rightAscension"></param>
         /// <returns>Hour Angle in hours</returns>
         public static double GetHourAngle(double siderealTime, double rightAscension) {
-            return GetHourAngle(Angle.ByHours(siderealTime), Angle.ByHours(rightAscension)).Hours;
+            var hours = DegreesToHours(ToDegree(ToRadians(HoursToDegrees(siderealTime)) - ToRadians(HoursToDegrees(rightAscension))));
+            return hours < 0 ? hours + 24 : hours;
         }
 
         public static Angle GetHourAngle(Angle siderealTime, Angle rightAscension) {
@@ -318,11 +275,11 @@ namespace NINA.Astrometry {
         /// <param name="latitude">   in degrees</param>
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
-        // Keep Angle temporaries inside this method so the JIT can eliminate them even
-        // when the caller samples altitudes in a loop.
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static double GetAltitude(double hourAngle, double latitude, double declination) {
-            return GetAltitude(Angle.ByDegree(hourAngle), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Degree;
+            double dec = ToRadians(declination), lat = ToRadians(latitude);
+            double sine = Math.Sin(dec) * Math.Sin(lat) + Math.Cos(dec) * Math.Cos(lat) * Math.Cos(ToRadians(hourAngle));
+            return ToDegree(Math.Asin(Math.Clamp(sine, -1.0, 1.0)));
         }
 
         /// <summary>
@@ -334,7 +291,8 @@ namespace NINA.Astrometry {
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle GetAltitude(Angle hourAngle, Angle latitude, Angle declination) {
-            return (declination.Sin() * latitude.Sin() + declination.Cos() * latitude.Cos() * hourAngle.Cos()).Asin();
+            double sine = (declination.Sin() * latitude.Sin() + declination.Cos() * latitude.Cos() * hourAngle.Cos()).Radians;
+            return Angle.ByRadians(Math.Asin(Math.Clamp(sine, -1.0, 1.0)));
         }
 
         /// <summary>
@@ -346,7 +304,10 @@ namespace NINA.Astrometry {
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
         public static double GetAzimuth(double hourAngle, double altitude, double latitude, double declination) {
-            return GetAzimuth(Angle.ByDegree(hourAngle), Angle.ByDegree(altitude), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Degree;
+            double alt = ToRadians(altitude), lat = ToRadians(latitude);
+            double cosine = (Math.Sin(ToRadians(declination)) - Math.Sin(alt) * Math.Sin(lat)) / (Math.Cos(alt) * Math.Cos(lat));
+            double azimuth = ToDegree(Math.Acos(Math.Clamp(cosine, -1.0, 1.0)));
+            return Math.Sin(ToRadians(hourAngle)) < 0 ? azimuth : 360 - azimuth;
         }
 
         /// <summary>
@@ -611,8 +572,11 @@ namespace NINA.Astrometry {
             return GetMoonPosition(date, oberverInfo);
         }
         public static NOVAS.SkyPosition GetMoonPosition(DateTime date, ObserverInfo observerInfo) {
-            var deltaT = DeltaT(date);
+            var (tt1, tt2) = GetJulianDateTTParts(date);
+            return GetMoonPosition(date, observerInfo, tt1 + tt2, DeltaT(date, tt1, tt2));
+        }
 
+        private static NOVAS.SkyPosition GetMoonPosition(DateTime date, ObserverInfo observerInfo, double jdTt, double deltaT) {
             var onSurface = new NOVAS.OnSurface() {
                 Latitude = observerInfo.Latitude,
                 Longitude = observerInfo.Longitude,
@@ -635,7 +599,6 @@ namespace NINA.Astrometry {
 
             var skyPosition = new NOVAS.SkyPosition();
 
-            var jdTt = GetJulianDateTT(date);
             var error = NOVAS.Place(jdTt, celestialObject, obs, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref skyPosition);
             if (error != 0) {
                 Logger.Warning($"Failed to calculate moon position for date {date}, latitude {observerInfo.Latitude}, longitude {observerInfo.Longitude}, elevation {observerInfo.Elevation}, temperature {observerInfo.Temperature}, pressure {observerInfo.Pressure} - Novas return code: " + error);
@@ -650,8 +613,11 @@ namespace NINA.Astrometry {
         }
 
         public static NOVAS.SkyPosition GetSunPosition(DateTime date, ObserverInfo observerInfo) {
-            var deltaT = DeltaT(date);
+            var (tt1, tt2) = GetJulianDateTTParts(date);
+            return GetSunPosition(date, observerInfo, tt1 + tt2, DeltaT(date, tt1, tt2));
+        }
 
+        private static NOVAS.SkyPosition GetSunPosition(DateTime date, ObserverInfo observerInfo, double jdTt, double deltaT) {
             var onSurface = new NOVAS.OnSurface() {
                 Latitude = observerInfo.Latitude,
                 Longitude = observerInfo.Longitude,
@@ -674,7 +640,6 @@ namespace NINA.Astrometry {
 
             var skyPosition = new NOVAS.SkyPosition();
 
-            var jdTt = GetJulianDateTT(date);
             var error = NOVAS.Place(jdTt, celestialObject, obs, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref skyPosition);
             if (error != 0) {
                 Logger.Warning($"Failed to calculate sun position for date {date}, latitude {observerInfo.Latitude}, longitude {observerInfo.Longitude}, elevation {observerInfo.Elevation}, temperature {observerInfo.Temperature}, pressure {observerInfo.Pressure} - Novas return code: " + error);
@@ -685,13 +650,15 @@ namespace NINA.Astrometry {
 
         [Obsolete("Use function without jd")]
         public static Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition> GetMoonAndSunPosition(DateTime date, double jd, ObserverInfo observerInfo = null) {
-            if (observerInfo == null) { observerInfo = new ObserverInfo(); }
-            return new Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition>(GetMoonPosition(date, jd, observerInfo), GetSunPosition(date, jd, observerInfo));
+            return GetMoonAndSunPosition(date, observerInfo);
         }
 
         public static Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition> GetMoonAndSunPosition(DateTime date, ObserverInfo observerInfo = null) {
             if (observerInfo == null) { observerInfo = new ObserverInfo(); }
-            return new Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition>(GetMoonPosition(date, observerInfo), GetSunPosition(date, observerInfo));
+            var (tt1, tt2) = GetJulianDateTTParts(date);
+            double deltaT = DeltaT(date, tt1, tt2);
+            double jdTt = tt1 + tt2;
+            return new Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition>(GetMoonPosition(date, observerInfo, jdTt, deltaT), GetSunPosition(date, observerInfo, jdTt, deltaT));
         }
 
         [Obsolete("Use function with NINA.Astrometry.ObserverInfo parameter")]
@@ -701,8 +668,10 @@ namespace NINA.Astrometry {
 
         public static double GetMoonPositionAngle(DateTime date, ObserverInfo observerInfo) {
             var tuple = GetMoonAndSunPosition(date, observerInfo);
-            var moonPosition = tuple.Item1;
-            var sunPosition = tuple.Item2;
+            return GetMoonPositionAngle(tuple.Item1, tuple.Item2);
+        }
+
+        private static double GetMoonPositionAngle(NOVAS.SkyPosition moonPosition, NOVAS.SkyPosition sunPosition) {
 
             var diff = HoursToDegrees(moonPosition.RA - sunPosition.RA);
             if (diff > 180) {
@@ -721,8 +690,10 @@ namespace NINA.Astrometry {
 
         private static double CalculateMoonIllumination(DateTime date, ObserverInfo observerInfo) {
             var tuple = GetMoonAndSunPosition(date, observerInfo);
-            var moonPosition = tuple.Item1;
-            var sunPosition = tuple.Item2;
+            return CalculateMoonIllumination(tuple.Item1, tuple.Item2);
+        }
+
+        private static double CalculateMoonIllumination(NOVAS.SkyPosition moonPosition, NOVAS.SkyPosition sunPosition) {
 
             var sunRAAngle = Angle.ByHours(sunPosition.RA);
             var sunDecAngle = Angle.ByDegree(sunPosition.Dec);
@@ -758,8 +729,16 @@ namespace NINA.Astrometry {
         }
 
         public static MoonPhase GetMoonPhase(DateTime date, ObserverInfo observerInfo) {
-            var angle = GetMoonPositionAngle(date, observerInfo);
+            return GetMoonPhase(GetMoonPositionAngle(date, observerInfo));
+        }
 
+        internal static (MoonPhase Phase, double Illumination) GetMoonPhaseAndIllumination(DateTime date, ObserverInfo observerInfo) {
+            var positions = GetMoonAndSunPosition(date, observerInfo);
+            return (GetMoonPhase(GetMoonPositionAngle(positions.Item1, positions.Item2)),
+                CalculateMoonIllumination(positions.Item1, positions.Item2));
+        }
+
+        private static MoonPhase GetMoonPhase(double angle) {
             if ((angle >= -180.0 && angle < -135.0) || angle == 180.0) {
                 return MoonPhase.FullMoon;
             } else if (angle >= -135.0 && angle < -90.0) {
@@ -791,18 +770,22 @@ namespace NINA.Astrometry {
         }
 
         public static double GetMoonAltitude(DateTime date, ObserverInfo observerInfo) {
-            var moon = GetMoonPosition(date, observerInfo);
+            var (tt1, tt2) = GetJulianDateTTParts(date);
+            double deltaT = DeltaT(date, tt1, tt2);
+            var moon = GetMoonPosition(date, observerInfo, tt1 + tt2, deltaT);
 
-            var siderealTime = GetLocalSiderealTime(date, observerInfo.Longitude);
+            var siderealTime = GetLocalSiderealTime(observerInfo.Longitude, tt1, tt2, deltaT);
             var hourAngle = HoursToDegrees(GetHourAngle(siderealTime, moon.RA));
 
             return GetAltitude(hourAngle, observerInfo.Latitude, moon.Dec);
         }
 
         public static double GetSunAltitude(DateTime date, ObserverInfo observerInfo) {
-            var sun = GetSunPosition(date, observerInfo);
+            var (tt1, tt2) = GetJulianDateTTParts(date);
+            double deltaT = DeltaT(date, tt1, tt2);
+            var sun = GetSunPosition(date, observerInfo, tt1 + tt2, deltaT);
 
-            var siderealTime = GetLocalSiderealTime(date, observerInfo.Longitude);
+            var siderealTime = GetLocalSiderealTime(observerInfo.Longitude, tt1, tt2, deltaT);
             var hourAngle = HoursToDegrees(GetHourAngle(siderealTime, sun.RA));
 
             return GetAltitude(hourAngle, observerInfo.Latitude, sun.Dec);

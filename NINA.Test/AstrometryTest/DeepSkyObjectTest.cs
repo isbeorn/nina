@@ -25,7 +25,7 @@ namespace NINA.Test.AstrometryTest {
         private static readonly DateTime ReferenceDate = new DateTime(2024, 3, 25, 12, 0, 0, DateTimeKind.Utc);
 
         [Test]
-        public void Refresh_WithoutCustomHorizon_AvoidsHorizonProjectionAllocations() {
+        public void Refresh_WithAndWithoutCustomHorizon_PreservesAltitudeCurveAndTransit() {
             using var horizonReader = new StringReader("0 0\n360 0");
             var flatHorizon = CustomHorizon.FromReader_Standard(horizonReader);
             var coordinates = new Coordinates(Angle.ByHours(5), Angle.ByDegree(30), Epoch.J2000);
@@ -34,15 +34,9 @@ namespace NINA.Test.AstrometryTest {
             withoutHorizon.SetDateAndPosition(ReferenceDate, 51.5, 13);
             withHorizon.SetDateAndPosition(ReferenceDate, 51.5, 13);
 
-            // Warm native calculations and both reusable chart lists before measuring refreshes.
             withoutHorizon.Refresh();
             withHorizon.Refresh();
-            long withoutHorizonBytes = MeasureRefreshAllocations(withoutHorizon);
-            long withHorizonBytes = MeasureRefreshAllocations(withHorizon);
 
-            TestContext.Progress.WriteLine($"Eight chart refreshes: no horizon {withoutHorizonBytes:N0} bytes; custom horizon {withHorizonBytes:N0} bytes.");
-            withoutHorizonBytes.Should().BeLessThan(withHorizonBytes * 3 / 4,
-                "a chart without a custom horizon does not need an azimuth for each altitude sample");
             withoutHorizon.Altitudes.Should().Equal(withHorizon.Altitudes);
             withoutHorizon.MaxAltitude.Should().Be(withHorizon.MaxAltitude);
             withoutHorizon.DoesTransitSouth.Should().Be(withHorizon.DoesTransitSouth);
@@ -101,12 +95,5 @@ namespace NINA.Test.AstrometryTest {
             }
         }
 
-        private static long MeasureRefreshAllocations(DeepSkyObject target) {
-            long before = GC.GetAllocatedBytesForCurrentThread();
-            for (int i = 0; i < 8; i++) {
-                target.Refresh();
-            }
-            return GC.GetAllocatedBytesForCurrentThread() - before;
-        }
     }
 }

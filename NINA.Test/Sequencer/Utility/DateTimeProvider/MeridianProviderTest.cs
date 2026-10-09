@@ -33,14 +33,14 @@ namespace NINA.Test.Sequencer.Utility.DateTimeProvider {
     public class MeridianProviderTest {
 
         [Test]
-        [TestCase(19, 10, 0, 20)]
-        [TestCase(18, 10, 11, 20)]
-        [TestCase(13, 10, 6, 20)]
-        [TestCase(11, 10, 4, 20)]
-        [TestCase(9, 10, 2, 20)]
-        [TestCase(7, 10, 0, 20)]
-        [TestCase(6, 10, 11, 20)]
-        public void GetDateTime_EntityHasParentWithCoordinates_CalculatesTimeToMeridian(double ra, double dec, int expectedHour, int expectedMinute) {
+        [TestCase(19, 10)]
+        [TestCase(18, 10)]
+        [TestCase(13, 10)]
+        [TestCase(11, 10)]
+        [TestCase(9, 10)]
+        [TestCase(7, 10)]
+        [TestCase(6, 10)]
+        public void GetDateTime_EntityHasParentWithCoordinates_CalculatesTimeToMeridian(double ra, double dec) {
             ra = AstroUtil.EuclidianModulus(ra, 24);
             dec = AstroUtil.EuclidianModulus(dec, 360);
 
@@ -66,8 +66,20 @@ namespace NINA.Test.Sequencer.Utility.DateTimeProvider {
 
             var date = sut.GetDateTime(entityMock.Object);
 
-            date.Hour.Should().Be(expectedHour);
-            date.Minute.Should().BeCloseTo(expectedMinute, 1);
+            (date - referenceDate).Should().BeGreaterThanOrEqualTo(TimeSpan.Zero)
+                .And.BeLessThan(TimeSpan.FromHours(12 / SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC));
+            void AssertOnMeridianLine(DateTime instant) {
+                var apparent = coordinates.Transform(Epoch.JNOW, instant);
+                double hourAngle = AstroUtil.GetLocalSiderealTime(instant, 0) - apparent.RA;
+                double lineError = AstroUtil.EuclidianModulus(hourAngle + 6, 12) - 6;
+                Math.Abs(lineError * 15).Should().BeLessThan(0.001);
+            }
+            AssertOnMeridianLine(date);
+            var rollover = DateOnly.FromDateTime(date).ToDateTime(sut.GetRolloverTime(entityMock.Object));
+            if (rollover < date) rollover = rollover.AddDays(1);
+            // TimeOnly has no zone information, so restore the UTC kind of the fixture clock.
+            rollover = DateTime.SpecifyKind(rollover, DateTimeKind.Utc);
+            AssertOnMeridianLine(rollover);
         }
 
         [Test]

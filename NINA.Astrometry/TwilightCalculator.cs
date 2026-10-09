@@ -25,13 +25,24 @@ namespace NINA.Astrometry {
         }
 
         public TimeSpan GetTwilightDuration(DateTime date, double latitude, double longitude, double elevation) {
-            var nightRise = AstroUtil.GetNightTimes(date, latitude, longitude, elevation).Rise;
-            var sunRiseAndSet = AstroUtil.GetSunRiseAndSet(date, latitude, longitude, elevation);
-            if (nightRise == null) {
-                return sunRiseAndSet.Rise - sunRiseAndSet.Set ?? TimeSpan.Zero;
-            }            
+            var sunrise = AstroUtil.GetSunRiseAndSet(date.ToUniversalTime(), latitude, longitude, elevation).Rise;
+            if (!sunrise.HasValue) {
+                return TimeSpan.Zero;
+            }
 
-            return sunRiseAndSet.Rise - nightRise ?? TimeSpan.Zero;
+            // Search backwards from the upcoming sunrise so a request after dawn cannot pair
+            // today's sunrise with tomorrow's dawn. UTC arithmetic also avoids DST clock jumps.
+            var precedingDay = sunrise.Value.AddDays(-1);
+            var dawn = AstroUtil.GetNightTimes(precedingDay, latitude, longitude, elevation).Rise;
+            if (dawn.HasValue && dawn.Value <= sunrise.Value) {
+                return sunrise.Value - dawn.Value;
+            }
+
+            var sunset = AstroUtil.GetSunRiseAndSet(precedingDay, latitude, longitude, elevation).Set;
+            if (sunset.HasValue && sunset.Value <= sunrise.Value) {
+                return sunrise.Value - sunset.Value;
+            }
+            return TimeSpan.Zero;
         }
     }
 }

@@ -50,7 +50,7 @@ namespace NINA.Sequencer.Utility.DateTimeProvider {
             if (contextCoordinates != null) {
                 var siderealTime = Angle.ByHours(AstroUtil.GetLocalSiderealTime(DateTime.Now, profileService.ActiveProfile.AstrometrySettings.Longitude));
                 var timeToMeridian = MeridianFlip.TimeToMeridian(contextCoordinates.Coordinates, siderealTime);
-                return TimeOnly.FromDateTime(DateTime.Now + timeToMeridian + TimeSpan.FromHours(12));
+                return TimeOnly.FromDateTime(DateTime.Now + timeToMeridian + TimeSpan.FromHours(12 / SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC));
             }
             return TimeOnly.FromDateTime(DateTime.Now + TimeSpan.FromHours(12));
         }

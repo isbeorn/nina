@@ -14,6 +14,7 @@
 
 using NINA.Core.Utility;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -27,6 +28,69 @@ namespace NINA.Astrometry {
 
         static SOFA() {
             DllLoader.LoadDll(Path.Combine("SOFA", DLLNAME));
+        }
+
+        private const int AstrometryContextCapacity = 1024;
+        private static readonly object astrometryContextLock = new object();
+        private static readonly Dictionary<(double, double), AstrometryContext> astrometryContexts = new();
+        private static readonly Queue<(double, double)> astrometryContextDates = new();
+
+        internal static AstrometryContext GetAstrometryContext(double date1, double date2) {
+            var key = (date1, date2);
+            lock (astrometryContextLock) {
+                if (astrometryContexts.TryGetValue(key, out var existing)) return existing;
+            }
+            // SOFA preparation is pure and uses local outputs. Different dates may be
+            // prepared concurrently; publication and bounded eviction remain synchronized.
+            var context = new AstrometryContext(date1, date2);
+            lock (astrometryContextLock) {
+                if (astrometryContexts.TryGetValue(key, out var existing)) return existing;
+                if (astrometryContexts.Count == AstrometryContextCapacity) {
+                    astrometryContexts.Remove(astrometryContextDates.Dequeue());
+                }
+                astrometryContexts.Add(key, context);
+                astrometryContextDates.Enqueue(key);
+                return context;
+            }
+        }
+
+        // iauAtci13 and iauAtic13 prepare this same star-independent context using iauApci13.
+        // Reuse the exact two-part date, without time rounding or model approximations.
+        // SOFA Astrometry Tools, section 5: https://www.iausofa.org/s/sofa_ast_c.pdf
+        internal sealed class AstrometryContext {
+            private readonly Astrom parameters;
+            private readonly double equationOfOrigins;
+
+            internal AstrometryContext(double date1, double date2) {
+                SOFA_Apci13(date1, date2, out parameters, out equationOfOrigins);
+            }
+
+            internal (double RA, double Dec) ToApparent(double ra, double dec) {
+                // Give native code a value copy so the shared cached context remains immutable.
+                var astrom = parameters;
+                SOFA_Atciq(ra, dec, 0, 0, 0, 0, ref astrom, out var ri, out var di);
+                return (SOFA_Anp(ri - equationOfOrigins), di);
+            }
+
+            internal (double RA, double Dec) ToCelestial(double ra, double dec) {
+                var astrom = parameters;
+                SOFA_Aticq(SOFA_Anp(ra + equationOfOrigins), dec, ref astrom, out var rc, out var dc);
+                return (rc, dc);
+            }
+        }
+
+        // Blittable layout of iauASTROM from the shipped SOFA 2023-10-11 sofa.h: 31 doubles.
+        // Scalar vector/matrix entries retain native order without array marshalling allocations.
+        [StructLayout(LayoutKind.Sequential)]
+        private struct Astrom {
+            public double pmt;
+            public double eb0, eb1, eb2;
+            public double eh0, eh1, eh2;
+            public double em;
+            public double v0, v1, v2;
+            public double bm1;
+            public double bpn00, bpn01, bpn02, bpn10, bpn11, bpn12, bpn20, bpn21, bpn22;
+            public double along, phi, xpl, ypl, sphi, cphi, diurab, eral, refa, refb;
         }
 
         #region "Public Methods"
@@ -317,6 +381,15 @@ namespace NINA.Astrometry {
         /// <returns>int status: +1 = dubious year (Note 3); 0 = OK; −1 = unacceptable date</returns>
         public static short UtcTai(double utc1, double utc2, ref double tai1, ref double tai2) {
             return SOFA_Utctai(utc1, utc2, ref tai1, ref tai2);
+        }
+
+        /// <summary>
+        /// Returns TAI minus UTC in seconds at the supplied UTC calendar date and fractional day.
+        /// A positive status identifies a dubious year; negative statuses identify invalid input.
+        /// Reference: SOFA iauDat, https://www.iausofa.org/cookbooks.
+        /// </summary>
+        public static int Dat(int year, int month, int day, double dayFraction, ref double deltaAT) {
+            return SOFA_Dat(year, month, day, dayFraction, ref deltaAT);
         }
 
         /// <summary>
@@ -944,6 +1017,15 @@ namespace NINA.Astrometry {
 
         #region "External DLL calls"
 
+        [DllImport(DLLNAME, EntryPoint = "iauApci13", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void SOFA_Apci13(double date1, double date2, out Astrom astrom, out double eo);
+
+        [DllImport(DLLNAME, EntryPoint = "iauAtciq", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void SOFA_Atciq(double rc, double dc, double pr, double pd, double px, double rv, ref Astrom astrom, out double ri, out double di);
+
+        [DllImport(DLLNAME, EntryPoint = "iauAticq", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void SOFA_Aticq(double ri, double di, ref Astrom astrom, out double rc, out double dc);
+
         [DllImport(DLLNAME, EntryPoint = "iauAtci13", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SOFA_Atci13(double rc, double dc, double pr, double pd, double px, double rv, double date1, double date2, ref double ri, ref double di, ref double eo);
 
@@ -961,6 +1043,9 @@ namespace NINA.Astrometry {
 
         [DllImport(DLLNAME, EntryPoint = "iauUtctai", CallingConvention = CallingConvention.Cdecl)]
         private static extern short SOFA_Utctai(double utc1, double utc2, ref double tai1, ref double tai2);
+
+        [DllImport(DLLNAME, EntryPoint = "iauDat", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int SOFA_Dat(int year, int month, int day, double dayFraction, ref double deltaAT);
 
         [DllImport(DLLNAME, EntryPoint = "iauTaitt", CallingConvention = CallingConvention.Cdecl)]
         private static extern short SOFA_Taitt(double tai1, double tai2, ref double tt1, ref double tt2);

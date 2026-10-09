@@ -14,6 +14,7 @@
 
 using NINA.Astrometry;
 using System;
+using System.Collections.Generic;
 
 namespace NINA.WPF.Base.SkySurvey {
 
@@ -25,6 +26,8 @@ namespace NINA.WPF.Base.SkySurvey {
         private readonly double latitudeCosine;
         private readonly double latitudeSine;
         private readonly double siderealTimeDegrees;
+        private readonly Dictionary<(double RA, double Dec), SkyMapHorizontalCoordinates> catalogPositions = new();
+        private readonly object catalogPositionLock = new();
 
         public SkyMapObserverSnapshot(
             double latitude,
@@ -72,10 +75,34 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         public SkyMapHorizontalCoordinates ToHorizontal(Coordinates coordinates) {
-            return ToHorizontal(coordinates.RADegrees, coordinates.Dec);
+            var key = (coordinates.RADegrees, coordinates.Dec);
+            var catalog = coordinates.Epoch == Epoch.J2000;
+            if (catalog) {
+                lock (catalogPositionLock) {
+                    if (catalogPositions.TryGetValue(key, out var cached)) return cached;
+                }
+            }
+            var apparent = coordinates.Transform(Epoch.JNOW, Timestamp);
+            var horizontal = ApparentToHorizontal(apparent.RADegrees, apparent.Dec);
+            if (catalog) {
+                lock (catalogPositionLock) {
+                    // The observer and instant are immutable. Numeric keys observe mutable catalog
+                    // coordinate edits without retaining the objects or growing without a limit.
+                    // Keep hot entries when saturated instead of clearing them on every frame.
+                    if (catalogPositions.Count < 65536) catalogPositions.TryAdd(key, horizontal);
+                }
+            }
+            return horizontal;
         }
 
         public SkyMapHorizontalCoordinates ToHorizontal(double rightAscension, double declination) {
+            lock (catalogPositionLock) {
+                if (catalogPositions.TryGetValue((rightAscension, declination), out var horizontal)) return horizontal;
+            }
+            return ToHorizontal(new Coordinates(rightAscension, declination, Epoch.J2000, Coordinates.RAType.Degrees));
+        }
+
+        private SkyMapHorizontalCoordinates ApparentToHorizontal(double rightAscension, double declination) {
             double hourAngle = AstroUtil.ToRadians(AstroUtil.EuclidianModulus(siderealTimeDegrees - rightAscension, 360));
             declination = AstroUtil.ToRadians(declination);
             double declinationSine = Math.Sin(declination);
@@ -94,9 +121,9 @@ namespace NINA.WPF.Base.SkySurvey {
         public Coordinates ToCelestial(SkyMapHorizontalCoordinates horizontal) {
             double altitude = AstroUtil.ToRadians(horizontal.Altitude);
             double azimuth = AstroUtil.ToRadians(horizontal.Azimuth);
-            double declination = Math.Asin(
+            double declination = Math.Asin(Math.Clamp(
                 Math.Sin(altitude) * latitudeSine
-                + Math.Cos(altitude) * latitudeCosine * Math.Cos(azimuth));
+                + Math.Cos(altitude) * latitudeCosine * Math.Cos(azimuth), -1, 1));
             double hourAngle = Math.Atan2(
                 -Math.Sin(azimuth) * Math.Cos(altitude),
                 Math.Sin(altitude) * latitudeCosine
@@ -104,7 +131,7 @@ namespace NINA.WPF.Base.SkySurvey {
             double rightAscension = AstroUtil.EuclidianModulus(
                 siderealTimeDegrees - AstroUtil.ToDegree(hourAngle),
                 360);
-            return new Coordinates(rightAscension, AstroUtil.ToDegree(declination), Epoch.J2000, Coordinates.RAType.Degrees);
+            return new Coordinates(Angle.ByDegree(rightAscension), Angle.ByRadians(declination), Epoch.JNOW, Timestamp).Transform(Epoch.J2000);
         }
     }
 }

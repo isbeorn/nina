@@ -13,11 +13,11 @@
 #endregion "copyright"
 
 using NINA.Astrometry.Interfaces;
+using NINA.Astrometry.RiseAndSet;
 using NINA.Core.Utility;
 using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Timers;
 
 namespace NINA.Astrometry {
@@ -29,7 +29,7 @@ namespace NINA.Astrometry {
 
         public NighttimeCalculator(IProfileService profile) {
             profileService = profile;
-            Cache = new Dictionary<string, NighttimeData>();
+            Cache = new Dictionary<(DateTime, DateTimeKind, double, double, double, TimeZoneInfo), NighttimeData>();
 
             LastReferenceDate = GetReferenceDate(DateTime.Now);
             ReferenceDateTimer = new Timer(10 * 60 * 1000);
@@ -45,7 +45,7 @@ namespace NINA.Astrometry {
             }
         }
 
-        private IDictionary<string, NighttimeData> Cache;
+        private IDictionary<(DateTime Date, DateTimeKind Kind, double Latitude, double Longitude, double Elevation, TimeZoneInfo Zone), NighttimeData> Cache;
 
         private object lockObj = new object();
 
@@ -59,18 +59,23 @@ namespace NINA.Astrometry {
                 var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
                 var elevation = profileService.ActiveProfile.AstrometrySettings.Elevation;
 
-                var key = $"{referenceDate:yyyy-MM-dd-HH-mm-ss}_{latitude.ToString("0.000000", CultureInfo.InvariantCulture)}_{longitude.ToString("0.000000", CultureInfo.InvariantCulture)}";
+                var key = (referenceDate, referenceDate.Kind, latitude, longitude, elevation, TimeZoneInfo.Local);
 
                 if (Cache.TryGetValue(key, out var nighttimeData)) {
                     return nighttimeData;
                 } else {
-                    var twilightRiseAndSet = AstroUtil.GetNightTimes(referenceDate, latitude, longitude, elevation);
-                    var civilTwilightRiseAndSet = AstroUtil.GetCivilNightTimes(referenceDate, latitude, longitude, elevation);
-                    var nauticalTwilightRiseAndSet = AstroUtil.GetNauticalNightTimes(referenceDate, latitude, longitude, elevation);
+                    var solarContext = new SolarEventContext(latitude, longitude, elevation);
+                    var twilightRiseAndSet = new AstronomicalTwilightRiseAndSet(referenceDate, latitude, longitude, elevation);
+                    var civilTwilightRiseAndSet = new CivilTwilightRiseAndSet(referenceDate, latitude, longitude, elevation);
+                    var nauticalTwilightRiseAndSet = new NauticalTwilightRiseAndSet(referenceDate, latitude, longitude, elevation);
+                    var sunRiseAndSet = new SunRiseAndSet(referenceDate, latitude, longitude, elevation);
+                    twilightRiseAndSet.Compute(solarContext);
+                    civilTwilightRiseAndSet.Compute(solarContext);
+                    nauticalTwilightRiseAndSet.Compute(solarContext);
+                    sunRiseAndSet.Compute(solarContext);
                     var moonRiseAndSet = AstroUtil.GetMoonRiseAndSet(referenceDate, latitude, longitude, elevation);
-                    var sunRiseAndSet = AstroUtil.GetSunRiseAndSet(referenceDate, latitude, longitude, elevation);
-                    var moonPhase = AstroUtil.GetMoonPhase(referenceDate, new ObserverInfo() { Latitude = latitude, Longitude = longitude, Elevation = elevation });
-                    var illumination = AstroUtil.GetMoonIllumination(referenceDate, new ObserverInfo() { Latitude = latitude, Longitude = longitude, Elevation = elevation });
+                    var (moonPhase, illumination) = AstroUtil.GetMoonPhaseAndIllumination(referenceDate,
+                        new ObserverInfo() { Latitude = latitude, Longitude = longitude, Elevation = elevation });
 
                     var data = new NighttimeData(date: selectedDate, referenceDate: referenceDate, moonPhase: moonPhase, moonIllumination: illumination, twilightRiseAndSet: twilightRiseAndSet, nauticalTwilightRiseAndSet: nauticalTwilightRiseAndSet,
                         sunRiseAndSet: sunRiseAndSet, moonRiseAndSet: moonRiseAndSet, civilTwilightRiseAndSet: civilTwilightRiseAndSet);

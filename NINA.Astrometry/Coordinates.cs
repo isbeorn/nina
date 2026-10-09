@@ -162,7 +162,7 @@ namespace NINA.Astrometry {
             }
 
             if (targetEpoch == Epoch.JNOW) {
-                return TransformToJNOW();
+                return TransformToJNOW(DateTime.Now);
             } else if (targetEpoch == Epoch.J2000) {
                 return TransformToJ2000();
             } else {
@@ -171,18 +171,31 @@ namespace NINA.Astrometry {
         }
 
         /// <summary>
+        /// Converts to the requested epoch at a specific instant. JNOW source coordinates are
+        /// interpreted at their creation date before being converted to the requested instant.
+        /// The injected clock is preserved for subsequent transformations without an explicit date.
+        /// </summary>
+        public Coordinates Transform(Epoch targetEpoch, DateTime at) {
+            if (targetEpoch == Epoch.J2000) {
+                return Transform(Epoch.J2000);
+            }
+            if (targetEpoch == Epoch.JNOW) {
+                var celestial = Epoch == Epoch.J2000 ? this : TransformToJ2000();
+                return celestial.TransformToJNOW(at);
+            }
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
         /// Transforms coordinates from J2000 to JNOW
         /// </summary>
         /// <returns></returns>
-        private Coordinates TransformToJNOW() {
-            var now = DateTime.Now;
-            double jdTT = AstroUtil.GetJulianDateTT(now);
+        private Coordinates TransformToJNOW(DateTime now) {
+            var (jdTt1, jdTt2) = AstroUtil.GetJulianDateTTParts(now);
 
-            double ri = 0, di = 0, eo = 0;
-            SOFA.CelestialToIntermediate(raAngle.Radians, decAngle.Radians, 0.0, 0.0, 0.0, 0.0, jdTT, 0.0, ref ri, ref di, ref eo);
-
-            var raApparent = Angle.ByRadians(SOFA.Anp(ri - eo));
-            var decApparent = Angle.ByRadians(di);
+            var (ra, dec) = SOFA.GetAstrometryContext(jdTt1, jdTt2).ToApparent(raAngle.Radians, decAngle.Radians);
+            var raApparent = Angle.ByRadians(ra);
+            var decApparent = Angle.ByRadians(dec);
 
             var jnowCoordinates = new Coordinates(raApparent, decApparent, Epoch.JNOW, now, DateTime);
             return jnowCoordinates;
@@ -195,8 +208,7 @@ namespace NINA.Astrometry {
         private Coordinates TransformToJ2000() {
             var (jdTt1, jdTt2) = AstroUtil.GetJulianDateTTParts(this.creationDate);
 
-            double rc = 0, dc = 0, eo = 0;
-            SOFA.IntermediateToCelestial(SOFA.Anp(raAngle.Radians + SOFA.Eo06a(jdTt1, jdTt2)), decAngle.Radians, jdTt1, jdTt2, ref rc, ref dc, ref eo);
+            var (rc, dc) = SOFA.GetAstrometryContext(jdTt1, jdTt2).ToCelestial(raAngle.Radians, decAngle.Radians);
 
             var raCelestial = Angle.ByRadians(rc);
             var decCelestial = Angle.ByRadians(dc);
@@ -272,13 +284,13 @@ namespace NINA.Astrometry {
             var originDecSin = originDec.Sin();
             var originDecCos = originDec.Cos();
 
-            var targetRA = originRA + Angle.Atan2(deltaXAngle, originDecCos - deltaYAngle * originDecSin);
+            var denominator = originDecCos - deltaYAngle * originDecSin;
+            var targetRA = originRA + Angle.Atan2(deltaXAngle, denominator);
 
-            var targetDec = (
-                (targetRA - originRA).Cos()
-                * (deltaYAngle * originDecCos + originDecSin)
-                / (originDecCos - deltaYAngle * originDecSin)
-            ).Atan();
+            // Inverse TAN: avoid dividing by a denominator that can vanish at valid offsets.
+            var targetDec = Angle.Atan2(
+                deltaYAngle * originDecCos + originDecSin,
+                Angle.ByRadians(double.Hypot(denominator.Radians, deltaXAngle.Radians)));
 
             if (targetRA.Degree < 0) { targetRA = Angle.ByDegree(targetRA.Degree + 360); }
             if (targetRA.Degree >= 360) { targetRA = Angle.ByDegree(targetRA.Degree - 360); }
@@ -543,7 +555,7 @@ namespace NINA.Astrometry {
 
             var raDiff = a.raAngle - b.raAngle;
             var decDiff = a.decAngle - b.decAngle;
-            var distance = (a.decAngle.Sin() * b.decAngle.Sin() + a.decAngle.Cos() * b.decAngle.Cos() * raDiff.Cos()).Acos();
+            var distance = Angle.ByRadians(SOFA.Seps(a.raAngle.Radians, a.decAngle.Radians, b.raAngle.Radians, b.decAngle.Radians));
 
             var y = raDiff.Sin() * b.decAngle.Cos();
             var x = a.decAngle.Cos() * b.decAngle.Sin() - a.decAngle.Sin() * b.decAngle.Cos() * raDiff.Cos();

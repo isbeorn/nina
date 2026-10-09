@@ -24,13 +24,72 @@ namespace NINA.Test.SkySurvey {
     public class SkyMapObserverSnapshotTest {
 
         [Test]
+        public void RepeatedCatalogProjection_DoesNotAllocateAndObservesCoordinateChanges() {
+            var at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            var snapshot = new SkyMapObserverSnapshot(52, 13, at);
+            var coordinates = CelestialCoordinates(120, 30);
+            var first = snapshot.ToHorizontal(coordinates);
+            for (int i = 0; i < 100; i++) snapshot.ToHorizontal(coordinates);
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            for (int i = 0; i < 1000; i++) {
+                snapshot.ToHorizontal(coordinates);
+                snapshot.ToHorizontal(coordinates.RADegrees, coordinates.Dec);
+            }
+            (GC.GetAllocatedBytesForCurrentThread() - before).Should().BeLessThan(1024);
+            coordinates.RA += 1;
+            snapshot.ToHorizontal(coordinates).Should().NotBe(first);
+            coordinates.RA -= 1;
+            snapshot.ToHorizontal(coordinates).Should().Be(first);
+            coordinates.Dec += 1;
+            snapshot.ToHorizontal(coordinates).Should().NotBe(first);
+            coordinates.Dec -= 1;
+            snapshot.ToHorizontal(coordinates).Should().Be(first);
+            coordinates.Epoch = Epoch.JNOW;
+            snapshot.ToHorizontal(coordinates).Should().NotBe(first);
+            coordinates.Epoch = Epoch.J2000;
+            snapshot.ToHorizontal(coordinates).Should().Be(first);
+        }
+
+        [Test]
+        public void CatalogProjection_ConcurrentCacheSaturationPreservesPositionsAndHotEntries() {
+            var at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
+            var snapshot = new SkyMapObserverSnapshot(52, 13, at);
+            var first = snapshot.ToHorizontal(120, 30);
+            System.Threading.Tasks.Parallel.For(0, 70000, i => {
+                var ra = i * 360d / 70000;
+                var actual = snapshot.ToHorizontal(ra, 30);
+                if (i % 257 == 0) {
+                    var independent = new SkyMapObserverSnapshot(52, 13, at).ToHorizontal(ra, 30);
+                    actual.Should().Be(independent);
+                }
+            });
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            var retained = snapshot.ToHorizontal(120, 30);
+            long bytes = GC.GetAllocatedBytesForCurrentThread() - before;
+            retained.Should().Be(first);
+            bytes.Should().Be(0, "saturating a snapshot must not discard the hot positions used by every frame");
+        }
+
+        [Test]
+        public void CatalogAndApparentCoordinatesAtSnapshot_DescribeSameDirection() {
+            var at = new DateTime(2050, 3, 20, 22, 0, 0, DateTimeKind.Utc);
+            var apparent = new Coordinates(Angle.ByHours(5), Angle.ByDegree(30), Epoch.JNOW, at);
+            var catalog = apparent.Transform(Epoch.J2000);
+            var snapshot = new SkyMapObserverSnapshot(52, 13, at);
+            var actual = snapshot.ToHorizontal(catalog);
+            var expected = snapshot.ToHorizontal(apparent);
+            actual.Altitude.Should().BeApproximately(expected.Altitude, 1e-6);
+            actual.Azimuth.Should().BeApproximately(expected.Azimuth, 1e-6);
+        }
+
+        [Test]
         public void UsesLocationTimeAndHorizonUntilRefreshIsDue() {
             DateTime at = new DateTime(2026, 7, 27, 22, 0, 0, DateTimeKind.Utc);
             const double latitude = 50;
             const double longitude = 10;
             double siderealTime = AstroUtil.GetLocalSiderealTime(at, longitude);
-            Coordinates zenith = CelestialCoordinates(AstroUtil.HoursToDegrees(siderealTime), latitude);
-            Coordinates nadir = CelestialCoordinates(AstroUtil.HoursToDegrees(siderealTime) + 180, -latitude);
+            Coordinates zenith = new Coordinates(Angle.ByHours(siderealTime), Angle.ByDegree(latitude), Epoch.JNOW, at);
+            Coordinates nadir = new Coordinates(Angle.ByHours(siderealTime + 12), Angle.ByDegree(-latitude), Epoch.JNOW, at);
             SkyMapObserverSnapshot sut = new SkyMapObserverSnapshot(latitude, longitude, at, _ => 5);
 
             SkyMapHorizontalCoordinates horizontal = sut.ToHorizontal(zenith);
@@ -56,14 +115,18 @@ namespace NINA.Test.SkySurvey {
             const double latitude = 50;
             const double longitude = 10;
             double siderealTime = AstroUtil.GetLocalSiderealTime(at, longitude);
-            double hourAngle = AstroUtil.HoursToDegrees(AstroUtil.GetHourAngle(
-                siderealTime,
-                AstroUtil.DegreesToHours(rightAscension)));
+            var catalogDeclination = declination;
+            var (tt1, tt2) = AstroUtil.GetJulianDateTTParts(at);
+            double ri = 0, di = 0, eo = 0;
+            SOFA.CelestialToIntermediate(AstroUtil.ToRadians(rightAscension), AstroUtil.ToRadians(declination),
+                0, 0, 0, 0, tt1, tt2, ref ri, ref di, ref eo);
+            double hourAngle = AstroUtil.HoursToDegrees(siderealTime) - AstroUtil.ToDegree(SOFA.Anp(ri - eo));
+            declination = AstroUtil.ToDegree(di);
             double expectedAltitude = AstroUtil.GetAltitude(hourAngle, latitude, declination);
             double expectedAzimuth = AstroUtil.GetAzimuth(hourAngle, expectedAltitude, latitude, declination);
             SkyMapObserverSnapshot sut = new SkyMapObserverSnapshot(latitude, longitude, at);
 
-            SkyMapHorizontalCoordinates actual = sut.ToHorizontal(CelestialCoordinates(rightAscension, declination));
+            SkyMapHorizontalCoordinates actual = sut.ToHorizontal(rightAscension, catalogDeclination);
 
             actual.Altitude.Should().BeApproximately(expectedAltitude, 1E-10);
             double azimuthDifference = AstroUtil.EuclidianModulus(actual.Azimuth - expectedAzimuth + 180, 360) - 180;

@@ -68,7 +68,7 @@ namespace NINA.Test.SkySurvey {
         }
 
         [Test]
-        public void AltAzProjection_SouthMeridianImageKeepsNorthUpAndEastLeft() {
+        public void AltAzProjection_SouthMeridianImageTracksCatalogNorthAndKeepsEastLeft() {
             SkyMapObserverSnapshot observer = new SkyMapObserverSnapshot(
                 50,
                 10,
@@ -83,7 +83,21 @@ namespace NINA.Test.SkySurvey {
                 viewport.ViewPortCenterPoint);
 
             double normalizedRotation = AstroUtil.EuclidianModulus(rotation + 180, 360) - 180;
-            normalizedRotation.Should().BeApproximately(0, 0.05);
+            // J2000 north is tilted relative to north of the observation date. Obtain its
+            // direction through uncached SOFA transforms instead of assuming zero rotation.
+            var (tt1, tt2) = AstroUtil.GetJulianDateTTParts(observer.Timestamp);
+            double ri = 0, di = 0, eo = 0;
+            SOFA.CelestialToIntermediate(AstroUtil.ToRadians(center.RADegrees), AstroUtil.ToRadians(center.Dec + 0.01),
+                0, 0, 0, 0, tt1, tt2, ref ri, ref di, ref eo);
+            double azimuth = 0, altitude = 0;
+            var lst = AstroUtil.ToRadians(15 * AstroUtil.GetLocalSiderealTime(observer.Timestamp, 10));
+            SOFA.Hd2ae(lst - SOFA.Anp(ri - eo), di, AstroUtil.ToRadians(50), ref azimuth, ref altitude);
+            double azimuthDifference = azimuth - Math.PI;
+            double north = Math.Cos(AstroUtil.ToRadians(35)) * Math.Sin(altitude)
+                - Math.Sin(AstroUtil.ToRadians(35)) * Math.Cos(altitude) * Math.Cos(azimuthDifference);
+            double east = Math.Sin(azimuthDifference) * Math.Cos(altitude);
+            double expectedRotation = AstroUtil.ToDegree(Math.Atan2(east / viewport.ArcSecWidth, north / viewport.ArcSecHeight));
+            normalizedRotation.Should().BeApproximately(expectedRotation, 1e-7);
             flipHorizontally.Should().BeFalse();
         }
     }

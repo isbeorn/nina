@@ -12,19 +12,24 @@
 using FluentAssertions;
 using NINA.Astrometry;
 using NINA.Core.Database;
+using NINA.Core.Utility;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.Entity.Infrastructure.Interception;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Test.Database {
 
-    [TestFixture]
+    [TestFixture, NonParallelizable]
     internal class DatabaseInteractionTest {
 
         [Test]
@@ -141,6 +146,228 @@ namespace NINA.Test.Database {
                 (await databaseInteraction.GetConstellations(cancellation.Token)).Should().BeEmpty();
                 (await databaseInteraction.GetObjectTypes(cancellation.Token)).Should().BeEmpty();
             } finally {
+                SQLiteConnection.ClearAllPools();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                if (File.Exists(databasePath)) File.Delete(databasePath);
+            }
+        }
+
+        [Test]
+        public async Task GetUT1_UTC_BracketsAndPreservesLeapJumpOutsideCoverage() {
+            var databasePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"earth-rotation-brackets-{Guid.NewGuid():N}.sqlite");
+            var date = new DateTime(2016, 12, 31, 0, 0, 0, DateTimeKind.Utc);
+            try {
+                var database = new DatabaseInteraction($"Data Source={databasePath};Pooling=False;");
+                using (var context = database.GetContext()) {
+                    context.Database.ExecuteSqlCommand("DELETE FROM earthrotationparameters");
+                    foreach (var row in new[] { (date, -0.4), (date.AddDays(1), 0.6) }) {
+                        context.Database.ExecuteSqlCommand(
+                            "INSERT OR REPLACE INTO earthrotationparameters (date,modifiedjuliandate,x,y,ut1_utc,lod,dx,dy) VALUES (@p0,@p1,0,0,@p2,1,0,0)",
+                            CoreUtil.DateTimeToUnixTimeStamp(row.Item1), AstroUtil.GetJulianDate(row.Item1) - 2400000.5, row.Item2);
+                    }
+                }
+                (await database.GetUT1_UTC(date.AddHours(18), CancellationToken.None)).Should().BeApproximately(-0.4, 1e-10);
+                (await database.GetUT1_UTC(date.AddDays(2), CancellationToken.None)).Should().BeApproximately(0.6, 1e-10);
+                (await database.GetUT1_UTC(date.AddDays(-1), CancellationToken.None)).Should().BeApproximately(-0.4, 1e-10);
+            } finally {
+                SQLiteConnection.ClearAllPools();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                if (File.Exists(databasePath)) File.Delete(databasePath);
+            }
+        }
+
+        [TestCase("intraday")]
+        [TestCase("gap")]
+        [TestCase("missing-before")]
+        [TestCase("missing-after")]
+        [TestCase("before")]
+        [TestCase("after")]
+        [TestCase("empty")]
+        public async Task GetUT1_UTC_ColdDay_ReadsExactlyBracketingRowsInOneIndexedQuery(string scenario) {
+            var databasePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"earth-rotation-query-{Guid.NewGuid():N}.sqlite");
+            var date = new DateTime(2024, 4, 8, 0, 0, 0, DateTimeKind.Utc);
+            var hours = scenario switch {
+                "intraday" => new[] { -48, -2, 0, 6, 18, 24, 26, 48 },
+                "gap" => new[] { -48, -2, 26, 48 },
+                "missing-before" => new[] { 6, 18, 26, 48 },
+                "missing-after" => new[] { -48, -2, 6, 18 },
+                "before" => new[] { -48, -2 },
+                "after" => new[] { 26, 48 },
+                _ => Array.Empty<int>()
+            };
+            var expectedHours = hours.Where(hour => hour >= 0 && hour <= 24).ToList();
+            if (hours.Any(hour => hour < 0)) expectedHours.Insert(0, hours.Where(hour => hour < 0).Max());
+            if (hours.Any(hour => hour > 24)) expectedHours.Add(hours.Where(hour => hour > 24).Min());
+            var invalidate = typeof(DatabaseInteraction).GetMethod("InvalidateEarthRotationCache", BindingFlags.NonPublic | BindingFlags.Static)!;
+            var interceptor = new EarthRotationReadInterceptor();
+            try {
+                var database = new DatabaseInteraction($"Data Source={databasePath};Pooling=False;");
+                using (var context = database.GetContext()) {
+                    context.Database.ExecuteSqlCommand("DELETE FROM earthrotationparameters");
+                    foreach (int hour in hours) {
+                        var instant = date.AddHours(hour);
+                        context.Database.ExecuteSqlCommand(
+                            "INSERT OR REPLACE INTO earthrotationparameters (date,modifiedjuliandate,x,y,ut1_utc,lod,dx,dy) VALUES (@p0,@p1,0,0,@p2,1,0,0)",
+                            CoreUtil.DateTimeToUnixTimeStamp(instant), AstroUtil.GetJulianDate(instant) - 2400000.5, hour * 0.01);
+                    }
+                }
+                invalidate.Invoke(null, null);
+                DbInterception.Add(interceptor);
+                double correction = await database.GetUT1_UTC(date.AddHours(12), CancellationToken.None);
+                interceptor.Reads.Should().Be(1, "one cold UTC day must fetch its in-day rows and nearest external endpoints in one round trip");
+                double expected = scenario switch { "empty" => double.NaN, "before" => -0.02, "after" => 0.26, _ => 0.12 };
+                if (double.IsNaN(expected)) correction.Should().Be(double.NaN);
+                else correction.Should().BeApproximately(expected, 1e-10);
+                await database.GetUT1_UTC(date.AddHours(18), CancellationToken.None);
+                interceptor.Reads.Should().Be(1, "a second query in the same UTC day must use the prepared snapshot");
+                DbInterception.Remove(interceptor);
+
+                TestContext.Out.WriteLine(interceptor.Sql);
+                using var connection = new SQLiteConnection($"Data Source={databasePath};Pooling=False;");
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandText = interceptor.Sql;
+                foreach (var parameter in interceptor.Parameters) command.Parameters.AddWithValue(parameter.Name, parameter.Value);
+                var returnedDates = new List<long>();
+                using (var reader = command.ExecuteReader()) {
+                    // EF aliases the leading date column as C1 in its UNION projection.
+                    while (reader.Read()) returnedDates.Add(reader.GetInt64(0));
+                }
+                returnedDates.Should().Equal(expectedHours.Select(hour => CoreUtil.DateTimeToUnixTimeStamp(date.AddHours(hour))),
+                    "the executed provider SQL must retain all intraday rows and exactly the nearest external endpoints");
+                command.CommandText = "EXPLAIN QUERY PLAN " + interceptor.Sql;
+                var plan = new List<string>();
+                using (var reader = command.ExecuteReader()) {
+                    while (reader.Read()) plan.Add(reader.GetString(3));
+                }
+                foreach (var step in plan) TestContext.Out.WriteLine(step);
+                var tableAliases = Regex.Matches(interceptor.Sql,
+                        @"\b(?:FROM|JOIN)\s+\[earthrotationparameters\]\s+AS\s+\[(?<alias>[^\]]+)\]", RegexOptions.IgnoreCase)
+                    .Select(match => match.Groups["alias"].Value).Append("earthrotationparameters").ToArray();
+                plan.Should().NotContain(step => tableAliases.Any(alias => Regex.IsMatch(step,
+                        @"^\s*SCAN\s+(?:TABLE\s+)?" + Regex.Escape(alias) + @"(?:\s|$)", RegexOptions.IgnoreCase)),
+                    "an indexed aggregate does not compensate for a full scan of the base EOP table");
+                plan.Where(step => step.Contains("SEARCH", StringComparison.OrdinalIgnoreCase) && step.Contains("date", StringComparison.OrdinalIgnoreCase))
+                    .Should().HaveCount(3, "each of the in-day, previous and following branches must search the existing date index");
+            } finally {
+                DbInterception.Remove(interceptor);
+                invalidate.Invoke(null, null);
+                SQLiteConnection.ClearAllPools();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                if (File.Exists(databasePath)) File.Delete(databasePath);
+            }
+        }
+
+        [Test]
+        public async Task GetUT1_UTC_ChartNavigation_RetainsDaysAndEvictsOldestAtBound() {
+            var databasePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"earth-rotation-month-{Guid.NewGuid():N}.sqlite");
+            var date = new DateTime(2024, 4, 1, 0, 0, 0, DateTimeKind.Utc);
+            var invalidate = typeof(DatabaseInteraction).GetMethod("InvalidateEarthRotationCache", BindingFlags.NonPublic | BindingFlags.Static)!;
+            var interceptor = new EarthRotationReadInterceptor();
+            try {
+                var database = new DatabaseInteraction($"Data Source={databasePath};Pooling=False;");
+                using (var context = database.GetContext()) {
+                    context.Database.ExecuteSqlCommand("DELETE FROM earthrotationparameters");
+                    for (int day = 0; day <= 97; day++) {
+                        var instant = date.AddDays(day);
+                        context.Database.ExecuteSqlCommand(
+                            "INSERT OR REPLACE INTO earthrotationparameters (date,modifiedjuliandate,x,y,ut1_utc,lod,dx,dy) VALUES (@p0,@p1,0,0,@p2,1,0,0)",
+                            CoreUtil.DateTimeToUnixTimeStamp(instant), AstroUtil.GetJulianDate(instant) - 2400000.5, day * 0.001);
+                    }
+                }
+                invalidate.Invoke(null, null);
+                DbInterception.Add(interceptor);
+                for (int day = 0; day < 96; day++) {
+                    (await database.GetUT1_UTC(date.AddDays(day).AddHours(12), CancellationToken.None)).Should().BeApproximately((day + 0.5) * 0.001, 1e-10);
+                }
+                interceptor.Reads.Should().Be(96);
+                for (int day = 95; day >= 0; day--) await database.GetUT1_UTC(date.AddDays(day).AddHours(12), CancellationToken.None);
+                interceptor.Reads.Should().Be(96, "revisiting cached chart dates must retain each prepared source snapshot");
+                await database.GetUT1_UTC(date.AddDays(96).AddHours(12), CancellationToken.None);
+                interceptor.Reads.Should().Be(97);
+                await database.GetUT1_UTC(date.AddDays(1).AddHours(12), CancellationToken.None);
+                interceptor.Reads.Should().Be(97, "adding the next day must retain other recent days");
+                (await database.GetUT1_UTC(date.AddHours(12), CancellationToken.None)).Should().BeApproximately(0.0005, 1e-10);
+                interceptor.Reads.Should().Be(98, "the oldest of the 96 retained entries must be evicted when the bound is exceeded");
+            } finally {
+                DbInterception.Remove(interceptor);
+                invalidate.Invoke(null, null);
+                SQLiteConnection.ClearAllPools();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                if (File.Exists(databasePath)) File.Delete(databasePath);
+            }
+        }
+
+        private sealed class EarthRotationReadInterceptor : DbCommandInterceptor {
+            public int Reads { get; private set; }
+            public string Sql { get; private set; }
+            public List<(string Name, object Value)> Parameters { get; private set; }
+
+            public override void ReaderExecuting(DbCommand command, DbCommandInterceptionContext<DbDataReader> context) {
+                if (command.CommandText.Contains("ut1_utc", StringComparison.OrdinalIgnoreCase)) {
+                    Reads++;
+                    if (Reads == 1) {
+                        Sql = command.CommandText;
+                        Parameters = command.Parameters.Cast<DbParameter>().Select(parameter => (parameter.ParameterName, parameter.Value)).ToList();
+                    }
+                }
+                base.ReaderExecuting(command, context);
+            }
+        }
+
+        [TestCase("update")]
+        [TestCase("expiry")]
+        [TestCase("rollover")]
+        public async Task EarthRotationCacheStamp_RefreshesPreparedRowsAfterValidityBoundary(string boundary) {
+            var databasePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"earth-rotation-validity-{Guid.NewGuid():N}.sqlite");
+            var date = new DateTime(2024, 4, 8, 0, 0, 0, DateTimeKind.Utc);
+            var flags = BindingFlags.NonPublic | BindingFlags.Static;
+            var invalidate = typeof(DatabaseInteraction).GetMethod("InvalidateEarthRotationCache", flags)!;
+            var getStamp = typeof(DatabaseInteraction).GetMethod("GetEarthRotationCacheStamp", flags)!;
+            try {
+                invalidate.Invoke(null, null);
+                var database = new DatabaseInteraction($"Data Source={databasePath};Pooling=False;");
+                using (var context = database.GetContext()) {
+                    context.Database.ExecuteSqlCommand("DELETE FROM earthrotationparameters");
+                    foreach (var row in new[] { (date, 0.1), (date.AddDays(1), 0.3) }) {
+                        context.Database.ExecuteSqlCommand(
+                            "INSERT OR REPLACE INTO earthrotationparameters (date,modifiedjuliandate,x,y,ut1_utc,lod,dx,dy) VALUES (@p0,@p1,0,0,@p2,1,0,0)",
+                            CoreUtil.DateTimeToUnixTimeStamp(row.Item1), AstroUtil.GetJulianDate(row.Item1) - 2400000.5, row.Item2);
+                    }
+                }
+                var query = date.AddHours(12);
+                (await database.GetUT1_UTC(query, CancellationToken.None)).Should().BeApproximately(0.2, 1e-10);
+                var first = ((long Generation, DateTime Expires))getStamp.Invoke(null, null)!;
+                first.Expires.Should().BeAfter(DateTime.UtcNow);
+                first.Expires.Should().BeOnOrBefore(DateTime.UtcNow.Date.AddDays(1));
+                ((ValueTuple<long, DateTime>)getStamp.Invoke(null, null)!).Item1.Should().Be(first.Generation);
+
+                using (var context = database.GetContext()) {
+                    context.Database.ExecuteSqlCommand("UPDATE earthrotationparameters SET ut1_utc = ut1_utc + 1");
+                }
+                // A warm snapshot remains coherent until its update, expiry or UTC-day boundary.
+                (await database.GetUT1_UTC(query, CancellationToken.None)).Should().BeApproximately(0.2, 1e-10);
+                if (boundary == "update") {
+                    invalidate.Invoke(null, null);
+                } else if (boundary == "expiry") {
+                    typeof(DatabaseInteraction).GetField("earthRotationCacheExpires", flags)!.SetValue(null, DateTime.UtcNow.AddSeconds(-1));
+                } else {
+                    typeof(DatabaseInteraction).GetField("earthRotationCacheExpires", flags)!.SetValue(null, DateTime.UtcNow.Date);
+                }
+                var invalid = ((long Generation, DateTime Expires))getStamp.Invoke(null, null)!;
+                invalid.Generation.Should().BeGreaterThan(first.Generation);
+                invalid.Expires.Should().BeOnOrBefore(DateTime.UtcNow);
+                (await database.GetUT1_UTC(query, CancellationToken.None)).Should().BeApproximately(1.2, 1e-10);
+
+                using var cancellation = new CancellationTokenSource();
+                cancellation.Cancel();
+                (await database.GetUT1_UTC(query, cancellation.Token)).Should().Be(double.NaN);
+            } finally {
+                invalidate.Invoke(null, null);
                 SQLiteConnection.ClearAllPools();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();

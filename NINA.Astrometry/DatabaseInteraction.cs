@@ -26,6 +26,7 @@ using NINA.Core.Utility.Extensions;
 using System.Text.RegularExpressions;
 using NINA.Core.Model;
 using NINA.Core.Database;
+using NINA.Core.Database.Schema;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Astrometry {
@@ -85,18 +86,169 @@ namespace NINA.Astrometry {
             return new List<string>();
         }
 
-        public async Task<double> GetUT1_UTC(DateTime date, CancellationToken token) {
-            var unixTimestamp = CoreUtil.DateTimeToUnixTimeStamp(date);
-            try {
-                using (var context = new NINADbContext(connectionString)) {
-                    var rows = await context.EarthRotationParameterSet.OrderBy(x => Math.Abs(x.date - unixTimestamp)).Take(1).ToListAsync(token);
-                    return rows.First().ut1_utc;
+        private static readonly object EarthRotationCacheLock = new object();
+        private const int EarthRotationCacheCapacity = 96;
+        private static readonly Dictionary<(string Source, DateTime Day), EarthRotationSample[]> EarthRotationCache = new();
+        private static readonly Queue<(string Source, DateTime Day)> EarthRotationCacheOrder = new();
+        private static readonly HashSet<(string Source, string Reason)> EarthRotationWarnings = new();
+        private static DateTime earthRotationCacheExpires;
+        private static long earthRotationCacheGeneration;
+
+        private readonly struct EarthRotationSample {
+            public EarthRotationSample(EarthRotationParameters row) {
+                Date = row.date;
+                UtcOffset = row.ut1_utc;
+                TaiOffset = Tt1 = Tt2 = double.NaN;
+                if (double.IsFinite(UtcOffset)) {
+                    var date = CoreUtil.UnixTimeStampToDateTime(row.date);
+                    TaiOffset = UtcOffset - AstroUtil.AtomicUtcOffset(date);
+                    (Tt1, Tt2) = AstroUtil.GetJulianDateTTParts(date);
                 }
+            }
+
+            public long Date { get; }
+            public double UtcOffset { get; }
+            public double TaiOffset { get; }
+            public double Tt1 { get; }
+            public double Tt2 { get; }
+        }
+
+        internal static void InvalidateEarthRotationCache() {
+            lock (EarthRotationCacheLock) {
+                EarthRotationCache.Clear();
+                EarthRotationCacheOrder.Clear();
+                EarthRotationWarnings.Clear();
+                earthRotationCacheExpires = DateTime.MinValue;
+                earthRotationCacheGeneration++;
+            }
+        }
+
+        private static void EnsureEarthRotationCacheCurrent(DateTime now) {
+            if (EarthRotationCache.Count > 0 && earthRotationCacheExpires <= now) {
+                InvalidateEarthRotationCache();
+            }
+        }
+
+        // Derived chart data must expire with its EOP snapshot, including a reload of the
+        // same UTC day. A conservative global stamp also covers custom database sources.
+        internal static (long Generation, DateTime Expires) GetEarthRotationCacheStamp() {
+            lock (EarthRotationCacheLock) {
+                var now = DateTime.UtcNow;
+                EnsureEarthRotationCacheCurrent(now);
+                return (earthRotationCacheGeneration, EarthRotationCache.Count == 0 ? now : earthRotationCacheExpires);
+            }
+        }
+
+        private void WarnEarthRotation(string reason, DateTime utc) {
+            lock (EarthRotationCacheLock) {
+                if (EarthRotationWarnings.Add((connectionString, reason))) {
+                    Logger.Warning(reason switch {
+                        "missing" => "Earth rotation data is unavailable; UT1-UTC remains NaN.",
+                        "nonfinite" => $"Earth rotation data for {utc:yyyy-MM-dd} contains a nonfinite UT1-UTC sample; the correction remains NaN.",
+                        _ => $"Earth rotation data does not cover {utc:yyyy-MM-dd}; holding the nearest UT1-TAI sample constant."
+                    });
+                }
+            }
+        }
+
+        private async ValueTask<EarthRotationSample[]> GetEarthRotationSamples(DateTime utc, CancellationToken token) {
+            var key = (connectionString, utc.Date);
+            var now = DateTime.UtcNow;
+            long generation;
+            lock (EarthRotationCacheLock) {
+                EnsureEarthRotationCacheCurrent(now);
+                generation = earthRotationCacheGeneration;
+                if (EarthRotationCache.TryGetValue(key, out var cached)) return cached;
+            }
+
+            // IERS rows are normally at 0h UTC. Retain in-day rows as well so callers' custom
+            // databases with a finer cadence use the same bracketing contract.
+            long start = CoreUtil.DateTimeToUnixTimeStamp(utc.Date);
+            long end = CoreUtil.DateTimeToUnixTimeStamp(utc.Date.AddDays(1));
+            List<EarthRotationParameters> rows;
+            using (var context = GetContext()) {
+                ConfigureReadOnlyQuery(context);
+                var source = context.EarthRotationParameterSet.AsNoTracking();
+                rows = await source.Where(x => x.date >= start && x.date <= end)
+                    .Concat(source.Where(x => x.date < start).OrderByDescending(x => x.date).Take(1))
+                    .Concat(source.Where(x => x.date > end).OrderBy(x => x.date).Take(1))
+                    .OrderBy(x => x.date).ToListAsync(token).ConfigureAwait(false);
+            }
+            var samples = rows.Select(row => new EarthRotationSample(row)).ToArray();
+            lock (EarthRotationCacheLock) {
+                EnsureEarthRotationCacheCurrent(DateTime.UtcNow);
+                // An updater can replace data while the query is in flight.
+                if (generation == earthRotationCacheGeneration) {
+                    if (EarthRotationCache.TryGetValue(key, out var cached)) return cached;
+                    if (EarthRotationCache.Count == 0) {
+                        // One validity window for the entire snapshot, never beyond UTC midnight.
+                        earthRotationCacheExpires = now.AddMinutes(10);
+                        var midnight = now.Date.AddDays(1);
+                        if (midnight < earthRotationCacheExpires) earthRotationCacheExpires = midnight;
+                    }
+                    if (EarthRotationCache.Count == EarthRotationCacheCapacity) {
+                        EarthRotationCache.Remove(EarthRotationCacheOrder.Dequeue());
+                    }
+                    EarthRotationCache.Add(key, samples);
+                    EarthRotationCacheOrder.Enqueue(key);
+                }
+            }
+            return samples;
+        }
+
+        /// <summary>
+        /// Interpolates bracketing Earth rotation rows on the continuous TT time axis after
+        /// removing TAI-UTC. This preserves the leap discontinuity in the returned UT1-UTC.
+        /// Outside coverage the nearest UT1-TAI sample is held constant, with a warning.
+        /// Reference: https://www.iausofa.org/cookbooks and IERS daily EOP at 0h UTC.
+        /// </summary>
+        public async Task<double> GetUT1_UTC(DateTime date, CancellationToken token) {
+            return await GetUT1Offset(date, token, relativeToTai: false).ConfigureAwait(false);
+        }
+
+        // ValueTask keeps synchronous cache hits allocation-free for the astrometry path.
+        // Supplying split TT lets a chart sample share its already prepared physical time.
+        internal async ValueTask<double> GetUT1Offset(DateTime date, CancellationToken token, bool relativeToTai, (double, double)? tt = null) {
+            try {
+                token.ThrowIfCancellationRequested();
+                var utc = date.ToUniversalTime();
+                double timestamp = (utc - DateTime.UnixEpoch).TotalSeconds;
+                var rows = await GetEarthRotationSamples(utc, token).ConfigureAwait(false);
+                EarthRotationSample? before = null, after = null;
+                foreach (var row in rows) {
+                    if (row.Date <= timestamp) before = row;
+                    if (row.Date >= timestamp) {
+                        after = row;
+                        break;
+                    }
+                }
+                if (before == null && after == null) {
+                    WarnEarthRotation("missing", utc);
+                    return double.NaN;
+                }
+                if ((before.HasValue && !double.IsFinite(before.Value.UtcOffset)) || (after.HasValue && !double.IsFinite(after.Value.UtcOffset))) {
+                    WarnEarthRotation("nonfinite", utc);
+                    return double.NaN;
+                }
+
+                if (before == null || after == null) {
+                    WarnEarthRotation("coverage", utc);
+                    double nearest = (before ?? after).Value.TaiOffset;
+                    return relativeToTai ? nearest : nearest + AstroUtil.AtomicUtcOffset(utc);
+                }
+                var first = before.Value;
+                var last = after.Value;
+                if (first.Date == last.Date) return relativeToTai ? first.TaiOffset : first.UtcOffset;
+
+                var at = tt ?? AstroUtil.GetJulianDateTTParts(utc);
+                double elapsed = (at.Item1 - first.Tt1) + (at.Item2 - first.Tt2);
+                double span = (last.Tt1 - first.Tt1) + (last.Tt2 - first.Tt2);
+                double fraction = elapsed / span;
+                double offset = first.TaiOffset + fraction * (last.TaiOffset - first.TaiOffset);
+                return relativeToTai ? offset : offset + AstroUtil.AtomicUtcOffset(utc);
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
-                if (!ex.Message.Contains("Execution was aborted by the user")) {
-                    Logger.Error(ex);
-                }
+                if (!ex.Message.Contains("Execution was aborted by the user")) Logger.Error(ex);
             }
             return double.NaN;
         }

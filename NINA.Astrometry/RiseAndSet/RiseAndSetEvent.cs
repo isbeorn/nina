@@ -45,126 +45,199 @@ namespace NINA.Astrometry.RiseAndSet {
             return Task.FromResult(Compute());
         }
 
+        private SolarEventContext solarContext;
+
+        // Only the built-in solar searches share a context. Public Compute and plugin hooks
+        // keep their standalone behavior, including when a returned event is recomputed.
+        internal bool Compute(SolarEventContext context) {
+            solarContext = context;
+            try {
+                return Compute();
+            } finally {
+                solarContext = null;
+            }
+        }
+
+        private const long EventTimeToleranceTicks = TimeSpan.TicksPerSecond / 10;
+        private const long ExtremumTimeToleranceTicks = TimeSpan.TicksPerSecond / 100;
+        private const int MaximumRefinementIterations = 32;
+
         /// <summary>
-        /// Calculates rise and set time
-        /// Caveat: does not consider more than one rise and one set event
+        /// Calculates the first rise and set in the historical 26-hour search interval.
+        /// Actual crossings are refined to a time bracket no wider than 0.1 seconds.
         /// </summary>
-        /// <returns></returns>
         public virtual bool Compute() {
-            // Check rise and set events in two hour periods
-            var offset = 0;
+            Rise = null;
+            Set = null;
+            var startUtc = Date.ToUniversalTime();
+            var previousAltitude = EvaluateAltitude(startUtc);
 
-            do {
-                // Shift date by offset
-                var offsetDate = Date.AddHours(offset);
+            // Preserve the historical search through Date + 26 hours, using elapsed UTC time.
+            for (var offset = 0; offset <= 24 && (Rise == null || Set == null); offset += 2) {
+                var start = startUtc.AddHours(offset);
+                var middle = start.AddHours(1);
+                var end = start.AddHours(2);
+                var altitude0 = previousAltitude;
+                var altitude1 = EvaluateAltitude(middle);
+                var altitude2 = EvaluateAltitude(end);
+                previousAltitude = altitude2;
 
-                // Get three body locations for date, date + 1 hour and date + 2 hours
-                var bodyAt0 = GetBody(offsetDate);
-                var bodyAt1 = GetBody(offsetDate.AddHours(1));
-                var bodyAt2 = GetBody(offsetDate.AddHours(2));
+                if (altitude0 == 0 && altitude1 == 0 && altitude2 == 0) {
+                    continue;
+                }
 
-                bodyAt0.Calculate();
-                bodyAt1.Calculate();
-                bodyAt2.Calculate();
-
-                // Adjust altitude for the three body parameters
-                var altitude0 = AdjustAltitude(bodyAt0);
-                var altitude1 = AdjustAltitude(bodyAt1);
-                var altitude2 = AdjustAltitude(bodyAt2);
-
-                // fit the three reference positions into a quadratic equation
-
-                //P1 (offsetDate | altitude0) => (0 | altitude0)
-                //P2 (offsetDate + 1 | altitude1) => (1 | altitude1)
-                //P3 (offsetDate + 2 | altitude2) => (2 | altitude2)
-
-                // ax^2 + bx + c
-
-                // Solve for c
-                // => altitude0 = 0 * x^2 + 0 * x + c => altitude0 = c
-
-                // Solve for b using c
-                // altitude1 = a * 1^2 + b * 1 + altitude0
-                //    => altitude1 = a + b + altitude0
-                //    => b = altitude1 - a - altitude0
-
-                // Solve for a using b and c
-                // altitude2 = a * 2^2 + b * 2 + altitude0
-                //   => altitude2 = 4a + 2(altitude1 - a - altitude0) + altitude0
-                //   => altitude2 = 4a + 2*altitude1 - 2a - 2*altitude0 + altitude0
-                //   => altitude2 = 2a + 2*altitude1 - altitude0
-                //   => 2a = altitude2 - 2*altitude1 + altitude0
-                //   => a = 0.5 * altitude2  - altitude1 + 0.5 * altitude0
-                //   => a = 0.5 * (altitude2 + altitude0) - altitude1
-
-                // Solve for b using a and c
-                //   => b = altitude1 - (0.5 * (altitude2 + altitude0) - altitude1) - altitude0
-                //   => b = altitude1 - 0.5 * altitude2 - 0.5 * altitude0 + altitude1 - altitude0
-                //   => b = 2 * altitude1 - 0.5 * altitude2 - 1.5 * altitude0
-
+                // The quadratic is only an extremum locator. Its roots need not be real crossings.
                 var a = 0.5 * (altitude2 + altitude0) - altitude1;
                 var b = 2 * altitude1 - 0.5 * altitude2 - 1.5 * altitude0;
-                var c = altitude0;
-
-                // a-b-c formula
-                // x = -b +- Sqrt(b^2 - 4ac) / 2a
-
-                // Discriminant definition: b^2 - 4ac
-                var discriminant = (b * b) - (4.0 * a * c);
-
-                const double epsilon = 1e-5;
-                const double discEps = 1e-10;
-
-                if (discriminant >= -discEps) {
-                    if (discriminant < 0) {
-                        discriminant = 0;
-                    }
-                    double sqrtD = Math.Sqrt(discriminant);
-
-                    double x1, x2;
-                    if (Math.Abs(a) < epsilon) {
-                        if (Math.Abs(b) < epsilon) {
-                            continue; // no usable root in this window
-                        }
-                        // Linear fallback: bx + c = 0
-                        x1 = x2 = -c / b;
-                    } else {
-                        x1 = (-b + sqrtD) / (2 * a);
-                        x2 = (-b - sqrtD) / (2 * a);
-                    }
-
-                    bool x1Valid = !double.IsNaN(x1) && x1 >= -epsilon && x1 <= 2 + epsilon;
-                    bool x2Valid = !double.IsNaN(x2) && x2 >= -epsilon && x2 <= 2 + epsilon && Math.Abs(x1 - x2) > epsilon;
-
-                    if (x1Valid) x1 = Math.Clamp(x1, 0, 2);
-                    if (x2Valid) x2 = Math.Clamp(x2, 0, 2);
-
-                    if (x1Valid) {
-                        AssignEvent(x1, a, b, offsetDate);
-                    }
-                    if (x2Valid) {
-                        AssignEvent(x2, a, b, offsetDate);
-                    }
+                var extremumHours = -b / (2 * a);
+                // Refine only extrema that could conceal crossings between same-sign samples.
+                // Crossings already bracketed by the samples can use those narrower intervals.
+                var needsExtremum = altitude0 == 0 || altitude1 == 0 || altitude2 == 0 ||
+                    (a > 0
+                        ? altitude0 > 0 && altitude1 > 0 && altitude2 > 0
+                        : altitude0 < 0 && altitude1 < 0 && altitude2 < 0);
+                if (needsExtremum && double.IsFinite(extremumHours) && extremumHours > 0 && extremumHours < 2) {
+                    var extremum = RefineExtremum(start, end, a > 0);
+                    FindCrossing(start, altitude0, extremum.Time, extremum.Altitude);
+                    FindCrossing(extremum.Time, extremum.Altitude, end, altitude2);
+                } else {
+                    FindCrossing(start, altitude0, middle, altitude1);
+                    FindCrossing(middle, altitude1, end, altitude2);
                 }
-                offset += 2;
-                //Repeat until rise and set events are found, or after a whole day
-            } while (!((this.Rise != null && this.Set != null) || offset > 24));
+            }
 
             return Rise != null || Set != null;
         }
 
-        private void AssignEvent(double x, double a, double b, DateTime offsetDate) {
-            var slope = 2 * a * x + b;
-            var eventTime = offsetDate.AddHours(x);
+        private double EvaluateAltitude(DateTime time, bool findingExtremum = false) {
+            var body = solarContext?.GetBody(time) ?? GetBody(time);
+            if (solarContext == null) {
+                body.Calculate();
+            }
+            var altitude = findingExtremum && solarContext != null ? body.Altitude : AdjustAltitude(body);
+            if (!double.IsFinite(altitude)) {
+                throw new InvalidOperationException($"Cannot calculate rise/set: nonfinite altitude at {time:O}.");
+            }
+            return altitude;
+        }
 
-            if (slope > 0) {
-                if (Rise == null || eventTime < Rise.Value) {
+        private (DateTime Time, double Altitude) RefineExtremum(DateTime left, DateTime right, bool minimum) {
+            var key = (left, right, minimum);
+            if (solarContext != null && solarContext.Extrema.TryGetValue(key, out var cachedTime)) {
+                return (cachedTime, EvaluateAltitude(cachedTime));
+            }
+            // Constant solar thresholds share the same center-altitude extrema. Compare the
+            // unadjusted altitude so rounding after threshold subtraction cannot change the search.
+            // Golden-section search retains a bounded interval around the actual body extremum.
+            const double fraction = 0.6180339887498949;
+            var first = right.AddTicks(-(long)((right - left).Ticks * fraction));
+            var second = left.AddTicks((long)((right - left).Ticks * fraction));
+            var firstAltitude = EvaluateAltitude(first, findingExtremum: true);
+            var secondAltitude = EvaluateAltitude(second, findingExtremum: true);
+            for (var iteration = 0; iteration < MaximumRefinementIterations && (right - left).Ticks > ExtremumTimeToleranceTicks; iteration++) {
+                if (minimum ? firstAltitude < secondAltitude : firstAltitude > secondAltitude) {
+                    right = second;
+                    second = first;
+                    secondAltitude = firstAltitude;
+                    first = right.AddTicks(-(long)((right - left).Ticks * fraction));
+                    firstAltitude = EvaluateAltitude(first, findingExtremum: true);
+                } else {
+                    left = first;
+                    first = second;
+                    firstAltitude = secondAltitude;
+                    second = left.AddTicks((long)((right - left).Ticks * fraction));
+                    secondAltitude = EvaluateAltitude(second, findingExtremum: true);
+                }
+            }
+            var time = left.AddTicks((right - left).Ticks / 2);
+            if (solarContext != null) {
+                solarContext.Extrema[key] = time;
+            }
+            return (time, EvaluateAltitude(time));
+        }
+
+        private void FindCrossing(DateTime left, double leftAltitude, DateTime right, double rightAltitude) {
+            // A zero at a shared boundary counts once and only when the body changes sides.
+            if (leftAltitude == 0) {
+                AssignBoundaryEvent(left);
+            }
+            if (rightAltitude == 0) {
+                AssignBoundaryEvent(right);
+            }
+            if (leftAltitude == 0 || rightAltitude == 0 || (leftAltitude > 0) == (rightAltitude > 0)) {
+                return;
+            }
+
+            var rising = rightAltitude > leftAltitude;
+            // Interpolation proposes a short bracket; actual altitude signs must verify it.
+            // Limit the proposals so a stalled secant always falls back to bounded bisection.
+            for (var trial = 0; trial < 4 && (right - left).Ticks > EventTimeToleranceTicks; trial++) {
+                var fraction = leftAltitude / (leftAltitude - rightAltitude);
+                if (!double.IsFinite(fraction) || fraction <= 0 || fraction >= 1) {
+                    break;
+                }
+                var proposal = left.AddTicks((long)((right - left).Ticks * fraction));
+                if (proposal <= left || proposal >= right) {
+                    break;
+                }
+                var first = proposal.AddTicks(-Math.Min(EventTimeToleranceTicks / 2, (proposal - left).Ticks));
+                var second = proposal.AddTicks(Math.Min(EventTimeToleranceTicks / 2, (right - proposal).Ticks));
+                var firstAltitude = first == left ? leftAltitude : EvaluateAltitude(first);
+                var secondAltitude = second == right ? rightAltitude : EvaluateAltitude(second);
+                if (firstAltitude == 0 || secondAltitude == 0) {
+                    break;
+                }
+                if ((firstAltitude > 0) != (secondAltitude > 0)) {
+                    AssignEvent(first.AddTicks((second - first).Ticks / 2), rising);
+                    return;
+                }
+                if ((firstAltitude > 0) == (leftAltitude > 0)) {
+                    left = second;
+                    leftAltitude = secondAltitude;
+                } else {
+                    right = first;
+                    rightAltitude = firstAltitude;
+                }
+            }
+            for (var iteration = 0; iteration < MaximumRefinementIterations && (right - left).Ticks > EventTimeToleranceTicks; iteration++) {
+                var middle = left.AddTicks((right - left).Ticks / 2);
+                var altitude = EvaluateAltitude(middle);
+                if (altitude == 0) {
+                    AssignEvent(middle, rising);
+                    return;
+                }
+                if ((altitude > 0) == (leftAltitude > 0)) {
+                    left = middle;
+                    leftAltitude = altitude;
+                } else {
+                    right = middle;
+                }
+            }
+            AssignEvent(left.AddTicks((right - left).Ticks / 2), rising);
+        }
+
+        private void AssignBoundaryEvent(DateTime time) {
+            var before = EvaluateAltitude(time.AddTicks(-EventTimeToleranceTicks));
+            var after = EvaluateAltitude(time.AddTicks(EventTimeToleranceTicks));
+            if ((before < 0 && after > 0) || (before > 0 && after < 0)) {
+                AssignEvent(time, after > before);
+            }
+        }
+
+        private void AssignEvent(DateTime utcTime, bool rising) {
+            var eventTime = Date.Kind == DateTimeKind.Utc ? utcTime : utcTime.ToLocalTime();
+            if (Date.Kind == DateTimeKind.Unspecified) {
+                eventTime = DateTime.SpecifyKind(eventTime, DateTimeKind.Unspecified);
+            }
+
+            // Windows and refined subintervals are visited chronologically, preserving the first
+            // crossing and ignoring duplicates at their shared boundaries, including DST folds.
+            if (rising) {
+                if (Rise == null) {
                     Rise = eventTime;
                 }
-            } else {
-                if (Set == null || eventTime < Set.Value) {
-                    Set = eventTime;
-                }
+            } else if (Set == null) {
+                Set = eventTime;
             }
         }
     }

@@ -25,6 +25,10 @@ namespace NINA.Astrometry {
     /// https://www.astro.rug.nl/~gipsy/tsk/fitsreproj.dc1
     /// </remarks>
     public class WorldCoordinateSystem {
+        private readonly double cd11;
+        private readonly double cd12;
+        private readonly double cd21;
+        private readonly double cd22;
 
         /// <summary>
         /// Handles WCS calculations based on CDn_m matrix and tangential projection
@@ -40,7 +44,6 @@ namespace NINA.Astrometry {
         /// <remarks>
         /// http://hosting.astro.cornell.edu/~vassilis/isocont/node17.html
         /// https://www.astro.rug.nl/~gipsy/tsk/fitsreproj.dc1
-        /// Vertically and horizontally flipped images don't work as of now
         /// </remarks>
         public WorldCoordinateSystem(
             double crval1,
@@ -54,6 +57,11 @@ namespace NINA.Astrometry {
         ) {
             Point = new Point(crpix1, crpix2);
             Coordinates = new Coordinates(Angle.ByDegree(crval1), Angle.ByDegree(crval2), Epoch.J2000);
+
+            cd11 = cd1_1;
+            cd12 = cd1_2;
+            cd21 = cd2_1;
+            cd22 = cd2_2;
 
             var determinant = cd1_1 * cd2_2 - cd1_2 * cd2_1;
 
@@ -91,7 +99,6 @@ namespace NINA.Astrometry {
         /// <param name="cdelta1">per pixel increment along RA</param>
         /// <param name="cdelta2">per pixel increment along DEC</param>
         /// <param name="crota2">Rotation in degrees</param>
-        /// <remarks>Vertically and horizontally flipped images don't work as of now</remarks>
         public WorldCoordinateSystem(
             double crval1,
             double crval2,
@@ -103,6 +110,14 @@ namespace NINA.Astrometry {
         ) {
             Point = new Point(crpix1, crpix2);
             Coordinates = new Coordinates(Angle.ByDegree(crval1), Angle.ByDegree(crval2), Epoch.J2000);
+
+            // Legacy CDELT/CROTA representation from FITS WCS Paper II.
+            // https://fits.gsfc.nasa.gov/fits_wcs.html
+            var radians = AstroUtil.ToRadians(crota2);
+            cd11 = cdelta1 * Math.Cos(radians);
+            cd12 = -cdelta2 * Math.Sin(radians);
+            cd21 = cdelta1 * Math.Sin(radians);
+            cd22 = cdelta2 * Math.Cos(radians);
 
             if (cdelta1 >= 0 || cdelta2 < 0) {
                 Flipped = true;
@@ -138,7 +153,14 @@ namespace NINA.Astrometry {
         /// <param name="pixelY">y pixel value</param>
         /// <returns>Coordinates at position x|y</returns>
         public Coordinates GetCoordinates(double pixelX, double pixelY) {
-            return Coordinates.Shift(pixelX - Point.X, pixelY - Point.Y, Rotation, PixelScaleX, PixelScaleY, Coordinates.ProjectionType.Gnomonic);
+            var dx = pixelX - Point.X;
+            var dy = pixelY - Point.Y;
+            var xiDegrees = cd11 * dx + cd12 * dy;
+            var etaDegrees = cd21 * dx + cd22 * dy;
+
+            // Preserve the complete signed matrix, then use the shared inverse TAN projection.
+            // Shift uses the opposite sign convention for its degree offsets.
+            return Coordinates.Shift(-xiDegrees, -etaDegrees, 0, Coordinates.ProjectionType.Gnomonic);
         }
     }
 }

@@ -247,7 +247,8 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
 
                     if (noRemainingTime) {
                         // There is no more time remaining. Project the side of pier to that at the time after the flip and check if this flip is required
-                        var projectedSiderealTime = Angle.ByHours(AstroUtil.EuclidianModulus(telescopeInfo.SiderealTime + originalMaximumTimeRemaining.TotalHours, 24));
+                        var projectedSiderealTime = Angle.ByHours(AstroUtil.EuclidianModulus(telescopeInfo.SiderealTime
+                            + originalMaximumTimeRemaining.TotalHours * SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC, 24));
                         var targetSideOfPier = NINA.Astrometry.MeridianFlip.ExpectedPierSide(
                             coordinates: telescopeInfo.Coordinates,
                             localSiderealTime: projectedSiderealTime);
@@ -281,9 +282,9 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                             // When pier side doesn't match the target, but remaining time indicating that a flip happened, the flip seems to have not happened yet and must be done immediately
                             // Only allow delayed flip behavior for the first hour after a flip should've happened
                             var delayedFlip =
-                                maximumTimeRemaining <= TimeSpan.FromHours(12)
+                                maximumTimeRemaining <= TimeSpan.FromHours(12 / SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC)
                                 && maximumTimeRemaining
-                                    >= (TimeSpan.FromHours(11)
+                                    >= (TimeSpan.FromHours(12 / SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC) - TimeSpan.FromHours(1)
                                         - TimeSpan.FromMinutes(MaxMinutesAfterMeridian)
                                         - TimeSpan.FromMinutes(PauseTimeBeforeMeridian)
                                        );

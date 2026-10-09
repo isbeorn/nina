@@ -16,7 +16,6 @@ using NINA.Astrometry.RiseAndSet;
 using NINA.Core.Utility;
 using NUnit.Framework;
 using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -24,7 +23,7 @@ using System.Windows;
 
 namespace NINA.Test.AstrometryTest {
 
-    [TestFixture]
+    [TestFixture, NonParallelizable]
     public class AstroUtilTest {
         private const double AngleTolerance = 1e-10;
         
@@ -865,12 +864,12 @@ namespace NINA.Test.AstrometryTest {
         }
 
         /// <summary>
-        /// Verifies the Earth-rotation database lookup used by Delta-T selects the nearest UT1-UTC
-        /// sample for the requested UTC date, matching the IERS finals data model of daily samples.
+        /// Verifies the Earth-rotation database lookup used by Delta-T interpolates bracketing
+        /// samples on an ordinary day without a UTC leap discontinuity.
         /// Reference: https://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html
         /// </summary>
         [Test]
-        public void DeltaUT_EarthRotationTable_UsesNearestUt1MinusUtcSample() {
+        public void DeltaUT_EarthRotationTable_InterpolatesBracketingUt1MinusUtcSamples() {
             DateTime target = new DateTime(2030, 1, 3, 18, 0, 0, DateTimeKind.Utc);
             using TempEarthRotationDatabase database = CreateEarthRotationDatabase(
                 (new DateTime(2030, 1, 1, 0, 0, 0, DateTimeKind.Utc), -0.25),
@@ -879,7 +878,7 @@ namespace NINA.Test.AstrometryTest {
 
             double deltaUT = AstroUtil.DeltaUT(target, database.Interaction);
 
-            deltaUT.Should().BeApproximately(0.125, 1e-12);
+            deltaUT.Should().BeApproximately(0.09375, 1e-10);
         }
 
         /// <summary>
@@ -1203,6 +1202,71 @@ namespace NINA.Test.AstrometryTest {
             altitude.Should().BeGreaterThan(20.0);
         }
 
+        [TestCase(NOVAS.Body.Moon, 2016, 12, 31, 23)]
+        [TestCase(NOVAS.Body.Sun, 2016, 12, 31, 23)]
+        [TestCase(NOVAS.Body.Moon, 2017, 1, 1, 0)]
+        [TestCase(NOVAS.Body.Sun, 2017, 1, 1, 0)]
+        [TestCase(NOVAS.Body.Moon, 2024, 4, 8, 18)]
+        [TestCase(NOVAS.Body.Sun, 2024, 4, 8, 18)]
+        public void BodyTimePreparation_PositionAltitudeAndBasicBody_MatchIndependentNovas(NOVAS.Body bodyNumber, int year, int month, int day, int hour) {
+            var date = new DateTime(year, month, day, hour, 59, 59, DateTimeKind.Utc).AddTicks(1_234_567);
+            var observer = new ObserverInfo { Latitude = -33, Longitude = 151, Elevation = 2800, Temperature = -12, Pressure = 780 };
+            var expected = GetNativeBodyReference(date, observer, bodyNumber);
+            var position = bodyNumber == NOVAS.Body.Moon ? AstroUtil.GetMoonPosition(date, observer) : AstroUtil.GetSunPosition(date, observer);
+            position.RA.Should().BeApproximately(expected.Position.RA, 1e-11);
+            position.Dec.Should().BeApproximately(expected.Position.Dec, 1e-10);
+            position.Dis.Should().BeApproximately(expected.Position.Dis, 1e-12);
+
+            foreach (var instant in new[] { date, date.ToLocalTime() }) {
+                double altitude = bodyNumber == NOVAS.Body.Moon ? AstroUtil.GetMoonAltitude(instant, observer) : AstroUtil.GetSunAltitude(instant, observer);
+                altitude.Should().BeApproximately(expected.Altitude, 1e-9);
+                var pair = AstroUtil.GetMoonAndSunPosition(instant, observer);
+                var paired = bodyNumber == NOVAS.Body.Moon ? pair.Item1 : pair.Item2;
+                paired.RA.Should().BeApproximately(expected.Position.RA, 1e-11);
+                paired.Dec.Should().BeApproximately(expected.Position.Dec, 1e-10);
+                paired.Dis.Should().BeApproximately(expected.Position.Dis, 1e-12);
+            }
+
+            // BasicBody's observer contract supplies zero pressure and temperature.
+            observer.Temperature = observer.Pressure = 0;
+            expected = GetNativeBodyReference(date, observer, bodyNumber);
+            BasicBody body = bodyNumber == NOVAS.Body.Moon
+                ? new Moon(date, observer.Latitude, observer.Longitude, observer.Elevation)
+                : new Sun(date, observer.Latitude, observer.Longitude, observer.Elevation);
+            body.Calculate();
+            body.Altitude.Should().BeApproximately(expected.Altitude, 1e-9);
+            body.Distance.Should().BeApproximately(expected.Position.Dis * 149597870.7, 1e-6);
+        }
+
+        private static (NOVAS.SkyPosition Position, double Altitude) GetNativeBodyReference(DateTime date, ObserverInfo observerInfo, NOVAS.Body bodyNumber) {
+            var tt = AstroUtil.GetJulianDateTTParts(date);
+            var deltaT = AstroUtil.DeltaT(date);
+            var observer = new NOVAS.Observer {
+                Where = (short)NOVAS.ObserverLocation.EarthSurface,
+                OnSurf = new NOVAS.OnSurface {
+                    Latitude = observerInfo.Latitude, Longitude = observerInfo.Longitude, Height = observerInfo.Elevation,
+                    Temperature = observerInfo.Temperature, Pressure = observerInfo.Pressure
+                }
+            };
+            var target = new NOVAS.CelestialObject {
+                Name = bodyNumber == NOVAS.Body.Moon ? "Moon" : "Sun", Number = (short)bodyNumber,
+                Type = (short)NOVAS.ObjectType.MajorPlanetSunOrMoon, Star = new NOVAS.CatalogueEntry()
+            };
+            var position = new NOVAS.SkyPosition();
+            NOVAS.Place(tt.Item1 + tt.Item2, target, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate,
+                NOVAS.Accuracy.Full, ref position).Should().Be(0);
+            var utHigh = (long)tt.Item1;
+            var utLow = (tt.Item1 - utHigh) + tt.Item2 - deltaT / 86400;
+            double gast = 0;
+            NOVAS.SiderealTime(utHigh, utLow, deltaT, NOVAS.GstType.GreenwichApparentSiderealTime,
+                NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref gast).Should().Be(0);
+            double latitude = observerInfo.Latitude * Math.PI / 180;
+            double declination = position.Dec * Math.PI / 180;
+            double hourAngle = ((gast - position.RA) * 15 + observerInfo.Longitude) * Math.PI / 180;
+            double sine = Math.Sin(declination) * Math.Sin(latitude) + Math.Cos(declination) * Math.Cos(latitude) * Math.Cos(hourAngle);
+            return (position, Math.Asin(Math.Clamp(sine, -1, 1)) * 180 / Math.PI);
+        }
+
         /// <summary>
         /// Verifies legacy latitude/longitude solar and lunar altitude overloads delegate to the
         /// current ObserverInfo overloads for deterministic historical callers.
@@ -1419,6 +1483,188 @@ namespace NINA.Test.AstrometryTest {
             negativeYAxis.Y.Should().BeApproximately(-2.0, AngleTolerance);
         }
 
+        [TestCase(0)]
+        [TestCase(6)]
+        [TestCase(12)]
+        [TestCase(23)]
+        public void DeltaT_LeapDay_UsesAtomicOffsetWithoutQuasiJulianDateDrift(int hour) {
+            var date = new DateTime(2016, 12, 31, hour, 0, 0, DateTimeKind.Utc);
+            using var database = CreateEarthRotationDatabase((date.Date, 0.0));
+            ClearDeltaUTCaches();
+            AstroUtil.DeltaT(date, database.Interaction).Should().BeApproximately(68.184, 1e-6);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void DeltaT_EntireLeapDayAndNextMidnight_IsIndependentOfQueryOrder(bool reverseOrder) {
+            var midnight = new DateTime(2016, 12, 31, 0, 0, 0, DateTimeKind.Utc);
+            // UT1-UTC steps by one second at the leap; UT1-TAI and DeltaT stay continuous.
+            using var database = CreateEarthRotationDatabase((midnight, 0.0), (midnight.AddDays(1), 1.0));
+            var samples = new DateTime[26];
+            for (int hour = 0; hour < 24; hour++) samples[hour] = midnight.AddHours(hour);
+            samples[24] = midnight.AddDays(1).AddSeconds(-1);
+            samples[25] = midnight.AddDays(1);
+            if (reverseOrder) Array.Reverse(samples);
+            ClearDeltaUTCaches();
+
+            foreach (var instant in samples) {
+                AstroUtil.DeltaT(instant, database.Interaction).Should().BeApproximately(68.184, 1e-6, $"the physical time-scale offset stays continuous at {instant:O}");
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void DeltaT_LeapDaySlope_UsesPhysicalElapsedTimeForWarmPreparedRows(bool reverseOrder) {
+            var date = new DateTime(2016, 12, 31, 0, 0, 0, DateTimeKind.Utc);
+            using var database = CreateEarthRotationDatabase((date, -0.4), (date.AddDays(1), 0.8));
+            var samples = new[] { date, date.AddHours(6), date.AddHours(18), date.AddDays(1).AddSeconds(-1), date.AddDays(1) };
+            if (reverseOrder) Array.Reverse(samples);
+            ClearDeltaUTCaches();
+            foreach (var instant in samples) {
+                double elapsed = (instant - date).TotalSeconds;
+                if (instant == date.AddDays(1)) elapsed++;
+                // The UTC jump is removed: UT1-TAI changes by 0.2 seconds over 86401 SI seconds.
+                double expected = 68.584 - 0.2 * elapsed / 86401;
+                AstroUtil.DeltaT(instant, database.Interaction).Should().BeApproximately(expected, 1e-10);
+                double atomicOffset = instant < date.AddDays(1) ? 36 : 37;
+                AstroUtil.DeltaUT(instant, database.Interaction).Should().BeApproximately(32.184 + atomicOffset - expected, 1e-10);
+            }
+        }
+
+        [Test]
+        public void DeltaUT_InterpolatesWithinDay_IndependentlyOfRequestOrderAndDatabase() {
+            var date = new DateTime(2024, 4, 8, 0, 0, 0, DateTimeKind.Utc);
+            using var first = CreateEarthRotationDatabase((date, 0.1), (date.AddDays(1), 0.3));
+            using var second = CreateEarthRotationDatabase((date, -0.2), (date.AddDays(1), -0.4));
+            ClearDeltaUTCaches();
+            AstroUtil.DeltaUT(date.AddHours(18), first.Interaction).Should().BeApproximately(0.25, 1e-10);
+            AstroUtil.DeltaUT(date.AddHours(6), first.Interaction).Should().BeApproximately(0.15, 1e-10);
+            AstroUtil.DeltaUT(date.AddHours(6), second.Interaction).Should().BeApproximately(-0.25, 1e-10);
+            AstroUtil.DeltaUT(date.AddHours(18), second.Interaction).Should().BeApproximately(-0.35, 1e-10);
+        }
+
+        [Test]
+        public void DeltaUT_LeapBoundary_DoesNotInterpolateTheUtcJump() {
+            var date = new DateTime(2016, 12, 31, 0, 0, 0, DateTimeKind.Utc);
+            using var database = CreateEarthRotationDatabase((date, -0.4), (date.AddDays(1), 0.6));
+            ClearDeltaUTCaches();
+            AstroUtil.DeltaUT(date.AddHours(18), database.Interaction).Should().BeApproximately(-0.4, 1e-10);
+            AstroUtil.DeltaUT(date.AddHours(6), database.Interaction).Should().BeApproximately(-0.4, 1e-10);
+            AstroUtil.DeltaUT(date.AddDays(1), database.Interaction).Should().BeApproximately(0.6, 1e-10);
+        }
+
+        [Test]
+        public void DeltaUT_EmptyEarthRotationTable_RemainsUnavailable() {
+            using var database = CreateEarthRotationDatabase();
+            ClearDeltaUTCaches();
+            AstroUtil.DeltaUT(new DateTime(2024, 4, 8, 12, 0, 0, DateTimeKind.Utc), database.Interaction).Should().Be(double.NaN);
+        }
+
+        [TestCase(double.PositiveInfinity)]
+        [TestCase(double.NegativeInfinity)]
+        public void DeltaUT_NonfiniteEarthRotationSample_RemainsUnavailable(double correction) {
+            var date = new DateTime(2024, 4, 8, 0, 0, 0, DateTimeKind.Utc);
+            using var database = CreateEarthRotationDatabase((date, correction));
+            AstroUtil.DeltaUT(date, database.Interaction).Should().Be(double.NaN);
+        }
+
+        [TestCase(0.015)]
+        [TestCase(0.021)]
+        [TestCase(-0.037)]
+        public void GetAltitude_ZenithRoundoff_ReturnsFiniteRightAngle(double latitude) {
+            AstroUtil.GetAltitude(0, latitude, latitude).Should().BeApproximately(90, 1e-6);
+            AstroUtil.GetAltitude(180, latitude, -latitude).Should().BeApproximately(-90, 1e-6);
+            AstroUtil.GetAltitude(Angle.ByDegree(0), Angle.ByDegree(latitude), Angle.ByDegree(latitude)).Degree.Should().BeApproximately(90, 1e-6);
+            AstroUtil.GetAltitude(Angle.ByDegree(180), Angle.ByDegree(latitude), Angle.ByDegree(-latitude)).Degree.Should().BeApproximately(-90, 1e-6);
+        }
+
+        [TestCase(double.NaN)]
+        [TestCase(double.PositiveInfinity)]
+        [TestCase(double.NegativeInfinity)]
+        public void GetAltitude_NonfiniteInputs_RemainNonfinite(double nonfinite) {
+            foreach (var (hourAngle, latitude, declination) in new[] {
+                (nonfinite, 45.0, 20.0), (0.0, nonfinite, 20.0), (0.0, 45.0, nonfinite)
+            }) {
+                AstroUtil.GetAltitude(hourAngle, latitude, declination).Should().Be(double.NaN);
+                AstroUtil.GetAltitude(Angle.ByDegree(hourAngle), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Radians.Should().Be(double.NaN);
+            }
+        }
+
+        [Test]
+        public void GetLocalSiderealTime_LeapDay_MatchesIndependentUt1JulianDate() {
+            var date = new DateTime(2016, 12, 31, 23, 59, 59, DateTimeKind.Utc);
+            using var database = CreateEarthRotationDatabase((date.Date, 0.0));
+            double ut1a = 0, ut1b = 0, expected = 0;
+            SOFA.Dtf2d("UT1", date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second, ref ut1a, ref ut1b);
+            NOVAS.SiderealTime(ut1a, ut1b, 68.184, NOVAS.GstType.GreenwichApparentSiderealTime,
+                NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref expected);
+            ClearDeltaUTCaches();
+            double actual = AstroUtil.GetLocalSiderealTime(date, 0, database.Interaction);
+            AngularDifference(actual * 15, expected * 15).Should().BeLessThan(0.001 / 3600);
+        }
+
+        [TestCase(0)]
+        [TestCase(18)]
+        [TestCase(24)]
+        public void GetLocalSiderealTime_PreparedTt_MatchesIndependentUt1OnBothSidesOfLeap(int hour) {
+            var midnight = new DateTime(2016, 12, 31, 0, 0, 0, DateTimeKind.Utc);
+            var date = midnight.AddHours(hour);
+            using var database = CreateEarthRotationDatabase((midnight, -0.4), (midnight.AddDays(1), 0.6));
+            ClearDeltaUTCaches();
+            double ut1a = 0, ut1b = 0, expected = 0;
+            SOFA.Dtf2d("UT1", date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second, ref ut1a, ref ut1b);
+            ut1b += AstroUtil.SecondsToDays(hour == 24 ? 0.6 : -0.4);
+            NOVAS.SiderealTime(ut1a, ut1b, 68.584, NOVAS.GstType.GreenwichApparentSiderealTime,
+                NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref expected);
+            const double longitude = -70;
+            AngularDifference(AstroUtil.GetLocalSiderealTime(date, longitude, database.Interaction) * 15,
+                expected * 15 + longitude).Should().BeLessThan(0.001 / 3600);
+
+            var tt = AstroUtil.GetJulianDateTTParts(date);
+            var helper = typeof(AstroUtil).GetMethod("GetLocalSiderealTime", BindingFlags.Static | BindingFlags.NonPublic,
+                null, new[] { typeof(DateTime), typeof(double), typeof(double), typeof(double), typeof(DatabaseInteraction) }, null)!;
+            double prepared = (double)helper.Invoke(null, new object[] { date.ToLocalTime(), longitude, tt.Item1, tt.Item2, database.Interaction })!;
+            AngularDifference(prepared * 15, expected * 15 + longitude).Should().BeLessThan(0.001 / 3600);
+        }
+
+        [TestCase(2016, 12, 31, false, 2.0)]
+        [TestCase(2024, 4, 8, false, 1.0)]
+        [TestCase(2016, 12, 31, true, 86401.0)]
+        [TestCase(2024, 4, 8, true, 86400.0)]
+        public void GetJulianDateTTParts_AndTai_AcrossUtcMidnight_PreservePhysicalElapsedSeconds(int year, int month, int day, bool fullDay, double expectedSeconds) {
+            var before = new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Utc);
+            if (!fullDay) before = before.AddHours(23).AddMinutes(59).AddSeconds(59);
+            var after = fullDay ? before.AddDays(1) : before.AddSeconds(1);
+            var first = AstroUtil.GetJulianDateTTParts(before);
+            var second = AstroUtil.GetJulianDateTTParts(after);
+            // Subtract the two parts separately rather than collapsing either large Julian date.
+            (((second.Item1 - first.Item1) + (second.Item2 - first.Item2)) * 86400).Should().BeApproximately(expectedSeconds, 1e-8);
+
+            var firstUtc = AstroUtil.GetJulianDateUTCParts(before);
+            var secondUtc = AstroUtil.GetJulianDateUTCParts(after);
+            double firstTai1 = 0, firstTai2 = 0, secondTai1 = 0, secondTai2 = 0;
+            SOFA.UtcTai(firstUtc.Item1, firstUtc.Item2, ref firstTai1, ref firstTai2).Should().Be(0);
+            SOFA.UtcTai(secondUtc.Item1, secondUtc.Item2, ref secondTai1, ref secondTai2).Should().Be(0);
+            (((secondTai1 - firstTai1) + (secondTai2 - firstTai2)) * 86400).Should().BeApproximately(expectedSeconds, 1e-8);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void GetJulianDateParts_DateTimeBoundsRetainSofaEstimates(bool maximum) {
+            var date = DateTime.SpecifyKind(maximum ? DateTime.MaxValue : DateTime.MinValue, DateTimeKind.Utc);
+            double utc1 = 0, utc2 = 0, tai1 = 0, tai2 = 0, tt1 = 0, tt2 = 0;
+            // The native calendar limits encompass DateTime's full range. Even at its
+            // boundaries SOFA returns estimates with warnings, not invalid-date errors.
+            SOFA.Dtf2d("UTC", date.Year, date.Month, date.Day, date.Hour, date.Minute,
+                AstroUtil.GetSecondOfMinuteWithFraction(date), ref utc1, ref utc2).Should().BeGreaterThanOrEqualTo(0);
+            SOFA.UtcTai(utc1, utc2, ref tai1, ref tai2).Should().BeGreaterThanOrEqualTo(0);
+            SOFA.TaiTt(tai1, tai2, ref tt1, ref tt2).Should().Be(0);
+
+            AstroUtil.GetJulianDateUTCParts(date).Should().Be((utc1, utc2));
+            AstroUtil.GetJulianDateTTParts(date).Should().Be((tt1, tt2));
+            double.IsFinite(tt1 + tt2).Should().BeTrue();
+        }
+
         private static double AngularDifference(double actualDegrees, double expectedDegrees) {
             double difference = Math.Abs(AstroUtil.EuclidianModulus(actualDegrees - expectedDegrees + 180.0, 360.0) - 180.0);
             return difference;
@@ -1434,6 +1680,8 @@ namespace NINA.Test.AstrometryTest {
             DatabaseInteraction databaseInteraction = new DatabaseInteraction(connectionString);
 
             using (var context = databaseInteraction.GetContext()) {
+                // Migrations seed real IERS rows. Synthetic tests must control the entire table.
+                context.Database.ExecuteSqlCommand("DELETE FROM earthrotationparameters");
                 foreach ((DateTime date, double ut1MinusUtc) in rows) {
                     long unixTimestamp = CoreUtil.DateTimeToUnixTimeStamp(date);
                     double modifiedJulianDate = AstroUtil.GetJulianDate(date) - 2400000.5;
@@ -1449,13 +1697,7 @@ namespace NINA.Test.AstrometryTest {
         }
 
         private static void ClearDeltaUTCaches() {
-            typeof(AstroUtil).GetField("DeltaUTToday", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
-            typeof(AstroUtil).GetField("DeltaUTYesterday", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
-            typeof(AstroUtil).GetField("DeltaUTTomorrow", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
-            typeof(AstroUtil).GetField("DeltaUTReference", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, default(DateTime));
-
-            FieldInfo? cacheField = typeof(AstroUtil).GetField("DeltaUTCache", BindingFlags.NonPublic | BindingFlags.Static);
-            cacheField?.SetValue(null, new ConcurrentDictionary<DateTime, double>());
+            typeof(DatabaseInteraction).GetMethod("InvalidateEarthRotationCache", BindingFlags.NonPublic | BindingFlags.Static)!.Invoke(null, null);
         }
 
         private sealed class TempEarthRotationDatabase : IDisposable {

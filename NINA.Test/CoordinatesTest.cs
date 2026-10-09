@@ -26,6 +26,22 @@ namespace NINA.Test {
     public class CoordinatesTest {
         private static double ANGLE_TOLERANCE = 0.000000000001;
 
+        [TestCase(45, 1)]
+        [TestCase(45, -1)]
+        [TestCase(-45, 1)]
+        [TestCase(-45, -1)]
+        public void ShiftGnomonic_NearZeroProjectionDenominator_PreservesDirection(double referenceDec, double xi) {
+            // eta = +/-1 at Dec +/-45 makes cos(Dec) - eta*sin(Dec) zero.
+            // The inverse TAN vector is (denominator, xi, +/-sqrt(2)), so Dec is
+            // +/-atan2(sqrt(2), 1), even though the former quotient is singular.
+            var eta = Math.Sign(referenceDec);
+            var origin = new Coordinates(359.9, referenceDec, Epoch.J2000, Coordinates.RAType.Degrees);
+            var shifted = origin.Shift(-AstroUtil.ToDegree(xi), -AstroUtil.ToDegree(eta), 0, Coordinates.ProjectionType.Gnomonic);
+            shifted.RADegrees.Should().BeApproximately(xi > 0 ? 89.9 : 269.9, 1e-10);
+            shifted.Dec.Should().BeApproximately(eta * AstroUtil.ToDegree(Math.Atan2(Math.Sqrt(2), 1)), 1e-10);
+            shifted.Epoch.Should().Be(origin.Epoch);
+        }
+
         private sealed class FixedDateTime : ICustomDateTime {
             public FixedDateTime(DateTime now, DateTime utcNow) {
                 Now = now;
@@ -473,7 +489,7 @@ namespace NINA.Test {
             var expectedDecRad = 0d;
             SOFA.TopocentricToCelestial("A", topocentric.Azimuth.Radians, zenithDistance, utc1, utc2, deltaUT, topocentric.Longitude.Radians, topocentric.Latitude.Radians, topocentric.Elevation, 0d, 0d, 0d, 0d, 0d, 0d, ref expectedRaRad, ref expectedDecRad);
 
-            var expected = new Coordinates(Angle.ByRadians(expectedRaRad), Angle.ByRadians(expectedDecRad), Epoch.J2000, observationTime, dateTimeProvider).Transform(Epoch.JNOW);
+            var expected = new Coordinates(Angle.ByRadians(expectedRaRad), Angle.ByRadians(expectedDecRad), Epoch.J2000, observationTime, new FixedDateTime(observationTime, observationTime)).Transform(Epoch.JNOW);
 
             transformed.RADegrees.Should().BeApproximately(expected.RADegrees, 1e-10);
             transformed.Dec.Should().BeApproximately(expected.Dec, 1e-10);
@@ -494,6 +510,122 @@ namespace NINA.Test {
                 sut.Dec.Should().Be(13);
                 sut.Epoch.Should().Be(Epoch.JNOW);
             }
+        }
+
+        [TestCase(15, 0.015)]
+        [TestCase(15, 0.021)]
+        [TestCase(15, 89.999)]
+        [TestCase(15, -89.999)]
+        public void Separation_IdenticalCoordinates_IsExactlyZero(double ra, double dec) {
+            var coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+            (coordinates - coordinates.Clone()).Distance.Radians.Should().Be(0);
+        }
+
+        [TestCase(0, 0.0000001, 0.0000001)]
+        [TestCase(359.9999999, 0, 0.0000001)]
+        [TestCase(0, 180, 180)]
+        [TestCase(0, 179.9999999, 179.9999999)]
+        public void Separation_EquatorialOffsets_ResolvesTinyAndAntipodalAngles(double ra1, double ra2, double expectedDegrees) {
+            var a = new Coordinates(ra1, 0, Epoch.J2000, Coordinates.RAType.Degrees);
+            var b = new Coordinates(ra2, 0, Epoch.J2000, Coordinates.RAType.Degrees);
+            (a - b).Distance.Degree.Should().BeApproximately(expectedDegrees, 1e-12);
+            (b - a).Distance.Degree.Should().BeApproximately(expectedDegrees, 1e-12);
+            (a - b).RA.Degree.Should().BeApproximately(ra1 - ra2, 1e-12);
+        }
+
+        [TestCase(1995)]
+        [TestCase(2050)]
+        public void Transform_ExplicitDate_PreservesClockAndReferenceDateAcrossCloneAndRoundTrip(int year) {
+            var clockNow = new DateTime(2026, 10, 8, 12, 0, 0, DateTimeKind.Utc);
+            var at = new DateTime(year, 4, 3, 12, 0, 0, DateTimeKind.Utc);
+            var clock = new FixedDateTime(clockNow, clockNow);
+            var source = new Coordinates(Angle.ByDegree(90), Angle.ByDegree(30), Epoch.J2000, clock);
+            var expected = new Coordinates(Angle.ByDegree(90), Angle.ByDegree(30), Epoch.J2000,
+                new FixedDateTime(at, at)).Transform(Epoch.JNOW);
+
+            var apparent = source.Transform(Epoch.JNOW, at);
+            apparent.RADegrees.Should().BeApproximately(expected.RADegrees, 1e-10);
+            apparent.Dec.Should().BeApproximately(expected.Dec, 1e-10);
+            apparent.DateTime.Should().BeSameAs(clock);
+            var recovered = apparent.Clone().Transform(Epoch.J2000);
+            recovered.RADegrees.Should().BeApproximately(source.RADegrees, 1e-9);
+            recovered.Dec.Should().BeApproximately(source.Dec, 1e-9);
+            var clockApparent = recovered.Transform(Epoch.JNOW);
+            var expectedAtClock = source.Transform(Epoch.JNOW);
+            clockApparent.RADegrees.Should().BeApproximately(expectedAtClock.RADegrees, 1e-9);
+            clockApparent.Dec.Should().BeApproximately(expectedAtClock.Dec, 1e-9);
+        }
+
+        [TestCase(1995)]
+        [TestCase(2050)]
+        public void Transform_ExplicitDate_JNowToJNowRedatesWithoutChangingLegacyClone(int year) {
+            var created = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var at = new DateTime(year, 4, 3, 12, 0, 0, DateTimeKind.Utc);
+            var clockNow = new DateTime(2035, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var clock = new FixedDateTime(clockNow, clockNow);
+            var catalog = new Coordinates(Angle.ByDegree(15), Angle.ByDegree(-20), Epoch.J2000,
+                new FixedDateTime(created, created));
+            var atCreation = catalog.Transform(Epoch.JNOW);
+            var source = new Coordinates(Angle.ByDegree(atCreation.RADegrees), Angle.ByDegree(atCreation.Dec),
+                Epoch.JNOW, created, clock);
+
+            var actual = source.Transform(Epoch.JNOW, at);
+            var expected = catalog.Transform(Epoch.JNOW, at);
+            actual.RADegrees.Should().BeApproximately(expected.RADegrees, 1e-9);
+            actual.Dec.Should().BeApproximately(expected.Dec, 1e-9);
+            actual.DateTime.Should().BeSameAs(clock);
+            var recovered = actual.Clone().Transform(Epoch.J2000, clockNow);
+            recovered.RADegrees.Should().BeApproximately(catalog.RADegrees, 1e-9);
+            recovered.Dec.Should().BeApproximately(catalog.Dec, 1e-9);
+            source.Transform(Epoch.JNOW).RADegrees.Should().Be(source.RADegrees);
+            source.Transform(Epoch.JNOW).Dec.Should().Be(source.Dec);
+        }
+
+        [TestCase(0, 0)]
+        [TestCase(359.9999, 89.9999)]
+        [TestCase(0.0001, -89.9999)]
+        [TestCase(89.7, 23.44)]
+        public void Transform_PreparedContext_MatchesUncachedSofaAcrossDates(double ra, double dec) {
+            // Includes near-Sun coordinates at the June solstice as well as both celestial poles.
+            foreach (int year in new[] { 2000, 2026, 2050 }) {
+                var at = new DateTime(year, 6, 21, 12, 0, 0, DateTimeKind.Utc);
+                AssertTransformMatchesUncachedSofa(ra, dec, at);
+                AssertTransformMatchesUncachedSofa(ra, dec, at.ToLocalTime());
+            }
+        }
+
+        [Test]
+        public void Transform_PreparedContext_ConcurrentUseAndEvictionPreserveExactDates() {
+            var firstDate = new DateTime(2026, 5, 23, 12, 0, 0, DateTimeKind.Utc);
+            AssertTransformMatchesUncachedSofa(90, 30, firstDate);
+            // More distinct dates than the bounded context cache, interleaved with repeated dates.
+            System.Threading.Tasks.Parallel.For(0, 1100, i => {
+                var at = firstDate.AddMinutes(i);
+                AssertTransformMatchesUncachedSofa(i % 360, i % 179 - 89, at);
+                AssertTransformMatchesUncachedSofa(90, 30, firstDate);
+            });
+            AssertTransformMatchesUncachedSofa(90, 30, firstDate);
+        }
+
+        private static void AssertTransformMatchesUncachedSofa(double ra, double dec, DateTime at) {
+            var (tt1, tt2) = AstroUtil.GetJulianDateTTParts(at);
+            double ri = 0, di = 0, eo = 0;
+            SOFA.CelestialToIntermediate(AstroUtil.ToRadians(ra), AstroUtil.ToRadians(dec), 0, 0, 0, 0,
+                tt1, tt2, ref ri, ref di, ref eo);
+            var source = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+            var apparent = source.Transform(Epoch.JNOW, at);
+            var apparentRa = SOFA.Anp(ri - eo);
+            apparent.RADegrees.Should().BeApproximately(AstroUtil.ToDegree(apparentRa), 1e-12);
+            apparent.Dec.Should().BeApproximately(AstroUtil.ToDegree(di), 1e-12);
+
+            double rc = 0, dc = 0;
+            // Retain native radians in the reference path. A degrees/radians round trip before
+            // the inverse magnifies rounding in RA near a pole and is not part of Coordinates.
+            SOFA.IntermediateToCelestial(SOFA.Anp(apparentRa + SOFA.Eo06a(tt1, tt2)),
+                di, tt1, tt2, ref rc, ref dc, ref eo);
+            var recovered = apparent.Transform(Epoch.J2000);
+            recovered.RADegrees.Should().BeApproximately(AstroUtil.ToDegree(rc), 1e-12);
+            recovered.Dec.Should().BeApproximately(AstroUtil.ToDegree(dc), 1e-12);
         }
 
         private const double ArcSecondToleranceInDegrees = 1.0 / 3600.0;
