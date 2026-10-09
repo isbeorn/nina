@@ -334,7 +334,8 @@ namespace NINA.Astrometry {
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Angle GetAltitude(Angle hourAngle, Angle latitude, Angle declination) {
-            return (declination.Sin() * latitude.Sin() + declination.Cos() * latitude.Cos() * hourAngle.Cos()).Asin();
+            double sine = (declination.Sin() * latitude.Sin() + declination.Cos() * latitude.Cos() * hourAngle.Cos()).Radians;
+            return Angle.ByRadians(Math.Asin(Math.Clamp(sine, -1.0, 1.0)));
         }
 
         /// <summary>

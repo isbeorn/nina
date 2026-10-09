@@ -1419,6 +1419,28 @@ namespace NINA.Test.AstrometryTest {
             negativeYAxis.Y.Should().BeApproximately(-2.0, AngleTolerance);
         }
 
+        [TestCase(0.015)]
+        [TestCase(0.021)]
+        [TestCase(-0.037)]
+        public void GetAltitude_ZenithRoundoff_ReturnsFiniteRightAngle(double latitude) {
+            AstroUtil.GetAltitude(0, latitude, latitude).Should().BeApproximately(90, 1e-6);
+            AstroUtil.GetAltitude(180, latitude, -latitude).Should().BeApproximately(-90, 1e-6);
+            AstroUtil.GetAltitude(Angle.ByDegree(0), Angle.ByDegree(latitude), Angle.ByDegree(latitude)).Degree.Should().BeApproximately(90, 1e-6);
+            AstroUtil.GetAltitude(Angle.ByDegree(180), Angle.ByDegree(latitude), Angle.ByDegree(-latitude)).Degree.Should().BeApproximately(-90, 1e-6);
+        }
+
+        [TestCase(double.NaN)]
+        [TestCase(double.PositiveInfinity)]
+        [TestCase(double.NegativeInfinity)]
+        public void GetAltitude_NonfiniteInputs_RemainNonfinite(double nonfinite) {
+            foreach (var (hourAngle, latitude, declination) in new[] {
+                (nonfinite, 45.0, 20.0), (0.0, nonfinite, 20.0), (0.0, 45.0, nonfinite)
+            }) {
+                AstroUtil.GetAltitude(hourAngle, latitude, declination).Should().Be(double.NaN);
+                AstroUtil.GetAltitude(Angle.ByDegree(hourAngle), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Radians.Should().Be(double.NaN);
+            }
+        }
+
         private static double AngularDifference(double actualDegrees, double expectedDegrees) {
             double difference = Math.Abs(AstroUtil.EuclidianModulus(actualDegrees - expectedDegrees + 180.0, 360.0) - 180.0);
             return difference;
