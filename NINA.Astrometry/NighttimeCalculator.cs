@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Astrometry.Interfaces;
+using NINA.Astrometry.RiseAndSet;
 using NINA.Core.Utility;
 using NINA.Profile.Interfaces;
 using System;
@@ -63,11 +64,16 @@ namespace NINA.Astrometry {
                 if (Cache.TryGetValue(key, out var nighttimeData)) {
                     return nighttimeData;
                 } else {
-                    var twilightRiseAndSet = AstroUtil.GetNightTimes(referenceDate, latitude, longitude, elevation);
-                    var civilTwilightRiseAndSet = AstroUtil.GetCivilNightTimes(referenceDate, latitude, longitude, elevation);
-                    var nauticalTwilightRiseAndSet = AstroUtil.GetNauticalNightTimes(referenceDate, latitude, longitude, elevation);
+                    var solarContext = new SolarEventContext(latitude, longitude, elevation);
+                    var twilightRiseAndSet = new AstronomicalTwilightRiseAndSet(referenceDate, latitude, longitude, elevation);
+                    var civilTwilightRiseAndSet = new CivilTwilightRiseAndSet(referenceDate, latitude, longitude, elevation);
+                    var nauticalTwilightRiseAndSet = new NauticalTwilightRiseAndSet(referenceDate, latitude, longitude, elevation);
+                    var sunRiseAndSet = new SunRiseAndSet(referenceDate, latitude, longitude, elevation);
+                    twilightRiseAndSet.Compute(solarContext);
+                    civilTwilightRiseAndSet.Compute(solarContext);
+                    nauticalTwilightRiseAndSet.Compute(solarContext);
+                    sunRiseAndSet.Compute(solarContext);
                     var moonRiseAndSet = AstroUtil.GetMoonRiseAndSet(referenceDate, latitude, longitude, elevation);
-                    var sunRiseAndSet = AstroUtil.GetSunRiseAndSet(referenceDate, latitude, longitude, elevation);
                     var (moonPhase, illumination) = AstroUtil.GetMoonPhaseAndIllumination(referenceDate,
                         new ObserverInfo() { Latitude = latitude, Longitude = longitude, Elevation = elevation });
 

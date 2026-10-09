@@ -45,6 +45,19 @@ namespace NINA.Astrometry.RiseAndSet {
             return Task.FromResult(Compute());
         }
 
+        private SolarEventContext solarContext;
+
+        // Only the built-in solar searches share a context. Public Compute and plugin hooks
+        // keep their standalone behavior, including when a returned event is recomputed.
+        internal bool Compute(SolarEventContext context) {
+            solarContext = context;
+            try {
+                return Compute();
+            } finally {
+                solarContext = null;
+            }
+        }
+
         private const long EventTimeToleranceTicks = TimeSpan.TicksPerSecond / 10;
         private const long ExtremumTimeToleranceTicks = TimeSpan.TicksPerSecond / 100;
         private const int MaximumRefinementIterations = 32;
@@ -96,10 +109,12 @@ namespace NINA.Astrometry.RiseAndSet {
             return Rise != null || Set != null;
         }
 
-        private double EvaluateAltitude(DateTime time) {
-            var body = GetBody(time);
-            body.Calculate();
-            var altitude = AdjustAltitude(body);
+        private double EvaluateAltitude(DateTime time, bool findingExtremum = false) {
+            var body = solarContext?.GetBody(time) ?? GetBody(time);
+            if (solarContext == null) {
+                body.Calculate();
+            }
+            var altitude = findingExtremum && solarContext != null ? body.Altitude : AdjustAltitude(body);
             if (!double.IsFinite(altitude)) {
                 throw new InvalidOperationException($"Cannot calculate rise/set: nonfinite altitude at {time:O}.");
             }
@@ -107,28 +122,37 @@ namespace NINA.Astrometry.RiseAndSet {
         }
 
         private (DateTime Time, double Altitude) RefineExtremum(DateTime left, DateTime right, bool minimum) {
+            var key = (left, right, minimum);
+            if (solarContext != null && solarContext.Extrema.TryGetValue(key, out var cachedTime)) {
+                return (cachedTime, EvaluateAltitude(cachedTime));
+            }
+            // Constant solar thresholds share the same center-altitude extrema. Compare the
+            // unadjusted altitude so rounding after threshold subtraction cannot change the search.
             // Golden-section search retains a bounded interval around the actual body extremum.
             const double fraction = 0.6180339887498949;
             var first = right.AddTicks(-(long)((right - left).Ticks * fraction));
             var second = left.AddTicks((long)((right - left).Ticks * fraction));
-            var firstAltitude = EvaluateAltitude(first);
-            var secondAltitude = EvaluateAltitude(second);
+            var firstAltitude = EvaluateAltitude(first, findingExtremum: true);
+            var secondAltitude = EvaluateAltitude(second, findingExtremum: true);
             for (var iteration = 0; iteration < MaximumRefinementIterations && (right - left).Ticks > ExtremumTimeToleranceTicks; iteration++) {
                 if (minimum ? firstAltitude < secondAltitude : firstAltitude > secondAltitude) {
                     right = second;
                     second = first;
                     secondAltitude = firstAltitude;
                     first = right.AddTicks(-(long)((right - left).Ticks * fraction));
-                    firstAltitude = EvaluateAltitude(first);
+                    firstAltitude = EvaluateAltitude(first, findingExtremum: true);
                 } else {
                     left = first;
                     first = second;
                     firstAltitude = secondAltitude;
                     second = left.AddTicks((long)((right - left).Ticks * fraction));
-                    secondAltitude = EvaluateAltitude(second);
+                    secondAltitude = EvaluateAltitude(second, findingExtremum: true);
                 }
             }
             var time = left.AddTicks((right - left).Ticks / 2);
+            if (solarContext != null) {
+                solarContext.Extrema[key] = time;
+            }
             return (time, EvaluateAltitude(time));
         }
 
