@@ -104,7 +104,7 @@ namespace NINA.Astrometry {
             var dec = Angle.ByRadians(decRad);
 
             var coordinates = new Coordinates(ra, dec, Epoch.J2000, now, DateTime);
-            return coordinates.Transform(epoch);
+            return coordinates.Transform(epoch, now);
         }
 
         public override string ToString() {

@@ -158,7 +158,7 @@ namespace NINA.Astrometry {
             }
 
             if (targetEpoch == Epoch.JNOW) {
-                return TransformToJNOW();
+                return TransformToJNOW(DateTime.Now);
             } else if (targetEpoch == Epoch.J2000) {
                 return TransformToJ2000();
             } else {
@@ -167,11 +167,26 @@ namespace NINA.Astrometry {
         }
 
         /// <summary>
+        /// Converts to the requested epoch at a specific instant. JNOW source coordinates are
+        /// interpreted at their creation date before being converted to the requested instant.
+        /// The injected clock is preserved for subsequent transformations without an explicit date.
+        /// </summary>
+        public Coordinates Transform(Epoch targetEpoch, DateTime at) {
+            if (targetEpoch == Epoch.J2000) {
+                return Transform(Epoch.J2000);
+            }
+            if (targetEpoch == Epoch.JNOW) {
+                var celestial = Epoch == Epoch.J2000 ? this : TransformToJ2000();
+                return celestial.TransformToJNOW(at);
+            }
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
         /// Transforms coordinates from J2000 to JNOW
         /// </summary>
         /// <returns></returns>
-        private Coordinates TransformToJNOW() {
-            var now = DateTime.Now;
+        private Coordinates TransformToJNOW(DateTime now) {
             double jdTT = AstroUtil.GetJulianDateTT(now);
 
             double ri = 0, di = 0, eo = 0;

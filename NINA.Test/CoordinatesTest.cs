@@ -489,7 +489,7 @@ namespace NINA.Test {
             var expectedDecRad = 0d;
             SOFA.TopocentricToCelestial("A", topocentric.Azimuth.Radians, zenithDistance, utc1, utc2, deltaUT, topocentric.Longitude.Radians, topocentric.Latitude.Radians, topocentric.Elevation, 0d, 0d, 0d, 0d, 0d, 0d, ref expectedRaRad, ref expectedDecRad);
 
-            var expected = new Coordinates(Angle.ByRadians(expectedRaRad), Angle.ByRadians(expectedDecRad), Epoch.J2000, observationTime, dateTimeProvider).Transform(Epoch.JNOW);
+            var expected = new Coordinates(Angle.ByRadians(expectedRaRad), Angle.ByRadians(expectedDecRad), Epoch.J2000, observationTime, new FixedDateTime(observationTime, observationTime)).Transform(Epoch.JNOW);
 
             transformed.RADegrees.Should().BeApproximately(expected.RADegrees, 1e-10);
             transformed.Dec.Should().BeApproximately(expected.Dec, 1e-10);
@@ -531,6 +531,54 @@ namespace NINA.Test {
             (a - b).Distance.Degree.Should().BeApproximately(expectedDegrees, 1e-12);
             (b - a).Distance.Degree.Should().BeApproximately(expectedDegrees, 1e-12);
             (a - b).RA.Degree.Should().BeApproximately(ra1 - ra2, 1e-12);
+        }
+
+        [TestCase(1995)]
+        [TestCase(2050)]
+        public void Transform_ExplicitDate_PreservesClockAndReferenceDateAcrossCloneAndRoundTrip(int year) {
+            var clockNow = new DateTime(2026, 10, 8, 12, 0, 0, DateTimeKind.Utc);
+            var at = new DateTime(year, 4, 3, 12, 0, 0, DateTimeKind.Utc);
+            var clock = new FixedDateTime(clockNow, clockNow);
+            var source = new Coordinates(Angle.ByDegree(90), Angle.ByDegree(30), Epoch.J2000, clock);
+            var expected = new Coordinates(Angle.ByDegree(90), Angle.ByDegree(30), Epoch.J2000,
+                new FixedDateTime(at, at)).Transform(Epoch.JNOW);
+
+            var apparent = source.Transform(Epoch.JNOW, at);
+            apparent.RADegrees.Should().BeApproximately(expected.RADegrees, 1e-10);
+            apparent.Dec.Should().BeApproximately(expected.Dec, 1e-10);
+            apparent.DateTime.Should().BeSameAs(clock);
+            var recovered = apparent.Clone().Transform(Epoch.J2000);
+            recovered.RADegrees.Should().BeApproximately(source.RADegrees, 1e-9);
+            recovered.Dec.Should().BeApproximately(source.Dec, 1e-9);
+            var clockApparent = recovered.Transform(Epoch.JNOW);
+            var expectedAtClock = source.Transform(Epoch.JNOW);
+            clockApparent.RADegrees.Should().BeApproximately(expectedAtClock.RADegrees, 1e-9);
+            clockApparent.Dec.Should().BeApproximately(expectedAtClock.Dec, 1e-9);
+        }
+
+        [TestCase(1995)]
+        [TestCase(2050)]
+        public void Transform_ExplicitDate_JNowToJNowRedatesWithoutChangingLegacyClone(int year) {
+            var created = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var at = new DateTime(year, 4, 3, 12, 0, 0, DateTimeKind.Utc);
+            var clockNow = new DateTime(2035, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var clock = new FixedDateTime(clockNow, clockNow);
+            var catalog = new Coordinates(Angle.ByDegree(15), Angle.ByDegree(-20), Epoch.J2000,
+                new FixedDateTime(created, created));
+            var atCreation = catalog.Transform(Epoch.JNOW);
+            var source = new Coordinates(Angle.ByDegree(atCreation.RADegrees), Angle.ByDegree(atCreation.Dec),
+                Epoch.JNOW, created, clock);
+
+            var actual = source.Transform(Epoch.JNOW, at);
+            var expected = catalog.Transform(Epoch.JNOW, at);
+            actual.RADegrees.Should().BeApproximately(expected.RADegrees, 1e-9);
+            actual.Dec.Should().BeApproximately(expected.Dec, 1e-9);
+            actual.DateTime.Should().BeSameAs(clock);
+            var recovered = actual.Clone().Transform(Epoch.J2000, clockNow);
+            recovered.RADegrees.Should().BeApproximately(catalog.RADegrees, 1e-9);
+            recovered.Dec.Should().BeApproximately(catalog.Dec, 1e-9);
+            source.Transform(Epoch.JNOW).RADegrees.Should().Be(source.RADegrees);
+            source.Transform(Epoch.JNOW).Dec.Should().Be(source.Dec);
         }
 
         private const double ArcSecondToleranceInDegrees = 1.0 / 3600.0;
