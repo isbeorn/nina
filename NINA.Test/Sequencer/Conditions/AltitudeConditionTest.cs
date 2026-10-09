@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -274,16 +274,33 @@ namespace NINA.Test.Sequencer.Conditions {
         [TestCase(-10, -11)]
         [TestCase(-10, -10)]
         public void Check_When_Scope_Is_Pointing_West_Above_Target_Alt_Returns_True(double currentAltitude, double targetAltitude) {
+            var time = new System.DateTime(2026, 1, 1, 22, 0, 0, System.DateTimeKind.Utc);
             var altaz = new TopocentricCoordinates(Angle.ByDegree(270), Angle.ByDegree(currentAltitude), Angle.Zero, Angle.Zero, 0);
-            var coords = altaz.Transform(Epoch.J2000);
+            var coords = altaz.Transform(time, Epoch.J2000, 0, 0, 0, 0);
 
-            var sut = new AltitudeCondition(profileServiceMock.Object);
+            var sut = new FixedTimeAltitudeCondition(profileServiceMock.Object, time);
             sut.Data.Coordinates.Coordinates = coords;
-            sut.Offset = targetAltitude;
+            // Equality must use the same full-precision transform, not a nominal altaz value
+            // from a round trip at a different wall-clock timestamp.
+            sut.Offset = currentAltitude == targetAltitude
+                ? coords.Transform(Angle.Zero, Angle.Zero, 0, time).Altitude.Degree : targetAltitude;
 
             Assert.That(
                 sut.Check(null, null),
                 Is.True);
+        }
+
+        private sealed class FixedTimeAltitudeCondition : AltitudeCondition {
+            private readonly System.DateTime time;
+
+            internal FixedTimeAltitudeCondition(IProfileService profileService, System.DateTime time) : base(profileService) {
+                this.time = time;
+            }
+
+            public override void CalculateExpectedTime() {
+                _ = Offset;
+                Data.CalculateTargetExpectedTime(time, TargetCrossingComparison.SettingBelow);
+            }
         }
 
         [Test]

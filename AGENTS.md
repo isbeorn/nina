@@ -25,6 +25,8 @@ Use the relevant route when more context is needed. Guidance already loaded for 
 ## Style
 
 - Follow [`.editorconfig`](.editorconfig) for C#. Preserve touched files' line endings; use CRLF for new files unless the location dictates otherwise.
+- Keep C# declarations readable: separate constructors, properties, methods and type declarations with one blank line. Keep related fields together and separate field groups from other members. Match the surrounding same-line brace style.
+- Within methods, separate guard clauses and distinct logical steps with blank lines. Expand control-flow bodies and long expressions instead of compressing them onto one line; wrap long parameter and argument lists consistently. Review new and touched code for this spacing before handoff, even when an automatic formatter preserves compact code.
 - Follow surrounding XAML style; there is no repository-wide XAML formatter configuration.
 - Prefer modern C# supported by the project and `CommunityToolkit.Mvvm` for new or refactored MVVM code where it fits.
 - Avoid new warnings. Report any intentional deferral with its reason.

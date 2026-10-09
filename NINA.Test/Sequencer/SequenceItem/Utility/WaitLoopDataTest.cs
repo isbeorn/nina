@@ -58,10 +58,11 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         public void CustomHorizon_CanBeAddedReplacedAndRemoved() {
             var data = CreateData();
             data.Offset = 2.346;
-            foreach (var (horizon, expected) in new[] { (FlatHorizon(10), 12.35), (FlatHorizon(20), 22.35), (null, 2.35) }) {
+            foreach (var (horizon, expected) in new[] { (FlatHorizon(10), 12.346), (FlatHorizon(20), 22.346), (null, 2.346) }) {
                 data.Horizon = horizon;
                 data.SetTargetAltitudeWithHorizon(ObservationTime);
                 data.TargetAltitude.Should().Be(expected);
+                data.GetTargetAltitudeWithHorizon(ObservationTime).Should().Be(Math.Round(expected, 2));
             }
         }
 

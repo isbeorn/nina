@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -25,13 +25,46 @@ namespace NINA.Core.Model {
 
     public class CustomHorizon {
         private static readonly JsonSerializer JSON_SERIALIZER = JsonSerializer.Create();
-        private double[] azimuths;
-        private double[] altitudes;
+        private readonly double[] azimuths;
+        private readonly double[] altitudes;
+        private readonly bool hasFiniteSearchVertices;
+
+        internal double? FlatSearchAltitude { get; }
+
+        internal bool HasFiniteSearchVertices => hasFiniteSearchVertices;
+
+        internal void GetSearchAltitudeBounds(double center, double radius, out double minimum, out double maximum) {
+            if (radius >= 180) {
+                minimum = GetMinAltitude();
+                maximum = GetMaxAltitude();
+                return;
+            }
+
+            // Include every vertex in the reachable circular arc and its interpolated endpoints.
+            // 0 and 360 can have different altitudes, so preserve both sides of the seam.
+            minimum = Math.Min(GetAltitude(center - radius), GetAltitude(center + radius));
+            maximum = Math.Max(GetAltitude(center - radius), GetAltitude(center + radius));
+
+            for (int i = 0; i < azimuths.Length; i++) {
+                var distance = Math.Abs(azimuths[i] - center);
+                distance = Math.Min(distance, 360 - distance);
+                if (distance <= radius) {
+                    minimum = Math.Min(minimum, altitudes[i]);
+                    maximum = Math.Max(maximum, altitudes[i]);
+                }
+            }
+        }
 
         /// <param name="horizonMap">A map containing azimuth->altitude mappings</param>
         private CustomHorizon(IDictionary<double, double> horizonMap) {
             this.azimuths = horizonMap.Keys.ToArray();
             this.altitudes = horizonMap.Values.ToArray();
+            hasFiniteSearchVertices = azimuths.All(x => double.IsFinite(x) && x >= 0 && x <= 360)
+                && altitudes.All(double.IsFinite);
+
+            if (hasFiniteSearchVertices && altitudes.All(x => x == altitudes[0])) {
+                FlatSearchAltitude = altitudes[0];
+            }
         }
 
         public double GetAltitude(double azimuth) {
