@@ -26,6 +26,22 @@ namespace NINA.Test {
     public class CoordinatesTest {
         private static double ANGLE_TOLERANCE = 0.000000000001;
 
+        [TestCase(45, 1)]
+        [TestCase(45, -1)]
+        [TestCase(-45, 1)]
+        [TestCase(-45, -1)]
+        public void ShiftGnomonic_NearZeroProjectionDenominator_PreservesDirection(double referenceDec, double xi) {
+            // eta = +/-1 at Dec +/-45 makes cos(Dec) - eta*sin(Dec) zero.
+            // The inverse TAN vector is (denominator, xi, +/-sqrt(2)), so Dec is
+            // +/-atan2(sqrt(2), 1), even though the former quotient is singular.
+            var eta = Math.Sign(referenceDec);
+            var origin = new Coordinates(359.9, referenceDec, Epoch.J2000, Coordinates.RAType.Degrees);
+            var shifted = origin.Shift(-AstroUtil.ToDegree(xi), -AstroUtil.ToDegree(eta), 0, Coordinates.ProjectionType.Gnomonic);
+            shifted.RADegrees.Should().BeApproximately(xi > 0 ? 89.9 : 269.9, 1e-10);
+            shifted.Dec.Should().BeApproximately(eta * AstroUtil.ToDegree(Math.Atan2(Math.Sqrt(2), 1)), 1e-10);
+            shifted.Epoch.Should().Be(origin.Epoch);
+        }
+
         private sealed class FixedDateTime : ICustomDateTime {
             public FixedDateTime(DateTime now, DateTime utcNow) {
                 Now = now;

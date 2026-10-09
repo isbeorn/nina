@@ -268,13 +268,13 @@ namespace NINA.Astrometry {
             var originDecSin = originDec.Sin();
             var originDecCos = originDec.Cos();
 
-            var targetRA = originRA + Angle.Atan2(deltaXAngle, originDecCos - deltaYAngle * originDecSin);
+            var denominator = originDecCos - deltaYAngle * originDecSin;
+            var targetRA = originRA + Angle.Atan2(deltaXAngle, denominator);
 
-            var targetDec = (
-                (targetRA - originRA).Cos()
-                * (deltaYAngle * originDecCos + originDecSin)
-                / (originDecCos - deltaYAngle * originDecSin)
-            ).Atan();
+            // Inverse TAN: avoid dividing by a denominator that can vanish at valid offsets.
+            var targetDec = Angle.Atan2(
+                deltaYAngle * originDecCos + originDecSin,
+                Angle.ByRadians(double.Hypot(denominator.Radians, deltaXAngle.Radians)));
 
             if (targetRA.Degree < 0) { targetRA = Angle.ByDegree(targetRA.Degree + 360); }
             if (targetRA.Degree >= 360) { targetRA = Angle.ByDegree(targetRA.Degree - 360); }

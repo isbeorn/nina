@@ -25,6 +25,65 @@ namespace NINA.Test.AstrometryTest {
 
         private const double AngleTolerance = 1e-10;
 
+        // FITS WCS Paper I CD transform and Paper II TAN projection.
+        // At an equatorial reference point, tan(RA) = xi and tan(Dec) = eta*cos(RA).
+        [TestCase(-0.001, 0, 0, 0.001, 100, 100)]
+        [TestCase(0.001, 0, 0, 0.001, 100, 100)]
+        [TestCase(-0.001, 0, 0, -0.001, 100, 100)]
+        [TestCase(0.001, 0, 0, -0.001, 100, 100)]
+        [TestCase(-0.001, 0.0005, 0, 0.001, 0, 100)]
+        [TestCase(0, -0.002, 0.001, 0, 100, 50)]
+        public void GetCoordinates_SignedAndSkewedMatrices_PreservesTangentPlane(double cd11, double cd12, double cd21, double cd22, double x, double y) {
+            var wcs = new WorldCoordinateSystem(0, 0, 10, 20, cd11, cd12, cd21, cd22);
+            var result = wcs.GetCoordinates(x + 10, y + 20);
+            double xi = AstroUtil.ToRadians(cd11 * x + cd12 * y);
+            double eta = AstroUtil.ToRadians(cd21 * x + cd22 * y);
+            double ra = AstroUtil.ToRadians(result.RADegrees);
+            double dec = AstroUtil.ToRadians(result.Dec);
+            Math.Tan(ra).Should().BeApproximately(xi, 1e-12);
+            (Math.Tan(dec) / Math.Cos(ra)).Should().BeApproximately(eta, 1e-12);
+            result.Epoch.Should().Be(Epoch.J2000);
+        }
+
+        [TestCase(-0.001, 0.002, 30)]
+        [TestCase(0.001, 0.002, 30)]
+        [TestCase(-0.001, -0.002, 120)]
+        [TestCase(0.001, -0.002, 270)]
+        public void GetCoordinates_CdeltaRotation_AgreesWithEquivalentCdMatrix(double scaleX, double scaleY, double rotation) {
+            double sine = Math.Sin(AstroUtil.ToRadians(rotation));
+            double cosine = Math.Cos(AstroUtil.ToRadians(rotation));
+            var matrix = new WorldCoordinateSystem(359.9, 80, 10, 20,
+                scaleX * cosine, -scaleY * sine, scaleX * sine, scaleY * cosine);
+            var legacy = new WorldCoordinateSystem(359.9, 80, 10, 20, scaleX, scaleY, rotation);
+            foreach (var pixel in new[] { (10d, 20d), (110d, -180d), (-190d, 120d) }) {
+                var expected = matrix.GetCoordinates(pixel.Item1, pixel.Item2);
+                var actual = legacy.GetCoordinates(pixel.Item1, pixel.Item2);
+                actual.RADegrees.Should().BeApproximately(expected.RADegrees, 1e-10);
+                actual.Dec.Should().BeApproximately(expected.Dec, 1e-10);
+            }
+        }
+
+        [TestCase(89.9)]
+        [TestCase(-89.9)]
+        [TestCase(90)]
+        [TestCase(-90)]
+        public void GetCoordinates_PolarReferenceAndRaWrap_ProjectsBackToTangentPlane(double referenceDec) {
+            var wcs = new WorldCoordinateSystem(359.9, referenceDec, 0, 0, -0.001, 0.0005, 0.0002, 0.001);
+            foreach (double x in new[] { -100d, 100d }) {
+                const double y = 200;
+                var result = wcs.GetCoordinates(x, y);
+                double dec = AstroUtil.ToRadians(result.Dec);
+                double dec0 = AstroUtil.ToRadians(referenceDec);
+                double deltaRa = AstroUtil.ToRadians(result.RADegrees - 359.9);
+                double denominator = Math.Sin(dec) * Math.Sin(dec0) + Math.Cos(dec) * Math.Cos(dec0) * Math.Cos(deltaRa);
+                double xi = Math.Cos(dec) * Math.Sin(deltaRa) / denominator;
+                double eta = (Math.Sin(dec) * Math.Cos(dec0) - Math.Cos(dec) * Math.Sin(dec0) * Math.Cos(deltaRa)) / denominator;
+                xi.Should().BeApproximately(AstroUtil.ToRadians(-0.001 * x + 0.0005 * y), 1e-12);
+                eta.Should().BeApproximately(AstroUtil.ToRadians(0.0002 * x + 0.001 * y), 1e-12);
+                result.RADegrees.Should().BeInRange(0, 360);
+            }
+        }
+
         /// <summary>
         /// Verifies WCS coordinate lookup at the reference pixel and one pixel from center, covering
         /// the production GetCoordinates path in addition to direct projection helpers.
