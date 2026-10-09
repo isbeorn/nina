@@ -72,12 +72,13 @@ namespace NINA.Astrometry {
 
         public void CalculateAltAz(double latitude, double longitude) {
             var start = DateTime.UtcNow;
+            var apparent = Coordinates.Transform(Epoch.JNOW, start);
             var siderealTime = AstroUtil.GetLocalSiderealTime(start, longitude);
-            var hourAngle = AstroUtil.GetHourAngle(siderealTime, Coordinates.RA);
+            var hourAngle = AstroUtil.GetHourAngle(siderealTime, apparent.RA);
 
             var degAngle = AstroUtil.HoursToDegrees(hourAngle);
-            Altitude = AstroUtil.GetAltitude(degAngle, latitude, Coordinates.Dec);
-            Azimuth = AstroUtil.GetAzimuth(degAngle, Altitude, latitude, Coordinates.Dec);
+            Altitude = AstroUtil.GetAltitude(degAngle, latitude, apparent.Dec);
+            Azimuth = AstroUtil.GetAzimuth(degAngle, Altitude, latitude, apparent.Dec);
             RaisePropertyChanged(nameof(Information));
         }
 
