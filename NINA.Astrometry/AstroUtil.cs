@@ -293,7 +293,8 @@ namespace NINA.Astrometry {
         /// <param name="rightAscension"></param>
         /// <returns>Hour Angle in hours</returns>
         public static double GetHourAngle(double siderealTime, double rightAscension) {
-            return GetHourAngle(Angle.ByHours(siderealTime), Angle.ByHours(rightAscension)).Hours;
+            var hours = DegreesToHours(ToDegree(ToRadians(HoursToDegrees(siderealTime)) - ToRadians(HoursToDegrees(rightAscension))));
+            return hours < 0 ? hours + 24 : hours;
         }
 
         public static Angle GetHourAngle(Angle siderealTime, Angle rightAscension) {
@@ -318,11 +319,11 @@ namespace NINA.Astrometry {
         /// <param name="latitude">   in degrees</param>
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
-        // Keep Angle temporaries inside this method so the JIT can eliminate them even
-        // when the caller samples altitudes in a loop.
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static double GetAltitude(double hourAngle, double latitude, double declination) {
-            return GetAltitude(Angle.ByDegree(hourAngle), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Degree;
+            double dec = ToRadians(declination), lat = ToRadians(latitude);
+            double sine = Math.Sin(dec) * Math.Sin(lat) + Math.Cos(dec) * Math.Cos(lat) * Math.Cos(ToRadians(hourAngle));
+            return ToDegree(Math.Asin(Math.Clamp(sine, -1.0, 1.0)));
         }
 
         /// <summary>
@@ -347,7 +348,10 @@ namespace NINA.Astrometry {
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
         public static double GetAzimuth(double hourAngle, double altitude, double latitude, double declination) {
-            return GetAzimuth(Angle.ByDegree(hourAngle), Angle.ByDegree(altitude), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Degree;
+            double alt = ToRadians(altitude), lat = ToRadians(latitude);
+            double cosine = (Math.Sin(ToRadians(declination)) - Math.Sin(alt) * Math.Sin(lat)) / (Math.Cos(alt) * Math.Cos(lat));
+            double azimuth = ToDegree(Math.Acos(Math.Clamp(cosine, -1.0, 1.0)));
+            return Math.Sin(ToRadians(hourAngle)) < 0 ? azimuth : 360 - azimuth;
         }
 
         /// <summary>
