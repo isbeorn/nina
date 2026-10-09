@@ -23,5 +23,14 @@ namespace NINA.Astrometry.RiseAndSet {
         public MoonRiseAndSet(DateTime date, double latitude, double longitude) : this(date, latitude, longitude, elevation: 0) { }
         public MoonRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation, -AstroUtil.MoonUpperLimbApparentHorizonAltitude) {
         }
+
+        protected override double AdjustAltitude(BasicBody body) {
+            // NOVAS already includes parallax in the topocentric center altitude and distance.
+            // The apparent upper limb reaches the horizon at 34 arcminutes of refraction plus
+            // the Moon's angular radius. The inherited MoonAltitude retains its legacy value.
+            // Reference: https://aa.usno.navy.mil/faq/RST_defs
+            var angularRadius = AstroUtil.ToDegree(Math.Asin(body.Radius / body.Distance));
+            return body.Altitude + 34.0 / 60.0 + angularRadius;
+        }
     }
 }
