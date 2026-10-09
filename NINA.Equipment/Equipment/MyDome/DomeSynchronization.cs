@@ -116,7 +116,8 @@ namespace NINA.Equipment.Equipment.MyDome {
                 domeAzimuthRadians = (domeAzimuthRadians + Math.PI) % TWO_PI;
             }
 
-            var domeAltitudeRadians = Math.Atan2(Math.Abs(intersection.Z), Math.Abs(intersection.X));
+            var horizontalDistance = double.Hypot(intersection.X, intersection.Y);
+            var domeAltitudeRadians = Math.Atan2(intersection.Z, horizontalDistance);
             return new TopocentricCoordinates(
                 azimuth: Angle.ByRadians(domeAzimuthRadians),
                 altitude: Angle.ByRadians(domeAltitudeRadians),
