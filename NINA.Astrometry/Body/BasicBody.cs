@@ -65,7 +65,9 @@ namespace NINA.Astrometry.Body {
             var jdTt = tt1 + tt2;
             var error = NOVAS.Place(jdTt, obj, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref objPosition);
             if (error != 0) {
-                Logger.Warning($"Failed to calculate {Name} position for date {Date}, latitude {location.Latitude}, longitude {location.Longitude}, elevation {location.Height} - Novas return code: " + error);
+                var message = $"Failed to calculate {Name} position for date {Date}, latitude {location.Latitude}, longitude {location.Longitude}, elevation {location.Height} - Novas return code: " + error;
+                Logger.Warning(message);
+                throw new InvalidOperationException(message);
             }
 
             this.Distance = AstroUtil.AUToKilometer(objPosition.Dis);

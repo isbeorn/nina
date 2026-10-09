@@ -42,6 +42,27 @@ namespace NINA.Test.AstrometryTest {
             perihelion.Radius.Should().Be(696342.0);
         }
 
+        [Test]
+        public void BasicBodyCalculate_UnsupportedEarthSurfaceTarget_ReportsNativeFailure() {
+            var body = new EarthSurfaceTarget(new DateTime(2026, 8, 23, 22, 0, 0, DateTimeKind.Utc));
+            var observer = new NOVAS.Observer {
+                Where = (short)NOVAS.ObserverLocation.EarthSurface,
+                OnSurf = new NOVAS.OnSurface { Latitude = body.Latitude, Longitude = body.Longitude, Height = body.Elevation }
+            };
+            var target = new NOVAS.CelestialObject {
+                Name = "Earth", Number = (short)NOVAS.Body.Earth,
+                Type = (short)NOVAS.ObjectType.MajorPlanetSunOrMoon, Star = new NOVAS.CatalogueEntry()
+            };
+            var position = new NOVAS.SkyPosition();
+            var nativeError = NOVAS.Place(AstroUtil.GetJulianDateTT(body.Date), target, observer,
+                AstroUtil.DeltaT(body.Date), NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref position);
+            nativeError.Should().NotBe(0, "NOVAS does not support Earth as a target for an Earth-surface observer");
+
+            Action calculate = () => body.Calculate();
+
+            calculate.Should().Throw<InvalidOperationException>().WithMessage($"*Earth*Novas return code: {nativeError}");
+        }
+
         [TestCase(90.0, 6)]
         [TestCase(90.0, 12)]
         [TestCase(-90.0, 6)]
@@ -263,5 +284,10 @@ namespace NINA.Test.AstrometryTest {
             }
         }
 
+        private sealed class EarthSurfaceTarget(DateTime date) : BasicBody(date, 47.0, 11.0, 650.0) {
+            public override double Radius => Earth.Radius;
+            protected override string Name => "Earth";
+            protected override NOVAS.Body BodyNumber => NOVAS.Body.Earth;
+        }
     }
 }
