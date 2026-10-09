@@ -581,6 +581,53 @@ namespace NINA.Test {
             source.Transform(Epoch.JNOW).Dec.Should().Be(source.Dec);
         }
 
+        [TestCase(0, 0)]
+        [TestCase(359.9999, 89.9999)]
+        [TestCase(0.0001, -89.9999)]
+        [TestCase(89.7, 23.44)]
+        public void Transform_PreparedContext_MatchesUncachedSofaAcrossDates(double ra, double dec) {
+            // Includes near-Sun coordinates at the June solstice as well as both celestial poles.
+            foreach (int year in new[] { 2000, 2026, 2050 }) {
+                var at = new DateTime(year, 6, 21, 12, 0, 0, DateTimeKind.Utc);
+                AssertTransformMatchesUncachedSofa(ra, dec, at);
+                AssertTransformMatchesUncachedSofa(ra, dec, at.ToLocalTime());
+            }
+        }
+
+        [Test]
+        public void Transform_PreparedContext_ConcurrentUseAndEvictionPreserveExactDates() {
+            var firstDate = new DateTime(2026, 5, 23, 12, 0, 0, DateTimeKind.Utc);
+            AssertTransformMatchesUncachedSofa(90, 30, firstDate);
+            // More distinct dates than the bounded context cache, interleaved with repeated dates.
+            System.Threading.Tasks.Parallel.For(0, 1100, i => {
+                var at = firstDate.AddMinutes(i);
+                AssertTransformMatchesUncachedSofa(i % 360, i % 179 - 89, at);
+                AssertTransformMatchesUncachedSofa(90, 30, firstDate);
+            });
+            AssertTransformMatchesUncachedSofa(90, 30, firstDate);
+        }
+
+        private static void AssertTransformMatchesUncachedSofa(double ra, double dec, DateTime at) {
+            var (tt1, tt2) = AstroUtil.GetJulianDateTTParts(at);
+            double ri = 0, di = 0, eo = 0;
+            SOFA.CelestialToIntermediate(AstroUtil.ToRadians(ra), AstroUtil.ToRadians(dec), 0, 0, 0, 0,
+                tt1, tt2, ref ri, ref di, ref eo);
+            var source = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+            var apparent = source.Transform(Epoch.JNOW, at);
+            var apparentRa = SOFA.Anp(ri - eo);
+            apparent.RADegrees.Should().BeApproximately(AstroUtil.ToDegree(apparentRa), 1e-12);
+            apparent.Dec.Should().BeApproximately(AstroUtil.ToDegree(di), 1e-12);
+
+            double rc = 0, dc = 0;
+            // Retain native radians in the reference path. A degrees/radians round trip before
+            // the inverse magnifies rounding in RA near a pole and is not part of Coordinates.
+            SOFA.IntermediateToCelestial(SOFA.Anp(apparentRa + SOFA.Eo06a(tt1, tt2)),
+                di, tt1, tt2, ref rc, ref dc, ref eo);
+            var recovered = apparent.Transform(Epoch.J2000);
+            recovered.RADegrees.Should().BeApproximately(AstroUtil.ToDegree(rc), 1e-12);
+            recovered.Dec.Should().BeApproximately(AstroUtil.ToDegree(dc), 1e-12);
+        }
+
         private const double ArcSecondToleranceInDegrees = 1.0 / 3600.0;
 
         /// <summary>

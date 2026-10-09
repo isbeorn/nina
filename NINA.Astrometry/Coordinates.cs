@@ -187,13 +187,11 @@ namespace NINA.Astrometry {
         /// </summary>
         /// <returns></returns>
         private Coordinates TransformToJNOW(DateTime now) {
-            double jdTT = AstroUtil.GetJulianDateTT(now);
+            var (jdTt1, jdTt2) = AstroUtil.GetJulianDateTTParts(now);
 
-            double ri = 0, di = 0, eo = 0;
-            SOFA.CelestialToIntermediate(raAngle.Radians, decAngle.Radians, 0.0, 0.0, 0.0, 0.0, jdTT, 0.0, ref ri, ref di, ref eo);
-
-            var raApparent = Angle.ByRadians(SOFA.Anp(ri - eo));
-            var decApparent = Angle.ByRadians(di);
+            var (ra, dec) = SOFA.GetAstrometryContext(jdTt1, jdTt2).ToApparent(raAngle.Radians, decAngle.Radians);
+            var raApparent = Angle.ByRadians(ra);
+            var decApparent = Angle.ByRadians(dec);
 
             var jnowCoordinates = new Coordinates(raApparent, decApparent, Epoch.JNOW, now, DateTime);
             return jnowCoordinates;
@@ -206,8 +204,7 @@ namespace NINA.Astrometry {
         private Coordinates TransformToJ2000() {
             var (jdTt1, jdTt2) = AstroUtil.GetJulianDateTTParts(this.creationDate);
 
-            double rc = 0, dc = 0, eo = 0;
-            SOFA.IntermediateToCelestial(SOFA.Anp(raAngle.Radians + SOFA.Eo06a(jdTt1, jdTt2)), decAngle.Radians, jdTt1, jdTt2, ref rc, ref dc, ref eo);
+            var (rc, dc) = SOFA.GetAstrometryContext(jdTt1, jdTt2).ToCelestial(raAngle.Radians, decAngle.Radians);
 
             var raCelestial = Angle.ByRadians(rc);
             var decCelestial = Angle.ByRadians(dc);
