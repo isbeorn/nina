@@ -51,10 +51,11 @@ namespace NINA.Astrometry.RiseAndSet {
         /// </summary>
         /// <returns></returns>
         public virtual bool Compute() {
-            // Check rise and set events in two hour periods
-            var offset = 0;
+            Rise = null;
+            Set = null;
 
-            do {
+            // Check rise and set events in two hour periods, advancing even when a window is skipped.
+            for (var offset = 0; offset <= 24 && (Rise == null || Set == null); offset += 2) {
                 // Shift date by offset
                 var offsetDate = Date.AddHours(offset);
 
@@ -146,9 +147,7 @@ namespace NINA.Astrometry.RiseAndSet {
                         AssignEvent(x2, a, b, offsetDate);
                     }
                 }
-                offset += 2;
-                //Repeat until rise and set events are found, or after a whole day
-            } while (!((this.Rise != null && this.Set != null) || offset > 24));
+            }
 
             return Rise != null || Set != null;
         }
