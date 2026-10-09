@@ -15,7 +15,6 @@ using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NUnit.Framework;
 using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Reflection;
 
@@ -128,13 +127,7 @@ namespace NINA.Test.AstrometryTest {
         }
 
         private static void ClearDeltaUTCaches() {
-            typeof(AstroUtil).GetField("DeltaUTToday", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
-            typeof(AstroUtil).GetField("DeltaUTYesterday", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
-            typeof(AstroUtil).GetField("DeltaUTTomorrow", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, null);
-            typeof(AstroUtil).GetField("DeltaUTReference", BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, default(DateTime));
-
-            FieldInfo? cacheField = typeof(AstroUtil).GetField("DeltaUTCache", BindingFlags.NonPublic | BindingFlags.Static);
-            cacheField?.SetValue(null, new ConcurrentDictionary<DateTime, double>());
+            typeof(DatabaseInteraction).GetMethod("InvalidateEarthRotationCache", BindingFlags.NonPublic | BindingFlags.Static)!.Invoke(null, null);
         }
 
         private sealed class TempEarthRotationDatabase : IDisposable {

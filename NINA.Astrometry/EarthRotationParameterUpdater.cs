@@ -95,6 +95,7 @@ namespace NINA.Astrometry {
                     //Bulk Query to insert all rows quickly
                     var query = $"INSERT OR REPLACE INTO `earthrotationparameters` (date,modifiedjuliandate,x,y,ut1_utc,lod,dx,dy) VALUES {string.Join($",{Environment.NewLine}", rows)}";
                     await context.Database.ExecuteSqlCommandAsync(query);
+                    DatabaseInteraction.InvalidateEarthRotationCache();
                 }
             }
             return CoreUtil.UnixTimeStampToDateTime(maxUnix);

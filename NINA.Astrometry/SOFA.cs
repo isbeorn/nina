@@ -384,6 +384,15 @@ namespace NINA.Astrometry {
         }
 
         /// <summary>
+        /// Returns TAI minus UTC in seconds at the supplied UTC calendar date and fractional day.
+        /// A positive status identifies a dubious year; negative statuses identify invalid input.
+        /// Reference: SOFA iauDat, https://www.iausofa.org/cookbooks.
+        /// </summary>
+        public static int Dat(int year, int month, int day, double dayFraction, ref double deltaAT) {
+            return SOFA_Dat(year, month, day, dayFraction, ref deltaAT);
+        }
+
+        /// <summary>
         /// Time scale transformation: International Atomic Time, TAI, to
         /// Terrestrial Time, TT.
         ///
@@ -1034,6 +1043,9 @@ namespace NINA.Astrometry {
 
         [DllImport(DLLNAME, EntryPoint = "iauUtctai", CallingConvention = CallingConvention.Cdecl)]
         private static extern short SOFA_Utctai(double utc1, double utc2, ref double tai1, ref double tai2);
+
+        [DllImport(DLLNAME, EntryPoint = "iauDat", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int SOFA_Dat(int year, int month, int day, double dayFraction, ref double deltaAT);
 
         [DllImport(DLLNAME, EntryPoint = "iauTaitt", CallingConvention = CallingConvention.Cdecl)]
         private static extern short SOFA_Taitt(double tai1, double tai2, ref double tt1, ref double tt2);
