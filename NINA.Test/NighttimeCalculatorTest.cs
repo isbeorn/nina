@@ -126,6 +126,30 @@ namespace NINA.Test {
             }
         }
 
+        [TestCase(52, 3, 20)]
+        [TestCase(52, 6, 21)]
+        [TestCase(69.65, 6, 21)]
+        [TestCase(-69.65, 12, 21)]
+        [TestCase(90, 6, 21)]
+        [TestCase(-90, 12, 21)]
+        public void Calculate_SharedPositions_PreserveLunarResultsAndEventRecomputation(double latitude, int month, int day) {
+            var date = new DateTime(2026, month, day, 12, 0, 0, DateTimeKind.Utc);
+            var observer = new ObserverInfo { Latitude = latitude, Longitude = 13, Elevation = 100 };
+            var calculator = new NighttimeCalculator(CreateProfileService(latitude, 13, 100).Object);
+            var night = calculator.Calculate(date);
+            night.Ticker.Stop();
+            night.MoonPhase.Should().Be(AstroUtil.GetMoonPhase(date, observer));
+            night.Illumination.Should().Be(AstroUtil.GetMoonIllumination(date, observer));
+            foreach (var events in new[] { night.SunRiseAndSet, night.TwilightRiseAndSet,
+                night.CivilTwilightRiseAndSet, night.NauticalTwilightRiseAndSet }) {
+                var rise = events.Rise;
+                var set = events.Set;
+                events.Compute();
+                AssertSameEvent(events.Rise, rise);
+                AssertSameEvent(events.Set, set);
+            }
+        }
+
         [TestCase(DateTimeKind.Local)]
         [TestCase(DateTimeKind.Unspecified)]
         public void Calculate_DateKindChanges_DoesNotReuseUtcEventRepresentation(DateTimeKind kind) {
@@ -139,6 +163,13 @@ namespace NINA.Test {
             (other.SunRiseAndSet.Rise ?? throw new AssertionException("Expected sunrise.")).Kind.Should().Be(kind);
             (other.SunRiseAndSet.Set ?? throw new AssertionException("Expected sunset.")).Kind.Should().Be(kind);
             calculator.Calculate(date).Should().BeSameAs(utc);
+        }
+
+        private static void AssertSameEvent(DateTime? actual, DateTime? expected) {
+            actual.HasValue.Should().Be(expected.HasValue);
+            if (expected.HasValue) {
+                (actual ?? throw new AssertionException("Expected event.")).Should().BeCloseTo(expected.Value, TimeSpan.FromSeconds(0.1));
+            }
         }
 
         private static Mock<IProfileService> CreateProfileService(double latitude, double longitude, double elevation) {

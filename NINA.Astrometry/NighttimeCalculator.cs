@@ -68,8 +68,8 @@ namespace NINA.Astrometry {
                     var nauticalTwilightRiseAndSet = AstroUtil.GetNauticalNightTimes(referenceDate, latitude, longitude, elevation);
                     var moonRiseAndSet = AstroUtil.GetMoonRiseAndSet(referenceDate, latitude, longitude, elevation);
                     var sunRiseAndSet = AstroUtil.GetSunRiseAndSet(referenceDate, latitude, longitude, elevation);
-                    var moonPhase = AstroUtil.GetMoonPhase(referenceDate, new ObserverInfo() { Latitude = latitude, Longitude = longitude, Elevation = elevation });
-                    var illumination = AstroUtil.GetMoonIllumination(referenceDate, new ObserverInfo() { Latitude = latitude, Longitude = longitude, Elevation = elevation });
+                    var (moonPhase, illumination) = AstroUtil.GetMoonPhaseAndIllumination(referenceDate,
+                        new ObserverInfo() { Latitude = latitude, Longitude = longitude, Elevation = elevation });
 
                     var data = new NighttimeData(date: selectedDate, referenceDate: referenceDate, moonPhase: moonPhase, moonIllumination: illumination, twilightRiseAndSet: twilightRiseAndSet, nauticalTwilightRiseAndSet: nauticalTwilightRiseAndSet,
                         sunRiseAndSet: sunRiseAndSet, moonRiseAndSet: moonRiseAndSet, civilTwilightRiseAndSet: civilTwilightRiseAndSet);

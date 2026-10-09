@@ -668,8 +668,10 @@ namespace NINA.Astrometry {
 
         public static double GetMoonPositionAngle(DateTime date, ObserverInfo observerInfo) {
             var tuple = GetMoonAndSunPosition(date, observerInfo);
-            var moonPosition = tuple.Item1;
-            var sunPosition = tuple.Item2;
+            return GetMoonPositionAngle(tuple.Item1, tuple.Item2);
+        }
+
+        private static double GetMoonPositionAngle(NOVAS.SkyPosition moonPosition, NOVAS.SkyPosition sunPosition) {
 
             var diff = HoursToDegrees(moonPosition.RA - sunPosition.RA);
             if (diff > 180) {
@@ -688,8 +690,10 @@ namespace NINA.Astrometry {
 
         private static double CalculateMoonIllumination(DateTime date, ObserverInfo observerInfo) {
             var tuple = GetMoonAndSunPosition(date, observerInfo);
-            var moonPosition = tuple.Item1;
-            var sunPosition = tuple.Item2;
+            return CalculateMoonIllumination(tuple.Item1, tuple.Item2);
+        }
+
+        private static double CalculateMoonIllumination(NOVAS.SkyPosition moonPosition, NOVAS.SkyPosition sunPosition) {
 
             var sunRAAngle = Angle.ByHours(sunPosition.RA);
             var sunDecAngle = Angle.ByDegree(sunPosition.Dec);
@@ -725,8 +729,16 @@ namespace NINA.Astrometry {
         }
 
         public static MoonPhase GetMoonPhase(DateTime date, ObserverInfo observerInfo) {
-            var angle = GetMoonPositionAngle(date, observerInfo);
+            return GetMoonPhase(GetMoonPositionAngle(date, observerInfo));
+        }
 
+        internal static (MoonPhase Phase, double Illumination) GetMoonPhaseAndIllumination(DateTime date, ObserverInfo observerInfo) {
+            var positions = GetMoonAndSunPosition(date, observerInfo);
+            return (GetMoonPhase(GetMoonPositionAngle(positions.Item1, positions.Item2)),
+                CalculateMoonIllumination(positions.Item1, positions.Item2));
+        }
+
+        private static MoonPhase GetMoonPhase(double angle) {
             if ((angle >= -180.0 && angle < -135.0) || angle == 180.0) {
                 return MoonPhase.FullMoon;
             } else if (angle >= -135.0 && angle < -90.0) {
