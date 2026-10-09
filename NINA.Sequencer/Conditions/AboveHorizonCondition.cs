@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -146,7 +146,7 @@ namespace NINA.Sequencer.Conditions {
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
             CalculateExpectedTime();
-            var targetAltitude = Data.GetTargetAltitudeWithHorizon(DateTime.Now);
+            var targetAltitude = Data.TargetAltitude;
             var check = Data.CurrentAltitude >= targetAltitude;
 
             if (!check && IsActive()) {
@@ -166,8 +166,7 @@ namespace NINA.Sequencer.Conditions {
 
         public void CalculateExpectedTime(DateTime time) {
             _ = Offset; // Refresh the target consumed by the shared altitude calculator.
-            Data.CurrentAltitude = GetCurrentAltitude(time, Data.Observer);
-            CalculateExpectedTimeCommon(Data, until: false, 90, GetCurrentAltitude);
+            Data.CalculateTargetExpectedTime(time, TargetCrossingComparison.BelowStrict);
         }
 
         protected bool Protect = false;

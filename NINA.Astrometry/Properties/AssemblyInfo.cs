@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -22,6 +22,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NINA.Astrometry")]
 [assembly: AssemblyDescription("This assembly contains the astronomy components of N.I.N.A.")]
 [assembly: AssemblyConfiguration("")]
+[assembly: InternalsVisibleTo("NINA.Sequencer")]
+[assembly: InternalsVisibleTo("NINA.Test")]
+[assembly: InternalsVisibleTo("NINA.Benchmark")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from

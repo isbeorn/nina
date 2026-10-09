@@ -42,6 +42,18 @@ The project is organized around a small number of responsibilities:
 - `EarthRotationParameterUpdater`
   Downloads `finals2000A.daily.csv` from the IERS data center and bulk-upserts rows into the local SQLite database when the cached data is stale.
 
+## Fixed Target Crossings
+
+`TargetCrossingCalculator` owns predictions for `WaitForAltitude`, `WaitUntilAboveHorizon`, `AltitudeCondition` and `AboveHorizonCondition`. The sequencer callers select comparison policy; `WaitLoopData` coordinates live position, presentation and its private, nonserialized cache. Public callback helpers and Sun/Moon calculations retain their existing paths.
+
+Inputs are immutable snapshots, normalized to J2000 using the original epoch reference. Search uses UTC and the same zero-pressure SOFA model as `Coordinates.Transform`. Runtime comparisons use raw values; display values remain rounded.
+
+Flat horizons use the [USNO hour-angle formula](https://aa.usno.navy.mil/faq/alt_az), verified and refined with SOFA. Terrain searches skip intervals proven nonqualifying by spherical motion bounds, leaving at most five seconds unchecked. The 16 degrees/hour envelope is a tested engineering margin above [IAU Earth rotation](https://iau-a3.gitlab.io/NSFA/NSFA_fixed.html) and the smaller effects described in [SOFA section 5.3](https://www.iausofa.org/s/sofa_ast_c.pdf#page=19), not a formal universal bound. Horizon seams, poles and UTC-day EOP changes require explicit handling.
+
+- Search covers 24 elapsed hours with at most 4096 coordinate evaluations. Within that budget, predictions meet the ten-second accuracy and minimum-window contract; shorter windows and instantaneous tangencies are not guaranteed.
+- `Exhausted` means unresolved, not no event. Unsuccessful predictions display `--` without a stale timestamp; exhaustion is logged separately.
+- Only found future events are cached, for at most five minutes. Every update checks the live condition first. Changed inputs, backward time, reaching the event or expiry invalidate the cache; clones start empty.
+
 ## Dependency Position
 
 Project references are intentionally narrow:

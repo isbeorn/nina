@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -148,7 +148,7 @@ namespace NINA.Sequencer.Conditions {
             }
 
             CalculateExpectedTime();
-            return Data.IsRising || Data.CurrentAltitude >= Offset;
+            return Data.IsRising || Data.CurrentAltitude >= Data.TargetAltitude;
         }
 
         public double GetCurrentAltitude(DateTime time, ObserverInfo observer) {
@@ -158,8 +158,7 @@ namespace NINA.Sequencer.Conditions {
 
         public override void CalculateExpectedTime() {
             _ = Offset; // Refresh the target consumed by the shared altitude calculator.
-            Data.CurrentAltitude = GetCurrentAltitude(DateTime.Now, Data.Observer);
-            CalculateExpectedTimeCommon(Data, until: true, 30, GetCurrentAltitude);
+            Data.CalculateTargetExpectedTime(DateTime.Now, TargetCrossingComparison.SettingBelow);
         }
 
         protected bool Protect = false;

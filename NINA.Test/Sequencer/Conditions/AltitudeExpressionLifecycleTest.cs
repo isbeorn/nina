@@ -257,6 +257,31 @@ namespace NINA.Test.Sequencer.Conditions {
             text.ToolTip.Should().BeOfType<string>().Which.Should().Contain("dc").And.Contain("-12").And.NotContain("not yet defined");
         }
 
+        [TestCase(typeof(AltitudeCondition))]
+        [TestCase(typeof(AboveHorizonCondition))]
+        [TestCase(typeof(WaitForAltitude))]
+        [TestCase(typeof(WaitUntilAboveHorizon))]
+        public void CompiledTemplate_RoundsAltitudeOnlyForDisplay(Type type) {
+            using var scope = new CoreEditorTestScope();
+            var entity = (ISequenceEntity)Activator.CreateInstance(type, profile.Object)!;
+            scope.Show(entity);
+            var data = entity is LoopForAltitudeBase condition
+                ? condition.Data
+                : ((NINA.Sequencer.SequenceItem.Telescope.CoordinatesInstruction)entity).Data;
+            data.CurrentAltitude = 29.996;
+            data.TargetAltitude = 30.004;
+            CoreEditorTestScope.Drain();
+
+            var altitudeText = CoreEditorTestScope.Descendants<TextBlock>(scope.Host)
+                .Single(t => System.Windows.Data.BindingOperations.GetBinding(t, TextBlock.TextProperty)?.Path.Path == "CurrentAltitude");
+            altitudeText.Text.Should().Be("30");
+            var targetText = CoreEditorTestScope.Descendants<TextBlock>(scope.Host)
+                .Single(t => System.Windows.Data.BindingOperations.GetBinding(t, TextBlock.TextProperty)?.Path.Path == "TargetAltitude");
+            targetText.Text.Should().Be(30d.ToString(entity is LoopForAltitudeBase ? "0.##" : "N2", targetText.Language.GetSpecificCulture()));
+            data.CurrentAltitude.Should().Be(29.996);
+            data.TargetAltitude.Should().Be(30.004);
+        }
+
         private T Prepare<T>(T condition) where T : SequenceCondition {
             condition.SymbolBroker = broker.Object;
             condition.ConditionWatchdog = Mock.Of<IConditionWatchdog>();

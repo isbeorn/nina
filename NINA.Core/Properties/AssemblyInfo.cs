@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -22,6 +23,7 @@ using System.Windows;
 [assembly: AssemblyTitle("N.I.N.A. Core Library")]
 [assembly: AssemblyDescription("This assembly contains the core components of N.I.N.A.")]
 [assembly: AssemblyConfiguration("")]
+[assembly: InternalsVisibleTo("NINA.Astrometry")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from

@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -95,15 +95,18 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             do {
-                var coordinates = Data.Coordinates.Coordinates;
-                var altaz = coordinates.Transform(Angle.ByDegree(Data.Latitude), Angle.ByDegree(Data.Longitude), Data.Elevation);
+                if (OffsetExpression.Definition.Length > 0) {
+                    _ = Offset;
+                }
+
+                var valid = Data.UpdateCurrentTargetPosition(Data.Coordinates.Coordinates.DateTime.Now);
                 progress?.Report(new ApplicationStatus() {
-                    Status = string.Format(Loc.Instance["Lbl_SequenceItem_Utility_WaitForAltitude_Progress"], Math.Round(altaz.Altitude.Degree, 2), Data.TargetAltitude)
+                    Status = string.Format(Loc.Instance["Lbl_SequenceItem_Utility_WaitForAltitude_Progress"], Math.Round(Data.CurrentAltitude, 2), Math.Round(Data.TargetAltitude, 2))
                 });
 
-                if (aboveOrBelow == ">" && altaz.Altitude.Degree >= Data.Offset) {
+                if (valid && aboveOrBelow == ">" && Data.CurrentAltitude >= Data.TargetAltitude) {
                     break;
-                } else if (aboveOrBelow == "<" && altaz.Altitude.Degree <= Data.Offset) {
+                } else if (valid && aboveOrBelow == "<" && Data.CurrentAltitude <= Data.TargetAltitude) {
                     break;
                 }
 
@@ -117,8 +120,12 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public void CalculateExpectedTime() {
-            Data.CurrentAltitude = GetCurrentAltitude(DateTime.Now, Data.Observer);
-            CalculateExpectedTimeCommon(Data, until: true, 30, GetCurrentAltitude);
+            if (OffsetExpression.Definition.Length > 0) {
+                _ = Offset;
+            }
+
+            Data.CalculateTargetExpectedTime(DateTime.Now, aboveOrBelow == ">"
+                ? TargetCrossingComparison.AboveInclusive : TargetCrossingComparison.BelowInclusive);
         }
 
         public override void AfterParentChanged() {

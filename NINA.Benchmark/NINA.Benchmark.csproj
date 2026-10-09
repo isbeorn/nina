@@ -12,11 +12,19 @@
 
   <ItemGroup>
     <Compile Remove="StartupProbe\**\*.cs" />
+    <Compile Remove="**\obj\**\*.cs" />
     <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NINA.WPF.Base\NINA.WPF.Base.csproj" />
+    <ProjectReference Include="..\NINA.Sequencer\NINA.Sequencer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\NINA\External\x64\SOFA\SOFA_2023_10_11.dll" Link="External\x64\SOFA\SOFA_2023_10_11.dll" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\NINA\External\x64\NOVAS\NOVAS31lib.dll" Link="External\x64\NOVAS\NOVAS31lib.dll" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\NINA\External\x64\NOVAS\cio_ra.bin" Link="External\x64\NOVAS\cio_ra.bin" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

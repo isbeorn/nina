@@ -20,6 +20,16 @@ namespace NINA.Benchmark {
 
         [STAThread]
         private static void Main(string[] args) {
+            if (args.Length == 2 && args[0] == "--target-diagnostics") {
+                TargetPredictionDiagnostics.Write(args[1]);
+                return;
+            }
+
+            if (args.Length == 2 && args[0] == "--horizon-file-diagnostics") {
+                HorizonFileDiagnostics.Write(args[1]);
+                return;
+            }
+
             BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
         }
     }
