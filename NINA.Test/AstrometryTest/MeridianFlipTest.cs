@@ -22,6 +22,16 @@ namespace NINA.Test.AstrometryTest {
     [TestFixture]
     public class MeridianFlipTest {
 
+        [TestCase(359.9, 0.1, 359.8)]
+        [TestCase(0.1, 359.9, 0.2)]
+        [TestCase(90.0, 0.0, 90.0)]
+        public void TimeToMeridian_GeometricInterval_IsElapsedCivilTime(double targetDegrees, double siderealDegrees, double deltaDegrees) {
+            var coordinates = new Coordinates(Angle.ByDegree(targetDegrees), Angle.ByDegree(0), Epoch.JNOW);
+            var expectedHours = (deltaDegrees / 15.0) % 12.0;
+            var actual = MeridianFlip.TimeToMeridian(coordinates, Angle.ByDegree(siderealDegrees));
+            actual.TotalSeconds.Should().BeApproximately(expectedHours * 3600 / 1.002737909350795, 0.01);
+        }
+
         /// <summary>
         /// Verifies the hour-angle relation used for meridian timing: a target east of the meridian
         /// reaches transit soon, a target west of the meridian wraps to the next upper culmination,
@@ -36,7 +46,7 @@ namespace NINA.Test.AstrometryTest {
 
             TimeSpan time = MeridianFlip.TimeToMeridian(coordinates, Angle.ByHours(localSiderealTimeHours));
 
-            time.TotalHours.Should().BeApproximately(expectedHours, 1e-12);
+            time.TotalSeconds.Should().BeApproximately(expectedHours * 3600 / SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC, 0.001);
         }
 
         /// <summary>
@@ -69,7 +79,7 @@ namespace NINA.Test.AstrometryTest {
 
             TimeSpan time = MeridianFlip.TimeToMeridianFlip(settings.Object, coordinates, Angle.ByHours(10.0), PierSide.pierEast);
 
-            time.TotalHours.Should().BeApproximately(12.75, 1e-12);
+            time.TotalSeconds.Should().BeApproximately(12.25 * 3600 / SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC + 1800, 0.001);
         }
 
         /// <summary>
@@ -85,7 +95,7 @@ namespace NINA.Test.AstrometryTest {
 
             TimeSpan time = MeridianFlip.TimeToMeridianFlip(settings.Object, coordinates, Angle.ByHours(10.0), PierSide.pierUnknown);
 
-            time.TotalHours.Should().BeApproximately(0.75, 1e-12);
+            time.TotalSeconds.Should().BeApproximately(0.25 * 3600 / SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC + 1800, 0.001);
         }
 
         /// <summary>
@@ -102,7 +112,7 @@ namespace NINA.Test.AstrometryTest {
 
             TimeSpan time = MeridianFlip.TimeToMeridianFlip(settings.Object, coordinates, Angle.ByHours(10.25), PierSide.pierEast);
 
-            time.TotalHours.Should().BeApproximately(12.25, 1e-12);
+            time.TotalSeconds.Should().BeApproximately(11.75 * 3600 / SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC + 1800, 0.001);
         }
     }
 }

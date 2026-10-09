@@ -66,6 +66,25 @@ namespace NINA.Test.Sequencer.Trigger.MeridianFlip {
             return new MeridianFlipTrigger(profileServiceMock.Object, cameraMediatorMock.Object, telescopeMediatorMock.Object, focuserMediatorMock.Object, applicationStatusMediatorMock.Object, meridianFlipVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
         }
 
+        [TestCase(11.96662, PierSide.pierWest)]
+        [TestCase(23.96662, PierSide.pierEast)]
+        public void ShouldTrigger_ProjectsCivilRemainingTimeAcrossSiderealBoundary(double siderealTime, PierSide projectedSide) {
+            var sut = CreateSUT();
+            SetupMeridianFlipSettings(0, 0, 0, useSideOfPier: true);
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo {
+                Connected = true,
+                TrackingEnabled = true,
+                TimeToMeridianFlip = TimeSpan.FromMinutes(2).TotalHours,
+                Coordinates = new Coordinates(Angle.ByHours(0), Angle.ByDegree(20), Epoch.JNOW),
+                SiderealTime = siderealTime,
+                SideOfPier = projectedSide
+            });
+            var nextItem = new Mock<ISequenceItem>();
+            nextItem.Setup(x => x.GetEstimatedDuration()).Returns(TimeSpan.FromMinutes(3));
+
+            sut.ShouldTrigger(null, nextItem.Object).Should().BeFalse("the reported pier side matches the side at the projected sidereal instant");
+        }
+
         [Test]
         public void CloneTest() {
             var initial = CreateSUT();

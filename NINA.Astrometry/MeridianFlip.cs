@@ -28,7 +28,7 @@ namespace NINA.Astrometry {
             if (hoursToMeridian < 0.0) {
                 hoursToMeridian += 12.0;
             }
-            return TimeSpan.FromHours(hoursToMeridian);
+            return TimeSpan.FromHours(hoursToMeridian / SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC);
         }
 
         /// <summary>
@@ -62,8 +62,10 @@ namespace NINA.Astrometry {
             PierSide currentSideOfPier) {
             // Shift the sidereal time by the time after the meridian to retrieve the time to the flip instead of the time to the meridian
             // This is critical to do instead of just adding to the meridian time, when the scope is already past the meridian but not past the flip
-            var projectedSiderealTime = Angle.ByHours(AstroUtil.EuclidianModulus(localSiderealTime.Hours - settings.MaxMinutesAfterMeridian / 60d, 24));
+            var projectedSiderealTime = Angle.ByHours(AstroUtil.EuclidianModulus(localSiderealTime.Hours
+                - settings.MaxMinutesAfterMeridian / 60d * SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC, 24));
             var timeToMeridianFlip = TimeToMeridian(coordinates, localSiderealTime: projectedSiderealTime);
+            var halfSiderealDay = TimeSpan.FromHours(12.0 / SiderealShiftTrackingRate.SIDEREAL_SEC_PER_SI_SEC);
 
             if (settings.UseSideOfPier) {
                 if (currentSideOfPier == PierSide.pierUnknown) {
@@ -77,22 +79,23 @@ namespace NINA.Astrometry {
                         // However the current side of pier is not what the expected pier side should be,
                         // which means the scope is already in the flipped state and won't require a flip.
                         // Thus, the next meridian flip won't be for another 12 hours
-                        timeToMeridianFlip += TimeSpan.FromHours(12.0);
+                        timeToMeridianFlip += halfSiderealDay;
                     }
                     if (timeToMeridianFlip < TimeSpan.FromHours(1)
-                        && timeToMeridian > (TimeSpan.FromHours(12) - TimeSpan.FromMinutes(settings.MaxMinutesAfterMeridian))
+                        && timeToMeridian > (halfSiderealDay - TimeSpan.FromMinutes(settings.MaxMinutesAfterMeridian))
                         && expectedPierSide == currentSideOfPier) {
                         // The telescope did travers the meridian recently, but the flip is soon
                         // The side of pier is already what it should be
                         // Thus, the next meridian flip won't be for another 12 hours
-                        timeToMeridianFlip += TimeSpan.FromHours(12.0);
+                        timeToMeridianFlip += halfSiderealDay;
                     }
                 }
             }
 
             // Safeguard against unrealistic timespan
-            if (timeToMeridianFlip >= TimeSpan.FromDays(1)) {
-                timeToMeridianFlip -= TimeSpan.FromDays(1);
+            var siderealDay = halfSiderealDay + halfSiderealDay;
+            if (timeToMeridianFlip >= siderealDay) {
+                timeToMeridianFlip -= siderealDay;
             }
             return timeToMeridianFlip;
         }
