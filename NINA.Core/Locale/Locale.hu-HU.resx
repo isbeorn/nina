@@ -2966,7 +2966,7 @@ This template will be used on startup to initialize the sequence instead of the 
     <value>Slew</value>
   </data>
   <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
+    <value>Ráállás sikertelen</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Slew and Center</value>
@@ -7222,16 +7222,16 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
-    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+    <value>Betölti a Képalkotás lap elrendezését egy elmentett panelkonfigurációs fájlból</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
-    <value>Load Imaging Layout</value>
+    <value>Képalkotás elrendezés betöltése</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
-    <value>The selected file is not a valid Imaging layout backup</value>
+    <value>A kiválasztott fájl nem egy érvényes biztonsági mentés, a képalkotás elrendezéséről</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
-    <value>Select an existing Imaging layout backup file</value>
+    <value>Válassz ki egy létező mentést a képalkotás elrendezéséről</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>Saves the current sequence at the specified file path</value>
@@ -7410,31 +7410,31 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Megakadályozza a mechanika parkolásának feloldását, ha a kupolaredőny vagy a tető állapota: Zárt, Csukódik, Nyílik vagy Hibás. A mechanika parkolásának feloldása csak akkor engedélyezett, ha a redőny vagy a tető Nyitott állapotot jelez</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
-    <value>There is no civil dawn at your location today.</value>
+    <value>A mai napon az Ön tartózkodási helyén nincs polgári hajnal.</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
     <value>A mai napon az Ön tartózkodási helyén nincs polgári alkonyat.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
-    <value>There is no astronomical dawn at your location today.</value>
+    <value>A mai napon az Ön tartózkodási helyén nincs csillagászati hajnal.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
     <value>A mai napon az Ön tartózkodási helyén nincs csillagászati alkonyat.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
-    <value>There is no nautical dawn at your location today.</value>
+    <value>A mai napon az Ön tartózkodási helyén nincs tengerészeti hajnal.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
-    <value>There is no nautical dusk at your location today.</value>
+    <value>A mai napon az Ön tartózkodási helyén nincs tengerészeti alkonyat.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
-    <value>There is no sunrise at your location today.</value>
+    <value>A mai napon az Ön tartózkodási helyén nincs napkelte.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
-    <value>There is no sunset at your location today.</value>
+    <value>A mai napon az Ön tartózkodási helyén nincs naplemente.</value>
   </data>
   <data name="LblUnableToConnectTo" xml:space="preserve">
-    <value>Unable to connect to {0}</value>
+    <value>Nem sikerült csatlakozni a következőhöz: {0}</value>
     <comment>Parameters: {0}=Url or device etc</comment>
   </data>
   <data name="LblCameraNoSupport16bit" xml:space="preserve">
@@ -7497,22 +7497,22 @@ CODE: {1}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblExposureOverMax" xml:space="preserve">
-    <value>The predicted exposure of {0}s is longer than the maximum allowed.
-Stopping sky flat acquisition.</value>
+    <value>A becsült {0} mp-es expozíciós idő hosszabb a megengedett maximumnál.
+A szürkületi flat készítése leáll.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblExposureUnderMin" xml:space="preserve">
-    <value>The predicted exposure of {0}s is shorter than the minimum allowed.
-Stopping sky flat acquisition.</value>
+    <value>A becsült {0} mp-es expozíciós idő rövidebb a megengedett minimumnál.
+A szürkületi flat készítése leáll.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
-    <value>Skyflat correction did not work and is outside of tolerance:
-first exposure time {0:#.####}
-current exposure time {1:#.####}
-elapsed time: {2:#.##}
-mean adu: {3:#.##}.
-The sky flat exposure time will be determined again and the exposure will be repeated.</value>
+    <value>A szürkületi flat korrekció nem működött, és kívül esik a tűréshatáron:
+első expozíciós idő: {0:#.####}
+jelenlegi expozíciós idő: {1:#.####}
+eltelt idő: {2:#.##}
+átlagos adu: {3:#.##}.
+A szoftver újra meghatározza a szürkületi flat expozíciós idejét, és megismétli az expozíciót.</value>
     <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
   </data>
   <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
@@ -7524,7 +7524,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSetShiftRateFailed" xml:space="preserve">
-    <value>Set shift rate failed. {0}</value>
+    <value>A sebességmódosítás beállítása meghiúsult. {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPrepareImageFailed" xml:space="preserve">
@@ -7619,10 +7619,10 @@ Ha az expozíciók száma nem fontos számodra, kapcsold be ezt az opciót, hogy
     <value>Állapot</value>
   </data>
   <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
-    <value>Sync focus offsets</value>
+    <value>Fókuszeltérések szinkronizálása</value>
   </data>
   <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
-    <value>Store focus offsets</value>
+    <value>Fókuszeltérések mentése</value>
   </data>
   <data name="LblOasisSyncFilterNames" xml:space="preserve">
     <value>Szűrőnevek szinkronizálása</value>
@@ -7643,10 +7643,10 @@ Ha az expozíciók száma nem fontos számodra, kapcsold be ezt az opciót, hogy
     <value>Engedélyezze ezt az opciót, ha azt szeretné, hogy a szűrők bekapcsoláskor automatikusan a legutolsó pozícióba váltsanak.</value>
   </data>
   <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
-    <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
+    <value>Beolvassa az Oasis eszközön tárolt fókuszeltéréseket, és frissíti a NINA fókuszeltéréseit.</value>
   </data>
   <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA focus offsets to the Oasis filter wheel.</value>
+    <value>Feltölti és tárolja a NINA fókuszeltéréseit az Oasis szűrőváltóra.</value>
   </data>
   <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
     <value>Beolvassa az Oasis eszközön tárolt szűrőneveket, és frissíti a NINA szűrőcímkéit.</value>
