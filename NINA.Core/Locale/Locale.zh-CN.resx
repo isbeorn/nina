@@ -419,15 +419,18 @@
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>将保存以下电调的回差值。 IN: {0}, OUT: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>测试版</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>偏置平均值(16 bit)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>偏置中位数(16 bit)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>合并像素</value>
@@ -547,6 +550,7 @@
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>佳能相机出现错误: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>采集图像并解析</value>
@@ -976,6 +980,7 @@
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>当前平均值</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>当前位置</value>
@@ -1025,6 +1030,7 @@
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>黎明</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>天数</value>
@@ -1292,6 +1298,7 @@
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>黄昏</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>东面</value>
@@ -1475,6 +1482,7 @@
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>平场向导设置</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>平场板无法链接</value>
@@ -1541,6 +1549,7 @@
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>平场向导设置</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>取消平场向导</value>
@@ -1589,6 +1598,7 @@
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>焦比</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>电调</value>
@@ -1718,6 +1728,7 @@
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>导星软件没有在预定时间({0}s + 10s)后返回“已稳定”消息。跳过。</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>导星恢复失败</value>
@@ -1994,12 +2005,14 @@
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>均值</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>测量电调回差</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>中值</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>中天翻转失败</value>
@@ -2097,6 +2110,7 @@
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>否</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>没有相机</value>
@@ -2386,9 +2400,11 @@
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>PHD2 服务器端口</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>PHD2 服务器主机名</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 设置</value>
@@ -2421,6 +2437,7 @@
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>未找到PHD2配置文件 ID {0} 。正在使用 {1}</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>像素</value>
@@ -2430,18 +2447,22 @@
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>像素比例</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>每像素对应的角秒</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>像素大小</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>X像素大小</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Y像素大小</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>第三方星图</value>
@@ -3347,6 +3368,7 @@
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
     <value>King (补偿大气折射)</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>自定义</value>
@@ -3422,9 +3444,11 @@
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>平均电流</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>电流</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>设备数据</value>
@@ -3674,27 +3698,35 @@
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>用于在FITS 或 XISF 图像头中记录相机使用的 BAYERPAT（拜尔阵列）关键字。
@@ -3702,6 +3734,7 @@
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>当前的</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>正在运行序列结束选项...</value>
@@ -3726,6 +3759,7 @@
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>相机超时 - 相机在曝光完成后 {0} 秒仍没有将图像状态设置为就绪</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>图片名预览</value>
@@ -4067,6 +4101,7 @@
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>镜筒偏向</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>相机超时</value>
@@ -4388,6 +4423,7 @@
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>关闭平场镜头盖</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>移动电调到指定位置</value>
@@ -4442,6 +4478,7 @@
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>停放望远镜</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>将望远镜指向到给定的高度角和方位角</value>
@@ -4460,6 +4497,7 @@
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>解除停放望远镜</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>设置跟踪</value>
@@ -4499,12 +4537,14 @@
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>等待时间</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>等待到指定时刻，格式 hh:mm:ss。另外，可以使用下拉选框自动设置为日落、黄昏、晨光、日出等的时刻</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>等待到达时刻</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>偏移后居中</value>
@@ -4734,6 +4774,7 @@
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>打开平场镜头盖</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>设置平场光源的亮度值</value>
@@ -4746,6 +4787,7 @@
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>切换灯光</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>根据“训练过的平场曝光时间”，拍摄平场</value>
@@ -5405,9 +5447,11 @@
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>目标在地平线上方时循环。如果使用了自定义地平线，则使用该高度而不是0</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>目标高于地平线时循环</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>目标永远不会升到地平线上</value>
@@ -5640,11 +5684,11 @@
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>主轴速率</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>次轴速率</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>望远镜主轴无法移动</value>
@@ -6609,6 +6653,7 @@
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>天窗和圆顶被要求打开，但安全监视器尚未连接，打开程序已被终止。</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>注意：这些设置与您的设备安全相关。配置前，请确保熟悉您的整套设备，并经过仔细考虑。这些设置仅管理N.I.N.A.对设备的直接控制，如果N.I.N.A未运行或未连接到相关设备，它们将无法生效。确保圆顶拥有可靠的电源保障和硬件保护设施，以防止任何意外的移动。您有责任确保这些设置不会与圆顶驱动程序的设置冲突。</value>
@@ -6799,7 +6844,7 @@
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>滤镜 {0} 的平场助手运行失败。
 原因：{1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>无法确定平场板亮度 - 光源太亮。
@@ -6923,18 +6968,23 @@
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>扩展</value>
@@ -7125,17 +7175,19 @@
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>使用 IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>使用IPv4来搜寻 ASCOM Alpaca 设备(默认：开启)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>使用 IPv6</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>使用IPv6来搜寻 ASCOM Alpaca 设备(默认：关闭)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>切换目录显示</value>
@@ -7184,6 +7236,7 @@
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>要求打开天窗和圆顶，但安全监视器尚未连接。已中止打开程序。</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>外部命令</value>
@@ -7989,21 +8042,27 @@
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
     <value>Value must be greater than or equal to {0}.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
     <value>Value must be greater than {0}.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
     <value>Value must be between {0} and {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
     <value>Value must be between {0} and less than {1}.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
     <value>Value must be greater than {0} and up to {1}.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
     <value>Value must be greater than {0} and less than {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>通知显示窗口</value>
