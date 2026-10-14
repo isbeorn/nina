@@ -419,15 +419,18 @@ E két pont segítségével a tényleges azimut hiba ki lesz számolva és megje
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>A következő fókuszáló holtjáték értékek kerülnek elmentésre. BE: {0}, KI: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>BIAS átlagérték (16 bitben)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>BIAS középérték (16 bitben)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
@@ -547,6 +550,7 @@ képes lesz kompenzálni a környezet hőmérsékletének ingadozását</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>Egy Canon hiba lépett fel: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Kép készítése és Platesolve</value>
@@ -977,6 +981,7 @@ Amennyiben hosszabb hűtési időre van szükség, megadható egy időtartam, é
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Jelenlegi átlag</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Jelenlegi pozíció</value>
@@ -1026,6 +1031,7 @@ Ha a vonalak nem esnek egybe, pólusra állítási hiba van</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Hajnal</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>Napok</value>
@@ -1293,6 +1299,7 @@ Ha a vonalak nem esnek egybe, pólusra állítási hiba van</value>
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>Szürkület</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>Kelet</value>
@@ -1472,6 +1479,7 @@ Az átlagos Bias-érték melletti Snapshot gombra kattintva kiszámíthatod a bi
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>Flat panel beállítások</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Érvénytelen válasz a flat paneltől.</value>
@@ -1538,6 +1546,7 @@ Az átlagos Bias-érték melletti Snapshot gombra kattintva kiszámíthatod a bi
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>Flat varázsló beállításai</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>Flat varázsló megszakítása</value>
@@ -1586,6 +1595,7 @@ Az átlagos Bias-érték melletti Snapshot gombra kattintva kiszámíthatod a bi
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>Fényerő</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Fókuszáló</value>
@@ -1715,6 +1725,7 @@ Számított HFR: {2}
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>A Vezető nem küldte el a megnyugvás kész üzenetet, a várt ({0}s + 10s) idő után. A lépés kihagyásra kerül.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Nem sikerült újraindítani a vezetést</value>
@@ -1991,12 +2002,14 @@ Számított HFR: {2}
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>Átlag</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>Fókuszáló holtjátékának mérése</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>Medián</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>Meridián átfordulás sikertelen</value>
@@ -2094,6 +2107,7 @@ Számított HFR: {2}
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Nem</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Nincs kamera</value>
@@ -2383,9 +2397,11 @@ Számított HFR: {2}
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>PHD2 Server Port</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>PHD2 Server Hostname</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 beállításai</value>
@@ -2422,6 +2438,7 @@ Számított HFR: {2}
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>Az {0} azonosítójú PHD2 profil nem található. Az {1} profil lesz használva</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>Pixelek</value>
@@ -2431,18 +2448,22 @@ Számított HFR: {2}
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>Pixel Skála</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Pixelskála ívmásodperc/pixelben</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>Pixelméret</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>Pixelméret X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Pixelméret Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Planetárium</value>
@@ -3349,6 +3370,7 @@ Húzza a téglalapot a kép azon része felé, amelyről képkivágást szeretne
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
     <value>King sebesség</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>Egyedi sebesség</value>
@@ -3425,9 +3447,11 @@ Húzza a téglalapot a kép azon része felé, amelyről képkivágást szeretne
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>Átlagos áram</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>Áram</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>Eszközadatok</value>
@@ -3677,27 +3701,35 @@ Húzza a téglalapot a kép azon része felé, amelyről képkivágást szeretne
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>A színes szenzorokkal készített képek FITS vagy XISF fejlécében a BAYERPAT kulcsszóhoz használandó Bayer minta.
@@ -3705,6 +3737,7 @@ Az Auto alapértelmezése a kamera vezérlője által biztosított mintát haszn
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Aktuális</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>A szekvencia végi műveletek végrehajtása</value>
@@ -3729,6 +3762,7 @@ Az Auto alapértelmezése a kamera vezérlője által biztosított mintát haszn
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Kamera időtúllépés - A kamera nem jelölte késznek a képet az expozíciós idő + {0} másodperc elteltével</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Mintázat előnézete</value>
@@ -4070,6 +4104,7 @@ Amennyiben hosszabb időtartamra van szükség, az megadható, és az alkalmazá
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>Oszlopoldal</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Kamera időtúllépés</value>
@@ -4391,6 +4426,7 @@ Amennyiben hosszabb időtartamra van szükség, az megadható, és az alkalmazá
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>Flat panel fedél zárás</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>A megadott abszolút pozícióba mozgatja a fókuszálót</value>
@@ -4445,6 +4481,7 @@ Amennyiben hosszabb időtartamra van szükség, az megadható, és az alkalmazá
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Távcső parkoltatása</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>A megadott magassági és azimut koordinátákra állítja a távcsövet</value>
@@ -4463,6 +4500,7 @@ Amennyiben hosszabb időtartamra van szükség, az megadható, és az alkalmazá
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>Távcső feloldása</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>Követés beállítása</value>
@@ -4502,12 +4540,14 @@ Amennyiben hosszabb időtartamra van szükség, az megadható, és az alkalmazá
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>Időtartam kivárása</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>Várakozás a megadott óó:pp:mpmp formátumú időpontig. Emellett egy segédeszköz is elérhető, amellyel automatikusan kitölthető a naplemente, szürkület, hajnal és napkelte időpontja</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>Időpont kivárása</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>Központosítás elmozdulás után</value>
@@ -4738,6 +4778,7 @@ Megjegyzés: Ez az üzemmód megköveteli, hogy a szűrők közötti HFR külön
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>Flat panel fedél nyitás</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>A megadott értékre állítja be a flat panel eszköz fényerejét</value>
@@ -4750,6 +4791,7 @@ Megjegyzés: Ez az üzemmód megköveteli, hogy a szűrők közötti HFR külön
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>Világítás be/kikapcsolása</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>Kikeresi a megadott paraméterekhez tartozó, betanított expozíciós értéket, és elkészíti a flat expozíciókat</value>
@@ -5409,9 +5451,11 @@ Gyorsan változó körülmények között a kisebb mintanagyság segít gyorsabb
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>Egy feltétel, amely addig ismétli a ciklust, amíg a célpont a horizont felett van, majd leállítja az aktuális utasításkészletet</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>Ismétlés, amíg a horizont felett van</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>A célpont soha nem fog a horizont fölé emelkedni</value>
@@ -5643,11 +5687,11 @@ Kizárólag ASCOM kamera illesztőprogram használata esetén releváns!</value>
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Elsődleges sebesség</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>Másodlagos sebesség</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>A távcső nem képes mozgatni az elsődleges tengelyt</value>
@@ -6612,6 +6656,7 @@ Ez a feltétel a „Mechanika parkolása kupolazár művelet előtt” beállít
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>A kupolazár vagy a tető nyitására parancs érkezett, de a Biztonsági Monitor eszköz nincs csatlakoztatva. A nyitás meg lett szakítva.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>FIGYELMEZTETÉS: Ezek a beállítások a felszerelés biztonságával kapcsolatosak. Beállításukat alapos megfontolással kell elvégezni, az Ön egyedi rendszerének alapos ismeretében. Ezek a paraméterek kizárólag a N.I.N.A. eszközvezérlésére vonatkoznak, és NINCSENEK érvényben, ha a N.I.N.A. nem fut, vagy nincs csatlakoztatva az adott felszereléshez. A kupola vagy a tető biztonsági mechanizmusainak mindig rendelkezniük kell hardveres biztonsági vészmegoldással és elektromos reteszeléssel a kupolazár vagy a tető nemkívánatos mozgásának megakadályozására. Az Ön felelőssége biztosítani, hogy ezek a beállítások ne ütközzenek a kupola illesztőprogramjának beállításaival.</value>
@@ -6802,7 +6847,7 @@ Ok: {0}</value>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>A Flat varázsló sikertelen az {0} szűrőnél.
 Ok: {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>Nem sikerült meghatározni a flat képek fényerejét – a fényforrás túl világos.
@@ -6926,18 +6971,23 @@ Növelje a minimális expozíciós időt, vagy várjon, amíg világosabb lesz.<
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>Kiterjesztés</value>
@@ -7128,17 +7178,19 @@ Emellett alapvető fontosságú, hogy a használt ASCOM illesztőprogram is tám
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>IPv4 használata</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>Az IPv4 protokoll használata az ASCOM Alpaca eszközkereséshez (Alapértelmezett: bekapcsolva)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>IPv6 használata</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>Az IPv6 protokoll használata az ASCOM Alpaca eszközkereséshez (Alapértelmezett: kikapcsolva)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Katalógus megjelenítésének ki/bekapcsolása</value>
@@ -7187,6 +7239,7 @@ Emellett alapvető fontosságú, hogy a használt ASCOM illesztőprogram is tám
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>A redőny vagy a tető nyitására kiment a parancs, de a biztonsági monitor veszélyes körülményeket jelent. A nyitás megszakítva.</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>Külső parancs</value>
@@ -7993,21 +8046,27 @@ Ha az expozíciók száma nem fontos számodra, kapcsold be ezt az opciót, hogy
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
     <value>Az érték nem lehet kisebb, mint {0}.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
     <value>Az értéknek nagyobbnak kell lennie, mint {0}.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
     <value>Az értéknek {0} és {1} között kell lennie.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
     <value>Az értéknek legalább {0} értékűnek, de {1}-nél kisebbnek kell lennie.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
     <value>Az értéknek nagyobbnak kell lennie, mint {0}, és legfeljebb {1} lehet.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
     <value>Az értéknek szigorúan {0} és {1} között kell lennie.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>Értesítési munkaterület</value>
