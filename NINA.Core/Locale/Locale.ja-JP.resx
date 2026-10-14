@@ -411,15 +411,18 @@
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>このフォーカサーバックラッシュ値が登録されます。内方向: {0}, 外方向: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>ベータ</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>BIASの平均値(16ビットにて）</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>BIASの中央値(16ビット)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>ビニング</value>
@@ -538,6 +541,7 @@
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>Canonエラーが発生しました：{0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>画像を取得してプレートソルブ処理します。。</value>
@@ -966,6 +970,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>現在の平均値</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>現在のポジション</value>
@@ -1014,6 +1019,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>薄明始</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>日</value>
@@ -1281,6 +1287,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>薄明終</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>東</value>
@@ -1462,6 +1469,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>フラットパネル設定</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>フラットパネルより無効な応答を得ました。</value>
@@ -1528,6 +1536,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>フラットウィザード設定</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>フラットウィザードのキャンセル</value>
@@ -1576,6 +1585,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>焦点比</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>フォーカサー</value>
@@ -1704,6 +1714,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>ガイドカメラが、予定時間（{0}秒＋10秒）が経過しても、SettleDoneメッセージを送信しませんでした。スキップしています。</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>ガイダー再開失敗</value>
@@ -1980,12 +1991,14 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>算術平均</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>フォーカサーバックラッシュの測定</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>中央値</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>子午線フリップに失敗しました。</value>
@@ -2083,6 +2096,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>いいえ</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>カメラ無し</value>
@@ -2372,9 +2386,11 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>PHD2サーバーポート</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>PHD2サーバーのホスト名</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2設定</value>
@@ -2410,6 +2426,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>PHD2のプロファイル ID {0} が見つかりません。 {1} を使用します。</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>ピクセル</value>
@@ -2419,18 +2436,22 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>ピクセルスケール</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>秒角/ピクセル表示のピクセルスケール</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>ピクセルサイズ</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>ピクセルサイズ X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>ピクセルサイズ Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>プラネタリウム</value>
@@ -3335,6 +3356,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
     <value>キング</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>カスタム</value>
@@ -3410,9 +3432,11 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>平均電流</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>電流</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>装置データ</value>
@@ -3662,27 +3686,35 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>カラーセンサーから生成される画像のFITSやXISF画像ヘッダー内にあるBAYERPATキーワードに使用されるベイヤー配列です。
@@ -3690,6 +3722,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>電流</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>シーケンス終了時のオプション</value>
@@ -3714,6 +3747,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>カメラのタイムアウト - カメラは露出時間+ {0} 秒後に画像を準備できませんでした</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>パターンプリビュー</value>
@@ -4051,6 +4085,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>ピアサイド</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>カメラのタイムアウト</value>
@@ -4372,6 +4407,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>フラットパネルに蓋をする</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>フォーカサーを指定された絶対位置に移動します</value>
@@ -4426,6 +4462,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>望遠鏡のパーク</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>所定の高度と方位角座標に望遠鏡を移動させます</value>
@@ -4444,6 +4481,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>望遠鏡のパーク解除</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>追尾に設定</value>
@@ -4483,12 +4521,14 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>指定時間待機</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>指定された時間（hh:mm:ss 形式）待機します。さらに、ユーティリティボックスが利用でき、そこには日没、夕暮れ、夜明け、日の出用の情報が自動的に設定されます。</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>指定時間待機</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>ドリフト後に再中央化</value>
@@ -4720,6 +4760,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>フラットパネルの蓋を開く</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>フラット装置の明るさを、指定した値に設定します</value>
@@ -4732,6 +4773,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>ライトの切り替え</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>指定されたパラメータで露出時間を調べ、フラットを撮影します</value>
@@ -5388,9 +5430,11 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>目標が地平線の上にある間ループし、その後で現在の命令セットを停止する条件</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>高度が地平線より上にある間ループ</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>目標は決して地平線の上に来ることはありません</value>
@@ -5620,11 +5664,11 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>赤経軸回転速度</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>赤緯軸回転速度</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>望遠鏡は赤経軸を動かすことができません</value>
@@ -6584,6 +6628,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>シャッターまたは屋根を開くように命令されましたが、セーフティモニター装置が切断されています。開放は中止されました。</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>注意: これらの設定は機器の安全性に関連しています。慎重に考慮するとともに、設定に関するご自分の知識を十分活用する必要があります。これらはN.I.N.A.が行う機器の制御のみを管理するものであり、N.I.N.A.が当該機器に接続されていなかったり、機器を運用していなかったりする場合は無効になります。 シャッターや屋根の望ましくない動きを防ぐため、ドームまたは屋根の安全機構は常に、ハードウェアバックアップと電気的連動装置を備えている必要があります。 これらの設定がドームドライバーの設定と矛盾していないことについて、自己責任で確認をお願いします。</value>
@@ -6772,7 +6817,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>フィルター {0}のフラットウィザードが失敗しました。原因 : {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>フラットの明るさを決定できませんでした。光源が明るすぎます。
@@ -6896,18 +6941,23 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>拡張</value>
@@ -7097,17 +7147,19 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>IPv4を使用</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>ASCOM Alpacaのデバイス検出に IPv4を使用 (デフォルト: オン)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>IPv6を使用</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>ASCOM Alpacaのデバイス検出にIPv6を使用 (デフォルト: オフ)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>カタログ表示の切り替え</value>
@@ -7156,6 +7208,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>シャッターまたは屋根を開くように命令されましたが、安全な状態ではないとセーフティモニター装置が報告しています。開放は中止されました。</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>外部コマンド</value>
@@ -7962,21 +8015,27 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
     <value>Value must be greater than or equal to {0}.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
     <value>Value must be greater than {0}.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
     <value>Value must be between {0} and {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
     <value>Value must be between {0} and less than {1}.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
     <value>Value must be greater than {0} and up to {1}.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
     <value>Value must be greater than {0} and less than {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>通知作業エリア</value>
