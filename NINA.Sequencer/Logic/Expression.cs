@@ -22,6 +22,7 @@ namespace NINA.Sequencer.Logic {
 
         private NCalc.Expression _cachedNCalcExpression = null;
         private bool isEvaluating;
+        private double evaluatedValue = double.NaN;
 
         // Parameters are NCalc Parameters used in the call to NCalc.Evaluate()
         private Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -358,15 +359,18 @@ namespace NINA.Sequencer.Logic {
                 }
             }
         }
+
+        internal double EvaluatedValue => evaluatedValue;
+
         public virtual double Value {
             get {
-                if (double.IsNaN(field) && !double.IsNaN(Default)) {
+                if (double.IsNaN(evaluatedValue) && !double.IsNaN(Default)) {
                     return Default;
                 }
-                return field;
+                return evaluatedValue;
             }
             set {
-                if (value != field) {
+                if (value != evaluatedValue) {
                     if ("int".Equals(Type)) {
                         if (StringValue != null) {
                             Error = Loc.Instance["LblMustBeInteger"];
@@ -378,7 +382,7 @@ namespace NINA.Sequencer.Logic {
                         }
                         RaisePropertyChanged(nameof(IsAnnotated));
                     }
-                    field = value;
+                    evaluatedValue = value;
                     if (Range != null) {
                         CheckRange((double)value);
                     }
@@ -391,7 +395,7 @@ namespace NINA.Sequencer.Logic {
                     RaisePropertyChanged(nameof(IsExpression));
                 }
             }
-        } = double.NaN;
+        }
 
         public string ValueString {
             get {

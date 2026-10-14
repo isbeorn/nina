@@ -1,0 +1,106 @@
+{
+  "$id": "1",
+  "$type": "NINA.Sequencer.Container.SequenceRootContainer, NINA.Sequencer",
+  "Strategy": {
+    "$type": "NINA.Sequencer.Container.ExecutionStrategy.SequentialStrategy, NINA.Sequencer"
+  },
+  "Items": [
+    {
+      "$id": "11",
+      "$type": "NINA.Sequencer.Container.DeepSkyObjectContainer, NINA.Sequencer",
+      "Target": {
+        "$id": "12",
+        "$type": "NINA.Astrometry.InputTarget, NINA.Astrometry",
+        "Expanded": true,
+        "TargetName": "M 2",
+        "PositionAngle": 0.0,
+        "InputCoordinates": {
+          "$id": "13",
+          "$type": "NINA.Astrometry.InputCoordinates, NINA.Astrometry",
+          "RAHours": 21,
+          "RAMinutes": 33,
+          "RASeconds": 27.02016,
+          "NegativeDec": true,
+          "DecDegrees": 0,
+          "DecMinutes": 49,
+          "DecSeconds": 23.7
+        }
+      },
+      "Strategy": {
+        "$type": "NINA.Sequencer.Container.ExecutionStrategy.SequentialStrategy, NINA.Sequencer"
+      },
+      "Items": [
+        {
+          "$id": "24",
+          "$type": "NINA.Sequencer.Container.SequentialContainer, NINA.Sequencer",
+          "Parent": { "$ref": "11" },
+          "Strategy": {
+            "$type": "NINA.Sequencer.Container.ExecutionStrategy.SequentialStrategy, NINA.Sequencer"
+          },
+          "Items": [
+            {
+              "$id": "27",
+              "$type": "NINA.Sequencer.SequenceItem.Utility.WaitUntilAboveHorizon, NINA.Sequencer",
+              "usesRotation": false,
+              "Coordinates": {
+                "$id": "28",
+                "$type": "NINA.Astrometry.InputCoordinates, NINA.Astrometry",
+                "RAHours": 21,
+                "RAMinutes": 33,
+                "RASeconds": 27.02,
+                "NegativeDec": true,
+                "DecDegrees": 0,
+                "DecMinutes": 49,
+                "DecSeconds": 23.7
+              },
+              "Data": {
+                "$id": "29",
+                "$type": "NINA.Sequencer.SequenceItem.Utility.WaitLoopData, NINA.Sequencer",
+                "Coordinates": {
+                  "$ref": "28"
+                },
+                "Offset": 2.0,
+                "Comparator": 3
+              },
+              "Inherited": true,
+              "RaExpression": {
+                "$id": "30",
+                "$type": "NINA.Sequencer.Logic.Expression, NINA.Sequencer",
+                "Definition": ""
+              },
+              "DecExpression": {
+                "$id": "31",
+                "$type": "NINA.Sequencer.Logic.Expression, NINA.Sequencer",
+                "Definition": ""
+              },
+              "PositionAngleExpression": {
+                "$id": "32",
+                "$type": "NINA.Sequencer.Logic.Expression, NINA.Sequencer",
+                "Definition": ""
+              },
+              "OffsetExpression": {
+                "$id": "33",
+                "$type": "NINA.Sequencer.Logic.Expression, NINA.Sequencer",
+                "Definition": "2"
+              },
+              "Parent": {
+                "$ref": "24"
+              },
+              "ErrorBehavior": 0,
+              "Attempts": 1,
+              "Ra": 0.0,
+              "Dec": 0.0,
+              "PositionAngle": 0.0,
+              "Offset": 2.0,
+              "RaDefinition": "",
+              "DecDefinition": "",
+              "PositionAngleDefinition": "",
+              "OffsetDefinition": "2"
+            }
+          ]
+        }
+      ],
+      "Parent": { "$ref": "1" }
+    }
+  ]
+}

@@ -47,6 +47,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public WaitForAltitude(IProfileService profileService) :base() {
             Data = new WaitLoopData(profileService, false, GetType().Name);
             Data.Offset = 30;
+            BindEffectiveCoordinates();
             AboveOrBelow = ">";
             ProfileService = profileService;
         }
@@ -57,20 +58,22 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override object Clone() {
             WaitForAltitude clone = new WaitForAltitude(this);
-            clone.Data = Data.Clone();
+            var clonedData = Data.Clone();
             clone.AboveOrBelow = AboveOrBelow;
             UpdateExpressions(clone, this);
+            clone.Data = clonedData;
+            clone.Coordinates = clone.Data.Coordinates;
             return clone;
         }
 
         [OnDeserialized]
         public new void OnDeserialized(StreamingContext context) {
-            Coordinates = Data.Coordinates.Clone();
             if (OffsetExpression.Definition.Length == 0) {
                 OffsetExpression.Definition = Data.Offset.ToString(CultureInfo.InvariantCulture);
             }
-            base.OnDeserialized(context);
         }
+
+        protected override bool UsesDataCoordinates => true;
 
         public IProfileService ProfileService { get; set; }
         
@@ -130,7 +133,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            Data.Coordinates = Coordinates;
             Validate();
         }
 
@@ -139,10 +141,14 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public bool Validate() {
+            ResolveEffectiveCoordinates();
+            if (OffsetExpression.Definition.Length > 0) {
+                _ = Offset;
+            }
             Issues.Clear();
 
-            double maxAlt = AstroUtil.GetAltitude(0, Data.Latitude, Data.Coordinates.DecDegrees);
-            double minAlt = AstroUtil.GetAltitude(180, Data.Latitude, Data.Coordinates.DecDegrees);
+            double maxAlt = AstroUtil.GetAltitude(0, Data.Latitude, Data.Coordinates.Coordinates.Dec);
+            double minAlt = AstroUtil.GetAltitude(180, Data.Latitude, Data.Coordinates.Coordinates.Dec);
 
             if (aboveOrBelow == ">") {
                 if (maxAlt < Data.TargetAltitude) {
@@ -158,7 +164,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 CalculateExpectedTime();
             }
 
-            Expression.ValidateExpressions(Issues, OffsetExpression, RaExpression, DecExpression);
+            Expression.ValidateExpressions(Issues, OffsetExpression);
+            if (!Inherited) {
+                Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
+            }
 
             RaisePropertyChanged("Issues");
             return Issues.Count == 0;
