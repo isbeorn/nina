@@ -149,7 +149,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Switch {
             sut.Value = value;
             await sut.Execute(default, default);
 
+#pragma warning disable CS0618 // Exercise the retained index API or its compatibility fallback.
             switchMediatorMock.Verify(x => x.SetSwitchValue(It.Is<short>(idx => idx == index), It.Is<double>(t => t == value), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
+#pragma warning restore CS0618
         }
 
         /// <summary>
@@ -176,7 +178,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Switch {
 
             await sut.Execute(default, default);
 
+#pragma warning disable CS0618 // Exercise the retained index API or its compatibility fallback.
             switchMediatorMock.Verify(x => x.SetSwitchValue(0, 10.5, It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
+#pragma warning restore CS0618
         }
 
         [Test]

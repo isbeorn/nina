@@ -8226,4 +8226,67 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
   </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA Safety Hub</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA Switch Hub</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA Weather Hub</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Add device</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Remove device</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Average period</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Open the hub settings with the gear icon. Select at least one device without duplicates or nested NINA hubs.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>No devices are configured for this hub. Open the settings with the gear icon and add a device.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>No weather fields have a source device. Open the hub settings with the gear icon and assign a device to at least one field.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>The device could not be connected.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>A hub device is unavailable. Reconnect the hub to continue.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>The switch controller does not support stable hub channel selection.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>The selected hub channel is missing, ambiguous or not writable.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>The switch could not be read after setting its value.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Add the devices that will contribute to this hub.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>The device is disconnected.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Not used</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Safe</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Unsafe</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Switch {0} - {1}</value>
+  </data>
 </root>

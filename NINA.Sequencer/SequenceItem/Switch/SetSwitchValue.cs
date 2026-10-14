@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Sequencer.Validations;
@@ -49,7 +50,7 @@ namespace NINA.Sequencer.SequenceItem.Switch {
             this.switchMediator = switchMediator;
 
             WritableSwitches = new ReadOnlyCollection<IWritableSwitch>(CreateDummyList());
-            SelectedSwitch = WritableSwitches.First();
+            RefreshSelection(WritableSwitches.First());
         }
 
         private SetSwitchValue(SetSwitchValue cloneMe) : this(cloneMe.switchMediator) {
@@ -58,6 +59,8 @@ namespace NINA.Sequencer.SequenceItem.Switch {
 
         partial void AfterClone(SetSwitchValue clone) {
             clone.SwitchIndex = SwitchIndex;
+            clone.HubDeviceId = HubDeviceId;
+            clone.HubChannelId = HubChannelId;
         }
 
         [IsExpression (Default = 1)]
@@ -76,6 +79,18 @@ namespace NINA.Sequencer.SequenceItem.Switch {
             }
         }
 
+#nullable enable annotations
+        [ObservableProperty]
+        [property: JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        private string? hubDeviceId;
+
+        [ObservableProperty]
+        [property: JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        private short? hubChannelId;
+#nullable restore annotations
+
+        private bool HasStableIdentity => HubDeviceId != null || HubChannelId.HasValue;
+
         private IWritableSwitch selectedSwitch;
 
         [JsonIgnore]
@@ -83,7 +98,15 @@ namespace NINA.Sequencer.SequenceItem.Switch {
             get => selectedSwitch;
             set {
                 selectedSwitch = value;
-                SwitchIndex = (short)(WritableSwitches?.IndexOf(selectedSwitch) ?? -1);
+                var info = switchMediator.GetInfo();
+                if (value != null && !(value is DummySwitch) && info?.Connected == true
+                    && info.WritableSwitches?.Contains(value) == true) {
+                    SwitchIndex = (short)info.WritableSwitches.IndexOf(value);
+                    CaptureIdentity(value, info);
+                } else if (value is DummySwitch && !HasStableIdentity) {
+                    SwitchIndex = (short)(WritableSwitches?.IndexOf(value) ?? -1);
+                }
+
                 RaisePropertyChanged();
             }
         }
@@ -98,8 +121,86 @@ namespace NINA.Sequencer.SequenceItem.Switch {
             }
         }
 
-        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return switchMediator.SetSwitchValue(switchIndex, Value, progress, token);
+        public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            token.ThrowIfCancellationRequested();
+            ResolveConnectedSwitch();
+            var value = Value;
+            if (HasStableIdentity) {
+                try {
+                    await switchMediator.SetSwitchValueByIdentity(HubDeviceId, HubChannelId.Value, value, progress, token);
+                    return;
+                } catch (NotSupportedException) {
+                    token.ThrowIfCancellationRequested();
+                    ResolveConnectedSwitch();
+                }
+            }
+
+#pragma warning disable CS0618 // Compatibility fallback when identity metadata or the identity API is unavailable.
+            await switchMediator.SetSwitchValue(switchIndex, value, progress, token);
+#pragma warning restore CS0618
+        }
+
+        private IWritableSwitch ResolveConnectedSwitch() {
+            var info = switchMediator.GetInfo();
+            if (info?.Connected != true) {
+                throw new SequenceEntityFailedException(Loc.Instance["LblSwitchNotConnected"]);
+            }
+
+            var target = ResolveSwitch(info);
+            if (target == null) {
+                throw new SequenceEntityFailedException(Loc.Instance[HasStableIdentity
+                    ? "LblHubSwitchTargetInvalid" : "Lbl_SequenceItem_Validation_NoSwitchSelected"]);
+            }
+
+            return target;
+        }
+
+        private void CaptureIdentity(IWritableSwitch target, SwitchInfo info) {
+            if (target is ICompositeSwitchIdentity identity) {
+                HubDeviceId = identity.DeviceId;
+                HubChannelId = identity.ChannelId;
+            } else if (!string.IsNullOrEmpty(info.DeviceId)) {
+                HubDeviceId = info.DeviceId;
+                HubChannelId = target.Id;
+            } else {
+                HubDeviceId = null;
+                HubChannelId = null;
+            }
+        }
+
+        private IWritableSwitch ResolveSwitch(SwitchInfo info) {
+            WritableSwitches = info.WritableSwitches ?? new ReadOnlyCollection<IWritableSwitch>(Array.Empty<IWritableSwitch>());
+            IWritableSwitch target = null;
+            if (!HasStableIdentity && switchIndex >= 0 && switchIndex < WritableSwitches.Count) {
+                target = WritableSwitches[switchIndex];
+                if (!(target is DummySwitch)) {
+                    CaptureIdentity(target, info);
+                }
+            }
+
+            if (HasStableIdentity) {
+                target = null;
+                if (!string.IsNullOrEmpty(HubDeviceId) && HubChannelId.HasValue) {
+                    var matches = WritableSwitches.Cast<ISwitch>()
+                        .Concat(info.ReadonlySwitches ?? Enumerable.Empty<ISwitch>())
+                        .Where(s => s is ICompositeSwitchIdentity identity
+                            ? string.Equals(identity.DeviceId, HubDeviceId, StringComparison.Ordinal) && identity.ChannelId == HubChannelId.Value
+                            : string.Equals(info.DeviceId, HubDeviceId, StringComparison.Ordinal) && s.Id == HubChannelId.Value)
+                        .ToList();
+                    if (matches.Count == 1 && matches[0] is IWritableSwitch writable && WritableSwitches.Contains(writable)) {
+                        target = writable;
+                        SwitchIndex = (short)WritableSwitches.IndexOf(target);
+                    }
+                }
+            }
+
+            RefreshSelection(target);
+            return target;
+        }
+
+        private void RefreshSelection(IWritableSwitch target) {
+            selectedSwitch = target;
+            RaisePropertyChanged(nameof(SelectedSwitch));
         }
 
         private IList<IWritableSwitch> CreateDummyList() {
@@ -118,47 +219,29 @@ namespace NINA.Sequencer.SequenceItem.Switch {
         partial void ValidateAdditional(IList<string> issues) {
             try {
                 var info = switchMediator.GetInfo();
+                IWritableSwitch target;
                 if (info?.Connected != true) {
-                    //When switch gets disconnected the real list will be changed to the dummy list
-                    if (!(WritableSwitches.FirstOrDefault() is DummySwitch)) {
-                        WritableSwitches = new ReadOnlyCollection<IWritableSwitch>(CreateDummyList());
-                    }
-
+                    WritableSwitches = new ReadOnlyCollection<IWritableSwitch>(CreateDummyList());
+                    target = !HasStableIdentity && switchIndex >= 0 && switchIndex < WritableSwitches.Count
+                        ? WritableSwitches[switchIndex] : null;
+                    RefreshSelection(target);
                     issues.Add(Loc.Instance["LblSwitchNotConnected"]);
                 } else {
-                    if (WritableSwitches.Count > 0) {
-                        //When switch gets connected the dummy list will be changed to the real list
-                        if (WritableSwitches.FirstOrDefault() is DummySwitch) {
-                            WritableSwitches = info.WritableSwitches;
-
-                            if (switchIndex >= 0 && WritableSwitches.Count > switchIndex) {
-                                SelectedSwitch = WritableSwitches[switchIndex];
-                            } else {
-                                SelectedSwitch = null;
-                            }
-                        }
-                    } else {
-                        SelectedSwitch = null;
-                        issues.Add(Loc.Instance["Lbl_SequenceItem_Validation_NoWritableSwitch"]);
+                    target = ResolveSwitch(info);
+                    if (target == null) {
+                        issues.Add(Loc.Instance[HasStableIdentity
+                            ? "LblHubSwitchTargetInvalid"
+                            : WritableSwitches.Count == 0
+                                ? "Lbl_SequenceItem_Validation_NoWritableSwitch"
+                                : "Lbl_SequenceItem_Validation_NoSwitchSelected"]);
                     }
                 }
 
-                if (switchIndex >= 0 && WritableSwitches.Count > switchIndex) {
-                    if (WritableSwitches[switchIndex] != SelectedSwitch) {
-                        SelectedSwitch = WritableSwitches[switchIndex];
-                    }
-                }
-
-                var s = SelectedSwitch;
-
-                if (s == null) {
-                    issues.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_NoSwitchSelected"]));
-                } else {
-                    if (Value < s.Minimum || Value > s.Maximum)
-                        issues.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_InvalidSwitchValue"], s.Minimum, s.Maximum, s.StepSize));
+                if (target != null && (Value < target.Minimum || Value > target.Maximum)) {
+                    issues.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_InvalidSwitchValue"], target.Minimum, target.Maximum, target.StepSize));
                 }
             } catch (Exception ex) {
-                issues.Add("An unexpected error occurred");
+                issues.Add(Loc.Instance["LblHubSwitchTargetInvalid"]);
                 Logger.Error(ex);
             }
         }

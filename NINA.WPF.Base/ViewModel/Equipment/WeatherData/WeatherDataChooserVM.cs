@@ -35,6 +35,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
+                if (HubConfiguration?.Hub.IsSessionActive == true) {
+                    return;
+                }
+
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblWeatherNoSource"]));
@@ -75,6 +79,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                 devices.Add(new TheWeatherCompany(this.profileService));
                 devices.Add(new WeatherUnderground(this.profileService));
                 devices.Add(new OpenMeteo(this.profileService));
+
+                AddHub(devices, new WeatherDataHub(Loc.Instance["LblWeatherDataHub"]), profileService.ActiveProfile.WeatherDataSettings);
 
                 DetermineSelectedDevice(devices, profileService.ActiveProfile.WeatherDataSettings.Id, profileService.ActiveProfile.WeatherDataSettings.LastDeviceName);
 

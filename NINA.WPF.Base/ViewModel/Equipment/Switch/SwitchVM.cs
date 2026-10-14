@@ -93,36 +93,85 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
         private static double SWITCHTOLERANCE = 0.00001;
 
         private async Task<bool> SetSwitchValue(object arg) {
-            var aSwitch = (IWritableSwitch)arg;
-
-            aSwitch.SetValue();
-            await CoreUtil.Wait(TimeSpan.FromMilliseconds(50));
-            aSwitch.Poll();
-
-            var timeOut = TimeSpan.FromSeconds(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval * 4);
-            bool success = true;
-            while (Math.Abs(aSwitch.Value - aSwitch.TargetValue) > SWITCHTOLERANCE) {
-                var elapsed = await CoreUtil.Wait(TimeSpan.FromMilliseconds(500));
-                timeOut = timeOut - elapsed;
-                if (timeOut.TotalMilliseconds <= 0) {
-                    success = false;
-                    break;
-                }
-            }
-
-            if (!success) {
-                var notification = string.Format(Loc.Instance["LblTimeoutToSetSwitchValue"], aSwitch.TargetValue, aSwitch.Id, aSwitch.Name, aSwitch.Value);
-                Notification.ShowError(notification);
-                Logger.Error(notification);
-            }
-            return success;
+            await SetSwitchValue((IWritableSwitch)arg, CancellationToken.None);
+            return true;
         }
 
+        private void EnsureLiveSwitch(ISwitchHub hub, IWritableSwitch target) {
+            if (hub == null || !ReferenceEquals(SwitchHub, hub) || !hub.Connected) {
+                throw new InvalidOperationException(Loc.Instance["LblSwitchNotConnected"]);
+            }
+
+            if (target == null || !WritableSwitches.Contains(target)) {
+                throw new InvalidOperationException(Loc.Instance["LblHubSwitchTargetInvalid"]);
+            }
+        }
+
+        private async Task SetSwitchValue(IWritableSwitch target, CancellationToken token) {
+            var hub = SwitchHub;
+            token.ThrowIfCancellationRequested();
+            EnsureLiveSwitch(hub, target);
+            var requestedValue = target.TargetValue;
+            target.SetValue();
+            await CoreUtil.Wait(TimeSpan.FromMilliseconds(50), token);
+            EnsureLiveSwitch(hub, target);
+            if (!target.Poll()) {
+                throw new InvalidOperationException(Loc.Instance["LblHubSwitchPollFailed"]);
+            }
+
+            EnsureLiveSwitch(hub, target);
+            var timeOut = TimeSpan.FromSeconds(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval * 4);
+            while (Math.Abs(target.Value - requestedValue) > SWITCHTOLERANCE) {
+                var elapsed = await CoreUtil.Wait(TimeSpan.FromMilliseconds(500), token);
+                EnsureLiveSwitch(hub, target);
+                if (!target.Poll()) {
+                    throw new InvalidOperationException(Loc.Instance["LblHubSwitchPollFailed"]);
+                }
+
+                EnsureLiveSwitch(hub, target);
+                timeOut -= elapsed;
+                if (timeOut.TotalMilliseconds <= 0 && Math.Abs(target.Value - requestedValue) > SWITCHTOLERANCE) {
+                    var notification = string.Format(Loc.Instance["LblTimeoutToSetSwitchValue"], requestedValue, target.Id, target.Name, target.Value);
+                    Notification.ShowError(notification);
+                    Logger.Error(notification);
+                    throw new TimeoutException(notification);
+                }
+            }
+        }
+
+        public async Task SetSwitchValueByIdentity(string deviceId, short channelId, double value, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            token.ThrowIfCancellationRequested();
+            try {
+                var hub = SwitchHub;
+                if (hub?.Connected != true) {
+                    throw new InvalidOperationException(Loc.Instance["LblSwitchNotConnected"]);
+                }
+
+                var matches = hub.Switches.Where(s => s is ICompositeSwitchIdentity identity
+                    ? string.Equals(identity.DeviceId, deviceId, StringComparison.Ordinal) && identity.ChannelId == channelId
+                    : string.Equals(hub.Id, deviceId, StringComparison.Ordinal) && s.Id == channelId).ToList();
+                if (string.IsNullOrEmpty(deviceId) || matches.Count != 1 || !(matches[0] is IWritableSwitch target)
+                    || !WritableSwitches.Contains(target)) {
+                    throw new InvalidOperationException(Loc.Instance["LblHubSwitchTargetInvalid"]);
+                }
+
+                EnsureLiveSwitch(hub, target);
+                target.TargetValue = value;
+                await SetSwitchValue(target, token);
+            } catch (NotSupportedException ex) {
+                // Reserve NotSupportedException for an unavailable identity API, never a failed driver write.
+                throw new InvalidOperationException(ex.Message, ex);
+            }
+        }
+
+        [Obsolete("Use SetSwitchValueByIdentity. Index-based writes are retained only when identity support is unavailable.")]
         public Task SetSwitchValue(short switchIndex, double value, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            if (this.WritableSwitches.Count > switchIndex) {
+            ct.ThrowIfCancellationRequested();
+            if (switchIndex >= 0 && this.WritableSwitches.Count > switchIndex) {
                 var writableSwitch = this.WritableSwitches[switchIndex];
+                EnsureLiveSwitch(SwitchHub, writableSwitch);
                 writableSwitch.TargetValue = value;
-                return SetSwitchValue(writableSwitch);
+                return SetSwitchValue(writableSwitch, ct);
             } else {
                 Logger.Error($"No switch found for index {switchIndex}");
                 return Task.CompletedTask;
@@ -148,13 +197,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
         private SwitchInfo switchInfo;
 
         private Dictionary<string, object> GetSwitchValues() {
-            var switchValues = new Dictionary<string, object>();
-            switchValues.Add(nameof(SwitchInfo.Connected), SwitchHub?.Connected ?? false);
+            var hub = SwitchHub;
+            if (hub?.Connected == true) {
+                foreach (var s in hub.Switches) {
+                    if (!hub.Connected) {
+                        break;
+                    }
 
-            foreach (var s in SwitchHub.Switches) {
-                s.Poll();
+                    s.Poll();
+                }
             }
-            return switchValues;
+
+            (hub as IEquipmentHub)?.RefreshConnectionStatuses();
+
+            return new Dictionary<string, object> {
+                { nameof(SwitchInfo.Connected), ReferenceEquals(SwitchHub, hub) && hub?.Connected == true }
+            };
         }
 
         private void UpdateSwitchValues(Dictionary<string, object> rotatorValues) {

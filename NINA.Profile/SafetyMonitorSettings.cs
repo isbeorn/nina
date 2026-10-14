@@ -20,7 +20,7 @@ namespace NINA.Profile {
 
     [Serializable()]
     [DataContract]
-    internal class SafetyMonitorSettings : Settings, ISafetyMonitorSettings {
+    internal class SafetyMonitorSettings : Settings, ISafetyMonitorSettings, IHasDeviceHubSettings {
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -28,8 +28,35 @@ namespace NINA.Profile {
         }
 
         protected override void SetDefaultValues() {
+            HubSettings = new DeviceHubSettings();
             id = "No_Device";
             lastDeviceName = string.Empty;
+        }
+
+        IDeviceHubSettings IHasDeviceHubSettings.HubSettings => HubSettings;
+
+        private DeviceHubSettings hubSettings;
+
+        [DataMember]
+        public DeviceHubSettings HubSettings {
+            get => hubSettings;
+            set {
+                if (ReferenceEquals(hubSettings, value)) {
+                    return;
+                }
+
+                if (hubSettings != null) {
+                    hubSettings.PropertyChanged -= HubSettingsChanged;
+                }
+
+                hubSettings = value ?? new DeviceHubSettings();
+                hubSettings.PropertyChanged += HubSettingsChanged;
+                RaisePropertyChanged();
+            }
+        }
+
+        private void HubSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            RaisePropertyChanged(nameof(HubSettings));
         }
 
         private string id;

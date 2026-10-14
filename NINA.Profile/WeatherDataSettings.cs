@@ -20,7 +20,7 @@ namespace NINA.Profile {
 
     [Serializable()]
     [DataContract]
-    public class WeatherDataSettings : Settings, IWeatherDataSettings {
+    public class WeatherDataSettings : Settings, IWeatherDataSettings, IHasDeviceHubSettings {
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -28,12 +28,39 @@ namespace NINA.Profile {
         }
 
         protected override void SetDefaultValues() {
+            HubSettings = new WeatherHubSettings();
             Id = "No_Device";
             LastDeviceName = string.Empty;
             OpenWeatherMapAPIKey = string.Empty;
             TheWeatherCompanyAPIKey = string.Empty;
             WeatherUndergroundAPIKey = string.Empty;
             WeatherUndergroundStation = string.Empty;
+        }
+
+        IDeviceHubSettings IHasDeviceHubSettings.HubSettings => HubSettings;
+
+        private DeviceHubSettings hubSettings;
+
+        [DataMember]
+        public DeviceHubSettings HubSettings {
+            get => hubSettings;
+            set {
+                if (ReferenceEquals(hubSettings, value)) {
+                    return;
+                }
+
+                if (hubSettings != null) {
+                    hubSettings.PropertyChanged -= HubSettingsChanged;
+                }
+
+                hubSettings = value ?? new WeatherHubSettings();
+                hubSettings.PropertyChanged += HubSettingsChanged;
+                RaisePropertyChanged();
+            }
+        }
+
+        private void HubSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            RaisePropertyChanged(nameof(HubSettings));
         }
 
         private string id = string.Empty;

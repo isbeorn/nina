@@ -12,7 +12,12 @@
 
 #endregion "copyright"
 
+using System;
+using System.ComponentModel;
 using NINA.Core.Utility;
+using NINA.Core.Utility.WindowService;
+using NINA.Core.Locale;
+using System.Windows;
 using NINA.Profile.Interfaces;
 using System.Linq;
 using System.Windows.Input;
@@ -24,6 +29,9 @@ using System.Threading;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MySafetyMonitor;
+using NINA.Equipment.Equipment.MySwitch;
+using NINA.Equipment.Equipment.MyWeatherData;
 
 namespace NINA.WPF.Base.ViewModel.Equipment {
 
@@ -52,6 +60,99 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
 
         public abstract Task GetEquipment();
 
+        private IProfile hubProfile;
+        private bool hubSetupDialogOpen;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HubSelected), nameof(HasSetupDialog))]
+        public partial HubConfigurationVM HubConfiguration { get; private set; }
+
+        partial void OnHubConfigurationChanging(HubConfigurationVM oldValue, HubConfigurationVM newValue) {
+            if (oldValue != null) {
+                oldValue.PropertyChanged -= HubConfigurationChanged;
+                oldValue.Hub.PropertyChanged -= HubSessionChanged;
+                oldValue.Dispose();
+            }
+        }
+
+        partial void OnHubConfigurationChanged(HubConfigurationVM value) {
+            hubProfile = value == null ? null : ActiveProfile;
+            if (value != null) {
+                value.PropertyChanged += HubConfigurationChanged;
+                value.Hub.PropertyChanged += HubSessionChanged;
+            }
+        }
+
+        public bool HubSelected => HubConfiguration != null && ReferenceEquals(SelectedDevice, HubConfiguration.Hub);
+
+        public bool HasSetupDialog => HubSelected || SelectedDevice?.HasSetupDialog == true;
+
+        protected void AddHub(IList<IDevice> devices, IEquipmentHub hub, object settings) {
+            HubConfiguration = settings is IHasDeviceHubSettings hubSettings
+                ? new HubConfigurationVM(profileService, hub, hubSettings.HubSettings, devices)
+                : null;
+            if (HubConfiguration != null) {
+                devices.Add(hub);
+            }
+        }
+
+        private void HubSessionChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName != nameof(IEquipmentHub.IsSessionActive) || HubConfiguration?.Hub.IsSessionActive != false
+                || ReferenceEquals(hubProfile, ActiveProfile)) {
+                return;
+            }
+
+            var dispatcher = Application.Current?.Dispatcher;
+            if (dispatcher != null && !dispatcher.CheckAccess()) {
+                // Finish rebinding before Disconnect returns and an immediate reconnect can start.
+                dispatcher.Invoke(RefreshHubProfile);
+            } else {
+                RefreshHubProfile();
+            }
+        }
+
+        private void RefreshHubProfile() {
+            if (HubConfiguration?.Hub.IsSessionActive != false || ReferenceEquals(hubProfile, ActiveProfile) || ActiveProfile == null) {
+                return;
+            }
+
+            var hub = HubConfiguration.Hub;
+            object settings;
+            string id;
+            string name;
+            if (hub is SafetyMonitorHub) {
+                var safety = ActiveProfile.SafetyMonitorSettings;
+                settings = safety;
+                id = safety.Id;
+                name = safety.LastDeviceName;
+                hub = new SafetyMonitorHub(Loc.Instance["LblSafetyMonitorHub"]);
+            } else if (hub is CompositeSwitchHub) {
+                var switches = ActiveProfile.SwitchSettings;
+                settings = switches;
+                id = switches.Id;
+                name = switches.LastDeviceName;
+                hub = new CompositeSwitchHub(Loc.Instance["LblSwitchHub"]);
+            } else if (hub is WeatherDataHub) {
+                var weather = ActiveProfile.WeatherDataSettings;
+                settings = weather;
+                id = weather.Id;
+                name = weather.LastDeviceName;
+                hub = new WeatherDataHub(Loc.Instance["LblWeatherDataHub"]);
+            } else {
+                return;
+            }
+
+            var devices = Devices.Where(device => device is not IEquipmentHub).ToList();
+            AddHub(devices, hub, settings);
+            DetermineSelectedDevice(devices, id, name);
+        }
+
+        private void HubConfigurationChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(HubConfiguration.IsSetupDialogOpen) && !hubSetupDialogOpen) {
+                SetupDialogOpen = HubConfiguration.IsSetupDialogOpen;
+            }
+        }
+
         private IDevice _selectedDevice;
 
         public IDevice SelectedDevice {
@@ -64,6 +165,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
                 lock (lockObj) {
                     _selectedDevice = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(HubSelected));
+                    RaisePropertyChanged(nameof(HasSetupDialog));
                 }
             }
         }
@@ -77,6 +180,26 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
 
         [RelayCommand(CanExecute = nameof(SetupDialogNotOpen))]
         private async Task SetupDialog() {
+            if (HubSelected) {
+                var configuration = HubConfiguration;
+                if (configuration.Hub.IsSessionActive) {
+                    return;
+                }
+
+                hubSetupDialogOpen = true;
+                SetupDialogOpen = true;
+                try {
+                    await new WindowService().ShowDialog(configuration,
+                        $"{configuration.Hub.Name} - {Loc.Instance["LblSettings"]}",
+                        ResizeMode.NoResize, WindowStyle.ToolWindow);
+                } finally {
+                    hubSetupDialogOpen = false;
+                    SetupDialogOpen = configuration.IsSetupDialogOpen;
+                }
+
+                return;
+            }
+
             if (SelectedDevice?.HasSetupDialog == true) {
                 SetupDialogOpen = true;
                 try {

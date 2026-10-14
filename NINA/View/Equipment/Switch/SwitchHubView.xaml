@@ -40,6 +40,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <GroupBox>
@@ -58,9 +59,11 @@
                         CancelCommand="{Binding CancelConnectCommand}"
                         ConnectCommand="{Binding ConnectCommand}"
                         Connected="{Binding SwitchInfo.Connected}"
+                        SelectionLocked="{Binding DeviceChooserVM.HubConfiguration.Hub.IsSessionActive, FallbackValue=False}"
+                        SessionActive="{Binding DeviceChooserVM.HubConfiguration.Hub.IsSessionActive, FallbackValue=False}"
                         Devices="{Binding DeviceChooserVM.Devices}"
                         DisconnectCommand="{Binding DisconnectCommand}"
-                        HasSetupDialog="{Binding DeviceChooserVM.SelectedDevice.HasSetupDialog}"
+                        HasSetupDialog="{Binding DeviceChooserVM.HasSetupDialog}"
                         RefreshCommand="{Binding RescanDevicesCommand}"
                         SelectedDevice="{Binding DeviceChooserVM.SelectedDevice, Mode=TwoWay}"
                         SetupCommand="{Binding DeviceChooserVM.SetupDialogCommand}"
@@ -68,7 +71,14 @@
                 </Grid>
             </GroupBox.Header>
         </GroupBox>
-        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+        <StackPanel
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Margin="10,0,10,10"
+            Visibility="{Binding DeviceChooserVM.HubSelected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <equip:HubDeviceStatusView DataContext="{Binding DeviceChooserVM.HubConfiguration}" ShowSeparator="False" />
+        </StackPanel>
+        <Grid Grid.Row="2" Grid.ColumnSpan="2">
             <Grid.Resources>
                 <DataTemplate x:Key="Generic">
                     <switch:Generic />

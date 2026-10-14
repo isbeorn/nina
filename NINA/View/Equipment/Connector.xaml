@@ -75,11 +75,22 @@
         <ComboBox
             Grid.Column="1"
             MinHeight="40"
-            IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
             IsSynchronizedWithCurrentItem="False"
             ItemTemplate="{StaticResource DeviceItemTemplate}"
             ItemsSource="{Binding Source={StaticResource GroupedDevices}}"
             SelectedItem="{Binding SelectedDevice}">
+            <ComboBox.Style>
+                <Style TargetType="ComboBox" BasedOn="{StaticResource StandardComboBox}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectionLocked}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Connected}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ComboBox.Style>
             <ComboBox.GroupStyle>
                 <GroupStyle ContainerStyle="{StaticResource ContainerStyle}" />
             </ComboBox.GroupStyle>
@@ -89,8 +100,17 @@
             Width="40"
             Height="40"
             Margin="1,0,0,0"
-            Command="{Binding SetupCommand}"
-            IsEnabled="{Binding HasSetupDialog}">
+            Command="{Binding SetupCommand}">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                    <Setter Property="IsEnabled" Value="{Binding HasSetupDialog}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectionLocked}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
             <Button.ToolTip>
                 <ToolTip ToolTipService.ShowOnDisabled="False">
                     <TextBlock Text="{ns:Loc LblSettings}" />
@@ -119,6 +139,7 @@
             Visibility="{Binding RefreshCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
         <Grid
             Grid.Column="4"
+            Visibility="{Binding ShowConnectionControls, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
             Width="40"
             Height="40"
             Margin="1,0,0,0"
@@ -133,11 +154,11 @@
                 Command="{Binding ConnectCommand}"
                 IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
                 ToolTip="{ns:Loc LblConnect}"
-                Visibility="{Binding Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                Visibility="{Binding ShowDisconnect, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
             <Button
                 Command="{Binding DisconnectCommand}"
-                IsEnabled="{Binding Connected}"
-                Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}">
+                IsEnabled="{Binding ShowDisconnect}"
+                Visibility="{Binding ShowDisconnect, Converter={StaticResource VisibilityConverter}}">
                 <Button.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="False">
                         <TextBlock Text="{ns:Loc LblDisconnect}" />

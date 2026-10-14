@@ -76,6 +76,10 @@ Sequence loading batches built-in container parent notifications while JSON is p
 
 Dirty-tracking property metadata is shared by runtime type and property name. Root lookup and named change-set evaluation remain per notification; the cache must never retain entity instances or cache their dirty state.
 
+## Hub Switch Targets
+
+`SetSwitchValue` retains legacy `SwitchIndex` data and optional `HubDeviceId` and `HubChannelId` fields. An index-only item captures device and native channel identity when it first resolves against a real composite or ordinary driver channel. Existing serialized field names remain unchanged. Once either identity field is present, validation and execution require one writable matching channel. Internal selection refresh, cloning and disconnect preserve identity. Writes prefer `ISwitchMediator.SetSwitchValueByIdentity`. The obsolete index API is used only when identity metadata is absent or the implementation reports unavailable identity support through `NotSupportedException`. Before that fallback, execution checks cancellation and resolves the saved identity again against current connected equipment, updating its numeric position. Missing, ambiguous or read-only targets and operational failures do not trigger a positional write.
+
 ## Target And Template Storage
 
 Two controllers manage user-authored sequence assets:

@@ -1,0 +1,95 @@
+<UserControl
+    x:Class="NINA.View.Equipment.HubConfigurationView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:equip="clr-namespace:NINA.View.Equipment"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    x:Name="Root">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="5">
+            <TextBlock
+                Margin="5,0,5,10"
+                Text="{ns:Loc LblHubAddDeviceHint}"
+                TextWrapping="Wrap"
+                Visibility="{Binding Rows, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}" />
+            <ItemsControl ItemsSource="{Binding Rows}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,0,0,5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Margin="0,0,5,0" VerticalAlignment="Center" Text="{Binding Settings.SourceNumber}" />
+                                <equip:Connector
+                                    Grid.Column="1"
+                                    Devices="{Binding Chooser.Devices}"
+                                    SelectedDevice="{Binding Chooser.SelectedDevice, Mode=TwoWay}"
+                                    HasSetupDialog="{Binding Chooser.SelectedDevice.HasSetupDialog}"
+                                    SetupCommand="{Binding Chooser.SetupDialogCommand}"
+                                    SetupDialogOpen="{Binding Chooser.SetupDialogOpen}"
+                                    SelectionLocked="{Binding ElementName=Root, Path=DataContext.Hub.IsSessionActive}"
+                                    ShowConnectionControls="False" />
+                                <Button
+                                    Grid.Column="2"
+                                    Width="40"
+                                    Height="40"
+                                    Margin="1,5,0,5"
+                                    Command="{Binding ElementName=Root, Path=DataContext.RemoveDeviceCommand}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip="{ns:Loc LblHubRemoveDevice}">
+                                    <Path Margin="5" Data="{StaticResource TrashCanSVG}" Fill="{StaticResource ButtonForegroundBrush}" Stretch="Uniform" />
+                                </Button>
+                            </Grid>
+                            <TextBlock
+                                Margin="5,0,5,5"
+                                Foreground="{StaticResource NotificationErrorBrush}"
+                                Text="{Binding Status.Error}"
+                                TextWrapping="Wrap"
+                                Visibility="{Binding Status.Error, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button
+                Height="40"
+                Margin="5,0,5,5"
+                HorizontalAlignment="Left"
+                Command="{Binding AddDeviceCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Path Width="20" Height="20" Margin="5" Data="{StaticResource AddSVG}" Fill="{StaticResource ButtonForegroundBrush}" Stretch="Uniform" />
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="{ns:Loc LblHubAddDevice}" />
+                </StackPanel>
+            </Button>
+            <ItemsControl
+                Margin="5,5,5,0"
+                IsEnabled="{Binding IsEditable}"
+                ItemsSource="{Binding Fields}"
+                Visibility="{Binding HasWeatherFields, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                Grid.IsSharedSizeScope="True">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,3,0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherHubField" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" Text="{Binding Name}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                MinHeight="40"
+                                Style="{StaticResource StandardComboBox}"
+                                DisplayMemberPath="Name"
+                                IsSynchronizedWithCurrentItem="False"
+                                ItemsSource="{Binding ElementName=Root, Path=DataContext.Sources}"
+                                SelectedValuePath="Id"
+                                SelectedValue="{Binding SourceId, Mode=TwoWay}" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -39,6 +39,26 @@ namespace NINA.View.Equipment {
             InitializeComponent();
 
             LayoutRoot.DataContext = this;
+            BindingOperations.SetBinding(this, IsConnectingProperty, new Binding("ConnectCommand.Execution.IsNotCompleted") {
+                Source = this,
+                FallbackValue = false
+            });
+        }
+
+        public static readonly DependencyProperty ShowConnectionControlsProperty =
+            DependencyProperty.Register(nameof(ShowConnectionControls), typeof(bool), typeof(Connector), new UIPropertyMetadata(true));
+
+        public bool ShowConnectionControls {
+            get => (bool)GetValue(ShowConnectionControlsProperty);
+            set => SetValue(ShowConnectionControlsProperty, value);
+        }
+
+        public static readonly DependencyProperty SelectionLockedProperty =
+            DependencyProperty.Register(nameof(SelectionLocked), typeof(bool), typeof(Connector), new UIPropertyMetadata(false));
+
+        public bool SelectionLocked {
+            get => (bool)GetValue(SelectionLockedProperty);
+            set => SetValue(SelectionLockedProperty, value);
         }
 
         public static readonly DependencyProperty ConnectCommandProperty =
@@ -66,11 +86,39 @@ namespace NINA.View.Equipment {
         }
 
         public static readonly DependencyProperty ConnectedProperty =
-            DependencyProperty.Register(nameof(Connected), typeof(bool), typeof(Connector), new UIPropertyMetadata(false));
+            DependencyProperty.Register(nameof(Connected), typeof(bool), typeof(Connector), new UIPropertyMetadata(false, ConnectionStateChanged));
 
         public bool Connected {
             get => (bool)GetValue(ConnectedProperty);
             set => SetValue(ConnectedProperty, value);
+        }
+
+        public static readonly DependencyProperty SessionActiveProperty =
+            DependencyProperty.Register(nameof(SessionActive), typeof(bool), typeof(Connector), new UIPropertyMetadata(false, ConnectionStateChanged));
+
+        public bool SessionActive {
+            get => (bool)GetValue(SessionActiveProperty);
+            set => SetValue(SessionActiveProperty, value);
+        }
+
+        public static readonly DependencyProperty IsConnectingProperty =
+            DependencyProperty.Register(nameof(IsConnecting), typeof(bool), typeof(Connector), new UIPropertyMetadata(false, ConnectionStateChanged));
+
+        public bool IsConnecting {
+            get => (bool)GetValue(IsConnectingProperty);
+            set => SetValue(IsConnectingProperty, value);
+        }
+
+        private static readonly DependencyPropertyKey ShowDisconnectPropertyKey =
+            DependencyProperty.RegisterReadOnly(nameof(ShowDisconnect), typeof(bool), typeof(Connector), new UIPropertyMetadata(false));
+
+        public static readonly DependencyProperty ShowDisconnectProperty = ShowDisconnectPropertyKey.DependencyProperty;
+
+        public bool ShowDisconnect => (bool)GetValue(ShowDisconnectProperty);
+
+        private static void ConnectionStateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+            var connector = (Connector)sender;
+            connector.SetValue(ShowDisconnectPropertyKey, connector.Connected || (connector.SessionActive && !connector.IsConnecting));
         }
 
         public static readonly DependencyProperty SelectedDeviceProperty =

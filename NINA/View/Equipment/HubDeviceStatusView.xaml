@@ -1,0 +1,108 @@
+<UserControl
+    x:Class="NINA.View.Equipment.HubDeviceStatusView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:NINA.View.Equipment"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    Margin="0,10,0,0"
+    Visibility="{Binding Hub.IsSessionActive, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
+    <Border BorderBrush="{StaticResource BorderBrush}">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="BorderThickness" Value="0,1,0,0" />
+                <Setter Property="Padding" Value="0,8,0,0" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ShowSeparator, RelativeSource={RelativeSource AncestorType=local:HubDeviceStatusView}}" Value="False">
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Padding" Value="0" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <ItemsControl Grid.IsSharedSizeScope="True" ItemsSource="{Binding Rows}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,4,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="HubConnectionStatus" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="HubSafetyStatus" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding DisplayName}"
+                            TextWrapping="Wrap" />
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <CheckBox
+                                Width="20"
+                                Height="20"
+                                Margin="0,0,5,0"
+                                BorderBrush="Transparent"
+                                IsChecked="{Binding Status.Connected, Mode=OneWay, FallbackValue=False}"
+                                IsEnabled="False"
+                                Style="{StaticResource CheckmarkCheckbox}"
+                                Visibility="{Binding IsUsed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            <TextBlock VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                        <Setter Property="Text" Value="{ns:Loc LblEquipmentHubDisconnected}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Status.Connected}" Value="True">
+                                                <Setter Property="Text" Value="{ns:Loc LblConnected}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsUsed}" Value="False">
+                                                <Setter Property="Text" Value="{ns:Loc LblEquipmentHubNotUsed}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="2"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal"
+                            Visibility="{Binding DataContext.HasSafetyStatus, RelativeSource={RelativeSource AncestorType=local:HubDeviceStatusView}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            <CheckBox
+                                Width="20"
+                                Height="20"
+                                Margin="0,0,5,0"
+                                BorderBrush="Transparent"
+                                IsChecked="{Binding Status.IsSafe, Mode=OneWay, FallbackValue=False}"
+                                IsEnabled="False"
+                                Style="{StaticResource CheckmarkCheckbox}" />
+                            <TextBlock VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                        <Setter Property="Text" Value="{ns:Loc LblEquipmentHubUnsafe}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Status.IsSafe}" Value="True">
+                                                <Setter Property="Text" Value="{ns:Loc LblEquipmentHubSafe}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            Margin="0,3,0,0"
+                            Text="{Binding Status.Error}"
+                            TextWrapping="Wrap"
+                            Visibility="{Binding Status.Error, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Border>
+</UserControl>

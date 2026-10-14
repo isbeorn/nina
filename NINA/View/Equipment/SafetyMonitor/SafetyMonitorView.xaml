@@ -37,9 +37,11 @@
                         CancelCommand="{Binding CancelConnectCommand}"
                         ConnectCommand="{Binding ConnectCommand}"
                         Connected="{Binding SafetyMonitorInfo.Connected}"
+                        SelectionLocked="{Binding DeviceChooserVM.HubConfiguration.Hub.IsSessionActive, FallbackValue=False}"
+                        SessionActive="{Binding DeviceChooserVM.HubConfiguration.Hub.IsSessionActive, FallbackValue=False}"
                         Devices="{Binding DeviceChooserVM.Devices}"
                         DisconnectCommand="{Binding DisconnectCommand}"
-                        HasSetupDialog="{Binding DeviceChooserVM.SelectedDevice.HasSetupDialog}"
+                        HasSetupDialog="{Binding DeviceChooserVM.HasSetupDialog}"
                         RefreshCommand="{Binding RescanDevicesCommand}"
                         SelectedDevice="{Binding DeviceChooserVM.SelectedDevice, Mode=TwoWay}"
                         SetupCommand="{Binding DeviceChooserVM.SetupDialogCommand}"
@@ -117,6 +119,9 @@
                             </UniformGrid>
                         </UniformGrid>
                     </Border>
+                    <StackPanel Visibility="{Binding DeviceChooserVM.HubSelected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <equip:HubDeviceStatusView DataContext="{Binding DeviceChooserVM.HubConfiguration}" />
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -150,7 +155,36 @@
                 <ContentControl
                     Content="{Binding}"
                     ContentTemplateSelector="{StaticResource ContentSelector}"
-                    DataContext="{Binding SafetyMonitor}" />
+                    DataContext="{Binding SafetyMonitor}"
+                    Visibility="{Binding DataContext.DeviceChooserVM.HubSelected, RelativeSource={RelativeSource AncestorType=equip:SafetyMonitorView}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                <ScrollViewer
+                    VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Disabled"
+                    Visibility="{Binding DeviceChooserVM.HubSelected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="5"
+                            Text="{ns:Loc LblNone}"
+                            Visibility="{Binding DeviceChooserVM.HubConfiguration.Rows, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}" />
+                        <ItemsControl ItemsSource="{Binding DeviceChooserVM.HubConfiguration.Rows}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="5,0,5,15">
+                                        <TextBlock
+                                            Margin="0,5,0,5"
+                                            FontWeight="Bold"
+                                            Text="{Binding DisplayName}"
+                                            TextWrapping="Wrap" />
+                                        <ContentControl
+                                            Content="{Binding}"
+                                            ContentTemplateSelector="{StaticResource ContentSelector}"
+                                            DataContext="{Binding Chooser.SelectedDevice}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
         </GroupBox>
     </UniformGrid>

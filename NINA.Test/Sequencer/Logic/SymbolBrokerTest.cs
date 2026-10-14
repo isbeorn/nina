@@ -3,6 +3,7 @@ using Moq;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Model.Equipment;
+using NINA.Equipment.Equipment.Hubs;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyDome;
 using NINA.Equipment.Equipment.MyFlatDevice;
@@ -425,6 +426,45 @@ namespace NINA.Test.Sequencer.Logic {
             ValidateSymbol(key: "Switch_TestSwitch4", expectedSuccess: true, expectedValue: 52.3);
             switchSettingsMock.Object.KnownReadonlySwitchSymbols.Should().Equal("TestSwitch1", "TestSwitch2");
             switchSettingsMock.Object.KnownWritableSwitchSymbols.Should().Equal("TestSwitch3", "TestSwitch4");
+        }
+
+        [Test]
+        public async Task CompositeSwitchLabels_KeepExistingGaugeAndSwitchExpressionKeys() {
+            var gauge = Mock.Of<ISwitch>(channel => channel.Id == 0 && channel.Name == "Voltage" && channel.Value == 12);
+            var output = Mock.Of<IWritableSwitch>(channel => channel.Id == 1 && channel.Name == "Relay" && channel.Value == 0.5);
+            var child = new Mock<ISwitchHub>();
+            child.SetupGet(device => device.Id).Returns("roof");
+            child.SetupGet(device => device.Name).Returns("Roof box");
+            child.SetupGet(device => device.Connected).Returns(true);
+            child.SetupGet(device => device.Switches).Returns(new ISwitch[] { gauge, output });
+            child.Setup(device => device.Connect(It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            var hub = new CompositeSwitchHub("Hub");
+            hub.Configure(new[] { new HubDevice(3, child.Object) });
+            try {
+                (await hub.Connect(CancellationToken.None)).Should().BeTrue();
+                hub.Switches.Select(channel => channel.Name).Should().Equal("Switch 1 - Voltage", "Switch 2 - Relay");
+                var info = new SwitchInfo {
+                    Connected = true,
+                    ReadonlySwitches = new System.Collections.ObjectModel.ReadOnlyCollection<ISwitch>(
+                        hub.Switches.Where(channel => channel is not IWritableSwitch).ToList()),
+                    WritableSwitches = new System.Collections.ObjectModel.ReadOnlyCollection<IWritableSwitch>(
+                        hub.Switches.OfType<IWritableSwitch>().ToList())
+                };
+
+                broker.UpdateDeviceInfo(info);
+                ValidateSymbol("Gauge_S3_C0_Roof_box_Voltage", true, 12d);
+                ValidateSymbol("Switch_S3_C1_Roof_box_Relay", true, 0.5d);
+                switchSettingsMock.Object.KnownReadonlySwitchSymbols.Should().Equal("S3_C0_Roof_box_Voltage");
+                switchSettingsMock.Object.KnownWritableSwitchSymbols.Should().Equal("S3_C1_Roof_box_Relay");
+                broker.UpdateDeviceInfo(new SwitchInfo { Connected = false });
+                ValidateUninitializedSymbol("Gauge_S3_C0_Roof_box_Voltage");
+                ValidateUninitializedSymbol("Switch_S3_C1_Roof_box_Relay");
+                broker.UpdateDeviceInfo(info);
+                ValidateSymbol("Gauge_S3_C0_Roof_box_Voltage", true, 12d);
+                ValidateSymbol("Switch_S3_C1_Roof_box_Relay", true, 0.5d);
+            } finally {
+                hub.Disconnect();
+            }
         }
 
         [Test]

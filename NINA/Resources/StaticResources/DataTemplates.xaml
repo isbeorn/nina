@@ -13,6 +13,7 @@
     xmlns:alpaca="clr-namespace:ASCOM.Common.Alpaca;assembly=ASCOM.Common"
     xmlns:camera="clr-namespace:NINA.Equipment.Equipment.MyCamera;assembly=NINA.Equipment"
     xmlns:equip="clr-namespace:NINA.View.Equipment"
+    xmlns:equipvm="clr-namespace:NINA.WPF.Base.ViewModel.Equipment;assembly=NINA.WPF.Base"
     xmlns:equipment="clr-namespace:NINA.Equipment.Equipment;assembly=NINA.Equipment"
     xmlns:flatdevice="clr-namespace:NINA.Equipment.Equipment.MyFlatDevice;assembly=NINA.Equipment"
     xmlns:focuser="clr-namespace:NINA.Equipment.Equipment.MyFocuser;assembly=NINA.Equipment"
@@ -32,6 +33,10 @@
     xmlns:view="clr-namespace:NINA.View"
     xmlns:vm="clr-namespace:NINA.ViewModel"
     xmlns:vm2="clr-namespace:NINA.WPF.Base.ViewModel;assembly=NINA.WPF.Base">
+
+    <DataTemplate DataType="{x:Type equipvm:HubConfigurationVM}">
+        <equip:HubConfigurationView MinWidth="600" MinHeight="180" MaxHeight="600" />
+    </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm2:MeridianFlipVM}">
         <view:MeridianFlipView />

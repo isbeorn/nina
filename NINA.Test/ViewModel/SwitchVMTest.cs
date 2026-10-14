@@ -200,8 +200,11 @@ namespace NINA.Test.ViewModel {
             writableSwitch.SetupGet(x => x.Value).Returns(() => currentValue);
             writableSwitch.Setup(x => x.SetValue()).Callback(() => currentValue = writableSwitch.Object.TargetValue);
             vm.WritableSwitches = new List<IWritableSwitch> { writableSwitch.Object };
+            vm.SwitchHub = CreateSwitchHub(connects: true).Object;
 
+#pragma warning disable CS0618 // Exercise the retained index API or its compatibility fallback.
             await vm.SetSwitchValue(0, 0.75, progress: null, ct: CancellationToken.None);
+#pragma warning restore CS0618
 
             writableSwitch.Object.TargetValue.Should().Be(0.75);
             writableSwitch.Verify(x => x.SetValue(), Times.Once);
@@ -218,10 +221,278 @@ namespace NINA.Test.ViewModel {
             Mock<IWritableSwitch> writableSwitch = CreateWritableSwitch(id: 0, name: "Relay", value: 0);
             vm.WritableSwitches = new List<IWritableSwitch> { writableSwitch.Object };
 
+#pragma warning disable CS0618 // Exercise the retained index API or its compatibility fallback.
             Func<Task> setMissingSwitch = () => vm.SetSwitchValue(2, 1, progress: null, ct: CancellationToken.None);
+#pragma warning restore CS0618
 
             await setMissingSwitch.Should().NotThrowAsync();
             writableSwitch.Verify(x => x.SetValue(), Times.Never);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task SetSwitchValueByIdentity_UsesCurrentWrapperAndIgnoresItsNumericId(bool throughMediator) {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(99, "Relay", 0);
+            var identity = target.As<ICompositeSwitchIdentity>();
+            identity.SetupGet(x => x.DeviceId).Returns("driver-b");
+            identity.SetupGet(x => x.ChannelId).Returns(7);
+            var preceding = CreateWritableSwitch(0, "Other relay", 0);
+            var hub = CreateSwitchHub(true);
+            hub.SetupGet(x => x.Switches).Returns(new ISwitch[] { preceding.Object, target.Object });
+            vm.SwitchHub = hub.Object;
+            vm.WritableSwitches = new List<IWritableSwitch> { preceding.Object, target.Object };
+            double value = 0;
+            target.SetupGet(x => x.Value).Returns(() => value);
+            target.Setup(x => x.SetValue()).Callback(() => value = target.Object.TargetValue);
+
+            if (throughMediator) {
+                ISwitchMediator mediator = new NINA.WPF.Base.Mediator.SwitchMediator();
+                mediator.RegisterHandler(vm);
+                await mediator.SetSwitchValueByIdentity("driver-b", 7, 0.75, null, CancellationToken.None);
+            } else {
+                await ((ISwitchVM)vm).SetSwitchValueByIdentity("driver-b", 7, 0.75, null, CancellationToken.None);
+            }
+
+            target.Object.TargetValue.Should().Be(0.75);
+            target.Verify(x => x.SetValue(), Times.Once);
+            preceding.Verify(x => x.SetValue(), Times.Never);
+        }
+
+        [TestCase("missing", false)]
+        [TestCase("duplicate", false)]
+        [TestCase("read-only", false)]
+        [TestCase("missing", true)]
+        [TestCase("duplicate", true)]
+        [TestCase("read-only", true)]
+        [TestCase("mixed-duplicate", true)]
+        [TestCase("wrong-device", true)]
+        public async Task SetSwitchValueByIdentity_RejectsInvalidTargets(string scenario, bool ordinaryDriver) {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(0, "Relay", 0);
+            if (!ordinaryDriver) {
+                var identity = target.As<ICompositeSwitchIdentity>();
+                identity.SetupGet(x => x.DeviceId).Returns("driver-b");
+                identity.SetupGet(x => x.ChannelId).Returns(7);
+            }
+            var channels = new List<ISwitch>();
+            if (scenario == "duplicate") {
+                channels.Add(target.Object);
+                channels.Add(target.Object);
+            } else if (scenario == "read-only" || scenario == "mixed-duplicate") {
+                var readOnly = new Mock<ISwitch>();
+                if (!ordinaryDriver) {
+                    var readOnlyIdentity = readOnly.As<ICompositeSwitchIdentity>();
+                    readOnlyIdentity.SetupGet(x => x.DeviceId).Returns("driver-b");
+                    readOnlyIdentity.SetupGet(x => x.ChannelId).Returns(7);
+                }
+                channels.Add(readOnly.Object);
+                if (scenario == "mixed-duplicate") {
+                    channels.Add(target.Object);
+                }
+            } else if (scenario == "wrong-device") {
+                channels.Add(target.Object);
+            }
+
+            var hub = CreateSwitchHub(true);
+            hub.SetupGet(x => x.Switches).Returns(channels);
+            vm.SwitchHub = hub.Object;
+            vm.WritableSwitches = new List<IWritableSwitch> { target.Object };
+
+            Func<Task> set = () => vm.SetSwitchValueByIdentity(
+                ordinaryDriver && scenario != "wrong-device" ? "switch-hub" : "driver-b",
+                ordinaryDriver ? (short)0 : (short)7, 1, null, CancellationToken.None);
+
+            await set.Should().ThrowAsync<InvalidOperationException>();
+            target.Verify(x => x.SetValue(), Times.Never);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task SetSwitchValueByIdentity_UsesOrdinaryDriverAndNativeChannelId(bool throughMediator) {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(7, "Relay", 0);
+            var preceding = CreateWritableSwitch(3, "Other relay", 0);
+            var hub = CreateSwitchHub(true);
+            hub.SetupGet(x => x.Switches).Returns(new ISwitch[] { preceding.Object, target.Object });
+            vm.SwitchHub = hub.Object;
+            vm.WritableSwitches = new List<IWritableSwitch> { preceding.Object, target.Object };
+            double value = 0;
+            target.SetupGet(x => x.Value).Returns(() => value);
+            target.Setup(x => x.SetValue()).Callback(() => value = target.Object.TargetValue);
+            ISwitchMediator mediator = new NINA.WPF.Base.Mediator.SwitchMediator();
+            mediator.RegisterHandler(vm);
+
+            if (throughMediator) {
+                await mediator.SetSwitchValueByIdentity("switch-hub", 7, 0.75, null, CancellationToken.None);
+            } else {
+                await ((ISwitchVM)vm).SetSwitchValueByIdentity("switch-hub", 7, 0.75, null, CancellationToken.None);
+            }
+
+            target.Object.TargetValue.Should().Be(0.75);
+            target.Verify(x => x.SetValue(), Times.Once);
+            preceding.Verify(x => x.SetValue(), Times.Never);
+        }
+
+        [TestCase("write")]
+        [TestCase("poll")]
+        public async Task NativeUnsupportedFailureDoesNotRetryThroughLegacyIndex(string phase) {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(0, "Relay", 0);
+            var identity = target.As<ICompositeSwitchIdentity>();
+            identity.SetupGet(x => x.DeviceId).Returns("driver-b");
+            identity.SetupGet(x => x.ChannelId).Returns(7);
+            var hub = CreateSwitchHub(true);
+            hub.SetupGet(x => x.Switches).Returns(new[] { target.Object });
+            vm.SwitchHub = hub.Object;
+            vm.WritableSwitches = new List<IWritableSwitch> { target.Object };
+            if (phase == "write") {
+                target.Setup(x => x.SetValue()).Throws(new NotSupportedException("driver failed"));
+            } else {
+                target.Setup(x => x.Poll()).Throws(new NotSupportedException("driver failed"));
+            }
+            ISwitchMediator mediator = new NINA.WPF.Base.Mediator.SwitchMediator();
+            mediator.RegisterHandler(vm);
+            vm.SwitchInfo.Connected = true;
+            vm.SwitchInfo.WritableSwitches = new System.Collections.ObjectModel.ReadOnlyCollection<IWritableSwitch>(vm.WritableSwitches);
+#pragma warning disable CS0618 // Exercise the retained index API or its compatibility fallback.
+            var item = new NINA.Sequencer.SequenceItem.Switch.SetSwitchValue(mediator);
+#pragma warning restore CS0618
+
+            Func<Task> execute = () => item.Execute(null, CancellationToken.None);
+
+            var failure = await execute.Should().ThrowAsync<InvalidOperationException>();
+            failure.Which.InnerException.Should().BeOfType<NotSupportedException>();
+            target.Verify(x => x.SetValue(), Times.Once);
+        }
+
+        [Test]
+        public async Task SetSwitchValueByIdentity_DisconnectedHubFailsWithoutWriting() {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(0, "Relay", 0);
+            var hub = CreateSwitchHub(false);
+            hub.SetupGet(x => x.Switches).Returns(new[] { target.Object });
+            vm.SwitchHub = hub.Object;
+            vm.WritableSwitches = new List<IWritableSwitch> { target.Object };
+
+            Func<Task> set = () => vm.SetSwitchValueByIdentity("switch-hub", 0, 1, null, CancellationToken.None);
+
+            await set.Should().ThrowAsync<InvalidOperationException>();
+            target.Verify(x => x.SetValue(), Times.Never);
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        public async Task SetSwitchValueByIdentity_FailedPollPropagatesThroughTask(int failedOnPoll) {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(0, "Relay", 0);
+            var hub = CreateSwitchHub(true);
+            hub.SetupGet(x => x.Switches).Returns(new[] { target.Object });
+            vm.SwitchHub = hub.Object;
+            vm.WritableSwitches = new List<IWritableSwitch> { target.Object };
+            int polls = 0;
+            target.Setup(x => x.Poll()).Returns(() => ++polls < failedOnPoll);
+
+            Func<Task> set = () => vm.SetSwitchValueByIdentity("switch-hub", 0, 1, null, CancellationToken.None);
+
+            await set.Should().ThrowAsync<InvalidOperationException>();
+        }
+
+        [Test]
+        public async Task SetSwitchValueByIdentity_DisconnectDuringAcknowledgementFails() {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(0, "Relay", 0);
+            var hub = CreateSwitchHub(true);
+            hub.SetupGet(x => x.Switches).Returns(new[] { target.Object });
+            bool connected = true;
+            hub.SetupGet(x => x.Connected).Returns(() => connected);
+            vm.SwitchHub = hub.Object;
+            vm.WritableSwitches = new List<IWritableSwitch> { target.Object };
+            int polls = 0;
+            target.Setup(x => x.Poll()).Callback(() => {
+                polls++;
+                if (polls == 2) {
+                    connected = false;
+                }
+            }).Returns(true);
+
+            Func<Task> set = () => vm.SetSwitchValueByIdentity("switch-hub", 0, 1, null, CancellationToken.None);
+
+            await set.Should().ThrowAsync<InvalidOperationException>();
+            polls.Should().Be(2);
+        }
+
+        [Test]
+        public async Task SetSwitchValueByIdentity_AcknowledgementTimeoutPropagatesThroughTask() {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(0, "Relay", 0);
+            var hub = CreateSwitchHub(true);
+            hub.SetupGet(x => x.Switches).Returns(new[] { target.Object });
+            vm.SwitchHub = hub.Object;
+            vm.WritableSwitches = new List<IWritableSwitch> { target.Object };
+
+            Func<Task> set = () => vm.SetSwitchValueByIdentity("switch-hub", 0, 1, null, CancellationToken.None);
+
+            await set.Should().ThrowAsync<TimeoutException>();
+        }
+
+        [Test]
+        public async Task SetSwitchValueByIdentity_CancellationWhileWaitingForAcknowledgementPropagates() {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(0, "Relay", 0);
+            var hub = CreateSwitchHub(true);
+            hub.SetupGet(x => x.Switches).Returns(new[] { target.Object });
+            vm.SwitchHub = hub.Object;
+            vm.WritableSwitches = new List<IWritableSwitch> { target.Object };
+            using var cancellation = new CancellationTokenSource();
+            target.Setup(x => x.SetValue()).Callback(cancellation.Cancel);
+
+            Func<Task> set = () => vm.SetSwitchValueByIdentity("switch-hub", 0, 1, null, cancellation.Token);
+
+            await set.Should().ThrowAsync<OperationCanceledException>();
+        }
+
+        [Test]
+        public async Task SetSwitchValueByIdentity_DoesNotRedirectCapturedTargetAfterListReplacement() {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(0, "Relay", 0);
+            var replacement = CreateWritableSwitch(0, "Replacement", 0);
+            var identity = target.As<ICompositeSwitchIdentity>();
+            identity.SetupGet(x => x.DeviceId).Returns("driver-b");
+            identity.SetupGet(x => x.ChannelId).Returns(7);
+            var hub = CreateSwitchHub(true);
+            hub.SetupGet(x => x.Switches).Returns(new[] { target.Object });
+            vm.SwitchHub = hub.Object;
+            vm.WritableSwitches = new List<IWritableSwitch> { target.Object };
+            target.SetupSet(x => x.TargetValue = 1).Callback(() => vm.WritableSwitches = new List<IWritableSwitch> { replacement.Object });
+
+            Func<Task> set = () => vm.SetSwitchValueByIdentity("driver-b", 7, 1, null, CancellationToken.None);
+
+            await set.Should().ThrowAsync<InvalidOperationException>();
+            target.Verify(x => x.SetValue(), Times.Never);
+            replacement.Verify(x => x.SetValue(), Times.Never);
+        }
+
+        [Test]
+        public void GetSwitchValues_DoesNotPollDisconnectedHubAndSamplesStateAfterPolling() {
+            var vm = CreateVm();
+            var target = CreateWritableSwitch(0, "Relay", 0);
+            var hub = CreateSwitchHub(false);
+            bool connected = false;
+            hub.SetupGet(x => x.Connected).Returns(() => connected);
+            hub.SetupGet(x => x.Switches).Returns(new[] { target.Object });
+            vm.SwitchHub = hub.Object;
+            var poll = typeof(SwitchVM).GetMethod("GetSwitchValues", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+
+            var values = (Dictionary<string, object>)poll.Invoke(vm, null)!;
+
+            values[nameof(SwitchInfo.Connected)].Should().Be(false);
+            target.Verify(x => x.Poll(), Times.Never);
+            connected = true;
+            target.Setup(x => x.Poll()).Callback(() => connected = false).Returns(false);
+            values = (Dictionary<string, object>)poll.Invoke(vm, null)!;
+            values[nameof(SwitchInfo.Connected)].Should().Be(false);
+            target.Verify(x => x.Poll(), Times.Once);
         }
 
         private SwitchVM CreateVm() {
@@ -230,6 +501,7 @@ namespace NINA.Test.ViewModel {
 
         private static Mock<ISwitchHub> CreateSwitchHub(bool connects) {
             Mock<ISwitchHub> switchHub = new Mock<ISwitchHub>();
+            switchHub.SetupGet(x => x.Connected).Returns(connects);
             switchHub.SetupGet(x => x.Id).Returns("switch-hub");
             switchHub.SetupGet(x => x.Name).Returns("Switch Hub");
             switchHub.SetupGet(x => x.DisplayName).Returns("Switch Hub Display");
@@ -244,6 +516,7 @@ namespace NINA.Test.ViewModel {
 
         private static Mock<IWritableSwitch> CreateWritableSwitch(short id, string name, double value) {
             Mock<IWritableSwitch> writableSwitch = new Mock<IWritableSwitch>();
+            writableSwitch.Setup(x => x.Poll()).Returns(true);
             writableSwitch.SetupGet(x => x.Id).Returns(id);
             writableSwitch.SetupGet(x => x.Name).Returns(name);
             writableSwitch.SetupGet(x => x.Value).Returns(value);

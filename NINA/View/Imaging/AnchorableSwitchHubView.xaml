@@ -42,7 +42,7 @@
             </CheckBox>
         </Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <Grid Margin="5,0,5,0" IsEnabled="{Binding SwitchHub, Converter={StaticResource InverseNullToBooleanConverter}, FallbackValue=False}">
+            <Grid Margin="5,0,5,0" IsEnabled="{Binding SwitchInfo.Connected, FallbackValue=False}">
                 <Grid.Resources>
                     <DataTemplate x:Key="Generic">
                         <StackPanel Orientation="Vertical">

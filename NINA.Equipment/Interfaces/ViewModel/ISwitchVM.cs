@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Equipment.Equipment.MySwitch;
 using System;
@@ -22,6 +23,12 @@ namespace NINA.Equipment.Interfaces.ViewModel {
 
     public interface ISwitchVM : IDeviceVM<SwitchInfo>, IDockableVM {
 
+        [Obsolete("Use SetSwitchValueByIdentity. Index-based writes are retained only when identity support is unavailable.")]
         Task SetSwitchValue(short switchIndex, double value, IProgress<ApplicationStatus> progress, CancellationToken ct);
+
+        Task SetSwitchValueByIdentity(string deviceId, short channelId, double value,
+                IProgress<ApplicationStatus> progress, CancellationToken token) {
+            return Task.FromException(new NotSupportedException(Loc.Instance["LblHubSwitchIdentityUnsupported"]));
+        }
     }
 }

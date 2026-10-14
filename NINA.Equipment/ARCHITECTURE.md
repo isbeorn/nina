@@ -71,6 +71,14 @@ The code supports multiple backends in parallel:
 
 The `Equipment/AscomDevice.cs` base class is the shared adapter foundation for many ASCOM/Alpaca implementations.
 
+## Equipment Hubs
+
+The built-in safety, switch and weather hubs expose the existing device interfaces. Shared session handling lives under `Equipment/Hubs`; category adapters own aggregation policy. Safety and switch require all children, while weather connects only explicitly mapped sources and preserves healthy readings when another source fails. Hub configuration is fixed for a connection session. Invalid configurations are rejected before connecting any child and report a localized notification with setup guidance, including when no child rows exist. Rejected initial sessions also report child connection errors before rollback clears cached state; cancellation remains silent.
+
+`IEquipmentHub` exposes cached child statuses and a connection refresh operation used by the existing equipment polling workers. Connected status requires a successful connection owned by the current session; rejected children remain disconnected even when native cleanup fails. Safety evaluations update individual `IsSafe` values from the same readings used for the aggregate result and continue evaluating healthy children after another child disconnects or throws. Full teardown clears cached runtime states. An established faulted session remains active until explicit disconnect.
+
+Composite switch channels carry the original device and channel IDs through `ICompositeSwitchIdentity`. Their aggregate IDs and display names are separate from that identity. Visible labels use a one-based switch number and preserve native channel text. `ExpressionName` retains the source and native channel qualifiers for existing expression identifiers; identity implementations that omit it default to their normal switch name. A failed switch session blocks writes until reconnect and previously issued channel objects remain invalid after reconnect. Bound target-value edits validate cached session state only; worker polling and writes retain live connection checks. Identity-based writes are exposed directly by `ISwitchMediator` and `ISwitchVM`. Their default implementations return a localized `NotSupportedException`, allowing existing implementations to omit the operation. The built-in mediator forwards to its handler and the switch VM resolves either the child device identity or an ordinary driver ID with its native channel ID before writing. Index-based `SetSwitchValue` is obsolete but retained for compatibility. `NotSupportedException` from the identity API signals unavailable support; the built-in VM wraps driver failures so they cannot trigger a second write through a legacy fallback.
+
 ## Special Integration: SBIG Camera Service
 
 This project also contains the SBIG-specific camera service bridge:

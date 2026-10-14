@@ -108,9 +108,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
         }
 
         private Dictionary<string, object> GetMonitorValues() {
+            var monitor = SafetyMonitor;
+            (monitor as IEquipmentHub)?.RefreshConnectionStatuses();
             Dictionary<string, object> safetyMonitorValues = new Dictionary<string, object>();
-            safetyMonitorValues.Add(nameof(SafetyMonitorInfo.Connected), SafetyMonitor?.Connected ?? false);
-            safetyMonitorValues.Add(nameof(SafetyMonitorInfo.IsSafe), SafetyMonitor?.IsSafe ?? false);
+            safetyMonitorValues.Add(nameof(SafetyMonitorInfo.Connected), monitor?.Connected ?? false);
+            safetyMonitorValues.Add(nameof(SafetyMonitorInfo.IsSafe), monitor?.IsSafe ?? false);
 
             return safetyMonitorValues;
         }

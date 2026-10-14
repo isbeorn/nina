@@ -57,6 +57,10 @@ This is also why many higher-level components subscribe to `ProfileChanged` inst
 
 `ImageFileSettingsExtensions.IsFilePathValid` exposes the result through the existing `IImageFileSettings` contract without adding an interface member. Custom interface implementations retain direct filesystem validation. Consumers should read the active profile's settings each time rather than retaining an old profile's result. Actual image saving still performs its own filesystem operations and error handling.
 
+## Equipment Hub Settings
+
+Safety, switch and weather settings expose hub configuration through the optional `IHasDeviceHubSettings` capability. Ordered child selections and stable source numbers are persisted in `DeviceHubSettings`; weather adds explicit field-to-device mappings in `WeatherHubSettings`. Collection and item edits bubble to the owning settings section so profile autosave sees nested changes. Profiles without these members receive empty defaults. Configuration consumers use `IDeviceHubSettings`, `IHubDeviceSettings` and `IWeatherHubSettings`. The owning sections retain concrete serialized `HubSettings` properties and implement the optional interface accessor explicitly, preserving saved member and type names. Runtime driver instances, connection statuses and safety readings are never serialized.
+
 ## Generated Plugin Settings Support
 
 `PluginSettingsTemplate.tt` generates strongly-typed storage and accessor code for plugin settings:

@@ -186,22 +186,24 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
         }
 
         private Dictionary<string, object> GetWeatherDataValues() {
+            var device = _weatherdev;
+            (device as IEquipmentHub)?.RefreshConnectionStatuses();
             Dictionary<string, object> weatherDataValues = new Dictionary<string, object> {
-                { nameof(WeatherDataInfo.Connected), _weatherdev?.Connected ?? false },
-                { nameof(WeatherDataInfo.AveragePeriod), _weatherdev?.AveragePeriod ?? double.NaN },
-                { nameof(WeatherDataInfo.CloudCover), _weatherdev?.CloudCover ?? double.NaN },
-                { nameof(WeatherDataInfo.DewPoint), _weatherdev?.DewPoint ?? double.NaN },
-                { nameof(WeatherDataInfo.Humidity), _weatherdev?.Humidity ?? double.NaN },
-                { nameof(WeatherDataInfo.Pressure), _weatherdev?.Pressure ?? double.NaN },
-                { nameof(WeatherDataInfo.RainRate), _weatherdev?.RainRate ?? double.NaN },
-                { nameof(WeatherDataInfo.SkyBrightness), _weatherdev?.SkyBrightness ?? double.NaN },
-                { nameof(WeatherDataInfo.SkyQuality), _weatherdev?.SkyQuality ?? double.NaN },
-                { nameof(WeatherDataInfo.SkyTemperature), _weatherdev?.SkyTemperature ?? double.NaN },
-                { nameof(WeatherDataInfo.StarFWHM), _weatherdev?.StarFWHM ?? double.NaN },
-                { nameof(WeatherDataInfo.Temperature), _weatherdev?.Temperature ?? double.NaN },
-                { nameof(WeatherDataInfo.WindDirection), _weatherdev?.WindDirection ?? double.NaN },
-                { nameof(WeatherDataInfo.WindGust), _weatherdev?.WindGust ?? double.NaN },
-                { nameof(WeatherDataInfo.WindSpeed), _weatherdev?.WindSpeed ?? double.NaN }
+                { nameof(WeatherDataInfo.Connected), device?.Connected ?? false },
+                { nameof(WeatherDataInfo.AveragePeriod), device?.AveragePeriod ?? double.NaN },
+                { nameof(WeatherDataInfo.CloudCover), device?.CloudCover ?? double.NaN },
+                { nameof(WeatherDataInfo.DewPoint), device?.DewPoint ?? double.NaN },
+                { nameof(WeatherDataInfo.Humidity), device?.Humidity ?? double.NaN },
+                { nameof(WeatherDataInfo.Pressure), device?.Pressure ?? double.NaN },
+                { nameof(WeatherDataInfo.RainRate), device?.RainRate ?? double.NaN },
+                { nameof(WeatherDataInfo.SkyBrightness), device?.SkyBrightness ?? double.NaN },
+                { nameof(WeatherDataInfo.SkyQuality), device?.SkyQuality ?? double.NaN },
+                { nameof(WeatherDataInfo.SkyTemperature), device?.SkyTemperature ?? double.NaN },
+                { nameof(WeatherDataInfo.StarFWHM), device?.StarFWHM ?? double.NaN },
+                { nameof(WeatherDataInfo.Temperature), device?.Temperature ?? double.NaN },
+                { nameof(WeatherDataInfo.WindDirection), device?.WindDirection ?? double.NaN },
+                { nameof(WeatherDataInfo.WindGust), device?.WindGust ?? double.NaN },
+                { nameof(WeatherDataInfo.WindSpeed), device?.WindSpeed ?? double.NaN }
             };
 
             return weatherDataValues;

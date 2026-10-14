@@ -24,6 +24,11 @@ namespace NINA.WPF.Base.Mediator {
 
     public class SwitchMediator : DeviceMediator<ISwitchVM, ISwitchConsumer, SwitchInfo>, ISwitchMediator {
 
+        public Task SetSwitchValueByIdentity(string deviceId, short channelId, double value, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            return handler.SetSwitchValueByIdentity(deviceId, channelId, value, progress, token);
+        }
+
+        [Obsolete("Use SetSwitchValueByIdentity. Index-based writes are retained only when identity support is unavailable.")]
         public Task SetSwitchValue(short switchIndex, double value, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             return handler.SetSwitchValue(switchIndex, value, progress, ct);
         }
