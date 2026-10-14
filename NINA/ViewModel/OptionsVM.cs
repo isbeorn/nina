@@ -612,7 +612,7 @@ namespace NINA.ViewModel {
         public ICommand CopyToAlternativeCustomSchemaCommand { get; private set; }
 
         [ObservableProperty]
-        private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
+        private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>(new[] {
             new CultureInfo("en-GB"),
             new CultureInfo("en-US"),
             new CultureInfo("de-DE"),
@@ -635,7 +635,7 @@ namespace NINA.ViewModel {
             new CultureInfo("nb-NO"),
             new CultureInfo("ko-KR"),
             new CultureInfo("hu-HU")
-        };
+        }.OrderBy(culture => culture.DisplayName));
 
         public CultureInfo Language {
             get => profileService.ActiveProfile.ApplicationSettings.Language;
