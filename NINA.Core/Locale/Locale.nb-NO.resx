@@ -414,15 +414,18 @@ uten stjerner, som f. eks. planeter, men kan være følsom for støy.</value>
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>Følgende slakk for fokusmotor vil bli lagret. INN: {0}, UT: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>Bias snittverdi (16 bit)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>Bias medianverdi (16 bit)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
@@ -542,6 +545,7 @@ i stand til å kompensere for endringer i omgivelsestemperatur</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>En Canon-feil oppstod: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Ta bilde og finn posisjon astrometrisk</value>
@@ -972,6 +976,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Nåværende gjennomsnitt</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Nåværende posisjon</value>
@@ -1020,6 +1025,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Demring</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>Dager</value>
@@ -1287,6 +1293,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>Skumring</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>Øst</value>
@@ -1469,6 +1476,7 @@ Når Bulb-funksjonen deaktiveres vil programmet ikke starte noen eksponering, og
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>Flatpanel-innstillinger</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Ugyldig respons fra flatpanel.</value>
@@ -1535,6 +1543,7 @@ Når Bulb-funksjonen deaktiveres vil programmet ikke starte noen eksponering, og
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>Innstillinger for flatbilde-assistenten</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>Avbryt flatbilde-assistenten</value>
@@ -1583,6 +1592,7 @@ Når Bulb-funksjonen deaktiveres vil programmet ikke starte noen eksponering, og
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>Fokalforhold</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Fokusmotor</value>
@@ -1712,6 +1722,7 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>Guideren sendte ikke SettleDone-melding etter forventet tid ({0}s + 10s). Hopper over.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Fortsettelse av guiding feilet</value>
@@ -1988,12 +1999,14 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>Snitt</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>Mål fokusmotor-slakk</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>Median</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>Meridianvending feilet</value>
@@ -2091,6 +2104,7 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Nei</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Ingen kamera</value>
@@ -2380,9 +2394,11 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>PHD2-port</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>PHD2 server vertsnavn</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2-innstillinger</value>
@@ -2419,6 +2435,7 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>PHD2-profil ID {0} finnes ikke. Bruker {1}</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>Piksler</value>
@@ -2428,18 +2445,22 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>Pikselstørrelse</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Pikselstørrelse i buesekunder</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>Pikselstørrelse</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>Pikselstørrelse X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Pikselstørrelse Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Planetarium</value>
@@ -3346,6 +3367,7 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
     <value>King</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>Egendefinert</value>
@@ -3418,9 +3440,11 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>Gjennomsnittlig strøm</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>Strøm</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>Enhetsinformasjon</value>
@@ -3670,27 +3694,35 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>Bayer-mønster som brukes i BAYERPAT-feltet i FITS eller XISF-bilder for bilder tatt med fargesensor.
@@ -3698,6 +3730,7 @@ Auto bruker mønster hentet fra kameradriveren. Gjelder ikke DSLR-kameraer.</val
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Gjeldende</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>Utfører valg for sekvensslutt</value>
@@ -3722,6 +3755,7 @@ Auto bruker mønster hentet fra kameradriveren. Gjelder ikke DSLR-kameraer.</val
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Tidsavbrudd for kamera - bilde var ikke klart etter eksponeringstid + {0} sekunder</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Forhåndsvisning</value>
@@ -4062,6 +4096,7 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>Side av søyle</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Tidsavbrudd for kamera</value>
@@ -4383,6 +4418,7 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>Lukk flatpanel-deksel</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Flytter fokusmotoren til en bestemt absolutt posisjon</value>
@@ -4437,6 +4473,7 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Parker teleskop</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>Svinger teleskopet til angitt elevasjon- og asimutvinkel</value>
@@ -4455,6 +4492,7 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>Avparker teleskop</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>Sett følging</value>
@@ -4494,12 +4532,14 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>Vent tidsperiode</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>Venter inntil angitt tidspunkt i tt:mm:ss-format, eller til automatisk beregnede tidspunkter for solnedgang, soloppgang og tussmørke</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>Vent til tidspunkt</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>Sentrer ved avdrift</value>
@@ -4731,6 +4771,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>Åpne flatpanel-deksel</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Setter lysstyrken til flatpanelet til angitt verdi</value>
@@ -4743,6 +4784,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>Slå lys av/på</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>Bruker innlært eksponeringstid for å ta flatbilder</value>
@@ -5400,9 +5442,11 @@ Et mindre antall gjør triggeren raskere til å reagere når fokusavstand faktis
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>En betingelse som gjentar instruksjonsblokken så lenge målet er over horisonten</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>Gjenta når over horisont</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>Målet vil aldri komme over horisonten</value>
@@ -5635,11 +5679,11 @@ Bare relevant ved bruk av en ASCOM-kameradriver!</value>
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Primær rate</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>Sekundær rate</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>Teleskopet kan ikke bevege primæraksen</value>
@@ -6601,6 +6645,7 @@ Når metadata er bekreftet, velg søkemotoren som skal brukes.</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>Kuppelen ble kommandert til å åpnes uten at sikkerhetsovervåker var tilkoblet. Åpning avbrytes.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>MERK: Disse innstillingene angår sikkerheten til utstyret. De må stilles inn med omhu ut fra din kunnskap om ditt spesifikke oppsett. Innstillingene omfatter kun N.I.N.A., og trer IKKE i kraft dersom N.I.N.A. ikke kjører eller ikke er tilkoblet det aktuelle utstyret. Sikkerhetsmekanismer for kuppel eller tak bør alltid ha mekanisk eller elektrisk forrigling som hindrer uønsket bevegelse av dome eller tak. Det er ditt ansvar å sørge for at disse innstillingene ikke er i konflikt med innstillingene i kuppelens driverinnstillinger.</value>
@@ -6789,7 +6834,7 @@ Dette bør bare deaktiveres hvis monteringen allerede har en pekemodell som man 
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>Kunne ikke ta flatbilder med filter {0}.
 Årsak: {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>Kunne ikke finne en lysstyrke for flatbildene - lyskilden er for sterk.
@@ -6913,18 +6958,23 @@ Reduser minste eksponeringstid eller vent til himmelen er mørkere.</value>
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>Utvidelse</value>
@@ -7115,17 +7165,19 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>Bruk IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>Bruk IPv4 for å oppdage ASCOM Alpaca enheter (Standard: på)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>Bruk IPv6</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>Bruk IPv6 for å oppdage ASCOM Alpaca enheter (Standard: av)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Objektkataloger</value>
@@ -7174,6 +7226,7 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>Under åpning av luke eller tak, rapporterte sikkerhetsovervåker om usikre forhold. Åpning avbrytes.</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>Ekstern kommando</value>
@@ -7980,21 +8033,27 @@ If exposure count is not important to you, enable this option to avoid having to
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
     <value>Value must be greater than or equal to {0}.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
     <value>Value must be greater than {0}.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
     <value>Value must be between {0} and {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
     <value>Value must be between {0} and less than {1}.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
     <value>Value must be greater than {0} and up to {1}.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
     <value>Value must be greater than {0} and less than {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>Notification work area</value>
