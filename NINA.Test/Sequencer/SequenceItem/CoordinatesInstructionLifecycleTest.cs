@@ -72,11 +72,15 @@ namespace NINA.Test.Sequencer.SequenceItem {
             AboveHorizonCondition? horizon = null;
             ISequenceEntity entity;
             if (entityName == nameof(AltitudeCondition)) {
-                altitude = new AltitudeCondition(profileServiceMock.Object);
+                altitude = new AltitudeCondition(profileServiceMock.Object) {
+                    ConditionWatchdog = Mock.Of<IConditionWatchdog>()
+                };
                 root.Add(altitude);
                 entity = altitude;
             } else if (entityName == nameof(AboveHorizonCondition)) {
-                horizon = new AboveHorizonCondition(profileServiceMock.Object);
+                horizon = new AboveHorizonCondition(profileServiceMock.Object) {
+                    ConditionWatchdog = Mock.Of<IConditionWatchdog>()
+                };
                 root.Add(horizon);
                 entity = horizon;
             } else {
@@ -185,10 +189,14 @@ namespace NINA.Test.Sequencer.SequenceItem {
             AltitudeCondition? altitude = null;
             AboveHorizonCondition? horizon = null;
             if (entityName == nameof(AltitudeCondition)) {
-                altitude = new AltitudeCondition(profileServiceMock.Object);
+                altitude = new AltitudeCondition(profileServiceMock.Object) {
+                    ConditionWatchdog = Mock.Of<IConditionWatchdog>()
+                };
                 root.Add(altitude);
             } else if (entityName == nameof(AboveHorizonCondition)) {
-                horizon = new AboveHorizonCondition(profileServiceMock.Object);
+                horizon = new AboveHorizonCondition(profileServiceMock.Object) {
+                    ConditionWatchdog = Mock.Of<IConditionWatchdog>()
+                };
                 root.Add(horizon);
             } else {
                 instruction = CreateInstruction(entityName);
@@ -402,8 +410,12 @@ namespace NINA.Test.Sequencer.SequenceItem {
             new SequenceRootContainer().Add(target);
             var source = new Coordinates(Angle.ByHours(21.5575056), Angle.ByDegree(-0.82325), Epoch.J2000);
             SetTarget(target, source, 0);
-            var altitude = aboveHorizon ? null : new AltitudeCondition(profileServiceMock.Object);
-            var horizon = aboveHorizon ? new AboveHorizonCondition(profileServiceMock.Object) : null;
+            var altitude = aboveHorizon ? null : new AltitudeCondition(profileServiceMock.Object) {
+                ConditionWatchdog = Mock.Of<IConditionWatchdog>()
+            };
+            var horizon = aboveHorizon ? new AboveHorizonCondition(profileServiceMock.Object) {
+                ConditionWatchdog = Mock.Of<IConditionWatchdog>()
+            } : null;
             var condition = (NINA.Sequencer.Conditions.SequenceCondition?)altitude ?? horizon!;
             var data = altitude?.Data ?? horizon!.Data;
             var ra = altitude?.RaExpression ?? horizon!.RaExpression;
@@ -440,8 +452,12 @@ namespace NINA.Test.Sequencer.SequenceItem {
             new SequenceRootContainer().Add(target);
             var source = new Coordinates(Angle.ByHours(21.5575056), Angle.ByDegree(-0.82325), Epoch.J2000);
             SetTarget(target, source, 0);
-            var altitude = aboveHorizon ? null : new AltitudeCondition(profileServiceMock.Object);
-            var horizon = aboveHorizon ? new AboveHorizonCondition(profileServiceMock.Object) : null;
+            var altitude = aboveHorizon ? null : new AltitudeCondition(profileServiceMock.Object) {
+                ConditionWatchdog = Mock.Of<IConditionWatchdog>()
+            };
+            var horizon = aboveHorizon ? new AboveHorizonCondition(profileServiceMock.Object) {
+                ConditionWatchdog = Mock.Of<IConditionWatchdog>()
+            } : null;
             var data = altitude?.Data ?? horizon!.Data;
             var ra = altitude?.RaExpression ?? horizon!.RaExpression;
             var dec = altitude?.DecExpression ?? horizon!.DecExpression;
