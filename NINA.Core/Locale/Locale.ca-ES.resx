@@ -1180,10 +1180,10 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>Nombre típic de píxels per utilitzar. El Dithering segueix una distribució normal centrada a l'objectiu, essent aquest valor la desviació estàndard. El 67% dels dithers estaran a aquesta distància</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>Moviment mínim de dither</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>Nombre mínim de píxels de la càmera principal que es desplacen entre posicions successives de dither de la muntura. Estableix-lo a 0 per preservar el comportament aleatori existent. El valor no pot superar els píxels de dither.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Només Dither en AR</value>
@@ -1307,7 +1307,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>Activar escalat de bit</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>Desa imatges de 8/10/12/14 bits amb escalat a 16 bits. Només és rellevant per als controladors natius d'Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony i ToupTek.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Activat</value>
@@ -2516,7 +2516,7 @@ HFR calculat: {2}    </value>
     <value>Interval, en minuts, entre dos intents de resolució de plaques (platesolve)</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>El centratge ha fallat després de {0} intents de correcció</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Resolució de plaques (platesolve) de la imatge actual</value>
@@ -2651,7 +2651,7 @@ HFR calculat: {2}    </value>
     <value>Convertidor fitxers Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>Els fitxers raw de les DSLR es converteixen amb LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Soroll de lectura en e</value>
@@ -2982,7 +2982,7 @@ Aquesta plantilla s'utilitzarà al començament per inicialitzar la seqüència 
     <value>Gira</value>
   </data>
   <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
+    <value>El desplaçament ha fallat</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Gira i centra</value>
@@ -3444,11 +3444,11 @@ Quan estigui activat, els canals de color s’estiraran per separat, ajudant a a
     <value>Control Automàtic de Rosada</value>
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
-    <value>Mitjana Actual</value>
+    <value>Corrent mitjà</value>
     <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Actual</value>
+    <value>Corrent</value>
     <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
@@ -4542,7 +4542,7 @@ En cas que calgui una durada més llarga, es pot especificar una durada i l’ap
     <value>Espera l'hora especificada en el format hh:mm:ss. A més, hi ha disponible una caixa d’utilitat per omplir-la automàticament a la posta de sol, al capvespre, a l’alba i a la sortida del sol</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
-    <value>Esperar un Temps</value>
+    <value>Esperar fins a l'hora indicada</value>
     <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
@@ -4611,7 +4611,7 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
     <value>Resume Tracking and Flip</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>Estabilització</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>La càmera no té un refrigerador i no pot configurar la temperatura</value>
@@ -6980,7 +6980,7 @@ Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</va
     <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
-    <value>USN A2.0</value>
+    <value>USNO A2.0</value>
     <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
@@ -7040,7 +7040,7 @@ Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</va
     <value>Show Local Horizon</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
-    <value>Show star measurements in arcseconds</value>
+    <value>Mostra les mesures de les estrelles en segons d'arc</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Només info</value>
@@ -7827,64 +7827,64 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
     <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
-    <value>Define Variable</value>
+    <value>Definir variable</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
     <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
-    <value>Define Constant</value>
+    <value>Definir constant</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
-    <value>Set Variable</value>
+    <value>Establir variable</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+    <value>Si la variable s'ha definit prèviament, el seu valor esdevindrà el resultat de l'expressió</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
-    <value>Set Variable to Date/Time</value>
+    <value>Assignar una data/hora a la variable</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+    <value>Si la variable s'ha definit prèviament, el seu valor esdevindrà la data/hora especificada</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
-    <value>Loop While</value>
+    <value>Bucle mentre</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
-    <value>Loops while the Expression is not false</value>
+    <value>Repeteix el bucle mentre l'expressió no sigui falsa</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
-    <value>Wait Until</value>
+    <value>Espera fins</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
-    <value>Waits until the Expression is true</value>
+    <value>Espera fins que l'expressió sigui certa</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
-    <value>Random double value between 0.0 and 1.0.</value>
+    <value>Valor aleatori de doble precisió entre 0,0 i 1,0.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
-    <value>Current Unix timestamp in seconds.</value>
+    <value>Marca de temps actual d'Unix en segons.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
-    <value>Hour component (0-23) of a datetime or the current time.</value>
+    <value>Component horari (0-23) d'una data i hora o l'hora actual.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
-    <value>Minute component (0-59) of a datetime or the current time.</value>
+    <value>Component de minuts (0-59) d'una data i hora o l'hora actual.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
-    <value>Day of the month (1-31) of a datetime or the current date.</value>
+    <value>Dia del mes (1-31) d'una data i hora o la data actual.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1-12) of a datetime or the current date.</value>
+    <value>Mes (1-12) d'una data i hora o la data actual.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
-    <value>Year component of a datetime or the current date.</value>
+    <value>Component de l'any d'una data i hora o de la data actual.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
-    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+    <value>Dia de la setmana com a nombre enter (0 = diumenge … 6 = dissabte).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
-    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+    <value>Data i hora més els minuts especificats (marca de temps d'Unix).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
     <value>Datetime plus the specified hours (Unix timestamp).</value>
@@ -7974,7 +7974,7 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
     <value>Rounded value to the nearest integer or specified decimal places.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
-    <value>Sign of a number.</value>
+    <value>Signe d'un nombre.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
     <value>Sinus de l'angle especificat.</value>
@@ -8059,7 +8059,7 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
     <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>El valor ha de ser superior a {0} i superior a {1}.</value>
+    <value>El valor ha de ser superior a {0} i inferior o igual a {1}.</value>
     <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
@@ -8191,7 +8191,7 @@ This is useful when a built-in trigger has the timing you need, but you want cus
     <value>Select a state to undo or redo to it.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Actual</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
     <value>(saved)</value>
