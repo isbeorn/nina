@@ -410,15 +410,18 @@
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>다음 포커서 백래시 값이 저장됩니다. 인: {0}, 아웃: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>베타</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>바이어스 평균값(16비트)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>바이어스 중간 값(16비트)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>비닝</value>
@@ -515,7 +518,7 @@ Dec: {1}</value>
     <value>카메라 옵션</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Camera Parameters</value>
+    <value>카메라 매개변수</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>카메라 상태</value>
@@ -537,6 +540,7 @@ Dec: {1}</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>캐논 오류: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>이미지 촬영 및 플레이트솔브</value>
@@ -569,12 +573,12 @@ Dec: {1}</value>
     <value>변경</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>노출 횟수</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence has been modified since it was last saved (changes to {0}).
+    <value>마지막으로 저장한 이후 시퀀스가 수정되었습니다({0} 변경).
         
-Do you want to continue and lose the changes anyway?</value>
+변경 사항을 버리고 계속하시겠습니까?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>수정된 시퀀스 닫기</value>
@@ -966,6 +970,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>현재 평균 값</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>현재 위치</value>
@@ -989,7 +994,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>다크 프레임 촬영</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
-    <value>D.A.R.V. Go-To</value>
+    <value>D.A.R.V. Go-To 이동</value>
   </data>
   <data name="LblDARVSlewButtonTooltip" xml:space="preserve">
     <value>망원경을 한쪽으로 천천히 Go-To 하면서 촬영합니다. 극축정렬의 오류가 있는 경우 선이 정렬되지 않습니다.</value>
@@ -1016,6 +1021,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>박명</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>일</value>
@@ -1105,10 +1111,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>디지털 Sky Survey</value>
   </data>
   <data name="LblMountDitherDuration" xml:space="preserve">
-    <value>Mount dither Duration</value>
+    <value>가대 디더 지속 시간</value>
   </data>
   <data name="LblMountDitherDurationTooltip" xml:space="preserve">
-    <value>Typical pulse duration in seconds</value>
+    <value>일반적인 펄스 지속 시간(초)</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>Ra 가이드 속도</value>
@@ -1123,10 +1129,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Dec 가이드 속도, 아크초/초</value>
   </data>
   <data name="LblMountDitherConnectionFail" xml:space="preserve">
-    <value>Mount Dither could not connect to Mount</value>
+    <value>가대 디더가 가대에 연결하지 못했습니다</value>
   </data>
   <data name="LblMountDitherMountDisconnect" xml:space="preserve">
-    <value>Mount has been disconnected. Mount Dither will disconnect. Dithering no longer effective!</value>
+    <value>가대 연결이 끊어졌습니다. 가대 디더의 연결을 해제합니다. 더 이상 디더링이 작동하지 않습니다!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>이미지를 저장할 폴더를 찾을 수 없습니다!</value>
@@ -1168,10 +1174,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>디더링할 일반적인 픽셀 수입니다. 디더링은 목표 값을 중심으로 정규 분포를 따르며, 이 목표 값은 표준 편차를 사용합니다. 67%의 디더링이 이 범위 내에 있을 것입니다.</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>최소 디더 이동량</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>가대 디더의 연속 위치 사이에서 이동할 최소 메인 카메라 픽셀 수입니다. 기존의 무작위 동작을 유지하려면 0으로 설정하세요. 이 값은 디더 픽셀 수를 초과할 수 없습니다.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Ra 만 디더링</value>
@@ -1283,18 +1289,19 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>황혼</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>동</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
+    <value>카메라가 수동 또는 벌브 모드로 설정되어 있지 않습니다. 모드 다이얼을 수동 또는 벌브로 설정하세요. 동영상/사진 전환 스위치가 있는 카메라는 사진으로 설정하세요.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>비트 스케일링 활성화</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>8/10/12/14비트 이미지를 16비트로 스케일링하여 저장합니다. Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony 및 ToupTek의 네이티브 드라이버에만 해당합니다.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>활성화됨</value>
@@ -1315,7 +1322,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>카메라 예열[Warm Camera]</value>
   </data>
   <data name="LblEpoch" xml:space="preserve">
-    <value>Epoch</value>
+    <value>역기</value>
   </data>
   <data name="LblEquipment" xml:space="preserve">
     <value>장비</value>
@@ -1466,6 +1473,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>플랫 패널 설정</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>플랫 패널에서 잘못된 응답이 발생했습니다.</value>
@@ -1532,6 +1540,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>플랫 마법사 설정</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>플랫 마법사 취소</value>
@@ -1580,6 +1589,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>초점비</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>포커서</value>
@@ -1597,16 +1607,16 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>오토포커스에 사용되는 초점 단계의 크기입니다. 한 단계는 임계 허용 오차보다 작아야 합니다.</value>
   </data>
   <data name="LblManualStepSmallMultiplier" xml:space="preserve">
-    <value>Small Step Multiplier</value>
+    <value>작은 스텝 배수</value>
   </data>
   <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+    <value>포커서 수동 이동 시 작은 스텝의 배수(기본값: 0.5)</value>
   </data>
   <data name="LblManualStepLargeMultiplier" xml:space="preserve">
-    <value>Large Step Multiplier</value>
+    <value>큰 스텝 배수</value>
   </data>
   <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+    <value>포커서 수동 이동 시 큰 스텝의 배수(기본값: 5.0)</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>백래시 인/아웃</value>
@@ -1708,6 +1718,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>가이더가 예상시간({0}초 + 10초)가 경과해도 SattleDone 메시지를 보내지 않았습니다. 건너띕니다.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>가이더 재개 실패</value>
@@ -1899,7 +1910,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>불러오기</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
+    <value>선택한 프로파일이 다른 N.I.N.A. 인스턴스에서 사용 중이거나 알 수 없는 문제로 불러올 수 없습니다. 자세한 내용은 로그 파일을 확인하세요.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>시퀀스 불러오기</value>
@@ -1984,12 +1995,14 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>평균</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>포커서 백래시 측정</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>중간 값</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>자오선 플립 실패</value>
@@ -2087,6 +2100,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>아니오</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>카메라 없음</value>
@@ -2294,10 +2308,10 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>NINA내부 OpenWeatherMap API 클라이언트</value>
   </data>
   <data name="LblOpenMeteoClientDescription" xml:space="preserve">
-    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+    <value>OpenMeteo의 일기 예보 API를 사용합니다. 날씨 데이터는 10분마다 새로 고쳐집니다.</value>
   </data>
   <data name="LblOpenMeteoClientInfo" xml:space="preserve">
-    <value>NINA internal OpenMeteo API client</value>
+    <value>NINA 내장 OpenMeteo API 클라이언트</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>옵션</value>
@@ -2376,9 +2390,11 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>PHD2 서버 포트</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Hostname</value>
+    <value>PHD2 서버 호스트 이름</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 설정</value>
@@ -2414,6 +2430,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>PHD2 프로필 ID {0} 을 찾을 수 없습니다. {1} 을 사용합니다</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>픽셀</value>
@@ -2423,18 +2440,22 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>픽셀 스케일</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>픽셀 스케일[아크초/픽셀]</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>픽셀 크기</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>픽셀 크기 X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>픽셀 크기 Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>플라네타리움</value>
@@ -2455,7 +2476,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>플라네타리움 기본설정</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Import the currently selected planetarium object to update name and coordinates</value>
+    <value>플라네타륨에서 현재 선택한 천체를 가져와 이름과 좌표를 업데이트합니다</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>선택된 개체의 좌표</value>
@@ -2488,7 +2509,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>두 플레이트솔빙 시도 간 지연 시간[분]</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>{0}번의 보정 시도 후에도 중심을 맞추지 못했습니다</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>현재 이미지 플레이트솔브</value>
@@ -2623,7 +2644,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>Raw 변환기</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>DSLR RAW 파일은 LibRaw로 변환됩니다.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>e에서 노이즈 읽기</value>
@@ -2632,7 +2653,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>모드</value>
   </data>
   <data name="LblReadout" xml:space="preserve">
-    <value>Readout</value>
+    <value>센서 읽기</value>
   </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>카메라의 읽기 모드에 해당하는 숫자</value>
@@ -2773,10 +2794,10 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>DSLR 네이티브 드라이버를 사용할 때 이 설정은 무시됨. 이미지는 카메라의 Raw 포맷으로 저장됩니다.</value>
   </data>
   <data name="LblSaveNativeCameraRaw" xml:space="preserve">
-    <value>Save native camera RAW</value>
+    <value>카메라의 원본 RAW 저장</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>활성화하면 Nikon 및 Canon 카메라의 원본 이미지를 카메라 RAW 파일로 저장합니다. 비활성화하면 옵션 &gt; 이미징 &gt; 파일 설정에 따라 이미지를 저장합니다.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>선택된 프로필을 저장하고, 다음에 묻지 않기</value>
@@ -2954,7 +2975,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>Go-To</value>
   </data>
   <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
+    <value>Go-To 실패</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Go-To와 중심</value>
@@ -3242,7 +3263,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>하루의 고정된 시간으로부터의 오프셋[분]</value>
   </data>
   <data name="LblTo" xml:space="preserve">
-    <value>To</value>
+    <value>까지</value>
   </data>
   <data name="LblTools" xml:space="preserve">
     <value>도구</value>
@@ -3294,7 +3315,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>타겟 내 모든 시퀀스 목록의 진행도 초기화</value>
   </data>
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
+    <value>현재 타겟 세트의 모든 타겟 진행 상황 재설정</value>
   </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>시퀀스 시작</value>
@@ -3340,7 +3361,8 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>달</value>
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
-    <value>왕[King]</value>
+    <value>King</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>사용자 정의</value>
@@ -3355,13 +3377,13 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>서쪽 통과[Transit South]</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
-    <value>North</value>
+    <value>북</value>
   </data>
   <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
+    <value>남</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>남중 시각</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>추세와 쌍곡선</value>
@@ -3415,9 +3437,11 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>평균 전류</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>전류</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>장비 정보</value>
@@ -3507,10 +3531,10 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>URL</value>
   </data>
   <data name="LblCopyURL" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>URL 복사</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
-    <value>USB Limit</value>
+    <value>USB 제한</value>
   </data>
   <data name="LblUseBlindSolveFailover" xml:space="preserve">
     <value>플레이트솔브 실패, 블라인드솔버를 사용하시겠습니까?</value>
@@ -3667,27 +3691,35 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>컬러 센서에서 생성된 이미지의 FITS 또는 XISF 이미지 헤더에 있는 BAYERPAT 키워드에 사용되는 베이어 배열입니다.
@@ -3695,6 +3727,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>현재</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>시퀀스 종료 옵션</value>
@@ -3719,6 +3752,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>카메라 시간 초과 - 카메라가 노출시간 + {0} 초 후에 이미지를 준비하지 못했습니다.</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>패턴 미리보기</value>
@@ -4055,7 +4089,8 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>망원경이 파킹되었습니다. Go-To 하기 전 망원경의 파킹 해제가 필요합니다.</value>
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
-    <value>Side of Pier</value>
+    <value>피어 기준 망원경 위치</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>카메라 시간 초과</value>
@@ -4319,13 +4354,13 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>딥스카이 대상 명령 세트</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
-    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+    <value>이 명령 세트에 도달하면 시퀀서 식을 확인합니다. 참이면 안에 있는 명령을 한 번 실행합니다. 거짓이면 건너뜁니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>조건부 명령 세트에는 식이 필요합니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>조건부 명령 세트</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>이 명령어세트의 모든 명령은 병렬로 실행됩니다. 명령어세트는 모든 명령이 완료될 때까지 조건 이나 트리거 를 확인하지 않습니다.</value>
@@ -4377,6 +4412,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>플랫 패널 커버 닫기</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>포커서를 지정된 절대 위치로 이동합니다.</value>
@@ -4431,6 +4467,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>망원경 파킹</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>망원경을 주어진 고도 및 방위 좌표까지 Go-To 시킵니다.</value>
@@ -4449,6 +4486,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>망원경 파킹 해제</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>추적 설정</value>
@@ -4488,12 +4526,14 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>지정 시간 대기</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>지정된 시간[hh:mm:ss 포맷] 만큼 대기합니다. 추가적으로 유틸리티 박스를 사용 할 수 있습으며, 자동으로 일몰, 황혼, 새벽, 일출 정보가 자동으로 설정됩니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>지정 시간 대기</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>이동 후 중심잡기</value>
@@ -4508,13 +4548,13 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>HFR 증가 후 오토포커스</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-    <value>HFR trend per filter</value>
+    <value>필터별 HFR 추세</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-    <value>When disabled, the HFR trend is evaluated across all filters combined. 
-This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
-and a temperature sensitive optics on a quickly changing ambient temperature. 
-Note: This mode requires that HFR differences between filters in your setup are small.</value>
+    <value>비활성화하면 모든 필터를 합쳐 HFR 추세를 평가합니다. 
+필터를 자주 변경하며 촬영하고 주변 온도가 빠르게 변할 때 온도에 민감한 광학계를 사용하는 경우
+오토포커스 실행을 더 일찍 시작하는 데 도움이 될 수 있습니다. 
+참고: 이 모드를 사용하려면 장비 구성에서 필터 간 HFR 차이가 작아야 합니다.</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>마지막 오토포커스 또는 시퀀스 시작 이후로 주어진 양만큼 온도가 변경된 후 오토포커스를 시작하는 트리거</value>
@@ -4535,34 +4575,34 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>자오선 플립</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
-    <value>Programmable Meridian Flip</value>
+    <value>동작 지정 자오선 플립</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
-    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+    <value>플립 전후의 동작을 지정할 수 있는 자오선 플립 트리거입니다.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
-    <value>Before Flip Actions</value>
+    <value>플립 전 동작</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
-    <value>After Flip Actions</value>
+    <value>플립 후 동작</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting for the meridian flip.</value>
+    <value>자오선 플립을 기다리기 전에 실행할 명령입니다.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after the meridian flip.</value>
+    <value>자오선 플립 후 실행할 명령입니다.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
-    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+    <value>이 단계들은 짧게 구성하세요. 플립 전 동작이 길면 자오선 플립이 지연될 수 있습니다.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
-    <value>Wait For Flip Window</value>
+    <value>플립 가능 시간대까지 대기</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
-    <value>Resume Tracking and Flip</value>
+    <value>추적 재개 및 플립</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>안정화</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>카메라에 쿨러가 없어 온도를 설정할 수 없습니다.</value>
@@ -4646,7 +4686,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>템플릿</value>
   </data>
   <data name="LblLinkedTemplates" xml:space="preserve">
-    <value>Linked Templates</value>
+    <value>연결된 템플릿</value>
   </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>기본 템플릿</value>
@@ -4655,10 +4695,10 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>시퀀스에서 시퀀스 명령 세트를 여기에 드롭하여 새 템플릿을 생성합니다.</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
-    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+    <value>템플릿을 놓을 때 Ctrl을 누르면 복사하는 대신 연결하여 추가합니다.</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
-    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
+    <value>연결된 템플릿은 원본 템플릿과의 연결을 유지합니다. 시퀀스에는 내용이 읽기 전용 미리보기로 표시되며 템플릿이 변경되면 자동으로 새로 고쳐집니다. 원본 템플릿을 수정하려면 연결된 템플릿에서 템플릿 편집을 사용하세요. 독립적인 복사본이 필요하면 일반적인 방식으로 끌어 놓으세요.</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>템플릿을 덮어씌울까요?</value>
@@ -4725,6 +4765,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>플랫 패널 커버 열기</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>플랫 장치의 밝기를 지정된 값으로 설정합니다.</value>
@@ -4737,6 +4778,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>조명 전환</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>지정된 매개변수에 대해 산출된 노출 값을 조회하고 플랫 노출을 수행합니다.</value>
@@ -5022,58 +5064,58 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>현재 명령 집합과 모든 내용을 재사용을 위해 템플릿으로 저장</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
-    <value>Linked Template</value>
+    <value>연결된 템플릿</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
-    <value>Linked Template: {0}</value>
+    <value>연결된 템플릿: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
-    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+    <value>시퀀스 템플릿을 복사하는 대신 원본에 대한 연결을 추가합니다. 시퀀스에서 확인할 수 있도록 현재 템플릿 내용이 이 컨테이너 안에 표시되지만 템플릿 편집을 활성화하기 전까지는 읽기 전용입니다. 원본 템플릿이 변경되면 이 컨테이너가 자동으로 최신 버전으로 업데이트됩니다. 실행 중에는 N.I.N.A.가 템플릿 로드가 완료될 때까지 기다린 후 현재 템플릿 내용을 실행합니다. 연결된 템플릿이 타겟 컨테이너를 기반으로 하더라도 템플릿에는 재사용 가능한 시퀀스 구조만 저장됩니다. 이번 사용에 적용할 타겟을 선택하려면 연결된 템플릿 위에 타겟을 놓으세요. 템플릿이 새로 고쳐질 때마다 N.I.N.A.가 해당 타겟을 다시 적용합니다. 여러 시퀀스에서 같은 템플릿을 따라야 할 때 사용하세요. 독립적인 복사본이 필요하면 일반적인 방식으로 템플릿을 끌어 놓으세요. 연결된 템플릿 메뉴에서 추가하거나 Ctrl을 누른 채 템플릿을 시퀀스에 놓으면 연결하여 추가할 수 있습니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
-    <value>Linked template preview</value>
+    <value>연결된 템플릿 미리보기</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
-    <value>Editing linked template</value>
+    <value>연결된 템플릿 편집 중</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
-    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+    <value>"{0}"의 읽기 전용 미리보기입니다. 원본 템플릿을 변경하려면 템플릿 편집을 사용하세요.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
-    <value>Editing the source template. Saving updates the template for every linked use.</value>
+    <value>원본 템플릿을 편집 중입니다. 저장하면 이 템플릿을 연결하여 사용하는 모든 곳에 변경 사항이 반영됩니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
-    <value>Waiting for template "{0}" to finish loading.</value>
+    <value>템플릿 "{0}"의 로드가 완료되기를 기다리는 중입니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
-    <value>Template "{0}" could not be found.</value>
+    <value>템플릿 "{0}"을(를) 찾을 수 없습니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
-    <value>This linked template does not have a valid source template.</value>
+    <value>이 연결된 템플릿에는 유효한 원본 템플릿이 없습니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
-    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+    <value>기본 템플릿은 직접 편집할 수 없습니다. 먼저 사용자 템플릿으로 저장하세요.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
-    <value>Edit Template</value>
+    <value>템플릿 편집</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
-    <value>Save Template</value>
+    <value>템플릿 저장</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
-    <value>Cancel Template Editing</value>
+    <value>템플릿 편집 취소</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
-    <value>Target: {0}</value>
+    <value>타겟: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
-    <value>No target selected. Drop a target here or enter target details below.</value>
+    <value>선택된 타겟이 없습니다. 여기에 타겟을 놓거나 아래에 타겟 정보를 입력하세요.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
-    <value>Use this target with the linked template</value>
+    <value>연결된 템플릿에 이 타겟 사용</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
-    <value>Select a target for this linked template before running the sequence.</value>
+    <value>시퀀스를 실행하기 전에 이 연결된 템플릿에 사용할 타겟을 선택하세요.</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>안전 모니터가 연결되어 있지 않습니다.</value>
@@ -5410,9 +5452,11 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>타겟이 수평선 위로 있는 동안 반복하고, 그 후 현재 명령 세트를 중지하는 조건</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
-    <value>지평선 위에 있을 때 까지 반복</value>
+    <value>대상이 지평선 위에 있는 동안 반복</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>타겟은 수평선 위로 오지 않습니다.</value>
@@ -5548,7 +5592,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>회전 장치의 지정된 기계 각도로 이동합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotate to mechanical angle</value>
+    <value>기계적 각도로 회전</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>자오선</value>
@@ -5648,12 +5692,12 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>글꼴</value>
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
-    <value>보조축 속도</value>
-    <comment>Primary telescope axis rate</comment>
+    <value>주축 속도</value>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>보조축 속도</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>망원경의 기본 축을 이동 할 수 없습니다.</value>
@@ -5910,7 +5954,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>기계적 범위 시작</value>
   </data>
   <data name="LblRotatorRangeFull" xml:space="preserve">
-    <value>Full</value>
+    <value>전체</value>
   </data>
   <data name="LblRotatorRangeFullTooltip" xml:space="preserve">
     <value>기계적 위치에 제한이 없습니다.</value>
@@ -6027,10 +6071,10 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>{0} 이 컴퓨터에서 연결이 끊어졌습니다. USB연결과 전원을 확인하세요.</value>
   </data>
   <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
-    <value>{0} is already in use by another program. Please close this program before trying to reconnect, or reconnect the camera to the PC.</value>
+    <value>{0}을(를) 다른 프로그램에서 사용 중입니다. 다시 연결하기 전에 해당 프로그램을 닫거나 카메라를 PC에 다시 연결하세요.</value>
   </data>
   <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
-    <value>{0} is already in use by EOS Utility. Please close EOS Utility, including any background tasks, before trying to reconnect.</value>
+    <value>{0}을(를) EOS Utility에서 사용 중입니다. 다시 연결하기 전에 백그라운드 작업을 포함하여 EOS Utility를 종료하세요.</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>캐논 SDK에서 내부 오류가 발생했습니다. 신뢰할 수 없는 카메라 조작으로 인해 발생할 수 있음</value>
@@ -6148,7 +6192,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>이미지 저장 실패</value>
   </data>
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+    <value>이미지를 저장하지 못했습니다. 저장 위치의 디스크 여유 공간이 부족할 수 있습니다.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>현재 망원경의 위치로부터 좌표 획득</value>
@@ -6305,19 +6349,19 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>날짜</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>일</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>월</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>연도</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
     <value>관측</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>관측 날짜와 시각을 현재 시각으로 재설정</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>명령</value>
@@ -6332,7 +6376,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>명령 전송</value>
   </data>
   <data name="LblBoolean" xml:space="preserve">
-    <value>Boolean</value>
+    <value>불리언</value>
   </data>
   <data name="LblDevice" xml:space="preserve">
     <value>장치</value>
@@ -6635,6 +6679,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>개방이 중단되었습니다. 셔터 또는 돔을 열도록 명령했지만 안전 모니터 장치가 분리되었습니다.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>주의: 이 설정은 장비 안전과 관련이 있습니다. 신중하게 고려해야 하며 설정에 대한 지식이 충분해야 합니다. N.I.N.A에 접속되어 있는 기기만 제어 및 관리하는 것이며, N.I.N.A에 접속되어 있지 않은 경우 아무런 효과가 없습니다. 돔이나 지붕의 원치 않는 움직임을 방지하기 위해 안전 메커니즘은 항상 HW백업과 전기 연동장치를 갖추고 있어야 합니다. 이 설정과 돔 드라이버의 설정이 일치하지 않는 것에 대한 책임은 본인에게 있습니다.</value>
@@ -6692,7 +6737,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>이슬 방지 열선 강도 설정</value>
   </data>
   <data name="LblColoredContainerBorders" xml:space="preserve">
-    <value>Colored Container Borders</value>
+    <value>컨테이너 테두리에 색상 표시</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>하드웨어 가속</value>
@@ -6736,7 +6781,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>연결된 ZWO 장치에 할당할 수 있는 ASCII 8자 이름입니다. 이를 통해 동일한 장치 모델을 고유하게 식별 할 수 있습니다.</value>
   </data>
   <data name="LblDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>연결된 장치에 지정할 수 있는 최대 8자의 ASCII 이름입니다. 같은 모델의 장치를 여러 개 사용하는 경우 각 장치를 고유하게 식별할 수 있습니다.</value>
   </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>단방향</value>
@@ -6745,7 +6790,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>보정</value>
   </data>
   <data name="LblNmeaSerialGnss" xml:space="preserve">
-    <value>NMEA Serial GNSS</value>
+    <value>NMEA 직렬 GNSS</value>
   </data>
   <data name="LblPrimaLuceLabEagle" xml:space="preserve">
     <value>PrimaLuceLab Eagle</value>
@@ -6824,7 +6869,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>필터 {0} 의 플랫 마법사 실패.
 원인: {1}}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>플랫 패널의 밝기를 확인하지 못했습니다. (광원이 너무 밝습니다.)
@@ -6908,13 +6953,13 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>TheSkyX Imagelink</value>
   </data>
   <data name="LblTSXHost" xml:space="preserve">
-    <value>TheSkyX Host</value>
+    <value>TheSkyX 호스트</value>
   </data>
   <data name="LblTSXPort" xml:space="preserve">
     <value>TheSkyX 포트</value>
   </data>
   <data name="LblZwoMonoBinMode" xml:space="preserve">
-    <value>Mono bin</value>
+    <value>모노 비닝</value>
   </data>
   <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
     <value>활성화 되면, 카메라가 평균 비닝 픽셀을 사용하여 단색으로 출력합니다.</value>
@@ -6948,18 +6993,23 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>확장장</value>
@@ -6974,22 +7024,22 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>참조 카탈로그에서 선택하는 별의 한계 등급 (최소=2.0, 최대=20.0, 기본=20.0)</value>
   </data>
   <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
-    <value>AllSky API host</value>
+    <value>AllSky API 호스트</value>
   </data>
   <data name="LblPinPointAllSkyApiHostToolTip" xml:space="preserve">
     <value>Astrometry.net/AllSky API host (기본 값= nova.astrometry.net)</value>
   </data>
   <data name="LblPinPointAllSkyApiKey" xml:space="preserve">
-    <value>AllSky API key</value>
+    <value>AllSky API 키</value>
   </data>
   <data name="LblPinPointAllSkyApiKeyToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API key (optional)</value>
+    <value>Astrometry.net/AllSky API 키(선택 사항)</value>
   </data>
   <data name="LblPinPointAllSkySolve" xml:space="preserve">
-    <value>PinPoint AllSky solve</value>
+    <value>PinPoint AllSky 솔브</value>
   </data>
   <data name="LblPinPointLocalSolve" xml:space="preserve">
-    <value>PinPoint local solve</value>
+    <value>PinPoint 로컬 솔브</value>
   </data>
   <data name="LblPinPointErrorMessage" xml:space="preserve">
     <value>PinPoint 오류 메시지</value>
@@ -7011,13 +7061,13 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>히스토그램 보기</value>
   </data>
   <data name="LblShowHorizon" xml:space="preserve">
-    <value>Show Local Horizon</value>
+    <value>현지 수평선 표시</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
-    <value>Show star measurements in arcseconds</value>
+    <value>별 측정값을 각초로 표시</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
-    <value>Info Only</value>
+    <value>정보만 표시</value>
   </data>
   <data name="LblInfoOnlyTooltip" xml:space="preserve">
     <value>패널 내에서 정보 내용만 표시하는 것과 컨트롤을 표시하는 것 사이 전환</value>
@@ -7090,10 +7140,10 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>망원경의 파킹이 {0} 분 후 취소됩니다.</value>
   </data>
   <data name="LblDomeParkTimeout" xml:space="preserve">
-    <value>Dome park has timed out after {0} minutes.</value>
+    <value>{0}분이 지나 돔 파킹 제한 시간이 초과되었습니다.</value>
   </data>
   <data name="LblDomeParkFailed" xml:space="preserve">
-    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+    <value>돔이 멈췄지만 드라이버가 파킹 상태를 확인하지 않았습니다.</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>망원경의 파킹 해제가 {0} 분 후 취소 됩니다.</value>
@@ -7150,23 +7200,25 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>IPv4 사용</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
-    <value>ASCOM Alpaca 디바이스 검색에 IPv6 사용(기본값: 켜짐)</value>
+    <value>ASCOM Alpaca 디바이스 검색에 IPv4 사용(기본값: 켜짐)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>IPv6 사용</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>ASCOM Alpaca 디바이스 검색에 IPv6 사용(기본값: 꺼짐)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>카탈로그 표시 전환</value>
   </data>
   <data name="LblToggleShowAllCatalogues" xml:space="preserve">
-    <value>Show all catalogues</value>
+    <value>모든 카탈로그 표시</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>타겟 고도</value>
@@ -7209,6 +7261,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>셔터 또는 루프를 열라고 명령했지만 안전 모니터 장치에서 안전하지 않은 상태를 보고합니다. 열림이 중단되었습니다</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>외부 명령</value>
@@ -7220,1026 +7273,1032 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>'{0}'에서 외부 명령을 찾을 수 없습니다</value>
   </data>
   <data name="LblFocuserMoveTimeout" xml:space="preserve">
-    <value>Focuser movement has timed out after {0} minutes.</value>
+    <value>{0}분이 지나 포커서 이동 제한 시간이 초과되었습니다.</value>
   </data>
   <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
-    <value>Failure to resolve PHD2 server hostname: {0}</value>
+    <value>PHD2 서버 호스트 이름을 확인하지 못했습니다: {0}</value>
   </data>
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
-    <value>PHD2 server hostname has not been set</value>
+    <value>PHD2 서버 호스트 이름이 설정되지 않았습니다</value>
   </data>
   <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+    <value>현재 색상 설정의 색상을 조정 가능한 "Alternative Custom" 색상 설정에 복사합니다</value>
   </data>
   <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+    <value>현재 색상 설정의 색상을 조정 가능한 "Custom" 색상 설정에 복사합니다</value>
   </data>
   <data name="LblLight" xml:space="preserve">
-    <value>Light</value>
+    <value>조명</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
-    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+    <value>저장된 도킹 구성 파일에서 이미징 탭 레이아웃을 불러옵니다</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
-    <value>Load Imaging Layout</value>
+    <value>이미징 레이아웃 불러오기</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
-    <value>The selected file is not a valid Imaging layout backup</value>
+    <value>선택한 파일이 유효한 이미징 레이아웃 백업이 아닙니다</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
-    <value>Select an existing Imaging layout backup file</value>
+    <value>기존 이미징 레이아웃 백업 파일을 선택하세요</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
-    <value>Saves the current sequence at the specified file path</value>
+    <value>현재 시퀀스를 지정한 파일 경로에 저장합니다</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
     <value>시퀀스 저장</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
-    <value>File path is invalid</value>
+    <value>파일 경로가 유효하지 않습니다</value>
   </data>
   <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
-    <value>There is no Weather Underground API key configured.</value>
+    <value>Weather Underground API 키가 설정되지 않았습니다.</value>
   </data>
   <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
-    <value>There is no Weather Underground station configured.</value>
+    <value>Weather Underground 관측소가 설정되지 않았습니다.</value>
   </data>
   <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
-    <value>Weather Underground API did not respond.</value>
+    <value>Weather Underground API가 응답하지 않았습니다.</value>
   </data>
   <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
-    <value>Weather Underground API request failed: {0}</value>
+    <value>Weather Underground API 요청이 실패했습니다: {0}</value>
   </data>
   <data name="LblZwoResetZeroPosition" xml:space="preserve">
-    <value>Set current position to zero</value>
+    <value>현재 위치를 0으로 설정</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
     <value>반전</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
-    <value>Set max step</value>
+    <value>최대 이동 위치 설정(스텝)</value>
   </data>
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
-    <value>Set current position to zero?</value>
+    <value>현재 위치를 0으로 설정하시겠습니까?</value>
   </data>
   <data name="LblCrosshair" xml:space="preserve">
-    <value>Crosshair</value>
+    <value>십자선</value>
   </data>
   <data name="LblGpsd" xml:space="preserve">
     <value>GPSD</value>
   </data>
   <data name="LblGnssInvalidHost" xml:space="preserve">
-    <value>Failed to resolve {0} host: {1}</value>
+    <value>{0} 호스트를 확인하지 못했습니다: {1}</value>
   </data>
   <data name="LblErrorNoHostSpecified" xml:space="preserve">
-    <value>No host specified in settings</value>
+    <value>설정에 호스트가 지정되지 않았습니다</value>
   </data>
   <data name="LblBlindSolveSettings" xml:space="preserve">
-    <value>Blind Solver Settings</value>
+    <value>블라인드 솔버 설정</value>
   </data>
   <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
-    <value>Warning: "Use telescope side of pier" in meridian flip settings is disabled and may cause alignment issues for equatorial mounts with domes near the meridian. The dome will assume a meridian flip occurs precisely at the meridian, potentially leading to misalignment if the mount has not yet flipped.</value>
+    <value>경고: 자오선 플립 설정에서 "망원경의 피어 기준 위치 사용"이 비활성화되어 있습니다. 돔을 사용하는 적도의식 가대가 자오선 근처에 있을 때 정렬 문제가 발생할 수 있습니다. 돔은 자오선에서 정확히 플립이 일어나는 것으로 간주하므로 가대가 아직 플립하지 않았다면 정렬이 어긋날 수 있습니다.</value>
   </data>
   <data name="LblCompleteDuration" xml:space="preserve">
-    <value>Complete duration</value>
+    <value>전체 소요 시간</value>
   </data>
   <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
-    <value>Lock sequencer to prevent any manual edits or drag and drop</value>
+    <value>수동 편집과 끌어 놓기를 방지하도록 시퀀서를 잠급니다</value>
   </data>
   <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
-    <value>Unlock sequencer to allow manual edits and drag and drop</value>
+    <value>수동 편집과 끌어 놓기를 허용하도록 시퀀서 잠금을 해제합니다</value>
   </data>
   <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Disable all drag and drop in the sequencer and sidebar</value>
+    <value>시퀀서와 사이드바의 모든 끌어 놓기를 비활성화합니다</value>
   </data>
   <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Enable all drag and drop in the sequencer and sidebar</value>
+    <value>시퀀서와 사이드바의 모든 끌어 놓기를 활성화합니다</value>
   </data>
   <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
-    <value>Invalid focal length!</value>
+    <value>초점 거리가 유효하지 않습니다!</value>
   </data>
   <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
-    <value>Unable to load image - please enter your telescope's effective focal length in the camera parameter section!</value>
+    <value>이미지를 불러올 수 없습니다. 카메라 매개변수 항목에 망원경의 유효 초점 거리를 입력하세요!</value>
   </data>
   <data name="LblSiteName" xml:space="preserve">
-    <value>Site name</value>
+    <value>관측지 이름</value>
     <comment>Observatory site</comment>
   </data>
   <data name="LblObservatory" xml:space="preserve">
-    <value>Observatory</value>
+    <value>천문대</value>
   </data>
   <data name="LblObserver" xml:space="preserve">
-    <value>Observer</value>
+    <value>관측자</value>
     <comment>The person who is doing the observations</comment>
   </data>
   <data name="LblDomeFollowingShort" xml:space="preserve">
-    <value>Following</value>
+    <value>연동 추적</value>
     <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
   </data>
   <data name="LblDomeFollowingViaNINA" xml:space="preserve">
-    <value>Dome following via N.I.N.A.</value>
+    <value>N.I.N.A.를 통한 돔 연동 추적</value>
   </data>
   <data name="LblDomeFollowingViaDriver" xml:space="preserve">
-    <value>via Driver</value>
+    <value>드라이버를 통해</value>
     <comment>If the dome following logic is managed by the driver</comment>
   </data>
   <data name="LblWorldMap" xml:space="preserve">
-    <value>World Map</value>
+    <value>세계 지도</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
     <value>장치 연결</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
-    <value>For the selected device, the device save in the profile will be connected.</value>
+    <value>선택한 장치 유형에 대해 프로파일에 저장된 장치를 연결합니다.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
     <value>연결</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
-    <value>Disconnect Equipment</value>
+    <value>장비 연결 해제</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
-    <value>Disconnects the selected device</value>
+    <value>선택한 장치의 연결을 해제합니다</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
-    <value>Connect All Equipment</value>
+    <value>모든 장비 연결</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
-    <value>Connect to all devices that are saved in the profile</value>
+    <value>프로파일에 저장된 모든 장치에 연결합니다</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
-    <value>Disconnect All Equipment</value>
+    <value>모든 장비 연결 해제</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
-    <value>Disconnects all currently connected devices</value>
+    <value>현재 연결된 모든 장치의 연결을 해제합니다</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
-    <value>Reconnect Camera On Download Failure</value>
+    <value>다운로드 실패 시 카메라 다시 연결</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
-    <value>A trigger that will fire when the camera failed to download an exposure and will try to reconnect the camera. When reconnecting the cooler state and dew heater state will also be restored.</value>
+    <value>카메라가 노출 이미지를 다운로드하지 못하면 실행되어 카메라 재연결을 시도하는 트리거입니다. 다시 연결할 때 냉각기와 이슬 방지 히터 상태도 복원합니다.</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
-    <value>Reconnect Equipment</value>
+    <value>장비 다시 연결</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
-    <value>A trigger that will fire when the selected device is disconnected and will try to reconnect to it.</value>
+    <value>선택한 장치의 연결이 끊어지면 실행되어 재연결을 시도하는 트리거입니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
-    <value>Switch Profile</value>
+    <value>프로파일 전환</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
-    <value>Disconnects all devices that are currently connected, switches to the specified profile and reconnects all devices of the specified profile.</value>
+    <value>현재 연결된 모든 장치의 연결을 해제하고 지정한 프로파일로 전환한 후 해당 프로파일의 모든 장치를 다시 연결합니다.</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
     <value></value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
-    <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
+    <value>{0}번의 시도 후에도 회전 각도를 찾지 못했습니다. 회전 장치의 반전 설정이 올바른지 확인하세요.</value>
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
-    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+    <value>패널을 잠그면 닫기나 재배치가 방지되고 잠금을 해제하면 조정할 수 있습니다.</value>
   </data>
   <data name="LblGnssFix2D" xml:space="preserve">
-    <value>Current fix is 2D. A 3D fix is required</value>
+    <value>현재 측위는 2D입니다. 3D 측위가 필요합니다</value>
   </data>
   <data name="LblMJDFormatDescription" xml:space="preserve">
-    <value>Modified Julian Date</value>
+    <value>수정 율리우스일</value>
   </data>
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
-    <value>Open cover when done</value>
+    <value>완료 후 덮개 열기</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
   <data name="LblCivilDusk" xml:space="preserve">
-    <value>Civil dusk</value>
+    <value>시민박명 종료</value>
   </data>
   <data name="LblCivilDawn" xml:space="preserve">
-    <value>Civil dawn</value>
+    <value>시민박명 시작</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
-    <value>Refuse mount unpark if shutter is not open</value>
+    <value>셔터가 열려 있지 않으면 가대 파킹 해제 거부</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
-    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+    <value>돔 셔터나 지붕이 열려 있지 않으면 가대 파킹을 해제할 수 없습니다</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
-    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+    <value>셔터나 지붕의 상태가 닫힘, 닫는 중, 여는 중 또는 오류인 경우 가대 파킹 해제 시도를 거부합니다. 셔터나 지붕이 열림 상태를 보고할 때만 가대 파킹 해제가 허용됩니다</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
-    <value>There is no civil dawn at your location today.</value>
+    <value>오늘 현재 위치에는 시민박명이 시작되는 시각이 없습니다.</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
-    <value>There is no civil dusk at your location today.</value>
+    <value>오늘 현재 위치에는 시민박명이 끝나는 시각이 없습니다.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
-    <value>There is no astronomical dawn at your location today.</value>
+    <value>오늘 현재 위치에는 천문박명이 시작되는 시각이 없습니다.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
-    <value>There is no astronomical dusk at your location today.</value>
+    <value>오늘 현재 위치에는 천문박명이 끝나는 시각이 없습니다.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
-    <value>There is no nautical dawn at your location today.</value>
+    <value>오늘 현재 위치에는 항해박명이 시작되는 시각이 없습니다.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
-    <value>There is no nautical dusk at your location today.</value>
+    <value>오늘 현재 위치에는 항해박명이 끝나는 시각이 없습니다.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
-    <value>There is no sunrise at your location today.</value>
+    <value>오늘 현재 위치에는 일출이 없습니다.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
-    <value>There is no sunset at your location today.</value>
+    <value>오늘 현재 위치에는 일몰이 없습니다.</value>
   </data>
   <data name="LblUnableToConnectTo" xml:space="preserve">
-    <value>Unable to connect to {0}</value>
+    <value>{0}에 연결할 수 없습니다</value>
     <comment>Parameters: {0}=Url or device etc</comment>
   </data>
   <data name="LblCameraNoSupport16bit" xml:space="preserve">
-    <value>Camera does not support 16 bit mode</value>
+    <value>카메라가 16비트 모드를 지원하지 않습니다</value>
   </data>
   <data name="LblExposureInProgress" xml:space="preserve">
-    <value>Another exposure still in progress. Cancel it to start another.</value>
+    <value>다른 노출이 아직 진행 중입니다. 새 노출을 시작하려면 진행 중인 노출을 취소하세요.</value>
   </data>
   <data name="LblFailedToConnectDevice" xml:space="preserve">
-    <value>Failed to connect {0}, {1}</value>
+    <value>{0} 연결 실패, {1}</value>
     <comment>Parameters: 0=Device ID, 1=error message</comment>
   </data>
   <data name="LblGenericCameraError" xml:space="preserve">
-    <value>Camera reported a generic error and needs to be reconnected!</value>
+    <value>카메라에서 일반 오류를 보고했습니다. 다시 연결해야 합니다!</value>
   </data>
   <data name="LblCameraDisconnected" xml:space="preserve">
-    <value>Camera disconnected! Maybe USB connection was interrupted.</value>
+    <value>카메라 연결이 끊어졌습니다! USB 연결이 중단되었을 수 있습니다.</value>
   </data>
   <data name="LblMetaGuideListenerError" xml:space="preserve">
-    <value>MetaGuide Listener Error: {0}</value>
+    <value>MetaGuide 수신기 오류: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPostFailed" xml:space="preserve">
-    <value>Failed to post {0} message</value>
+    <value>{0} 메시지를 보내지 못했습니다</value>
     <comment>Parameters: {0}=message type</comment>
   </data>
   <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
-    <value>Guiding is not active. Unable to dither</value>
+    <value>가이딩이 활성화되어 있지 않습니다. 디더링할 수 없습니다</value>
   </data>
   <data name="LblFailedCommsMGENDither" xml:space="preserve">
-    <value>Failed to communicate to MGEN during dithering</value>
+    <value>디더링 중 MGEN과 통신하지 못했습니다</value>
   </data>
   <data name="LblPHDError" xml:space="preserve">
-    <value>PHD Error: {0}
-CODE: {1}</value>
+    <value>PHD 오류: {0}
+코드: {1}</value>
     <comment>Parameters: {0}=error message, {1}=error code</comment>
   </data>
   <data name="LblPHDErrorMsg" xml:space="preserve">
-    <value>PHD Error: {0}</value>
+    <value>PHD 오류: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblTWCNoAPIKey" xml:space="preserve">
-    <value>There is no TheWeatherCompany API key configured.</value>
+    <value>TheWeatherCompany API 키가 설정되지 않았습니다.</value>
   </data>
   <data name="LblFileNotExist" xml:space="preserve">
-    <value>File {0} does not exist</value>
+    <value>{0} 파일이 없습니다</value>
     <comment>Parameters: {0}=file path</comment>
   </data>
   <data name="LblASTAPNoOutputFile" xml:space="preserve">
-    <value>ASTAP - Plate solve failed. No output file found.</value>
+    <value>ASTAP - 플레이트 솔브에 실패했습니다. 출력 파일을 찾을 수 없습니다.</value>
   </data>
   <data name="LblASTAPSolveFailed" xml:space="preserve">
-    <value>ASTAP - Plate solve failed.
+    <value>ASTAP - 플레이트 솔브에 실패했습니다.
 {0}
 {1}</value>
     <comment>Parameters: {0}=warning, {1}=error</comment>
   </data>
   <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
-    <value>Error plate solving with Astrometry.net. {0}</value>
+    <value>Astrometry.net으로 플레이트 솔브 중 오류가 발생했습니다. {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblExposureOverMax" xml:space="preserve">
-    <value>The predicted exposure of {0}s is longer than the maximum allowed.
-Stopping sky flat acquisition.</value>
+    <value>예상 노출 시간 {0}초가 허용된 최댓값보다 깁니다.
+스카이플랫 촬영을 중지합니다.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblExposureUnderMin" xml:space="preserve">
-    <value>The predicted exposure of {0}s is shorter than the minimum allowed.
-Stopping sky flat acquisition.</value>
+    <value>예상 노출 시간 {0}초가 허용된 최솟값보다 짧습니다.
+스카이플랫 촬영을 중지합니다.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
-    <value>Skyflat correction did not work and is outside of tolerance:
-first exposure time {0:#.####}
-current exposure time {1:#.####}
-elapsed time: {2:#.##}
-mean adu: {3:#.##}.
-The sky flat exposure time will be determined again and the exposure will be repeated.</value>
+    <value>스카이플랫 보정이 제대로 작동하지 않아 허용 오차를 벗어났습니다:
+첫 노출 시간 {0:#.####}
+현재 노출 시간 {1:#.####}
+경과 시간: {2:#.##}
+평균 ADU: {3:#.##}.
+스카이플랫 노출 시간을 다시 결정하고 촬영을 반복합니다.</value>
     <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
   </data>
   <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
-    <value>Failed to restore previous filter position: {0}</value>
+    <value>이전 필터 위치를 복원하지 못했습니다: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblFailedToChangeFilter" xml:space="preserve">
-    <value>Failed to change filter: {0}</value>
+    <value>필터를 변경하지 못했습니다: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSetShiftRateFailed" xml:space="preserve">
-    <value>Set shift rate failed. {0}</value>
+    <value>이동률을 설정하지 못했습니다. {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPrepareImageFailed" xml:space="preserve">
-    <value>Failed to prepare image for display: {0}</value>
+    <value>표시할 이미지를 준비하지 못했습니다: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
-    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+    <value>노출 횟수만 변경된 경우 시퀀스 저장 여부를 묻지 않음</value>
   </data>
   <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
-    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
-You'll normally be prompted to save the sequence to save the changed exposure count.
+    <value>시퀀스를 수정하지 않았더라도 실행했다면 노출 횟수가 변경됩니다.
+일반적으로 변경된 노출 횟수를 저장하기 위해 시퀀스 저장 여부를 묻습니다.
 
-If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+노출 횟수가 중요하지 않다면 이 옵션을 활성화하여 실행 후 시퀀스를 저장하는 과정을 생략할 수 있습니다.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
-    <value>Day Rollover Time</value>
+    <value>날짜 전환 시각</value>
   </data>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
-    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+    <value>이 명령에는 날짜가 지정되어 있지 않으므로 표시된 날짜 전환 시각에 다음 날로 넘어갑니다.</value>
   </data>
   <data name="LblInitializing" xml:space="preserve">
-    <value>Initializing</value>
+    <value>초기화 중</value>
   </data>
   <data name="LblOasisClearStallPrompt" xml:space="preserve">
-    <value>Clear stall?</value>
+    <value>모터 정지 상태를 해제하시겠습니까?</value>
   </data>
   <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value>Focuser stalled. You need to manually clear stall.</value>
+    <value>포커서 모터가 멈췄습니다. 정지 상태를 수동으로 해제해야 합니다.</value>
   </data>
   <data name="LblBeepOnStartup" xml:space="preserve">
-    <value>Beep on startup</value>
+    <value>시작 시 신호음</value>
   </data>
   <data name="LblBeepOnMove" xml:space="preserve">
-    <value>Beep on move</value>
+    <value>이동 시 신호음</value>
   </data>
   <data name="LblOasisHeating" xml:space="preserve">
-    <value>Heating</value>
+    <value>가열</value>
   </data>
   <data name="LblOasisHeatingTemperature" xml:space="preserve">
-    <value>Heating temperature</value>
+    <value>가열 온도</value>
   </data>
   <data name="LblOasisStallDetection" xml:space="preserve">
-    <value>Stall detection</value>
+    <value>모터 정지 감지</value>
   </data>
   <data name="LblOasisIsStalled" xml:space="preserve">
-    <value>Is stalled</value>
+    <value>모터 정지 상태</value>
   </data>
   <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value>USB capacity</value>
+    <value>USB 전원 공급 용량</value>
   </data>
   <data name="LblOasisSpeed" xml:space="preserve">
-    <value>Speed</value>
+    <value>속도</value>
   </data>
   <data name="LblOasisClearStall" xml:space="preserve">
-    <value>Clear stall</value>
+    <value>모터 정지 상태 해제</value>
   </data>
   <data name="LblOasisDcPower" xml:space="preserve">
-    <value>DC power</value>
+    <value>DC 전원</value>
   </data>
   <data name="LblOasisBoardHeating" xml:space="preserve">
-    <value>Board heating</value>
+    <value>기판 가열</value>
   </data>
   <data name="LblOasisHeatingPower" xml:space="preserve">
-    <value>Heating power</value>
+    <value>가열 전력</value>
   </data>
   <data name="LblOasisBoardTemperature" xml:space="preserve">
-    <value>Board temperature</value>
+    <value>기판 온도</value>
   </data>
   <data name="LblOasisSyncPosition" xml:space="preserve">
-    <value>Sync position</value>
+    <value>동기화 위치</value>
   </data>
   <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
-    <value>Set current position to sync position?</value>
+    <value>현재 위치 값을 동기화 위치 값으로 설정하시겠습니까?</value>
   </data>
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+    <value>선택한 Oasis 포커서를 사용할 수 없습니다. 연결을 확인하고 장치를 다시 검색하세요.</value>
   </data>
   <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
+    <value>선택한 Oasis 필터 휠을 사용할 수 없습니다. 연결을 확인하고 장치를 다시 검색하세요.</value>
   </data>
   <data name="LblOasisTurboMode" xml:space="preserve">
-    <value>Turbo mode</value>
+    <value>터보 모드</value>
   </data>
   <data name="LblOasisDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>장치 ID</value>
   </data>
   <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
-    <value>Device ID</value>
+    <value>장치 ID</value>
   </data>
   <data name="LblOasisState" xml:space="preserve">
-    <value>State</value>
+    <value>상태</value>
   </data>
   <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
-    <value>Sync focus offsets</value>
+    <value>초점 오프셋 동기화</value>
   </data>
   <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
-    <value>Store focus offsets</value>
+    <value>초점 오프셋 저장</value>
   </data>
   <data name="LblOasisSyncFilterNames" xml:space="preserve">
-    <value>Sync filter names</value>
+    <value>필터 이름 동기화</value>
   </data>
   <data name="LblOasisStoreFilterNames" xml:space="preserve">
-    <value>Store filter names</value>
+    <value>필터 이름 저장</value>
   </data>
   <data name="LblOasisAutorun" xml:space="preserve">
-    <value>Autorun</value>
+    <value>자동 실행</value>
   </data>
   <data name="LblOasisSpeedTooltip" xml:space="preserve">
-    <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
+    <value>주변 온도가 매우 낮을 때 필터가 원활하게 전환되도록 Normal 또는 Slow 속도를 선택하세요.</value>
   </data>
   <data name="LblOasisTurboModeTooltip" xml:space="preserve">
-    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port has at least 5V,1A power supply capacity.</value>
+    <value>터보 모드를 활성화하면 모터 토크가 증가합니다. 주변 온도가 매우 낮을 때 유용할 수 있습니다. USB 호스트 포트가 최소 5V,1A의 전원을 공급할 수 있는지 확인하세요.</value>
   </data>
   <data name="LblOasisAutorunTooltip" xml:space="preserve">
-    <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
+    <value>전원을 켤 때 필터를 마지막 위치로 자동 전환하려면 이 옵션을 활성화하세요.</value>
   </data>
   <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
-    <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
+    <value>Oasis 장치에 저장된 초점 오프셋을 읽어 NINA의 초점 오프셋을 업데이트합니다.</value>
   </data>
   <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA focus offsets to the Oasis filter wheel.</value>
+    <value>NINA의 초점 오프셋을 Oasis 필터 휠에 업로드하고 저장합니다.</value>
   </data>
   <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
-    <value>Reads the filter names stored on the Oasis device and updates the NINA filter labels.</value>
+    <value>Oasis 장치에 저장된 필터 이름을 읽어 NINA의 필터 이름을 업데이트합니다.</value>
   </data>
   <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA filter names to the Oasis filter wheel.</value>
+    <value>NINA의 필터 이름을 Oasis 필터 휠에 업로드하고 저장합니다.</value>
   </data>
   <data name="LblOasisCounter" xml:space="preserve">
-    <value>Counter</value>
+    <value>카운터</value>
   </data>
   <data name="LblOasisCounterTooltip" xml:space="preserve">
-    <value>Indicator that shows how many filter slots have been rotated since the filter wheel powered up.</value>
+    <value>필터 휠의 전원을 켠 이후 회전한 필터 슬롯 수를 나타냅니다.</value>
   </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
-    <value>ASCOM Alpaca IP Setup</value>
+    <value>ASCOM Alpaca IP 설정</value>
   </data>
   <data name="LblAlpacaDirectServiceType" xml:space="preserve">
-    <value>Service Type</value>
+    <value>서비스 유형</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
   <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
-    <value>IP Address</value>
+    <value>IP 주소</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
-    <value>Port</value>
+    <value>포트</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
-    <value>Device Number</value>
+    <value>장치 번호</value>
   </data>
   <data name="LblSymbols" xml:space="preserve">
-    <value>Symbols</value>
+    <value>기호</value>
   </data>
   <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
-    <value>No other data for {0}</value>
+    <value>{0}에 대한 추가 데이터 없음</value>
     <comment>{0} will be filled with the category name</comment>
   </data>
   <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
-    <value>Additional Symbols:</value>
+    <value>추가 기호:</value>
     <comment>The prefix for additional data rows for symbol tooltips</comment>
   </data>
   <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
-    <value>Options:</value>
+    <value>옵션:</value>
     <comment>The prefix per symbol for additional options</comment>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
-    <value>Click any symbol to copy it to the clipboard.</value>
+    <value>기호를 클릭하면 클립보드에 복사됩니다.</value>
   </data>
   <data name="LblTrue" xml:space="preserve">
-    <value>True</value>
+    <value>참</value>
   </data>
   <data name="LblFalse" xml:space="preserve">
-    <value>False</value>
+    <value>거짓</value>
   </data>
   <data name="LblDecimal" xml:space="preserve">
-    <value>(Decimal: </value>
+    <value>(10진수: </value>
     <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
   </data>
   <data name="LblWarnings" xml:space="preserve">
-    <value>Warning(s): {0}</value>
+    <value>경고: {0}</value>
   </data>
   <data name="LblNoErrors" xml:space="preserve">
-    <value>No errors</value>
+    <value>오류 없음</value>
   </data>
   <data name="LblErrors" xml:space="preserve">
-    <value>Error(s): {0}</value>
+    <value>오류: {0}</value>
   </data>
   <data name="LblNotEvaluated" xml:space="preserve">
-    <value>Not Evaluated</value>
+    <value>평가되지 않음</value>
     <comment>As in, a variable is not yet evaluated</comment>
   </data>
   <data name="LblTomorrow" xml:space="preserve">
-    <value>tomorrow</value>
+    <value>내일</value>
   </data>
   <data name="LblYesterday" xml:space="preserve">
-    <value>yesterday</value>
+    <value>어제</value>
   </data>
   <data name="LblUndefined" xml:space="preserve">
-    <value>Undefined</value>
+    <value>정의되지 않음</value>
     <comment>As in "Undefined: &lt;variable name&gt;"</comment>
   </data>
   <data name="LblSyntaxError" xml:space="preserve">
-    <value>Syntax error</value>
+    <value>구문 오류</value>
     <comment>Used when an Expression can't be parsed</comment>
   </data>
   <data name="LblMustBeInteger" xml:space="preserve">
-    <value>Value must be an Integer</value>
+    <value>값은 정수여야 합니다</value>
   </data>
   <data name="LblAnd" xml:space="preserve">
-    <value>and</value>
+    <value>및</value>
   </data>
   <data name="LblAlreadyDefined" xml:space="preserve">
-    <value>is already defined</value>
+    <value>은(는) 이미 정의되어 있습니다</value>
     <comment>As in &lt;variable&gt; is already defined</comment>
   </data>
   <data name="LblConstantVariable" xml:space="preserve">
-    <value>The Constant/Variable</value>
+    <value>상수/변수</value>
     <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
   </data>
   <data name="LblNoSymbols" xml:space="preserve">
-    <value>No defined Constant/Variable is used in this expression</value>
+    <value>이 식에는 정의된 상수/변수가 사용되지 않았습니다</value>
   </data>
   <data name="LblNotYetDefined" xml:space="preserve">
-    <value> The Constant/Variable is not yet defined</value>
+    <value> 상수/변수가 아직 정의되지 않았습니다</value>
   </data>
   <data name="LblValueBetween" xml:space="preserve">
-    <value>Value must be between {0} and {1}</value>
+    <value>값은 {0}에서 {1} 사이여야 합니다</value>
   </data>
   <data name="LblVariable" xml:space="preserve">
-    <value>Variable:</value>
+    <value>변수:</value>
   </data>
   <data name="LblInitially" xml:space="preserve">
-    <value>Initially</value>
+    <value>초기값</value>
   </data>
   <data name="LblNewValue" xml:space="preserve">
-    <value>New Value</value>
+    <value>새 값</value>
   </data>
   <data name="LblIsAmbiguous" xml:space="preserve">
-    <value>is ambiguous, use one of</value>
+    <value>이(가) 모호합니다. 다음 중 하나를 사용하세요</value>
     <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
   </data>
   <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
-    <value>Symbols</value>
+    <value>기호</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Defines a global variable for expressions anywhere in this sequence. Its initial value is assigned when this instruction runs, so place it before instructions that use it. Use Set Variable to change it later.</value>
+    <value>이 시퀀스의 어디서나 식에 사용할 수 있는 전역 변수를 정의합니다. 이 명령이 실행될 때 초기값이 할당되므로 변수를 사용하는 명령보다 앞에 배치하세요. 나중에 값을 변경하려면 변수 설정을 사용하세요.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
-    <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
+    <value>이 명령 세트와 그 안에 중첩된 명령 세트의 식에 사용할 수 있는 변수를 정의합니다. 이 명령이 실행될 때 초기값이 할당됩니다. 나중에 값을 변경하려면 변수 설정을 사용하세요. 상위 또는 형제 명령 세트에서는 사용할 수 없습니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
-    <value>Define Variable</value>
+    <value>변수 정의</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
+    <value>이 시퀀스의 어디서나 식에 사용할 수 있는 전역 상수를 정의합니다. 시퀀스가 실행되기 전부터 사용할 수 있습니다. 값을 변경하려면 이 명령을 편집하세요. 변수 설정으로는 상수를 변경할 수 없습니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
-    <value>Define Constant</value>
+    <value>상수 정의</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
-    <value>Set Variable</value>
+    <value>변수 설정</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+    <value>변수가 이미 정의되어 있으면 그 값을 식의 결과로 설정합니다</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
-    <value>Set Variable to Date/Time</value>
+    <value>변수를 날짜/시간으로 설정</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+    <value>변수가 이미 정의되어 있으면 그 값을 지정한 날짜/시간으로 설정합니다</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
-    <value>Loop While</value>
+    <value>조건이 유지되는 동안 반복</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
-    <value>Loops while the Expression is not false</value>
+    <value>식이 거짓이 아닌 동안 반복합니다</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
-    <value>Wait Until</value>
+    <value>조건이 충족될 때까지 대기</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
-    <value>Waits until the Expression is true</value>
+    <value>식이 참이 될 때까지 기다립니다</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
-    <value>Random double value between 0.0 and 1.0.</value>
+    <value>0.0과 1.0 사이의 난수(double형).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
-    <value>Current Unix timestamp in seconds.</value>
+    <value>현재 Unix 타임스탬프(초).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
-    <value>Hour component (0-23) of a datetime or the current time.</value>
+    <value>날짜/시간 또는 현재 시각의 시(0-23).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
-    <value>Minute component (0-59) of a datetime or the current time.</value>
+    <value>날짜/시간 또는 현재 시각의 분(0-59).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
-    <value>Day of the month (1-31) of a datetime or the current date.</value>
+    <value>날짜/시간 또는 현재 날짜의 일(1-31).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1-12) of a datetime or the current date.</value>
+    <value>날짜/시간 또는 현재 날짜의 월(1-12).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
-    <value>Year component of a datetime or the current date.</value>
+    <value>날짜/시간 또는 현재 날짜의 연도.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
-    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+    <value>요일을 나타내는 정수(0 = 일요일 … 6 = 토요일).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
-    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+    <value>날짜/시간에 지정한 분을 더한 값(Unix 타임스탬프).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
-    <value>Datetime plus the specified hours (Unix timestamp).</value>
+    <value>날짜/시간에 지정한 시간을 더한 값(Unix 타임스탬프).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
-    <value>Seconds elapsed since the given datetime (Unix timestamp).</value>
+    <value>주어진 날짜/시간 이후 경과한 초(Unix 타임스탬프).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
-    <value>Datetime formatted using the specified .NET format string.</value>
+    <value>지정한 .NET 서식 문자열로 표현한 날짜/시간.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
-    <value>Whether the string starts with the specified prefix.</value>
+    <value>문자열이 지정한 접두사로 시작하는지 여부.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
-    <value>Length of the given string, or -1 if the value is not a string.</value>
+    <value>주어진 문자열의 길이. 값이 문자열이 아니면 -1.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
-    <value>Concatenation of two strings.</value>
+    <value>두 문자열을 이어 붙인 결과.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
-    <value>Character at the specified zero-based index, or empty if out of bounds.</value>
+    <value>지정한 인덱스(0부터 시작)의 문자. 범위를 벗어나면 빈 문자열.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
-    <value>Whether the string contains the specified substring.</value>
+    <value>문자열에 지정한 부분 문자열이 포함되어 있는지 여부.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
-    <value>Whether the string ends with the specified suffix.</value>
+    <value>문자열이 지정한 접미사로 끝나는지 여부.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
-    <value>Substring of the given string; empty if out of range.</value>
+    <value>주어진 문자열의 부분 문자열. 범위를 벗어나면 빈 문자열.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
-    <value>Lower-case version of the string (invariant).</value>
+    <value>문자열을 소문자로 변환한 결과(문화권에 무관).</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
-    <value>Upper-case version of the string (invariant).</value>
+    <value>문자열을 대문자로 변환한 결과(문화권에 무관).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
-    <value>Absolute value of a number.</value>
+    <value>숫자의 절댓값.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
-    <value>Angle whose cosine is the specified number.</value>
+    <value>코사인 값이 지정한 숫자인 각도.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
-    <value>Angle whose sine is the specified number.</value>
+    <value>사인 값이 지정한 숫자인 각도.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
-    <value>Angle whose tangent is the specified number.</value>
+    <value>탄젠트 값이 지정한 숫자인 각도.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
-    <value>Arithmetic mean of all arguments.</value>
+    <value>모든 인수의 산술평균.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
-    <value>Smallest integer greater than or equal to the number.</value>
+    <value>숫자보다 크거나 같은 가장 작은 정수.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
-    <value>Cosine of the specified angle.</value>
+    <value>지정한 각도의 코사인.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
-    <value>e raised to the specified power.</value>
+    <value>e를 지정한 지수로 거듭제곱한 값.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
-    <value>Largest integer less than or equal to the number.</value>
+    <value>숫자보다 작거나 같은 가장 큰 정수.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
-    <value>IEEE remainder of x / y.</value>
+    <value>x / y의 IEEE 나머지.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
-    <value>Natural logarithm of a number.</value>
+    <value>숫자의 자연로그.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
-    <value>Logarithm of a number.</value>
+    <value>숫자의 로그.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
-    <value>Base-10 logarithm of a number.</value>
+    <value>숫자의 상용로그(밑이 10).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
-    <value>Larger of two numbers.</value>
+    <value>두 숫자 중 큰 값.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
-    <value>Smaller of two numbers.</value>
+    <value>두 숫자 중 작은 값.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
-    <value>Number raised to the specified power.</value>
+    <value>숫자를 지정한 지수로 거듭제곱한 값.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
-    <value>Rounded value to the nearest integer or specified decimal places.</value>
+    <value>가장 가까운 정수 또는 지정한 소수 자릿수로 반올림한 값.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
-    <value>Sign of a number.</value>
+    <value>숫자의 부호.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
-    <value>Sine of the specified angle.</value>
+    <value>지정한 각도의 사인.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
-    <value>Square root of a number.</value>
+    <value>숫자의 제곱근.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
-    <value>Tangent of the specified angle.</value>
+    <value>지정한 각도의 탄젠트.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
-    <value>Integral part of a number.</value>
+    <value>숫자의 정수 부분.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
-    <value>Mathematical modulus (x mod y). Result is in [0, y) for positive y.</value>
+    <value>수학적 모듈로(x mod y). y가 양수이면 결과는 [0, y) 범위에 있습니다.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
-    <value>Value clamped to the inclusive range [min, max].</value>
+    <value>양 끝을 포함한 [min, max] 범위로 제한한 값.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
-    <value>Whether x is between min and max (inclusive).</value>
+    <value>x가 min과 max 사이에 있는지 여부(양 끝 포함).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
-    <value>Conversion from radians to degrees.</value>
+    <value>라디안에서 도로 변환.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
-    <value>Conversion from degrees to radians.</value>
+    <value>도에서 라디안으로 변환.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
-    <value>Sum of all arguments.</value>
+    <value>모든 인수의 합.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
-    <value>Whether an element is in a set of values.</value>
+    <value>요소가 값의 집합에 포함되어 있는지 여부.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
-    <value>Conditional value based on a condition.</value>
+    <value>조건에 따라 선택한 값.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
-    <value>Conditional value based on multiple conditions, with a default.</value>
+    <value>여러 조건에 따라 선택한 값. 기본값이 있습니다.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
-    <value>Whether a symbol name is defined in the symbol table.</value>
+    <value>기호 이름이 기호 테이블에 정의되어 있는지 여부.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
-    <value>Logical negation of a boolean value.</value>
+    <value>불리언 값의 논리 부정.</value>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
-    <value>Click any function to copy it to the clipboard.</value>
+    <value>함수를 클릭하면 클립보드에 복사됩니다.</value>
   </data>
   <data name="Lbl_SymbolFunctions" xml:space="preserve">
-    <value>Functions</value>
+    <value>함수</value>
   </data>
   <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
-    <value>Usage</value>
+    <value>사용법</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
-    <value>Function '{0}' expects no arguments, but got {1}.</value>
+    <value>함수 '{0}'에는 인수가 없어야 하지만 {1}개가 전달되었습니다.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
-    <value>Function '{0}' expects exactly one argument, but got {1}.</value>
+    <value>함수 '{0}'에는 인수가 정확히 1개 필요하지만 {1}개가 전달되었습니다.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
-    <value>Function '{0}' expects exactly {1} arguments, but got {2}.</value>
+    <value>함수 '{0}'에는 인수가 정확히 {1}개 필요하지만 {2}개가 전달되었습니다.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
-    <value>Function '{0}' expects between {1} and {2} arguments, but got {3}.</value>
+    <value>함수 '{0}'에는 인수가 {1}개에서 {2}개 사이로 필요하지만 {3}개가 전달되었습니다.</value>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
-    <value>Value must be greater than or equal to {0}.</value>
+    <value>값은 {0} 이상이어야 합니다.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
-    <value>Value must be greater than {0}.</value>
+    <value>값은 {0}보다 커야 합니다.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
-    <value>Value must be between {0} and {1}.</value>
+    <value>값은 {0} 이상 {1} 이하여야 합니다.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
-    <value>Value must be between {0} and less than {1}.</value>
+    <value>값은 {0} 이상 {1} 미만이어야 합니다.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and up to {1}.</value>
+    <value>값은 {0} 초과 {1} 이하여야 합니다.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and less than {1}.</value>
+    <value>값은 {0} 초과 {1} 미만이어야 합니다.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
-    <value>Notification work area</value>
+    <value>알림 표시 영역</value>
   </data>
   <data name="LblNotificationCorner" xml:space="preserve">
-    <value>Notification corner</value>
+    <value>알림 표시 모서리</value>
   </data>
   <data name="LblNotificationTopLeft" xml:space="preserve">
-    <value>Top left</value>
+    <value>왼쪽 위</value>
   </data>
   <data name="LblNotificationTopRight" xml:space="preserve">
-    <value>Top right</value>
+    <value>오른쪽 위</value>
   </data>
   <data name="LblNotificationBottomLeft" xml:space="preserve">
-    <value>Bottom left</value>
+    <value>왼쪽 아래</value>
   </data>
   <data name="LblNotificationBottomRight" xml:space="preserve">
-    <value>Bottom right</value>
+    <value>오른쪽 아래</value>
   </data>
   <data name="LblNotificationPrimaryScreen" xml:space="preserve">
-    <value>Primary screen</value>
+    <value>주 모니터</value>
   </data>
   <data name="LblNotificationSameScreenAsApplication" xml:space="preserve">
-    <value>Same screen as application</value>
+    <value>응용 프로그램과 같은 모니터</value>
   </data>
   <data name="LblNotificationApplication" xml:space="preserve">
-    <value>Application</value>
+    <value>응용 프로그램</value>
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
   </data>
   <data name="LblMoravianFlashVersion" xml:space="preserve">
-    <value>Flash version</value>
+    <value>플래시 버전</value>
     <comment>Version of an internal camera component stored in flash memory.
     This is a separate version from camera firmware and driver.</comment>
   </data>
   <data name="LblDimensions" xml:space="preserve">
-    <value>Dimensions</value>
+    <value>크기</value>
     <comment>Label for entering subframe dimensions</comment>
   </data>
   <data name="LblTop" xml:space="preserve">
-    <value>Top</value>
+    <value>위쪽</value>
   </data>
   <data name="LblLeft" xml:space="preserve">
-    <value>Left</value>
+    <value>왼쪽</value>
   </data>
   <data name="LblSequencerExpressionValues" xml:space="preserve">
-    <value>Sequencer expressions values</value>
+    <value>시퀀서 식의 값</value>
   </data>
   <data name="LblEccentricity" xml:space="preserve">
-    <value>Eccentricity</value>
+    <value>이심률</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
-    <value>Custom Trigger</value>
+    <value>사용자 정의 트리거</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
-    <value>Use an existing trigger as the trigger source, then choose your own instructions to run when that trigger would normally fire.
-This is useful when a built-in trigger has the timing you need, but you want custom actions.</value>
+    <value>기존 트리거를 트리거 소스로 사용한 후 해당 트리거가 실행될 시점에 수행할 명령을 직접 선택합니다.
+기본 트리거의 실행 시점은 적합하지만 동작을 변경하려는 경우 유용합니다.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
-    <value>Trigger Source</value>
+    <value>트리거 소스</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
-    <value>Custom Trigger Instructions</value>
+    <value>사용자 정의 트리거 명령</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
-    <value>Drop a trigger here to choose when the custom trigger runs.</value>
+    <value>사용자 정의 트리거의 실행 시점을 선택하려면 여기에 트리거를 놓으세요.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
-    <value>Drop instructions here to run when the selected trigger source fires.</value>
+    <value>선택한 트리거 소스가 실행될 때 수행할 명령을 여기에 놓으세요.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
-    <value>ADD TRIGGER SOURCE</value>
+    <value>트리거 소스 추가</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
-    <value>ADD CUSTOM INSTRUCTIONS</value>
+    <value>사용자 정의 명령 추가</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
-    <value>Add a trigger source.</value>
+    <value>트리거 소스를 추가하세요.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
-    <value>Add at least one instruction.</value>
+    <value>명령을 하나 이상 추가하세요.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
-    <value>Trigger On Unsafe</value>
+    <value>안전하지 않을 때 실행</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Description" xml:space="preserve">
-    <value>Runs configured instructions when the safety monitor reports unsafe conditions or disconnects after being connected, waits until conditions are safe again, then runs follow-up instructions.</value>
+    <value>안전 모니터가 안전하지 않은 상태를 보고하거나 연결된 후 연결이 끊어지면 설정된 명령을 실행합니다. 다시 안전해질 때까지 기다린 후 후속 명령을 실행합니다.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
-    <value>Before Waiting For Safety</value>
+    <value>안전 대기 전</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description" xml:space="preserve">
-    <value>After Waiting For Safety</value>
+    <value>안전 대기 후</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting until conditions are safe again.</value>
+    <value>다시 안전해질 때까지 기다리기 전에 실행할 명령입니다.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after conditions are safe again.</value>
+    <value>다시 안전해진 후 실행할 명령입니다.</value>
   </data>
   <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
-    <value>Show Star Mass in Guide Graph</value>
+    <value>가이드 그래프에 별 광량 표시</value>
   </data>
   <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
-    <value>Show Star SNR in Guide Graph</value>
+    <value>가이드 그래프에 별 SNR 표시</value>
   </data>
   <data name="LblStarMass" xml:space="preserve">
-    <value>Star Mass</value>
+    <value>별 광량</value>
   </data>
   <data name="LblStarSNR" xml:space="preserve">
-    <value>Star SNR</value>
+    <value>별 SNR</value>
   </data>
   <data name="Lbl_SequenceHistory_Undo" xml:space="preserve">
-    <value>Undo</value>
+    <value>실행 취소</value>
   </data>
   <data name="Lbl_SequenceHistory_Redo" xml:space="preserve">
-    <value>Redo</value>
+    <value>다시 실행</value>
   </data>
   <data name="Lbl_SequenceHistory_Title" xml:space="preserve">
-    <value>Edit history</value>
+    <value>편집 기록</value>
   </data>
   <data name="Lbl_SequenceHistory_Hint" xml:space="preserve">
-    <value>Select a state to undo or redo to it.</value>
+    <value>상태를 선택하면 실행 취소 또는 다시 실행을 통해 해당 상태로 돌아갑니다.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>현재</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
-    <value>(saved)</value>
+    <value>(저장됨)</value>
   </data>
   <data name="Lbl_SequenceHistory_Initial" xml:space="preserve">
-    <value>Earlier state</value>
+    <value>이전 상태</value>
   </data>
   <data name="Lbl_SequenceHistory_UndoAction" xml:space="preserve">
-    <value>Undo {0}</value>
+    <value>{0} 실행 취소</value>
   </data>
   <data name="Lbl_SequenceHistory_RedoAction" xml:space="preserve">
-    <value>Redo {0}</value>
+    <value>{0} 다시 실행</value>
   </data>
   <data name="Lbl_SequenceHistory_EditAction" xml:space="preserve">
-    <value>Edit {0}: {1}</value>
+    <value>{0} 편집: {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MoveAction" xml:space="preserve">
-    <value>Move {0}</value>
+    <value>{0} 이동</value>
   </data>
   <data name="Lbl_SequenceHistory_AddAction" xml:space="preserve">
-    <value>Add {0}</value>
+    <value>{0} 추가</value>
   </data>
   <data name="Lbl_SequenceHistory_Position" xml:space="preserve">
-    <value>Position {0}</value>
+    <value>위치 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PositionChange" xml:space="preserve">
-    <value>Position {0} -&gt; {1}</value>
+    <value>위치 {0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_DeleteAction" xml:space="preserve">
-    <value>Delete {0}</value>
+    <value>{0} 삭제</value>
   </data>
   <data name="Lbl_SequenceHistory_DuplicateAction" xml:space="preserve">
-    <value>Duplicate {0}</value>
+    <value>{0} 복제</value>
   </data>
   <data name="Lbl_SequenceHistory_PlaceAction" xml:space="preserve">
-    <value>Place item in {0}</value>
+    <value>{0}에 항목 배치</value>
   </data>
   <data name="Lbl_SequenceHistory_ToggleAction" xml:space="preserve">
-    <value>Enable/disable {0}</value>
+    <value>{0} 활성화/비활성화</value>
   </data>
   <data name="Lbl_SequenceHistory_ClearAction" xml:space="preserve">
-    <value>Clear sequence</value>
+    <value>시퀀스 지우기</value>
   </data>
   <data name="Lbl_SequenceHistory_TargetAction" xml:space="preserve">
-    <value>Change target {0}</value>
+    <value>타겟 {0} 변경</value>
   </data>
   <data name="Lbl_SequenceHistory_Conflict" xml:space="preserve">
-    <value>This edit cannot be restored because its configuration was changed outside edit history. The sequence has not been changed.</value>
+    <value>편집 기록 외부에서 구성이 변경되어 이 편집 내용을 복원할 수 없습니다. 시퀀스는 변경되지 않았습니다.</value>
   </data>
   <data name="Lbl_SequenceHistory_Failed" xml:space="preserve">
-    <value>Restoring the edit failed. Edit history was cleared. Review the sequence before continuing.</value>
+    <value>편집 내용을 복원하지 못했습니다. 편집 기록이 지워졌습니다. 계속하기 전에 시퀀스를 확인하세요.</value>
   </data>
   <data name="Lbl_SequenceHistory_ValueChange" xml:space="preserve">
     <value>{0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_NoValue" xml:space="preserve">
-    <value>(empty)</value>
+    <value>(비어 있음)</value>
   </data>
   <data name="Lbl_SequenceHistory_CoordinateValue" xml:space="preserve">
-    <value>RA {0}, Dec {1}, rotation {2} degrees ({3})</value>
+    <value>RA {0}, Dec {1}, 회전 {2}도 ({3})</value>
   </data>
   <data name="Lbl_SequenceHistory_MoreChanges" xml:space="preserve">
-    <value>+ {0} more changes</value>
+    <value>+ 추가 변경 {0}개</value>
   </data>
   <data name="Lbl_SequenceHistory_AddedDetail" xml:space="preserve">
-    <value>Added {0} to {1}</value>
+    <value>{1}에 {0} 추가됨</value>
   </data>
   <data name="Lbl_SequenceHistory_RemovedDetail" xml:space="preserve">
-    <value>Removed {0} from {1}</value>
+    <value>{1}에서 {0} 제거됨</value>
   </data>
   <data name="Lbl_SequenceHistory_MovedDetail" xml:space="preserve">
     <value>{0}: {1} -&gt; {2}</value>
   </data>
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
-    <value>The edit could not be applied. The previous state and edit history were preserved.</value>
+    <value>편집 내용을 적용하지 못했습니다. 이전 상태와 편집 기록은 유지되었습니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
-    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+    <value>템플릿 편집이 완료되기를 기다리는 중입니다. 저장하지 않은 편집 내용은 {0} 후 버려지고 저장된 템플릿이 실행됩니다. 지금 계속하려면 저장하거나 취소하세요.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
-    <value>Waiting for the template to finish saving.</value>
+    <value>템플릿 저장이 완료되기를 기다리는 중입니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
-    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
+    <value>연결된 템플릿 '{0}'의 저장하지 않은 편집 내용이 5분 동안 아무 작업이 없어 버려졌습니다. 저장된 템플릿으로 계속합니다.</value>
   </data>
 </root>

@@ -415,15 +415,18 @@ Mitjançant aquests dos punts es calcularà i es mostrarà l'error azimutal actu
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>Es gravaran els següents valors de backlash de l'enfocador. IN: {0}, OUT: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>Valor mitjà (mean) del BIAS (en 16 bits)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>Valor de la mediana (median) del BIAS (en 16 bits)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
@@ -543,6 +546,7 @@ capaç de compensar les variacions de la temperatura ambient</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>S'ha produït un error de Canon: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Capturar Imatge i fer Resolució de Plaques</value>
@@ -973,6 +977,7 @@ En cas que es necessiti una durada més llarga, es pot especificar aquesta durad
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Mitjana actual</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Posició actual</value>
@@ -1022,6 +1027,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Alba</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>Dies</value>
@@ -1174,10 +1180,10 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>Nombre típic de píxels per utilitzar. El Dithering segueix una distribució normal centrada a l'objectiu, essent aquest valor la desviació estàndard. El 67% dels dithers estaran a aquesta distància</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>Moviment mínim de dither</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>Nombre mínim de píxels de la càmera principal que es desplacen entre posicions successives de dither de la muntura. Estableix-lo a 0 per preservar el comportament aleatori existent. El valor no pot superar els píxels de dither.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Només Dither en AR</value>
@@ -1289,6 +1295,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>Capvespre</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>Est</value>
@@ -1300,7 +1307,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>Activar escalat de bit</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>Desa imatges de 8/10/12/14 bits amb escalat a 16 bits. Només és rellevant per als controladors natius d'Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony i ToupTek.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Activat</value>
@@ -1472,6 +1479,7 @@ Quan es desactivi aquest, l'aplicació només saltarà a l'inici de l'exposició
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>Característiques del Panell de Flats</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Resposta invàlida del Panell de Flats.</value>
@@ -1538,6 +1546,7 @@ Quan es desactivi aquest, l'aplicació només saltarà a l'inici de l'exposició
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>Configuració de l'Assistent de Flats</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>Cancel·la l'Assistent de Flats</value>
@@ -1586,6 +1595,7 @@ Quan es desactivi aquest, l'aplicació només saltarà a l'inici de l'exposició
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>Proporció Focal</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Enfocador</value>
@@ -1714,6 +1724,7 @@ HFR calculat: {2}    </value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>El Guiatge no ha enviat cap missatge SettleDone després del temps previst ({0} s + 10s). Saltant.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Fallada en la reiniciació del Guiatge</value>
@@ -1990,12 +2001,14 @@ HFR calculat: {2}    </value>
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>Mitjana</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>Mesura el Backlash de l'Enfocador Automàtic</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>Mediana</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>El canvi de Meridià a fallat</value>
@@ -2093,6 +2106,7 @@ HFR calculat: {2}    </value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>No</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Sense Càmera</value>
@@ -2382,9 +2396,11 @@ HFR calculat: {2}    </value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>Port del Servidor de PHD2</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>Nom del servidor de PHD2</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Configuració de PHD2</value>
@@ -2421,6 +2437,7 @@ HFR calculat: {2}    </value>
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>No s'ha trobat ID {0} del perfil de PHD2 {0}. Utilitzant {1}</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>Pixels</value>
@@ -2430,18 +2447,22 @@ HFR calculat: {2}    </value>
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>Escala de Pixel</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Escala de pixel en segons d'arc per pixel</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>Tamany Pixel</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>Tamany Pixel X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Tamany Pixel Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Planetari</value>
@@ -2495,7 +2516,7 @@ HFR calculat: {2}    </value>
     <value>Interval, en minuts, entre dos intents de resolució de plaques (platesolve)</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>El centratge ha fallat després de {0} intents de correcció</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Resolució de plaques (platesolve) de la imatge actual</value>
@@ -2630,7 +2651,7 @@ HFR calculat: {2}    </value>
     <value>Convertidor fitxers Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>Els fitxers raw de les DSLR es converteixen amb LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Soroll de lectura en e</value>
@@ -2961,7 +2982,7 @@ Aquesta plantilla s'utilitzarà al començament per inicialitzar la seqüència 
     <value>Gira</value>
   </data>
   <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
+    <value>El desplaçament ha fallat</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Gira i centra</value>
@@ -3348,6 +3369,7 @@ Arrossegueu el rectangle sobre la part del marc que vulgueu fer SubMostra i acti
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
     <value>King</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>Personalitzat</value>
@@ -3422,10 +3444,12 @@ Quan estigui activat, els canals de color s’estiraran per separat, ajudant a a
     <value>Control Automàtic de Rosada</value>
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
-    <value>Mitjana Actual</value>
+    <value>Corrent mitjà</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Actual</value>
+    <value>Corrent</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>Dades del Dispositiu</value>
@@ -3675,27 +3699,35 @@ Quan estigui activat, els canals de color s’estiraran per separat, ajudant a a
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>La matriu de Baier que s'utilitzarà en la paraula clau BAYERPAT dels encapçalament d'imatges FITS o XISF per a imatges generades pels sensors de color.
@@ -3703,6 +3735,7 @@ El valor predeterminat de l'Auto utilitza qualsevol matriu que el controlador de
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Actual</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>Executa Opcions de final de seqüència</value>
@@ -3727,6 +3760,7 @@ El valor predeterminat de l'Auto utilitza qualsevol matriu que el controlador de
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Temps d'espera de la càmera: la càmera no ha aconseguit la imatge després del temps d'exposició + {0} segons</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Vista prèvia de la matriu</value>
@@ -4066,6 +4100,7 @@ En cas que calgui una durada més llarga, es pot especificar una durada i l’ap
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>Costat de la columna</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Temps d'espera de la càmera</value>
@@ -4387,6 +4422,7 @@ En cas que calgui una durada més llarga, es pot especificar una durada i l’ap
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>Tanqueu la coberta del Panell de Flats</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Mou l'enfocador a la posició absoluta donada</value>
@@ -4441,6 +4477,7 @@ En cas que calgui una durada més llarga, es pot especificar una durada i l’ap
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Estacionar (park) telescopi</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>Envia el telescopi a las coordenades d'altitud i azimut donades</value>
@@ -4459,6 +4496,7 @@ En cas que calgui una durada més llarga, es pot especificar una durada i l’ap
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>Treure Telescopi de l'aparcament</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>Definir el seguiment</value>
@@ -4498,12 +4536,14 @@ En cas que calgui una durada més llarga, es pot especificar una durada i l’ap
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>Espera durant un interval de temps</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>Espera l'hora especificada en el format hh:mm:ss. A més, hi ha disponible una caixa d’utilitat per omplir-la automàticament a la posta de sol, al capvespre, a l’alba i a la sortida del sol</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
-    <value>Esperar un Temps</value>
+    <value>Esperar fins a l'hora indicada</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>Centrar després de la deriva</value>
@@ -4571,7 +4611,7 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
     <value>Resume Tracking and Flip</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>Estabilització</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>La càmera no té un refrigerador i no pot configurar la temperatura</value>
@@ -4734,6 +4774,7 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>Obre la coberta del panell de flats</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Estableix la lluminositat del dispositiu dels flats al valor especificat</value>
@@ -4746,6 +4787,7 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>Alterna la llum</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>Cerca el valor d’exposició entrenat per als paràmetres especificats i pren exposicions de flats</value>
@@ -5405,9 +5447,11 @@ Per a condicions de canvi sobtat, una mida de mostra més petita ajudarà a resp
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>Una condició que crea un bucle mentre l'objectiu està per sobre de l'horitzó i després atura el conjunt d'instruccions actuals</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>Repeteix mentre l'altitud estigui per sobre de l'horitzó</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>L’objectiu mai no estarà per sobre de l’horitzó</value>
@@ -5640,11 +5684,11 @@ Només és rellevant quan s’utilitza un controlador de càmera ASCOM!</value>
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Taxa primària</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>Taxa secundària</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>El Telescopi no pot desplaçar l'eix primari</value>
@@ -6610,6 +6654,7 @@ Això s'avalua DESPRÉS del paràmetre "Aparcar la muntura abans de moure la per
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>S'ha ordenat l'obertura de la persiana o el sostre, però el dispositiu de monitor de seguretat està desconnectat. L'obertura s'ha avortat.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>AVÍS: aquests paràmetres estan relacionats amb la seguretat del vostre equip. S'han d'establir amb molta cura i amb la familiaritat que heu de teniu de la vostra configuració específica. Governen només el control de l'equip per part de N.I.N.A. i NO estan vigents si N.I.N.A. no funciona o no està connectat a l'equip en qüestió. Els mecanismes de seguretat de la cúpula o del sostre sempre haurien de tenir una còpia de seguretat de maquinari i enclavaments elèctrics per evitar qualsevol moviment no desitjat de la persiana o del sostre. És la vostra responsabilitat assegurar-vos que aquests paràmetres no entren en conflicte amb els del controlador de la cúpula.</value>
@@ -6800,7 +6845,7 @@ Motiu: {0}</value>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>Ha fallat l'Asistent de Flats al filtre {0}.
 Motiu: {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>No s'ha pogut determinar la brillantor dels Flats: la font de llum és massa brillant.
@@ -6924,18 +6969,23 @@ Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</va
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
-    <value>USN A2.0</value>
+    <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>Expansion</value>
@@ -6990,7 +7040,7 @@ Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</va
     <value>Show Local Horizon</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
-    <value>Show star measurements in arcseconds</value>
+    <value>Mostra les mesures de les estrelles en segons d'arc</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Només info</value>
@@ -7126,17 +7176,19 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>Utilitzar IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>Utilitzar IPv4 per a la recerca de dispositius ASCOM Alpaca (per defecte: activat)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>Utilitzar IPv6</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>Utilitzeu IPv6 per a la recerca del dispositiu ASCOM Alpaca (per defecte: desactivat)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Alternar visualització del catàleg</value>
@@ -7185,6 +7237,7 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>Es va ordenar que la persiana o el sostre s'obrissin, però el dispositiu de monitor de seguretat informa de condicions insegures. L'obertura s'ha avortat.</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>Ordre Externa</value>
@@ -7774,64 +7827,64 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
     <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
-    <value>Define Variable</value>
+    <value>Definir variable</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
     <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
-    <value>Define Constant</value>
+    <value>Definir constant</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
-    <value>Set Variable</value>
+    <value>Establir variable</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+    <value>Si la variable s'ha definit prèviament, el seu valor esdevindrà el resultat de l'expressió</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
-    <value>Set Variable to Date/Time</value>
+    <value>Assignar una data/hora a la variable</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+    <value>Si la variable s'ha definit prèviament, el seu valor esdevindrà la data/hora especificada</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
-    <value>Loop While</value>
+    <value>Bucle mentre</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
-    <value>Loops while the Expression is not false</value>
+    <value>Repeteix el bucle mentre l'expressió no sigui falsa</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
-    <value>Wait Until</value>
+    <value>Espera fins</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
-    <value>Waits until the Expression is true</value>
+    <value>Espera fins que l'expressió sigui certa</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
-    <value>Random double value between 0.0 and 1.0.</value>
+    <value>Valor aleatori de doble precisió entre 0,0 i 1,0.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
-    <value>Current Unix timestamp in seconds.</value>
+    <value>Marca de temps actual d'Unix en segons.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
-    <value>Hour component (0-23) of a datetime or the current time.</value>
+    <value>Component horari (0-23) d'una data i hora o l'hora actual.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
-    <value>Minute component (0-59) of a datetime or the current time.</value>
+    <value>Component de minuts (0-59) d'una data i hora o l'hora actual.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
-    <value>Day of the month (1-31) of a datetime or the current date.</value>
+    <value>Dia del mes (1-31) d'una data i hora o la data actual.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1-12) of a datetime or the current date.</value>
+    <value>Mes (1-12) d'una data i hora o la data actual.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
-    <value>Year component of a datetime or the current date.</value>
+    <value>Component de l'any d'una data i hora o de la data actual.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
-    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+    <value>Dia de la setmana com a nombre enter (0 = diumenge … 6 = dissabte).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
-    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+    <value>Data i hora més els minuts especificats (marca de temps d'Unix).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
     <value>Datetime plus the specified hours (Unix timestamp).</value>
@@ -7921,7 +7974,7 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
     <value>Rounded value to the nearest integer or specified decimal places.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
-    <value>Sign of a number.</value>
+    <value>Signe d'un nombre.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
     <value>Sinus de l'angle especificat.</value>
@@ -7991,21 +8044,27 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
     <value>El valor ha de ser superior o igual a {0}.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
     <value>El valor ha de ser superior a {0}.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
     <value>El valor ha d'estar entre {0} i {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
     <value>El valor ha d'estar entre {0} i inferior a {1}.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>El valor ha de ser superior a {0} i superior a {1}.</value>
+    <value>El valor ha de ser superior a {0} i inferior o igual a {1}.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
     <value>El valor ha de ser superior a {0} i inferior a {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>Zona de treball de notificació</value>
@@ -8132,7 +8191,7 @@ This is useful when a built-in trigger has the timing you need, but you want cus
     <value>Select a state to undo or redo to it.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Actual</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
     <value>(saved)</value>

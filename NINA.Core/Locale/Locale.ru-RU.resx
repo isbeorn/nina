@@ -175,7 +175,7 @@
     <value>Настройка камер Altair</value>
   </data>
   <data name="LblAltAz" xml:space="preserve">
-    <value>Alt/Az</value>
+    <value>Высота/азимут</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>Альтернативная цветовая схема</value>
@@ -414,15 +414,18 @@
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>Следующие значения люфта фокусера будут сохранены. Внутрь: {0}, Наружу:  {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Бета</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>Среднее значение bias (в 16бит)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>Медиана значения BIAS (в 16 бит)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Биннинг</value>
@@ -519,7 +522,7 @@ Dec: {1}</value>
     <value>Параметры камеры</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Camera Parameters</value>
+    <value>Параметры камеры</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Состояние камеры</value>
@@ -541,6 +544,7 @@ Dec: {1}</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>Произошла ошибка Canon: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Съёмка изображения и определение координат</value>
@@ -573,12 +577,12 @@ Dec: {1}</value>
     <value>Смена</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>Количество экспозиций</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence has been modified since it was last saved (changes to {0}).
+    <value>Серия была изменена после последнего сохранения (изменения в {0}).
         
-Do you want to continue and lose the changes anyway?</value>
+Всё равно продолжить с потерей изменений?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Закрытие измененной серии</value>
@@ -971,6 +975,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Текущее среднее значение</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Текущая позиция</value>
@@ -1019,6 +1024,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Рассвет</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>Дни</value>
@@ -1108,10 +1114,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Цифровой обзор неба</value>
   </data>
   <data name="LblMountDitherDuration" xml:space="preserve">
-    <value>Mount dither Duration</value>
+    <value>Длительность межкадровой подвижки монтировки</value>
   </data>
   <data name="LblMountDitherDurationTooltip" xml:space="preserve">
-    <value>Typical pulse duration in seconds</value>
+    <value>Типичная длительность импульса в секундах</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>Скорость гидирования прямого восхождения</value>
@@ -1126,10 +1132,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Скорость гидирования склонения в угл. секундах в секунду</value>
   </data>
   <data name="LblMountDitherConnectionFail" xml:space="preserve">
-    <value>Mount Dither could not connect to Mount</value>
+    <value>Модулю межкадровых подвижек не удалось подключиться к монтировке</value>
   </data>
   <data name="LblMountDitherMountDisconnect" xml:space="preserve">
-    <value>Mount has been disconnected. Mount Dither will disconnect. Dithering no longer effective!</value>
+    <value>Монтировка отключена. Межкадровая подвижка монтировки будет отключена и больше не будет работать!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Каталог для сохранения изображения не найден!</value>
@@ -1171,10 +1177,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Типичное число пикселей для межкадровой подвижки. Межкадровая подвижка следует обычному распределению, расположенному по цели, которое это значение является стандартным отклонением. 67% подвижек будут находиться в пределах этого расстояния</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>Минимальная межкадровая подвижка</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>Минимальное смещение в пикселях основной камеры между последовательными положениями межкадровой подвижки монтировки. Установите 0, чтобы сохранить прежнее случайное поведение. Значение не должно превышать число пикселей межкадровой подвижки.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Межкадровые подвижки только по П.В.</value>
@@ -1186,7 +1192,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Не удалось подключиться к драйверу ASCOM Dom:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>Dome can follow</value>
+    <value>Купол может следовать за телескопом</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>Статус затвора</value>
@@ -1286,18 +1292,19 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>Сумерки</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>Восток</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
+    <value>Камера не переведена в режим Manual или Bulb. Установите диск выбора режима в положение Manual или Bulb. Если на камере есть переключатель Movie/Still, установите его в положение Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Включить масштабирование битности</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>Сохранять 8/10/12/14-битные изображения с масштабированием до 16 бит. Только для встроенных драйверов Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony и ToupTek.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Включено</value>
@@ -1469,6 +1476,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>Настройки флетбокса</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Неверный ответ от флэт панели.</value>
@@ -1535,6 +1543,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>Настройки помощника флетов</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>Отменить работу помощника флетов</value>
@@ -1583,6 +1592,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>Фокусное соотношение</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Фокусер</value>
@@ -1600,16 +1610,16 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Размер одного шага, используемого для автоматической фокусировки. Один шаг должен быть меньше, чем допуск критической точки фокуса</value>
   </data>
   <data name="LblManualStepSmallMultiplier" xml:space="preserve">
-    <value>Small Step Multiplier</value>
+    <value>Множитель малого шага</value>
   </data>
   <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+    <value>Множитель малого шага ручного перемещения фокусера (по умолчанию: 0.5)</value>
   </data>
   <data name="LblManualStepLargeMultiplier" xml:space="preserve">
-    <value>Large Step Multiplier</value>
+    <value>Множитель большого шага</value>
   </data>
   <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+    <value>Множитель большого шага ручного перемещения фокусера (по умолчанию: 5.0)</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Люфт В/ИЗ</value>
@@ -1712,6 +1722,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>Гид не отправил сообщение SettleDone после ожидаемого времени ({0}s + 10s). Пропуск.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Ошибка при возобновлении гида</value>
@@ -1729,16 +1740,16 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Среднеквадратичное значение ошибки гидирования в пикселях за время экспозиции</value>
   </data>
   <data name="LblGuidingPeakRAArcSecDescription" xml:space="preserve">
-    <value>Peak RA guiding error during exposure in arc seconds</value>
+    <value>Пиковая ошибка гидирования по П.В. за время экспозиции в угловых секундах</value>
   </data>
   <data name="LblGuidingPeakRADescription" xml:space="preserve">
-    <value>Peak RA guiding error during exposure in pixels</value>
+    <value>Пиковая ошибка гидирования по П.В. за время экспозиции в пикселях</value>
   </data>
   <data name="LblGuidingPeakDecArcSecDescription" xml:space="preserve">
-    <value>Peak Dec guiding error during exposure in arc seconds</value>
+    <value>Пиковая ошибка гидирования по склонению за время экспозиции в угловых секундах</value>
   </data>
   <data name="LblGuidingPeakDecDescription" xml:space="preserve">
-    <value>Peak Dec guiding error during exposure in pixels</value>
+    <value>Пиковая ошибка гидирования по склонению за время экспозиции в пикселях</value>
   </data>
   <data name="LblHalt" xml:space="preserve">
     <value>Остановить</value>
@@ -1903,7 +1914,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Загр. профиль</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
+    <value>Выбранный профиль сейчас используется другим экземпляром N.I.N.A. или не может быть загружен из-за неизвестной ошибки. Подробности смотрите в файле журнала.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Загрузить серию</value>
@@ -1988,12 +1999,14 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>Среднее</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>Измерить люфт фокусера</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>Медиана</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>Перекладка меридиана провалилась</value>
@@ -2087,10 +2100,11 @@ Do you want to continue and lose the changes anyway?</value>
     <value>N.I.N.A.</value>
   </data>
   <data name="LblNINAToMount" xml:space="preserve">
-    <value>From N.I.N.A. to Mount</value>
+    <value>Из N.I.N.A. в монтировку</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Нет</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Нет камеры</value>
@@ -2298,10 +2312,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>NINA внутренний клиент OpenWeatherMap API</value>
   </data>
   <data name="LblOpenMeteoClientDescription" xml:space="preserve">
-    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+    <value>Использует API прогноза погоды OpenMeteo. Погодные данные обновляются каждые 10 минут.</value>
   </data>
   <data name="LblOpenMeteoClientInfo" xml:space="preserve">
-    <value>NINA internal OpenMeteo API client</value>
+    <value>Внутренний клиент API OpenMeteo в NINA</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Настройки</value>
@@ -2313,7 +2327,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Направление</value>
   </data>
   <data name="LblPanelOverlap" xml:space="preserve">
-    <value>Panel overlap</value>
+    <value>Перекрытие панелей</value>
   </data>
   <data name="LblPanel" xml:space="preserve">
     <value>Панель</value>
@@ -2380,9 +2394,11 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>Порт PHD2 сервера</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Hostname</value>
+    <value>Имя сервера PHD2</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Настройки PHD2</value>
@@ -2419,6 +2435,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>PHD2 профиль id {0} не найден. Используется {1}</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>Пиксели</value>
@@ -2427,19 +2444,23 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Макс. пикселей</value>
   </data>
   <data name="LblPixelScale" xml:space="preserve">
-    <value>Размер пикселя</value>
+    <value>Масштаб изображения</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Масштаб пикселей в угл. секундах на пиксель</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>Размер пикселя</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>Размер пикселя X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Размер пикселя Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Планетарий</value>
@@ -2460,7 +2481,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Настройки Планетария</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Import the currently selected planetarium object to update name and coordinates</value>
+    <value>Импортировать выбранный в планетарии объект, чтобы обновить название и координаты</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Координаты выбранного объекта</value>
@@ -2493,7 +2514,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Задержка в минутах между двумя попытками плейтсолва</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>Не удалось выполнить центрирование после {0} попыток коррекции</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Распознать текущее изображение</value>
@@ -2628,7 +2649,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Конвертер Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>RAW-файлы зеркальных камер преобразуются с помощью LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Шум чтения в е</value>
@@ -2637,7 +2658,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Режим</value>
   </data>
   <data name="LblReadout" xml:space="preserve">
-    <value>Readout</value>
+    <value>Считывание</value>
   </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>Цифровое значение, соответствующее режиму чтения вашей камеры</value>
@@ -2646,7 +2667,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Режим чтения для серий</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
+    <value>Этот режим считывания камеры используется для кадров LIGHT, BIAS, DARK и FLAT в сериях.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Режим чтения для снимков</value>
@@ -2778,10 +2799,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Этот параметр игнорируется для зеркальных фотокамер при использовании родного драйвера. Вместо этого будет сохранен формат камеры RAW!</value>
   </data>
   <data name="LblSaveNativeCameraRaw" xml:space="preserve">
-    <value>Save native camera RAW</value>
+    <value>Сохранять исходный RAW камеры</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>Если включено, исходные изображения камер Nikon и Canon сохраняются как RAW-файлы камеры. Если отключено, изображения сохраняются согласно настройкам в разделе "Настройки &gt; Съёмка &gt; Настройки файла".</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Всегда использовать этот профиль</value>
@@ -2959,7 +2980,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Навести</value>
   </data>
   <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
+    <value>Не удалось выполнить наведение</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Двигаться и отцентрировать</value>
@@ -2989,7 +3010,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Команда конца порта съёмки</value>
   </data>
   <data name="LblSobel" xml:space="preserve">
-    <value>Sobel</value>
+    <value>Собель</value>
   </data>
   <data name="LblSolving" xml:space="preserve">
     <value>Разрешение...</value>
@@ -3029,7 +3050,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Не удалось начать гидирование</value>
   </data>
   <data name="LblRestartGuidingAfterLostShiftLockFailed" xml:space="preserve">
-    <value>Restarting guiding failed after lost shift lock</value>
+    <value>Не удалось возобновить гидирование после потери фиксации со смещением</value>
   </data>
   <data name="LblStartingINBacklashMeasurement" xml:space="preserve">
     <value>Начинается измерение люфта В</value>
@@ -3047,10 +3068,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Статистика</value>
   </data>
   <data name="LblStDev" xml:space="preserve">
-    <value>SD</value>
+    <value>СКО</value>
   </data>
   <data name="LblHFRStDev" xml:space="preserve">
-    <value>HFR SD</value>
+    <value>СКО HFR</value>
   </data>
   <data name="LblStellarium" xml:space="preserve">
     <value>Stellarium</value>
@@ -3116,9 +3137,9 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Синхронизировать настройки сайта</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>Mount's site settings differ from N.I.N.A.'s.
+    <value>Настройки местоположения монтировки отличаются от настроек N.I.N.A.
 
-Should the settings be synchronized?</value>
+Синхронизировать настройки?</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
     <value>Цель (J2000)</value>
@@ -3190,7 +3211,7 @@ Should the settings be synchronized?</value>
     <value>Телескоп синхронизирован на координаты</value>
   </data>
   <data name="LblMountToNINA" xml:space="preserve">
-    <value>From Mount to N.I.N.A.</value>
+    <value>Из монтировки в N.I.N.A.</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>Скорость гидирования П.В.</value>
@@ -3299,7 +3320,7 @@ Should the settings be synchronized?</value>
     <value>Сбросить прогресс всех элементов серии в цели</value>
   </data>
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
+    <value>Сбросить прогресс всех целей в текущем наборе целей</value>
   </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Запускает серии</value>
@@ -3345,13 +3366,14 @@ Should the settings be synchronized?</value>
     <value>Лунный</value>
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
-    <value>Король</value>
+    <value>King</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>Свой</value>
   </data>
   <data name="LblTrackingCustomRate" xml:space="preserve">
-    <value>Custom ({0:0.####}, {1:0.####})</value>
+    <value>Свой ({0:0.####}, {1:0.####})</value>
   </data>
   <data name="LblTransitNorth" xml:space="preserve">
     <value>Транзит по Северу</value>
@@ -3360,13 +3382,13 @@ Should the settings be synchronized?</value>
     <value>Транзит по Югу</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
-    <value>North</value>
+    <value>Север</value>
   </data>
   <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
+    <value>Юг</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>Время кульминации</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Тенденции и гиперболизм</value>
@@ -3422,9 +3444,11 @@ Should the settings be synchronized?</value>
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>Средний ток</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>Ток</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>Данные устройства</value>
@@ -3514,7 +3538,7 @@ Should the settings be synchronized?</value>
     <value>URL</value>
   </data>
   <data name="LblCopyURL" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>Копировать URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB лимит</value>
@@ -3674,34 +3698,43 @@ Should the settings be synchronized?</value>
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>Байеровская матрица для ключевого слова BAYERPAT в заголовках FITS или XISF для изображений, сгенерированных цветными сенсорами.
 По умолчанию используется любой шаблон драйвера камеры. Не применяется к камерам DSLR.</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
-    <value>Ток</value>
+    <value>Текущий</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>Запуск опций конца серии</value>
@@ -3726,6 +3759,7 @@ Should the settings be synchronized?</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Тайм-аут камеры. Камера не установила изображение как готовое после времени экспозиции + 15 секунд</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Предварительный просмотр шаблона</value>
@@ -4067,6 +4101,7 @@ Should the settings be synchronized?</value>
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>Сторона колонны</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Тайм-аут камеры</value>
@@ -4330,13 +4365,13 @@ Should the settings be synchronized?</value>
     <value>Набор инструкций для объектов глубокого космоса</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
-    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+    <value>Проверяет это выражение секвенсора при достижении набора инструкций. Если оно истинно, вложенные инструкции выполняются один раз. Если ложно, они пропускаются.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>Для условного набора инструкций требуется выражение.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>Условный набор инструкций</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Все инструкции в этом наборе выполняются параллельно. Этот набор инструкций не будет оценивать никаких условий или триггеров до тех пор, пока не будут выполнены все инструкции.</value>
@@ -4388,6 +4423,7 @@ Should the settings be synchronized?</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>Закрыть крышку флэт панели</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Перемещает фокусер в заданное абсолютное положение</value>
@@ -4442,6 +4478,7 @@ Should the settings be synchronized?</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Запарковать телескоп</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>Двигает телескоп к заданным координатам высоты и азимута</value>
@@ -4460,6 +4497,7 @@ Should the settings be synchronized?</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>Распарковать телескоп</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>Задать слежение</value>
@@ -4499,12 +4537,14 @@ Should the settings be synchronized?</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>Время ожидания</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>Ждёт заданного времени в формате чч:мм:сс. Дополнительно окно утилиты доступно для автозаполнения заката, сумерек, рассвета и восхода Солнца</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>Ожидание времени</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>Центр после дрейфа</value>
@@ -4519,13 +4559,13 @@ Should the settings be synchronized?</value>
     <value>АФ после увеличения HFR</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-    <value>HFR trend per filter</value>
+    <value>Тенденция изменения HFR для каждого фильтра</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-    <value>When disabled, the HFR trend is evaluated across all filters combined. 
-This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
-and a temperature sensitive optics on a quickly changing ambient temperature. 
-Note: This mode requires that HFR differences between filters in your setup are small.</value>
+    <value>Если отключено, тенденция изменения HFR оценивается совместно по всем фильтрам. 
+Это позволяет раньше запускать автофокусировку, особенно при частой смене фильтров
+и использовании чувствительной к температуре оптики при быстром изменении температуры окружающей среды. 
+Примечание: этот режим требует небольших различий HFR между фильтрами в вашей системе.</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>Триггер для инициирования автофокуса после изменения температуры на заданное количество в градусах с момента последнего автофокуса или начала серии</value>
@@ -4546,34 +4586,34 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Перекладка меридиана</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
-    <value>Programmable Meridian Flip</value>
+    <value>Программируемая перекладка через меридиан</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
-    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+    <value>Триггер перекладки через меридиан с настраиваемыми действиями до и после перекладки.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
-    <value>Before Flip Actions</value>
+    <value>Действия до перекладки</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
-    <value>After Flip Actions</value>
+    <value>Действия после перекладки</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting for the meridian flip.</value>
+    <value>Инструкции, выполняемые перед ожиданием перекладки через меридиан.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after the meridian flip.</value>
+    <value>Инструкции, выполняемые после перекладки через меридиан.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
-    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+    <value>Эти действия должны быть короткими. Длительные действия перед перекладкой могут задержать её выполнение.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
-    <value>Wait For Flip Window</value>
+    <value>Ожидать разрешённого времени перекладки</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
-    <value>Resume Tracking and Flip</value>
+    <value>Возобновить слежение и выполнить перекладку</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>Стабилизация</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>Камера не имеет охлаждения и не может установить температуру</value>
@@ -4657,7 +4697,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Шаблоны</value>
   </data>
   <data name="LblLinkedTemplates" xml:space="preserve">
-    <value>Linked Templates</value>
+    <value>Связанные шаблоны</value>
   </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>Шаблоны по умолчанию</value>
@@ -4666,10 +4706,10 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Перетащите набор инструкций серии из последовательности здесь, чтобы создать новый шаблон</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
-    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+    <value>Удерживайте Ctrl при перетаскивании шаблона, чтобы добавить ссылку на него вместо копии.</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
-    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
+    <value>Связанный шаблон сохраняет связь с исходным шаблоном. Его содержимое показано в серии для предварительного просмотра без возможности редактирования и автоматически обновляется при изменении шаблона. Чтобы изменить исходный шаблон, используйте "Редактировать шаблон" в связанном шаблоне. Чтобы создать независимую копию, перетащите шаблон без Ctrl.</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>Перезаписать шаблон?</value>
@@ -4736,6 +4776,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>Открыть крышку флэт панели</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Устанавливает яркость флэт устройства в указанное значение</value>
@@ -4747,7 +4788,8 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Включение или выключение лампы флэт устройства</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
-    <value>Включение света</value>
+    <value>Переключить свет</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>Ищет обученное значение экспозиции по указанным параметрам и принимает плоские экспозиции</value>
@@ -4881,13 +4923,13 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Открыть набор цели</value>
   </data>
   <data name="Lbl_OldSequencer_Title" xml:space="preserve">
-    <value>Legacy Sequencer</value>
+    <value>Устаревший секвенсор</value>
   </data>
   <data name="Lbl_OldSequencer_EndOfSequenceHeader" xml:space="preserve">
     <value>Опции окончания последней цели</value>
   </data>
   <data name="Lbl_OldSequencer_Template" xml:space="preserve">
-    <value>Legacy Sequence Template</value>
+    <value>Шаблон устаревшей серии</value>
   </data>
   <data name="Lbl_OldSequencer_ImportTarget" xml:space="preserve">
     <value>Импортировать цель</value>
@@ -4932,7 +4974,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Условие, которое повторяется до тех пор, пока цель не опустится ниже заданной высоты, а затем останавливает текущий набор инструкций</value>
   </data>
   <data name="Lbl_SequenceCondition_AltitudeCondition_Name" xml:space="preserve">
-    <value>Loop until Altitude Below</value>
+    <value>Цикл, пока высота не ниже порога</value>
   </data>
   <data name="Lbl_SequenceCategory_Dome" xml:space="preserve">
     <value>Купол</value>
@@ -5029,58 +5071,58 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Сохранить текущий набор инструкций и все его содержимое в качестве шаблона для повторного использования</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
-    <value>Linked Template</value>
+    <value>Связанный шаблон</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
-    <value>Linked Template: {0}</value>
+    <value>Связанный шаблон: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
-    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+    <value>Добавляет связь с шаблоном серии вместо его копирования. Текущее содержимое шаблона показано внутри этого контейнера для просмотра в серии, но доступно только для чтения, пока не включено редактирование шаблона. При изменении исходного шаблона контейнер автоматически обновляется до последней версии. При выполнении N.I.N.A. ожидает завершения загрузки шаблонов, затем выполняет текущее содержимое шаблона. Если связанный шаблон основан на контейнере цели, в нём по-прежнему хранится только повторно используемая структура серии; перетащите цель на связанный шаблон, чтобы выбрать её для этого использования. N.I.N.A. будет повторно применять эту цель при каждом обновлении шаблона. Используйте связанный шаблон, если несколько серий должны следовать одному шаблону; для независимой копии перетащите шаблон обычным способом. Добавьте его через меню "Связанные шаблоны" или удерживайте Ctrl при перетаскивании шаблона в серию, чтобы добавить его как связанный.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
-    <value>Linked template preview</value>
+    <value>Предварительный просмотр связанного шаблона</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
-    <value>Editing linked template</value>
+    <value>Редактирование связанного шаблона</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
-    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+    <value>Предварительный просмотр "{0}" только для чтения. Используйте "Редактировать шаблон", чтобы изменить исходный шаблон.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
-    <value>Editing the source template. Saving updates the template for every linked use.</value>
+    <value>Редактирование исходного шаблона. При сохранении шаблон обновится во всех местах, где используется ссылка на него.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
-    <value>Waiting for template "{0}" to finish loading.</value>
+    <value>Ожидание завершения загрузки шаблона "{0}".</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
-    <value>Template "{0}" could not be found.</value>
+    <value>Шаблон "{0}" не найден.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
-    <value>This linked template does not have a valid source template.</value>
+    <value>У этого связанного шаблона нет действительного исходного шаблона.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
-    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+    <value>Шаблоны по умолчанию нельзя редактировать напрямую. Сначала сохраните шаблон как пользовательский.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
-    <value>Edit Template</value>
+    <value>Редактировать шаблон</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
-    <value>Save Template</value>
+    <value>Сохранить шаблон</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
-    <value>Cancel Template Editing</value>
+    <value>Отменить редактирование шаблона</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
-    <value>Target: {0}</value>
+    <value>Цель: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
-    <value>No target selected. Drop a target here or enter target details below.</value>
+    <value>Цель не выбрана. Перетащите цель сюда или введите её данные ниже.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
-    <value>Use this target with the linked template</value>
+    <value>Использовать эту цель со связанным шаблоном</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
-    <value>Select a target for this linked template before running the sequence.</value>
+    <value>Выберите цель для этого связанного шаблона перед запуском серии.</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>Монитор безопасности не подключен</value>
@@ -5206,8 +5248,8 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Построить расширенную серию?</value>
   </data>
   <data name="Lbl_OldSequencer_BuildAdvanced_Text" xml:space="preserve">
-    <value>Are you sure to export the sequence to the advanced sequence?
-Note: Advanced sequences are NOT backwards compatible and it is not possible to revert to the legacy sequence!</value>
+    <value>Экспортировать серию в расширенный секвенсор?
+Примечание: расширенные серии НЕ обладают обратной совместимостью, и вернуться к устаревшей серии будет невозможно!</value>
   </data>
   <data name="Lbl_OldSequencer_SwitchToAdvanced" xml:space="preserve">
     <value>Расширенная серия</value>
@@ -5217,7 +5259,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
 Там можно спланировать серию с нуля с помощью мелких гранулярных инструкций, триггеров и условий.</value>
   </data>
   <data name="LblDisableSimpleSequencer" xml:space="preserve">
-    <value>Disable Legacy Sequencer</value>
+    <value>Отключить устаревший секвенсор</value>
   </data>
   <data name="LblDisableSimpleSequencerTooltip" xml:space="preserve">
     <value>Это отключит устаревший секвенсор и отобразит улучшенный секвенсор напрямую в закладке серий</value>
@@ -5407,9 +5449,11 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>Условие, которое повторяется, пока цель находится над горизонтом, а затем останавливает текущий набор инструкций</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
-    <value>Loop while Altitude Above Horizon</value>
+    <value>Цикл, пока высота не ниже горизонта</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>Цель никогда не будет выше горизонта</value>
@@ -5421,10 +5465,10 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Перемещение ротатора в позицию {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
+    <value>Находит сохранённую при обучении выдержку для указанных параметров и делает темновые кадры</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Trained Dark Exposure</value>
+    <value>Темновая экспозиция по результатам обучения</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Левая сторона</value>
@@ -5520,7 +5564,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Не удалось изменить состояние подключения устройства.</value>
   </data>
   <data name="LblRms" xml:space="preserve">
-    <value>Rms</value>
+    <value>RMS</value>
   </data>
   <data name="LblFLatUserPromptAdjustStepSize" xml:space="preserve">
     <value>Мастер не обнаружил правильного уровня яркости после 5 попыток. Пожалуйста, попробуйте изменить размер шага или допусков.</value>
@@ -5541,7 +5585,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Перемещает вращатель в указанный механический угол</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotate to mechanical angle</value>
+    <value>Повернуть на механический угол</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Меридиан</value>
@@ -5642,11 +5686,11 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Основная скорость</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>Вторичная скорость</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>Телескоп не может переместить первичную ось</value>
@@ -5697,7 +5741,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Проверить обновления</value>
   </data>
   <data name="LblPluginDllInstallDescription" xml:space="preserve">
-    <value>Install via the N.I.N.A. plugin manager or manually download and copy the DLL file into %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt; from:</value>
+    <value>Установите через менеджер плагинов N.I.N.A. или вручную скачайте DLL-файл и скопируйте его в %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt; из:</value>
   </data>
   <data name="LblPluginSetupInstallDescription" xml:space="preserve">
     <value>Установите через менеджер плагинов N.I.N.A. или скачайте вручную и запустите установку из:</value>
@@ -6004,10 +6048,10 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>{0} был отключен от компьютера. Проверьте его USB-соединение и источник питания</value>
   </data>
   <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
-    <value>{0} is already in use by another program. Please close this program before trying to reconnect, or reconnect the camera to the PC.</value>
+    <value>{0} уже используется другой программой. Закройте эту программу перед повторным подключением или переподключите камеру к компьютеру.</value>
   </data>
   <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
-    <value>{0} is already in use by EOS Utility. Please close EOS Utility, including any background tasks, before trying to reconnect.</value>
+    <value>{0} уже используется программой EOS Utility. Закройте EOS Utility, включая фоновые задачи, перед повторным подключением.</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>В Canon SDK произошла внутренняя ошибка. Это может привести к ненадежной работе камеры</value>
@@ -6125,7 +6169,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Не удалось сохранить изображение</value>
   </data>
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+    <value>Не удалось сохранить изображение. Возможно, на целевом диске закончилось свободное место.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Получить координаты из текущей позиции телескопа</value>
@@ -6227,689 +6271,690 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Отключает текущую инструкцию. Отключенная инструкция не будет выполняться, пока выполняется последовательность.</value>
   </data>
   <data name="Lbl_SequenceItem_Enable_Tooltip" xml:space="preserve">
-    <value>Enables the current instruction, to be considered again to run during sequence execution.</value>
+    <value>Включает текущую инструкцию, чтобы она снова учитывалась при выполнении серии.</value>
   </data>
   <data name="Lbl_SequenceContainer_DisableEnable_Tooltip" xml:space="preserve">
-    <value>Disables or enables the current instruction set and all its content.</value>
+    <value>Отключает или включает текущий набор инструкций и всё его содержимое.</value>
   </data>
   <data name="LblDateUTCFormatDescription" xml:space="preserve">
     <value>Дата UTC в формате ГГГГ-ММ-ДД</value>
   </data>
   <data name="LblTimeUTCFormatDescription" xml:space="preserve">
-    <value>UTC time with format HH-mm-ss</value>
+    <value>Время UTC в формате HH-mm-ss</value>
   </data>
   <data name="LblGuiderCanSetShift" xml:space="preserve">
-    <value>Can Shift Tracking</value>
+    <value>Поддерживается слежение со смещением</value>
   </data>
   <data name="LblGuiderShiftEnabled" xml:space="preserve">
-    <value>Shift Enabled</value>
+    <value>Смещение включено</value>
   </data>
   <data name="LblGuiderRAShiftRate" xml:space="preserve">
-    <value>RA Shift Rate</value>
+    <value>Скорость смещения по П.В.</value>
   </data>
   <data name="LblGuiderDecShiftRate" xml:space="preserve">
-    <value>Dec Shift Rate</value>
+    <value>Скорость смещения по склонению</value>
   </data>
   <data name="LblPhd2GuiderShiftAxis" xml:space="preserve">
-    <value>Shift Axis</value>
+    <value>Ось смещения</value>
   </data>
   <data name="LblGuiderSetShiftRate" xml:space="preserve">
-    <value>Set Shift</value>
+    <value>Задать смещение</value>
   </data>
   <data name="LblGuiderStopShift" xml:space="preserve">
-    <value>Stop Shift</value>
+    <value>Остановить смещение</value>
   </data>
   <data name="LblPhd2GuiderRestartShiftLockFailed" xml:space="preserve">
-    <value>Setting shift rate after losing shift lock failed</value>
+    <value>Не удалось задать скорость смещения после потери фиксации со смещением</value>
   </data>
   <data name="LblPhd2GuiderRestartShiftLockSuccess" xml:space="preserve">
-    <value>Restored shift rate after losing shift lock</value>
+    <value>Скорость смещения восстановлена после потери фиксации со смещением</value>
   </data>
   <data name="LblDisplayMoonChart" xml:space="preserve">
-    <value>Display moon chart</value>
+    <value>Показать график Луны</value>
   </data>
   <data name="LblMoonSeparation" xml:space="preserve">
-    <value>Angular separation between moon and target</value>
+    <value>Угловое расстояние между Луной и целью</value>
   </data>
   <data name="LblPluginFailedToLoad" xml:space="preserve">
-    <value>Failed to load plugin {0} version {1}.
-Please check if there is an update available.</value>
+    <value>Не удалось загрузить плагин {0} версии {1}.
+Проверьте наличие обновления.</value>
   </data>
   <data name="LblMoon" xml:space="preserve">
-    <value>Moon</value>
+    <value>Луна</value>
   </data>
   <data name="LblDate" xml:space="preserve">
-    <value>Date</value>
+    <value>Дата</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>День</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>Месяц</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>Год</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
-    <value>Observation</value>
+    <value>Наблюдение</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>Установить текущие дату и время наблюдения</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
-    <value>Command</value>
+    <value>Команда</value>
   </data>
   <data name="LblRaw" xml:space="preserve">
-    <value>Raw</value>
+    <value>Без обработки</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SendCommand_Description" xml:space="preserve">
-    <value>Sends a command to the selected device in accordance with the ASCOM SendCommand methods. Any returned output is logged in the main N.I.N.A. log file.</value>
+    <value>Отправляет команду выбранному устройству согласно методам SendCommand ASCOM. Любой полученный ответ записывается в основной файл журнала N.I.N.A.</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SendCommand_Name" xml:space="preserve">
-    <value>Send Command</value>
+    <value>Отправить команду</value>
   </data>
   <data name="LblBoolean" xml:space="preserve">
-    <value>Boolean</value>
+    <value>Логическое значение</value>
   </data>
   <data name="LblDevice" xml:space="preserve">
-    <value>Device</value>
+    <value>Устройство</value>
   </data>
   <data name="LblString" xml:space="preserve">
-    <value>String</value>
+    <value>Строка</value>
   </data>
   <data name="LblBlind" xml:space="preserve">
-    <value>Blind</value>
+    <value>Без ответа</value>
   </data>
   <data name="LblAction" xml:space="preserve">
-    <value>Action</value>
+    <value>Действие</value>
   </data>
   <data name="LblParameters" xml:space="preserve">
-    <value>Parameters</value>
+    <value>Параметры</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_DeviceAction_Description" xml:space="preserve">
-    <value>Select and execute any ASCOM (or other) Actions that may be available by the device's driver</value>
+    <value>Выбирает и выполняет действия ASCOM (или другие действия), доступные в драйвере устройства</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_DeviceAction_Name" xml:space="preserve">
-    <value>Device Action</value>
+    <value>Действие устройства</value>
   </data>
   <data name="LblNoActionsAvailable" xml:space="preserve">
-    <value>No actions are available</value>
+    <value>Нет доступных действий</value>
   </data>
   <data name="LblSkyGuardPath" xml:space="preserve">
-    <value>SkyGuard path</value>
+    <value>Путь к SkyGuard</value>
   </data>
   <data name="LblSkyGuardServerPort" xml:space="preserve">
-    <value>SkyGuard Server Port</value>
+    <value>Порт сервера SkyGuard</value>
   </data>
   <data name="LblSkyGuardServerUrl" xml:space="preserve">
-    <value>SkyGuard Server URL</value>
+    <value>URL сервера SkyGuard</value>
   </data>
   <data name="LblSkyGuardSetup" xml:space="preserve">
-    <value>SkyGuard Setup</value>
+    <value>Настройка SkyGuard</value>
   </data>
   <data name="LblSkyGuardCallbackPort" xml:space="preserve">
-    <value>Callback Reservation Port SkyGuard</value>
+    <value>Порт обратных вызовов SkyGuard</value>
   </data>
   <data name="LblSkyGuardTimeLapsChecked" xml:space="preserve">
-    <value>Guider Settling</value>
+    <value>Стабилизация гидирования</value>
   </data>
   <data name="LblSkyGuardTimeLapsGuiding" xml:space="preserve">
-    <value>For a duration of</value>
+    <value>В течение</value>
   </data>
   <data name="LblSkyGuardTimeOutGuiding" xml:space="preserve">
-    <value>Start guiding timeout delay</value>
+    <value>Время ожидания запуска гидирования</value>
   </data>
   <data name="LblSkyGuardValueMaxGuiding" xml:space="preserve">
-    <value>Settle at &lt;</value>
+    <value>Стабилизация при &lt;</value>
   </data>
   <data name="LblDitherSkyGuardSkippedBecauseNotGuiding" xml:space="preserve">
-    <value>Dither was skipped because SkyGuard was not actively guiding</value>
+    <value>Межкадровая подвижка пропущена, поскольку SkyGuard не выполнял гидирование</value>
   </data>
   <data name="LblSkyGuardNotReady" xml:space="preserve">
-    <value>SkyGuard is not ready for operations. Check logs for details.</value>
+    <value>SkyGuard не готов к работе. Подробности смотрите в журнале.</value>
   </data>
   <data name="LblSkyGuardOperationCancelled" xml:space="preserve">
-    <value>Operation cancelled.</value>
+    <value>Операция отменена.</value>
   </data>
   <data name="LblSkyGuardPathNotFound" xml:space="preserve">
-    <value>Could not start SkyGuard. Path not found.</value>
+    <value>Не удалось запустить SkyGuard. Путь не найден.</value>
   </data>
   <data name="LblSkyGuardStartProcessError" xml:space="preserve">
-    <value>Could not start SkyGuard. Check logs for details.</value>
+    <value>Не удалось запустить SkyGuard. Подробности смотрите в журнале.</value>
   </data>
   <data name="LblSkyGuardConnectError" xml:space="preserve">
-    <value>Failed connecting to SkyGuard. View logs for more details.</value>
+    <value>Не удалось подключиться к SkyGuard. Подробности смотрите в журнале.</value>
   </data>
   <data name="LblSkyGuardDisconnectError" xml:space="preserve">
-    <value>Failed disconnecting SkyGuard. View logs for more details.</value>
+    <value>Не удалось отключиться от SkyGuard. Подробности смотрите в журнале.</value>
   </data>
   <data name="LblSkyGuardDitheringError" xml:space="preserve">
-    <value>Error on dithering operation. View logs for more details.</value>
+    <value>Ошибка при выполнении межкадровой подвижки. Подробности смотрите в журнале.</value>
   </data>
   <data name="LblSkyGuardEndpointNotReachable" xml:space="preserve">
-    <value>SkyGuard enpoint not reachable. View logs for more details.</value>
+    <value>Конечная точка SkyGuard недоступна. Подробности смотрите в журнале.</value>
   </data>
   <data name="LblSkyGuardGuidingError" xml:space="preserve">
-    <value>Error on start guiding operation. View logs for more details.</value>
+    <value>Ошибка при запуске гидирования. Подробности смотрите в журнале.</value>
   </data>
   <data name="LblSkyGuardStopGuidingError" xml:space="preserve">
-    <value>Error on stop guiding operation. View logs for more details.</value>
+    <value>Ошибка при остановке гидирования. Подробности смотрите в журнале.</value>
   </data>
   <data name="lblSkyGuardWrongVersion" xml:space="preserve">
-    <value>SkyGuard version is not supported by N.I.N.A. View logs for more details.</value>
+    <value>Эта версия SkyGuard не поддерживается N.I.N.A. Подробности смотрите в журнале.</value>
   </data>
   <data name="LblUseCachedImages" xml:space="preserve">
-    <value>This will use the images out of the framing cache and draw them in the offline sky map for framing. Only images that are less than or equal to 10° and greater than or equal to 0.1° horizontal field of view are used.</value>
+    <value>Использует изображения из кэша кадрирования и отображает их на автономной карте неба для кадрирования. Используются только изображения с полем зрения по горизонтали от 0.1° до 10° включительно.</value>
   </data>
   <data name="LblAny" xml:space="preserve">
-    <value>Any</value>
+    <value>Любое</value>
   </data>
   <data name="LblAnyDuration" xml:space="preserve">
-    <value>Any duration</value>
+    <value>Любая длительность</value>
   </data>
   <data name="LblFromTime" xml:space="preserve">
-    <value>from time</value>
+    <value>с</value>
   </data>
   <data name="LblMinimumDistance" xml:space="preserve">
-    <value>Minimum distance</value>
+    <value>Минимальное расстояние</value>
   </data>
   <data name="LblThroughTime" xml:space="preserve">
-    <value>through time</value>
+    <value>до</value>
   </data>
   <data name="LblVisibleFor" xml:space="preserve">
-    <value>visible for</value>
+    <value>виден в течение</value>
   </data>
   <data name="LblPegasusNativeDeprecation" xml:space="preserve">
-    <value>With the introduction of the Pegasus Astro Unity Platform and possible changes to the communication protocols the native drivers will be deprecated in future versions. Please use the ASCOM drivers instead!</value>
+    <value>В связи с появлением Pegasus Astro Unity Platform и возможными изменениями протоколов связи встроенные драйверы будут упразднены в будущих версиях. Используйте драйверы ASCOM!</value>
   </data>
   <data name="LblAlwaysListen" xml:space="preserve">
-    <value>Always listen to file changes</value>
+    <value>Всегда отслеживать изменения файлов</value>
   </data>
   <data name="LblDownloadDelay" xml:space="preserve">
-    <value>Seconds to wait before download</value>
+    <value>Задержка перед загрузкой в секундах</value>
   </data>
   <data name="LblSkySurveyUnavailable" xml:space="preserve">
-    <value>{0} is unavailable. Please select an alternative image source.
+    <value>{0} недоступен. Выберите другой источник изображений.
 
-Reason: {1}</value>
+Причина: {1}</value>
   </data>
   <data name="LblImageSourceError" xml:space="preserve">
-    <value>Image source error</value>
+    <value>Ошибка источника изображений</value>
   </data>
   <data name="LblSaveImageQueueSize" xml:space="preserve">
-    <value>Image Save Queue Size</value>
+    <value>Размер очереди сохранения изображений</value>
   </data>
   <data name="LblSaveImageQueueSizeTooltip" xml:space="preserve">
-    <value>Increasing this allows the application to enqueue more than one image into the processing and saving queue. This is useful for increasing the speed of short exposures during a sequence at the cost of increased memory consumption.</value>
+    <value>Увеличение этого значения позволяет приложению помещать более одного изображения в очередь обработки и сохранения. Это ускоряет съёмку коротких экспозиций в серии за счёт увеличения потребления памяти.</value>
   </data>
   <data name="LblSelectedTimeSourceInvalid" xml:space="preserve">
-    <value>Selected time source could not determine a valid time. Please select a different source.</value>
+    <value>Выбранный источник времени не смог определить допустимое время. Выберите другой источник.</value>
   </data>
   <data name="LblLoadingPlugin" xml:space="preserve">
-    <value>Loading plugin {0} version {1} created by {2}</value>
+    <value>Загрузка плагина {0} версии {1}, автор: {2}</value>
   </data>
   <data name="LblMGENSetup" xml:space="preserve">
-    <value>MGEN Setup</value>
+    <value>Настройка MGEN</value>
   </data>
   <data name="LblSingleImagingLayout" xml:space="preserve">
-    <value>Single imaging tab layout</value>
+    <value>Единая компоновка вкладки съёмки</value>
   </data>
   <data name="LblSingleImagingLayoutTooltip" xml:space="preserve">
-    <value>When enabled, the imaging tab will have only one layout for all profiles instead of being profile dependent</value>
+    <value>Если включено, вкладка съёмки использует одну компоновку для всех профилей, а не отдельную для каждого профиля</value>
   </data>
   <data name="LblPlatesolve3" xml:space="preserve">
     <value>Platesolve3</value>
   </data>
   <data name="LblPlatesolve3Directory" xml:space="preserve">
-    <value>Platesolve3 Location</value>
+    <value>Расположение Platesolve3</value>
   </data>
   <data name="LblPlatesolve3NoCoordinates" xml:space="preserve">
-    <value>No coordinates available. Platesolve3 requires coordinates to solve!</value>
+    <value>Координаты недоступны. Для плейтсолва с Platesolve3 требуются координаты!</value>
   </data>
   <data name="LblPlatesolve3NotFound" xml:space="preserve">
-    <value>Platesolve3 exe not found</value>
+    <value>Исполняемый файл Platesolve3 не найден</value>
   </data>
   <data name="LblBackupDockLayout" xml:space="preserve">
-    <value>Backup Layout</value>
+    <value>Сохранить резервную копию компоновки</value>
   </data>
   <data name="LblBackupDockLayoutFailed" xml:space="preserve">
-    <value>Backup layout failed</value>
+    <value>Не удалось сохранить резервную копию компоновки</value>
   </data>
   <data name="LblBackupDockLayoutSuccessful" xml:space="preserve">
-    <value>Imaging tab layout backed up</value>
+    <value>Резервная копия компоновки вкладки съёмки сохранена</value>
   </data>
   <data name="LblBackupDockLayoutTooltip" xml:space="preserve">
-    <value>Backup the imaging tab layout to a file, so it can be restored at a later point</value>
+    <value>Сохранить компоновку вкладки съёмки в файл, чтобы восстановить её позже</value>
   </data>
   <data name="LblDockLayoutReset" xml:space="preserve">
-    <value>Imaging tab layout reset</value>
+    <value>Компоновка вкладки съёмки сброшена</value>
   </data>
   <data name="LblDockLayoutRestored" xml:space="preserve">
-    <value>Imaging tab layout restored</value>
+    <value>Компоновка вкладки съёмки восстановлена</value>
   </data>
   <data name="LblRestoreDockLayoutFromFile" xml:space="preserve">
-    <value>Restore Layout</value>
+    <value>Восстановить компоновку</value>
   </data>
   <data name="LblRestoreDockLayoutFromFileFailed" xml:space="preserve">
-    <value>Restore layout failed</value>
+    <value>Не удалось восстановить компоновку</value>
   </data>
   <data name="LblRestoreDockLayoutFromFileTooltip" xml:space="preserve">
-    <value>Restore imaging tab layout from a backup</value>
+    <value>Восстановить компоновку вкладки съёмки из резервной копии</value>
   </data>
   <data name="LblTotal" xml:space="preserve">
-    <value>Total</value>
+    <value>Всего</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_ExposureInfo" xml:space="preserve">
-    <value>Exposure Info</value>
+    <value>Информация об экспозициях</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_UpdateTarget" xml:space="preserve">
-    <value>UPDATE TARGET</value>
+    <value>ОБНОВИТЬ ЦЕЛЬ</value>
   </data>
   <data name="LblNoFilter" xml:space="preserve">
-    <value>No Filter</value>
+    <value>Без фильтра</value>
   </data>
   <data name="LblAtikExposureSpeed" xml:space="preserve">
-    <value>Exposure speed</value>
+    <value>Скорость экспонирования</value>
   </data>
   <data name="LblAtikGainPreset" xml:space="preserve">
-    <value>Gain preset</value>
+    <value>Предустановка усиления</value>
   </data>
   <data name="LblAtikWindowHeaterPowerLevel" xml:space="preserve">
-    <value>Heater power level</value>
+    <value>Уровень мощности нагревателя</value>
   </data>
   <data name="LblSkyGuardTimeLapsDitherChecked" xml:space="preserve">
-    <value>Dither Settling</value>
+    <value>Стабилизация после межкадровой подвижки</value>
   </data>
   <data name="LblAutoFocusPointLimitReached" xml:space="preserve">
-    <value>Autofocus failed to complete. Maximum number of measurement points reached.</value>
+    <value>Не удалось завершить автофокусировку. Достигнуто максимальное количество точек измерения.</value>
   </data>
   <data name="LblAutoFocusZeroPositionReached" xml:space="preserve">
-    <value>Autofocus failed to complete. Focuser Position reached 0.</value>
+    <value>Не удалось завершить автофокусировку. Положение фокусера достигло 0.</value>
   </data>
   <data name="LblRotateImageTooltip" xml:space="preserve">
-    <value>Rotates the image by 90° clockwise. Following images will then also be rotated by the same amount. This is for displaying purposes only and won't affect the image data.</value>
+    <value>Поворачивает изображение на 90° по часовой стрелке. Последующие изображения также будут повёрнуты на этот угол. Это влияет только на отображение и не изменяет данные изображения.</value>
   </data>
   <data name="LblFramingPlateSolvePromptText" xml:space="preserve">
-    <value>Image needs to be solved for framing.
-Please confirm the meta data to use for solving.
-Once confirmed choose which solver should be used.</value>
+    <value>Для кадрирования необходимо выполнить плейтсолв изображения.
+Подтвердите метаданные для плейтсолва.
+После подтверждения выберите программу для плейтсолва.</value>
   </data>
   <data name="LblPlateSolveRequired" xml:space="preserve">
-    <value>Platesolve required</value>
+    <value>Требуется плейтсолв</value>
   </data>
   <data name="LblFramingSolveWithBlindSolver" xml:space="preserve">
-    <value>When blind solver is selected, the coordinates will be ignored and the blind solver that is set up in the options will be used.</value>
+    <value>При выборе слепого плейтсолва координаты игнорируются и используется программа слепого плейтсолва, указанная в настройках.</value>
   </data>
   <data name="LblFramingSolveWithPlateSolver" xml:space="preserve">
-    <value>When plate solver is selected, the coordinates will be used as reference coordinates and used for the plate solver that is set up in the options.</value>
+    <value>При выборе обычного плейтсолва координаты используются как опорные для программы плейтсолва, указанной в настройках.</value>
   </data>
   <data name="LblGuideGraphDeclinationColor" xml:space="preserve">
-    <value>Guide Graph Dec Color</value>
+    <value>Цвет склонения на графике гидирования</value>
   </data>
   <data name="LblGuideGraphRightAscensionColor" xml:space="preserve">
-    <value>Guide Graph RA Color</value>
+    <value>Цвет П.В. на графике гидирования</value>
   </data>
   <data name="LblGuideGraphShowCorrections" xml:space="preserve">
-    <value>Guide Graph Show Corrections</value>
+    <value>Показывать коррекции на графике гидирования</value>
   </data>
   <data name="LblRotateImageAfterFlip" xml:space="preserve">
-    <value>Rotate image after flip</value>
+    <value>Поворачивать изображение после перекладки</value>
   </data>
   <data name="LblRotateImageAfterFlipTooltip" xml:space="preserve">
-    <value>When enabled, this will rotate the image by 180° in the imaging tab after the flip. This is for displaying purposes only and won't affect the image data.</value>
+    <value>Если включено, изображение на вкладке съёмки поворачивается на 180° после перекладки. Это влияет только на отображение и не изменяет данные изображения.</value>
   </data>
   <data name="LblDisableGuidingOnFilterChange" xml:space="preserve">
-    <value>Disable guiding during filter change</value>
+    <value>Отключать гидирование при смене фильтра</value>
   </data>
   <data name="LblDisableGuidingOnFilterChangeTooltip" xml:space="preserve">
-    <value>When this option is enabled, every time a filter is changed the guiding will be disabled while the filter is being changed and re-enabled afterwards.</value>
+    <value>Если этот параметр включён, при каждой смене фильтра гидирование отключается на время смены и снова включается после её завершения.</value>
   </data>
   <data name="LblEphemerisNotFound" xml:space="preserve">
-    <value>Ephemeris file to calculate celestial trajectories not found. Please run a repair on your N.I.N.A. installation.</value>
+    <value>Не найден файл эфемерид для расчёта траекторий небесных тел. Выполните восстановление установки N.I.N.A.</value>
   </data>
   <data name="LblPHD2InstanceNumber" xml:space="preserve">
-    <value>PHD2 instance number</value>
+    <value>Номер экземпляра PHD2</value>
   </data>
   <data name="LblDomeMountGeometry" xml:space="preserve">
-    <value>Dome &amp; mount geometry</value>
+    <value>Геометрия купола и монтировки</value>
   </data>
   <data name="LblDomeNotConnectedError" xml:space="preserve">
-    <value>The dome driver is not connected!</value>
+    <value>Драйвер купола не подключён!</value>
   </data>
   <data name="LblDomeShutterCoordination" xml:space="preserve">
-    <value>Shutter coordination</value>
+    <value>Координация затвора</value>
   </data>
   <data name="LblMountDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to move but the mount is disconnected. Mount status cannot be determined. This can be unsafe!</value>
+    <value>Получена команда перемещения затвора или крыши, но монтировка отключена. Невозможно определить состояние монтировки. Это может быть небезопасно!</value>
   </data>
   <data name="LblMountUnparkedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to move but the mount is unparked. This can be unsafe!</value>
+    <value>Получена команда перемещения затвора или крыши, но монтировка распаркована. Это может быть небезопасно!</value>
   </data>
   <data name="LblParkDomeBeforeShutterMovement" xml:space="preserve">
-    <value>Park dome before shutter operation</value>
+    <value>Парковать купол перед управлением затвором</value>
   </data>
   <data name="LblParkDomeBeforeShutterMovementTooltip" xml:space="preserve">
-    <value>Sends the dome to its park position before attempting to open or cloose the shutter</value>
+    <value>Отправляет купол в парковочное положение перед попыткой открыть или закрыть затвор</value>
   </data>
   <data name="LblParkMountBeforeShutterMovement" xml:space="preserve">
-    <value>Park mount before shutter operation</value>
+    <value>Парковать монтировку перед управлением затвором</value>
   </data>
   <data name="LblParkMountBeforeShutterMovementTooltip" xml:space="preserve">
-    <value>Attempt to park the mount before opening or closing the shutter</value>
+    <value>Пытается запарковать монтировку перед открытием или закрытием затвора</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfMountUnparked" xml:space="preserve">
-    <value>Refuse open or close if mount is unparked</value>
+    <value>Запретить открытие и закрытие, если монтировка распаркована</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfMountUnparkedTooltip" xml:space="preserve">
-    <value>Causes N.I.N.A. to refuse to open or close the shutter or roof if the mount is in an unparked state.
-This is evaluated AFTER the "Park mount before moving the shutter" setting.</value>
+    <value>Запрещает N.I.N.A. открывать или закрывать затвор или крышу, если монтировка распаркована.
+Эта проверка выполняется ПОСЛЕ применения параметра "Парковать монтировку перед управлением затвором".</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfNoSafetyDevice" xml:space="preserve">
-    <value>Refuse open if a Safety Monitor is not connected</value>
+    <value>Запретить открытие, если монитор безопасности не подключён</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfNoSafetyDeviceTooltip" xml:space="preserve">
-    <value>Causes N.I.N.A. to refuse to open the shutter or roof if a Safety Monitor device is not connected.</value>
+    <value>Запрещает N.I.N.A. открывать затвор или крышу, если устройство монитора безопасности не подключено.</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device is disconnected. Opening has been aborted.</value>
+    <value>Получена команда открытия затвора или крыши, но устройство монитора безопасности отключено. Открытие отменено.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
-    <value>NOTICE: These settings relate to the safety of your equipment. They must be set with careful consideration and with the familiarity you have with your specific setup. They govern only N.I.N.A.'s control of the equipment and are NOT in effect if N.I.N.A. is not running or is not connected to the equipment in question. Dome or roof safety mechanisms should always have a hardware backup and electrical interlocks to prevent any undesired shutter or roof movement. It is your responsibility to ensure that these settings do not conflict with your dome driver's settings.</value>
+    <value>ВНИМАНИЕ: эти настройки связаны с безопасностью вашего оборудования. Настраивайте их внимательно, учитывая особенности своей системы. Они действуют только при управлении оборудованием из N.I.N.A. и НЕ действуют, когда N.I.N.A. не запущена или не подключена к соответствующему оборудованию. Механизмы безопасности купола или крыши всегда должны иметь аппаратное резервирование и электрические блокировки, предотвращающие нежелательное движение затвора или крыши. Вы отвечаете за то, чтобы эти настройки не противоречили настройкам драйвера купола.</value>
   </data>
   <data name="LblCollapseSidebarTooltip" xml:space="preserve">
-    <value>Collapses the left sidebars to only show smaller icons without text</value>
+    <value>Сворачивает левые боковые панели, оставляя только уменьшенные значки без текста</value>
   </data>
   <data name="LblExpandSidebarTooltip" xml:space="preserve">
-    <value>Expands the left sidebars to show larger icons with text</value>
+    <value>Разворачивает левые боковые панели, показывая увеличенные значки с текстом</value>
   </data>
   <data name="Lbl_Sequencer_InstructionsSidebar_SettingsModeTooltip" xml:space="preserve">
-    <value>Enable settings mode. When this mode is enabled each instruction can be disabled or enabled. A disabled instruction will then not be shown inside the sidebar outside of settings mode.</value>
+    <value>Включить режим настройки. В этом режиме можно отключать и включать каждую инструкцию. Отключённая инструкция не отображается на боковой панели вне режима настройки.</value>
   </data>
   <data name="LblCollapseAll" xml:space="preserve">
-    <value>Collapse All</value>
+    <value>Свернуть всё</value>
   </data>
   <data name="LblExpandAll" xml:space="preserve">
-    <value>Expand All</value>
+    <value>Развернуть всё</value>
   </data>
   <data name="LblRotating" xml:space="preserve">
-    <value>Rotating</value>
+    <value>Вращение</value>
   </data>
   <data name="LblASCOMTelescopeDriveRateInvalid" xml:space="preserve">
-    <value>The drive rate {0} is invalid to move the telescope axis. Please enter a different rate.</value>
+    <value>Скорость {0} недопустима для перемещения оси телескопа. Укажите другую скорость.</value>
   </data>
   <data name="LblFilterChangeFailed" xml:space="preserve">
-    <value>Failed to move filter wheel to filter {0} at position {1}</value>
+    <value>Не удалось переместить колесо фильтров на фильтр {0} в позиции {1}</value>
     <comment>First parameter is filter name and second parameter is filter position number</comment>
   </data>
   <data name="LblSwitches" xml:space="preserve">
-    <value>Switches</value>
+    <value>Переключатели</value>
   </data>
   <data name="LblGauges" xml:space="preserve">
-    <value>Gauges</value>
+    <value>Индикаторы</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_SetUSBLimit_Description" xml:space="preserve">
-    <value>Sets the USB limit for the camera if available</value>
+    <value>Задаёт ограничение USB для камеры, если оно доступно</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_SetUSBLimit_Name" xml:space="preserve">
-    <value>Set USB Limit</value>
+    <value>Задать ограничение USB</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CannotSetUSBLimit" xml:space="preserve">
-    <value>Camera cannot set USB limit</value>
+    <value>Камера не поддерживает настройку ограничения USB</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_InvalidUSBLimit" xml:space="preserve">
-    <value>Invalid value for USB limit for the camera</value>
+    <value>Недопустимое значение ограничения USB для камеры</value>
   </data>
   <data name="LblHighFullwellMode" xml:space="preserve">
-    <value>High Fullwell Mode</value>
+    <value>Режим увеличенной ёмкости пикселя</value>
   </data>
   <data name="LblHighFullwellModeTooltip" xml:space="preserve">
-    <value>Enables the high fullwell mode for extended fullwell</value>
+    <value>Включает режим увеличенной ёмкости пикселя для повышения его предельного заряда</value>
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
-    <value>Target Dew Heater Strength</value>
+    <value>Заданный уровень нагревателя против росы</value>
   </data>
   <data name="LblColoredContainerBorders" xml:space="preserve">
-    <value>Colored Container Borders</value>
+    <value>Цветные границы контейнеров</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
-    <value>Hardware Acceleration</value>
+    <value>Аппаратное ускорение</value>
   </data>
   <data name="LblHardwareAccelerationTooltip" xml:space="preserve">
-    <value>This will enable or disable hardware accelerated rendering of the application.
-In case you are having rendering issues, or the application is turning blank when using a remote software while there is no monitor attached disabling hardware acceleration might be beneficial.
-Keep in mind that disabling hardware acceleration might reduce overall application performance.
+    <value>Включает или отключает аппаратное ускорение отрисовки приложения.
+Отключение аппаратного ускорения может помочь при проблемах с отрисовкой или появлении пустого окна при удалённом подключении к компьютеру без монитора.
+Учтите, что отключение аппаратного ускорения может снизить общую производительность приложения.
 
-Changing the value will require an app restart to take affect.</value>
+Для применения изменения необходимо перезапустить приложение.</value>
   </data>
   <data name="LblProfile" xml:space="preserve">
-    <value>Profile</value>
+    <value>Профиль</value>
     <comment>The equipment profile that is used in the application that stores all the settings</comment>
   </data>
   <data name="LblAutomaticMountSync" xml:space="preserve">
-    <value>Automatic Sync</value>
+    <value>Автоматическая синхронизация</value>
     <comment>The option to turn automatic sync of platesolving to the mount</comment>
   </data>
   <data name="LblAutomaticMountSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will send a sync command to the mount during platesolve &amp; center operations. 
-This should only be disabled when having a good pointing model that must not be altered in any way. When disabled the plate solve panel in imaging tab will also not show the sync toggle.</value>
+    <value>Если включено, приложение отправляет монтировке команду синхронизации при плейтсолве и центрировании. 
+Отключайте этот параметр только при наличии точной модели наведения, которую нельзя изменять. Если параметр отключён, переключатель синхронизации также не отображается на панели плейтсолва вкладки съёмки.</value>
     <comment>The option tooltip to turn automatic sync of platesolving to the mount</comment>
   </data>
   <data name="LblCameraDitherPixels" xml:space="preserve">
-    <value>Camera Dither Pixels</value>
+    <value>Пиксели межкадровой подвижки камеры</value>
   </data>
   <data name="LblCameraPixelScale" xml:space="preserve">
-    <value>Camera Pixel Scale</value>
+    <value>Масштаб изображения камеры</value>
   </data>
   <data name="LblGuiderDitherPixels" xml:space="preserve">
-    <value>Guider Dither Pixels</value>
+    <value>Пиксели межкадровой подвижки гида</value>
   </data>
   <data name="LblGuiderPixelScale" xml:space="preserve">
-    <value>Guider Pixel Scale</value>
+    <value>Масштаб изображения гида</value>
   </data>
   <data name="LblZwoDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Идентификатор устройства</value>
   </data>
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected ZWO device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>Имя длиной до 8 символов ASCII, которое можно назначить подключённому устройству ZWO. Оно позволяет различать несколько устройств одной модели.</value>
   </data>
   <data name="LblDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>Имя длиной до 8 символов ASCII, которое можно назначить подключённому устройству. Оно позволяет различать несколько устройств одной модели.</value>
   </data>
   <data name="LblUnidirectional" xml:space="preserve">
-    <value>Unidirectional</value>
+    <value>Однонаправленный</value>
   </data>
   <data name="LblCalibrate" xml:space="preserve">
-    <value>Calibrate</value>
+    <value>Калибровать</value>
   </data>
   <data name="LblNmeaSerialGnss" xml:space="preserve">
-    <value>NMEA Serial GNSS</value>
+    <value>GNSS NMEA через последовательный порт</value>
   </data>
   <data name="LblPrimaLuceLabEagle" xml:space="preserve">
     <value>PrimaLuceLab Eagle</value>
   </data>
   <data name="LblGnssGgaMissingError" xml:space="preserve">
-    <value>Did not observe a GGA sentence within {0} seconds</value>
+    <value>Сообщение GGA не получено за {0} с</value>
   </data>
   <data name="LblGnssGgaQualityError" xml:space="preserve">
-    <value>GGA sentence indicates the fix quality is {0}</value>
+    <value>Сообщение GGA указывает качество определения положения: {0}</value>
   </data>
   <data name="LblGnss" xml:space="preserve">
     <value>GNSS</value>
   </data>
   <data name="LblPegasusUranusNotFound" xml:space="preserve">
-    <value>PegasusAstro Uranus Meteo not found</value>
+    <value>PegasusAstro Uranus Meteo не найден</value>
   </data>
   <data name="LblPegausAstroUranus" xml:space="preserve">
     <value>PegasusAstro Uranus Meteo</value>
   </data>
   <data name="LblIsValidIpPortRule" xml:space="preserve">
-    <value>Port number must be between {0} and {1}</value>
+    <value>Номер порта должен быть между {0} и {1}</value>
   </data>
   <data name="LblMetaGuideListenAllInterfaces" xml:space="preserve">
-    <value>Use all interfaces</value>
+    <value>Использовать все интерфейсы</value>
   </data>
   <data name="LblMetaGuideListenAllInterfacesTooltip" xml:space="preserve">
-    <value>Listen on all interfaces for MegaGuide broadcasts. By default, N.I.N.A. will listen on loopback (127.0.0.1) only</value>
+    <value>Принимать широковещательные сообщения MetaGuide на всех интерфейсах. По умолчанию N.I.N.A. принимает их только через локальный интерфейс (127.0.0.1)</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Description" xml:space="preserve">
-    <value>This instruction will automatically determine flat exposures similar to the flat wizard for a fixed panel brightness,.</value>
+    <value>Автоматически определяет выдержку флэтов при фиксированной яркости панели, аналогично флэт мастеру.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Name" xml:space="preserve">
-    <value>Auto Exposure Flat</value>
+    <value>Флэты с автоматической выдержкой</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Description" xml:space="preserve">
-    <value>This instruction will automatically determine flat panel brightness similar to the flat wizard for a fixed exposure time.</value>
+    <value>Автоматически определяет яркость флэт панели при фиксированной выдержке, аналогично флэт мастеру.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Name" xml:space="preserve">
-    <value>Auto Brightness Flat</value>
+    <value>Флэты с автоматической яркостью</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>This instruction automatically adjusts exposure times for capturing twilight sky flats, akin to the functionality of the flat wizard tool. It dynamically modifies the exposure duration after each shot, based on real-time predictions of changes in sky brightness.</value>
+    <value>Автоматически подбирает выдержку для съёмки флэтов по сумеречному небу, аналогично флэт мастеру. После каждого снимка выдержка изменяется на основе текущего прогноза изменения яркости неба.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Twilight Sky Flats</value>
+    <value>Флэты по сумеречному небу</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
-    <value>Closing Cover</value>
+    <value>Закрытие крышки</value>
   </data>
   <data name="LblOpeningCover" xml:space="preserve">
-    <value>Opening Cover</value>
+    <value>Открытие крышки</value>
   </data>
   <data name="LblSettingBrightness" xml:space="preserve">
-    <value>Setting brightness to {0}</value>
+    <value>Установка яркости {0}</value>
   </data>
   <data name="LblToggleLight" xml:space="preserve">
-    <value>Toggling light to {0}</value>
+    <value>Переключение света в состояние {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness" xml:space="preserve">
-    <value>Determining brightness using {0}. Attempt {1} / {2}.</value>
+    <value>Определение яркости с использованием {0}. Попытка {1} / {2}.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness" xml:space="preserve">
-    <value>Found brightness at panel brightness {0}. Capturing flats.</value>
+    <value>Подобрана яркость панели {0}. Съёмка флэтов.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_DetermineTime" xml:space="preserve">
-    <value>Determining exposure time using {0} s. Attempt {1} / {2}.</value>
+    <value>Определение выдержки с использованием {0} с. Попытка {1} / {2}.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_FoundTime" xml:space="preserve">
-    <value>Found exposure time at {0} s. Capturing flats.</value>
+    <value>Подобрана выдержка {0} с. Съёмка флэтов.</value>
   </data>
   <data name="LblFlatWizardFailed" xml:space="preserve">
-    <value>Flat Wizard failed.
-Reason: {0}</value>
+    <value>Ошибка флэт мастера.
+Причина: {0}</value>
     <comment>When flat wizard fails in single mode</comment>
   </data>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
-    <value>Flat Wizard failed for filter {0}.
-Reason: {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <value>Ошибка флэт мастера для фильтра {0}.
+Причина: {1}</value>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
-    <value>Failed to determine brightness for flats - light source is too bright.
-Decrease minimum panel brightness or exposure time.</value>
+    <value>Не удалось определить яркость для флэтов - источник света слишком яркий.
+Уменьшите минимальную яркость панели или выдержку.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooDim" xml:space="preserve">
-    <value>Failed to determine brightness for flats - light source is too dim.
-Increase maximum panel brightness or exposure time.</value>
+    <value>Не удалось определить яркость для флэтов - источник света слишком тусклый.
+Увеличьте максимальную яркость панели или выдержку.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooBright" xml:space="preserve">
-    <value>Failed to determine exposure time for flats - light source is too bright.
-Decrease panel brightness or minimum exposure time.</value>
+    <value>Не удалось определить выдержку флэтов - источник света слишком яркий.
+Уменьшите яркость панели или минимальную выдержку.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooDim" xml:space="preserve">
-    <value>Failed to determine exposure time for flats - light source is too dim.
-Increase panel brightness or maximum exposure time.</value>
+    <value>Не удалось определить выдержку флэтов - источник света слишком тусклый.
+Увеличьте яркость панели или максимальную выдержку.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime" xml:space="preserve">
-    <value>Determining exposure time using {0} s. Attempt {1} / {2}.</value>
+    <value>Определение выдержки с использованием {0} с. Попытка {1} / {2}.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime" xml:space="preserve">
-    <value>Found exposure time at {0} s. Capturing sky flats.</value>
+    <value>Подобрана выдержка {0} с. Съёмка флэтов по небу.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright" xml:space="preserve">
-    <value>Failed to determine exposure time for sky flats - sky is too bright. 
-Decrease minimum exposure time or wait until it is darker.</value>
+    <value>Не удалось определить выдержку флэтов по небу - небо слишком яркое. 
+Уменьшите минимальную выдержку или дождитесь более тёмного неба.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooDim" xml:space="preserve">
-    <value>Failed to determine exposure time for sky flats - sky is too dim.
-Increase minimum exposure time or wait until it is brighter.</value>
+    <value>Не удалось определить выдержку флэтов по небу - небо слишком тёмное.
+Увеличьте минимальную выдержку или дождитесь более светлого неба.</value>
   </data>
   <data name="LblFlatDeviceError" xml:space="preserve">
-    <value>Errored</value>
+    <value>Ошибка</value>
   </data>
   <data name="LblFlatDeviceCoverError" xml:space="preserve">
-    <value>{0} reports that the cover is in an errored state</value>
+    <value>{0} сообщает об ошибке крышки</value>
   </data>
   <data name="LblFlatDeviceNotPresent" xml:space="preserve">
-    <value>Not present</value>
+    <value>Отсутствует</value>
   </data>
   <data name="LblFlipImageTooltip" xml:space="preserve">
-    <value>Flips image horizontally</value>
+    <value>Отражает изображение по горизонтали</value>
   </data>
   <data name="LblASCOMColorSensorTypeNotSupported" xml:space="preserve">
-    <value>The ASCOM Sensor Type is currently configured to return already debayered images, which is not supported. Please adjust the driver settings to return bayered images instead!</value>
+    <value>Тип сенсора ASCOM настроен на возврат изображений с уже выполненной дебайеризацией, что не поддерживается. Измените настройки драйвера, чтобы получать изображения с мозаикой Байера!</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection" xml:space="preserve">
-    <value>Location sync</value>
+    <value>Синхронизация местоположения</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
-    <value>Prompt</value>
+    <value>Спрашивать</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
-    <value>Sync to application</value>
+    <value>Передать в приложение</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToTelescope" xml:space="preserve">
-    <value>Sync to telescope</value>
+    <value>Передать в телескоп</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_NoSync" xml:space="preserve">
-    <value>No sync</value>
+    <value>Без синхронизации</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
-    <value>When connecting the telescope this defines the behavior how to react when the mount location and application location differs.</value>
+    <value>Определяет поведение при подключении телескопа, если местоположения монтировки и приложения различаются.</value>
   </data>
   <data name="LblPHD2PeakDec" xml:space="preserve">
-    <value>Peak Dec: {0} ({1}")</value>
+    <value>Пик по Скл.: {0} ({1}")</value>
   </data>
   <data name="LblPHD2PeakRA" xml:space="preserve">
-    <value>Peak RA: {0} ({1}")</value>
+    <value>Пик по П.В.: {0} ({1}")</value>
   </data>
   <data name="LblPluginRepositories" xml:space="preserve">
-    <value>Plugin Repositories</value>
+    <value>Репозитории плагинов</value>
   </data>
   <data name="LblPluginRepositoryEnterUrl" xml:space="preserve">
-    <value>Enter Plugin Repository URL</value>
+    <value>Введите URL репозитория плагинов</value>
   </data>
   <data name="LblPluginRepositoryUrlInvalid" xml:space="preserve">
-    <value>Plugin Repository Url is invalid: {0}</value>
+    <value>Недопустимый URL репозитория плагинов: {0}</value>
   </data>
   <data name="LblTSXImageLink" xml:space="preserve">
     <value>TheSkyX Imagelink</value>
   </data>
   <data name="LblTSXHost" xml:space="preserve">
-    <value>TheSkyX Host</value>
+    <value>Сервер TheSkyX</value>
   </data>
   <data name="LblTSXPort" xml:space="preserve">
-    <value>TheSkyX Port</value>
+    <value>Порт TheSkyX</value>
   </data>
   <data name="LblZwoMonoBinMode" xml:space="preserve">
-    <value>Mono bin</value>
+    <value>Монохромный биннинг</value>
   </data>
   <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
-    <value>When on, the camera will average binned pixels to create monochrome output</value>
+    <value>Если включено, камера усредняет объединяемые пиксели для получения монохромного изображения</value>
   </data>
   <data name="LblPinPoint" xml:space="preserve">
     <value>PinPoint</value>
   </data>
   <data name="LblPinPointCatalogRoot" xml:space="preserve">
-    <value>Catalog root</value>
+    <value>Корневая папка каталога</value>
   </data>
   <data name="LblPinPointFailedInitialize" xml:space="preserve">
-    <value>Failure to initialize PinPoint Astrometric Engine</value>
+    <value>Не удалось инициализировать PinPoint Astrometric Engine</value>
   </data>
   <data name="LblPinPointNotInstalled" xml:space="preserve">
-    <value>Failed to initialize PinPoint Astrometric Engine. It or its 64bit component does not appear to be installed.</value>
+    <value>Не удалось инициализировать PinPoint Astrometric Engine. Похоже, он или его 64-битный компонент не установлен.</value>
   </data>
   <data name="LblPinPointReferenceCatalog" xml:space="preserve">
-    <value>Reference catalog</value>
+    <value>Опорный каталог</value>
   </data>
   <data name="LblPinPointCatAtas" xml:space="preserve">
     <value>ATLAS / PanSTARRS+Gaia</value>
@@ -6921,86 +6966,91 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>ESA Tycho-2</value>
   </data>
   <data name="LblPinPointCatType" xml:space="preserve">
-    <value>Reference catalog</value>
+    <value>Опорный каталог</value>
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
-    <value>Expansion</value>
+    <value>Расширение</value>
   </data>
   <data name="LblPinPointExpansionToolTip" xml:space="preserve">
-    <value>Expansion of catalog search area outside the image dimensions (min = 0, max = 80, default = 40)</value>
+    <value>Расширение области поиска в каталоге за пределы изображения (мин. = 0, макс. = 80, по умолчанию = 40)</value>
   </data>
   <data name="LblPinPointMaxMagnitude" xml:space="preserve">
-    <value>Max. magnitude</value>
+    <value>Макс. звёздная величина</value>
   </data>
   <data name="LblPinPointMaxMagnitudeToolTip" xml:space="preserve">
-    <value>The maximum (fainter) magnitude for selection of stars from the reference catalog (min = 2.0, max = 20.0, default = 20.0)</value>
+    <value>Максимальная звёздная величина (самые слабые звёзды) для выбора звёзд из опорного каталога (мин. = 2.0, макс. = 20.0, по умолчанию = 20.0)</value>
   </data>
   <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
-    <value>AllSky API host</value>
+    <value>Сервер API AllSky</value>
   </data>
   <data name="LblPinPointAllSkyApiHostToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API host (default = nova.astrometry.net)</value>
+    <value>Сервер API Astrometry.net/AllSky (по умолчанию = nova.astrometry.net)</value>
   </data>
   <data name="LblPinPointAllSkyApiKey" xml:space="preserve">
-    <value>AllSky API key</value>
+    <value>Ключ API AllSky</value>
   </data>
   <data name="LblPinPointAllSkyApiKeyToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API key (optional)</value>
+    <value>Ключ API Astrometry.net/AllSky (необязательно)</value>
   </data>
   <data name="LblPinPointAllSkySolve" xml:space="preserve">
-    <value>PinPoint AllSky solve</value>
+    <value>Слепой плейтсолв PinPoint AllSky</value>
   </data>
   <data name="LblPinPointLocalSolve" xml:space="preserve">
-    <value>PinPoint local solve</value>
+    <value>Локальный плейтсолв PinPoint</value>
   </data>
   <data name="LblPinPointErrorMessage" xml:space="preserve">
-    <value>PinPoint Error Message</value>
+    <value>Сообщение об ошибке PinPoint</value>
   </data>
   <data name="LblUnableToSetMountElevation" xml:space="preserve">
-    <value>Unable to set mount elevation to {0}!</value>
+    <value>Не удалось установить высоту местоположения монтировки {0}!</value>
   </data>
   <data name="LblSaveInCache" xml:space="preserve">
-    <value>Cache Image for Offline Use</value>
+    <value>Сохранить изображение в кэш для автономного использования</value>
     <comment>To store an image automatically in the framing assistant offline cache or not</comment>
   </data>
   <data name="LblSaveInCacheTooltip" xml:space="preserve">
-    <value>When enabled, the image will be saved to your device and can be viewed in the offline sky map</value>
+    <value>Если включено, изображение сохраняется на вашем устройстве и может просматриваться на автономной карте неба</value>
   </data>
   <data name="LblClose" xml:space="preserve">
     <value>Закрыть</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
-    <value>Show Histogram</value>
+    <value>Показать гистограмму</value>
   </data>
   <data name="LblShowHorizon" xml:space="preserve">
-    <value>Show Local Horizon</value>
+    <value>Показать местный горизонт</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
-    <value>Show star measurements in arcseconds</value>
+    <value>Показывать параметры звёзд в угловых секундах</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
-    <value>Info only</value>
+    <value>Только информация</value>
   </data>
   <data name="LblInfoOnlyTooltip" xml:space="preserve">
-    <value>Toggle between displaying only informational content and showing interactive controls within the panel</value>
+    <value>Переключает между показом только информации и отображением интерактивных элементов управления на панели</value>
   </data>
   <data name="LblParked" xml:space="preserve">
-    <value>Parked</value>
+    <value>Запарковано</value>
     <comment>When mount is at park position</comment>
   </data>
   <data name="LblSlewing" xml:space="preserve">
@@ -7022,1201 +7072,1210 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>RICE</value>
   </data>
   <data name="LblAddFzExtension" xml:space="preserve">
-    <value>Add .fz extension</value>
+    <value>Добавлять расширение .fz</value>
   </data>
   <data name="LblAddFzExtensionTooltip" xml:space="preserve">
-    <value>Adds an additional .fz extension to the file name of compressed FITS files. Example: filename.fits.fz</value>
+    <value>Добавляет расширение .fz к имени сжатых файлов FITS. Пример: filename.fits.fz</value>
   </data>
   <data name="LblASCOMCreate32BitData" xml:space="preserve">
-    <value>Create 32-bit data</value>
+    <value>Создавать 32-битные данные</value>
   </data>
   <data name="LblASCOMCreate32BitDataTooltip" xml:space="preserve">
-    <value>When the feature is enabled, N.I.N.A. will generate image data with a 32-bit depth, enhancing the pixel value range. 
-However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
-Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
-Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+    <value>Если параметр включён, N.I.N.A. создаёт данные изображения с 32-битной глубиной, увеличивая диапазон значений пикселей. 
+Однако это требует больше памяти, увеличивает время обработки и расход дискового пространства для каждой экспозиции.
+Учтите, что только форматы XISF и FITS могут сохранять изображения в этом 32-битном формате. 
+Также используемый драйвер ASCOM должен поддерживать такую 32-битную глубину. Если драйвер не поддерживает 32-битную глубину, увеличение размера файла лишь приведёт к расходу места без улучшения данных изображения.</value>
   </data>
   <data name="LblUseCfitsio" xml:space="preserve">
-    <value>Use CFITSIO</value>
+    <value>Использовать CFITSIO</value>
   </data>
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
-    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
+    <value>Если параметр включён, файлы FITS создаются с помощью библиотеки CFITSIO вместо стандартного способа записи. Это позволяет использовать дополнительные возможности, например сжатие FITS для уменьшения размера файлов и сохранение 32-битных данных для повышения точности.</value>
   </data>
   <data name="LblBadPixelCorrection" xml:space="preserve">
-    <value>Bad Pixel Correction</value>
+    <value>Коррекция дефектных пикселей</value>
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
-    <value>Bad Pixel Correction Threshold</value>
+    <value>Порог коррекции дефектных пикселей</value>
   </data>
   <data name="LblClosed" xml:space="preserve">
     <value>Закрыто</value>
   </data>
   <data name="LblClosing" xml:space="preserve">
-    <value>Closing</value>
+    <value>Закрытие</value>
   </data>
   <data name="LblOpen" xml:space="preserve">
     <value>Открыть</value>
   </data>
   <data name="LblOpening" xml:space="preserve">
-    <value>Opening</value>
+    <value>Открытие</value>
   </data>
   <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
-    <value>Telescope find home has timed out after {0} minutes</value>
+    <value>Превышено время ожидания поиска исходного положения телескопа: {0} мин.</value>
   </data>
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
-    <value>Telescope park has timed out after {0} minutes.</value>
+    <value>Превышено время ожидания парковки телескопа: {0} мин.</value>
   </data>
   <data name="LblDomeParkTimeout" xml:space="preserve">
-    <value>Dome park has timed out after {0} minutes.</value>
+    <value>Превышено время ожидания парковки купола: {0} мин.</value>
   </data>
   <data name="LblDomeParkFailed" xml:space="preserve">
-    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+    <value>Купол остановился, но драйвер не подтвердил парковку.</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
-    <value>Telescope unpark has timed out after {0} minutes.</value>
+    <value>Превышено время ожидания распарковки телескопа: {0} мин.</value>
   </data>
   <data name="LblTimeSync" xml:space="preserve">
-    <value>Time sync</value>
+    <value>Синхронизация времени</value>
   </data>
   <data name="LblTimeSyncTooltip" xml:space="preserve">
-    <value>When enabled, the application will update the mount time to be in sync with the system time on connection.</value>
+    <value>Если включено, при подключении приложение синхронизирует время монтировки с системным временем.</value>
   </data>
   <data name="LblCoordinatesMountSync" xml:space="preserve">
-    <value>Coordinates sync</value>
+    <value>Синхронизация координат</value>
   </data>
   <data name="LblMount" xml:space="preserve">
-    <value>Mount</value>
+    <value>Монтировка</value>
   </data>
   <data name="LblMountName" xml:space="preserve">
-    <value>Mount name</value>
+    <value>Название монтировки</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
-    <value>Discovery duration</value>
+    <value>Длительность поиска</value>
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 2 seconds)</value>
+    <value>Длительность попыток поиска устройств ASCOM Alpaca (по умолчанию: 2 с)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
-    <value>Discovery Port</value>
+    <value>Порт поиска</value>
     <comment>The ASCOM Alpaca Port to discover devices</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
-    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+    <value>Номер IP-порта поиска ASCOM Alpaca (по умолчанию: 32227)</value>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
-    <value># of broadcasts</value>
+    <value>Количество широковещательных запросов</value>
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 1)</value>
+    <value>Количество широковещательных запросов поиска устройств ASCOM Alpaca (по умолчанию: 1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
-    <value>Resolve DNS name</value>
+    <value>Разрешать DNS-имена</value>
     <comment>ASCOM Alpaca DNS name resolution</comment>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
-    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+    <value>Пытаться разрешать DNS-имена устройств ASCOM Alpaca (по умолчанию: выкл.)</value>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
-    <value>Use HTTPS</value>
+    <value>Использовать HTTPS</value>
     <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
-    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+    <value>Определяет, использовать HTTP или HTTPS при поиске устройств ASCOM Alpaca (по умолчанию: выкл.)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
-    <value>Use IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <value>Использовать IPv4</value>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
-    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+    <value>Использовать IPv4 для поиска устройств ASCOM Alpaca (по умолчанию: вкл.)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
-    <value>Use IPv6</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <value>Использовать IPv6</value>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
-    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
+    <value>Использовать IPv6 для поиска устройств ASCOM Alpaca (по умолчанию: выкл.)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
-    <value>Toggle Catalogue Display</value>
+    <value>Показать/скрыть каталог</value>
   </data>
   <data name="LblToggleShowAllCatalogues" xml:space="preserve">
-    <value>Show all catalogues</value>
+    <value>Показать все каталоги</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
-    <value>Target Alt</value>
+    <value>Высота цели</value>
   </data>
   <data name="LblTargetAz" xml:space="preserve">
-    <value>Target Az</value>
+    <value>Азимут цели</value>
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Geoptik Flat Field Controller</value>
   </data>
   <data name="LblLEDLights" xml:space="preserve">
-    <value>LED Lights</value>
+    <value>Светодиоды</value>
   </data>
   <data name="LblLEDLightsTooltop" xml:space="preserve">
-    <value>Turn the LED lights on the camera on or off</value>
+    <value>Включить или выключить светодиоды на камере</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum brightness is higher than the maximum brightness!</value>
+    <value>Минимальная яркость выше максимальной!</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+    <value>Минимальная выдержка больше максимальной!</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but telescope is not capable of pulse guiding</value>
+    <value>Межкадровая подвижка между флэтами по небу включена, но телескоп не поддерживает импульсное гидирование</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but mount is not connected</value>
+    <value>Межкадровая подвижка между флэтами по небу включена, но монтировка не подключена</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but telescope is parked</value>
+    <value>Межкадровая подвижка между флэтами по небу включена, но телескоп запаркован</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+    <value>Минимальная выдержка больше максимальной!</value>
   </data>
   <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
-    <value>Instruction "{0}" has not responded to the cancellation request after {1} minutes. The sequence will continue and the unresponsive task will be ignored.</value>
+    <value>Инструкция "{0}" не ответила на запрос отмены за {1} мин. Выполнение серии продолжится, а неотвечающая задача будет проигнорирована.</value>
   </data>
   <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
-    <value>Waiting for instruction to acknowledge cancellation</value>
+    <value>Ожидание подтверждения отмены инструкцией</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+    <value>Получена команда открытия затвора или крыши, но устройство монитора безопасности сообщает о небезопасных условиях. Открытие отменено.</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
-    <value>External Command</value>
+    <value>Внешняя команда</value>
   </data>
   <data name="LblExternalCommandFailed" xml:space="preserve">
-    <value>External command was unable to run successfully</value>
+    <value>Не удалось успешно выполнить внешнюю команду</value>
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
-    <value>External command was not found at '{0}'</value>
+    <value>Внешняя команда не найдена по пути '{0}'</value>
   </data>
   <data name="LblFocuserMoveTimeout" xml:space="preserve">
-    <value>Focuser movement has timed out after {0} minutes.</value>
+    <value>Превышено время ожидания перемещения фокусера: {0} мин.</value>
   </data>
   <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
-    <value>Failure to resolve PHD2 server hostname: {0}</value>
+    <value>Не удалось разрешить имя сервера PHD2: {0}</value>
   </data>
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
-    <value>PHD2 server hostname has not been set</value>
+    <value>Имя сервера PHD2 не задано</value>
   </data>
   <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+    <value>Копирует цвета текущей цветовой схемы в настраиваемую схему "Alternative Custom"</value>
   </data>
   <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+    <value>Копирует цвета текущей цветовой схемы в настраиваемую схему "Custom"</value>
   </data>
   <data name="LblLight" xml:space="preserve">
-    <value>Light</value>
+    <value>Свет</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
-    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+    <value>Загружает компоновку вкладки съёмки из сохранённого файла конфигурации панелей</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
-    <value>Load Imaging Layout</value>
+    <value>Загрузить компоновку съёмки</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
-    <value>The selected file is not a valid Imaging layout backup</value>
+    <value>Выбранный файл не является допустимой резервной копией компоновки съёмки</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
-    <value>Select an existing Imaging layout backup file</value>
+    <value>Выберите существующий файл резервной копии компоновки съёмки</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
-    <value>Saves the current sequence at the specified file path</value>
+    <value>Сохраняет текущую серию по указанному пути</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
     <value>Сохранить серию</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
-    <value>File path is invalid</value>
+    <value>Недопустимый путь к файлу</value>
   </data>
   <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
-    <value>There is no Weather Underground API key configured.</value>
+    <value>Ключ API Weather Underground не настроен.</value>
   </data>
   <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
-    <value>There is no Weather Underground station configured.</value>
+    <value>Станция Weather Underground не настроена.</value>
   </data>
   <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
-    <value>Weather Underground API did not respond.</value>
+    <value>API Weather Underground не ответил.</value>
   </data>
   <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
-    <value>Weather Underground API request failed: {0}</value>
+    <value>Ошибка запроса API Weather Underground: {0}</value>
   </data>
   <data name="LblZwoResetZeroPosition" xml:space="preserve">
-    <value>Set current position to zero</value>
+    <value>Принять текущее положение за ноль</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
     <value>Обратный</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
-    <value>Set max step</value>
+    <value>Задать максимальное положение</value>
   </data>
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
-    <value>Set current position to zero?</value>
+    <value>Принять текущее положение за ноль?</value>
   </data>
   <data name="LblCrosshair" xml:space="preserve">
-    <value>Crosshair</value>
+    <value>Перекрестие</value>
   </data>
   <data name="LblGpsd" xml:space="preserve">
     <value>GPSD</value>
   </data>
   <data name="LblGnssInvalidHost" xml:space="preserve">
-    <value>Failed to resolve {0} host: {1}</value>
+    <value>Не удалось разрешить имя сервера {0}: {1}</value>
   </data>
   <data name="LblErrorNoHostSpecified" xml:space="preserve">
-    <value>No host specified in settings</value>
+    <value>В настройках не указан сервер</value>
   </data>
   <data name="LblBlindSolveSettings" xml:space="preserve">
-    <value>Blind Solver Settings</value>
+    <value>Настройки слепого плейтсолва</value>
   </data>
   <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
-    <value>Warning: "Use telescope side of pier" in meridian flip settings is disabled and may cause alignment issues for equatorial mounts with domes near the meridian. The dome will assume a meridian flip occurs precisely at the meridian, potentially leading to misalignment if the mount has not yet flipped.</value>
+    <value>Предупреждение: параметр "Использовать сторону колонны с телескопом" в настройках перекладки через меридиан отключён. Это может вызвать ошибки совмещения экваториальной монтировки с куполом вблизи меридиана. Купол будет считать, что перекладка происходит точно на меридиане, что может привести к несовпадению, если монтировка ещё не выполнила перекладку.</value>
   </data>
   <data name="LblCompleteDuration" xml:space="preserve">
-    <value>Complete duration</value>
+    <value>Полная длительность</value>
   </data>
   <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
-    <value>Lock sequencer to prevent any manual edits or drag and drop</value>
+    <value>Заблокировать секвенсор, чтобы запретить ручное редактирование и перетаскивание</value>
   </data>
   <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
-    <value>Unlock sequencer to allow manual edits and drag and drop</value>
+    <value>Разблокировать секвенсор, чтобы разрешить ручное редактирование и перетаскивание</value>
   </data>
   <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Disable all drag and drop in the sequencer and sidebar</value>
+    <value>Отключить любое перетаскивание в секвенсоре и на боковой панели</value>
   </data>
   <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Enable all drag and drop in the sequencer and sidebar</value>
+    <value>Включить перетаскивание в секвенсоре и на боковой панели</value>
   </data>
   <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
-    <value>Invalid focal length!</value>
+    <value>Недопустимое фокусное расстояние!</value>
   </data>
   <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
-    <value>Unable to load image - please enter your telescope's effective focal length in the camera parameter section!</value>
+    <value>Не удалось загрузить изображение - укажите эффективное фокусное расстояние телескопа в разделе параметров камеры!</value>
   </data>
   <data name="LblSiteName" xml:space="preserve">
-    <value>Site name</value>
+    <value>Название места наблюдения</value>
     <comment>Observatory site</comment>
   </data>
   <data name="LblObservatory" xml:space="preserve">
-    <value>Observatory</value>
+    <value>Обсерватория</value>
   </data>
   <data name="LblObserver" xml:space="preserve">
-    <value>Observer</value>
+    <value>Наблюдатель</value>
     <comment>The person who is doing the observations</comment>
   </data>
   <data name="LblDomeFollowingShort" xml:space="preserve">
-    <value>Following</value>
+    <value>Слежение</value>
     <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
   </data>
   <data name="LblDomeFollowingViaNINA" xml:space="preserve">
-    <value>Dome following via N.I.N.A.</value>
+    <value>Слежение купола через N.I.N.A.</value>
   </data>
   <data name="LblDomeFollowingViaDriver" xml:space="preserve">
-    <value>via Driver</value>
+    <value>через драйвер</value>
     <comment>If the dome following logic is managed by the driver</comment>
   </data>
   <data name="LblWorldMap" xml:space="preserve">
-    <value>World Map</value>
+    <value>Карта мира</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
-    <value>Connect Equipment</value>
+    <value>Подключить оборудование</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
-    <value>For the selected device, the device save in the profile will be connected.</value>
+    <value>Подключает выбранное устройство, сохранённое в профиле.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
     <value>Подключиться</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
-    <value>Disconnect Equipment</value>
+    <value>Отключить оборудование</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
-    <value>Disconnects the selected device</value>
+    <value>Отключает выбранное устройство</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
-    <value>Connect All Equipment</value>
+    <value>Подключить всё оборудование</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
-    <value>Connect to all devices that are saved in the profile</value>
+    <value>Подключает все устройства, сохранённые в профиле</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
-    <value>Disconnect All Equipment</value>
+    <value>Отключить всё оборудование</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
-    <value>Disconnects all currently connected devices</value>
+    <value>Отключает все подключённые устройства</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
-    <value>Reconnect Camera On Download Failure</value>
+    <value>Переподключить камеру при ошибке загрузки</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
-    <value>A trigger that will fire when the camera failed to download an exposure and will try to reconnect the camera. When reconnecting the cooler state and dew heater state will also be restored.</value>
+    <value>Срабатывает при ошибке загрузки экспозиции с камеры и пытается переподключить её. При переподключении также восстанавливаются состояния охлаждения и нагревателя против росы.</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
-    <value>Reconnect Equipment</value>
+    <value>Переподключить оборудование</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
-    <value>A trigger that will fire when the selected device is disconnected and will try to reconnect to it.</value>
+    <value>Срабатывает при отключении выбранного устройства и пытается подключить его повторно.</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
-    <value>Switch Profile</value>
+    <value>Сменить профиль</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
-    <value>Disconnects all devices that are currently connected, switches to the specified profile and reconnects all devices of the specified profile.</value>
+    <value>Отключает все подключённые устройства, переключается на указанный профиль и подключает все устройства этого профиля.</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
     <value></value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
-    <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
+    <value>Не удалось определить поворот после {0} попыток. Верно ли задан флаг обратного направления ротатора?</value>
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
-    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+    <value>Блокирует панели, запрещая их закрытие и перестановку, или разблокирует для настройки.</value>
   </data>
   <data name="LblGnssFix2D" xml:space="preserve">
-    <value>Current fix is 2D. A 3D fix is required</value>
+    <value>Текущее определение координат - двумерное (2D). Требуется трёхмерное (3D)</value>
   </data>
   <data name="LblMJDFormatDescription" xml:space="preserve">
-    <value>Modified Julian Date</value>
+    <value>Модифицированная юлианская дата</value>
   </data>
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
-    <value>Open cover when done</value>
+    <value>Открыть крышку по завершении</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
   <data name="LblCivilDusk" xml:space="preserve">
-    <value>Civil dusk</value>
+    <value>Гражданские сумерки</value>
   </data>
   <data name="LblCivilDawn" xml:space="preserve">
-    <value>Civil dawn</value>
+    <value>Гражданский рассвет</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
-    <value>Refuse mount unpark if shutter is not open</value>
+    <value>Запретить распарковку монтировки, если затвор не открыт</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
-    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+    <value>Невозможно распарковать монтировку, пока затвор купола или крыша не открыты</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
-    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+    <value>Отклонять попытки распарковать монтировку, если затвор или крыша закрыты, закрываются, открываются или находятся в состоянии ошибки. Распарковка монтировки разрешена только тогда, когда затвор или крыша сообщают состояние "Открыто"</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
-    <value>There is no civil dawn at your location today.</value>
+    <value>Сегодня в вашем местоположении нет гражданского рассвета.</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
-    <value>There is no civil dusk at your location today.</value>
+    <value>Сегодня в вашем местоположении нет гражданских сумерек.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
-    <value>There is no astronomical dawn at your location today.</value>
+    <value>Сегодня в вашем местоположении нет астрономического рассвета.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
-    <value>There is no astronomical dusk at your location today.</value>
+    <value>Сегодня в вашем местоположении нет астрономических сумерек.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
-    <value>There is no nautical dawn at your location today.</value>
+    <value>Сегодня в вашем местоположении нет навигационного рассвета.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
-    <value>There is no nautical dusk at your location today.</value>
+    <value>Сегодня в вашем местоположении нет навигационных сумерек.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
-    <value>There is no sunrise at your location today.</value>
+    <value>Сегодня в вашем местоположении нет восхода Солнца.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
-    <value>There is no sunset at your location today.</value>
+    <value>Сегодня в вашем местоположении нет захода Солнца.</value>
   </data>
   <data name="LblUnableToConnectTo" xml:space="preserve">
-    <value>Unable to connect to {0}</value>
+    <value>Не удалось подключиться к {0}</value>
     <comment>Parameters: {0}=Url or device etc</comment>
   </data>
   <data name="LblCameraNoSupport16bit" xml:space="preserve">
-    <value>Camera does not support 16 bit mode</value>
+    <value>Камера не поддерживает 16-битный режим</value>
   </data>
   <data name="LblExposureInProgress" xml:space="preserve">
-    <value>Another exposure still in progress. Cancel it to start another.</value>
+    <value>Другая экспозиция ещё выполняется. Отмените её, чтобы начать новую.</value>
   </data>
   <data name="LblFailedToConnectDevice" xml:space="preserve">
-    <value>Failed to connect {0}, {1}</value>
+    <value>Не удалось подключить {0}, {1}</value>
     <comment>Parameters: 0=Device ID, 1=error message</comment>
   </data>
   <data name="LblGenericCameraError" xml:space="preserve">
-    <value>Camera reported a generic error and needs to be reconnected!</value>
+    <value>Камера сообщила об общей ошибке. Требуется повторное подключение!</value>
   </data>
   <data name="LblCameraDisconnected" xml:space="preserve">
-    <value>Camera disconnected! Maybe USB connection was interrupted.</value>
+    <value>Камера отключена! Возможно, соединение USB было прервано.</value>
   </data>
   <data name="LblMetaGuideListenerError" xml:space="preserve">
-    <value>MetaGuide Listener Error: {0}</value>
+    <value>Ошибка приёма сообщений MetaGuide: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPostFailed" xml:space="preserve">
-    <value>Failed to post {0} message</value>
+    <value>Не удалось отправить сообщение {0}</value>
     <comment>Parameters: {0}=message type</comment>
   </data>
   <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
-    <value>Guiding is not active. Unable to dither</value>
+    <value>Гидирование не выполняется. Межкадровая подвижка невозможна</value>
   </data>
   <data name="LblFailedCommsMGENDither" xml:space="preserve">
-    <value>Failed to communicate to MGEN during dithering</value>
+    <value>Не удалось установить связь с MGEN во время межкадровой подвижки</value>
   </data>
   <data name="LblPHDError" xml:space="preserve">
-    <value>PHD Error: {0}
-CODE: {1}</value>
+    <value>Ошибка PHD: {0}
+КОД: {1}</value>
     <comment>Parameters: {0}=error message, {1}=error code</comment>
   </data>
   <data name="LblPHDErrorMsg" xml:space="preserve">
-    <value>PHD Error: {0}</value>
+    <value>Ошибка PHD: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblTWCNoAPIKey" xml:space="preserve">
-    <value>There is no TheWeatherCompany API key configured.</value>
+    <value>Ключ API TheWeatherCompany не настроен.</value>
   </data>
   <data name="LblFileNotExist" xml:space="preserve">
-    <value>File {0} does not exist</value>
+    <value>Файл {0} не существует</value>
     <comment>Parameters: {0}=file path</comment>
   </data>
   <data name="LblASTAPNoOutputFile" xml:space="preserve">
-    <value>ASTAP - Plate solve failed. No output file found.</value>
+    <value>ASTAP - не удалось выполнить плейтсолв. Выходной файл не найден.</value>
   </data>
   <data name="LblASTAPSolveFailed" xml:space="preserve">
-    <value>ASTAP - Plate solve failed.
+    <value>ASTAP - не удалось выполнить плейтсолв.
 {0}
 {1}</value>
     <comment>Parameters: {0}=warning, {1}=error</comment>
   </data>
   <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
-    <value>Error plate solving with Astrometry.net. {0}</value>
+    <value>Ошибка плейтсолва с Astrometry.net. {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblExposureOverMax" xml:space="preserve">
-    <value>The predicted exposure of {0}s is longer than the maximum allowed.
-Stopping sky flat acquisition.</value>
+    <value>Расчётная выдержка {0} с превышает максимально допустимую.
+Съёмка флэтов по небу остановлена.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblExposureUnderMin" xml:space="preserve">
-    <value>The predicted exposure of {0}s is shorter than the minimum allowed.
-Stopping sky flat acquisition.</value>
+    <value>Расчётная выдержка {0} с меньше минимально допустимой.
+Съёмка флэтов по небу остановлена.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
-    <value>Skyflat correction did not work and is outside of tolerance:
-first exposure time {0:#.####}
-current exposure time {1:#.####}
-elapsed time: {2:#.##}
-mean adu: {3:#.##}.
-The sky flat exposure time will be determined again and the exposure will be repeated.</value>
+    <value>Коррекция выдержки флэтов по небу не сработала, результат выходит за пределы допуска:
+первая выдержка {0:#.####}
+текущая выдержка {1:#.####}
+прошедшее время: {2:#.##}
+среднее ADU: {3:#.##}.
+Выдержка флэтов по небу будет определена заново, затем экспозиция будет повторена.</value>
     <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
   </data>
   <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
-    <value>Failed to restore previous filter position: {0}</value>
+    <value>Не удалось восстановить прежнее положение фильтра: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblFailedToChangeFilter" xml:space="preserve">
-    <value>Failed to change filter: {0}</value>
+    <value>Не удалось сменить фильтр: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSetShiftRateFailed" xml:space="preserve">
-    <value>Set shift rate failed. {0}</value>
+    <value>Не удалось задать скорость смещения. {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPrepareImageFailed" xml:space="preserve">
-    <value>Failed to prepare image for display: {0}</value>
+    <value>Не удалось подготовить изображение для отображения: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
-    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+    <value>Не предлагать сохранять серию, если изменилось только количество экспозиций</value>
   </data>
   <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
-    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
-You'll normally be prompted to save the sequence to save the changed exposure count.
+    <value>Если серия не изменялась, но была выполнена, количество экспозиций изменится.
+Обычно программа предложит сохранить серию, чтобы сохранить изменённое количество экспозиций.
 
-If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+Если количество экспозиций для вас не важно, включите этот параметр, чтобы не сохранять серию после каждого запуска.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
-    <value>Day Rollover Time</value>
+    <value>Время перехода к следующему дню</value>
   </data>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
-    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+    <value>Поскольку в инструкции не указана дата, переход к следующему дню происходит в показанное время.</value>
   </data>
   <data name="LblInitializing" xml:space="preserve">
-    <value>Initializing</value>
+    <value>Инициализация</value>
   </data>
   <data name="LblOasisClearStallPrompt" xml:space="preserve">
-    <value>Clear stall?</value>
+    <value>Сбросить состояние заклинивания?</value>
   </data>
   <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value>Focuser stalled. You need to manually clear stall.</value>
+    <value>Фокусер заклинило. Необходимо вручную сбросить состояние заклинивания.</value>
   </data>
   <data name="LblBeepOnStartup" xml:space="preserve">
-    <value>Beep on startup</value>
+    <value>Звуковой сигнал при включении</value>
   </data>
   <data name="LblBeepOnMove" xml:space="preserve">
-    <value>Beep on move</value>
+    <value>Звуковой сигнал при движении</value>
   </data>
   <data name="LblOasisHeating" xml:space="preserve">
-    <value>Heating</value>
+    <value>Нагрев</value>
   </data>
   <data name="LblOasisHeatingTemperature" xml:space="preserve">
-    <value>Heating temperature</value>
+    <value>Температура нагрева</value>
   </data>
   <data name="LblOasisStallDetection" xml:space="preserve">
-    <value>Stall detection</value>
+    <value>Обнаружение заклинивания</value>
   </data>
   <data name="LblOasisIsStalled" xml:space="preserve">
-    <value>Is stalled</value>
+    <value>Заклинивание</value>
   </data>
   <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value>USB capacity</value>
+    <value>Допустимый ток USB</value>
   </data>
   <data name="LblOasisSpeed" xml:space="preserve">
-    <value>Speed</value>
+    <value>Скорость</value>
   </data>
   <data name="LblOasisClearStall" xml:space="preserve">
-    <value>Clear stall</value>
+    <value>Сбросить состояние заклинивания</value>
   </data>
   <data name="LblOasisDcPower" xml:space="preserve">
-    <value>DC power</value>
+    <value>Питание постоянного тока</value>
   </data>
   <data name="LblOasisBoardHeating" xml:space="preserve">
-    <value>Board heating</value>
+    <value>Нагрев платы</value>
   </data>
   <data name="LblOasisHeatingPower" xml:space="preserve">
-    <value>Heating power</value>
+    <value>Мощность нагрева</value>
   </data>
   <data name="LblOasisBoardTemperature" xml:space="preserve">
-    <value>Board temperature</value>
+    <value>Температура платы</value>
   </data>
   <data name="LblOasisSyncPosition" xml:space="preserve">
-    <value>Sync position</value>
+    <value>Положение синхронизации</value>
   </data>
   <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
-    <value>Set current position to sync position?</value>
+    <value>Установить текущее положение равным положению синхронизации?</value>
   </data>
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+    <value>Выбранный фокусер Oasis недоступен. Проверьте подключение и повторите поиск устройств.</value>
   </data>
   <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
+    <value>Выбранное колесо фильтров Oasis недоступно. Проверьте подключение и повторите поиск устройств.</value>
   </data>
   <data name="LblOasisTurboMode" xml:space="preserve">
-    <value>Turbo mode</value>
+    <value>Турборежим</value>
   </data>
   <data name="LblOasisDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Идентификатор устройства</value>
   </data>
   <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Идентификатор устройства</value>
   </data>
   <data name="LblOasisState" xml:space="preserve">
-    <value>State</value>
+    <value>Статус</value>
   </data>
   <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
-    <value>Sync focus offsets</value>
+    <value>Считать смещения фокуса</value>
   </data>
   <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
-    <value>Store focus offsets</value>
+    <value>Сохранить смещения фокуса</value>
   </data>
   <data name="LblOasisSyncFilterNames" xml:space="preserve">
-    <value>Sync filter names</value>
+    <value>Считать названия фильтров</value>
   </data>
   <data name="LblOasisStoreFilterNames" xml:space="preserve">
-    <value>Store filter names</value>
+    <value>Сохранить названия фильтров</value>
   </data>
   <data name="LblOasisAutorun" xml:space="preserve">
-    <value>Autorun</value>
+    <value>Автовосстановление положения</value>
   </data>
   <data name="LblOasisSpeedTooltip" xml:space="preserve">
-    <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
+    <value>При очень низкой температуре окружающей среды выберите скорость Normal или Slow, чтобы обеспечить плавную смену фильтров.</value>
   </data>
   <data name="LblOasisTurboModeTooltip" xml:space="preserve">
-    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port has at least 5V,1A power supply capacity.</value>
+    <value>Включите турборежим для увеличения крутящего момента двигателя. Это может быть полезно при очень низкой температуре окружающей среды. Убедитесь, что порт USB обеспечивает питание не менее 5 В и 1 А.</value>
   </data>
   <data name="LblOasisAutorunTooltip" xml:space="preserve">
-    <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
+    <value>Включите этот параметр, чтобы при включении питания фильтры автоматически возвращались в последнее положение.</value>
   </data>
   <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
-    <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
+    <value>Считывает смещения фокуса, сохранённые в устройстве Oasis, и обновляет смещения фокуса в NINA.</value>
   </data>
   <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA focus offsets to the Oasis filter wheel.</value>
+    <value>Передаёт и сохраняет смещения фокуса NINA в колесе фильтров Oasis.</value>
   </data>
   <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
-    <value>Reads the filter names stored on the Oasis device and updates the NINA filter labels.</value>
+    <value>Считывает названия фильтров, сохранённые в устройстве Oasis, и обновляет названия фильтров в NINA.</value>
   </data>
   <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA filter names to the Oasis filter wheel.</value>
+    <value>Передаёт и сохраняет названия фильтров NINA в колесе фильтров Oasis.</value>
   </data>
   <data name="LblOasisCounter" xml:space="preserve">
-    <value>Counter</value>
+    <value>Счётчик</value>
   </data>
   <data name="LblOasisCounterTooltip" xml:space="preserve">
-    <value>Indicator that shows how many filter slots have been rotated since the filter wheel powered up.</value>
+    <value>Показывает, на сколько позиций переместилось колесо фильтров с момента включения питания.</value>
   </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
-    <value>ASCOM Alpaca IP Setup</value>
+    <value>Настройка IP для ASCOM Alpaca</value>
   </data>
   <data name="LblAlpacaDirectServiceType" xml:space="preserve">
-    <value>Service Type</value>
+    <value>Тип службы</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
   <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
-    <value>IP Address</value>
+    <value>IP-адрес</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
-    <value>Port</value>
+    <value>Порт</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
-    <value>Device Number</value>
+    <value>Номер устройства</value>
   </data>
   <data name="LblSymbols" xml:space="preserve">
-    <value>Symbols</value>
+    <value>Символы</value>
   </data>
   <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
-    <value>No other data for {0}</value>
+    <value>Нет других данных для {0}</value>
     <comment>{0} will be filled with the category name</comment>
   </data>
   <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
-    <value>Additional Symbols:</value>
+    <value>Дополнительные символы:</value>
     <comment>The prefix for additional data rows for symbol tooltips</comment>
   </data>
   <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
-    <value>Options:</value>
+    <value>Параметры:</value>
     <comment>The prefix per symbol for additional options</comment>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
-    <value>Click any symbol to copy it to the clipboard.</value>
+    <value>Нажмите на символ, чтобы скопировать его в буфер обмена.</value>
   </data>
   <data name="LblTrue" xml:space="preserve">
-    <value>True</value>
+    <value>Истина</value>
   </data>
   <data name="LblFalse" xml:space="preserve">
-    <value>False</value>
+    <value>Ложь</value>
   </data>
   <data name="LblDecimal" xml:space="preserve">
-    <value>(Decimal: </value>
+    <value>(Десятичное: </value>
     <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
   </data>
   <data name="LblWarnings" xml:space="preserve">
-    <value>Warning(s): {0}</value>
+    <value>Предупреждения: {0}</value>
   </data>
   <data name="LblNoErrors" xml:space="preserve">
-    <value>No errors</value>
+    <value>Ошибок нет</value>
   </data>
   <data name="LblErrors" xml:space="preserve">
-    <value>Error(s): {0}</value>
+    <value>Ошибки: {0}</value>
   </data>
   <data name="LblNotEvaluated" xml:space="preserve">
-    <value>Not Evaluated</value>
+    <value>Не вычислено</value>
     <comment>As in, a variable is not yet evaluated</comment>
   </data>
   <data name="LblTomorrow" xml:space="preserve">
-    <value>tomorrow</value>
+    <value>завтра</value>
   </data>
   <data name="LblYesterday" xml:space="preserve">
-    <value>yesterday</value>
+    <value>вчера</value>
   </data>
   <data name="LblUndefined" xml:space="preserve">
-    <value>Undefined</value>
+    <value>Не определено</value>
     <comment>As in "Undefined: &lt;variable name&gt;"</comment>
   </data>
   <data name="LblSyntaxError" xml:space="preserve">
-    <value>Syntax error</value>
+    <value>Синтаксическая ошибка</value>
     <comment>Used when an Expression can't be parsed</comment>
   </data>
   <data name="LblMustBeInteger" xml:space="preserve">
-    <value>Value must be an Integer</value>
+    <value>Значение должно быть целым числом</value>
   </data>
   <data name="LblAnd" xml:space="preserve">
-    <value>and</value>
+    <value>и</value>
   </data>
   <data name="LblAlreadyDefined" xml:space="preserve">
-    <value>is already defined</value>
+    <value>уже определена</value>
     <comment>As in &lt;variable&gt; is already defined</comment>
   </data>
   <data name="LblConstantVariable" xml:space="preserve">
-    <value>The Constant/Variable</value>
+    <value>Константа/переменная</value>
     <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
   </data>
   <data name="LblNoSymbols" xml:space="preserve">
-    <value>No defined Constant/Variable is used in this expression</value>
+    <value>В этом выражении не используется ни одна определённая константа/переменная</value>
   </data>
   <data name="LblNotYetDefined" xml:space="preserve">
-    <value> The Constant/Variable is not yet defined</value>
+    <value> Константа/переменная ещё не определена</value>
   </data>
   <data name="LblValueBetween" xml:space="preserve">
-    <value>Value must be between {0} and {1}</value>
+    <value>Значение должно быть между {0} и {1}</value>
   </data>
   <data name="LblVariable" xml:space="preserve">
-    <value>Variable:</value>
+    <value>Переменная:</value>
   </data>
   <data name="LblInitially" xml:space="preserve">
-    <value>Initially</value>
+    <value>Начальное значение</value>
   </data>
   <data name="LblNewValue" xml:space="preserve">
-    <value>New Value</value>
+    <value>Новое значение</value>
   </data>
   <data name="LblIsAmbiguous" xml:space="preserve">
-    <value>is ambiguous, use one of</value>
+    <value>неоднозначна, используйте одно из</value>
     <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
   </data>
   <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
-    <value>Symbols</value>
+    <value>Символы</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Defines a global variable for expressions anywhere in this sequence. Its initial value is assigned when this instruction runs, so place it before instructions that use it. Use Set Variable to change it later.</value>
+    <value>Определяет глобальную переменную для выражений в любом месте этой серии. Начальное значение присваивается при выполнении этой инструкции, поэтому разместите её перед инструкциями, использующими переменную. Для последующего изменения используйте "Задать переменную".</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
-    <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
+    <value>Определяет переменную для выражений в этом наборе инструкций и вложенных наборах. Начальное значение присваивается при выполнении этой инструкции. Для последующего изменения используйте "Задать переменную". Переменная не видна в родительских и соседних наборах инструкций.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
-    <value>Define Variable</value>
+    <value>Определить переменную</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
+    <value>Определяет глобальное именованное значение для выражений в любом месте этой серии. Оно доступно до запуска серии. Чтобы изменить значение, отредактируйте эту инструкцию; инструкция "Задать переменную" не может изменить константу.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
-    <value>Define Constant</value>
+    <value>Определить константу</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
-    <value>Set Variable</value>
+    <value>Задать переменную</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+    <value>Если переменная была определена ранее, её значением станет результат выражения</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
-    <value>Set Variable to Date/Time</value>
+    <value>Задать переменной дату/время</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+    <value>Если переменная была определена ранее, её значением станет указанная дата/время</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
-    <value>Loop While</value>
+    <value>Цикл, пока</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
-    <value>Loops while the Expression is not false</value>
+    <value>Повторяет цикл, пока значение выражения не равно ложному</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
-    <value>Wait Until</value>
+    <value>Ожидать, пока</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
-    <value>Waits until the Expression is true</value>
+    <value>Ожидает, пока выражение не станет истинным</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
-    <value>Random double value between 0.0 and 1.0.</value>
+    <value>Случайное число двойной точности от 0.0 до 1.0.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
-    <value>Current Unix timestamp in seconds.</value>
+    <value>Текущая временная метка Unix в секундах.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
-    <value>Hour component (0-23) of a datetime or the current time.</value>
+    <value>Час (0-23) указанной даты и времени или текущего времени.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
-    <value>Minute component (0-59) of a datetime or the current time.</value>
+    <value>Минута (0-59) указанной даты и времени или текущего времени.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
-    <value>Day of the month (1-31) of a datetime or the current date.</value>
+    <value>День месяца (1-31) указанной даты и времени или текущей даты.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1-12) of a datetime or the current date.</value>
+    <value>Месяц (1-12) указанной даты и времени или текущей даты.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
-    <value>Year component of a datetime or the current date.</value>
+    <value>Год указанной даты и времени или текущей даты.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
-    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+    <value>День недели в виде целого числа (0 = воскресенье, 6 = суббота).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
-    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+    <value>Указанная дата и время плюс заданное количество минут (временная метка Unix).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
-    <value>Datetime plus the specified hours (Unix timestamp).</value>
+    <value>Указанная дата и время плюс заданное количество часов (временная метка Unix).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
-    <value>Seconds elapsed since the given datetime (Unix timestamp).</value>
+    <value>Количество секунд, прошедших с указанной даты и времени (временная метка Unix).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
-    <value>Datetime formatted using the specified .NET format string.</value>
+    <value>Дата и время, отформатированные с помощью указанной строки формата .NET.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
-    <value>Whether the string starts with the specified prefix.</value>
+    <value>Начинается ли строка с указанного префикса.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
-    <value>Length of the given string, or -1 if the value is not a string.</value>
+    <value>Длина указанной строки или -1, если значение не является строкой.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
-    <value>Concatenation of two strings.</value>
+    <value>Объединение двух строк.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
-    <value>Character at the specified zero-based index, or empty if out of bounds.</value>
+    <value>Символ по указанному индексу, начиная с нуля, или пустое значение, если индекс вне границ строки.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
-    <value>Whether the string contains the specified substring.</value>
+    <value>Содержит ли строка указанную подстроку.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
-    <value>Whether the string ends with the specified suffix.</value>
+    <value>Заканчивается ли строка указанным суффиксом.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
-    <value>Substring of the given string; empty if out of range.</value>
+    <value>Подстрока указанной строки; пустое значение при выходе за допустимые границы.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
-    <value>Lower-case version of the string (invariant).</value>
+    <value>Строка в нижнем регистре (независимо от региональных настроек).</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
-    <value>Upper-case version of the string (invariant).</value>
+    <value>Строка в верхнем регистре (независимо от региональных настроек).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
-    <value>Absolute value of a number.</value>
+    <value>Абсолютное значение числа.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
-    <value>Angle whose cosine is the specified number.</value>
+    <value>Угол, косинус которого равен указанному числу.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
-    <value>Angle whose sine is the specified number.</value>
+    <value>Угол, синус которого равен указанному числу.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
-    <value>Angle whose tangent is the specified number.</value>
+    <value>Угол, тангенс которого равен указанному числу.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
-    <value>Arithmetic mean of all arguments.</value>
+    <value>Среднее арифметическое всех аргументов.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
-    <value>Smallest integer greater than or equal to the number.</value>
+    <value>Наименьшее целое число, которое больше или равно указанному числу.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
-    <value>Cosine of the specified angle.</value>
+    <value>Косинус указанного угла.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
-    <value>e raised to the specified power.</value>
+    <value>Число e в указанной степени.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
-    <value>Largest integer less than or equal to the number.</value>
+    <value>Наибольшее целое число, которое меньше или равно указанному числу.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
-    <value>IEEE remainder of x / y.</value>
+    <value>Остаток от деления x / y по стандарту IEEE.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
-    <value>Natural logarithm of a number.</value>
+    <value>Натуральный логарифм числа.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
-    <value>Logarithm of a number.</value>
+    <value>Логарифм числа.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
-    <value>Base-10 logarithm of a number.</value>
+    <value>Десятичный логарифм числа.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
-    <value>Larger of two numbers.</value>
+    <value>Большее из двух чисел.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
-    <value>Smaller of two numbers.</value>
+    <value>Меньшее из двух чисел.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
-    <value>Number raised to the specified power.</value>
+    <value>Число в указанной степени.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
-    <value>Rounded value to the nearest integer or specified decimal places.</value>
+    <value>Значение, округлённое до ближайшего целого или до указанного количества знаков после запятой.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
-    <value>Sign of a number.</value>
+    <value>Знак числа.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
-    <value>Sine of the specified angle.</value>
+    <value>Синус указанного угла.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
-    <value>Square root of a number.</value>
+    <value>Квадратный корень числа.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
-    <value>Tangent of the specified angle.</value>
+    <value>Тангенс указанного угла.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
-    <value>Integral part of a number.</value>
+    <value>Целая часть числа.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
-    <value>Mathematical modulus (x mod y). Result is in [0, y) for positive y.</value>
+    <value>Математический остаток (x mod y). При положительном y результат находится в диапазоне [0, y).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
-    <value>Value clamped to the inclusive range [min, max].</value>
+    <value>Значение, ограниченное диапазоном [min, max] включительно.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
-    <value>Whether x is between min and max (inclusive).</value>
+    <value>Находится ли x между min и max (включительно).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
-    <value>Conversion from radians to degrees.</value>
+    <value>Преобразование радиан в градусы.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
-    <value>Conversion from degrees to radians.</value>
+    <value>Преобразование градусов в радианы.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
-    <value>Sum of all arguments.</value>
+    <value>Сумма всех аргументов.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
-    <value>Whether an element is in a set of values.</value>
+    <value>Входит ли элемент в набор значений.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
-    <value>Conditional value based on a condition.</value>
+    <value>Условное значение на основе условия.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
-    <value>Conditional value based on multiple conditions, with a default.</value>
+    <value>Условное значение на основе нескольких условий со значением по умолчанию.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
-    <value>Whether a symbol name is defined in the symbol table.</value>
+    <value>Определено ли имя символа в таблице символов.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
-    <value>Logical negation of a boolean value.</value>
+    <value>Логическое отрицание логического значения.</value>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
-    <value>Click any function to copy it to the clipboard.</value>
+    <value>Нажмите на функцию, чтобы скопировать её в буфер обмена.</value>
   </data>
   <data name="Lbl_SymbolFunctions" xml:space="preserve">
-    <value>Functions</value>
+    <value>Функции</value>
   </data>
   <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
-    <value>Usage</value>
+    <value>Использование</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
-    <value>Function '{0}' expects no arguments, but got {1}.</value>
+    <value>Функция '{0}' не принимает аргументов, но получено: {1}.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
-    <value>Function '{0}' expects exactly one argument, but got {1}.</value>
+    <value>Функция '{0}' принимает ровно один аргумент, но получено: {1}.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
-    <value>Function '{0}' expects exactly {1} arguments, but got {2}.</value>
+    <value>Функция '{0}' принимает ровно {1} аргументов, но получено: {2}.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
-    <value>Function '{0}' expects between {1} and {2} arguments, but got {3}.</value>
+    <value>Функция '{0}' принимает от {1} до {2} аргументов, но получено: {3}.</value>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
-    <value>Value must be greater than or equal to {0}.</value>
+    <value>Значение должно быть больше или равно {0}.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
-    <value>Value must be greater than {0}.</value>
+    <value>Значение должно быть больше {0}.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
-    <value>Value must be between {0} and {1}.</value>
+    <value>Значение должно быть между {0} и {1} включительно.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
-    <value>Value must be between {0} and less than {1}.</value>
+    <value>Значение должно быть не меньше {0} и меньше {1}.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and up to {1}.</value>
+    <value>Значение должно быть больше {0} и не больше {1}.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and less than {1}.</value>
+    <value>Значение должно быть больше {0} и меньше {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
-    <value>Notification work area</value>
+    <value>Рабочая область уведомлений</value>
   </data>
   <data name="LblNotificationCorner" xml:space="preserve">
-    <value>Notification corner</value>
+    <value>Угол для уведомлений</value>
   </data>
   <data name="LblNotificationTopLeft" xml:space="preserve">
-    <value>Top left</value>
+    <value>Слева вверху</value>
   </data>
   <data name="LblNotificationTopRight" xml:space="preserve">
-    <value>Top right</value>
+    <value>Справа вверху</value>
   </data>
   <data name="LblNotificationBottomLeft" xml:space="preserve">
-    <value>Bottom left</value>
+    <value>Слева внизу</value>
   </data>
   <data name="LblNotificationBottomRight" xml:space="preserve">
-    <value>Bottom right</value>
+    <value>Справа внизу</value>
   </data>
   <data name="LblNotificationPrimaryScreen" xml:space="preserve">
-    <value>Primary screen</value>
+    <value>Основной экран</value>
   </data>
   <data name="LblNotificationSameScreenAsApplication" xml:space="preserve">
-    <value>Same screen as application</value>
+    <value>Экран приложения</value>
   </data>
   <data name="LblNotificationApplication" xml:space="preserve">
-    <value>Application</value>
+    <value>Приложение</value>
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
   </data>
   <data name="LblMoravianFlashVersion" xml:space="preserve">
-    <value>Flash version</value>
+    <value>Версия прошивки</value>
     <comment>Version of an internal camera component stored in flash memory.
     This is a separate version from camera firmware and driver.</comment>
   </data>
   <data name="LblDimensions" xml:space="preserve">
-    <value>Dimensions</value>
+    <value>Размеры</value>
     <comment>Label for entering subframe dimensions</comment>
   </data>
   <data name="LblTop" xml:space="preserve">
-    <value>Top</value>
+    <value>Сверху</value>
   </data>
   <data name="LblLeft" xml:space="preserve">
-    <value>Left</value>
+    <value>Слева</value>
   </data>
   <data name="LblSequencerExpressionValues" xml:space="preserve">
-    <value>Sequencer expressions values</value>
+    <value>Значения выражений секвенсора</value>
   </data>
   <data name="LblEccentricity" xml:space="preserve">
-    <value>Eccentricity</value>
+    <value>Эксцентриситет</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
-    <value>Custom Trigger</value>
+    <value>Пользовательский триггер</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
-    <value>Use an existing trigger as the trigger source, then choose your own instructions to run when that trigger would normally fire.
-This is useful when a built-in trigger has the timing you need, but you want custom actions.</value>
+    <value>Используйте существующий триггер как источник срабатывания, затем выберите инструкции, которые будут выполняться при его срабатывании.
+Это полезно, когда встроенный триггер срабатывает в нужный момент, но нужны другие действия.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
-    <value>Trigger Source</value>
+    <value>Источник срабатывания</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
-    <value>Custom Trigger Instructions</value>
+    <value>Инструкции пользовательского триггера</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
-    <value>Drop a trigger here to choose when the custom trigger runs.</value>
+    <value>Перетащите сюда триггер, чтобы выбрать, когда будет срабатывать пользовательский триггер.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
-    <value>Drop instructions here to run when the selected trigger source fires.</value>
+    <value>Перетащите сюда инструкции для выполнения при срабатывании выбранного триггера.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
-    <value>ADD TRIGGER SOURCE</value>
+    <value>ДОБАВИТЬ ИСТОЧНИК СРАБАТЫВАНИЯ</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
-    <value>ADD CUSTOM INSTRUCTIONS</value>
+    <value>ДОБАВИТЬ ПОЛЬЗОВАТЕЛЬСКИЕ ИНСТРУКЦИИ</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
-    <value>Add a trigger source.</value>
+    <value>Добавьте источник срабатывания.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
-    <value>Add at least one instruction.</value>
+    <value>Добавьте хотя бы одну инструкцию.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
-    <value>Trigger On Unsafe</value>
+    <value>Срабатывание при небезопасных условиях</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Description" xml:space="preserve">
-    <value>Runs configured instructions when the safety monitor reports unsafe conditions or disconnects after being connected, waits until conditions are safe again, then runs follow-up instructions.</value>
+    <value>Выполняет заданные инструкции, когда монитор безопасности сообщает о небезопасных условиях или отключается после подключения, ожидает восстановления безопасных условий, затем выполняет последующие инструкции.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
-    <value>Before Waiting For Safety</value>
+    <value>Перед ожиданием безопасных условий</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description" xml:space="preserve">
-    <value>After Waiting For Safety</value>
+    <value>После ожидания безопасных условий</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting until conditions are safe again.</value>
+    <value>Инструкции, выполняемые перед ожиданием восстановления безопасных условий.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after conditions are safe again.</value>
+    <value>Инструкции, выполняемые после восстановления безопасных условий.</value>
   </data>
   <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
-    <value>Show Star Mass in Guide Graph</value>
+    <value>Показывать поток звезды на графике гидирования</value>
   </data>
   <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
-    <value>Show Star SNR in Guide Graph</value>
+    <value>Показывать SNR звезды на графике гидирования</value>
   </data>
   <data name="LblStarMass" xml:space="preserve">
-    <value>Star Mass</value>
+    <value>Поток звезды</value>
   </data>
   <data name="LblStarSNR" xml:space="preserve">
-    <value>Star SNR</value>
+    <value>SNR звезды</value>
   </data>
   <data name="Lbl_SequenceHistory_Undo" xml:space="preserve">
-    <value>Undo</value>
+    <value>Отменить</value>
   </data>
   <data name="Lbl_SequenceHistory_Redo" xml:space="preserve">
-    <value>Redo</value>
+    <value>Повторить</value>
   </data>
   <data name="Lbl_SequenceHistory_Title" xml:space="preserve">
-    <value>Edit history</value>
+    <value>История изменений</value>
   </data>
   <data name="Lbl_SequenceHistory_Hint" xml:space="preserve">
-    <value>Select a state to undo or redo to it.</value>
+    <value>Выберите состояние, к которому нужно вернуться, отменив или повторив изменения.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Текущее состояние</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
-    <value>(saved)</value>
+    <value>(сохранено)</value>
   </data>
   <data name="Lbl_SequenceHistory_Initial" xml:space="preserve">
-    <value>Earlier state</value>
+    <value>Более раннее состояние</value>
   </data>
   <data name="Lbl_SequenceHistory_UndoAction" xml:space="preserve">
-    <value>Undo {0}</value>
+    <value>Отменить {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_RedoAction" xml:space="preserve">
-    <value>Redo {0}</value>
+    <value>Повторить {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_EditAction" xml:space="preserve">
-    <value>Edit {0}: {1}</value>
+    <value>Изменить {0}: {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MoveAction" xml:space="preserve">
-    <value>Move {0}</value>
+    <value>Переместить {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_AddAction" xml:space="preserve">
-    <value>Add {0}</value>
+    <value>Добавить {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_Position" xml:space="preserve">
-    <value>Position {0}</value>
+    <value>Позиция {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PositionChange" xml:space="preserve">
-    <value>Position {0} -&gt; {1}</value>
+    <value>Позиция {0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_DeleteAction" xml:space="preserve">
-    <value>Delete {0}</value>
+    <value>Удалить {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_DuplicateAction" xml:space="preserve">
-    <value>Duplicate {0}</value>
+    <value>Дублировать {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PlaceAction" xml:space="preserve">
-    <value>Place item in {0}</value>
+    <value>Поместить элемент в {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_ToggleAction" xml:space="preserve">
-    <value>Enable/disable {0}</value>
+    <value>Включить/отключить {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_ClearAction" xml:space="preserve">
-    <value>Clear sequence</value>
+    <value>Очистить серию</value>
   </data>
   <data name="Lbl_SequenceHistory_TargetAction" xml:space="preserve">
-    <value>Change target {0}</value>
+    <value>Изменить цель {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_Conflict" xml:space="preserve">
-    <value>This edit cannot be restored because its configuration was changed outside edit history. The sequence has not been changed.</value>
+    <value>Невозможно восстановить это изменение, поскольку его конфигурация была изменена вне истории изменений. Серия не изменена.</value>
   </data>
   <data name="Lbl_SequenceHistory_Failed" xml:space="preserve">
-    <value>Restoring the edit failed. Edit history was cleared. Review the sequence before continuing.</value>
+    <value>Не удалось восстановить изменение. История изменений очищена. Проверьте серию перед продолжением.</value>
   </data>
   <data name="Lbl_SequenceHistory_ValueChange" xml:space="preserve">
     <value>{0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_NoValue" xml:space="preserve">
-    <value>(empty)</value>
+    <value>(пусто)</value>
   </data>
   <data name="Lbl_SequenceHistory_CoordinateValue" xml:space="preserve">
-    <value>RA {0}, Dec {1}, rotation {2} degrees ({3})</value>
+    <value>П.В. {0}, Скл. {1}, поворот {2} градусов ({3})</value>
   </data>
   <data name="Lbl_SequenceHistory_MoreChanges" xml:space="preserve">
-    <value>+ {0} more changes</value>
+    <value>+ ещё {0} изменений</value>
   </data>
   <data name="Lbl_SequenceHistory_AddedDetail" xml:space="preserve">
-    <value>Added {0} to {1}</value>
+    <value>Добавлено {0} в {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_RemovedDetail" xml:space="preserve">
-    <value>Removed {0} from {1}</value>
+    <value>Удалено {0} из {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MovedDetail" xml:space="preserve">
     <value>{0}: {1} -&gt; {2}</value>
   </data>
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
-    <value>The edit could not be applied. The previous state and edit history were preserved.</value>
+    <value>Не удалось применить изменение. Предыдущее состояние и история изменений сохранены.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
-    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+    <value>Ожидание завершения редактирования шаблона. Несохранённые изменения будут отброшены через {0}, затем будет выполнен сохранённый шаблон. Чтобы продолжить сейчас, сохраните изменения или отмените редактирование.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
-    <value>Waiting for the template to finish saving.</value>
+    <value>Ожидание завершения сохранения шаблона.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
-    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
+    <value>Несохранённые изменения связанного шаблона '{0}' отброшены после пяти минут бездействия. Продолжение с сохранённым шаблоном.</value>
   </data>
 </root>

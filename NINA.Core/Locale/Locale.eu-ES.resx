@@ -401,15 +401,18 @@
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>Fokatzailearen ondorengo backlash balioak gordeko dira. BARRURA: {0}, KANPORA: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>BIASen batez besteko balioa (16 bitean)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>BIASen mediana balioa (16 bitean)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Pixel-bateratzea</value>
@@ -524,6 +527,7 @@ Dek: {1}</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>Canon errorea gertatu da: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Atera irudia eta aplikatu eremu-ebazpena</value>
@@ -952,6 +956,7 @@ Jarraitu eta aldaketak galdu nahi dituzu, hala ere?</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Egungo batez bestekoa</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Egungo posizioa</value>
@@ -1001,6 +1006,7 @@ lerroak lerrokatuta ez daudenean lerrokadura polarrean errore bat dago</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Egunsentia</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>Egunak</value>
@@ -1268,6 +1274,7 @@ lerroak lerrokatuta ez daudenean lerrokadura polarrean errore bat dago</value>
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>Ilunabarra</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>Ekialdea</value>
@@ -1451,6 +1458,7 @@ Abiarazle hau desaktibatuta dagoenean, aplikazioak Esposizioa hasi urratsa salta
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>Flat panelaren ezarpenak</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Flat panelaren erantzun baliogabea.</value>
@@ -1517,6 +1525,7 @@ Abiarazle hau desaktibatuta dagoenean, aplikazioak Esposizioa hasi urratsa salta
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>Flat-laguntzailearen ezarpenak</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>Ezeztatu flat-laguntzailea</value>
@@ -1565,6 +1574,7 @@ Abiarazle hau desaktibatuta dagoenean, aplikazioak Esposizioa hasi urratsa salta
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>Foku-erlazioa</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Fokatzailea</value>
@@ -1693,6 +1703,7 @@ Kalkulatutako HFRa: {2}</value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>Gidagailuak ez du SettleDone mezua bidali espero zen denbora igaro ondoren ({0}s + 10s). Saltatzen.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Gidagailua berrekitzeak huts egin du</value>
@@ -1969,12 +1980,14 @@ Kalkulatutako HFRa: {2}</value>
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>Batez bestekoa</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>Neurtu fokatzailearen lasaiera</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>Mediana</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>Meridiano-itzuliak huts egin du</value>
@@ -2072,6 +2085,7 @@ Kalkulatutako HFRa: {2}</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Ez</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Kamerarik ez</value>
@@ -2361,9 +2375,11 @@ Kalkulatutako HFRa: {2}</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>PHD2 zerbitzariaren ataka</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>PHD2 zerbitzariaren ostalari-izena</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 ezarpenak</value>
@@ -2396,6 +2412,7 @@ Kalkulatutako HFRa: {2}</value>
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>PHD2 profilaren IDa {0} ez da aurkitu. {1} erabiltzen</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>Pixelak</value>
@@ -2405,18 +2422,22 @@ Kalkulatutako HFRa: {2}</value>
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>Pixel-eskala</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Pixel-eskala arkosegundotan pixel bakoitzeko</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>Pixel-tamaina</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>Pixel-tamaina X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Pixel-tamaina Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Planetarioa</value>
@@ -3323,6 +3344,7 @@ Arrastatu laukizuzena azpilaginatu nahi duzun markoaren zatira eta gaitu azpilag
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
     <value>King</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>Pertsonalizatua</value>
@@ -3395,9 +3417,11 @@ Arrastatu laukizuzena azpilaginatu nahi duzun markoaren zatira eta gaitu azpilag
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>Korrontearen batez bestekoa</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Egungoa</value>
+    <value>Korrontea</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>Gailuaren datuak</value>
@@ -3647,27 +3671,35 @@ Arrastatu laukizuzena azpilaginatu nahi duzun markoaren zatira eta gaitu azpilag
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>Kolore-sentsoreek sortutako irudien FITS edo XISF goiburuko BAYERPAT gakoan erabili beharreko Bayer-eredua.
@@ -3675,6 +3707,7 @@ Automatikoa lehenetsiak kameraren kontrolatzaileak eman dezakeen edozein eredu e
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Egungoa</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>Sekuentzia-amaierako aukerak exekutatzen</value>
@@ -3699,6 +3732,7 @@ Automatikoa lehenetsiak kameraren kontrolatzaileak eman dezakeen edozein eredu e
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Kameraren denbora-muga - Kamerak ez du irudia prest jarri esposizio-denbora + {0} segundo igaro ondoren</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Ereduaren aurrebista</value>
@@ -4040,6 +4074,7 @@ Iraupen luzeagoa behar izanez gero, iraupen bat zehaztu daiteke eta aplikazioak 
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>Zutabearen aldea</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Kameraren denbora-muga</value>
@@ -4361,6 +4396,7 @@ Iraupen luzeagoa behar izanez gero, iraupen bat zehaztu daiteke eta aplikazioak 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>Itxi flat panelaren estalkia</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Fokatzailea emandako posizio absolutura mugitzen du</value>
@@ -4415,6 +4451,7 @@ Iraupen luzeagoa behar izanez gero, iraupen bat zehaztu daiteke eta aplikazioak 
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Aparkatu teleskopioa</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>Teleskopioa emandako altitude eta azimut koordenatuetara biratzen du</value>
@@ -4433,6 +4470,7 @@ Iraupen luzeagoa behar izanez gero, iraupen bat zehaztu daiteke eta aplikazioak 
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>Atera teleskopioa aparkatzetik</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>Ezarri jarraipena</value>
@@ -4472,12 +4510,14 @@ Iraupen luzeagoa behar izanez gero, iraupen bat zehaztu daiteke eta aplikazioak 
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>Itxaron denbora-tartea bete arte</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>hh:mm:ss formatuan adierazitako denbora itxaroten du. Gainera, tresna-koadro bat dago ilunabarrerako, ilunabarrerako, egunsentirako eta egunsentirako automatikoki betetzeko</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>Itxaron denbora</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>Erdiratu desbideratzearen ondoren</value>
@@ -4709,6 +4749,7 @@ Oharra: modu honek zure konfigurazioan iragazkien arteko HFR aldeak txikiak izat
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>Ireki flat panelaren estalkia</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Flat gailuaren distira adierazitako baliora ezartzen du</value>
@@ -4721,6 +4762,7 @@ Oharra: modu honek zure konfigurazioan iragazkien arteko HFR aldeak txikiak izat
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>Txandakatu argia</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>Adierazitako parametroetarako entrenatutako esposizio-balioa bilatu eta flat esposizioak hartzen ditu</value>
@@ -5380,9 +5422,11 @@ Azkar aldatzen diren baldintzetan lagin-tamaina txikiagoak fokuaren aldaketari a
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>Helburua zerumugaren gainetik dagoen bitartean errepikatzen duen eta gero egungo instrukzio-multzoa gelditzen duen baldintza</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>Errepikatu altitudea zerumugaren gainetik dagoen bitartean</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>Helburua ez da inoiz zerumugaren gainetik egongo</value>
@@ -5615,11 +5659,11 @@ ASCOM kamera-kontrolatzailea erabiltzean baino ez da garrantzitsua!</value>
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Abiadura nagusia</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>Bigarren abiadura</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>Teleskopioak ezin du ardatz nagusia mugitu</value>
@@ -6584,6 +6628,7 @@ Hau "Aparkatu armazoia obturadorea mugitu aurretik" ezarpenaren ONDOREN ebaluatz
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>Kupula-irekiera edo teilatua irekitzeko agindua zegoen, baina segurtasun-monitorearen gailua deskonektatuta dago. Irekitzea bertan behera utzi da.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>OHARRA: ezarpen hauek zure ekipoaren segurtasunari dagozkio. Arreta handiz ezarri behar dira, eta zure konfigurazio zehatzaren ezagutza izanik. N.I.N.A.k ekipoa nola kontrolatzen duen baino ez dute arautzen, eta EZ dute eraginik N.I.N.A. exekutatzen ari ez bada edo gailu horrekin konektatuta ez badago. Kupularen edo teilatuaren segurtasun-mekanismoek beti izan behar dute hardwareko babesgailu bat eta blokeo elektrikoak, nahi ez den obturadore- edo teilatu-mugimendurik eragozteko. Zure erantzukizuna da ezarpen hauek zure kupula-kontrolatzailearen ezarpenekin bat ez etortzea.</value>
@@ -6773,7 +6818,7 @@ Arrazoia: {0}</value>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>Flat-laguntzaileak huts egin du {0} iragazkirako.
 Arrazoia: {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>Flaten distira zehazteak huts egin du - argi-iturria distiratsuegia da.
@@ -6897,18 +6942,23 @@ Handitu gutxieneko esposizio-denbora edo itxaron argiago egon arte.</value>
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>Zabalketa</value>
@@ -7099,17 +7149,19 @@ Gainera, funtsezkoa da erabilitako ASCOM kontrolatzaileak 32 biteko sakonera hau
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>Erabili IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>Erabili IPv4 ASCOM Alpaca gailuen aurkikuntzarako (lehenetsia: piztuta)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>Erabili IPv6</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>Erabili IPv6 ASCOM Alpaca gailuen aurkikuntzarako (lehenetsia: itzalita)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Txandakatu katalogoaren bistaratzea</value>
@@ -7158,6 +7210,7 @@ Gainera, funtsezkoa da erabilitako ASCOM kontrolatzaileak 32 biteko sakonera hau
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>Kupula-irekiera edo teilatua irekitzeko agindua zegoen, baina segurtasun-monitorearen arabera baldintzak ez dira seguruak. Irekitzea bertan behera utzi da.</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>Kanpo-komandoa</value>
@@ -7964,21 +8017,27 @@ Esposizio-kopurua garrantzitsua ez bazaizu, gaitu aukera hau exekuzio baten ondo
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
     <value>Balioak {0} baino handiagoa edo berdina izan behar du.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
     <value>Balioak {0} baino handiagoa izan behar du.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
     <value>Balioa {0} eta {1} artean egon behar da.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
     <value>Balioa {0} eta {1} baino txikiagoa artean egon behar da.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
     <value>Balioak {0} baino handiagoa eta {1} artekoa izan behar du.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
     <value>Balioak {0} baino handiagoa eta {1} baino txikiagoa izan behar du.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>Jakinarazpenen lan-eremua</value>

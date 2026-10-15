@@ -412,15 +412,18 @@ Usando esos dos puntos se calculará y mostrará el error de azimut actual</valu
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>Se guardarán los siguientes valores de backlash del enfocador. IN: {0}, OUT: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>Media de los BIAS (en 16 bits)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>Valor de la mediana (median) del BIAS (en 16bit)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
@@ -539,6 +542,7 @@ Filtro: {3}</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>Se ha producido un error de Canon: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Capturar imagen y resolverla</value>
@@ -669,10 +673,10 @@ Filtro: {3}</value>
     <value>Andrómeda</value>
   </data>
   <data name="LblConstellation_ANT" xml:space="preserve">
-    <value>Antlia</value>
+    <value>Máquina neumática</value>
   </data>
   <data name="LblConstellation_APS" xml:space="preserve">
-    <value>Apus</value>
+    <value>Ave del Paraíso</value>
   </data>
   <data name="LblConstellation_AQL" xml:space="preserve">
     <value>Águila</value>
@@ -681,7 +685,7 @@ Filtro: {3}</value>
     <value>Acuario</value>
   </data>
   <data name="LblConstellation_ARA" xml:space="preserve">
-    <value>Ara</value>
+    <value>Altar</value>
   </data>
   <data name="LblConstellation_ARI" xml:space="preserve">
     <value>Aries</value>
@@ -693,16 +697,16 @@ Filtro: {3}</value>
     <value>Boyero</value>
   </data>
   <data name="LblConstellation_CAE" xml:space="preserve">
-    <value>Caelum</value>
+    <value>Buril</value>
   </data>
   <data name="LblConstellation_CAM" xml:space="preserve">
-    <value>Camelopardalis</value>
+    <value>Jirafa</value>
   </data>
   <data name="LblConstellation_CAP" xml:space="preserve">
     <value>Capricornio</value>
   </data>
   <data name="LblConstellation_CAR" xml:space="preserve">
-    <value>Carina</value>
+    <value>Quilla</value>
   </data>
   <data name="LblConstellation_CAS" xml:space="preserve">
     <value>Casiopeia</value>
@@ -717,13 +721,13 @@ Filtro: {3}</value>
     <value>Ballena</value>
   </data>
   <data name="LblConstellation_CHA" xml:space="preserve">
-    <value>Chamaeleon</value>
+    <value>Camaleón</value>
   </data>
   <data name="LblConstellation_CIR" xml:space="preserve">
-    <value>Circinus</value>
+    <value>Compás</value>
   </data>
   <data name="LblConstellation_CMA" xml:space="preserve">
-    <value>Can Major</value>
+    <value>Can Mayor</value>
   </data>
   <data name="LblConstellation_CMI" xml:space="preserve">
     <value>Can Menor</value>
@@ -747,64 +751,64 @@ Filtro: {3}</value>
     <value>Copa</value>
   </data>
   <data name="LblConstellation_CRU" xml:space="preserve">
-    <value>Crux</value>
+    <value>Cruz del Sur</value>
   </data>
   <data name="LblConstellation_CRV" xml:space="preserve">
-    <value>Corvus</value>
+    <value>Cuervo</value>
   </data>
   <data name="LblConstellation_CVN" xml:space="preserve">
-    <value>Canes venatici</value>
+    <value>Perros de caza</value>
   </data>
   <data name="LblConstellation_CYG" xml:space="preserve">
-    <value>Cygnus</value>
+    <value>Cisne</value>
   </data>
   <data name="LblConstellation_DEL" xml:space="preserve">
-    <value>Delphinus</value>
+    <value>Delfín</value>
   </data>
   <data name="LblConstellation_DOR" xml:space="preserve">
     <value>Dorado</value>
   </data>
   <data name="LblConstellation_DRA" xml:space="preserve">
-    <value>Draco</value>
+    <value>Dragón</value>
   </data>
   <data name="LblConstellation_EQU" xml:space="preserve">
-    <value>Equuleus</value>
+    <value>Caballo menor</value>
   </data>
   <data name="LblConstellation_ERI" xml:space="preserve">
-    <value>Eridanus</value>
+    <value>Erídano</value>
   </data>
   <data name="LblConstellation_FOR" xml:space="preserve">
-    <value>Fornax</value>
+    <value>Horno químico</value>
   </data>
   <data name="LblConstellation_GEM" xml:space="preserve">
-    <value>Gemini</value>
+    <value>Géminis</value>
   </data>
   <data name="LblConstellation_GRU" xml:space="preserve">
-    <value>Grus</value>
+    <value>Grulla</value>
   </data>
   <data name="LblConstellation_HER" xml:space="preserve">
     <value>Hércules</value>
   </data>
   <data name="LblConstellation_HOR" xml:space="preserve">
-    <value>Horologium</value>
+    <value>Reloj</value>
   </data>
   <data name="LblConstellation_HYA" xml:space="preserve">
-    <value>Hydra</value>
+    <value>Hidra hembra</value>
   </data>
   <data name="LblConstellation_HYI" xml:space="preserve">
-    <value>Hydrus</value>
+    <value>Hidra macho</value>
   </data>
   <data name="LblConstellation_IND" xml:space="preserve">
-    <value>Indus</value>
+    <value>Indio</value>
   </data>
   <data name="LblConstellation_LAC" xml:space="preserve">
-    <value>Lacerta</value>
+    <value>Lagarto</value>
   </data>
   <data name="LblConstellation_LEO" xml:space="preserve">
     <value>León</value>
   </data>
   <data name="LblConstellation_LEP" xml:space="preserve">
-    <value>Lepus</value>
+    <value>Liebre</value>
   </data>
   <data name="LblConstellation_LIB" xml:space="preserve">
     <value>Libra</value>
@@ -813,7 +817,7 @@ Filtro: {3}</value>
     <value>León menor</value>
   </data>
   <data name="LblConstellation_LUP" xml:space="preserve">
-    <value>Lupus</value>
+    <value>Lobo</value>
   </data>
   <data name="LblConstellation_LYN" xml:space="preserve">
     <value>Lince</value>
@@ -834,10 +838,10 @@ Filtro: {3}</value>
     <value>Mosca</value>
   </data>
   <data name="LblConstellation_NOR" xml:space="preserve">
-    <value>Norma</value>
+    <value>Escuadra</value>
   </data>
   <data name="LblConstellation_OCT" xml:space="preserve">
-    <value>Octans</value>
+    <value>Octante</value>
   </data>
   <data name="LblConstellation_OPH" xml:space="preserve">
     <value>Ofiuco</value>
@@ -858,16 +862,16 @@ Filtro: {3}</value>
     <value>Fénix</value>
   </data>
   <data name="LblConstellation_PIC" xml:space="preserve">
-    <value>Pictor</value>
+    <value>Pintor</value>
   </data>
   <data name="LblConstellation_PSA" xml:space="preserve">
-    <value>Pisces austrinus</value>
+    <value>Pez austral</value>
   </data>
   <data name="LblConstellation_PSC" xml:space="preserve">
     <value>Piscis</value>
   </data>
   <data name="LblConstellation_PUP" xml:space="preserve">
-    <value>Puppis</value>
+    <value>Popa</value>
   </data>
   <data name="LblConstellation_PYX" xml:space="preserve">
     <value>Brújula</value>
@@ -897,7 +901,7 @@ Filtro: {3}</value>
     <value>Sextante</value>
   </data>
   <data name="LblConstellation_SGE" xml:space="preserve">
-    <value>Sagitta</value>
+    <value>Flecha</value>
   </data>
   <data name="LblConstellation_SGR" xml:space="preserve">
     <value>Sagitario</value>
@@ -930,7 +934,7 @@ Filtro: {3}</value>
     <value>Virgo</value>
   </data>
   <data name="LblConstellation_VOL" xml:space="preserve">
-    <value>Volans</value>
+    <value>Pez volador</value>
   </data>
   <data name="LblConstellation_VUL" xml:space="preserve">
     <value>Vulpécula</value>
@@ -969,6 +973,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Media Actual</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Posición Actual</value>
@@ -1017,6 +1022,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Amanecer</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>Días</value>
@@ -1043,7 +1049,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>Debayerizando imagen</value>
   </data>
   <data name="LblDebug" xml:space="preserve">
-    <value>Debug</value>
+    <value>Depuración</value>
   </data>
   <data name="LblDec" xml:space="preserve">
     <value>Dec</value>
@@ -1284,6 +1290,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>Anochecer</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>Este</value>
@@ -1316,7 +1323,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>Calentar cámara</value>
   </data>
   <data name="LblEpoch" xml:space="preserve">
-    <value>Epoch</value>
+    <value>Época</value>
   </data>
   <data name="LblEquipment" xml:space="preserve">
     <value>Equipamiento</value>
@@ -1467,6 +1474,7 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>Ajustes del panel de Flats</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Respuesta no válida del panel de flats.</value>
@@ -1533,6 +1541,7 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>Ajustes del Asistente de Flats</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>Cancelar Asistente de Flats</value>
@@ -1581,6 +1590,7 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>Proporción Focal</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Enfocador</value>
@@ -1710,6 +1720,7 @@ HFR calculada: {2}
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>El programa de guiado no ha mandado el mensaje SettleDonde tras el tiempo previsto ({0}s + 10s). Ignorándolo.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Falló la reanudación del Guider</value>
@@ -1829,7 +1840,7 @@ HFR calculada: {2}
     <value>Origen de Imagen</value>
   </data>
   <data name="LblImageTypeDescription" xml:space="preserve">
-    <value>Light, Flat, Dark, Bias, Captura</value>
+    <value>Light, Flat, Dark, Bias, Snapshot</value>
   </data>
   <data name="LblImaging" xml:space="preserve">
     <value>Capturando</value>
@@ -1986,12 +1997,14 @@ HFR calculada: {2}
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>Media</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>Mide el Backlash del enfocador</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>Mediana</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>El cambio de Meridiano ha fallado.</value>
@@ -2089,6 +2102,7 @@ HFR calculada: {2}
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>No</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Sin Cámara</value>
@@ -2378,9 +2392,11 @@ HFR calculada: {2}
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>Puerto del Servidor de PHD2</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>Nombre de Servidor PHD2</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Ajustes PHD2</value>
@@ -2417,6 +2433,7 @@ HFR calculada: {2}
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>ID de perfil de PHD2 {0} no encontrado. Usando {1}</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>Píxeles</value>
@@ -2426,18 +2443,22 @@ HFR calculada: {2}
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>Escala de Píxel</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Escala de píxeles en arcosegundos por píxel</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>Tamaño Píxel</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>Tamaño Píxel X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Tamaño Píxel Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Planetario</value>
@@ -3093,7 +3114,7 @@ Antes de continuar, por favor, confirme que su sistema está actualmente en o ce
     <value>Brillo de Superficie</value>
   </data>
   <data name="LblSwitch" xml:space="preserve">
-    <value>Switch</value>
+    <value>Interruptor</value>
   </data>
   <data name="LblSwitchConnected" xml:space="preserve">
     <value>Switch conectado</value>
@@ -3344,6 +3365,7 @@ Mueve el rectángulo sobre la parte del Encuadre que quieras hacer subsampling. 
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
     <value>King</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>Personalizado</value>
@@ -3418,9 +3440,11 @@ Cuando está habilitado, se estirarán los canales de color de forma independien
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>Corriente promedio</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>Corriente</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>Datos del dispositivo</value>
@@ -3670,27 +3694,35 @@ Cuando está habilitado, se estirarán los canales de color de forma independien
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>La matriz de Bayer que se utilizará en la palabra clave BAYERPAT de los encabezados de imágenes FITS o XISF para imágenes generadas por sensores de color.
@@ -3698,6 +3730,7 @@ El valor predeterminado automático utiliza cualquier matriz que el controlador 
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Actual</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>Ejecuta Opciones de final de secuencia</value>
@@ -3722,6 +3755,7 @@ El valor predeterminado automático utiliza cualquier matriz que el controlador 
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Tiempo de espera de la cámara agotado - La cámara no ha conseguido la imagen después de + {0} segundos</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Vista previa de la matriz</value>
@@ -4063,6 +4097,7 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>Lado de la columna</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Tiempo de espera de la cámara</value>
@@ -4384,6 +4419,7 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>Cerrar tapa de panel de flats</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Mueve el enfocador a la posición absoluta dada</value>
@@ -4438,6 +4474,7 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Aparcar telescopio</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>Lleva el telescopio a las coordenadas de altitud y acimut dadas</value>
@@ -4456,6 +4493,7 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>Desaparcar telescopio</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>Establecer seguimiento</value>
@@ -4495,12 +4533,14 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>Espera durante un intervalo de tiempo</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>Espera el tiempo especificado en el formato hh:mm:ss Además, está disponible una caja para rellenarla automáticamente para crepúsculo, anochecer, alba y amanecer</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>Esperar al tiempo</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>Centrar después de la deriva</value>
@@ -4731,6 +4771,7 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>Abrir tapa del panel de flats</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Establece el brillo del panel de flats al valor especificado</value>
@@ -4743,6 +4784,7 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>Alterna la luz</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>Busca el valor de exposición entrenado para los parámetros especificados y toma los flats</value>
@@ -5234,7 +5276,7 @@ Allí la secuencia puede planificarse desde cero utilizando instrucciones pormen
     <value>Clave API para Weather Underground</value>
   </data>
   <data name="LblWeatherUndergroundStationID" xml:space="preserve">
-    <value>Id para Weather Underground Station</value>
+    <value>ID de la estación de Weather Underground</value>
   </data>
   <data name="LblTooltipDemoteSimpleExposure" xml:space="preserve">
     <value>Bajar de nivel la fila seleccionada</value>
@@ -5402,9 +5444,11 @@ Para condiciones que cambian rápidamente, un menor tamaño de muestra ayudará 
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>Una condición que crea un bucle mientras el objetivo está por encima del horizonte y luego detiene el conjunto actual de instrucciones</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>En bucle mientras la altitud esté por encima del horizonte</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>El objetivo no va a estar nunca sobre el horizonte</value>
@@ -5637,11 +5681,11 @@ Este ajuste no tendrá efecto en los sensores de color.
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Velocidad primaria</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>Velocidad secundaria</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>El telescopio no puede mover el eje primario</value>
@@ -6607,6 +6651,7 @@ Esto se evalúa DESPUÉS del ajuste "Aparcar montura antes de mover la ventana".
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>Se ha ordenado la apertura de la ventana o el techo pero el dispositivo de monitoreo de seguridad está desconectado. La apertura ha sido abortada.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>AVISO: Estos ajustes se relacionan con la seguridad de su equipo. Deben configurarse muy cuidadosamente y con la familiaridad que Ud. tiene con la configuración de su equipo específico. Gestionan el control del equipo por parte de N.I.N.A. y NO tienen efecto si N.I.N.A. no está funcionando o no está conectado al equipo en cuestión. Los mecanismos de seguridad de la cúpula o del techo siempre deben tener un respaldo de hardware y dispositivos de bloqueo eléctricos para evitar cualquier movimiento no deseado de la ventana o el techo. Es su responsabilidad asegurarse de que esta configuración no entre en conflicto con la configuración del controlador de su cúpula.</value>
@@ -6796,7 +6841,7 @@ Razón: {0}</value>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>El asistente de Flats ha fallado con el filtro {0}.
 Motivo: {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>No se pudo determinar el brillo de los flats - la luz es demasiado brillante.
@@ -6847,7 +6892,7 @@ Aumenta el tiempo mínimo de exposición o espera hasta que sea más brillante.<
     <value>Sincronizar Localización</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
-    <value>Prompt</value>
+    <value>Preguntar</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
     <value>Sincronizar con la aplicación</value>
@@ -6886,7 +6931,7 @@ Aumenta el tiempo mínimo de exposición o espera hasta que sea más brillante.<
     <value>Puerto SkyX</value>
   </data>
   <data name="LblZwoMonoBinMode" xml:space="preserve">
-    <value>Mono bin</value>
+    <value>Binning monocromático</value>
   </data>
   <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
     <value>Cuando está activado, la cámara promediará píxeles agrupados (con bin) para crear salida monocromática</value>
@@ -6920,18 +6965,23 @@ Aumenta el tiempo mínimo de exposición o espera hasta que sea más brillante.<
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>Ampliación</value>
@@ -6946,16 +6996,16 @@ Aumenta el tiempo mínimo de exposición o espera hasta que sea más brillante.<
     <value>La magnitud máxima (más débil) para la selección de estrellas del catálogo de referencia (min = 2.0, max = 20.0, default = 20.0)</value>
   </data>
   <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
-    <value>AllSky API host</value>
+    <value>Servidor de la API AllSky</value>
   </data>
   <data name="LblPinPointAllSkyApiHostToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API host (por defecto = nova.astrometry.net)</value>
+    <value>Servidor de la API Astrometry.net/AllSky (por defecto = nova.astrometry.net)</value>
   </data>
   <data name="LblPinPointAllSkyApiKey" xml:space="preserve">
     <value>Clave API de AllSky</value>
   </data>
   <data name="LblPinPointAllSkyApiKeyToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API key (opcional)</value>
+    <value>Clave de la API Astrometry.net/AllSky (opcional)</value>
   </data>
   <data name="LblPinPointAllSkySolve" xml:space="preserve">
     <value>Astrometría PinPoint AllSky</value>
@@ -7122,17 +7172,19 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>Usar IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>Usar IPv4 para el descubrimiento de dispositivo ASCOM Alpaca (por defecto: encendido)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>Usar IPv6</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>Usar IPv6 para el descubrimiento de dispositivo ASCOM Alpaca (por defecto: apagado)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Alternar visualización del catálogo</value>
@@ -7181,6 +7233,7 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>Se ordenó abrir la ventana de la cúpula o el techo, pero el dispositivo de monitoreo de seguridad informa de condiciones inseguras. Se ha interrumpido la apertura.</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>Comando externo</value>
@@ -7618,7 +7671,7 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
     <value>Guardar nombres de filtros</value>
   </data>
   <data name="LblOasisAutorun" xml:space="preserve">
-    <value>Autorun</value>
+    <value>Ejecución automática</value>
   </data>
   <data name="LblOasisSpeedTooltip" xml:space="preserve">
     <value>Seleccione la velocidad normal o lenta cuando la temperatura ambiente es muy baja para asegurar que los filtros se pueden cambiar sin problemas.</value>
@@ -7689,7 +7742,7 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
     <value>Verdadero</value>
   </data>
   <data name="LblFalse" xml:space="preserve">
-    <value>False</value>
+    <value>Falso</value>
   </data>
   <data name="LblDecimal" xml:space="preserve">
     <value>(Decimal: </value>
@@ -7985,21 +8038,27 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
     <value>El valor debe ser mayor o igual que {0}.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
     <value>El valor debe ser mayor que {0}.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
     <value>El valor debe estar entre {0} y {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
     <value>El valor debe estar entre {0} y menos de {1}.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
     <value>El valor debe ser mayor que {0} y hasta {1}.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
     <value>El valor debe ser mayor que {0} y menor que {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>Área de notificación de trabajo</value>

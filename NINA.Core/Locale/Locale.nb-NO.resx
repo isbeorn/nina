@@ -263,7 +263,7 @@ Skal programmet forsøke å hente seg inn igjen etter feilen? (Kan føre til ufo
     <value>Finner ikke ASPS-programfil</value>
   </data>
   <data name="LblASTAP" xml:space="preserve">
-    <value>ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</value>
+    <value>ASTAP, the Astrometric STAcking Program, for astrometrisk søk og visning av FITS-filer</value>
   </data>
   <data name="LblASTAPDirectory" xml:space="preserve">
     <value>ASTAP plassering</value>
@@ -414,15 +414,18 @@ uten stjerner, som f. eks. planeter, men kan være følsom for støy.</value>
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>Følgende slakk for fokusmotor vil bli lagret. INN: {0}, UT: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>Bias snittverdi (16 bit)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>Bias medianverdi (16 bit)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
@@ -520,7 +523,7 @@ i stand til å kompensere for endringer i omgivelsestemperatur</value>
     <value>Kamerainnstillinger</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Camera Parameters</value>
+    <value>Kameraparametere</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Tilstand</value>
@@ -542,6 +545,7 @@ i stand til å kompensere for endringer i omgivelsestemperatur</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>En Canon-feil oppstod: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Ta bilde og finn posisjon astrometrisk</value>
@@ -574,12 +578,12 @@ i stand til å kompensere for endringer i omgivelsestemperatur</value>
     <value>Endre</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>Antall eksponeringer</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence has been modified since it was last saved (changes to {0}).
+    <value>Sekvensen er endret siden den sist ble lagret (endringer i {0}).
         
-Do you want to continue and lose the changes anyway?</value>
+Vil du likevel fortsette og miste endringene?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Lukking av sekvens med endringer</value>
@@ -972,6 +976,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Nåværende gjennomsnitt</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Nåværende posisjon</value>
@@ -1020,6 +1025,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Demring</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>Dager</value>
@@ -1046,7 +1052,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>Debayer bilde</value>
   </data>
   <data name="LblDebug" xml:space="preserve">
-    <value>Debug</value>
+    <value>Feilsøking</value>
   </data>
   <data name="LblDec" xml:space="preserve">
     <value>Dek</value>
@@ -1127,10 +1133,10 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>Deklinasjon guiderate i buesekund per sekund</value>
   </data>
   <data name="LblMountDitherConnectionFail" xml:space="preserve">
-    <value>Mount Dither could not connect to Mount</value>
+    <value>Monteringsdither kunne ikke koble til monteringen</value>
   </data>
   <data name="LblMountDitherMountDisconnect" xml:space="preserve">
-    <value>Mount has been disconnected. Mount Dither will disconnect. Dithering no longer effective!</value>
+    <value>Monteringen er koblet fra. Monteringsdither kobles fra. Dither virker ikke lenger!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Mappe for lagring av bilde ble ikke funnet!</value>
@@ -1172,10 +1178,10 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>Typisk antall piksler for dither-bevegelse. Dithering følger en normalfordeling som er sentrert på målet, og denne verdien er standardavviket til fordelingen. 67 prosent av ditherbevegelser havner innenfor denne avstanden</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>Minste ditherbevegelse</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>Minste antall piksler på hovedkameraet som flyttes mellom påfølgende ditherposisjoner for monteringen. Sett til 0 for å beholde eksisterende tilfeldig oppførsel. Verdien kan ikke overstige verdien for 'Ditheravstand i piksler'.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dither kun i RA</value>
@@ -1287,18 +1293,19 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>Skumring</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>Øst</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
+    <value>Kameraet er ikke satt til Manual- eller Bulb-modus. Still inn programhjulet på Manual eller Bulb. Hvis kameraet har en bryter for Movie/Still, setter du den til Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Aktiver bit-skalering</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>Lagre 8/10/12/14-bitsbilder skalert til 16 bit. Gjelder bare NINAs direkte kameradrivere for Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony og ToupTek.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Aktivert</value>
@@ -1469,6 +1476,7 @@ Når Bulb-funksjonen deaktiveres vil programmet ikke starte noen eksponering, og
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>Flatpanel-innstillinger</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Ugyldig respons fra flatpanel.</value>
@@ -1535,6 +1543,7 @@ Når Bulb-funksjonen deaktiveres vil programmet ikke starte noen eksponering, og
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>Innstillinger for flatbilde-assistenten</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>Avbryt flatbilde-assistenten</value>
@@ -1583,6 +1592,7 @@ Når Bulb-funksjonen deaktiveres vil programmet ikke starte noen eksponering, og
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>Fokalforhold</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Fokusmotor</value>
@@ -1600,16 +1610,16 @@ Når Bulb-funksjonen deaktiveres vil programmet ikke starte noen eksponering, og
     <value>Størrelse på ett fokuseringssteg. Steglengden bør være mindre en kritisk fokusavstand</value>
   </data>
   <data name="LblManualStepSmallMultiplier" xml:space="preserve">
-    <value>Small Step Multiplier</value>
+    <value>Faktor for små steg</value>
   </data>
   <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+    <value>Faktor for små manuelle steg med fokusmotoren (standard: 0.5)</value>
   </data>
   <data name="LblManualStepLargeMultiplier" xml:space="preserve">
-    <value>Large Step Multiplier</value>
+    <value>Faktor for store steg</value>
   </data>
   <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+    <value>Faktor for store manuelle steg med fokusmotoren (standard: 5.0)</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Slakk INN/UT</value>
@@ -1712,6 +1722,7 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>Guideren sendte ikke SettleDone-melding etter forventet tid ({0}s + 10s). Hopper over.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Fortsettelse av guiding feilet</value>
@@ -1831,7 +1842,7 @@ Forventet HFR: {2}</value>
     <value>Kilde</value>
   </data>
   <data name="LblImageTypeDescription" xml:space="preserve">
-    <value>Light, Flat, Dark, Bias, Enkeltbilde</value>
+    <value>Light, Flat, Dark, Bias, Snapshot</value>
   </data>
   <data name="LblImaging" xml:space="preserve">
     <value>Foto</value>
@@ -1903,7 +1914,7 @@ Forventet HFR: {2}</value>
     <value>Åpne profil</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
+    <value>Den valgte profilen er i bruk av en annen N.I.N.A.-instans eller kunne ikke lastes på grunn av en ukjent feil. Se loggfilen for flere detaljer.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Åpne sekvens</value>
@@ -1921,7 +1932,7 @@ Forventet HFR: {2}</value>
     <value>Åpne enkel målliste</value>
   </data>
   <data name="LblLocalPlatesolver" xml:space="preserve">
-    <value>Local Platesolver</value>
+    <value>Lokal astrometriløser</value>
   </data>
   <data name="LblLocation" xml:space="preserve">
     <value>Posisjon</value>
@@ -1939,7 +1950,7 @@ Forventet HFR: {2}</value>
     <value>MAD</value>
   </data>
   <data name="LblMagnitude" xml:space="preserve">
-    <value>Magnitude</value>
+    <value>Størrelsesklasse</value>
   </data>
   <data name="LblManualControl" xml:space="preserve">
     <value>Manuell styring</value>
@@ -1988,12 +1999,14 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>Snitt</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>Mål fokusmotor-slakk</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>Median</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>Meridianvending feilet</value>
@@ -2014,7 +2027,7 @@ Forventet HFR: {2}</value>
     <value>MetaGuide-oppsett</value>
   </data>
   <data name="LblMetaGuidePort" xml:space="preserve">
-    <value>MetaGuide Port</value>
+    <value>MetaGuide-port</value>
   </data>
   <data name="LblMin" xml:space="preserve">
     <value>Min</value>
@@ -2091,6 +2104,7 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Nei</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Ingen kamera</value>
@@ -2298,10 +2312,10 @@ Forventet HFR: {2}</value>
     <value>NINA intern OpenWeatherMap API-klient</value>
   </data>
   <data name="LblOpenMeteoClientDescription" xml:space="preserve">
-    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+    <value>Bruker værvarslings-API-et til OpenMeteo. Værdata oppdateres hvert 10. minutt.</value>
   </data>
   <data name="LblOpenMeteoClientInfo" xml:space="preserve">
-    <value>NINA internal OpenMeteo API client</value>
+    <value>Intern OpenMeteo API-klient i NINA</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Innstillinger</value>
@@ -2380,9 +2394,11 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>PHD2-port</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>PHD2 server vertsnavn</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2-innstillinger</value>
@@ -2419,6 +2435,7 @@ Forventet HFR: {2}</value>
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>PHD2-profil ID {0} finnes ikke. Bruker {1}</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>Piksler</value>
@@ -2427,19 +2444,23 @@ Forventet HFR: {2}</value>
     <value>Maks piksler</value>
   </data>
   <data name="LblPixelScale" xml:space="preserve">
-    <value>Pikselstørrelse</value>
+    <value>Pikselskala</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Pikselstørrelse i buesekunder</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>Pikselstørrelse</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>Pikselstørrelse X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Pikselstørrelse Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Planetarium</value>
@@ -2460,7 +2481,7 @@ Forventet HFR: {2}</value>
     <value>Planetarium-innstillinger</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Import the currently selected planetarium object to update name and coordinates</value>
+    <value>Importer objektet som er valgt i planetariumprogrammet for å oppdatere navn og koordinater</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Koordinater fra valgt objekt</value>
@@ -2493,7 +2514,7 @@ Forventet HFR: {2}</value>
     <value>Forsinkelse, i minutter, mellom forsøk på astrometrisk løsning</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>Sentrering mislyktes etter {0} korrigeringsforsøk</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Astrometrisk søk for dette bildet</value>
@@ -2628,7 +2649,7 @@ Forventet HFR: {2}</value>
     <value>RAW-konvertering</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>RAW-filer fra speilreflekskameraer konverteres med LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Utlesingsstøy i e</value>
@@ -2637,7 +2658,7 @@ Forventet HFR: {2}</value>
     <value>Modus</value>
   </data>
   <data name="LblReadout" xml:space="preserve">
-    <value>Readout</value>
+    <value>Utlesning</value>
   </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>Et tall som korresponderer med kameraet sin utlesingsmodus</value>
@@ -2778,10 +2799,10 @@ Forventet HFR: {2}</value>
     <value>Innstillingen ignoreres for DSLR hvis innebygget driver brukes. RAW-format lagres i stedet!</value>
   </data>
   <data name="LblSaveNativeCameraRaw" xml:space="preserve">
-    <value>Save native camera RAW</value>
+    <value>Lagre kameraets opprinnelige RAW-filer</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>Når dette er aktivert, lagres bilder fra direkte tilkoblede Nikon- og Canon-kameraer i kameraets RAW-format. Når dette er deaktivert, lagres bilder i henhold til Innstillinger &gt; Foto &gt; Bildefil-innstillinger.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Lagre valgt profil og ikke spør igjen neste gang</value>
@@ -2959,7 +2980,7 @@ Denne malen vil bli brukt når en ny sekvens opprettes.</value>
     <value>Sving til</value>
   </data>
   <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
+    <value>Svinging mislyktes</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Sving og sentrer</value>
@@ -3299,7 +3320,7 @@ Dra firkanten over en stjerne med diffraksjonslinjer. NINA vil analysere disse o
     <value>Tilbakestill all fremdrift for dette målet</value>
   </data>
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
+    <value>Tilbakestill fremdriften for alle mål i gjeldende målsett</value>
   </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Starter sekvenser</value>
@@ -3324,7 +3345,7 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
     <value>ToupTek kamerainnstillinger</value>
   </data>
   <data name="LblTrace" xml:space="preserve">
-    <value>Trace</value>
+    <value>Sporing</value>
   </data>
   <data name="LblTracking" xml:space="preserve">
     <value>Følging</value>
@@ -3339,13 +3360,14 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
     <value>Siderisk</value>
   </data>
   <data name="LblTrackingSolar" xml:space="preserve">
-    <value>Solar</value>
+    <value>Solfølging</value>
   </data>
   <data name="LblTrackingLunar" xml:space="preserve">
-    <value>Lunar</value>
+    <value>Månefølging</value>
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
     <value>King</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>Egendefinert</value>
@@ -3360,13 +3382,13 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
     <value>Sør</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
-    <value>North</value>
+    <value>Nord</value>
   </data>
   <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
+    <value>Sør</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>Transittid</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Trendlinjer og parabolsk</value>
@@ -3418,9 +3440,11 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>Gjennomsnittlig strøm</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>Strøm</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>Enhetsinformasjon</value>
@@ -3510,7 +3534,7 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
     <value>URL</value>
   </data>
   <data name="LblCopyURL" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>Kopier URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB-grense</value>
@@ -3670,27 +3694,35 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>Bayer-mønster som brukes i BAYERPAT-feltet i FITS eller XISF-bilder for bilder tatt med fargesensor.
@@ -3698,6 +3730,7 @@ Auto bruker mønster hentet fra kameradriveren. Gjelder ikke DSLR-kameraer.</val
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Gjeldende</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>Utfører valg for sekvensslutt</value>
@@ -3722,6 +3755,7 @@ Auto bruker mønster hentet fra kameradriveren. Gjelder ikke DSLR-kameraer.</val
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Tidsavbrudd for kamera - bilde var ikke klart etter eksponeringstid + {0} sekunder</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Forhåndsvisning</value>
@@ -4062,6 +4096,7 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>Side av søyle</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Tidsavbrudd for kamera</value>
@@ -4325,13 +4360,13 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
     <value>Instruksjonsblokk med mål</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
-    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+    <value>Kontrollerer dette sekvensuttrykket når instruksjonsblokken nås. Hvis det er sant, kjøres instruksjonene i blokken én gang. Hvis det er usant, hoppes de over.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>En betinget instruksjonsblokk krever et uttrykk.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>Betinget instruksjonsblokk</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Alle instruksjonene i blokken utføres parallelt. Ingen betingelser eller triggere brukes før alle instruksjoner er fullført.</value>
@@ -4383,6 +4418,7 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>Lukk flatpanel-deksel</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Flytter fokusmotoren til en bestemt absolutt posisjon</value>
@@ -4437,6 +4473,7 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Parker teleskop</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>Svinger teleskopet til angitt elevasjon- og asimutvinkel</value>
@@ -4455,6 +4492,7 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>Avparker teleskop</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>Sett følging</value>
@@ -4494,12 +4532,14 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>Vent tidsperiode</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>Venter inntil angitt tidspunkt i tt:mm:ss-format, eller til automatisk beregnede tidspunkter for solnedgang, soloppgang og tussmørke</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>Vent til tidspunkt</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>Sentrer ved avdrift</value>
@@ -4514,13 +4554,13 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
     <value>Autofokus etter økning i HFR</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-    <value>HFR trend per filter</value>
+    <value>HFR-trend per filter</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-    <value>When disabled, the HFR trend is evaluated across all filters combined. 
-This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
-and a temperature sensitive optics on a quickly changing ambient temperature. 
-Note: This mode requires that HFR differences between filters in your setup are small.</value>
+    <value>Når dette er deaktivert, vurderes HFR-trenden samlet for alle filtre. 
+Dette kan bidra til å utløse autofokus tidligere, særlig ved hyppige filterbytter
+og temperaturfølsom optikk når omgivelsestemperaturen endres raskt. 
+Merk: Denne modusen krever at HFR-forskjellene mellom filtrene i oppsettet ditt er små.</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>En trigger for å autofokusere når temperaturen har endret seg med angitt antall grader siden forrige autofokusering eller start av sekvensen</value>
@@ -4541,34 +4581,34 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Meridianvending</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
-    <value>Programmable Meridian Flip</value>
+    <value>Programmerbar meridianvending</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
-    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+    <value>En trigger for meridianvending med tilpassbare handlinger før og etter vendingen.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
-    <value>Before Flip Actions</value>
+    <value>Handlinger før vending</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
-    <value>After Flip Actions</value>
+    <value>Handlinger etter vending</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting for the meridian flip.</value>
+    <value>Instruksjoner som kjøres før ventingen på meridianvendingen.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after the meridian flip.</value>
+    <value>Instruksjoner som kjøres etter meridianvendingen.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
-    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+    <value>Hold disse trinnene korte. Langvarige handlinger før vending kan forsinke meridianvendingen.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
-    <value>Wait For Flip Window</value>
+    <value>Vent på tidsvindu for vending</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
-    <value>Resume Tracking and Flip</value>
+    <value>Fortsett følging og vend</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>Stabilisering</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>Kameraet har ikke en kjøler og er ikke i stand til å styre temperatur</value>
@@ -4652,7 +4692,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Maler</value>
   </data>
   <data name="LblLinkedTemplates" xml:space="preserve">
-    <value>Linked Templates</value>
+    <value>Koblede maler</value>
   </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>Standard-maler</value>
@@ -4661,10 +4701,10 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Dra en instruksjonsblokk hit fra sekvensen for å lage en ny mal</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
-    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+    <value>Hold Ctrl inne mens du slipper en mal for å legge den til som koblet i stedet for kopiert.</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
-    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
+    <value>En koblet mal opprettholder en aktiv kobling til kildemalen. Innholdet vises i sekvensen som en skrivebeskyttet forhåndsvisning og oppdateres automatisk når malen endres. Bruk Rediger mal på den koblede malen for å oppdatere kildemalen. Slipp malen på vanlig måte når du vil ha en uavhengig kopi.</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>Overskriv mal?</value>
@@ -4731,6 +4771,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>Åpne flatpanel-deksel</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Setter lysstyrken til flatpanelet til angitt verdi</value>
@@ -4743,6 +4784,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>Slå lys av/på</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>Bruker innlært eksponeringstid for å ta flatbilder</value>
@@ -5024,58 +5066,58 @@ Brukes best med en annen repetisjonsbetingelse for å unngå uendelig repetisjon
     <value>Lagre instruksjonsblokken som en gjenbrukbar mal</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
-    <value>Linked Template</value>
+    <value>Koblet mal</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
-    <value>Linked Template: {0}</value>
+    <value>Koblet mal: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
-    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+    <value>Legger til en aktiv kobling til en sekvensmal i stedet for å kopiere den. Gjeldende malinnhold vises i denne instruksjonsblokken slik at det kan undersøkes i sekvensen, men er skrivebeskyttet til Rediger mal aktiveres. Når kildemalen endres, oppdateres denne blokken automatisk til den nyeste versjonen. Under kjøring venter N.I.N.A. til malene er ferdig lastet, og kjører deretter gjeldende malinnhold. Hvis den koblede malen er basert på en målblokk, lagrer malen fortsatt bare den gjenbrukbare sekvensstrukturen. Slipp et mål på den koblede malen for å velge mål for denne bruken, så legger N.I.N.A. inn dette målet på nytt hver gang malen oppdateres. Bruk dette når flere sekvenser skal følge den samme malen. Slipp malen på vanlig måte når du vil ha en uavhengig kopi. Legg til en koblet mal fra menyen Koblede maler, eller hold Ctrl inne mens du slipper en mal i sekvensen for å koble den.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
-    <value>Linked template preview</value>
+    <value>Forhåndsvisning av koblet mal</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
-    <value>Editing linked template</value>
+    <value>Redigerer koblet mal</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
-    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+    <value>Skrivebeskyttet forhåndsvisning av "{0}". Bruk Rediger mal for å endre kildemalen.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
-    <value>Editing the source template. Saving updates the template for every linked use.</value>
+    <value>Redigerer kildemalen. Lagring oppdaterer malen for alle koblede forekomster.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
-    <value>Waiting for template "{0}" to finish loading.</value>
+    <value>Venter på at malen "{0}" skal bli ferdig lastet.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
-    <value>Template "{0}" could not be found.</value>
+    <value>Fant ikke malen "{0}".</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
-    <value>This linked template does not have a valid source template.</value>
+    <value>Denne koblede malen har ingen gyldig kildemal.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
-    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+    <value>Standardmaler kan ikke redigeres direkte. Lagre først malen som en brukermal.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
-    <value>Edit Template</value>
+    <value>Rediger mal</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
-    <value>Save Template</value>
+    <value>Lagre mal</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
-    <value>Cancel Template Editing</value>
+    <value>Avbryt malredigering</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
-    <value>Target: {0}</value>
+    <value>Mål: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
-    <value>No target selected. Drop a target here or enter target details below.</value>
+    <value>Ingen mål valgt. Slipp et mål her eller skriv inn måldetaljene nedenfor.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
-    <value>Use this target with the linked template</value>
+    <value>Bruk dette målet med den koblede malen</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
-    <value>Select a target for this linked template before running the sequence.</value>
+    <value>Velg et mål for denne koblede malen før du kjører sekvensen.</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>Sikkerhetsovervåker er ikke koblet til</value>
@@ -5400,9 +5442,11 @@ Et mindre antall gjør triggeren raskere til å reagere når fokusavstand faktis
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>En betingelse som gjentar instruksjonsblokken så lenge målet er over horisonten</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>Gjenta når over horisont</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>Målet vil aldri komme over horisonten</value>
@@ -5534,7 +5578,7 @@ Et mindre antall gjør triggeren raskere til å reagere når fokusavstand faktis
     <value>Roterer kamera til angitt vinkel</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotate to mechanical angle</value>
+    <value>Roter til mekanisk vinkel</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridian</value>
@@ -5635,11 +5679,11 @@ Bare relevant ved bruk av en ASCOM-kameradriver!</value>
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Primær rate</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>Sekundær rate</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>Teleskopet kan ikke bevege primæraksen</value>
@@ -6116,7 +6160,7 @@ Se bruksanvisningen for denne innstillingen</value>
     <value>Kunne ikke lagre bilde</value>
   </data>
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+    <value>Kunne ikke lagre bildet. Målstasjonen kan være tom for ledig diskplass.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Finn koordinater til gjeldende pekeretning</value>
@@ -6272,19 +6316,19 @@ Sjekk om en oppdatert versjon er tilgjengelig.</value>
     <value>Dato</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>Dag</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>Måned</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>År</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
     <value>Observasjon</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>Tilbakestill observasjonsdato og -tid til gjeldende tidspunkt</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>Kommando</value>
@@ -6308,7 +6352,7 @@ Sjekk om en oppdatert versjon er tilgjengelig.</value>
     <value>Streng</value>
   </data>
   <data name="LblBlind" xml:space="preserve">
-    <value>Blind</value>
+    <value>Uten svar</value>
   </data>
   <data name="LblAction" xml:space="preserve">
     <value>Handling</value>
@@ -6601,6 +6645,7 @@ Når metadata er bekreftet, velg søkemotoren som skal brukes.</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>Kuppelen ble kommandert til å åpnes uten at sikkerhetsovervåker var tilkoblet. Åpning avbrytes.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>MERK: Disse innstillingene angår sikkerheten til utstyret. De må stilles inn med omhu ut fra din kunnskap om ditt spesifikke oppsett. Innstillingene omfatter kun N.I.N.A., og trer IKKE i kraft dersom N.I.N.A. ikke kjører eller ikke er tilkoblet det aktuelle utstyret. Sikkerhetsmekanismer for kuppel eller tak bør alltid ha mekanisk eller elektrisk forrigling som hindrer uønsket bevegelse av dome eller tak. Det er ditt ansvar å sørge for at disse innstillingene ikke er i konflikt med innstillingene i kuppelens driverinnstillinger.</value>
@@ -6658,7 +6703,7 @@ Når metadata er bekreftet, velg søkemotoren som skal brukes.</value>
     <value>Varmeeffekt</value>
   </data>
   <data name="LblColoredContainerBorders" xml:space="preserve">
-    <value>Colored Container Borders</value>
+    <value>Fargede rammer rundt instruksjonsblokker</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Maskinvareakselerasjon</value>
@@ -6702,7 +6747,7 @@ Dette bør bare deaktiveres hvis monteringen allerede har en pekemodell som man 
     <value>Et navn med inntil 8 tegn som kan brukes til å entydig identifisere flere enheter av samme modell.</value>
   </data>
   <data name="LblDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>Et navn på opptil 8 ASCII-tegn som du kan tilordne den tilkoblede enheten. Dette gjør det mulig å skille mellom flere enheter av samme modell.</value>
   </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Kun en dreieretning</value>
@@ -6789,7 +6834,7 @@ Dette bør bare deaktiveres hvis monteringen allerede har en pekemodell som man 
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>Kunne ikke ta flatbilder med filter {0}.
 Årsak: {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>Kunne ikke finne en lysstyrke for flatbildene - lyskilden er for sterk.
@@ -6913,18 +6958,23 @@ Reduser minste eksponeringstid eller vent til himmelen er mørkere.</value>
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>Utvidelse</value>
@@ -6976,10 +7026,10 @@ Reduser minste eksponeringstid eller vent til himmelen er mørkere.</value>
     <value>Vis histogram</value>
   </data>
   <data name="LblShowHorizon" xml:space="preserve">
-    <value>Show Local Horizon</value>
+    <value>Vis lokal horisont</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
-    <value>Show star measurements in arcseconds</value>
+    <value>Vis stjernemålinger i buesekunder</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Kun informasjon</value>
@@ -7055,10 +7105,10 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Parkering fikk tidsavbrudd etter {0} minutter.</value>
   </data>
   <data name="LblDomeParkTimeout" xml:space="preserve">
-    <value>Dome park has timed out after {0} minutes.</value>
+    <value>Parkering av kuppel har overskredet tidsgrensen på {0} minutter.</value>
   </data>
   <data name="LblDomeParkFailed" xml:space="preserve">
-    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+    <value>Kuppelen sluttet å bevege seg, men driveren bekreftet ikke at den er parkert.</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Avparkering fikk tidsavbrudd etter {0} minutter.</value>
@@ -7115,23 +7165,25 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>Bruk IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>Bruk IPv4 for å oppdage ASCOM Alpaca enheter (Standard: på)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>Bruk IPv6</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>Bruk IPv6 for å oppdage ASCOM Alpaca enheter (Standard: av)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Objektkataloger</value>
   </data>
   <data name="LblToggleShowAllCatalogues" xml:space="preserve">
-    <value>Show all catalogues</value>
+    <value>Vis alle kataloger</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Mål Alt</value>
@@ -7174,6 +7226,7 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>Under åpning av luke eller tak, rapporterte sikkerhetsovervåker om usikre forhold. Åpning avbrytes.</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>Ekstern kommando</value>
@@ -7204,16 +7257,16 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
-    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+    <value>Laster et oppsett for Foto-fanen fra en lagret fil med panelkonfigurasjon</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
-    <value>Load Imaging Layout</value>
+    <value>Last fotooppsett</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
-    <value>The selected file is not a valid Imaging layout backup</value>
+    <value>Den valgte filen er ikke en gyldig sikkerhetskopi av et fotooppsett</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
-    <value>Select an existing Imaging layout backup file</value>
+    <value>Velg en eksisterende fil med en sikkerhetskopi av et fotooppsett</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>Lagrer gjeldende sekvens i den angitte filbanen</value>
@@ -7261,10 +7314,10 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Ingen vert er angitt i innstillingene</value>
   </data>
   <data name="LblBlindSolveSettings" xml:space="preserve">
-    <value>Blind Solver Settings</value>
+    <value>Innstillinger for astrometrisk søk uten startkoordinater</value>
   </data>
   <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
-    <value>Warning: "Use telescope side of pier" in meridian flip settings is disabled and may cause alignment issues for equatorial mounts with domes near the meridian. The dome will assume a meridian flip occurs precisely at the meridian, potentially leading to misalignment if the mount has not yet flipped.</value>
+    <value>Advarsel: "Bruk teleskop-siden av søylen" i innstillingene for meridianvending er deaktivert. Dette kan føre til innrettingsproblemer for ekvatorialmonteringer med kupler nær meridianen. Kuppelen vil anta at meridianvendingen skjer nøyaktig ved meridianen. Det kan føre til feil innretting hvis monteringen ennå ikke har vendt.</value>
   </data>
   <data name="LblCompleteDuration" xml:space="preserve">
     <value>Total varighet</value>
@@ -7343,13 +7396,13 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Koble til kamera på ny etter nedlastingsfeil</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
-    <value>A trigger that will fire when the camera failed to download an exposure and will try to reconnect the camera. When reconnecting the cooler state and dew heater state will also be restored.</value>
+    <value>En trigger som utløses når kameraet ikke klarer å laste ned en eksponering, og som prøver å koble til kameraet på nytt. Ved ny tilkobling gjenopprettes også tilstanden til kjøleren og duggvarmeren.</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
     <value>Koble til utstyr på ny</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
-    <value>A trigger that will fire when the selected device is disconnected and will try to reconnect to it.</value>
+    <value>En trigger som utløses når den valgte enheten kobles fra, og som prøver å koble til enheten på nytt.</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
     <value>Bytt profil</value>
@@ -7361,850 +7414,856 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value></value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
-    <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
+    <value>Kunne ikke finne rotasjonen etter {0} forsøk. Er reverseringsflagget for dreiemotoren satt riktig?</value>
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
     <value>Lås oppsett i foto-panelet for å hindre lukking eller flytting av paneler.</value>
   </data>
   <data name="LblGnssFix2D" xml:space="preserve">
-    <value>Current fix is 2D. A 3D fix is required</value>
+    <value>Gjeldende posisjonsbestemmelse er 2D. En 3D-posisjonsbestemmelse kreves</value>
   </data>
   <data name="LblMJDFormatDescription" xml:space="preserve">
-    <value>Modified Julian Date</value>
+    <value>Modifisert juliansk dato</value>
   </data>
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
-    <value>Open cover when done</value>
+    <value>Åpne dekselet når ferdig</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
   <data name="LblCivilDusk" xml:space="preserve">
-    <value>Civil dusk</value>
+    <value>Borgerlig skumring</value>
   </data>
   <data name="LblCivilDawn" xml:space="preserve">
-    <value>Civil dawn</value>
+    <value>Borgerlig demring</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
-    <value>Refuse mount unpark if shutter is not open</value>
+    <value>Hindre avparkering av monteringen hvis kuppelluken ikke er åpen</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
-    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+    <value>Kan ikke avparkere monteringen mens kuppelluken eller taket ikke er åpent</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
-    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+    <value>Avvis forsøk på å avparkere monteringen hvis kuppelluken eller taket rapporterer tilstanden Lukket, Lukkes, Åpnes eller Feil. Avparkering tillates bare hvis kuppelluken eller taket rapporterer tilstanden Åpen</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
-    <value>There is no civil dawn at your location today.</value>
+    <value>Det er ingen borgerlig demring på stedet ditt i dag.</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
-    <value>There is no civil dusk at your location today.</value>
+    <value>Det er ingen borgerlig skumring på stedet ditt i dag.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
-    <value>There is no astronomical dawn at your location today.</value>
+    <value>Det er ingen astronomisk demring på stedet ditt i dag.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
-    <value>There is no astronomical dusk at your location today.</value>
+    <value>Det er ingen astronomisk skumring på stedet ditt i dag.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
-    <value>There is no nautical dawn at your location today.</value>
+    <value>Det er ingen nautisk demring på stedet ditt i dag.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
-    <value>There is no nautical dusk at your location today.</value>
+    <value>Det er ingen nautisk skumring på stedet ditt i dag.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
-    <value>There is no sunrise at your location today.</value>
+    <value>Solen står ikke opp på stedet ditt i dag.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
-    <value>There is no sunset at your location today.</value>
+    <value>Solen går ikke ned på stedet ditt i dag.</value>
   </data>
   <data name="LblUnableToConnectTo" xml:space="preserve">
-    <value>Unable to connect to {0}</value>
+    <value>Kan ikke koble til {0}</value>
     <comment>Parameters: {0}=Url or device etc</comment>
   </data>
   <data name="LblCameraNoSupport16bit" xml:space="preserve">
-    <value>Camera does not support 16 bit mode</value>
+    <value>Kameraet støtter ikke 16-bitsmodus</value>
   </data>
   <data name="LblExposureInProgress" xml:space="preserve">
-    <value>Another exposure still in progress. Cancel it to start another.</value>
+    <value>En annen eksponering pågår fortsatt. Avbryt den for å starte en ny.</value>
   </data>
   <data name="LblFailedToConnectDevice" xml:space="preserve">
-    <value>Failed to connect {0}, {1}</value>
+    <value>Kunne ikke koble til {0}, {1}</value>
     <comment>Parameters: 0=Device ID, 1=error message</comment>
   </data>
   <data name="LblGenericCameraError" xml:space="preserve">
-    <value>Camera reported a generic error and needs to be reconnected!</value>
+    <value>Kameraet rapporterte en generell feil og må kobles til på nytt!</value>
   </data>
   <data name="LblCameraDisconnected" xml:space="preserve">
-    <value>Camera disconnected! Maybe USB connection was interrupted.</value>
+    <value>Kameraet ble koblet fra! USB-forbindelsen kan ha blitt avbrutt.</value>
   </data>
   <data name="LblMetaGuideListenerError" xml:space="preserve">
-    <value>MetaGuide Listener Error: {0}</value>
+    <value>Feil i MetaGuide-lytter: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPostFailed" xml:space="preserve">
-    <value>Failed to post {0} message</value>
+    <value>Kunne ikke sende {0}-melding</value>
     <comment>Parameters: {0}=message type</comment>
   </data>
   <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
-    <value>Guiding is not active. Unable to dither</value>
+    <value>Guiding er ikke aktiv. Kan ikke utføre dither</value>
   </data>
   <data name="LblFailedCommsMGENDither" xml:space="preserve">
-    <value>Failed to communicate to MGEN during dithering</value>
+    <value>Kunne ikke kommunisere med MGEN under dither</value>
   </data>
   <data name="LblPHDError" xml:space="preserve">
-    <value>PHD Error: {0}
-CODE: {1}</value>
+    <value>PHD-feil: {0}
+KODE: {1}</value>
     <comment>Parameters: {0}=error message, {1}=error code</comment>
   </data>
   <data name="LblPHDErrorMsg" xml:space="preserve">
-    <value>PHD Error: {0}</value>
+    <value>PHD-feil: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblTWCNoAPIKey" xml:space="preserve">
-    <value>There is no TheWeatherCompany API key configured.</value>
+    <value>Ingen API-nøkkel for TheWeatherCompany er konfigurert.</value>
   </data>
   <data name="LblFileNotExist" xml:space="preserve">
-    <value>File {0} does not exist</value>
+    <value>Filen {0} finnes ikke</value>
     <comment>Parameters: {0}=file path</comment>
   </data>
   <data name="LblASTAPNoOutputFile" xml:space="preserve">
-    <value>ASTAP - Plate solve failed. No output file found.</value>
+    <value>ASTAP - Astrometrisk søk feilet. Ingen utdatafil ble funnet.</value>
   </data>
   <data name="LblASTAPSolveFailed" xml:space="preserve">
-    <value>ASTAP - Plate solve failed.
+    <value>ASTAP - Astrometrisk søk feilet.
 {0}
 {1}</value>
     <comment>Parameters: {0}=warning, {1}=error</comment>
   </data>
   <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
-    <value>Error plate solving with Astrometry.net. {0}</value>
+    <value>Feil under astrometrisk søk med Astrometry.net. {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblExposureOverMax" xml:space="preserve">
-    <value>The predicted exposure of {0}s is longer than the maximum allowed.
-Stopping sky flat acquisition.</value>
+    <value>Den beregnede eksponeringstiden på {0}s er lengre enn maksimalt tillatt.
+Stopper opptak av flatbilder av himmelen.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblExposureUnderMin" xml:space="preserve">
-    <value>The predicted exposure of {0}s is shorter than the minimum allowed.
-Stopping sky flat acquisition.</value>
+    <value>Den beregnede eksponeringstiden på {0}s er kortere enn minste tillatte tid.
+Stopper opptak av flatbilder av himmelen.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
-    <value>Skyflat correction did not work and is outside of tolerance:
-first exposure time {0:#.####}
-current exposure time {1:#.####}
-elapsed time: {2:#.##}
-mean adu: {3:#.##}.
-The sky flat exposure time will be determined again and the exposure will be repeated.</value>
+    <value>Korrigering av flatbilder av himmelen mislyktes og er utenfor toleransen:
+første eksponeringstid {0:#.####}
+gjeldende eksponeringstid {1:#.####}
+forløpt tid: {2:#.##}
+gjennomsnittlig ADU: {3:#.##}.
+Eksponeringstiden for flatbildet beregnes på nytt, og eksponeringen gjentas.</value>
     <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
   </data>
   <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
-    <value>Failed to restore previous filter position: {0}</value>
+    <value>Kunne ikke gjenopprette forrige filterposisjon: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblFailedToChangeFilter" xml:space="preserve">
-    <value>Failed to change filter: {0}</value>
+    <value>Kunne ikke bytte filter: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSetShiftRateFailed" xml:space="preserve">
-    <value>Set shift rate failed. {0}</value>
+    <value>Kunne ikke sette skiftrate. {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPrepareImageFailed" xml:space="preserve">
-    <value>Failed to prepare image for display: {0}</value>
+    <value>Kunne ikke klargjøre bildet for visning: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
-    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+    <value>Ikke spør om å lagre sekvensen når bare antall eksponeringer er endret</value>
   </data>
   <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
-    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
-You'll normally be prompted to save the sequence to save the changed exposure count.
+    <value>Hvis sekvensen ikke er redigert, men du har kjørt den, vil antall eksponeringer være endret.
+Du blir normalt bedt om å lagre sekvensen for å ta vare på det endrede antallet eksponeringer.
 
-If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+Hvis antall eksponeringer ikke er viktig for deg, kan du aktivere dette alternativet for å slippe å lagre sekvensen etter en kjøring.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
-    <value>Day Rollover Time</value>
+    <value>Tidspunkt for døgnskifte</value>
   </data>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
-    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+    <value>Siden ingen dato er knyttet til instruksjonen, skjer overgangen til en ny dag på det viste tidspunktet for døgnskifte.</value>
   </data>
   <data name="LblInitializing" xml:space="preserve">
-    <value>Initializing</value>
+    <value>Initialiserer</value>
   </data>
   <data name="LblOasisClearStallPrompt" xml:space="preserve">
-    <value>Clear stall?</value>
+    <value>Tilbakestille fastkjøringsstatus?</value>
   </data>
   <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value>Focuser stalled. You need to manually clear stall.</value>
+    <value>Fokusmotoren har kjørt seg fast. Du må tilbakestille fastkjøringsstatusen manuelt.</value>
   </data>
   <data name="LblBeepOnStartup" xml:space="preserve">
-    <value>Beep on startup</value>
+    <value>Pip ved oppstart</value>
   </data>
   <data name="LblBeepOnMove" xml:space="preserve">
-    <value>Beep on move</value>
+    <value>Pip ved bevegelse</value>
   </data>
   <data name="LblOasisHeating" xml:space="preserve">
-    <value>Heating</value>
+    <value>Oppvarming</value>
   </data>
   <data name="LblOasisHeatingTemperature" xml:space="preserve">
-    <value>Heating temperature</value>
+    <value>Oppvarmingstemperatur</value>
   </data>
   <data name="LblOasisStallDetection" xml:space="preserve">
-    <value>Stall detection</value>
+    <value>Registrering av fastkjøring</value>
   </data>
   <data name="LblOasisIsStalled" xml:space="preserve">
-    <value>Is stalled</value>
+    <value>Har kjørt seg fast</value>
   </data>
   <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value>USB capacity</value>
+    <value>USB-strømkapasitet</value>
   </data>
   <data name="LblOasisSpeed" xml:space="preserve">
-    <value>Speed</value>
+    <value>Hastighet</value>
   </data>
   <data name="LblOasisClearStall" xml:space="preserve">
-    <value>Clear stall</value>
+    <value>Tilbakestill fastkjøringsstatus</value>
   </data>
   <data name="LblOasisDcPower" xml:space="preserve">
-    <value>DC power</value>
+    <value>Likestrømsforsyning</value>
   </data>
   <data name="LblOasisBoardHeating" xml:space="preserve">
-    <value>Board heating</value>
+    <value>Oppvarming av kretskort</value>
   </data>
   <data name="LblOasisHeatingPower" xml:space="preserve">
-    <value>Heating power</value>
+    <value>Varmeeffekt</value>
   </data>
   <data name="LblOasisBoardTemperature" xml:space="preserve">
-    <value>Board temperature</value>
+    <value>Kretskorttemperatur</value>
   </data>
   <data name="LblOasisSyncPosition" xml:space="preserve">
-    <value>Sync position</value>
+    <value>Synkroniseringsposisjon</value>
   </data>
   <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
-    <value>Set current position to sync position?</value>
+    <value>Sette gjeldende posisjon til synkroniseringsposisjonen?</value>
   </data>
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+    <value>Den valgte Oasis-fokusmotoren er ikke tilgjengelig. Kontroller tilkoblingen og søk etter enheter på nytt.</value>
   </data>
   <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
+    <value>Det valgte Oasis-filterhjulet er ikke tilgjengelig. Kontroller tilkoblingen og søk etter enheter på nytt.</value>
   </data>
   <data name="LblOasisTurboMode" xml:space="preserve">
-    <value>Turbo mode</value>
+    <value>Turbomodus</value>
   </data>
   <data name="LblOasisDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Enhets-ID</value>
   </data>
   <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Enhets-ID</value>
   </data>
   <data name="LblOasisState" xml:space="preserve">
-    <value>State</value>
+    <value>Tilstand</value>
   </data>
   <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
-    <value>Sync focus offsets</value>
+    <value>Synkroniser fokusforskyvinger</value>
   </data>
   <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
-    <value>Store focus offsets</value>
+    <value>Lagre fokusforskyvinger</value>
   </data>
   <data name="LblOasisSyncFilterNames" xml:space="preserve">
-    <value>Sync filter names</value>
+    <value>Synkroniser filternavn</value>
   </data>
   <data name="LblOasisStoreFilterNames" xml:space="preserve">
-    <value>Store filter names</value>
+    <value>Lagre filternavn</value>
   </data>
   <data name="LblOasisAutorun" xml:space="preserve">
-    <value>Autorun</value>
+    <value>Automatisk kjøring</value>
   </data>
   <data name="LblOasisSpeedTooltip" xml:space="preserve">
-    <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
+    <value>Velg hastigheten 'Normal' eller 'Slow' når omgivelsestemperaturen er svært lav for å sikre at filterbytter skjer jevnt.</value>
   </data>
   <data name="LblOasisTurboModeTooltip" xml:space="preserve">
-    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port has at least 5V,1A power supply capacity.</value>
+    <value>Aktiver turbomodus for å øke motorens dreiemoment. Dette kan være nyttig når omgivelsestemperaturen er svært lav. Sørg for at USB-porten på vertsenheten kan levere minst 5V,1A.</value>
   </data>
   <data name="LblOasisAutorunTooltip" xml:space="preserve">
-    <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
+    <value>Aktiver dette alternativet hvis du vil at filtrene automatisk skal flyttes til siste posisjon når enheten slås på.</value>
   </data>
   <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
-    <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
+    <value>Leser fokusforskyvingene som er lagret på Oasis-enheten og oppdaterer fokusforskyvingene i NINA.</value>
   </data>
   <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA focus offsets to the Oasis filter wheel.</value>
+    <value>Overfører og lagrer fokusforskyvingene fra NINA på Oasis-filterhjulet.</value>
   </data>
   <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
-    <value>Reads the filter names stored on the Oasis device and updates the NINA filter labels.</value>
+    <value>Leser filternavnene som er lagret på Oasis-enheten og oppdaterer filteretikettene i NINA.</value>
   </data>
   <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA filter names to the Oasis filter wheel.</value>
+    <value>Overfører og lagrer filternavnene fra NINA på Oasis-filterhjulet.</value>
   </data>
   <data name="LblOasisCounter" xml:space="preserve">
-    <value>Counter</value>
+    <value>Teller</value>
   </data>
   <data name="LblOasisCounterTooltip" xml:space="preserve">
-    <value>Indicator that shows how many filter slots have been rotated since the filter wheel powered up.</value>
+    <value>Viser hvor mange filterplasser hjulet har rotert siden filterhjulet ble slått på.</value>
   </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
-    <value>ASCOM Alpaca IP Setup</value>
+    <value>IP-oppsett for ASCOM Alpaca</value>
   </data>
   <data name="LblAlpacaDirectServiceType" xml:space="preserve">
-    <value>Service Type</value>
+    <value>Tjenestetype</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
   <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
-    <value>IP Address</value>
+    <value>IP-adresse</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
     <value>Port</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
-    <value>Device Number</value>
+    <value>Enhetsnummer</value>
   </data>
   <data name="LblSymbols" xml:space="preserve">
-    <value>Symbols</value>
+    <value>Symboler</value>
   </data>
   <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
-    <value>No other data for {0}</value>
+    <value>Ingen andre data for {0}</value>
     <comment>{0} will be filled with the category name</comment>
   </data>
   <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
-    <value>Additional Symbols:</value>
+    <value>Flere symboler:</value>
     <comment>The prefix for additional data rows for symbol tooltips</comment>
   </data>
   <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
-    <value>Options:</value>
+    <value>Alternativer:</value>
     <comment>The prefix per symbol for additional options</comment>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
-    <value>Click any symbol to copy it to the clipboard.</value>
+    <value>Klikk på et symbol for å kopiere det til utklippstavlen.</value>
   </data>
   <data name="LblTrue" xml:space="preserve">
-    <value>True</value>
+    <value>Sann</value>
   </data>
   <data name="LblFalse" xml:space="preserve">
-    <value>False</value>
+    <value>Usann</value>
   </data>
   <data name="LblDecimal" xml:space="preserve">
-    <value>(Decimal: </value>
+    <value>(Desimal: </value>
     <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
   </data>
   <data name="LblWarnings" xml:space="preserve">
-    <value>Warning(s): {0}</value>
+    <value>Advarsler: {0}</value>
   </data>
   <data name="LblNoErrors" xml:space="preserve">
-    <value>No errors</value>
+    <value>Ingen feil</value>
   </data>
   <data name="LblErrors" xml:space="preserve">
-    <value>Error(s): {0}</value>
+    <value>Feil: {0}</value>
   </data>
   <data name="LblNotEvaluated" xml:space="preserve">
-    <value>Not Evaluated</value>
+    <value>Ikke evaluert</value>
     <comment>As in, a variable is not yet evaluated</comment>
   </data>
   <data name="LblTomorrow" xml:space="preserve">
-    <value>tomorrow</value>
+    <value>i morgen</value>
   </data>
   <data name="LblYesterday" xml:space="preserve">
-    <value>yesterday</value>
+    <value>i går</value>
   </data>
   <data name="LblUndefined" xml:space="preserve">
-    <value>Undefined</value>
+    <value>Udefinert</value>
     <comment>As in "Undefined: &lt;variable name&gt;"</comment>
   </data>
   <data name="LblSyntaxError" xml:space="preserve">
-    <value>Syntax error</value>
+    <value>Syntaksfeil</value>
     <comment>Used when an Expression can't be parsed</comment>
   </data>
   <data name="LblMustBeInteger" xml:space="preserve">
-    <value>Value must be an Integer</value>
+    <value>Verdien må være et heltall</value>
   </data>
   <data name="LblAnd" xml:space="preserve">
-    <value>and</value>
+    <value>og</value>
   </data>
   <data name="LblAlreadyDefined" xml:space="preserve">
-    <value>is already defined</value>
+    <value>er allerede definert</value>
     <comment>As in &lt;variable&gt; is already defined</comment>
   </data>
   <data name="LblConstantVariable" xml:space="preserve">
-    <value>The Constant/Variable</value>
+    <value>Konstanten/variabelen</value>
     <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
   </data>
   <data name="LblNoSymbols" xml:space="preserve">
-    <value>No defined Constant/Variable is used in this expression</value>
+    <value>Ingen definert konstant/variabel brukes i dette uttrykket</value>
   </data>
   <data name="LblNotYetDefined" xml:space="preserve">
-    <value> The Constant/Variable is not yet defined</value>
+    <value> Konstanten/variabelen er ikke definert ennå</value>
   </data>
   <data name="LblValueBetween" xml:space="preserve">
-    <value>Value must be between {0} and {1}</value>
+    <value>Verdien må være mellom {0} og {1}</value>
   </data>
   <data name="LblVariable" xml:space="preserve">
-    <value>Variable:</value>
+    <value>Variabel:</value>
   </data>
   <data name="LblInitially" xml:space="preserve">
-    <value>Initially</value>
+    <value>Opprinnelig</value>
   </data>
   <data name="LblNewValue" xml:space="preserve">
-    <value>New Value</value>
+    <value>Ny verdi</value>
   </data>
   <data name="LblIsAmbiguous" xml:space="preserve">
-    <value>is ambiguous, use one of</value>
+    <value>er tvetydig, bruk en av</value>
     <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
   </data>
   <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
-    <value>Symbols</value>
+    <value>Symboler</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Defines a global variable for expressions anywhere in this sequence. Its initial value is assigned when this instruction runs, so place it before instructions that use it. Use Set Variable to change it later.</value>
+    <value>Definerer en global variabel for uttrykk hvor som helst i denne sekvensen. Startverdien tilordnes når denne instruksjonen kjøres, så plasser den før instruksjoner som bruker variabelen. Bruk Sett variabel for å endre den senere.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
-    <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
+    <value>Definerer en variabel for uttrykk i denne instruksjonsblokken og dens underblokker. Startverdien tilordnes når denne instruksjonen kjøres. Bruk Sett variabel for å endre den senere. Den er ikke synlig i overordnede blokker eller blokker på samme nivå.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
-    <value>Define Variable</value>
+    <value>Definer variabel</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
+    <value>Definerer en global navngitt verdi for uttrykk hvor som helst i denne sekvensen. Den er tilgjengelig før sekvensen kjøres. Rediger denne instruksjonen for å endre verdien. Sett variabel kan ikke endre en konstant.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
-    <value>Define Constant</value>
+    <value>Definer konstant</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
-    <value>Set Variable</value>
+    <value>Sett variabel</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+    <value>Hvis variabelen er definert fra før, blir verdien dens satt til resultatet av uttrykket</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
-    <value>Set Variable to Date/Time</value>
+    <value>Sett variabel til dato/tid</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+    <value>Hvis variabelen er definert fra før, blir verdien dens satt til angitt dato/tid</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
-    <value>Loop While</value>
+    <value>Gjenta mens</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
-    <value>Loops while the Expression is not false</value>
+    <value>Gjentar så lenge uttrykket ikke er usant</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
-    <value>Wait Until</value>
+    <value>Vent til</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
-    <value>Waits until the Expression is true</value>
+    <value>Venter til uttrykket er sant</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
-    <value>Random double value between 0.0 and 1.0.</value>
+    <value>Tilfeldig verdi med dobbel presisjon mellom 0.0 og 1.0.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
-    <value>Current Unix timestamp in seconds.</value>
+    <value>Gjeldende Unix-tidsstempel i sekunder.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
-    <value>Hour component (0-23) of a datetime or the current time.</value>
+    <value>Timekomponenten (0-23) i en dato/tid eller gjeldende klokkeslett.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
-    <value>Minute component (0-59) of a datetime or the current time.</value>
+    <value>Minuttkomponenten (0-59) i en dato/tid eller gjeldende klokkeslett.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
-    <value>Day of the month (1-31) of a datetime or the current date.</value>
+    <value>Dag i måneden (1-31) i en dato/tid eller gjeldende dato.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1-12) of a datetime or the current date.</value>
+    <value>Måned (1-12) i en dato/tid eller gjeldende dato.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
-    <value>Year component of a datetime or the current date.</value>
+    <value>Årskomponenten i en dato/tid eller gjeldende dato.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
-    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+    <value>Ukedag som heltall (0 = søndag … 6 = lørdag).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
-    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+    <value>Dato/tid pluss angitt antall minutter (Unix-tidsstempel).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
-    <value>Datetime plus the specified hours (Unix timestamp).</value>
+    <value>Dato/tid pluss angitt antall timer (Unix-tidsstempel).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
-    <value>Seconds elapsed since the given datetime (Unix timestamp).</value>
+    <value>Antall sekunder siden angitt dato/tid (Unix-tidsstempel).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
-    <value>Datetime formatted using the specified .NET format string.</value>
+    <value>Dato/tid formatert med den angitte .NET-formatstrengen.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
-    <value>Whether the string starts with the specified prefix.</value>
+    <value>Om strengen begynner med det angitte prefikset.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
-    <value>Length of the given string, or -1 if the value is not a string.</value>
+    <value>Lengden på den angitte strengen, eller -1 hvis verdien ikke er en streng.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
-    <value>Concatenation of two strings.</value>
+    <value>Sammenkjeding av to strenger.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
-    <value>Character at the specified zero-based index, or empty if out of bounds.</value>
+    <value>Tegnet på den angitte nullbaserte indeksen, eller tomt hvis indeksen er utenfor grensene.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
-    <value>Whether the string contains the specified substring.</value>
+    <value>Om strengen inneholder den angitte delstrengen.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
-    <value>Whether the string ends with the specified suffix.</value>
+    <value>Om strengen slutter med det angitte suffikset.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
-    <value>Substring of the given string; empty if out of range.</value>
+    <value>Delstreng av den angitte strengen; tom hvis området er utenfor grensene.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
-    <value>Lower-case version of the string (invariant).</value>
+    <value>Strengen med små bokstaver (kulturuavhengig).</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
-    <value>Upper-case version of the string (invariant).</value>
+    <value>Strengen med store bokstaver (kulturuavhengig).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
-    <value>Absolute value of a number.</value>
+    <value>Absoluttverdien av et tall.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
-    <value>Angle whose cosine is the specified number.</value>
+    <value>Vinkelen som har det angitte tallet som cosinus.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
-    <value>Angle whose sine is the specified number.</value>
+    <value>Vinkelen som har det angitte tallet som sinus.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
-    <value>Angle whose tangent is the specified number.</value>
+    <value>Vinkelen som har det angitte tallet som tangens.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
-    <value>Arithmetic mean of all arguments.</value>
+    <value>Aritmetisk gjennomsnitt av alle argumentene.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
-    <value>Smallest integer greater than or equal to the number.</value>
+    <value>Det minste heltallet som er større enn eller lik tallet.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
-    <value>Cosine of the specified angle.</value>
+    <value>Cosinus til den angitte vinkelen.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
-    <value>e raised to the specified power.</value>
+    <value>e opphøyd i den angitte potensen.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
-    <value>Largest integer less than or equal to the number.</value>
+    <value>Det største heltallet som er mindre enn eller lik tallet.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
-    <value>IEEE remainder of x / y.</value>
+    <value>IEEE-rest ved x / y.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
-    <value>Natural logarithm of a number.</value>
+    <value>Den naturlige logaritmen til et tall.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
-    <value>Logarithm of a number.</value>
+    <value>Logaritmen til et tall.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
-    <value>Base-10 logarithm of a number.</value>
+    <value>Logaritmen med grunntall 10 til et tall.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
-    <value>Larger of two numbers.</value>
+    <value>Det største av to tall.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
-    <value>Smaller of two numbers.</value>
+    <value>Det minste av to tall.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
-    <value>Number raised to the specified power.</value>
+    <value>Tallet opphøyd i den angitte potensen.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
-    <value>Rounded value to the nearest integer or specified decimal places.</value>
+    <value>Verdien avrundet til nærmeste heltall eller angitt antall desimaler.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
-    <value>Sign of a number.</value>
+    <value>Fortegnet til et tall.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
-    <value>Sine of the specified angle.</value>
+    <value>Sinus til den angitte vinkelen.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
-    <value>Square root of a number.</value>
+    <value>Kvadratroten av et tall.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
-    <value>Tangent of the specified angle.</value>
+    <value>Tangens til den angitte vinkelen.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
-    <value>Integral part of a number.</value>
+    <value>Heltallsdelen av et tall.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
-    <value>Mathematical modulus (x mod y). Result is in [0, y) for positive y.</value>
+    <value>Matematisk modulo (x mod y). Resultatet er i [0, y) for positiv y.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
-    <value>Value clamped to the inclusive range [min, max].</value>
+    <value>Verdien begrenset til det inklusive intervallet [min, max].</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
-    <value>Whether x is between min and max (inclusive).</value>
+    <value>Om x er mellom min og max (inklusive).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
-    <value>Conversion from radians to degrees.</value>
+    <value>Omregning fra radianer til grader.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
-    <value>Conversion from degrees to radians.</value>
+    <value>Omregning fra grader til radianer.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
-    <value>Sum of all arguments.</value>
+    <value>Summen av alle argumentene.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
-    <value>Whether an element is in a set of values.</value>
+    <value>Om et element finnes i en mengde verdier.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
-    <value>Conditional value based on a condition.</value>
+    <value>En verdi valgt ut fra en betingelse.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
-    <value>Conditional value based on multiple conditions, with a default.</value>
+    <value>En verdi valgt ut fra flere betingelser, med en standardverdi.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
-    <value>Whether a symbol name is defined in the symbol table.</value>
+    <value>Om et symbolnavn er definert i symboltabellen.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
-    <value>Logical negation of a boolean value.</value>
+    <value>Logisk negasjon av en boolsk verdi.</value>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
-    <value>Click any function to copy it to the clipboard.</value>
+    <value>Klikk på en funksjon for å kopiere den til utklippstavlen.</value>
   </data>
   <data name="Lbl_SymbolFunctions" xml:space="preserve">
-    <value>Functions</value>
+    <value>Funksjoner</value>
   </data>
   <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
-    <value>Usage</value>
+    <value>Bruk</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
-    <value>Function '{0}' expects no arguments, but got {1}.</value>
+    <value>Funksjonen '{0}' forventer ingen argumenter, men fikk {1}.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
-    <value>Function '{0}' expects exactly one argument, but got {1}.</value>
+    <value>Funksjonen '{0}' forventer nøyaktig ett argument, men fikk {1}.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
-    <value>Function '{0}' expects exactly {1} arguments, but got {2}.</value>
+    <value>Funksjonen '{0}' forventer nøyaktig {1} argumenter, men fikk {2}.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
-    <value>Function '{0}' expects between {1} and {2} arguments, but got {3}.</value>
+    <value>Funksjonen '{0}' forventer mellom {1} og {2} argumenter, men fikk {3}.</value>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
-    <value>Value must be greater than or equal to {0}.</value>
+    <value>Verdien må være større enn eller lik {0}.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
-    <value>Value must be greater than {0}.</value>
+    <value>Verdien må være større enn {0}.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
-    <value>Value must be between {0} and {1}.</value>
+    <value>Verdien må være mellom {0} og {1} (begge inklusive).</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
-    <value>Value must be between {0} and less than {1}.</value>
+    <value>Verdien må være større enn eller lik {0} og mindre enn {1}.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and up to {1}.</value>
+    <value>Verdien må være større enn {0} og mindre enn eller lik {1}.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and less than {1}.</value>
+    <value>Verdien må være større enn {0} og mindre enn {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
-    <value>Notification work area</value>
+    <value>Arbeidsområde for varsler</value>
   </data>
   <data name="LblNotificationCorner" xml:space="preserve">
-    <value>Notification corner</value>
+    <value>Hjørne for varsler</value>
   </data>
   <data name="LblNotificationTopLeft" xml:space="preserve">
-    <value>Top left</value>
+    <value>Øverst til venstre</value>
   </data>
   <data name="LblNotificationTopRight" xml:space="preserve">
-    <value>Top right</value>
+    <value>Øverst til høyre</value>
   </data>
   <data name="LblNotificationBottomLeft" xml:space="preserve">
-    <value>Bottom left</value>
+    <value>Nederst til venstre</value>
   </data>
   <data name="LblNotificationBottomRight" xml:space="preserve">
-    <value>Bottom right</value>
+    <value>Nederst til høyre</value>
   </data>
   <data name="LblNotificationPrimaryScreen" xml:space="preserve">
-    <value>Primary screen</value>
+    <value>Hovedskjerm</value>
   </data>
   <data name="LblNotificationSameScreenAsApplication" xml:space="preserve">
-    <value>Same screen as application</value>
+    <value>Samme skjerm som programmet</value>
   </data>
   <data name="LblNotificationApplication" xml:space="preserve">
-    <value>Application</value>
+    <value>Program</value>
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
   </data>
   <data name="LblMoravianFlashVersion" xml:space="preserve">
-    <value>Flash version</value>
+    <value>Flash-versjon</value>
     <comment>Version of an internal camera component stored in flash memory.
     This is a separate version from camera firmware and driver.</comment>
   </data>
   <data name="LblDimensions" xml:space="preserve">
-    <value>Dimensions</value>
+    <value>Dimensjoner</value>
     <comment>Label for entering subframe dimensions</comment>
   </data>
   <data name="LblTop" xml:space="preserve">
-    <value>Top</value>
+    <value>Topp</value>
   </data>
   <data name="LblLeft" xml:space="preserve">
-    <value>Left</value>
+    <value>Venstre</value>
   </data>
   <data name="LblSequencerExpressionValues" xml:space="preserve">
-    <value>Sequencer expressions values</value>
+    <value>Verdier i sekvensuttrykk</value>
   </data>
   <data name="LblEccentricity" xml:space="preserve">
-    <value>Eccentricity</value>
+    <value>Eksentrisitet</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
-    <value>Custom Trigger</value>
+    <value>Egendefinert trigger</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
-    <value>Use an existing trigger as the trigger source, then choose your own instructions to run when that trigger would normally fire.
-This is useful when a built-in trigger has the timing you need, but you want custom actions.</value>
+    <value>Bruk en eksisterende trigger som utløserkilde, og velg egne instruksjoner som skal kjøres når denne triggeren normalt ville blitt utløst.
+Dette er nyttig når en innebygd trigger har tidspunktet du trenger, men du vil utføre egendefinerte handlinger.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
-    <value>Trigger Source</value>
+    <value>Utløserkilde</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
-    <value>Custom Trigger Instructions</value>
+    <value>Instruksjoner for egendefinert trigger</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
-    <value>Drop a trigger here to choose when the custom trigger runs.</value>
+    <value>Slipp en trigger her for å velge når den egendefinerte triggeren skal kjøres.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
-    <value>Drop instructions here to run when the selected trigger source fires.</value>
+    <value>Slipp instruksjoner her som skal kjøres når den valgte utløserkilden utløses.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
-    <value>ADD TRIGGER SOURCE</value>
+    <value>LEGG TIL UTLØSERKILDE</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
-    <value>ADD CUSTOM INSTRUCTIONS</value>
+    <value>LEGG TIL EGNE INSTRUKSJONER</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
-    <value>Add a trigger source.</value>
+    <value>Legg til en utløserkilde.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
-    <value>Add at least one instruction.</value>
+    <value>Legg til minst én instruksjon.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
-    <value>Trigger On Unsafe</value>
+    <value>Utløs ved utrygge forhold</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Description" xml:space="preserve">
-    <value>Runs configured instructions when the safety monitor reports unsafe conditions or disconnects after being connected, waits until conditions are safe again, then runs follow-up instructions.</value>
+    <value>Kjører de angitte instruksjonene når sikkerhetsovervåkeren rapporterer utrygge forhold eller kobles fra etter å ha vært tilkoblet, venter til forholdene er trygge igjen og kjører deretter oppfølgingsinstruksjonene.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
-    <value>Before Waiting For Safety</value>
+    <value>Før venting på trygge forhold</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description" xml:space="preserve">
-    <value>After Waiting For Safety</value>
+    <value>Etter venting på trygge forhold</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting until conditions are safe again.</value>
+    <value>Instruksjoner som kjøres før ventingen på at forholdene blir trygge igjen.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after conditions are safe again.</value>
+    <value>Instruksjoner som kjøres etter at forholdene er trygge igjen.</value>
   </data>
   <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
-    <value>Show Star Mass in Guide Graph</value>
+    <value>Vis stjernefluks i guidegrafen</value>
   </data>
   <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
-    <value>Show Star SNR in Guide Graph</value>
+    <value>Vis stjernens SNR i guidegrafen</value>
   </data>
   <data name="LblStarMass" xml:space="preserve">
-    <value>Star Mass</value>
+    <value>Stjernefluks</value>
   </data>
   <data name="LblStarSNR" xml:space="preserve">
-    <value>Star SNR</value>
+    <value>Stjernens SNR</value>
   </data>
   <data name="Lbl_SequenceHistory_Undo" xml:space="preserve">
-    <value>Undo</value>
+    <value>Angre</value>
   </data>
   <data name="Lbl_SequenceHistory_Redo" xml:space="preserve">
-    <value>Redo</value>
+    <value>Gjør om</value>
   </data>
   <data name="Lbl_SequenceHistory_Title" xml:space="preserve">
-    <value>Edit history</value>
+    <value>Redigeringshistorikk</value>
   </data>
   <data name="Lbl_SequenceHistory_Hint" xml:space="preserve">
-    <value>Select a state to undo or redo to it.</value>
+    <value>Velg en tilstand for å angre eller gjøre om til den.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Gjeldende</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
-    <value>(saved)</value>
+    <value>(lagret)</value>
   </data>
   <data name="Lbl_SequenceHistory_Initial" xml:space="preserve">
-    <value>Earlier state</value>
+    <value>Tidligere tilstand</value>
   </data>
   <data name="Lbl_SequenceHistory_UndoAction" xml:space="preserve">
-    <value>Undo {0}</value>
+    <value>Angre {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_RedoAction" xml:space="preserve">
-    <value>Redo {0}</value>
+    <value>Gjør om {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_EditAction" xml:space="preserve">
-    <value>Edit {0}: {1}</value>
+    <value>Rediger {0}: {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MoveAction" xml:space="preserve">
-    <value>Move {0}</value>
+    <value>Flytt {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_AddAction" xml:space="preserve">
-    <value>Add {0}</value>
+    <value>Legg til {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_Position" xml:space="preserve">
-    <value>Position {0}</value>
+    <value>Posisjon {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PositionChange" xml:space="preserve">
-    <value>Position {0} -&gt; {1}</value>
+    <value>Posisjon {0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_DeleteAction" xml:space="preserve">
-    <value>Delete {0}</value>
+    <value>Slett {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_DuplicateAction" xml:space="preserve">
-    <value>Duplicate {0}</value>
+    <value>Dupliser {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PlaceAction" xml:space="preserve">
-    <value>Place item in {0}</value>
+    <value>Plasser element i {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_ToggleAction" xml:space="preserve">
-    <value>Enable/disable {0}</value>
+    <value>Aktiver/deaktiver {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_ClearAction" xml:space="preserve">
-    <value>Clear sequence</value>
+    <value>Tøm sekvens</value>
   </data>
   <data name="Lbl_SequenceHistory_TargetAction" xml:space="preserve">
-    <value>Change target {0}</value>
+    <value>Endre mål {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_Conflict" xml:space="preserve">
-    <value>This edit cannot be restored because its configuration was changed outside edit history. The sequence has not been changed.</value>
+    <value>Denne redigeringen kan ikke gjenopprettes fordi konfigurasjonen ble endret utenfor redigeringshistorikken. Sekvensen er ikke endret.</value>
   </data>
   <data name="Lbl_SequenceHistory_Failed" xml:space="preserve">
-    <value>Restoring the edit failed. Edit history was cleared. Review the sequence before continuing.</value>
+    <value>Gjenoppretting av redigeringen mislyktes. Redigeringshistorikken ble tømt. Kontroller sekvensen før du fortsetter.</value>
   </data>
   <data name="Lbl_SequenceHistory_ValueChange" xml:space="preserve">
     <value>{0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_NoValue" xml:space="preserve">
-    <value>(empty)</value>
+    <value>(tom)</value>
   </data>
   <data name="Lbl_SequenceHistory_CoordinateValue" xml:space="preserve">
-    <value>RA {0}, Dec {1}, rotation {2} degrees ({3})</value>
+    <value>RA {0}, Dek {1}, rotasjon {2} grader ({3})</value>
   </data>
   <data name="Lbl_SequenceHistory_MoreChanges" xml:space="preserve">
-    <value>+ {0} more changes</value>
+    <value>+ {0} flere endringer</value>
   </data>
   <data name="Lbl_SequenceHistory_AddedDetail" xml:space="preserve">
-    <value>Added {0} to {1}</value>
+    <value>La til {0} i {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_RemovedDetail" xml:space="preserve">
-    <value>Removed {0} from {1}</value>
+    <value>Fjernet {0} fra {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MovedDetail" xml:space="preserve">
     <value>{0}: {1} -&gt; {2}</value>
   </data>
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
-    <value>The edit could not be applied. The previous state and edit history were preserved.</value>
+    <value>Redigeringen kunne ikke brukes. Forrige tilstand og redigeringshistorikk ble bevart.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
-    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+    <value>Venter på malredigering. Ulagrede endringer forkastes om {0}, og deretter kjøres den lagrede malen. Lagre eller avbryt for å fortsette nå.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
-    <value>Waiting for the template to finish saving.</value>
+    <value>Venter på at malen skal bli ferdig lagret.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
-    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
+    <value>Ulagrede endringer i den koblede malen '{0}' ble forkastet etter fem minutters inaktivitet. Fortsetter med den lagrede malen.</value>
   </data>
 </root>
