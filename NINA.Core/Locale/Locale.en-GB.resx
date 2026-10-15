@@ -1187,7 +1187,7 @@ when the lines are not aligned there is some polar alignment error</value>
     <value>Minimum dither movement</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behaviour. The value cannot exceed Dither Pixels.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dither in RA only</value>
@@ -2521,7 +2521,7 @@ Calculated HFR: {2}
     <value>Delay, in minutes, between two plate solve attempts</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>Centring failed after {0} correction attempts</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Plate solve current image</value>
@@ -2809,7 +2809,7 @@ Calculated HFR: {2}
     <value>Save native camera RAW</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options &gt; Imaging &gt; File Settings.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Save selected profile and don't ask again next time</value>
@@ -4569,9 +4569,9 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>HFR trend per filter</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-    <value>When disabled, the HFR trend is evaluated across all filters combined. 
-This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
-and a temperature sensitive optics on a quickly changing ambient temperature. 
+    <value>When disabled, the HFR trend is evaluated across all filters combined.
+This can help trigger autofocus runs earlier, particularly when imaging with frequent filter changes
+and temperature-sensitive optics while the ambient temperature changes quickly.
 Note: This mode requires that HFR differences between filters in your setup are small.</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
@@ -4596,7 +4596,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Programmable Meridian Flip</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
-    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+    <value>A meridian flip trigger with customisable actions before and after the flip.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
     <value>Before Flip Actions</value>
@@ -6721,7 +6721,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>Target Dew Heater Strength</value>
   </data>
   <data name="LblColoredContainerBorders" xml:space="preserve">
-    <value>Colored Container Borders</value>
+    <value>Coloured Container Borders</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Hardware Acceleration</value>
@@ -7461,7 +7461,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
-    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
     <value>There is no civil dawn at your location today.</value>
@@ -7492,10 +7492,10 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <comment>Parameters: {0}=Url or device etc</comment>
   </data>
   <data name="LblCameraNoSupport16bit" xml:space="preserve">
-    <value>Camera does not support 16 bit mode</value>
+    <value>Camera does not support 16-bit mode</value>
   </data>
   <data name="LblExposureInProgress" xml:space="preserve">
-    <value>Another exposure still in progress. Cancel it to start another.</value>
+    <value>Another exposure is still in progress. Cancel it to start another.</value>
   </data>
   <data name="LblFailedToConnectDevice" xml:space="preserve">
     <value>Failed to connect {0}, {1}</value>
@@ -7519,7 +7519,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Guiding is not active. Unable to dither</value>
   </data>
   <data name="LblFailedCommsMGENDither" xml:space="preserve">
-    <value>Failed to communicate to MGEN during dithering</value>
+    <value>Failed to communicate with MGEN during dithering</value>
   </data>
   <data name="LblPHDError" xml:space="preserve">
     <value>PHD Error: {0}
@@ -7561,11 +7561,11 @@ Stopping sky flat acquisition.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
-    <value>Skyflat correction did not work and is outside of tolerance:
+    <value>Sky flat correction did not work and is outside tolerance:
 first exposure time {0:#.####}
 current exposure time {1:#.####}
 elapsed time: {2:#.##}
-mean adu: {3:#.##}.
+mean ADU: {3:#.##}.
 The sky flat exposure time will be determined again and the exposure will be repeated.</value>
     <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
   </data>
@@ -7598,16 +7598,16 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Day Rollover Time</value>
   </data>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
-    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+    <value>As no date is attached to the instruction, the rollover to a new day happens at the displayed rollover time.</value>
   </data>
   <data name="LblInitializing" xml:space="preserve">
-    <value>Initializing</value>
+    <value>Initialising</value>
   </data>
   <data name="LblOasisClearStallPrompt" xml:space="preserve">
     <value>Clear stall?</value>
   </data>
   <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value>Focuser stalled. You need to manually clear stall.</value>
+    <value>Focuser stalled. You need to clear the stall manually.</value>
   </data>
   <data name="LblBeepOnStartup" xml:space="preserve">
     <value>Beep on startup</value>
@@ -7628,7 +7628,7 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Is stalled</value>
   </data>
   <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value>USB capacity</value>
+    <value>USB current capacity</value>
   </data>
   <data name="LblOasisSpeed" xml:space="preserve">
     <value>Speed</value>
@@ -7652,13 +7652,13 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Sync position</value>
   </data>
   <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
-    <value>Set current position to sync position?</value>
+    <value>Set the current focuser position to the sync position?</value>
   </data>
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+    <value>Selected Oasis focuser is not available. Please check the connection and rescan for devices.</value>
   </data>
   <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
+    <value>Selected Oasis filter wheel is not available. Please check the connection and rescan for devices.</value>
   </data>
   <data name="LblOasisTurboMode" xml:space="preserve">
     <value>Turbo mode</value>
@@ -7691,10 +7691,10 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
   </data>
   <data name="LblOasisTurboModeTooltip" xml:space="preserve">
-    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port has at least 5V,1A power supply capacity.</value>
+    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port can supply at least 5 V and 1 A.</value>
   </data>
   <data name="LblOasisAutorunTooltip" xml:space="preserve">
-    <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
+    <value>Enable this option to move the filter wheel automatically to its last position during power-up.</value>
   </data>
   <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
     <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
@@ -7868,7 +7868,7 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Waits until the Expression is true</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
-    <value>Random double value between 0.0 and 1.0.</value>
+    <value>Random double value greater than or equal to 0.0 and less than 1.0.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
     <value>Current Unix timestamp in seconds.</value>
@@ -7889,7 +7889,7 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Year component of a datetime or the current date.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
-    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+    <value>Day of the week as an integer (0 = Sunday to 6 = Saturday).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
     <value>Datetime plus the specified minutes (Unix timestamp).</value>
@@ -8059,15 +8059,15 @@ If exposure count is not important to you, enable this option to avoid having to
     <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
-    <value>Value must be between {0} and {1}.</value>
+    <value>Value must be greater than or equal to {0} and less than or equal to {1}.</value>
     <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
-    <value>Value must be between {0} and less than {1}.</value>
+    <value>Value must be greater than or equal to {0} and less than {1}.</value>
     <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and up to {1}.</value>
+    <value>Value must be greater than {0} and less than or equal to {1}.</value>
     <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
@@ -8120,7 +8120,7 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Left</value>
   </data>
   <data name="LblSequencerExpressionValues" xml:space="preserve">
-    <value>Sequencer expressions values</value>
+    <value>Sequencer expression values</value>
   </data>
   <data name="LblEccentricity" xml:space="preserve">
     <value>Eccentricity</value>
@@ -8196,7 +8196,7 @@ This is useful when a built-in trigger has the timing you need, but you want cus
     <value>Edit history</value>
   </data>
   <data name="Lbl_SequenceHistory_Hint" xml:space="preserve">
-    <value>Select a state to undo or redo to it.</value>
+    <value>Select a state to undo or redo changes to that point.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
     <value>Current</value>
