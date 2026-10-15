@@ -30,6 +30,7 @@ using System.Diagnostics;
 namespace NINA.Test.Dome {
     [TestFixture]
     [NonParallelizable]
+    [Ignore("These tests are slow. Run explicitly before merging changes to parking.")]
     public class AscomDomeTest {
         private Mock<IDomeV3> driver = null!;
         private TestDome dome = null!;
