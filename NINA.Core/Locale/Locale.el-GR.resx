@@ -1303,7 +1303,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>Ενεργοποίηση κλιμάκωσης bit</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>Αποθήκευση εικόνων 8/10/12/14 bit με κλιμάκωση στα 16 bit. Αφορά μόνο τα εγγενή προγράμματα οδήγησης Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony και ToupTek.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Ενεργοποιημένο</value>
@@ -4610,7 +4610,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Resume Tracking and Flip</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>Ηρεμία</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>Η Κάμερα δεν έχει ψύξη και δεν μπορεί να ορίσει θερμοκρασία</value>
@@ -7654,13 +7654,13 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Turbo mode</value>
   </data>
   <data name="LblOasisDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Αναγνωριστικό συσκευής</value>
   </data>
   <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Αναγνωριστικό συσκευής</value>
   </data>
   <data name="LblOasisState" xml:space="preserve">
-    <value>State</value>
+    <value>Κατάσταση</value>
   </data>
   <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
     <value>Sync focus offsets</value>
@@ -7718,7 +7718,7 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>IP Address</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
-    <value>Port</value>
+    <value>Θύρα</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
@@ -8189,7 +8189,7 @@ This is useful when a built-in trigger has the timing you need, but you want cus
     <value>Select a state to undo or redo to it.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Τρέχουσα</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
     <value>(saved)</value>
