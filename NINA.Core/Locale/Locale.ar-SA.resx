@@ -1311,7 +1311,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>تمكين تحجيم البت</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>حفظ الصور ذات عمق 8/10/12/14 بت مع توسيع نطاق قيمها إلى 16 بت. ينطبق فقط على برامج التشغيل الأصلية لكل من Altair وCanon وMoravian وNikon وOmegon وRisingCam وSVBony وToupTek.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>تمكين</value>
@@ -2012,7 +2012,7 @@ HFR المحسوب: {2}
     <value>قياس الحركة التراجعية Backlash للمُركّز</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
-    <value>متوسط</value>
+    <value>الوسيط</value>
     <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
@@ -2404,7 +2404,7 @@ HFR المحسوب: {2}
     <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>منفذ خادم PHD2</value>
+    <value>اسم مضيف خادم PHD2</value>
     <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
@@ -2458,7 +2458,7 @@ HFR المحسوب: {2}
     <value>مقياس البكسل بالثواني القوسية لكل بكسل</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
-    <value>مقياس البكسل</value>
+    <value>حجم البكسل</value>
     <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
@@ -3373,7 +3373,7 @@ HFR المحسوب: {2}
     <value>قمري</value>
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
-    <value>الملك</value>
+    <value>King</value>
     <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
@@ -3451,7 +3451,7 @@ HFR المحسوب: {2}
     <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>حاليا</value>
+    <value>التيار</value>
     <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
@@ -3705,31 +3705,31 @@ HFR المحسوب: {2}
     <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
-    <value>ازرق اخضر احمر اخضر</value>
+    <value>BGRG</value>
     <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
-    <value>اخضر ازرق اخضر احمر</value>
+    <value>GBGR</value>
     <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
-    <value>اخضر ازرق احمر اخضر</value>
+    <value>GBRG</value>
     <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
-    <value>اخضر احمر ازرق اخضر</value>
+    <value>GRBG</value>
     <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
-    <value>اخضر احمر اخضر ازرق</value>
+    <value>GRGB</value>
     <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
-    <value>احمر اخضر ازرق اخضر</value>
+    <value>RGBG</value>
     <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
-    <value>احمر اخضر اخضر ازرق</value>
+    <value>RGGB</value>
     <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
@@ -4617,7 +4617,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Resume Tracking and Flip</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>استقرار</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>Camera does not have a cooler and is unable to set a temperature</value>
@@ -7661,13 +7661,13 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>Turbo mode</value>
   </data>
   <data name="LblOasisDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>معرّف الجهاز</value>
   </data>
   <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
-    <value>Device ID</value>
+    <value>معرّف الجهاز</value>
   </data>
   <data name="LblOasisState" xml:space="preserve">
-    <value>State</value>
+    <value>الحالة</value>
   </data>
   <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
     <value>Sync focus offsets</value>
@@ -7725,7 +7725,7 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>IP Address</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
-    <value>Port</value>
+    <value>المنفذ</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
@@ -8196,7 +8196,7 @@ This is useful when a built-in trigger has the timing you need, but you want cus
     <value>Select a state to undo or redo to it.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>الحالي</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
     <value>(saved)</value>
