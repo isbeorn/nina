@@ -265,7 +265,7 @@ Soll die Anwendung versuchen, den Fehler zu beheben? (kann zu unerwartetem Verha
     <value>ASPS exe wurde nicht gefunden</value>
   </data>
   <data name="LblASTAP" xml:space="preserve">
-    <value>ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</value>
+    <value>ASTAP, das Astrometric STAcking Program, astrometrischer Solver und FITS-Betrachter</value>
   </data>
   <data name="LblASTAPDirectory" xml:space="preserve">
     <value>ASTAP Ort</value>
@@ -1184,10 +1184,10 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Anzahl Pixel zum Dithern. Dithering folgt einer Normalverteilung zentriert um das Ziel und die Pixelzahl ist die Standardabweichung. 67% der Dither-Vorgänge bleiben innerhalb dieses Abstands</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>Minimale Dither-Bewegung</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>Mindestabstand zwischen aufeinanderfolgenden Montierungs-Dither-Positionen, gemessen in Pixeln der Hauptkamera. Bei 0 bleibt das bisherige Zufallsverhalten erhalten. Der Wert darf 'Dither Pixel' nicht überschreiten.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dither ausschließlich RA</value>
@@ -1305,13 +1305,13 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Ost</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
+    <value>Die Kamera ist weder auf den manuellen Modus noch auf den Bulb-Modus eingestellt. Stellen Sie das Moduswahlrad auf Manuell oder Bulb. Falls die Kamera einen Schalter für Film-/Fotoaufnahmen hat, stellen Sie ihn auf Fotoaufnahmen.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Bitskalierung aktivieren</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>Speichert 8/10/12/14-Bit-Bilder mit Skalierung auf 16 Bit. Nur für die nativen Treiber von Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony und ToupTek relevant.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Aktiv</value>
@@ -2316,7 +2316,7 @@ Berechneter HFR: {2}
     <value>Nutze aktuelle OpenWeatherMap API für konfigurierte Koordianten. Wetterdaten werden alle 10 Minuten aktualisiert.</value>
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
-    <value>N.I.N.A. internal OpenWeatherMap API client</value>
+    <value>NINA-interner OpenWeatherMap-API-Client</value>
   </data>
   <data name="LblOpenMeteoClientDescription" xml:space="preserve">
     <value>Verwendet die Wettervorhersage-API von OpenMeteo. Wetterdaten werden alle 10 Minuten aktualisiert.</value>
@@ -2656,7 +2656,7 @@ Berechneter HFR: {2}
     <value>Raw Konvertierer</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>DSLR-RAW-Dateien werden mit LibRaw konvertiert.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Ausleserauschen in e</value>
@@ -2665,7 +2665,7 @@ Berechneter HFR: {2}
     <value>Modus</value>
   </data>
   <data name="LblReadout" xml:space="preserve">
-    <value>Readout</value>
+    <value>Auslesemodus</value>
   </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>Ein numerischer Wert, der dem Auslesemodus der Kamera entspricht</value>
@@ -2806,10 +2806,10 @@ Berechneter HFR: {2}
     <value>Diese Einstellung wird bei DSLRs ignoriert, wenn der native Treiber verwendet wird. Das RAW-Format der Kamera wird stattdessen gespeichert!</value>
   </data>
   <data name="LblSaveNativeCameraRaw" xml:space="preserve">
-    <value>Save native camera RAW</value>
+    <value>Im nativen Kamera-RAW-Format speichern</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>Wenn aktiviert, werden Bilder von Nikon- und Canon-Kameras bei Verwendung des nativen Treibers im RAW-Format der Kamera gespeichert. Wenn deaktiviert, werden die Bilder gemäß Optionen &gt; Aufnahmen &gt; Datei Einstellungen gespeichert.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Gewähltes Profil speichern und nicht nochmal fragen</value>
@@ -3090,7 +3090,7 @@ Bitte vergewissern, dass das System gut oder nahe im Fokus ist, bevor fortgefahr
     <value>Um Stellarium nutzen zu können, muss das Remote Plugin installiert und auf dem Host sowie Port aktiv sein, welcher oben spezifiziert ist</value>
   </data>
   <data name="LblStop" xml:space="preserve">
-    <value>Stop</value>
+    <value>Stopp</value>
   </data>
   <data name="LblStopAutoguider" xml:space="preserve">
     <value>Autoguider pausieren</value>
@@ -3327,7 +3327,7 @@ Das Rechteck über einen Stern mit Bahtinov Beugungsmuster bewegen. NINA versuch
     <value>Fortschritt aller Sequenzeinträge des Ziels zurücksetzen</value>
   </data>
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
+    <value>Fortschritt aller Ziele im aktuellen Zielsatz zurücksetzen</value>
   </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Startet die Sequenzen</value>
@@ -3374,7 +3374,7 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
     <value>Lunar</value>
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
-    <value>König</value>
+    <value>King</value>
     <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
@@ -3544,7 +3544,7 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
     <value>URL</value>
   </data>
   <data name="LblCopyURL" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>URL kopieren</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB-Limit</value>
@@ -4371,13 +4371,13 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
     <value>Deep-Sky-Objekt-Anweisungssatz</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
-    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+    <value>Prüft diesen Sequenzerausdruck, sobald das Anweisungsset erreicht wird. Ist der Ausdruck wahr, werden die enthaltenen Anweisungen einmal ausgeführt. Ist er falsch, werden sie übersprungen.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>Ein bedingtes Anweisungsset benötigt einen Ausdruck.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>Bedingtes Anweisungsset</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Alle Anweisungen in diesem Befehlssatz werden parallel ausgeführt. Es werden keinerlei Bedingungen oder Auslöser ausgewertet, bis alle Anweisungen komplett durchgeführt wurden.</value>
@@ -5491,7 +5491,7 @@ Andererseits hilft bei sich schnell ändernden atmosphärischen Bedingungen ein 
     <value>Die Home Position der Montierung ermitteln</value>
   </data>
   <data name="LblHome" xml:space="preserve">
-    <value>Home</value>
+    <value>Home-Position suchen</value>
   </data>
   <data name="LblTelescopeAtHomeParkedWarn" xml:space="preserve">
     <value>Teleskop is geparkt. Die Home-Position kann nicht ermittelt werden.</value>
@@ -5587,7 +5587,7 @@ Andererseits hilft bei sich schnell ändernden atmosphärischen Bedingungen ein 
     <value>Dreht den Rotator zum angegebenen Drehwinkel</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotate to mechanical angle</value>
+    <value>Zum mechanischen Winkel drehen</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridian</value>
@@ -5681,7 +5681,7 @@ Nur relevant bei Verwendung eines ASCOM-Kamera-Treibers!</value>
     <value>PHD2 - Start des Guidings ist nicht innerhalb der festgelegten Zeitspanne erfolgt. Wiederholen...</value>
   </data>
   <data name="LblFont" xml:space="preserve">
-    <value>Font</value>
+    <value>Schriftart</value>
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Primärrate</value>
@@ -5749,7 +5749,7 @@ Nur relevant bei Verwendung eines ASCOM-Kamera-Treibers!</value>
     <value>Screenshots</value>
   </data>
   <data name="LblSetup" xml:space="preserve">
-    <value>Setup</value>
+    <value>Installation</value>
     <comment>Setup as in application setup/installer</comment>
   </data>
   <data name="LblInstall" xml:space="preserve">
@@ -6168,7 +6168,7 @@ Einmal erfolgreich gelöst, wird die Drehung für das Framing gesetzt.</value>
     <value>Fehler beim Speichern des Bildes</value>
   </data>
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+    <value>Das Bild konnte nicht gespeichert werden. Möglicherweise ist am Ziel nicht genügend freier Speicherplatz vorhanden.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Ermittle Koordinaten der aktuellen Teleskopposition</value>
@@ -6325,19 +6325,19 @@ Bitte prüfen, ob ein Update verfügbar ist.</value>
     <value>Datum</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>Tag</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>Monat</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>Jahr</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
     <value>Beobachtung</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>Beobachtungsdatum und -uhrzeit auf den aktuellen Zeitpunkt zurücksetzen</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>Befehl</value>
@@ -6352,13 +6352,13 @@ Bitte prüfen, ob ein Update verfügbar ist.</value>
     <value>Befehl senden</value>
   </data>
   <data name="LblBoolean" xml:space="preserve">
-    <value>Boolean</value>
+    <value>Boolescher Wert</value>
   </data>
   <data name="LblDevice" xml:space="preserve">
     <value>Gerät</value>
   </data>
   <data name="LblString" xml:space="preserve">
-    <value>String</value>
+    <value>Zeichenkette</value>
   </data>
   <data name="LblBlind" xml:space="preserve">
     <value>Blind</value>
@@ -7037,7 +7037,7 @@ Erhöhen Sie die minimale Belichtungszeit oder warten Sie, bis es heller ist.</v
     <value>Histogramm anzeigen</value>
   </data>
   <data name="LblShowHorizon" xml:space="preserve">
-    <value>Show Local Horizon</value>
+    <value>Lokalen Horizont anzeigen</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
     <value>Sternmessungen in Bogensekunden anzeigen</value>
@@ -7116,10 +7116,10 @@ Außerdem muss auch der verwendete ASCOM-Treiber diese 32-Bit-Tiefe unterstütze
     <value>Parken des Teleskops hat nach {0} Minuten ein Timeout erreicht.</value>
   </data>
   <data name="LblDomeParkTimeout" xml:space="preserve">
-    <value>Dome park has timed out after {0} minutes.</value>
+    <value>Zeitüberschreitung beim Parken der Kuppel nach {0} Minuten.</value>
   </data>
   <data name="LblDomeParkFailed" xml:space="preserve">
-    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+    <value>Die Kuppel bewegt sich nicht mehr, aber der Treiber hat die Parkposition nicht bestätigt.</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Ausparken des Teleskops hat nach {0} Minuten ein Timeout erreicht.</value>
@@ -7264,20 +7264,20 @@ Außerdem muss auch der verwendete ASCOM-Treiber diese 32-Bit-Tiefe unterstütze
     <value>Kopiert die Farben des aktuellen Farbschemas in das anpassbare Farbschema "Benutzerdefiniert"</value>
   </data>
   <data name="LblLight" xml:space="preserve">
-    <value>Light</value>
+    <value>Licht</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
-    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+    <value>Lädt ein Layout für den Tab 'Aufnahmen' aus einer gespeicherten Dock-Konfigurationsdatei</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
-    <value>Load Imaging Layout</value>
+    <value>Aufnahmelayout laden</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
-    <value>The selected file is not a valid Imaging layout backup</value>
+    <value>Die ausgewählte Datei ist keine gültige Sicherung eines Aufnahmelayouts</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
-    <value>Select an existing Imaging layout backup file</value>
+    <value>Wählen Sie eine vorhandene Sicherungsdatei für ein Aufnahmelayout aus</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>Speichert die aktuelle Sequenz im angegebenen Dateipfad</value>
@@ -7821,16 +7821,16 @@ Wenn die Belichtungsanzahl für Sie nicht wichtig ist, aktivieren Sie diese Opti
     <value>Symbole</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Defines a global variable for expressions anywhere in this sequence. Its initial value is assigned when this instruction runs, so place it before instructions that use it. Use Set Variable to change it later.</value>
+    <value>Definiert eine globale Variable für Ausdrücke in der gesamten Sequenz. Ihr Anfangswert wird zugewiesen, wenn diese Anweisung ausgeführt wird. Platzieren Sie diese Anweisung daher vor den Anweisungen, die die Variable verwenden. Verwenden Sie 'Variable setzen', um den Wert später zu ändern.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
-    <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
+    <value>Definiert eine Variable für Ausdrücke in diesem Anweisungsset und seinen verschachtelten Anweisungssets. Ihr Anfangswert wird zugewiesen, wenn diese Anweisung ausgeführt wird. Verwenden Sie 'Variable setzen', um den Wert später zu ändern. In übergeordneten oder gleichrangigen Anweisungssets ist sie nicht sichtbar.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
     <value>Variable definieren</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
+    <value>Definiert einen globalen benannten Wert für Ausdrücke in der gesamten Sequenz. Er ist bereits vor dem Start der Sequenz verfügbar. Bearbeiten Sie diese Anweisung, um den Wert zu ändern; mit 'Variable setzen' kann eine Konstante nicht geändert werden.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
     <value>Konstante definieren</value>
@@ -8167,52 +8167,52 @@ Dies ist hilfreich, wenn ein integrierter Auslöser den benötigten Zeitpunkt ha
     <value>Anweisungen, die ausgeführt werden, nachdem die Bedingungen wieder sicher sind.</value>
   </data>
   <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
-    <value>Show Star Mass in Guide Graph</value>
+    <value>Sterngröße im Guiding-Diagramm anzeigen</value>
   </data>
   <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
-    <value>Show Star SNR in Guide Graph</value>
+    <value>Stern-SNR im Guiding-Diagramm anzeigen</value>
   </data>
   <data name="LblStarMass" xml:space="preserve">
-    <value>Star Mass</value>
+    <value>Sterngröße</value>
   </data>
   <data name="LblStarSNR" xml:space="preserve">
-    <value>Star SNR</value>
+    <value>Stern-SNR</value>
   </data>
   <data name="Lbl_SequenceHistory_Undo" xml:space="preserve">
-    <value>Undo</value>
+    <value>Rückgängig</value>
   </data>
   <data name="Lbl_SequenceHistory_Redo" xml:space="preserve">
-    <value>Redo</value>
+    <value>Wiederholen</value>
   </data>
   <data name="Lbl_SequenceHistory_Title" xml:space="preserve">
-    <value>Edit history</value>
+    <value>Bearbeitungsverlauf</value>
   </data>
   <data name="Lbl_SequenceHistory_Hint" xml:space="preserve">
-    <value>Select a state to undo or redo to it.</value>
+    <value>Wählen Sie einen Zustand aus, um Änderungen bis zu diesem Zustand rückgängig zu machen oder zu wiederholen.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Aktuell</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
-    <value>(saved)</value>
+    <value>(gespeichert)</value>
   </data>
   <data name="Lbl_SequenceHistory_Initial" xml:space="preserve">
-    <value>Earlier state</value>
+    <value>Früherer Zustand</value>
   </data>
   <data name="Lbl_SequenceHistory_UndoAction" xml:space="preserve">
-    <value>Undo {0}</value>
+    <value>Rückgängig: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_RedoAction" xml:space="preserve">
-    <value>Redo {0}</value>
+    <value>Wiederholen: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_EditAction" xml:space="preserve">
-    <value>Edit {0}: {1}</value>
+    <value>{0} bearbeiten: {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MoveAction" xml:space="preserve">
-    <value>Move {0}</value>
+    <value>{0} verschieben</value>
   </data>
   <data name="Lbl_SequenceHistory_AddAction" xml:space="preserve">
-    <value>Add {0}</value>
+    <value>{0} hinzufügen</value>
   </data>
   <data name="Lbl_SequenceHistory_Position" xml:space="preserve">
     <value>Position {0}</value>
@@ -8221,60 +8221,60 @@ Dies ist hilfreich, wenn ein integrierter Auslöser den benötigten Zeitpunkt ha
     <value>Position {0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_DeleteAction" xml:space="preserve">
-    <value>Delete {0}</value>
+    <value>{0} löschen</value>
   </data>
   <data name="Lbl_SequenceHistory_DuplicateAction" xml:space="preserve">
-    <value>Duplicate {0}</value>
+    <value>{0} duplizieren</value>
   </data>
   <data name="Lbl_SequenceHistory_PlaceAction" xml:space="preserve">
-    <value>Place item in {0}</value>
+    <value>Element in {0} platzieren</value>
   </data>
   <data name="Lbl_SequenceHistory_ToggleAction" xml:space="preserve">
-    <value>Enable/disable {0}</value>
+    <value>{0} aktivieren/deaktivieren</value>
   </data>
   <data name="Lbl_SequenceHistory_ClearAction" xml:space="preserve">
-    <value>Clear sequence</value>
+    <value>Sequenz leeren</value>
   </data>
   <data name="Lbl_SequenceHistory_TargetAction" xml:space="preserve">
-    <value>Change target {0}</value>
+    <value>Ziel {0} ändern</value>
   </data>
   <data name="Lbl_SequenceHistory_Conflict" xml:space="preserve">
-    <value>This edit cannot be restored because its configuration was changed outside edit history. The sequence has not been changed.</value>
+    <value>Diese Bearbeitung kann nicht wiederhergestellt werden, da ihre Konfiguration außerhalb des Bearbeitungsverlaufs geändert wurde. Die Sequenz wurde nicht geändert.</value>
   </data>
   <data name="Lbl_SequenceHistory_Failed" xml:space="preserve">
-    <value>Restoring the edit failed. Edit history was cleared. Review the sequence before continuing.</value>
+    <value>Die Bearbeitung konnte nicht wiederhergestellt werden. Der Bearbeitungsverlauf wurde gelöscht. Prüfen Sie die Sequenz, bevor Sie fortfahren.</value>
   </data>
   <data name="Lbl_SequenceHistory_ValueChange" xml:space="preserve">
     <value>{0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_NoValue" xml:space="preserve">
-    <value>(empty)</value>
+    <value>(leer)</value>
   </data>
   <data name="Lbl_SequenceHistory_CoordinateValue" xml:space="preserve">
-    <value>RA {0}, Dec {1}, rotation {2} degrees ({3})</value>
+    <value>RA {0}, Dec {1}, Drehung {2} Grad ({3})</value>
   </data>
   <data name="Lbl_SequenceHistory_MoreChanges" xml:space="preserve">
-    <value>+ {0} more changes</value>
+    <value>+ {0} weitere Änderungen</value>
   </data>
   <data name="Lbl_SequenceHistory_AddedDetail" xml:space="preserve">
-    <value>Added {0} to {1}</value>
+    <value>{0} zu {1} hinzugefügt</value>
   </data>
   <data name="Lbl_SequenceHistory_RemovedDetail" xml:space="preserve">
-    <value>Removed {0} from {1}</value>
+    <value>{0} aus {1} entfernt</value>
   </data>
   <data name="Lbl_SequenceHistory_MovedDetail" xml:space="preserve">
     <value>{0}: {1} -&gt; {2}</value>
   </data>
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
-    <value>The edit could not be applied. The previous state and edit history were preserved.</value>
+    <value>Die Bearbeitung konnte nicht angewendet werden. Der vorherige Zustand und der Bearbeitungsverlauf wurden beibehalten.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
-    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+    <value>Warte auf die Bearbeitung der Vorlage. Nicht gespeicherte Änderungen werden in {0} verworfen. Anschließend wird die gespeicherte Vorlage ausgeführt. Wählen Sie 'Speichern' oder 'Abbrechen', um jetzt fortzufahren.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
-    <value>Waiting for the template to finish saving.</value>
+    <value>Warte, bis die Vorlage vollständig gespeichert ist.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
-    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
+    <value>Nicht gespeicherte Änderungen an der verknüpften Vorlage '{0}' wurden nach fünf Minuten Inaktivität verworfen. Die Ausführung wird mit der gespeicherten Vorlage fortgesetzt.</value>
   </data>
 </root>
