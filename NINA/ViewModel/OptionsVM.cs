@@ -634,7 +634,16 @@ namespace NINA.ViewModel {
             new CultureInfo("ca-ES"),
             new CultureInfo("nb-NO"),
             new CultureInfo("ko-KR"),
-            new CultureInfo("hu-HU")
+            new CultureInfo("hu-HU"),
+            new CultureInfo("ro-RO"),
+            new CultureInfo("fi-FI"),
+            new CultureInfo("id-ID"),
+            new CultureInfo("vi-VN"),
+            new CultureInfo("bg-BG"),
+            new CultureInfo("sk-SK"),
+            new CultureInfo("hr-HR"),
+            new CultureInfo("hi-IN"),
+            new CultureInfo("pt-BR")
         }.OrderBy(culture => culture.DisplayName));
 
         public CultureInfo Language {
