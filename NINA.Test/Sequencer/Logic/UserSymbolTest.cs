@@ -23,6 +23,7 @@ using NINA.Sequencer.SequenceItem.Expressions;
 using NINA.Sequencer.Trigger;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -1192,7 +1193,10 @@ namespace NINA.Test.Sequencer.Logic {
 
             UserSymbol.ShowSymbols(textBox);
 
-            textBox.ToolTip.Should().Be("Value must be between 1 and 3.");
+            textBox.ToolTip.Should().Be(string.Format(
+                CultureInfo.InvariantCulture,
+                Loc.Instance["Lbl_Expressions_CheckRange_RangeInclusiveInclusive"],
+                1, 3));
         }
 
         /// <summary>

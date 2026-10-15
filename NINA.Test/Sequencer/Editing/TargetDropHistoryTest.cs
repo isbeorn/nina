@@ -43,8 +43,11 @@ namespace NINA.Test.Sequencer.Editing {
             if (historyRelease == "disabled") scope.History.IsEnabled = false;
             var removed = CreateAndRemoveTarget(scope, showView, retainCommand: false);
 
-            CollectAfterDispatcherCleanup();
-            removed.Target.IsAlive.Should().Be(historyRelease != "disabled", "only undo history should retain the removed target");
+            if (historyRelease != "disabled") {
+                CollectAfterDispatcherCleanup();
+                removed.Target.IsAlive.Should().BeTrue("undo history should retain the removed target until released");
+            }
+
             if (historyRelease == "clear") scope.History.Clear();
             else if (historyRelease == "dispose") scope.History.Dispose();
             else if (historyRelease == "evict") {
@@ -55,9 +58,9 @@ namespace NINA.Test.Sequencer.Editing {
                 }
             }
 
-            CollectAfterDispatcherCleanup();
-            removed.Target.IsAlive.Should().BeFalse();
-            removed.Child.IsAlive.Should().BeFalse();
+            SequencerLifetimeTest.AssertCollected(
+                new[] { ("removed target", removed.Target), ("removed child", removed.Child) },
+                scope.ClearServiceInvocations);
             GC.KeepAlive(scope);
         }
 
@@ -67,10 +70,9 @@ namespace NINA.Test.Sequencer.Editing {
             scope.History.IsEnabled = false;
             var removed = CreateAndRemoveTarget(scope, showView: false, retainCommand: true);
 
-            CollectAfterDispatcherCleanup();
-
-            removed.Target.IsAlive.Should().BeFalse("a retained weak command must not own the removed container");
-            removed.Child.IsAlive.Should().BeFalse();
+            SequencerLifetimeTest.AssertCollected(
+                new[] { ("removed target", removed.Target), ("removed child", removed.Child) },
+                scope.ClearServiceInvocations);
             GC.KeepAlive(removed.Command);
             GC.KeepAlive(scope);
         }
