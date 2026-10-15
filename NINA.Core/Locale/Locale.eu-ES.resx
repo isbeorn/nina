@@ -3420,7 +3420,7 @@ Arrastatu laukizuzena azpilaginatu nahi duzun markoaren zatira eta gaitu azpilag
     <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Egungoa</value>
+    <value>Korrontea</value>
     <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
