@@ -12,22 +12,24 @@
 
 #endregion "copyright"
 
-using NINA.Profile.Interfaces;
-using NINA.Astrometry;
-using System;
 using Accord.Math;
+using NINA.Astrometry;
 using NINA.Core.Enum;
-using NINA.Equipment.Interfaces;
 using NINA.Core.Locale;
+using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Interfaces;
+using NINA.Profile.Interfaces;
+using System;
 
 namespace NINA.Equipment.Equipment.MyDome {
 
     public class DomeSynchronization : IDomeSynchronization {
-        private static double TWO_PI = 2.0 * Math.PI;
-        private static double HALF_PI = Math.PI / 2.0;
+        private const double TWO_PI = 2.0 * Math.PI;
+        private const double HALF_PI = Math.PI / 2.0;
 
         private readonly IProfileService profileService;
+        private bool flippedDome = false;
 
         public DomeSynchronization(IProfileService profileService) {
             this.profileService = profileService;
@@ -42,7 +44,6 @@ namespace NINA.Equipment.Equipment.MyDome {
             PierSide sideOfPier) {
             return TargetDomeCoordinates(scopeCoordinates: scopeCoordinates, localSiderealTime: localSiderealTime, siteLatitude: siteLatitude, siteLongitude: siteLongitude, siteElevation: 0, sideOfPier: sideOfPier);
         }
-
 
         /// <summary>
         /// Gets the dome coordinates required so the scope points directly out of the shutter. This works for Alt-Az, EQ mounts, and fork mounts on a wedge
@@ -77,22 +78,29 @@ namespace NINA.Equipment.Equipment.MyDome {
             PierSide sideOfPier) {
             scopeCoordinates = scopeCoordinates.Transform(Epoch.JNOW);
             var domeSettings = profileService.ActiveProfile.DomeSettings;
+
             // To calculate the effect of rotations in the southern hemisphere we augment a few of the rotations to pretend as if it were the northern hemisphere,
             // and then add 180 degrees to the final result
-
             var origin = new Vector4(0, 0, 0, 1);
-            Matrix4x4 scopeOriginTranslation;
-            if (domeSettings.MountType == MountTypeEnum.EQUATORIAL) {
-                scopeOriginTranslation = CalculateGEM(scopeCoordinates, localSiderealTime, siteLatitude, sideOfPier);
-            } else {
-                scopeOriginTranslation = CalculateForkOnWedge(scopeCoordinates, localSiderealTime, siteLatitude);
-            }
+
+            var scopeOriginTranslation = domeSettings.MountType switch {
+                MountTypeEnum.EQUATORIAL => CalculateGEM(scopeCoordinates, localSiderealTime, siteLatitude, sideOfPier),
+                MountTypeEnum.FORK_ON_WEDGE => CalculateForkOnWedge(scopeCoordinates, localSiderealTime, siteLatitude),
+                MountTypeEnum.ALT_AZ => CalculateAltAz(scopeCoordinates, siteLatitude, siteLongitude, siteElevation),
+                _ => throw new NotSupportedException($"Unsupported mount type: {domeSettings.MountType}"),
+            };
+
+            // An alt-az mount whose OTA is offset above the altitude axis can look out of the opposite side of the dome
+            // when it points near the zenith. This only affects which way the dome is turned, so it is applied to the
+            // resulting dome azimuth rather than to the transformation above
+            var flipDomeAzimuth = domeSettings.MountType == MountTypeEnum.ALT_AZ
+                && ShouldFlipAltAzDome(scopeCoordinates, siteLatitude, siteLongitude, siteElevation);
 
             var scopeApertureOrigin = scopeOriginTranslation * origin;
 
             // The OTA points along the positive X-axis before any transformations take place. Transforming the point (1, 0, 0) provides a unit
             // direction vector from (0, 0, 0) which is the scope aperture origin
-            var scopeDirection = scopeOriginTranslation * Matrix4x4.CreateTranslation(new Vector3(1.0f, 0.0f, 0.0f)) * origin - scopeApertureOrigin;
+            var scopeDirection = (scopeOriginTranslation * Matrix4x4.CreateTranslation(new Vector3(1.0f, 0.0f, 0.0f)) * origin) - scopeApertureOrigin;
 
             // Calculate the distance along the unit vector, originating from the scope aperture origin, to where the line
             // intersects the sphere
@@ -107,7 +115,7 @@ namespace NINA.Equipment.Equipment.MyDome {
             var distance = -dotProduct + Math.Sqrt(underRoot);
 
             // Calculate the intersection point with the sphere
-            var intersection = scopeApertureOrigin + scopeDirection * (float)distance;
+            var intersection = scopeApertureOrigin + (scopeDirection * (float)distance);
 
             // Finally, calculate the azimuth of that intersection point, and ensure it is within [0, 2PI)
             var domeAzimuthRadians = (-Math.Atan2(intersection.Y, intersection.X) + TWO_PI) % TWO_PI;
@@ -193,7 +201,7 @@ namespace NINA.Equipment.Equipment.MyDome {
             var localHour = Angle.ByHours(localSiderealTime - scopeCoordinates.RA);
             var pierFactor = ((sideOfPier == PierSide.pierEast) ? 1.0 : -1.0) * latitudeFactor;
             // In the southern hemisphere, RA goes the opposite direction it does in the north
-            var raRotationRadians = pierFactor * HALF_PI - (localHour.Radians * latitudeFactor);
+            var raRotationRadians = (pierFactor * HALF_PI) - (localHour.Radians * latitudeFactor);
             var raRotationAdjustment = Matrix4x4.CreateRotationX((float)raRotationRadians);
             // Rotation around Dec is along the Z axis
             // The north celestial pole is at +90 DEC, and the south pole is at -90 DEC
@@ -207,6 +215,95 @@ namespace NINA.Equipment.Equipment.MyDome {
                     (float)domeSettings.GemAxis_mm));
 
             return mountOffset * latitudeAdjustment * raRotationAdjustment * decRotationAdjustment * gemAdjustment;
+        }
+
+        private Matrix4x4 CalculateAltAz(
+            Coordinates scopeCoordinates,
+            Angle siteLatitude,
+            Angle siteLongitude,
+            double siteElevation) {
+            var domeSettings = profileService.ActiveProfile.DomeSettings;
+
+            // Convert scope RA/Dec to horizontal coordinates (Alt/Az)
+            var topocentric = scopeCoordinates.Transform(siteLatitude, siteLongitude, siteElevation);
+
+            // Altitude rotation: scope tilts up from horizontal
+            var altitudeRotation = Matrix4x4.CreateRotationY((float)topocentric.Altitude.Radians);
+            var azimuth = topocentric.Azimuth;
+
+            // Determine hemisphere direction
+            var latitudeFactor = siteLatitude.Radians >= 0 ? 1.0 : -1.0;
+
+            // In the southern hemisphere, the azimuth math is done as if the site were in the northern hemisphere, and
+            // TargetDomeCoordinates flips the answer by adding 180 degrees at the end. An azimuth is already a
+            // real-world compass bearing, so it must first be turned 180 degrees. Otherwise that final flip
+            // would send the dome in the wrong direction.
+            var mirroredAzimuthRadians = latitudeFactor >= 0 ? azimuth.Radians : azimuth.Radians + Math.PI;
+
+            // Azimuth rotation: scope rotates around the dome's vertical axis (z-axis)
+            var azimuthRotation = Matrix4x4.CreateRotationZ((float)-mirroredAzimuthRadians);
+
+            // Mount offset from dome center
+            var mountOffset = Matrix4x4.CreateTranslation(new Vector3(
+                (float)(domeSettings.ScopePositionNorthSouth_mm * latitudeFactor),   // X: North-South
+                (float)(-domeSettings.ScopePositionEastWest_mm * latitudeFactor),    // Y: East-West
+                (float)domeSettings.ScopePositionUpDown_mm                           // Z: Up-Down
+            ));
+
+            // Account for any lateral axis and vertical axis offsets to accomodate side-by-side or piggyback telescopes
+            // The lateral axis is negated because the final azimuth is derived from -atan2(y, x), so a positive
+            // offset along the y-axis has to point to the right of the OTA axis.
+            var offsets = Matrix4x4.CreateTranslation(new Vector3(
+                0.0f,
+                -(float)domeSettings.LateralAxis_mm,
+                (float)domeSettings.GemAxis_mm
+            ));
+
+            return mountOffset * (azimuthRotation * altitudeRotation * offsets);
+        }
+
+        /// <summary>
+        /// Determines whether the dome has to be driven to the opposing azimuth for an alt-az mount.
+        /// <para>
+        /// When the OTA sits above the altitude axis, its line of sight crosses over the zenith and exits the dome on
+        /// the far side once the mount points high enough. In that case only the dome has to be turned around, so this
+        /// decision is deliberately kept out of the transformation matrix. Rotating the mount model itself would move
+        /// the aperture origin and the line of sight along with it and produce a different answer.
+        /// </para>
+        /// </summary>
+        private bool ShouldFlipAltAzDome(
+            Coordinates scopeCoordinates,
+            Angle siteLatitude,
+            Angle siteLongitude,
+            double siteElevation) {
+            var domeSettings = profileService.ActiveProfile.DomeSettings;
+
+            if (domeSettings.GemAxis_mm == 0d) {
+                flippedDome = false;
+                return false;
+            }
+
+            var topocentric = scopeCoordinates.Transform(siteLatitude, siteLongitude, siteElevation);
+
+            // Adaptive threshold: telescope is considered to be beyond the top edge of the shutter if this altitude is exceeded
+            var verticalClearanceAngleDeg = Math.Atan2(Math.Abs(domeSettings.GemAxis_mm), domeSettings.DomeRadius_mm) * (180.0 / Math.PI);
+            var zenithThresholdDeg = 90.0 - verticalClearanceAngleDeg;
+            var zOffsetAngle = topocentric.Altitude.Degree + verticalClearanceAngleDeg;
+
+            // Check if telescope is near zenith and whether it is beyond the zenith threshold
+            var flip = topocentric.Altitude.Degree >= zenithThresholdDeg && zOffsetAngle > domeSettings.SlitMaximumAltitude_degrees;
+
+            if (flip != flippedDome) {
+                var reason = flip
+                    ? "Dome azimuth flipped due to pointing inside zenith threshold. "
+                    : "Dome azimuth unflipped after telescope moved away from zenith threshold. ";
+
+                Logger.Info(reason +
+                    $"Mount Alt: {topocentric.Altitude.Degree:F2}°, Mount Az: {topocentric.Azimuth.Degree:F2}°, z-Offset Alt: {zOffsetAngle:F2}°");
+            }
+
+            flippedDome = flip;
+            return flip;
         }
     }
 }

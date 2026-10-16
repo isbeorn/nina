@@ -40,5 +40,6 @@ namespace NINA.Profile.Interfaces {
         MountTypeEnum MountType { get; set; }
         double DecOffsetHorizontal_mm { get; set; }
         int SettleTimeSeconds { get; set; }
+        double SlitMaximumAltitude_degrees { get; set; }
     }
 }
