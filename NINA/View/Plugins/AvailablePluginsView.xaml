@@ -244,8 +244,25 @@
                             CancelCommand="{Binding CancelInstallPluginCommand}"
                             CancelToolTip="{ns:Loc LblPluginUpdateAllCancel}"
                             Command="{Binding UpdateAllPluginsCommand}"
-                            ToolTip="{ns:Loc LblPluginUpdateAllTooltip}"
-                            Visibility="{Binding AvailablePluginUpdateCount, Converter={StaticResource ZeroToVisibilityConverter}}" />
+                            ToolTip="{ns:Loc LblPluginUpdateAllTooltip}">
+                            <ninactrl:AsyncProcessButton.Style>
+                                <Style TargetType="ninactrl:AsyncProcessButton">
+                                    <Setter Property="Visibility" Value="{Binding AvailablePluginUpdateCount, Converter={StaticResource ZeroToVisibilityConverter}}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding UpdateAllPluginsRequiresRestart}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ninactrl:AsyncProcessButton.Style>
+                        </ninactrl:AsyncProcessButton>
+                        <Button
+                            Height="25"
+                            Margin="5,0,5,5"
+                            Command="{Binding RestartCommand}"
+                            Visibility="{Binding UpdateAllPluginsRequiresRestart, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            <TextBlock Text="{ns:Loc LblRequiresRestart}" />
+                        </Button>
                     </StackPanel>
                 </Grid>
             </Border>
