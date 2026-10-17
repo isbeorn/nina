@@ -8277,4 +8277,235 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Actualitza</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Torna-ho a provar</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Presentació</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Versions</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>No hi ha captures de pantalla disponibles per a aquest complement.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>S'està carregant l'historial de versions...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>No s'ha pogut carregar una part de l'historial de versions. Es continuen mostrant les versions disponibles.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Un dipòsit no proporciona l'historial de versions. Es continuen mostrant les versions del seu catàleg.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>No hi ha versions compatibles disponibles als dipòsits configurats.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>La versió instal·lada es mostra al costat de les versions compatibles que proporcionen els dipòsits configurats. És possible que les versions anteriors no estiguin disponibles. Els canvis de versió s'apliquen després de reiniciar NINA.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Instal·la la versió</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Instal·lada actualment</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Es pot tornar a una versió anterior</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Es pot actualitzar a una versió més recent</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Versió anterior</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Versió més recent</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Torna a la versió {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Actualitza a la versió {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Instal·la {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Utilitza l'acció de Versions per instal·lar o canviar una versió i després reinicia NINA. Consulta la pàgina principal del complement per veure les instruccions de configuració específiques del distribuïdor.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Cerca complements</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Totes les etiquetes</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Esborra els filtres</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Explora els complements disponibles</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>S'estan carregant els complements disponibles...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>No s'han pogut carregar els complements disponibles. Es continuen mostrant els resultats anteriors. Torna-ho a provar per comprovar-ho de nou.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>No s'ha pogut accedir a alguns dipòsits de complements. Es continuen mostrant els resultats anteriors d'aquests dipòsits.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Cap complement coincideix amb aquests filtres. Esborra els filtres per veure tots els complements.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>No hi ha cap complement instal·lat. Explora els complements disponibles per instal·lar-ne un.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Error de càrrega</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Desinstal·lació pendent de reinici</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Cal reiniciar</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>S'està instal·lant el complement...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>S'està actualitzant el complement...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>S'està desinstal·lant el complement...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>S'ha sol·licitat la cancel·lació...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Actualitza'ls tots ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>La configuració estarà disponible després de reiniciar NINA.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Versió mínima de NINA:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Codi font</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Reinicia NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Cal reiniciar per aplicar els canvis als complements.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Actualització disponible</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>No hi ha complements compatibles disponibles als dipòsits configurats.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Aquest complement no ofereix cap configuració.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Obre el registre de canvis al navegador</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>S'està carregant el registre de canvis...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Aquest registre de canvis no es pot mostrar aquí. Obre'l al navegador per llegir-lo.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>No s'ha pogut actualitzar el registre de canvis. Es mostren les notes desades anteriorment. Torna-ho a provar per comprovar-ho de nou o obre'l al navegador.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>No s'ha pogut carregar el registre de canvis. Torna-ho a provar o obre'l al navegador.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Imatge anterior</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Imatge següent</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Imatge</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>S'estan carregant les captures de pantalla...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Informació addicional</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>Concentrador de seguretat de NINA</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>Concentrador de commutadors de NINA</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>Concentrador meteorològic de NINA</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Afegeix un dispositiu</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Elimina el dispositiu</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Període de càlcul de la mitjana</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Obre la configuració del concentrador amb la icona de l'engranatge. Selecciona almenys un dispositiu sense duplicats ni concentradors de NINA imbricats.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>No hi ha cap dispositiu configurat per a aquest concentrador. Obre la configuració amb la icona de l'engranatge i afegeix un dispositiu.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Cap camp de dades meteorològiques té un dispositiu d'origen. Obre la configuració del concentrador amb la icona de l'engranatge i assigna un dispositiu a almenys un camp.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>No s'ha pogut connectar el dispositiu.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Un dispositiu del concentrador no està disponible. Torna a connectar el concentrador per continuar.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>El controlador de commutadors no admet la selecció persistent de canals del concentrador.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>El canal seleccionat del concentrador no es troba, és ambigu o no permet modificar-ne el valor.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>No s'ha pogut llegir el valor del commutador després d'establir-lo.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Afegeix els dispositius que formaran part d'aquest concentrador.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>El dispositiu està desconnectat.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>No utilitzat</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Desconnectat</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Segur</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Insegur</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Commutador {0} - {1}</value>
+  </data>
 </root>
