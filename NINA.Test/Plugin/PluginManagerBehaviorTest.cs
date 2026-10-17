@@ -33,9 +33,21 @@ namespace NINA.Test.Plugin {
     [Apartment(ApartmentState.STA)]
     [NonParallelizable]
     public class PluginManagerBehaviorTest {
+        private Application? originalApplication;
+
+        [SetUp]
+        public void PreserveApplication() {
+            originalApplication = Application.Current;
+        }
+
+        [TearDown]
+        public void VerifyApplicationIsUnchanged() {
+            Application.Current.Should().BeSameAs(originalApplication,
+                "plugin manager behavior tests must not create process-wide WPF application state");
+        }
+
         [Test]
         public void UpdateAll_CancelAfterOneSuccess_KeepsRestartRequiredWithRemainingUpdates() {
-            EnsureApplication();
             var sut = CreateManager();
             var payload = Encoding.UTF8.GetBytes("plugin payload");
             using var firstServer = new LoopbackHttpServer(payload, fileName: "First.dll");
@@ -77,7 +89,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Filters_UseVisibleManifestMetadataAndKeepInstalledIdentityAndDiagnostics() {
-            EnsureApplication();
             var sut = CreateManager();
             var catalog = Manifest("Focus Catalog", tags: ["Focus", "Automation"]);
             var support = Manifest("Support", tags: ["Focus"]);
@@ -126,7 +137,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Tags_OnlyOfferTagsSharedByDistinctCompatibleCatalogPlugins() {
-            EnsureApplication();
             var sut = CreateManager();
             var first = Manifest("Alpha", tags: ["Imaging", " Focus ", "focus", "Rare"]);
             var second = Manifest("Beta", tags: ["FOCUS"]);
@@ -157,7 +167,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Tags_CountTheUnfilteredActiveSectionAndRetainSelectionAcrossCountChanges() {
-            EnsureApplication();
             var sut = CreateManager();
             var first = Manifest("First", tags: [" Web ", "web", "Rare"]);
             var second = Manifest("Second", tags: ["web"]);
@@ -197,7 +206,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Tags_UseAnOrFilterIntersectSearchAndPruneWithdrawnChoicesOnRefresh() {
-            EnsureApplication();
             var sut = CreateManager();
             var first = Manifest("Alpha", tags: ["Focus", "focus"]);
             var second = Manifest("Beta", tags: ["Tools"]);
@@ -246,7 +254,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Install_CapturesSelectionAndPreservesPendingInstallAcrossCatalogRefresh() {
-            EnsureApplication();
             var sut = CreateManager();
             var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             var payload = Encoding.UTF8.GetBytes("captured plugin payload");
@@ -288,7 +295,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Uninstall_KeepsLoadedManifestAndMarksRemovalUntilRestart() {
-            EnsureApplication();
             var sut = CreateManager();
             var installed = Manifest("Remove");
             string folder = Path.Combine(Constants.UserExtensionsFolder, installed.Name);
@@ -319,7 +325,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void UpdateAll_IgnoresFiltersAndRetainsSuccessfulPendingStateWhenAnotherDownloadFails() {
-            EnsureApplication();
             var sut = CreateManager();
             var payload = Encoding.UTF8.GetBytes("updated payload");
             using var goodServer = new LoopbackHttpServer(payload, fileName: "Updated.dll");
@@ -367,7 +372,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Install_CancelDownload_ReleasesMutationAndLeavesPluginEligible() {
-            EnsureApplication();
             var sut = CreateManager();
             var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             var payload = Encoding.UTF8.GetBytes("cancelled payload");
@@ -393,8 +397,7 @@ namespace NINA.Test.Plugin {
         }
 
         [Test]
-        public void Refresh_PartialFailureMergesCatalogAndTotalFailureKeepsUsableResultsOnUIThread() {
-            EnsureApplication();
+        public void Refresh_PartialFailureMergesCatalogAndTotalFailureKeepsUsableResults() {
             var sut = CreateManager();
             var original = Manifest("Original");
             sut.AvailablePlugins = [new(original)];
@@ -402,20 +405,12 @@ namespace NINA.Test.Plugin {
             var offered = Manifest("New Offered");
             using var success = Catalog(offered);
             using var failure = new LoopbackHttpServer([], statusCode: 503);
-            int ownerThread = Environment.CurrentManagedThreadId;
-            var changedThreads = new List<int>();
-            sut.PropertyChanged += (_, args) => {
-                if (args.PropertyName == nameof(PluginsVM.AvailablePlugins)) {
-                    changedThreads.Add(Environment.CurrentManagedThreadId);
-                }
-            };
 
             Complete(Refresh(sut, success.Url, failure.Url));
 
             sut.AvailablePlugins.Should().HaveCount(2);
             sut.SelectedPlugin.Should().BeSameAs(selected);
             sut.HasCatalogError.Should().BeTrue();
-            changedThreads.Should().OnlyContain(thread => thread == ownerThread);
             using var totalFailure = new LoopbackHttpServer([], statusCode: 503);
             Complete(Refresh(sut, totalFailure.Url));
             sut.AvailablePlugins.Should().HaveCount(2);
@@ -426,7 +421,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Refresh_CancelAfterOneRepositorySuccess_DiscardsIncompleteRefresh() {
-            EnsureApplication();
             var sut = CreateManager();
             var original = Manifest("Original");
             sut.AvailablePlugins = [new(original)];
@@ -450,7 +444,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Initialization_WithInstalledPlugins_StartsCatalogFetchWithoutConstructingView() {
-            EnsureApplication();
             var installed = Manifest("Startup Update Check");
             int fetches = 0;
 
@@ -467,7 +460,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Initialization_SelectsInstalledOnceWhenLocalPluginsExist() {
-            EnsureApplication();
             var installed = Manifest("Startup");
             var sut = CreateManager(new Dictionary<IPluginManifest, bool> { [installed] = true }, openAvailable: false);
 
@@ -483,7 +475,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Initialization_PreservesASectionChosenBeforeTheLoaderCompletes() {
-            EnsureApplication();
             var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             var loader = new Mock<IPluginLoader>();
             loader.SetupGet(value => value.Plugins).Returns(new Dictionary<IPluginManifest, bool> { [Manifest("Delayed startup")] = true });
@@ -507,7 +498,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Installed_OrdersUpdatesFirstAndDistinguishesEmptyCatalogFromFilteredResults() {
-            EnsureApplication();
             var sut = CreateManager();
             sut.EmptyMessage.Should().Be(NINA.Core.Locale.Loc.Instance["LblPluginManagerNoAvailable"]);
             var current = Manifest("A Current");
@@ -526,7 +516,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void ClearingAvailableSelection_ClearsSharedSelectionAndDisablesActions() {
-            EnsureApplication();
             var sut = CreateManager();
             sut.AvailablePlugins = [new(Manifest("Available Selection"))];
             NINA.Interfaces.IPluginsVM legacy = sut;
@@ -542,7 +531,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void ClearingInstalledSelection_ClearsSharedSelectionAndDisablesActions() {
-            EnsureApplication();
             var manifest = Manifest("Installed Selection");
             var sut = CreateManager(new Dictionary<IPluginManifest, bool> { [Installed(manifest)] = true });
             sut.AvailablePlugins = [new(manifest)];
@@ -560,7 +548,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void RepublishingInstalledDictionary_ReconcilesSameInstanceAdditionsAndRemovals() {
-            EnsureApplication();
             var sut = CreateManager();
             NINA.Interfaces.IPluginsVM legacy = sut;
             var installed = legacy.InstalledPlugins;
@@ -590,7 +577,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void RepublishingAvailableList_ReconcilesSameInstanceAdditionsAndRemovals() {
-            EnsureApplication();
             var sut = CreateManager();
             NINA.Interfaces.IPluginsVM legacy = sut;
             var available = legacy.AvailablePlugins;
@@ -619,7 +605,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void LegacySelectionSetters_NotifyWhenRepublishingAlreadyClearedValues() {
-            EnsureApplication();
             var sut = CreateManager();
             NINA.Interfaces.IPluginsVM legacy = sut;
             var notifications = new List<string?>();
@@ -641,7 +626,6 @@ namespace NINA.Test.Plugin {
         }
         [Test]
         public void Sections_RetainIndependentSearchTagsAndSelection() {
-            EnsureApplication();
             var sut = CreateManager();
             var first = Manifest("Catalog Alpha", tags: ["Focus", "Imaging"]);
             var second = Manifest("Catalog Beta", tags: ["Focus", "Imaging"]);
@@ -680,7 +664,6 @@ namespace NINA.Test.Plugin {
         [TestCase(false)]
         [TestCase(true)]
         public void History_LoadsCompatibleReleasesWhenTheCatalogHasNoCompatibleLatestRelease(bool catalogFails) {
-            EnsureApplication();
             var installed = Manifest("Installed history");
             var sut = CreateManager();
             sut.InstalledPlugins = new Dictionary<IPluginManifest, bool> { [installed] = true };
@@ -716,7 +699,6 @@ namespace NINA.Test.Plugin {
         [TestCase("invalid")]
         [TestCase("")]
         public void History_LoadsLazilyCachesByPluginAndRetainsReleasesAcrossRefreshFailureAndRetry(string failedResponse) {
-            EnsureApplication();
             var sut = CreateManager();
             var latest = Manifest("Lazy history");
             latest.Version = new PluginVersion("3.0.0.0");
@@ -760,7 +742,6 @@ namespace NINA.Test.Plugin {
         [TestCase(404)]
         [TestCase(405)]
         public void History_UnsupportedRouteUsesEveryCatalogReleaseAndRefreshesTheFallback(int statusCode) {
-            EnsureApplication();
             var sut = CreateManager();
             var latest = Manifest("Fallback");
             latest.Version = new PluginVersion("3.0.0.0");
@@ -819,7 +800,6 @@ namespace NINA.Test.Plugin {
         [TestCase(405)]
         [TestCase(500)]
         public void History_PartialRepositoryFailureKeepsSuccessfulHistoryAndCatalogReleases(int statusCode) {
-            EnsureApplication();
             var sut = CreateManager();
             var latest = Manifest("Partial history");
             var previous = Manifest("Previous");
@@ -847,7 +827,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void History_CancelsObsoleteSelectionAndDoesNotPublishItsRowsOrErrorsToAnotherPlugin() {
-            EnsureApplication();
             var sut = CreateManager();
             var first = Manifest("First history");
             var second = Manifest("Second history");
@@ -880,7 +859,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void History_EmptyCatalogStillChecksHistoryAndAnEmptyHistoryKeepsOnlyTheInstalledMarker() {
-            EnsureApplication();
             var sut = CreateManager();
             var latest = Manifest("Removed");
             var older = Manifest("Retired release");
@@ -910,7 +888,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void History_RefreshCancelsAnOlderResponseBeforeReloadingTheSelectedPlugin() {
-            EnsureApplication();
             var sut = CreateManager();
             var latest = Manifest("Refreshed history");
             var stale = Manifest("Obsolete response");
@@ -944,7 +921,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Versions_RetainUniqueReleasesAndSelectionAcrossRefreshAndFailure() {
-            EnsureApplication();
             var sut = CreateManager();
             var latest = Manifest("Version history");
             latest.Version = new PluginVersion("3.0.0.0");
@@ -981,7 +957,6 @@ namespace NINA.Test.Plugin {
         [TestCase("1.0.0.0")]
         [TestCase("3.0.0.0")]
         public void VersionChange_CapturesUpgradeOrRollbackAndKeepsLoadedSettingsUntilRestart(string targetVersion) {
-            EnsureApplication();
             var sut = CreateManager();
             var payload = Encoding.UTF8.GetBytes("selected release " + targetVersion);
             var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -1043,7 +1018,6 @@ namespace NINA.Test.Plugin {
 
         [Test]
         public void Versions_KeepTheInstalledMarkerWithoutACatalogAndClearItAfterRemovalFromTheLoader() {
-            EnsureApplication();
             var sut = CreateManager();
             var installed = Manifest("Local release");
             sut.InstalledPlugins = new Dictionary<IPluginManifest, bool> { [installed] = true };
@@ -1141,11 +1115,6 @@ namespace NINA.Test.Plugin {
                 Tags = manifest.Tags,
                 Descriptions = manifest.Descriptions
             };
-        }
-
-        private static void EnsureApplication() {
-            Application application = Application.Current ?? new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-            application.Dispatcher.CheckAccess().Should().BeTrue();
         }
 
         private static void PumpUntil(Func<bool> complete) {

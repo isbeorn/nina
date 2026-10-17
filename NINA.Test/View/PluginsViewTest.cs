@@ -1179,6 +1179,51 @@ namespace NINA.Test.View {
             manager.SelectedPlugin.Identifier.Should().Be(switchToInstalled ? rememberedLocal.Identifier : rememberedRemote.Identifier);
         }
 
+        [Test]
+        public void CatalogRefresh_PublishesResultsToTheBoundListOnTheUiThread() {
+            EnsureApplicationResources();
+            var manager = CreateManager();
+            var view = new PluginsView { DataContext = manager };
+            Layout(view);
+            var manifest = new PluginManifest {
+                Identifier = Guid.NewGuid().ToString(), Name = "Offered plugin", Author = "Test Observatory",
+                Version = new PluginVersion("1.0.0.0"), MinimumApplicationVersion = new PluginVersion(CoreUtil.Version),
+                Repository = "https://example.invalid", License = "MPL-2.0", LicenseURL = "https://example.invalid/license",
+                Descriptions = new PluginDescription { ShortDescription = "Catalog refresh fixture" },
+                Installer = new PluginInstallerDetails {
+                    URL = "https://example.invalid/plugin.dll", Checksum = new string('0', 64),
+                    ChecksumType = InstallerChecksum.SHA256, Type = InstallerType.DLL
+                }
+            };
+            byte[] json = Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new[] { manifest },
+                new Newtonsoft.Json.JsonSerializerSettings {
+                    NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+                    Converters = { new Newtonsoft.Json.Converters.StringEnumConverter() }
+                }));
+            using var success = new LoopbackHttpServer(json, "application/json");
+            using var failure = new LoopbackHttpServer([], statusCode: 503);
+
+            int ownerThread = Environment.CurrentManagedThreadId;
+            var changedThreads = new List<int>();
+            manager.PropertyChanged += (_, args) => {
+                if (args.PropertyName == nameof(PluginsVM.AvailablePlugins)) {
+                    changedThreads.Add(Environment.CurrentManagedThreadId);
+                }
+            };
+
+            var fetch = typeof(PluginsVM).GetMethod("FetchRepositories", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+            var refresh = (Task)fetch.Invoke(manager, [new[] { success.Url, failure.Url }])!;
+            PumpUntil(() => refresh.IsCompleted);
+            refresh.GetAwaiter().GetResult();
+            Layout(view);
+
+            changedThreads.Should().NotBeEmpty().And.OnlyContain(thread => thread == ownerThread);
+            var list = (ListBox)view.FindName("PluginList");
+            list.Items.Cast<PluginEntryVM>().Should().ContainSingle().Which.Identifier.Should().Be(manifest.Identifier);
+            manager.HasCatalogError.Should().BeTrue();
+        }
+
         [TestCase("complete", false)]
         [TestCase("cancel", false)]
         [TestCase("failure", false)]
