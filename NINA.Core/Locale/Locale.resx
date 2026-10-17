@@ -8285,4 +8285,52 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="LblPluginManagerRetry" xml:space="preserve"><value>Retry</value></data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve"><value>Showcase</value></data>
+  <data name="LblPluginManagerVersions" xml:space="preserve"><value>Versions</value></data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve"><value>No screenshots are available for this plugin.</value></data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve"><value>Loading version history...</value></data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve"><value>Some version history could not be loaded. Available releases are still shown.</value></data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve"><value>A repository does not provide version history. Releases from its catalog are still shown.</value></data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve"><value>No compatible releases are available from the configured repositories.</value></data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve"><value>The installed version is shown alongside compatible releases supplied by the configured repositories. Earlier releases may be unavailable. Version changes take effect after restarting NINA.</value></data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve"><value>Install version</value></data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve"><value>Currently installed</value></data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve"><value>Rollback available</value></data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve"><value>Upgrade available</value></data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve"><value>Older version</value></data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve"><value>Newer version</value></data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve"><value>Roll back to {0}</value></data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve"><value>Upgrade to {0}</value></data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve"><value>Install {0}</value></data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve"><value>Use the action in Versions to install or change a release, then restart NINA. See the plugin homepage for any publisher-specific setup instructions.</value></data>
+  <data name="LblPluginManagerSearch" xml:space="preserve"><value>Search plugins</value></data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve"><value>All tags</value></data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve"><value>{0} ({1})</value></data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve"><value>Clear filters</value></data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve"><value>Browse available plugins</value></data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve"><value>Loading available plugins...</value></data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve"><value>Could not load available plugins. Previous results are still shown. Retry to check again.</value></data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve"><value>Some plugin repositories could not be reached. Previous results from those repositories are still shown.</value></data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve"><value>No plugins match these filters. Clear the filters to see all plugins.</value></data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve"><value>No plugins are installed. Browse available plugins to install one.</value></data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve"><value>Failed to load</value></data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve"><value>Removal pending restart</value></data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve"><value>Restart required</value></data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve"><value>Installing plugin...</value></data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve"><value>Updating plugin...</value></data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve"><value>Removing plugin...</value></data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve"><value>Cancellation requested...</value></data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve"><value>Update all ({0})</value></data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve"><value>Settings will be available after restarting NINA.</value></data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve"><value>Minimum NINA version:</value></data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve"><value>Source code</value></data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve"><value>Restart NINA</value></data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve"><value>Plugin changes require a restart.</value></data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve"><value>Update available</value></data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve"><value>No compatible plugins are available from the configured repositories.</value></data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>This plugin does not provide settings.</value>
+  </data>
 </root>
