@@ -39,19 +39,11 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="1" Orientation="Vertical">
-                <ninactrl:LoadingControl
-                    Width="50"
-                    Height="50"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    LoadingImageBrush="{StaticResource PrimaryBrush}" />
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="20"
-                    Text="{ns:Loc LblInitializingPlugins}" />
-            </StackPanel>
+            <ContentControl
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                Content="{ns:Loc LblInitializingPlugins}"
+                ContentTemplate="{StaticResource InitializationLoadingTemplate}" />
         </Grid>
         <TabControl
             MinWidth="40"

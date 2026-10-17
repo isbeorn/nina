@@ -74,6 +74,80 @@
         </Setter>
     </Style>
 
+    <Style
+        x:Key="LoadingProgressBar"
+        BasedOn="{StaticResource {x:Type ProgressBar}}"
+        TargetType="ProgressBar">
+        <Setter Property="Height" Value="3" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="IsIndeterminate" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ProgressBar">
+                    <Grid x:Name="TemplateRoot" ClipToBounds="True">
+                        <Rectangle
+                            x:Name="PART_Track"
+                            Fill="{TemplateBinding Foreground}"
+                            Opacity="0.15" />
+                        <Grid
+                            x:Name="PART_Indicator"
+                            HorizontalAlignment="Left"
+                            ClipToBounds="True">
+                            <Rectangle x:Name="Indicator" Fill="{TemplateBinding Foreground}" />
+                            <Rectangle
+                                x:Name="Animation"
+                                Fill="{TemplateBinding Foreground}"
+                                RenderTransformOrigin="0.5,0.5"
+                                Visibility="Collapsed">
+                                <Rectangle.RenderTransform>
+                                    <ScaleTransform ScaleX="0.25" />
+                                </Rectangle.RenderTransform>
+                            </Rectangle>
+                        </Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Determinate" />
+                                <VisualState x:Name="Indeterminate">
+                                    <Storyboard RepeatBehavior="Forever">
+                                        <PointAnimation
+                                            Storyboard.TargetName="Animation"
+                                            Storyboard.TargetProperty="RenderTransformOrigin"
+                                            From="-0.5,0.5"
+                                            To="1.5,0.5"
+                                            Duration="0:0:2" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsIndeterminate" Value="True">
+                            <Setter TargetName="Indicator" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="Animation" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsVisible" Value="False">
+                <Setter Property="IsIndeterminate" Value="False" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <DataTemplate x:Key="InitializationLoadingTemplate">
+        <StackPanel Width="320">
+            <TextBlock
+                FontSize="20"
+                Foreground="{StaticResource PrimaryBrush}"
+                Text="{Binding}"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+            <ProgressBar Margin="0,8,0,0" Style="{StaticResource LoadingProgressBar}" />
+        </StackPanel>
+    </DataTemplate>
+
     <Style x:Key="FlowBar" TargetType="ProgressBar">
         <Setter Property="Template">
             <Setter.Value>
