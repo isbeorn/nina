@@ -8285,4 +8285,235 @@ Dec: {1}</value>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Незапазените редакции на свързания шаблон '{0}' са отхвърлени след пет минути бездействие. Продължаване със запазения шаблон.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Обновяване</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Повторен опит</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Представяне</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Версии</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Няма налични екранни снимки за този плъгин.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Зареждане на историята на версиите...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Част от историята на версиите не можа да бъде заредена. Наличните версии продължават да се показват.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Едно от хранилищата не предоставя история на версиите. Версиите от неговия каталог продължават да се показват.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>Няма налични съвместими версии в зададените хранилища.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>Инсталираната версия се показва заедно със съвместимите версии, предоставени от зададените хранилища. По-ранни версии може да не са достъпни. Смяната на версията влиза в сила след рестартиране на NINA.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Инсталиране на версия</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Инсталирана в момента</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Възможно връщане към по-стара версия</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Налична по-нова версия</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>По-стара версия</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>По-нова версия</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Връщане към {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Обновяване до {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Инсталиране на {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Използвайте действието в раздел "Версии", за да инсталирате или смените версия, след което рестартирайте NINA. Вижте началната страница на плъгина за специфични инструкции за настройка от неговия издател.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Търсене на плъгини</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Всички етикети</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Изчистване на филтрите</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Преглед на наличните плъгини</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Зареждане на наличните плъгини...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Наличните плъгини не можаха да бъдат заредени. Предишните резултати продължават да се показват. Опитайте отново, за да повторите проверката.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Някои хранилища за плъгини не бяха достъпни. Предишните резултати от тези хранилища продължават да се показват.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Няма плъгини, които отговарят на тези филтри. Изчистете филтрите, за да видите всички плъгини.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Няма инсталирани плъгини. Прегледайте наличните плъгини, за да инсталирате някой от тях.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Неуспешно зареждане</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Премахване след рестартиране</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Необходимо е рестартиране</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Инсталиране на плъгина...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Обновяване на плъгина...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Премахване на плъгина...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Заявена е отмяна...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Обновяване на всички ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Настройките ще бъдат достъпни след рестартиране на NINA.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Минимална версия на NINA:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Изходен код</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Рестартиране на NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Промените в плъгините изискват рестартиране.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Налична актуализация</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>Няма налични съвместими плъгини в зададените хранилища.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Този плъгин не предоставя настройки.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Отваряне на дневника на промените в браузъра</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Зареждане на дневника на промените...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Този дневник на промените не може да се покаже тук. Отворете го в браузъра, за да го прочетете.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Дневникът на промените не можа да бъде обновен. Показват се запазените по-рано бележки. Опитайте отново, за да повторите проверката, или го отворете в браузъра.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Дневникът на промените не можа да бъде зареден. Опитайте отново или го отворете в браузъра.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Предишно изображение</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Следващо изображение</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Изображение</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Зареждане на екранните снимки...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Допълнителна информация</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>Концентратор за безопасност на NINA</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>Концентратор за превключватели на NINA</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>Концентратор за метеорологични данни на NINA</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Добавяне на устройство</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Премахване на устройство</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Период на осредняване</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Отворете настройките на концентратора чрез иконата със зъбно колело. Изберете поне едно устройство, без дублиране на устройства или вложени концентратори на NINA.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>За този концентратор няма зададени устройства. Отворете настройките чрез иконата със зъбно колело и добавете устройство.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>За нито един метеорологичен показател не е зададено устройство като източник. Отворете настройките на концентратора чрез иконата със зъбно колело и задайте устройство за поне един показател.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Устройството не можа да бъде свързано.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Едно от устройствата в концентратора е недостъпно. Прекъснете връзката с концентратора и го свържете отново, за да продължите.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Контролерът на превключвателите не поддържа избор на канал в концентратора по постоянен идентификатор.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Избраният канал на концентратора липсва, не може да бъде определен еднозначно или не позволява задаване на стойност.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Стойността на превключвателя не можа да бъде прочетена след задаването ѝ.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Добавете устройствата, които ще участват в този концентратор.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Връзката с устройството е прекъсната.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Не се използва</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Несвързано</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Безопасни условия</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Небезопасни условия</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Превключвател {0} - {1}</value>
+  </data>
 </root>
