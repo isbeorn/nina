@@ -20,5 +20,6 @@
         <ResourceDictionary Source="/NINA.CustomControlLibrary;component/Themes/AsyncProcessButton.Generic.xaml" />
         <ResourceDictionary Source="/NINA.CustomControlLibrary;component/Themes/Arc.Generic.xaml" />
         <ResourceDictionary Source="/NINA.CustomControlLibrary;component/Themes/AutoCompleteBox.Generic.xaml" />
+        <ResourceDictionary Source="/NINA.CustomControlLibrary;component/Themes/ImageGallery.Generic.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

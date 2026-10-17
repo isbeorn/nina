@@ -21,26 +21,34 @@ namespace NINA.Test.Plugin {
     internal sealed class LoopbackHttpServer : IDisposable {
         private readonly TcpListener listener;
         private readonly Task serverTask;
-        private readonly byte[] body;
+        private readonly IReadOnlyList<Response> responses;
         private readonly string contentType;
         private readonly string? fileName;
-        private readonly Task? responseGate;
-        private readonly int statusCode;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<string> requests = new();
+        private readonly TaskCompletionSource requestReceived = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        public LoopbackHttpServer(byte[] body, string contentType = "application/octet-stream", string? fileName = null, Task? responseGate = null, int statusCode = 200) {
-            this.body = body;
+        public LoopbackHttpServer(byte[] body, string contentType = "application/octet-stream", string? fileName = null, Task? responseGate = null, int statusCode = 200)
+            : this([new Response(body, statusCode, responseGate)], contentType, fileName) {
+        }
+
+        public LoopbackHttpServer(IReadOnlyList<Response> responses, string contentType = "application/json", string? fileName = null) {
+            this.responses = responses;
             this.contentType = contentType;
             this.fileName = fileName;
-            this.responseGate = responseGate;
-            this.statusCode = statusCode;
             listener = new TcpListener(IPAddress.Loopback, 0);
             listener.Start();
             int port = ((IPEndPoint)listener.LocalEndpoint).Port;
             Url = $"http://127.0.0.1:{port}";
-            serverTask = Task.Run(ServeSingleRequest);
+            serverTask = Task.Run(ServeRequests);
         }
 
         public string Url { get; }
+
+        public Task RequestReceived => requestReceived.Task;
+
+        public IReadOnlyList<string> Requests => requests.ToArray();
+
+        public sealed record Response(byte[] Body, int StatusCode = 200, Task? Gate = null);
 
         public void Dispose() {
             listener.Stop();
@@ -50,30 +58,39 @@ namespace NINA.Test.Plugin {
             }
         }
 
-        private async Task ServeSingleRequest() {
+        private async Task ServeRequests() {
             try {
-                using TcpClient client = await listener.AcceptTcpClientAsync();
-                await using NetworkStream stream = client.GetStream();
-                await ReadHeaders(stream);
-                if (responseGate != null) await responseGate;
+                foreach (var response in responses) {
+                    using TcpClient client = await listener.AcceptTcpClientAsync();
+                    await using NetworkStream stream = client.GetStream();
+                    requests.Enqueue(await ReadHeaders(stream));
+                    requestReceived.TrySetResult();
+                    if (response.Gate != null) {
+                        await response.Gate;
+                    }
 
-                string contentDisposition = string.IsNullOrEmpty(fileName) ? string.Empty : $"Content-Disposition: attachment; filename=\"{fileName}\"\r\n";
-                string headers =
-                    $"HTTP/1.1 {statusCode} Test response\r\n" +
-                    $"Content-Length: {body.Length}\r\n" +
-                    $"Content-Type: {contentType}\r\n" +
-                    contentDisposition +
-                    "Connection: close\r\n" +
-                    "\r\n";
-                byte[] headerBytes = Encoding.ASCII.GetBytes(headers);
-                await stream.WriteAsync(headerBytes);
-                await stream.WriteAsync(body);
+                    string contentDisposition = string.IsNullOrEmpty(fileName) ? string.Empty : $"Content-Disposition: attachment; filename=\"{fileName}\"\r\n";
+                    string headers =
+                        $"HTTP/1.1 {response.StatusCode} Test response\r\n" +
+                        $"Content-Length: {response.Body.Length}\r\n" +
+                        $"Content-Type: {contentType}\r\n" +
+                        contentDisposition +
+                        "Connection: close\r\n" +
+                        "\r\n";
+                    byte[] headerBytes = Encoding.ASCII.GetBytes(headers);
+                    try {
+                        await stream.WriteAsync(headerBytes);
+                        await stream.WriteAsync(response.Body);
+                    } catch (IOException) {
+                        // A canceled request can close its connection while later requests still need a response.
+                    }
+                }
             } finally {
                 listener.Stop();
             }
         }
 
-        private static async Task ReadHeaders(NetworkStream stream) {
+        private static async Task<string> ReadHeaders(NetworkStream stream) {
             var buffer = new byte[1];
             var headers = new StringBuilder();
             var recentBytes = new Queue<byte>(4);
@@ -95,9 +112,11 @@ namespace NINA.Test.Plugin {
                             remaining -= read;
                         }
                     }
-                    return;
+                    return headers.ToString();
                 }
             }
+
+            return headers.ToString();
         }
     }
 }

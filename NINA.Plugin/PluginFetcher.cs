@@ -35,20 +35,29 @@ namespace NINA.Plugin {
         }
 
         public async Task<IList<PluginManifest>> RequestAll(IPluginVersion minimumApplicationVersion, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            return await RequestManifests("/plugins/manifests", minimumApplicationVersion, ct);
+        }
+
+        public Task<IList<PluginManifest>> RequestVersions(string identifier, IPluginVersion applicationVersion, CancellationToken ct) {
+            return RequestManifests($"/plugins/{Uri.EscapeDataString(identifier)}/versions", applicationVersion, ct, identifier);
+        }
+
+        private async Task<IList<PluginManifest>> RequestManifests(string path, IPluginVersion applicationVersion, CancellationToken ct, string identifier = null) {
             return await Task.Run(async () => {
                 List<PluginManifest> plugins = new List<PluginManifest>();
                 var compatibilityMap = new PluginCompatibilityMap();
                 try {
-                    var req = new HttpGetRequest(repositoryURL + "/plugins/manifests", true);
+                    var req = new HttpGetRequest(repositoryURL.TrimEnd('/') + path, true);
                     Logger.Info($"Fetching plugin manifests from {req.Url}");
                     var res = await req.Request(ct);
-                    if (!string.IsNullOrEmpty(res)) {
+                    if (identifier != null || !string.IsNullOrEmpty(res)) {
                         var arr = JArray.Parse(res);
                         foreach (var item in arr) {
                             var plugin = await ValidateAndParseManifest(item);
-                            if (plugin != null) {
-                                if (PluginVersion.IsPluginCompatible(plugin.MinimumApplicationVersion, minimumApplicationVersion)
-                                    && !compatibilityMap.IsNotCompatible(plugin)) {
+                            ct.ThrowIfCancellationRequested();
+                            if (plugin != null && (identifier == null || string.Equals(plugin.Identifier, identifier, StringComparison.OrdinalIgnoreCase))) {
+                                if (PluginVersion.IsPluginCompatible(plugin.MinimumApplicationVersion, applicationVersion)
+                                    && compatibilityMap.IsCompatible(plugin)) {
                                     plugins.Add(plugin);
                                 }
                             }

@@ -84,6 +84,7 @@
 
             <Style TargetType="List">
                 <Setter Property="Margin" Value="0,0,0,0" />
+                <Setter Property="MarkerStyle" Value="Box" />
             </Style>
 
             <!--<Style TargetType="Run">

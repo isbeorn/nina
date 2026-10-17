@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     Copyright (c) 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
@@ -11,521 +11,992 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behavior="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA.View.Plugins"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:manifest="clr-namespace:NINA.Plugin.ManifestDefinition;assembly=NINA.Plugin"
     xmlns:mdxam="clr-namespace:MdXaml;assembly=MdXaml"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:plugin="clr-namespace:NINA.ViewModel.Plugins"
     xmlns:settings="clr-namespace:NINA.Properties"
-    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    mc:Ignorable="d">
+    xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+    Background="{StaticResource BackgroundBrush}"
+    DataContextChanged="OnDataContextChanged"
+    Foreground="{StaticResource PrimaryBrush}"
+    Loaded="OnLoaded"
+    UseLayoutRounding="True">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Find" Executed="OnFind" />
+    </UserControl.CommandBindings>
     <UserControl.Resources>
-        <DataTemplate x:Key="DefaultPluginOption">
+        <BooleanToVisibilityConverter x:Key="VisibleWhenTrue" />
+        <DataTemplate x:Key="EmptyOptionsTemplate">
             <Grid />
         </DataTemplate>
-        <plugin:PluginOptionsDataTemplateSelector x:Key="TemplateSelector" Default="{StaticResource DefaultPluginOption}" />
-        <BitmapImage x:Key="DefaultImage" UriSource="/NINA;component/Resources/plugin.png" />
+        <plugin:PluginOptionsDataTemplateSelector x:Key="OptionsSelector" Default="{StaticResource EmptyOptionsTemplate}" />
+        <Style
+            x:Key="PluginStateMarker"
+            BasedOn="{StaticResource {x:Type TextBlock}}"
+            TargetType="TextBlock">
+            <Setter Property="Margin" Value="8,0,0,0" />
+            <Setter Property="Padding" Value="4,1" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+        </Style>
+        <DataTemplate x:Key="PluginSidebarCaption">
+            <Grid>
+                <Grid MinWidth="65" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="10" />
+                    </Grid.RowDefinitions>
+                    <Grid Width="40" Height="40">
+                        <Path
+                            Margin="5"
+                            Data="{Binding Tag, RelativeSource={RelativeSource AncestorType={x:Type TabItem}}}"
+                            Stretch="Uniform"
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                    <TextBlock
+                        x:Name="SidebarCaption"
+                        Grid.Row="1"
+                        MaxWidth="65"
+                        Style="{StaticResource SideBarTextBlock}"
+                        Text="{Binding}"
+                        TextTrimming="CharacterEllipsis" />
+                </Grid>
+                <Grid Height="25" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    <Path
+                        Width="25"
+                        Margin="2.5"
+                        Data="{Binding Tag, RelativeSource={RelativeSource AncestorType={x:Type TabItem}}}"
+                        Stretch="Uniform"
+                        Style="{StaticResource TabItemPath}"
+                        UseLayoutRounding="True" />
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="PluginTabCaption">
+            <TextBlock
+                x:Name="Caption"
+                Style="{StaticResource TabItemTextBox}"
+                Text="{Binding}" />
+        </DataTemplate>
+        <Style x:Key="PluginTagCheckBox" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Border Padding="6,4" Background="{TemplateBinding Background}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox
+                                    Width="18"
+                                    Height="18"
+                                    VerticalAlignment="Center"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    Focusable="False"
+                                    IsChecked="{TemplateBinding IsChecked}"
+                                    IsHitTestVisible="False"
+                                    Style="{StaticResource CheckmarkAndEmptyCheckbox}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="8,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    Text="{TemplateBinding Content}" />
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="PluginTagItem" TargetType="xceed:SelectorItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="xceed:SelectorItem">
+                        <CheckBox
+                            Content="{Binding Content.Label, RelativeSource={RelativeSource TemplatedParent}}"
+                            IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                            Style="{StaticResource PluginTagCheckBox}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PluginTagFilterStyle" TargetType="xceed:CheckComboBox">
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="IsSelectAllActive" Value="False" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource PluginTagItem}" />
+            <Setter Property="MaxDropDownHeight" Value="300" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="xceed:CheckComboBox">
+                        <Grid>
+                            <ToggleButton
+                                x:Name="PART_DropDownButton"
+                                ClickMode="Press"
+                                Focusable="False"
+                                IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                Template="{StaticResource ComboBoxToggleButton}" />
+                            <TextBlock
+                                Margin="3,3,23,3"
+                                VerticalAlignment="Center"
+                                Foreground="{TemplateBinding Foreground}"
+                                IsHitTestVisible="False"
+                                Text="{Binding DataContext.TagFilterText, RelativeSource={RelativeSource TemplatedParent}}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap" />
+                            <Popup
+                                x:Name="PART_Popup"
+                                AllowsTransparency="True"
+                                IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                Placement="Bottom"
+                                StaysOpen="False">
+                                <Border
+                                    MinWidth="{TemplateBinding ActualWidth}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                    Background="{StaticResource BackgroundBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    PreviewKeyDown="OnTagFilterPreviewKeyDown">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                        <ItemsPresenter
+                                            x:Name="PART_ItemsPresenter"
+                                            KeyboardNavigation.DirectionalNavigation="Contained"
+                                            KeyboardNavigation.TabNavigation="Cycle" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PluginRow" TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border
+                            x:Name="RowBorder"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{StaticResource ButtonForegroundDisabledBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style
+            x:Key="PluginVersionRow"
+            BasedOn="{StaticResource PluginRow}"
+            TargetType="ListBoxItem">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+                    <Setter Property="BorderThickness" Value="2,1,1,1" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <DataTemplate x:Key="PluginRowTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="48" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <local:PluginImage
+                    Width="36"
+                    Height="36"
+                    VerticalAlignment="Top"
+                    CacheVersion="{Binding DisplayManifest.Version, StringFormat='{}{0}'}"
+                    ImageUrl="{Binding DisplayManifest.Descriptions.FeaturedImageURL}" />
+                <StackPanel Grid.Column="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                            Text="{Binding Name}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap"
+                            ToolTip="{Binding Name}" />
+                        <WrapPanel
+                            Grid.Column="1"
+                            MaxWidth="140"
+                            VerticalAlignment="Center">
+                            <TextBlock
+                                Style="{StaticResource PluginStateMarker}"
+                                Text="{ns:Loc LblInstalled}"
+                                Visibility="{Binding ShowInstalledMarker, Converter={StaticResource VisibleWhenTrue}}" />
+                            <TextBlock
+                                Background="{StaticResource ButtonBackgroundSelectedBrush}"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Style="{StaticResource PluginStateMarker}"
+                                Text="{ns:Loc LblUpdate}"
+                                Visibility="{Binding HasUpdate, Converter={StaticResource VisibleWhenTrue}}" />
+                        </WrapPanel>
+                    </Grid>
+                    <TextBlock
+                        Margin="0,2,0,0"
+                        FontSize="12"
+                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                        Text="{Binding Author}"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap" />
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                        Text="{Binding ShortDescription}"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap"
+                        ToolTip="{Binding ShortDescription}" />
+                    <TextBlock
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                        Text="{Binding ListStatusText}"
+                        Visibility="{Binding ListStatusText, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid>
-        <Grid Visibility="{Binding Initialized, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <StackPanel Grid.Row="1" Orientation="Vertical">
-                <ninactrl:LoadingControl
-                    Width="50"
-                    Height="50"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    LoadingImageBrush="{StaticResource PrimaryBrush}" />
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="20"
-                    Text="{ns:Loc LblInitializingPlugins}" />
-            </StackPanel>
-        </Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
         <TabControl
+            x:Name="PluginNavigation"
+            Grid.RowSpan="3"
             MinWidth="40"
+            SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
             Style="{StaticResource SecondLevelTabControl}"
-            TabStripPlacement="Left"
-            Visibility="{Binding Initialized, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-
-            <TabItem>
-                <TabItem.Header>
+            TabStripPlacement="Left">
+            <TabItem
+                x:Name="InstalledPluginsTab"
+                AutomationProperties.Name="{ns:Loc LblInstalled}"
+                Header="{ns:Loc LblInstalled}"
+                HeaderTemplate="{StaticResource PluginSidebarCaption}"
+                Tag="{StaticResource SaveSVG}"
+                ToolTip="{ns:Loc LblInstalled}" />
+            <TabItem
+                x:Name="AvailablePluginsTab"
+                AutomationProperties.Name="{ns:Loc LblAvailable}"
+                Header="{ns:Loc LblAvailable}"
+                HeaderTemplate="{StaticResource PluginSidebarCaption}"
+                Tag="{StaticResource GridSVG}"
+                ToolTip="{ns:Loc LblAvailable}" />
+        </TabControl>
+        <StackPanel Grid.Column="1" Margin="12,0">
+            <Border
+                Margin="0,0,0,8"
+                Padding="8"
+                Background="{StaticResource NotificationWarningBrush}"
+                Visibility="{Binding HasCatalogError, Converter={StaticResource VisibleWhenTrue}}">
+                <DockPanel>
+                    <Button
+                        Margin="12,0,0,0"
+                        Command="{Binding FetchPluginsCommand}"
+                        DockPanel.Dock="Right"
+                        Style="{StaticResource BackgroundButton}">
+                        <TextBlock Margin="12,6" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblPluginManagerRetry}" TextWrapping="Wrap" />
+                    </Button>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource NotificationWarningTextBrush}"
+                        Text="{Binding CatalogError}"
+                        TextWrapping="Wrap" />
+                </DockPanel>
+            </Border>
+            <Border
+                x:Name="PluginOperationErrors"
+                Margin="0,0,0,8"
+                Padding="8"
+                Background="{StaticResource NotificationErrorBrush}"
+                Visibility="{Binding OperationErrors, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
+                    <TextBlock Foreground="{StaticResource NotificationErrorTextBrush}" Text="{Binding OperationErrors}" TextWrapping="Wrap" />
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
+        <Grid
+            x:Name="BrowserGrid"
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="5,8,12,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    x:Name="PluginListColumn"
+                    Width="400"
+                    MinWidth="240"
+                    MaxWidth="600" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" MinWidth="320" />
+            </Grid.ColumnDefinitions>
+            <Grid Background="{StaticResource BackgroundBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Margin="0,0,0,8">
                     <Grid>
-                        <Grid MinWidth="65" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition Height="10" />
-                            </Grid.RowDefinitions>
-                            <Grid>
-                                <Grid Width="40" Height="40">
-                                    <Path
-                                        Margin="5"
-                                        Data="{StaticResource SaveSVG}"
-                                        Stretch="Uniform"
-                                        Style="{StaticResource TabItemPath}"
-                                        UseLayoutRounding="True" />
-                                </Grid>
-                            </Grid>
-                            <TextBlock
-                                Grid.Row="1"
-                                Style="{StaticResource SideBarTextBlock}"
-                                Text="{ns:Loc LblInstalled}" />
-                        </Grid>
-                        <Grid Height="25" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ninactrl:HintTextBox
+                            x:Name="PluginSearch"
+                            MinHeight="30"
+                            Margin="0,0,0,0"
+                            VerticalContentAlignment="Center"
+                            AutomationProperties.Name="{ns:Loc LblPluginManagerSearch}"
+                            Focusable="False"
+                            FontSize="14"
+                            HintText="{ns:Loc LblPluginManagerSearch}"
+                            HintTextOpacity="0.8"
+                            KeyDown="OnSearchKeyDown"
+                            Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
+                            <ninactrl:HintTextBox.Resources>
+                                <Style BasedOn="{StaticResource StandardTextbox}" TargetType="TextBox">
+                                    <Setter Property="AutomationProperties.Name" Value="{ns:Loc LblPluginManagerSearch}" />
+                                </Style>
+                            </ninactrl:HintTextBox.Resources>
+                        </ninactrl:HintTextBox>
+                        <Button
+                            x:Name="RefreshPluginsButton"
+                            Grid.Column="1"
+                            Width="30"
+                            Height="30"
+                            Margin="5,0,5,0"
+                            AutomationProperties.Name="{ns:Loc LblPluginManagerRefresh}"
+                            Command="{Binding FetchPluginsCommand}"
+                            Style="{StaticResource BackgroundButton}"
+                            ToolTip="{ns:Loc LblPluginManagerRefresh}">
                             <Path
-                                Width="25"
-                                Margin="2.5"
-                                Data="{StaticResource SaveSVG}"
+                                Margin="4"
+                                Data="{StaticResource LoopSVG}"
+                                Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                 Stretch="Uniform"
-                                Style="{StaticResource TabItemPath}"
                                 UseLayoutRounding="True" />
-                        </Grid>
+                        </Button>
                     </Grid>
-                </TabItem.Header>
-                <TabItem.Content>
+                    <xceed:CheckComboBox
+                        x:Name="PluginTagFilter"
+                        MinHeight="30"
+                        Margin="0,8,5,0"
+                        AutomationProperties.Name="{ns:Loc LblTags}"
+                        FontSize="14"
+                        ItemsSource="{Binding AvailableTags}"
+                        PreviewKeyDown="OnTagFilterPreviewKeyDown"
+                        SelectedItemsOverride="{Binding SelectedTags}"
+                        Style="{StaticResource PluginTagFilterStyle}" />
+                    <StackPanel Visibility="{Binding IsInstalledTab, Converter={StaticResource VisibleWhenTrue}}">
+                        <Button
+                            x:Name="UpdateAllPluginsButton"
+                            Margin="0,8,5,0"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding UpdateAllPluginsCommand}"
+                            Style="{StaticResource StandardButton}"
+                            Visibility="{Binding AvailablePluginUpdateCount, Converter={StaticResource ZeroToVisibilityConverter}}">
+                            <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{Binding UpdateAllButtonText}" TextWrapping="Wrap" />
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+                <ListBox
+                    x:Name="PluginList"
+                    Grid.Row="1"
+                    AutomationProperties.Name="{ns:Loc LblPlugins}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Foreground="{StaticResource PrimaryBrush}"
+                    ItemContainerStyle="{StaticResource PluginRow}"
+                    ItemTemplate="{StaticResource PluginRowTemplate}"
+                    ItemsSource="{Binding FilteredPlugins}"
+                    ScrollViewer.CanContentScroll="True"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    SelectedItem="{Binding SelectedPlugin, Mode=TwoWay}"
+                    VirtualizingPanel.IsVirtualizing="True" />
+                <StackPanel
+                    Grid.Row="1"
+                    Margin="16"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding HasResults, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <TextBlock Text="{Binding EmptyMessage}" TextAlignment="Center" TextWrapping="Wrap" />
+                    <Button
+                        x:Name="ClearPluginFiltersButton"
+                        Margin="0,12,0,0"
+                        Command="{Binding ClearFiltersCommand}"
+                        Style="{StaticResource BackgroundButton}">
+                        <TextBlock Margin="12,6" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblPluginManagerClearFilters}" TextWrapping="Wrap" />
+                    </Button>
+                    <Button
+                        Margin="0,8,0,0"
+                        Command="{Binding ShowAvailableCommand}"
+                        Style="{StaticResource BackgroundButton}"
+                        Visibility="{Binding IsInstalledTab, Converter={StaticResource VisibleWhenTrue}}">
+                        <TextBlock Margin="12,6" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblPluginManagerBrowseAvailable}" TextWrapping="Wrap" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <GridSplitter
+                Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" />
+            <Grid
+                x:Name="PluginDetails"
+                Grid.Column="2"
+                Margin="16,0,0,0"
+                Visibility="{Binding HasResults, Converter={StaticResource VisibleWhenTrue}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel>
                     <Grid>
-                        <Grid Opacity="0.4" Visibility="{Binding InstalledPlugins, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="1" Orientation="Vertical">
-                                <Path
-                                    MaxWidth="100"
-                                    MaxHeight="100"
-                                    Margin="5"
-                                    Data="{StaticResource PuzzlePieceSVG}"
-                                    Fill="{StaticResource PrimaryBrush}"
-                                    Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}"
-                                    UseLayoutRounding="True" />
-
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="20"
-                                    FontStyle="Italic"
-                                    Text="{ns:Loc LblNoPluginsInstalled}" />
-                            </StackPanel>
-                        </Grid>
-
-                        <Grid Visibility="{Binding InstalledPlugins, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" MaxWidth="350" />
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="64" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <local:PluginImage
+                            Width="52"
+                            Height="52"
+                            VerticalAlignment="Top"
+                            CacheVersion="{Binding SelectedPlugin.DisplayManifest.Version, StringFormat='{}{0}'}"
+                            ImageUrl="{Binding SelectedPlugin.DisplayManifest.Descriptions.FeaturedImageURL}" />
+                        <StackPanel Grid.Column="1">
+                            <TextBlock
+                                FontSize="24"
+                                FontWeight="SemiBold"
+                                Text="{Binding SelectedPlugin.Name}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"
+                                ToolTip="{Binding SelectedPlugin.Name}" />
+                            <TextBlock
+                                Margin="0,4,0,0"
+                                Text="{Binding SelectedPlugin.Author}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"
+                                ToolTip="{Binding SelectedPlugin.Author}" />
+                        </StackPanel>
+                        <UniformGrid
+                            Grid.Column="2"
+                            MaxWidth="200"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Rows="1">
+                            <Button
+                                x:Name="InstallPluginButton"
+                                Margin="8,0,0,8"
+                                Command="{Binding InstallPluginCommand}"
+                                Style="{StaticResource StandardButton}"
+                                Visibility="{Binding SelectedPlugin.CanInstall, Converter={StaticResource VisibleWhenTrue}}">
+                                <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblInstall}" TextWrapping="Wrap" />
+                            </Button>
+                            <Button
+                                x:Name="UpdatePluginButton"
+                                Margin="8,0,0,8"
+                                Command="{Binding UpdatePluginCommand}"
+                                Style="{StaticResource StandardButton}"
+                                Visibility="{Binding SelectedPlugin.CanUpdate, Converter={StaticResource VisibleWhenTrue}}">
+                                <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblUpdate}" TextWrapping="Wrap" />
+                            </Button>
+                            <Button
+                                x:Name="UninstallPluginButton"
+                                Margin="8,0,0,8"
+                                Command="{Binding UninstallPluginCommand}"
+                                Style="{StaticResource StandardButton}">
+                                <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblUninstall}" TextWrapping="Wrap" />
+                                <Button.Visibility>
+                                    <MultiBinding Converter="{StaticResource BooleanToVisibilityCollapsedMultiConverter}">
+                                        <Binding Path="IsInstalledTab" />
+                                        <Binding Path="SelectedPlugin.CanUninstall" />
+                                    </MultiBinding>
+                                </Button.Visibility>
+                            </Button>
+                        </UniformGrid>
+                    </Grid>
+                    <WrapPanel Margin="0,8,0,0">
+                        <StackPanel
+                            Margin="0,0,16,4"
+                            Orientation="Horizontal"
+                            Visibility="{Binding SelectedPlugin.InstalledVersion, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                            <TextBlock Margin="0,0,8,0" Text="{ns:Loc LblInstalled}" />
+                            <TextBlock Text="{Binding SelectedPlugin.InstalledVersion}" />
+                        </StackPanel>
+                        <StackPanel
+                            Margin="0,0,0,4"
+                            Orientation="Horizontal"
+                            Visibility="{Binding SelectedPlugin.AvailableVersion, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                            <TextBlock Margin="0,0,8,0" Text="{ns:Loc LblAvailable}" />
+                            <TextBlock Text="{Binding SelectedPlugin.AvailableVersion}" />
+                        </StackPanel>
+                    </WrapPanel>
+                    <TextBlock Margin="0,4,0,8" Text="{Binding SelectedPlugin.ShortDescription}" TextWrapping="Wrap" />
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        Text="{Binding SelectedPlugin.StatusText}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding SelectedPlugin.StatusText, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+                    <Border
+                        Margin="0,0,0,8"
+                        Padding="8"
+                        Background="{StaticResource NotificationErrorBrush}"
+                        Visibility="{Binding SelectedPlugin.HasLoadError, Converter={StaticResource VisibleWhenTrue}}">
+                        <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
+                            <TextBlock Foreground="{StaticResource NotificationErrorTextBrush}" Text="{Binding SelectedPlugin.LoadError}" TextWrapping="Wrap" />
+                        </ScrollViewer>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,8"
+                        Padding="8"
+                        Background="{StaticResource NotificationErrorBrush}"
+                        Visibility="{Binding SelectedPlugin.HasOperationError, Converter={StaticResource VisibleWhenTrue}}">
+                        <TextBlock Foreground="{StaticResource NotificationErrorTextBrush}" Text="{Binding SelectedPlugin.OperationError}" TextWrapping="Wrap" />
+                    </Border>
+                    <TextBlock Margin="0,0,0,8" Text="{ns:Loc LblPluginManagerSettingsAfterRestart}" TextWrapping="Wrap">
+                        <TextBlock.Style>
+                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedPlugin.PendingChange}" Value="{x:Static plugin:PluginPendingChange.Install}">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock
+                        x:Name="NoSettingsHint"
+                        Margin="0,0,0,8"
+                        Text="{ns:Loc LblPluginManagerNoSettings}"
+                        TextWrapping="Wrap"
+                        Visibility="Collapsed" />
+                </StackPanel>
+                <TabControl
+                    x:Name="DetailsNavigation"
+                    Grid.Row="1"
+                    SelectionChanged="OnDetailsSelectionChanged"
+                    TabStripPlacement="Top">
+                    <TabItem
+                        x:Name="SettingsTab"
+                        Header="{ns:Loc LblSettings}"
+                        HeaderTemplate="{StaticResource PluginTabCaption}"
+                        Visibility="Collapsed" />
+                    <TabItem
+                        x:Name="DescriptionTab"
+                        Header="{ns:Loc LblDescription}"
+                        HeaderTemplate="{StaticResource PluginTabCaption}"
+                        IsSelected="True" />
+                    <TabItem
+                        x:Name="ChangelogTab"
+                        Header="{ns:Loc LblChangelog}"
+                        HeaderTemplate="{StaticResource PluginTabCaption}"
+                        Visibility="Collapsed" />
+                    <TabItem
+                        x:Name="ShowcaseTab"
+                        Header="{ns:Loc LblPluginManagerShowcase}"
+                        HeaderTemplate="{StaticResource PluginTabCaption}" />
+                    <TabItem
+                        x:Name="VersionsTab"
+                        Header="{ns:Loc LblPluginManagerVersions}"
+                        HeaderTemplate="{StaticResource PluginTabCaption}" />
+                    <TabItem
+                        x:Name="InfoTab"
+                        Header="{ns:Loc LblPluginManagerAdditionalInfo}"
+                        HeaderTemplate="{StaticResource PluginTabCaption}" />
+                </TabControl>
+                <ScrollViewer
+                    x:Name="DescriptionContent"
+                    Grid.Row="2"
+                    DataContext="{Binding SelectedPlugin.DisplayManifest}"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,12,8,8">
+                        <i:Interaction.Behaviors>
+                            <behavior:BubbleScrollEvent />
+                        </i:Interaction.Behaviors>
+                        <mdxam:MarkdownScrollViewer
+                            ClickAction="OpenBrowser"
+                            Markdown="{Binding Descriptions.LongDescription, NotifyOnTargetUpdated=True}"
+                            MarkdownStyle="{StaticResource MarkdownStyle}"
+                            TargetUpdated="OnMarkdownUpdated"
+                            VerticalScrollBarVisibility="Disabled" />
+                    </StackPanel>
+                </ScrollViewer>
+                <ScrollViewer
+                    x:Name="ChangelogContent"
+                    Grid.Row="2"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto"
+                    Visibility="Collapsed">
+                    <StackPanel Margin="0,12,8,8">
+                        <i:Interaction.Behaviors>
+                            <behavior:BubbleScrollEvent />
+                        </i:Interaction.Behaviors>
+                        <TextBlock x:Name="ChangelogBrowserLink" Margin="0,0,0,12" TextWrapping="Wrap"><Hyperlink NavigateUri="{Binding BrowserUrl}">
+                                <Run Text="{ns:Loc LblPluginManagerOpenChangelog}" />
+                            </Hyperlink></TextBlock>
+                        <StackPanel Margin="0,0,0,12" Visibility="{Binding IsLoading, Converter={StaticResource VisibleWhenTrue}}">
+                            <TextBlock Text="{ns:Loc LblPluginManagerLoadingChangelog}" />
+                            <ProgressBar Margin="0,6,0,0" Style="{StaticResource LoadingProgressBar}" />
+                        </StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,12"
+                            Text="{Binding Notice}"
+                            TextWrapping="Wrap"
+                            Visibility="{Binding Notice, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+                        <Button
+                            x:Name="RetryChangelogButton"
+                            Margin="0,0,0,12"
+                            HorizontalAlignment="Left"
+                            Command="{Binding RetryCommand}"
+                            Style="{StaticResource StandardButton}"
+                            Visibility="{Binding CanRetry, Converter={StaticResource VisibleWhenTrue}}">
+                            <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblPluginManagerRetry}" TextWrapping="Wrap" />
+                        </Button>
+                        <mdxam:MarkdownScrollViewer
+                            x:Name="ChangelogMarkdown"
+                            AssetPathRoot="{Binding AssetPathRoot, NotifyOnTargetUpdated=True}"
+                            ClickAction="OpenBrowser"
+                            Markdown="{Binding Markdown, NotifyOnTargetUpdated=True}"
+                            MarkdownStyle="{StaticResource MarkdownStyle}"
+                            TargetUpdated="OnMarkdownUpdated"
+                            VerticalScrollBarVisibility="Disabled" />
+                    </StackPanel>
+                </ScrollViewer>
+                <Grid
+                    x:Name="ShowcaseContent"
+                    Grid.Row="2"
+                    Margin="0,12,8,8"
+                    Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <ninactrl:ImageGallery x:Name="ScreenshotGallery" Grid.Row="1" ItemsSource="{Binding Images}" />
+                    <TextBlock
+                        VerticalAlignment="Top"
+                        Text="{ns:Loc LblPluginManagerNoScreenshots}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding IsEmpty, Converter={StaticResource VisibleWhenTrue}}" />
+                    <StackPanel
+                        x:Name="ShowcaseLoading"
+                        VerticalAlignment="Top"
+                        Visibility="{Binding IsLoading, Converter={StaticResource VisibleWhenTrue}}">
+                        <TextBlock Text="{ns:Loc LblPluginManagerLoadingScreenshots}" />
+                        <ProgressBar Margin="0,6,0,8" Style="{StaticResource LoadingProgressBar}" />
+                    </StackPanel>
+                </Grid>
+                <Grid
+                    x:Name="VersionsContent"
+                    Grid.Row="2"
+                    Margin="0,12,8,8"
+                    Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,12" Text="{ns:Loc LblPluginManagerVersionHistoryHint}" TextWrapping="Wrap" />
+                        <StackPanel Margin="0,0,0,12" Visibility="{Binding IsLoadingVersions, Converter={StaticResource VisibleWhenTrue}}">
+                            <TextBlock Text="{ns:Loc LblPluginManagerLoadingVersions}" />
+                            <ProgressBar Margin="0,6,0,0" Style="{StaticResource LoadingProgressBar}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,0,0,12" Visibility="{Binding HasVersionHistoryError, Converter={StaticResource VisibleWhenTrue}}">
+                            <TextBlock Text="{Binding VersionHistoryError}" TextWrapping="Wrap" />
+                            <Button
+                                Margin="0,6,0,0"
+                                HorizontalAlignment="Left"
+                                Command="{Binding RetryVersionHistoryCommand}"
+                                Style="{StaticResource StandardButton}">
+                                <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblPluginManagerRetry}" TextWrapping="Wrap" />
+                            </Button>
+                        </StackPanel>
+                        <TextBlock Text="{ns:Loc LblPluginManagerNoVersions}" TextWrapping="Wrap" Visibility="{Binding CompatibleVersions, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}" />
+                    </StackPanel>
+                    <ListBox
+                        x:Name="PluginVersions"
+                        Grid.Row="1"
+                        AutomationProperties.Name="{ns:Loc LblPluginManagerVersions}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="{StaticResource PrimaryBrush}"
+                        ItemContainerStyle="{StaticResource PluginVersionRow}"
+                        ItemsSource="{Binding VersionEntries}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectedValue="{Binding SelectedVersion, Mode=TwoWay}"
+                        SelectedValuePath="Manifest"
+                        SelectionChanged="OnVersionSelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
                                 <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
-                                        <RowDefinition />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <GroupBox Header="{ns:Loc LblPlugins}" />
-                                    <ListView
-                                        Grid.Row="1"
-                                        MinWidth="180"
-                                        Margin="5,-15,0,0"
-                                        BorderThickness="0"
-                                        ItemsSource="{Binding InstalledPlugins}"
-                                        SelectedItem="{Binding SelectedInstalledPlugin}"
-                                        SelectionMode="Single">
-                                        <ListView.ItemContainerStyle>
-                                            <Style TargetType="ListViewItem">
-                                                <Style.Setters>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="ListBoxItem">
-                                                                <Border
-                                                                    Name="Border"
-                                                                    Margin="0,2.5,0,2.5"
-                                                                    Padding="2,0,2,0"
-                                                                    HorizontalAlignment="Stretch"
-                                                                    Background="{StaticResource BackgroundBrush}"
-                                                                    BorderBrush="{StaticResource BorderBrush}"
-                                                                    BorderThickness="0,0,0,1"
-                                                                    UseLayoutRounding="True">
-                                                                    <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-                                                                </Border>
-                                                                <ControlTemplate.Triggers>
-                                                                    <Trigger Property="IsSelected" Value="true">
-                                                                        <Setter TargetName="Border" Property="Background" Value="{StaticResource SecondaryBrush}" />
-                                                                    </Trigger>
-                                                                    <Trigger Property="IsMouseOver" Value="true">
-                                                                        <Setter TargetName="Border" Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
-                                                                    </Trigger>
-                                                                    <Trigger Property="IsEnabled" Value="false">
-                                                                        <Setter Property="Foreground" Value="{StaticResource ButtonForegroundDisabledBrush}" />
-                                                                    </Trigger>
-                                                                </ControlTemplate.Triggers>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style.Setters>
-                                            </Style>
-                                        </ListView.ItemContainerStyle>
-                                        <ListView.Resources>
-                                            <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </Style>
-                                        </ListView.Resources>
-                                        <ListView.View>
-                                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
-                                                <GridViewColumn Width="Auto" Header="">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <Image
-                                                                MaxWidth="25"
-                                                                MaxHeight="25"
-                                                                RenderOptions.BitmapScalingMode="HighQuality"
-                                                                Source="{Binding Key.Descriptions.FeaturedImageURL, Converter={StaticResource NullImageConverter}, TargetNullValue={StaticResource DefaultImage}, FallbackValue={StaticResource DefaultImage}}" />
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-                                                <GridViewColumn Width="Auto" Header="">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock
-                                                                VerticalAlignment="Center"
-                                                                FontSize="16"
-                                                                Text="{Binding Path=Key.Name}" />
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-                                                <GridViewColumn Width="Auto" Header="">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <CheckBox
-                                                                Height="25"
-                                                                Margin="2.5"
-                                                                VerticalAlignment="Center"
-                                                                IsChecked="{Binding Path=Value, Mode=OneWay}"
-                                                                IsEnabled="False"
-                                                                Style="{StaticResource CheckmarkCheckbox}"
-                                                                Visibility="{Binding Value, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-                                </Grid>
-                            </Border>
-
-                            <GridSplitter
-                                Grid.Column="1"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch" />
-                            <ScrollViewer
-                                Grid.Column="2"
-                                Margin="5"
-                                DataContext="{Binding SelectedInstalledPlugin.Key}"
-                                VerticalScrollBarVisibility="Auto">
-                                <StackPanel Orientation="Vertical">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel Orientation="Vertical">
-                                            <TextBlock
-                                                FontSize="30"
-                                                FontWeight="Bold"
-                                                Text="{Binding Name}"
-                                                TextDecorations="Underline" />
-                                            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                                                <TextBlock FontSize="16" Text="{ns:Loc LblAuthor}" />
-                                                <TextBlock FontSize="16" Text=":" />
-                                                <TextBlock
-                                                    Margin="5,0,0,0"
-                                                    FontSize="16"
-                                                    FontWeight="Bold"
-                                                    Text="{Binding Author}" />
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock FontSize="16" Text="{ns:Loc LblVersion}" />
-                                                <TextBlock FontSize="16" Text=":" />
-                                                <TextBlock
-                                                    Margin="5,0,0,0"
-                                                    FontSize="16"
-                                                    FontWeight="Bold"
-                                                    Text="{Binding Version.Major}" />
-                                                <TextBlock
-                                                    FontSize="16"
-                                                    FontWeight="Bold"
-                                                    Text="." />
-                                                <TextBlock
-                                                    FontSize="16"
-                                                    FontWeight="Bold"
-                                                    Text="{Binding Version.Minor}" />
-                                                <TextBlock
-                                                    FontSize="16"
-                                                    FontWeight="Bold"
-                                                    Text="." />
-                                                <TextBlock
-                                                    FontSize="16"
-                                                    FontWeight="Bold"
-                                                    Text="{Binding Version.Patch}" />
-                                                <TextBlock
-                                                    FontSize="16"
-                                                    FontWeight="Bold"
-                                                    Text="." />
-                                                <TextBlock
-                                                    FontSize="16"
-                                                    FontWeight="Bold"
-                                                    Text="{Binding Version.Build}" />
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Visibility="{Binding Homepage, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
-                                                <TextBlock
-                                                    VerticalAlignment="Center"
-                                                    FontSize="16"
-                                                    Text="{ns:Loc LblHomepage}" />
-                                                <TextBlock FontSize="16" Text=":" />
-                                                <TextBlock
-                                                    Margin="5,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="16"
-                                                    TextWrapping="Wrap">
-                                                    <Hyperlink NavigateUri="{Binding Homepage, FallbackValue=''}">
-                                                        <TextBlock
-                                                            VerticalAlignment="Center"
-                                                            FontSize="16"
-                                                            Text="{Binding Homepage, FallbackValue=''}"
-                                                            TextWrapping="Wrap" />
-                                                    </Hyperlink>
-                                                </TextBlock>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Visibility="{Binding ChangelogURL, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
-                                                <TextBlock
-                                                    VerticalAlignment="Center"
-                                                    FontSize="16"
-                                                    Text="{ns:Loc LblChangelog}" />
-                                                <TextBlock FontSize="16" Text=":" />
-                                                <TextBlock
-                                                    Margin="5,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="16"
-                                                    TextWrapping="Wrap">
-                                                    <Hyperlink NavigateUri="{Binding ChangelogURL, FallbackValue=''}">
-                                                        <TextBlock
-                                                            VerticalAlignment="Center"
-                                                            FontSize="16"
-                                                            Text="{Binding ChangelogURL, FallbackValue=''}"
-                                                            TextWrapping="Wrap" />
-                                                    </Hyperlink>
-                                                </TextBlock>
-                                            </StackPanel>
-                                            <TextBlock
-                                                Margin="0,10,0,10"
-                                                FontSize="16"
-                                                FontStyle="Italic"
-                                                Text="{Binding Descriptions.ShortDescription}"
-                                                TextWrapping="Wrap" />
-                                        </StackPanel>
-
-                                        <Grid Grid.Column="1">
-                                            <Grid Grid.Column="1">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="Auto" />
-                                                </Grid.RowDefinitions>
-
-                                                <ninactrl:AsyncProcessButton
-                                                    Width="150"
-                                                    Height="35"
-                                                    VerticalAlignment="Top"
-                                                    ButtonText="{ns:Loc LblUninstall}"
-                                                    Command="{Binding DataContext.UninstallPluginCommand, RelativeSource={RelativeSource AncestorType=local:PluginsView}}" />
-
-                                                <Image
-                                                    Grid.Row="1"
-                                                    MaxWidth="150"
-                                                    MaxHeight="150"
-                                                    Margin="0,10,0,0"
-                                                    VerticalAlignment="Top"
-                                                    RenderOptions.BitmapScalingMode="HighQuality"
-                                                    Source="{Binding Descriptions.FeaturedImageURL, Converter={StaticResource NullImageConverter}, TargetNullValue={StaticResource DefaultImage}, FallbackValue={StaticResource DefaultImage}}" />
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-
-                                    <GroupBox Header="{ns:Loc LblOptions}">
-                                        <ContentControl
-                                            Margin="0,5,0,0"
-                                            Content="{Binding}"
-                                            ContentTemplateSelector="{StaticResource TemplateSelector}" />
-                                    </GroupBox>
-
-                                    <GroupBox
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        Header="{ns:Loc LblDescription}"
-                                        Visibility="{Binding Descriptions.LongDescription, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
-                                        <i:Interaction.Behaviors>
-                                            <behavior:BubbleScrollEvent />
-                                        </i:Interaction.Behaviors>
-                                        <mdxam:MarkdownScrollViewer
-                                            Margin="0,5,0,5"
-                                            HorizontalAlignment="Stretch"
-                                            HorizontalContentAlignment="Stretch"
-                                            ClickAction="OpenBrowser"
-                                            Markdown="{Binding Descriptions.LongDescription}"
-                                            MarkdownStyle="{StaticResource MarkdownStyle}"
-                                            VerticalScrollBarVisibility="Disabled" />
-                                    </GroupBox>
-                                </StackPanel>
-                            </ScrollViewer>
-                            <!--<Grid
-                        Grid.Column="1"
-                        Margin="5"
-                        DataContext="{Binding SelectedInstalledPlugin.Key}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,3">
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock
-                                    FontSize="20"
-                                    FontWeight="Bold"
-                                    Text="{Binding Name}" />
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{ns:Loc LblVersion}" />
-                                    <TextBlock
-                                        Margin="5,0,0,0"
-                                        FontWeight="Bold"
-                                        Text="{Binding Version.Major}" />
-                                    <TextBlock FontWeight="Bold" Text="." />
-                                    <TextBlock FontWeight="Bold" Text="{Binding Version.Minor}" />
-                                    <TextBlock FontWeight="Bold" Text="." />
-                                    <TextBlock FontWeight="Bold" Text="{Binding Version.Patch}" />
-                                    <TextBlock FontWeight="Bold" Text="." />
-                                    <TextBlock FontWeight="Bold" Text="{Binding Version.Build}" />
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{ns:Loc LblAuthor}" />
-                                    <TextBlock
-                                        Margin="5,0,0,0"
-                                        FontWeight="Bold"
-                                        Text="{Binding Author}" />
-                                </StackPanel>
-                                <TextBlock
-                                    Margin="0,5,0,5"
-                                    FontStyle="Italic"
-                                    Text="{Binding Descriptions.ShortDescription}"
-                                    TextWrapping="Wrap" />
-
-                                <TextBlock
-                                    Margin="0,5,0,5"
-                                    FontStyle="Italic"
-                                    Text="{Binding Descriptions.LongDescription}"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                        </Border>
-                        <ContentControl
-                            Grid.Row="1"
-                            Margin="0,5,0,0"
-                            Content="{Binding}"
-                            ContentTemplateSelector="{StaticResource TemplateSelector}" />
-                    </Grid>-->
-                        </Grid>
-                    </Grid>
-                </TabItem.Content>
-            </TabItem>
-            <TabItem>
-                <TabItem.Style>
-                    <Style BasedOn="{StaticResource LeftTabItem}" TargetType="TabItem">
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Content" Value="{Binding Path=(util:DeferredContent.Content), RelativeSource={RelativeSource Self}}" />
-                            </Trigger>
-                            <Trigger Property="IsSelected" Value="False">
-                                <Setter Property="Content" Value="{Binding Content, RelativeSource={RelativeSource Self}}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </TabItem.Style>
-                <TabItem.Header>
-                    <Grid>
-                        <Grid Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition Height="10" />
-                            </Grid.RowDefinitions>
-                            <Grid>
-                                <Grid Width="40" Height="40">
-                                    <Path
-                                        Margin="5"
-                                        Data="{StaticResource GridSVG}"
-                                        Stretch="Uniform"
-                                        Style="{StaticResource TabItemPath}"
-                                        UseLayoutRounding="True" />
-
-                                    <Border
-                                        Width="15"
-                                        Height="15"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        Background="{StaticResource ButtonBackgroundBrush}"
-                                        CornerRadius="1"
-                                        Visibility="{Binding AvailablePluginUpdateCount, Converter={StaticResource ZeroToVisibilityConverter}}">
+                                    <WrapPanel MinHeight="32" VerticalAlignment="Center">
                                         <TextBlock
-                                            HorizontalAlignment="Center"
+                                            x:Name="VersionNumber"
                                             VerticalAlignment="Center"
-                                            FontWeight="Bold"
-                                            Foreground="{StaticResource ButtonForegroundBrush}"
-                                            Text="{Binding AvailablePluginUpdateCount}" />
-                                    </Border>
+                                            FontSize="16"
+                                            FontWeight="SemiBold"
+                                            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                                            Text="{Binding VersionText}" />
+                                        <Border
+                                            x:Name="InstalledVersionMarker"
+                                            Margin="12,0,0,0"
+                                            Padding="6,2"
+                                            BorderBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                                            BorderThickness="1"
+                                            Visibility="Collapsed">
+                                            <TextBlock
+                                                FontWeight="SemiBold"
+                                                Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                                                Text="{ns:Loc LblPluginManagerCurrentlyInstalled}" />
+                                        </Border>
+                                    </WrapPanel>
+                                    <Button
+                                        x:Name="VersionAction"
+                                        Grid.Column="1"
+                                        MaxWidth="180"
+                                        Margin="12,0,0,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding DataContext.InstallSelectedVersionCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                                        Style="{StaticResource StandardButton}"
+                                        Visibility="Collapsed">
+                                        <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{Binding ActionText}" TextWrapping="Wrap" />
+                                    </Button>
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,4,0,0"
+                                        FontSize="12"
+                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                                        Visibility="{Binding MinimumApplicationVersion, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} {1}">
+                                                <Binding Path="[LblPluginManagerRequiresNina]" Source="{x:Static ns:Loc.Instance}" />
+                                                <Binding Path="MinimumApplicationVersion" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock
+                                        x:Name="VersionState"
+                                        Grid.Row="2"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,4,0,0"
+                                        FontSize="12"
+                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                                        Text="{Binding StatusText}" />
                                 </Grid>
-                            </Grid>
-                            <TextBlock
-                                Grid.Row="1"
-                                Style="{StaticResource SideBarTextBlock}"
-                                Text="{ns:Loc LblAvailable}" />
-                        </Grid>
-                        <Grid Height="25" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                            <Path
-                                Width="25"
-                                Margin="2.5"
-                                Data="{StaticResource GridSVG}"
-                                Stretch="Uniform"
-                                Style="{StaticResource TabItemPath}"
-                                UseLayoutRounding="True" />
-                            <Border
-                                Width="13"
-                                Height="13"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                Background="{StaticResource ButtonBackgroundBrush}"
-                                CornerRadius="1"
-                                Visibility="{Binding AvailablePluginUpdateCount, Converter={StaticResource ZeroToVisibilityConverter}}">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontWeight="Bold"
-                                    Foreground="{StaticResource ButtonForegroundBrush}"
-                                    Text="{Binding AvailablePluginUpdateCount}" />
-                            </Border>
-                        </Grid>
-                    </Grid>
-                </TabItem.Header>
-
-                <util:DeferredContent.Content>
-                    <local:AvailablePluginsView />
-                </util:DeferredContent.Content>
-            </TabItem>
-        </TabControl>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                                        <Setter TargetName="InstalledVersionMarker" Property="Visibility" Value="Visible" />
+                                        <Setter TargetName="VersionNumber" Property="FontWeight" Value="Bold" />
+                                        <Setter TargetName="VersionState" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Value="True" />
+                                            <Condition Binding="{Binding IsInstalled}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="VersionAction" Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+                <ScrollViewer
+                    x:Name="InfoContent"
+                    Grid.Row="2"
+                    DataContext="{Binding SelectedPlugin.DisplayManifest}"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto"
+                    Visibility="Collapsed">
+                    <StackPanel Margin="0,12,8,8">
+                        <i:Interaction.Behaviors>
+                            <behavior:BubbleScrollEvent />
+                        </i:Interaction.Behaviors>
+                        <TextBlock Margin="0,8" Visibility="{Binding MinimumApplicationVersion, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1}">
+                                    <Binding Path="[LblPluginManagerRequiresNina]" Source="{x:Static ns:Loc.Instance}" />
+                                    <Binding Path="MinimumApplicationVersion" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            Text="{Binding Tags, Converter={StaticResource StringCollectionToStringConverter}, ConverterParameter=', '}"
+                            TextWrapping="Wrap"
+                            Visibility="{Binding Tags, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
+                        <WrapPanel Margin="0,4,0,12">
+                            <TextBlock Margin="0,0,16,8" Visibility="{Binding Homepage, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}"><Hyperlink NavigateUri="{Binding Homepage}">
+                                    <Run Text="{ns:Loc LblHomepage}" />
+                                </Hyperlink></TextBlock>
+                            <TextBlock Margin="0,0,16,8" Visibility="{Binding ChangelogURL, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}"><Hyperlink NavigateUri="{Binding ChangelogURL}">
+                                    <Run Text="{ns:Loc LblChangelog}" />
+                                </Hyperlink></TextBlock>
+                            <TextBlock Margin="0,0,16,8" Visibility="{Binding Repository, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}"><Hyperlink NavigateUri="{Binding Repository}">
+                                    <Run Text="{ns:Loc LblPluginManagerSourceCode}" />
+                                </Hyperlink></TextBlock>
+                            <TextBlock Margin="0,0,16,8" Visibility="{Binding LicenseURL, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}"><Hyperlink NavigateUri="{Binding LicenseURL}">
+                                    <Run Text="{Binding License, Mode=OneWay}" />
+                                </Hyperlink></TextBlock>
+                        </WrapPanel>
+                        <GroupBox Header="{ns:Loc LblSetup}">
+                            <StackPanel Margin="0,6,0,8">
+                                <TextBlock Margin="0,0,0,8" Text="{ns:Loc LblPluginManagerInstallHelp}" TextWrapping="Wrap" />
+                                <TextBlock TextWrapping="Wrap" Visibility="{Binding Installer, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                    <TextBlock.Style>
+                                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+                                            <Setter Property="Text" Value="{ns:Loc LblPluginDllInstallDescription}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Installer.Type}" Value="{x:Static manifest:InstallerType.ARCHIVE}">
+                                                    <Setter Property="Text" Value="{ns:Loc LblPluginArchiveInstallDescription}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Margin="0,4,0,0" Visibility="{Binding Installer.URL, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}"><Hyperlink NavigateUri="{Binding Installer.URL}">
+                                        <Run Text="{Binding Installer.URL, Mode=OneWay}" />
+                                    </Hyperlink></TextBlock>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+                <ScrollViewer
+                    x:Name="SettingsContent"
+                    Grid.Row="2"
+                    Margin="0,12,8,8"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto"
+                    Visibility="Collapsed">
+                    <ContentControl x:Name="SettingsPresenter" VerticalAlignment="Top">
+                        <i:Interaction.Behaviors>
+                            <behavior:BubbleScrollEvent />
+                        </i:Interaction.Behaviors>
+                    </ContentControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+        <Border
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="5,8,12,8"
+            Background="{StaticResource BackgroundBrush}"
+            Visibility="{Binding Initialized, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+            <ContentControl
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="{ns:Loc LblInitializingPlugins}"
+                ContentTemplate="{StaticResource InitializationLoadingTemplate}" />
+        </Border>
+        <Border
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="5,0,12,8"
+            Padding="8"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="0,1,0,0">
+            <Border.Visibility>
+                <MultiBinding Converter="{StaticResource BooleanOrToVisibilityCollapsedMultiConverter}">
+                    <Binding Path="IsMutating" />
+                    <Binding Path="IsFetching" />
+                    <Binding Path="HasPendingChanges" />
+                </MultiBinding>
+            </Border.Visibility>
+            <StackPanel>
+                <DockPanel Margin="0,0,0,8" Visibility="{Binding IsFetching, Converter={StaticResource VisibleWhenTrue}}">
+                    <Button
+                        Command="{Binding CancelFetchPluginsCommand}"
+                        DockPanel.Dock="Right"
+                        Style="{StaticResource BackgroundButton}">
+                        <TextBlock Margin="12,6" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblCancel}" TextWrapping="Wrap" />
+                    </Button>
+                    <StackPanel Margin="0,0,12,0" VerticalAlignment="Center">
+                        <TextBlock Text="{ns:Loc LblPluginManagerLoadingCatalog}" />
+                        <ProgressBar Margin="0,4,0,0" Style="{StaticResource LoadingProgressBar}" />
+                    </StackPanel>
+                </DockPanel>
+                <DockPanel Margin="0,0,0,8" Visibility="{Binding IsMutating, Converter={StaticResource VisibleWhenTrue}}">
+                    <Button
+                        Command="{Binding CancelInstallPluginCommand}"
+                        DockPanel.Dock="Right"
+                        Style="{StaticResource BackgroundButton}">
+                        <TextBlock Margin="12,6" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblCancel}" TextWrapping="Wrap" />
+                    </Button>
+                    <StackPanel Margin="0,0,12,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding ActivityText}" />
+                        <ProgressBar Margin="0,4,0,0" Style="{StaticResource LoadingProgressBar}" />
+                    </StackPanel>
+                </DockPanel>
+                <DockPanel Visibility="{Binding HasPendingChanges, Converter={StaticResource VisibleWhenTrue}}">
+                    <Button
+                        x:Name="RestartPluginsButton"
+                        Margin="12,0,0,0"
+                        Command="{Binding RestartCommand}"
+                        DockPanel.Dock="Right"
+                        Style="{StaticResource StandardButton}">
+                        <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblPluginManagerRestartNina}" TextWrapping="Wrap" />
+                    </Button>
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPluginManagerRestartNotice}" />
+                </DockPanel>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

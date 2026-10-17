@@ -15,7 +15,6 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:util="clr-namespace:NINA.Utility.AvalonDock"
     xmlns:view="clr-namespace:NINA.View"
@@ -209,19 +208,11 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="1" Orientation="Vertical">
-                <ninactrl:LoadingControl
-                    Width="50"
-                    Height="50"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    LoadingImageBrush="{StaticResource PrimaryBrush}" />
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="20"
-                    Text="{ns:Loc LblInitializingLayout}" />
-            </StackPanel>
+            <ContentControl
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                Content="{ns:Loc LblInitializingLayout}"
+                ContentTemplate="{StaticResource InitializationLoadingTemplate}" />
         </Grid>
         <Grid Background="{StaticResource TertiaryBackgroundBrush}" Visibility="{Binding LoadAvalonDockLayoutCommand.Execution.IsCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             <Grid.RowDefinitions>

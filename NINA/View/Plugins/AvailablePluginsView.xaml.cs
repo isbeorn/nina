@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -35,6 +35,11 @@ namespace NINA.View.Plugins {
 
         public AvailablePluginsView() {
             InitializeComponent();
+            Loaded += (_, _) => {
+                if (DataContext is NINA.ViewModel.Plugins.PluginsVM manager) {
+                    manager.SelectedTabIndex = 1;
+                }
+            };
         }
 
     }

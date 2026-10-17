@@ -15,7 +15,7 @@ Build shape from `NINA.CustomControlLibrary.csproj`:
 The project is intentionally small and split between control classes and theme dictionaries:
 
 - Control classes in the project root
-  `AsyncProcessButton`, `CancellableButton`, `AutoCompleteBox`, `HintTextBox`, `UnitTextBox`, `StepperControl`, `LoadingControl`, `Arc`, `OutlinedTextBlock`, `IntStepperControl`, `DetachingExpander`, `GridHelpers`, `HitTestGroupBox`, `CardinalSplineShape`
+  `AsyncProcessButton`, `CancellableButton`, `AutoCompleteBox`, `HintTextBox`, `UnitTextBox`, `StepperControl`, `LoadingControl`, `Arc`, `OutlinedTextBlock`, `IntStepperControl`, `DetachingExpander`, `GridHelpers`, `HitTestGroupBox`, `CardinalSplineShape`, `ImageGallery`
 - Value converters
   `Converters/*`
 - Theme dictionaries
@@ -31,6 +31,7 @@ The project is intentionally small and split between control classes and theme d
 - `AsyncProcessButton.Generic.xaml`
 - `Arc.Generic.xaml`
 - `AutoCompleteBox.Generic.xaml`
+- `ImageGallery.Generic.xaml`
 
 ## Control Model
 
@@ -42,6 +43,8 @@ Examples:
   Extends `CancellableButton` with pause/resume commands and icon properties.
 - `AutoCompleteBox`
   Extends `HintTextBox` and coordinates popup/list behavior around `IAutoCompleteItem` collections from `NINA.Core.Interfaces`.
+- `ImageGallery`
+  Extends `ListBox` to show a selected `ImageSource` with wrapping arrow/keyboard navigation and selectable bottom indicators. It accepts arbitrary image collections through `ItemsSource`; image loading belongs to the caller.
 
 There is no app startup logic, no DI container, and no project-specific view model layer here.
 

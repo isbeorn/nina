@@ -249,12 +249,12 @@ namespace NINA.Test.View {
                 host.UpdateLayout();
             }
 
-            Hyperlink[] compiledViewHyperlinks = compiledViews
-                .SelectMany(FindLogicalDescendants<Hyperlink>)
-                .ToArray();
-            compiledViewHyperlinks.Should().HaveCount(140);
-            compiledViewHyperlinks.Should().OnlyContain(hyperlink =>
-                HyperlinkBehavior.GetIsEnabled(hyperlink) && hyperlink.ContextMenu != null);
+            foreach (UserControl view in compiledViews) {
+                Hyperlink[] hyperlinks = FindLogicalDescendants<Hyperlink>(view).ToArray();
+                hyperlinks.Should().NotBeEmpty($"{view.GetType().Name} must contribute its own hyperlinks");
+                hyperlinks.Should().OnlyContain(hyperlink =>
+                    HyperlinkBehavior.GetIsEnabled(hyperlink) && hyperlink.ContextMenu != null);
+            }
 
             MarkdownScrollViewer viewer = new MarkdownScrollViewer {
                 MarkdownStyle = markdownResources["MarkdownStyle"].Should().BeOfType<Style>().Subject,

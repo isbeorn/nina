@@ -28,6 +28,8 @@ Build shape from `NINA.WPF.Base.csproj`:
 - `Resources/`, `View/`, `Behaviors/`, `Utility/`, `Model/`
   Shared XAML resources, controls, behaviors, and support models
 
+The shared `Resources/Styles/ProgressBar.xaml` dictionary supplies `LoadingProgressBar` for thin horizontal indeterminate activity and `InitializationLoadingTemplate` for the Imaging, Sequencer and Plugins initialization captions. Loading bars use the active profile's primary brush and stop animating when hidden. Compact spinner controls remain in inline action and sequence-row slots.
+
 ## Mediator Pattern
 
 The mediator classes in `Mediator/` are intentionally simple. A typical mediator:
