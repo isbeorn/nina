@@ -102,6 +102,7 @@ This allows you to safely return to a stable release if needed.
   - Preventing automatic tracking on unpark avoids unexpected mount movement and reduces the risk of pier collisions or other unintended motion, while ensuring consistent and predictable behavior across drivers.
 - `Wait Until Safe` instruction no longer requires a safety monitor to be connected. A disconnected safety monitor is treated as unsafe, as it could be disconnected due to communication failures.
 - Plugins that register sequencer symbol functions must now use `ISymbolFunctionArguments`. Use `Count` to inspect the argument count and `Evaluate(index)` to lazily evaluate an argument. This NINA-owned contract prevents future NCalc upgrades from changing the plugin API directly.
+- The rotator's selected Mechanical Range mode is now applied in all cases, whether the rotator was commanded as part of a sequence or by using manual controls.
 
 ## Features
 
@@ -162,6 +163,8 @@ This allows you to safely return to a stable release if needed.
   - While connecting the app will wait for the filter wheel homing to finish before proceeding
 - **Moravian Instruments Cameras and Integrated Filter Wheels**
   - Added native drivers for Moravian Instruments cameras and integrated filter wheels
+- **Rotators**
+  - Added a `Literal` mechanical range mode where the requested angle is always moved to even if its opposing angle would be a closer movement.
 
 ### **User Interface & Usability**
 - **Plugin Manager**
