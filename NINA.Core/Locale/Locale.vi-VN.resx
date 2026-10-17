@@ -8285,4 +8285,235 @@ Hữu ích khi bộ kích hoạt tích hợp có thời điểm phù hợp nhưn
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Các chỉnh sửa chưa lưu của mẫu liên kết '{0}' đã bị bỏ sau năm phút không hoạt động. Tiếp tục với mẫu đã lưu.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Làm mới</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Thử lại</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Giới thiệu</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Phiên bản</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Không có ảnh chụp màn hình cho plugin này.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Đang tải lịch sử phiên bản...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Không tải được một phần lịch sử phiên bản. Các phiên bản có sẵn vẫn được hiển thị.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Một kho plugin không cung cấp lịch sử phiên bản. Các phiên bản trong danh mục của kho đó vẫn được hiển thị.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>Không có phiên bản tương thích nào từ các kho plugin đã cấu hình.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>Phiên bản đã cài đặt được hiển thị cùng các phiên bản tương thích do các kho plugin đã cấu hình cung cấp. Các phiên bản cũ hơn có thể không còn sẵn có. Thay đổi phiên bản có hiệu lực sau khi khởi động lại NINA.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Cài đặt phiên bản</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Hiện đã cài đặt</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Có thể quay về phiên bản cũ</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Có thể nâng cấp</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Phiên bản cũ hơn</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Phiên bản mới hơn</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Quay về {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Nâng cấp lên {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Cài đặt {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Dùng thao tác trong mục Phiên bản để cài đặt hoặc đổi phiên bản, rồi khởi động lại NINA. Xem trang chủ của plugin để biết hướng dẫn thiết lập riêng của nhà phát hành.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Tìm kiếm plugin</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Tất cả thẻ</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Xóa bộ lọc</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Duyệt plugin có sẵn</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Đang tải các plugin có sẵn...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Không tải được các plugin có sẵn. Kết quả trước đó vẫn được hiển thị. Thử lại để kiểm tra lần nữa.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Không thể truy cập một số kho plugin. Kết quả trước đó từ các kho này vẫn được hiển thị.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Không có plugin nào khớp với các bộ lọc này. Xóa bộ lọc để xem tất cả plugin.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Chưa cài plugin nào. Duyệt các plugin có sẵn để cài đặt.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Nạp thất bại</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Chờ khởi động lại để gỡ bỏ</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Cần khởi động lại</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Đang cài đặt plugin...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Đang cập nhật plugin...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Đang gỡ bỏ plugin...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Đã yêu cầu hủy...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Cập nhật tất cả ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Phần cài đặt sẽ khả dụng sau khi khởi động lại NINA.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Phiên bản NINA tối thiểu:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Mã nguồn</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Khởi động lại NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Cần khởi động lại để áp dụng các thay đổi về plugin.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Có bản cập nhật</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>Không có plugin tương thích nào từ các kho plugin đã cấu hình.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Plugin này không có phần cài đặt.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Mở lịch sử thay đổi trong trình duyệt</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Đang tải lịch sử thay đổi...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Không thể hiển thị lịch sử thay đổi này tại đây. Mở trong trình duyệt để đọc.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Không thể làm mới lịch sử thay đổi. Nội dung đã lưu trước đó đang được hiển thị. Thử lại để kiểm tra lần nữa hoặc mở trong trình duyệt.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Không tải được lịch sử thay đổi. Thử lại hoặc mở trong trình duyệt.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Ảnh trước</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Ảnh tiếp theo</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Ảnh</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Đang tải ảnh chụp màn hình...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Thông tin bổ sung</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>Bộ tổng hợp giám sát an toàn NINA</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>Bộ tổng hợp công tắc NINA</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>Bộ tổng hợp thời tiết NINA</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Thêm thiết bị</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Xóa thiết bị</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Khoảng thời gian lấy trung bình</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Mở phần cài đặt của bộ tổng hợp bằng biểu tượng bánh răng. Chọn ít nhất một thiết bị, không được chọn trùng hoặc lồng bộ tổng hợp NINA.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Chưa cấu hình thiết bị nào cho bộ tổng hợp này. Mở phần cài đặt bằng biểu tượng bánh răng rồi thêm thiết bị.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Chưa có thông số thời tiết nào được gán thiết bị nguồn. Mở phần cài đặt của bộ tổng hợp bằng biểu tượng bánh răng rồi gán thiết bị cho ít nhất một thông số.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Không thể kết nối thiết bị.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Một thiết bị trong bộ tổng hợp không khả dụng. Ngắt rồi kết nối lại bộ tổng hợp để tiếp tục.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Bộ điều khiển công tắc không hỗ trợ chọn kênh theo định danh ổn định trong bộ tổng hợp.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Kênh đã chọn trong bộ tổng hợp bị thiếu, không thể xác định rõ hoặc không cho phép ghi.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Không thể đọc lại giá trị của công tắc sau khi đặt.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Thêm các thiết bị sẽ được dùng trong bộ tổng hợp này.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Thiết bị đã ngắt kết nối.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Không sử dụng</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Đã ngắt kết nối</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>An toàn</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Không an toàn</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Công tắc {0} - {1}</value>
+  </data>
 </root>
