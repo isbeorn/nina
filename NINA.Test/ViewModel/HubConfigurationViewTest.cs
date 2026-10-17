@@ -21,6 +21,7 @@ using NINA.WPF.Base.ViewModel.Equipment.Switch;
 using NINA.WPF.Base.ViewModel.Equipment.WeatherData;
 using System.ComponentModel;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -38,6 +39,8 @@ namespace NINA.Test.ViewModel {
     public partial class HubConfigurationViewTest {
         private ResourceDictionary previousResources = null!;
         private Window? previousWindow;
+        private object? previousNotificationManager;
+        private object? previousNotificationDispatcher;
         private IProfile? previousProfile;
         private NINA.Profile.ProfileService sharedProfiles = null!;
         private NINA.Profile.Profile profile = null!;
@@ -45,6 +48,8 @@ namespace NINA.Test.ViewModel {
         [SetUp]
         public void SetUp() {
             var app = Application.Current ?? new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+            previousNotificationManager = typeof(Notification).GetField("manager", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null);
+            previousNotificationDispatcher = typeof(Notification).GetField("dispatcher", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null);
             previousResources = app.Resources;
             previousWindow = app.MainWindow;
             app.Resources = new ResourceDictionary();
@@ -71,10 +76,17 @@ namespace NINA.Test.ViewModel {
             app.Resources.MergedDictionaries.Add(new ResourceDictionary {
                 Source = new Uri("/NINA;component/Resources/StaticResources/DataTemplates.xaml", UriKind.Relative)
             });
+
+            // Equipment-only tests can initialize notifications before a WPF application exists.
+            typeof(Notification).GetMethod("Initialize", BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, null);
         }
 
         [TearDown]
         public void TearDown() {
+            Notification.Dispose();
+            Drain();
+            typeof(Notification).GetField("manager", BindingFlags.Static | BindingFlags.NonPublic)!.SetValue(null, previousNotificationManager);
+            typeof(Notification).GetField("dispatcher", BindingFlags.Static | BindingFlags.NonPublic)!.SetValue(null, previousNotificationDispatcher);
             Application.Current.MainWindow = previousWindow;
             typeof(NINA.Profile.ProfileService).GetProperty(nameof(IProfileService.ActiveProfile))!.SetValue(sharedProfiles, previousProfile);
             Application.Current.Resources = previousResources;
