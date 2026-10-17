@@ -8279,4 +8279,235 @@ Ez akkor hasznos, ha egy beépített indítófeltétel időzítése pont megfele
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Az „{0}” összekapcsolt sablon nem mentett módosításai öt perc inaktivitás után elvetésre kerültek. A folyamat a mentett sablonnal folytatódik.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Frissítés</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Újrapróbálkozás</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Bemutató</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Verziók</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Ehhez a bővítményhez nem érhetők el képernyőképek.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Verzióelőzmények betöltése...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>A verzióelőzmények egy részét nem sikerült betölteni. Az elérhető kiadások továbbra is láthatók.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Az egyik tároló nem biztosít verzióelőzményeket. A katalógusában szereplő kiadások továbbra is láthatók.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>A beállított tárolókban nem érhetők el kompatibilis kiadások.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>A telepített verzió a beállított tárolók által biztosított kompatibilis kiadások mellett jelenik meg. Előfordulhat, hogy a korábbi kiadások nem érhetők el. A verzióváltás a NINA újraindítása után lép érvénybe.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Verzió telepítése</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Jelenleg telepítve</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Visszaállítható korábbi verzióra</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Újabb verzióra frissíthető</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Régebbi verzió</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Újabb verzió</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Visszaállás a(z) {0} verzióra</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Frissítés a(z) {0} verzióra</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>{0} telepítése</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>A Verziók lapon található művelettel telepíthet egy kiadást vagy válthat másikra, majd indítsa újra a NINA alkalmazást. A készítő esetleges további beállítási útmutatóját a bővítmény honlapján találja.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Bővítmények keresése</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Összes címke</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Szűrők törlése</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Elérhető bővítmények böngészése</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Elérhető bővítmények betöltése...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Nem sikerült betölteni az elérhető bővítményeket. A korábbi eredmények továbbra is láthatók. Az ismételt ellenőrzéshez próbálja újra.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Egyes bővítménytárolókat nem sikerült elérni. Az ezekből a tárolókból származó korábbi eredmények továbbra is láthatók.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Nincs a szűrőknek megfelelő bővítmény. Az összes bővítmény megjelenítéséhez törölje a szűrőket.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Nincsenek telepített bővítmények. Telepítéshez böngésszen az elérhető bővítmények között.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Sikertelen betöltés</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Eltávolítás az újraindítás után</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Újraindítás szükséges</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Bővítmény telepítése...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Bővítmény frissítése...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Bővítmény eltávolítása...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Megszakítás kérve...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Összes frissítése ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>A beállítások a NINA újraindítása után lesznek elérhetők.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Minimális NINA-verzió:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Forráskód</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>NINA újraindítása</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>A bővítmények módosításaihoz újraindítás szükséges.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Frissítés elérhető</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>A beállított tárolókban nem érhetők el kompatibilis bővítmények.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Ez a bővítmény nem biztosít beállításokat.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Változások listájának megnyitása a böngészőben</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Változások listájának betöltése...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Ez a változáslista itt nem jeleníthető meg. Az elolvasásához nyissa meg a böngészőben.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Nem sikerült frissíteni a változások listáját. A korábban mentett leírás látható. Próbálja újra az ellenőrzést, vagy nyissa meg a böngészőben.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Nem sikerült betölteni a változások listáját. Próbálja újra, vagy nyissa meg a böngészőben.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Előző kép</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Következő kép</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Kép</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Képernyőképek betöltése...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>További információk</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA biztonsági központ</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA kapcsolóközpont</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA időjárási központ</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Eszköz hozzáadása</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Eszköz eltávolítása</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Átlagolási időszak</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Nyissa meg a központ beállításait a fogaskerék ikonnal. Válasszon ki legalább egy eszközt, ismétlődés és egymásba ágyazott NINA-központok nélkül.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Ehhez a központhoz nincs eszköz beállítva. Nyissa meg a beállításokat a fogaskerék ikonnal, és adjon hozzá egy eszközt.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Egyetlen időjárási adatmezőhöz sincs forráseszköz rendelve. Nyissa meg a központ beállításait a fogaskerék ikonnal, és rendeljen eszközt legalább egy mezőhöz.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Nem sikerült csatlakoztatni az eszközt.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>A központ egyik eszköze nem érhető el. A folytatáshoz válassza le, majd csatlakoztassa újra a központot.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>A kapcsolóvezérlő nem támogatja a központ csatornáinak állandó azonosítón alapuló kiválasztását.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>A központ kiválasztott csatornája hiányzik, nem azonosítható egyértelműen vagy nem módosítható.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>A kapcsoló értékét a beállítása után nem sikerült kiolvasni.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Adja hozzá a központban használni kívánt eszközöket.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Az eszköz nincs csatlakoztatva.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Nincs használatban</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Leválasztva</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Biztonságos</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Nem biztonságos</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Kapcsoló {0} - {1}</value>
+  </data>
 </root>
