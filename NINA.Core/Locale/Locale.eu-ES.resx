@@ -8250,4 +8250,235 @@ Hau erabilgarria da barneko abiarazle batek behar duzun denbora-unea duenean, ba
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>'{0}' txantiloi lotuaren gorde gabeko edizioak baztertu egin dira bost minutu jarduerarik gabe igaro ondoren. Gordetako txantiloiarekin jarraitzen da.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Freskatu</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Saiatu berriz</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Aurkezpena</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Bertsioak</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Ez dago plugin honen pantaila-argazkirik eskuragarri.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Bertsioen historia kargatzen...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Ezin izan da bertsioen historiaren zati bat kargatu. Eskuragarri dauden bertsioak erakusten dira oraindik.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Biltegi batek ez du bertsioen historiarik eskaintzen. Haren katalogoko bertsioak erakusten dira oraindik.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>Konfiguratutako biltegietan ez dago bertsio bateragarririk eskuragarri.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>Instalatutako bertsioa konfiguratutako biltegiek eskaintzen dituzten bertsio bateragarriekin batera erakusten da. Baliteke aurreko bertsioak eskuragarri ez egotea. Bertsio-aldaketak NINA berrabiarazi ondoren aplikatzen dira.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Instalatu bertsioa</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Une honetan instalatuta</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Aurreko bertsio batera itzul daiteke</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Bertsio berriago batera eguneratu daiteke</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Bertsio zaharragoa</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Bertsio berriagoa</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Itzuli {0} bertsiora</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Eguneratu {0} bertsiora</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Instalatu {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Bertsio bat instalatzeko edo aldatzeko, erabili Bertsioak ataleko ekintza eta, ondoren, berrabiarazi NINA. Kontsultatu pluginaren hasierako orria argitaratzailearen konfigurazio-jarraibide espezifikoak ikusteko.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Bilatu pluginak</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Etiketa guztiak</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Garbitu iragazkiak</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Arakatu eskuragarri dauden pluginak</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Eskuragarri dauden pluginak kargatzen...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Ezin izan dira eskuragarri dauden pluginak kargatu. Aurreko emaitzak erakusten dira oraindik. Saiatu berriz egiaztapena errepikatzeko.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Ezin izan da plugin-biltegi batzuekin konektatu. Biltegi horien aurreko emaitzak erakusten dira oraindik.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Ez dago iragazki hauekin bat datorren pluginik. Garbitu iragazkiak plugin guztiak ikusteko.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Ez dago pluginik instalatuta. Arakatu eskuragarri dauden pluginak bat instalatzeko.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Ezin izan da kargatu</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Berrabiaraztean kenduko da</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Berrabiarazi behar da</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Plugina instalatzen...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Plugina eguneratzen...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Plugina kentzen...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Ezeztatzea eskatu da...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Eguneratu guztiak ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Ezarpenak NINA berrabiarazi ondoren egongo dira eskuragarri.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>NINAren gutxieneko bertsioa:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Iturburu-kodea</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Berrabiarazi NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Plugin-aldaketak aplikatzeko, berrabiarazi behar da.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Eguneratzea eskuragarri</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>Konfiguratutako biltegietan ez dago plugin bateragarririk eskuragarri.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Plugin honek ez du ezarpenik eskaintzen.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Ireki aldaketen zerrenda arakatzailean</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Aldaketen zerrenda kargatzen...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Aldaketen zerrenda hau ezin da hemen erakutsi. Ireki arakatzailean irakurtzeko.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Ezin izan da aldaketen zerrenda freskatu. Aurrez gordetako oharrak erakusten dira. Saiatu berriz egiaztapena errepikatzeko edo ireki zerrenda arakatzailean.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Ezin izan da aldaketen zerrenda kargatu. Saiatu berriz edo ireki arakatzailean.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Aurreko irudia</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Hurrengo irudia</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Irudia</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Pantaila-argazkiak kargatzen...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Informazio gehigarria</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA segurtasun-huba</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA etengailu-huba</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA eguraldi-huba</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Gehitu gailua</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Kendu gailua</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Batez bestekorako denbora-tartea</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Ireki hubaren ezarpenak engranajearen ikonoarekin. Hautatu gutxienez gailu bat, bikoiztutako gailurik edo habiaratutako NINA hubik gabe.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Ez dago gailurik konfiguratuta hub honetarako. Ireki ezarpenak engranajearen ikonoarekin eta gehitu gailu bat.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Eguraldi-datuen eremu bakar batek ere ez du iturri-gailurik. Ireki hubaren ezarpenak engranajearen ikonoarekin eta esleitu gailu bat gutxienez eremu bati.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Ezin izan da gailua konektatu.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Hubeko gailu bat ez dago erabilgarri. Birkonektatu huba jarraitzeko.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Etengailu-kontrolagailuak ez du onartzen hubeko kanalak modu fidagarri eta iraunkorrean hautatzea.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Hautatutako hub-kanala falta da, anbiguoa da edo ez du balioak ezartzea onartzen.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Ezin izan da etengailuaren balioa irakurri hura ezarri ondoren.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Gehitu hub honetan parte hartuko duten gailuak.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Gailua deskonektatuta dago.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Ez da erabiltzen</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Deskonektatuta</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Segurua</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Ez-segurua</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>{0}. etengailua - {1}</value>
+  </data>
 </root>
