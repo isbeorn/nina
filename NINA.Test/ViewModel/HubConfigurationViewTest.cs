@@ -189,13 +189,10 @@ namespace NINA.Test.ViewModel {
             }
         }
 
-        [TestCase("Safety", 96)]
-        [TestCase("Safety", 144)]
-        [TestCase("Switch", 96)]
-        [TestCase("Switch", 144)]
-        [TestCase("Weather", 96)]
-        [TestCase("Weather", 144)]
-        public void EquipmentConnectCommand_WithBoundHubControls_ConnectsAndDisconnectsOnWorkerThread(string category, int dpi) {
+        [TestCase("Safety")]
+        [TestCase("Switch")]
+        [TestCase("Weather")]
+        public void EquipmentConnectCommand_WithBoundHubControls_ConnectsAndDisconnectsOnWorkerThread(string category) {
             IEquipmentHub hub = category switch {
                 "Safety" => new SafetyMonitorHub("Hub"),
                 "Switch" => new CompositeSwitchHub("Hub"),
@@ -348,13 +345,13 @@ namespace NINA.Test.ViewModel {
                     hub.DeviceStatuses.Select(status => status.Connected).Should().Equal(true, false, false);
                 }
 
-                SavePreview(equipmentView, $"Hub{category}StatusConnected-{dpi}.png", dpi);
+                SavePreview(equipmentView, $"Hub{category}StatusConnected");
                 if (category == "Switch") {
                     var labels = Descendants<TextBlock>(equipmentView).Where(label => label.IsVisible).Select(label => label.Text);
                     labels.Should().Contain("Switch 1 - Voltage / DC");
                     labels.Should().Contain("Switch 1 - Dew heater (main)");
                     ((Border)deviceList.Content).BorderThickness.Top.Should().Be(0);
-                    SavePreview(equipmentView, "HubSwitchReadableNames-96.png", 96);
+                    SavePreview(equipmentView, "HubSwitchReadableNames");
                 }
 
                 var add = Descendants<Button>(view).Single(button => ReferenceEquals(button.Command, chooser.HubConfiguration.AddDeviceCommand));
@@ -376,7 +373,7 @@ namespace NINA.Test.ViewModel {
                     VisibleLabels(deviceList).Should().Contain(Loc.Instance["LblEquipmentHubUnsafe"]);
                 }
 
-                SavePreview(equipmentView, $"Hub{category}StatusFaulted-{dpi}.png", dpi);
+                SavePreview(equipmentView, $"Hub{category}StatusFaulted");
                 connected = true;
                 PollEquipment(equipmentVm, pollMethod);
                 Drain();
@@ -404,9 +401,8 @@ namespace NINA.Test.ViewModel {
             }
         }
 
-        [TestCase(96)]
-        [TestCase(144)]
-        public void SafetyStatusView_MixedStatesShareColumnPositions(int dpi) {
+        [Test]
+        public void SafetyStatusView_MixedStatesShareColumnPositions() {
             var hub = new SafetyMonitorHub("Hub");
             var settings = new DeviceHubSettings();
             var devices = new List<IDevice>();
@@ -443,12 +439,12 @@ namespace NINA.Test.ViewModel {
                 PollEquipment(vm, "GetMonitorValues");
                 var statuses = Descendants<HubDeviceStatusView>(view).Single();
                 AssertStatusColumnPositions(statuses);
-                SavePreview(view, $"HubSafetyAlignedStates-{dpi}.png", dpi);
+                SavePreview(view, "HubSafetyAlignedStates");
                 connected[2] = false;
                 PollEquipment(vm, "GetMonitorValues");
                 AssertStatusColumnPositions(statuses);
                 vm.SafetyMonitorInfo.IsSafe.Should().BeFalse();
-                SavePreview(view, $"HubSafetyAlignedFault-{dpi}.png", dpi);
+                SavePreview(view, "HubSafetyAlignedFault");
                 safe[0] = false;
                 safe[1] = true;
                 connected[2] = true;
@@ -547,7 +543,7 @@ namespace NINA.Test.ViewModel {
                 hub.DeviceStatuses.Select(device => device.Error).Should().Equal(
                     Enumerable.Repeat(Loc.Instance[messageKey], settings.Devices.Count));
                 if (configuration is "empty" or "unmapped") {
-                    SavePreview(host, $"Hub{category}-{configuration}-Error.png", 96);
+                    SavePreview(host, $"Hub{category}-{configuration}-Error");
                 }
 
                 hub.Connected.Should().BeFalse();
@@ -617,11 +613,9 @@ namespace NINA.Test.ViewModel {
             }
         }
 
-        [TestCase("Safety", 96)]
-        [TestCase("Safety", 144)]
-        [TestCase("Weather", 96)]
-        [TestCase("Weather", 144)]
-        public async Task HubDriverSettings_AreStackedAndTrackSelectionsWithoutDuplicatingHubSetup(string category, int dpi) {
+        [TestCase("Safety")]
+        [TestCase("Weather")]
+        public async Task HubDriverSettings_AreStackedAndTrackSelectionsWithoutDuplicatingHubSetup(string category) {
             Mock<IDevice> Device(string id, string name) {
                 var device = category == "Safety"
                     ? new Mock<ISafetyMonitor>().As<IDevice>()
@@ -701,7 +695,7 @@ namespace NINA.Test.ViewModel {
                 Editors(view).Should().OnlyContain(editor => editor.IsEnabled, "driver settings retain their own connection rules");
                 hub.Disconnect();
                 Drain();
-                SavePreview(view, $"Hub{category}StackedSettings-{dpi}.png", dpi);
+                SavePreview(view, $"Hub{category}StackedSettings");
 
                 var popupView = new HubConfigurationView { DataContext = chooser.HubConfiguration };
                 window.Content = popupView;
@@ -725,11 +719,10 @@ namespace NINA.Test.ViewModel {
             string Setting { get; set; }
         }
 
-        [TestCase("Weather", 96)]
-        [TestCase("Weather", 144)]
-        [TestCase("Safety", 96)]
-        [TestCase("Switch", 96)]
-        public void EquipmentGear_OpensHubPopupWithoutInlineConfiguration(string category, int dpi) {
+        [TestCase("Weather")]
+        [TestCase("Safety")]
+        [TestCase("Switch")]
+        public void EquipmentGear_OpensHubPopupWithoutInlineConfiguration(string category) {
             IEquipmentHub hub = category switch {
                 "Safety" => new SafetyMonitorHub("NINA Safety Hub"),
                 "Switch" => new CompositeSwitchHub("NINA Switch Hub"),
@@ -797,7 +790,7 @@ namespace NINA.Test.ViewModel {
                         PumpUntilCompleted(chooser.HubConfiguration.Rows[0].Chooser.SetupDialogCommand.ExecuteAsync(null));
                         chooser.SetupDialogOpen.Should().BeTrue("the parent hub popup is still open after child setup closes");
                         Mock.Get(first).Verify(device => device.SetupDialog(), Times.Once);
-                        SavePreview(popup, $"Hub{category}Popup-{dpi}.png", dpi);
+                        SavePreview(popup, $"Hub{category}Popup");
                         inspected.SetResult();
                     } catch (Exception error) {
                         inspected.SetException(error);
@@ -815,7 +808,7 @@ namespace NINA.Test.ViewModel {
                 chooser.SetupDialogOpen.Should().BeFalse();
                 gear.IsEnabled.Should().BeTrue();
                 settings.Devices.Should().HaveCount(2);
-                SavePreview(view, $"Hub{category}-{dpi}.png", dpi);
+                SavePreview(view, $"Hub{category}");
 
                 var reopened = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
@@ -961,26 +954,35 @@ namespace NINA.Test.ViewModel {
             }
         }
 
-        private static void SavePreview(FrameworkElement view, string name, int dpi) {
-            var scale = dpi / 96.0;
-            var bitmap = new RenderTargetBitmap((int)(view.ActualWidth * scale), (int)(view.ActualHeight * scale), dpi, dpi, PixelFormats.Pbgra32);
-            var drawing = new DrawingVisual();
-            using (var context = drawing.RenderOpen()) {
-                var bounds = new Rect(0, 0, view.ActualWidth, view.ActualHeight);
-                context.DrawRectangle((Brush)Application.Current.FindResource("BackgroundBrush"), null, bounds);
-                context.DrawRectangle(new VisualBrush(view) {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = bounds
-                }, null, bounds);
+        private static void SavePreview(FrameworkElement view, string name) {
+            if (!TestContext.Parameters.Get("SaveTestPreviews", false)) {
+                return;
             }
-            bitmap.Render(drawing);
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            var path = Path.Combine(TestContext.CurrentContext.WorkDirectory, name);
-            using (var stream = File.Create(path)) {
-                encoder.Save(stream);
+
+            foreach (int dpi in new[] { 96, 144 }) {
+                var scale = dpi / 96.0;
+                var bitmap = new RenderTargetBitmap((int)(view.ActualWidth * scale), (int)(view.ActualHeight * scale), dpi, dpi, PixelFormats.Pbgra32);
+                var drawing = new DrawingVisual();
+                using (var context = drawing.RenderOpen()) {
+                    var bounds = new Rect(0, 0, view.ActualWidth, view.ActualHeight);
+                    context.DrawRectangle((Brush)Application.Current.FindResource("BackgroundBrush"), null, bounds);
+                    context.DrawRectangle(new VisualBrush(view) {
+                        ViewboxUnits = BrushMappingMode.Absolute,
+                        Viewbox = bounds
+                    }, null, bounds);
+                }
+
+                bitmap.Render(drawing);
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmap));
+
+                var path = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"{name}-{dpi}.png");
+                using (var stream = File.Create(path)) {
+                    encoder.Save(stream);
+                }
+
+                TestContext.AddTestAttachment(path);
             }
-            TestContext.AddTestAttachment(path);
         }
 
         [Test]

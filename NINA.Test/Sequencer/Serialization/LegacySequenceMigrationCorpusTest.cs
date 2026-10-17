@@ -65,6 +65,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace NINA.Test.Sequencer.Serialization {
@@ -161,42 +162,83 @@ namespace NINA.Test.Sequencer.Serialization {
                     JObject legacyJson = ReadJsonObject(corpus.SequencePath);
                     IReadOnlyList<JsonEntityNode> legacyNodes = TraverseJsonEntities(legacyJson).ToList();
 
-                    ISequenceContainer migrated = loadFromFile
-                        ? converter.DeserializeFromFile(corpus.SequencePath)
-                        : converter.Deserialize(legacyJsonText, corpus.SequencePath);
-                    IReadOnlyList<EntityNode> migratedNodes = TraverseEntities(migrated).ToList();
+                    var deserializedRoots = new List<ISequenceContainer>();
+                    try {
+                        ISequenceContainer migrated = loadFromFile
+                            ? converter.DeserializeFromFile(corpus.SequencePath)
+                            : converter.Deserialize(legacyJsonText, corpus.SequencePath);
+                        deserializedRoots.Add(migrated);
+                        IReadOnlyList<EntityNode> migratedNodes = TraverseEntities(migrated).ToList();
 
-                    AssertNoUnknownEntities(migratedNodes, "every built-in 3.2 entity should resolve to a current sequencer type");
+                        AssertNoUnknownEntities(migratedNodes, "every built-in 3.2 entity should resolve to a current sequencer type");
 
-                    FindValueMismatches(legacyNodes, migratedNodes)
-                        .Should()
-                        .BeEmpty("old scalar JSON values must survive migration unchanged");
+                        FindValueMismatches(legacyNodes, migratedNodes)
+                            .Should()
+                            .BeEmpty("old scalar JSON values must survive migration unchanged");
 
-                    FindExpressionMismatches(legacyNodes, migratedNodes)
-                        .Should()
-                        .BeEmpty("old scalar JSON values must also hydrate expression definitions and evaluated expression values");
+                        FindExpressionMismatches(legacyNodes, migratedNodes)
+                            .Should()
+                            .BeEmpty("old scalar JSON values must also hydrate expression definitions and evaluated expression values");
 
-                    AssertPopulatedSwitchFilterWasMigrated(migratedNodes);
+                        AssertPopulatedSwitchFilterWasMigrated(migratedNodes);
 
-                    string currentJsonText = converter.Serialize(migrated);
-                    ISequenceContainer roundTripped = converter.Deserialize(currentJsonText, corpus.SequencePath);
-                    IReadOnlyList<EntityNode> roundTrippedNodes = TraverseEntities(roundTripped).ToList();
+                        string currentJsonText = converter.Serialize(migrated);
+                        ISequenceContainer roundTripped = converter.Deserialize(currentJsonText, corpus.SequencePath);
+                        deserializedRoots.Add(roundTripped);
+                        IReadOnlyList<EntityNode> roundTrippedNodes = TraverseEntities(roundTripped).ToList();
 
-                    AssertNoUnknownEntities(roundTrippedNodes, "current-version serialization should not introduce unknown entities");
+                        AssertNoUnknownEntities(roundTrippedNodes, "current-version serialization should not introduce unknown entities");
 
-                    CreateEntityTypeDigest(roundTrippedNodes)
-                        .Should()
-                        .Equal(CreateEntityTypeDigest(migratedNodes), "current-version serialization should preserve the migrated sequence structure");
+                        CreateEntityTypeDigest(roundTrippedNodes)
+                            .Should()
+                            .Equal(CreateEntityTypeDigest(migratedNodes), "current-version serialization should preserve the migrated sequence structure");
 
-                    FindExpressionMismatches(legacyNodes, roundTrippedNodes)
-                        .Should()
-                        .BeEmpty("expression-backed migrated values must survive current-version serialization");
+                        FindExpressionMismatches(legacyNodes, roundTrippedNodes)
+                            .Should()
+                            .BeEmpty("expression-backed migrated values must survive current-version serialization");
 
-                    AssertPopulatedSwitchFilterWasMigrated(roundTrippedNodes);
+                        AssertPopulatedSwitchFilterWasMigrated(roundTrippedNodes);
+                    } finally {
+                        StopDeserializedSequences(deserializedRoots);
+                    }
                 }
             } finally {
                 Thread.CurrentThread.CurrentCulture = originalCulture;
                 Thread.CurrentThread.CurrentUICulture = originalUICulture;
+            }
+        }
+
+        private static void StopDeserializedSequences(IEnumerable<ISequenceContainer> roots) {
+            ISequenceEntity[] entities = roots
+                .SelectMany(root => TraverseEntities(root))
+                .Select(node => node.Entity)
+                .Distinct<ISequenceEntity>(ReferenceEqualityComparer.Instance)
+                .ToArray();
+            var watchdogs = entities.OfType<SequenceCondition>()
+                .Select(condition => condition.ConditionWatchdog)
+                .Where(watchdog => watchdog != null)
+                .ToArray();
+            Task[] watchdogTasks = watchdogs.Select(watchdog => watchdog.WatchdogTask)
+                .Where(task => task != null)
+                .ToArray();
+
+            // TimeCondition watchdogs follow attachment lifetime and have no block teardown override.
+            foreach (var watchdog in watchdogs) {
+                watchdog.Cancel();
+            }
+
+            try {
+                foreach (ISequenceEntity entity in entities.Reverse()) {
+                    entity.SequenceBlockTeardown();
+                }
+            } finally {
+                try {
+                    Task.WhenAll(watchdogTasks).WaitAsync(TimeSpan.FromSeconds(5)).GetAwaiter().GetResult();
+                } catch (OperationCanceledException) {
+                }
+
+                watchdogTasks.Should().OnlyContain(task => task.IsCompleted,
+                    "every deserialized watchdog must stop before the corpus services are released");
             }
         }
 

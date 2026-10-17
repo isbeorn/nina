@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -150,7 +150,8 @@ namespace NINA.Test.Sequencer.Conditions {
         public async Task MonitorIsUnsafe_InterruptParent() {
             monitorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = true });
             var parentMock = new Mock<ISequenceRootContainer>();
-            parentMock.Setup(x => x.Interrupt()).Returns(Task.CompletedTask);
+            var interrupted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            parentMock.Setup(x => x.Interrupt()).Callback(() => interrupted.TrySetResult()).Returns(Task.CompletedTask);
             parentMock.SetupGet(x => x.Parent).Returns(new Mock<ISequenceRootContainer>().Object);
             parentMock.SetupGet(x => x.Status).Returns(NINA.Core.Enum.SequenceEntityStatus.RUNNING);
 
@@ -160,11 +161,15 @@ namespace NINA.Test.Sequencer.Conditions {
 
             sut.SequenceBlockInitialize();
 
-            monitorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = false });
+            try {
+                monitorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = false });
 
-            await Task.Delay(500);
+                await interrupted.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
-            parentMock.Verify(x => x.Interrupt(), Times.AtLeastOnce);
+                parentMock.Verify(x => x.Interrupt(), Times.AtLeastOnce);
+            } finally {
+                sut.SequenceBlockTeardown();
+            }
         }
     }
 
@@ -290,7 +295,8 @@ namespace NINA.Test.Sequencer.Conditions {
         public async Task MonitorIsUnsafe_InterruptParent() {
             monitorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = false });
             var parentMock = new Mock<ISequenceContainer>();
-            parentMock.Setup(x => x.Interrupt()).Returns(Task.CompletedTask);
+            var interrupted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            parentMock.Setup(x => x.Interrupt()).Callback(() => interrupted.TrySetResult()).Returns(Task.CompletedTask);
             parentMock.SetupGet(x => x.Parent).Returns(new Mock<ISequenceRootContainer>().Object);
             parentMock.SetupGet(x => x.Status).Returns(NINA.Core.Enum.SequenceEntityStatus.RUNNING);
 
@@ -300,11 +306,15 @@ namespace NINA.Test.Sequencer.Conditions {
 
             sut.SequenceBlockInitialize();
 
-            monitorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = true });
+            try {
+                monitorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = true });
 
-            await Task.Delay(50);
+                await interrupted.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
-            parentMock.Verify(x => x.Interrupt(), Times.AtLeastOnce);
+                parentMock.Verify(x => x.Interrupt(), Times.AtLeastOnce);
+            } finally {
+                sut.SequenceBlockTeardown();
+            }
         }
     }
 }

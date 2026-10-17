@@ -46,13 +46,18 @@ namespace NINA.Test.View {
     public class PluginNavigationDuringRefreshTest {
         private PluginViewResources resources = null!;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void SetUpResources() {
             resources = new PluginViewResources();
         }
 
         [TearDown]
         public void RestoreResources() {
+            resources.Reset();
+        }
+
+        [OneTimeTearDown]
+        public void DisposeResources() {
             resources.Dispose();
         }
 

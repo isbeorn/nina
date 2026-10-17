@@ -932,15 +932,27 @@ namespace NINA.Test.Plugin {
             oldest.Identifier = latest.Identifier;
             oldest.Name = latest.Name;
             oldest.Version = new PluginVersion("1.0.0.0");
-            using var repository = Catalog(oldest, latest, previous);
-            using var duplicate = Catalog(previous);
+            byte[] releases = CatalogJson(oldest, latest, previous);
+            byte[] duplicateRelease = CatalogJson(previous);
+            using var repository = new LoopbackHttpServer(new LoopbackHttpServer.Response[] {
+                new(releases), new(releases)
+            });
+            using var duplicate = new LoopbackHttpServer(new LoopbackHttpServer.Response[] {
+                new(duplicateRelease), new(duplicateRelease)
+            });
 
             Complete(Refresh(sut, repository.Url, duplicate.Url));
 
+            sut.HasCatalogError.Should().BeFalse();
             sut.AvailablePlugins.Should().ContainSingle().Which.Version.ToString().Should().Be("3.0.0.0");
             sut.CompatibleVersions.Select(manifest => manifest.Version.ToString()).Should().Equal("3.0.0.0", "2.0.0.0", "1.0.0.0");
             sut.SelectedVersion = sut.CompatibleVersions[1];
             Complete(Refresh(sut, repository.Url, duplicate.Url));
+            sut.HasCatalogError.Should().BeFalse();
+            repository.Requests.Should().HaveCount(2);
+            duplicate.Requests.Should().HaveCount(2);
+            repository.Requests.Should().OnlyContain(request => request.StartsWith("GET /plugins/manifests HTTP/1.1"));
+            duplicate.Requests.Should().OnlyContain(request => request.StartsWith("GET /plugins/manifests HTTP/1.1"));
             sut.SelectedVersion.Version.ToString().Should().Be("2.0.0.0");
             using var failure = new LoopbackHttpServer(Encoding.UTF8.GetBytes("invalid"), "application/json");
             Complete(Refresh(sut, failure.Url));
@@ -989,6 +1001,7 @@ namespace NINA.Test.Plugin {
             try {
                 Task operation = sut.InstallSelectedVersionCommand.ExecuteAsync(null);
                 PumpUntil(() => download.RequestReceived.IsCompleted);
+                sut.IsVersionHistoryVisible = false;
                 sut.SelectedPlugin = sut.FilteredPlugins.Single(candidate => candidate.Identifier == other.Identifier);
                 sut.InstallSelectedVersionCommand.CanExecute(null).Should().BeFalse();
                 gate.SetResult();
@@ -1001,8 +1014,12 @@ namespace NINA.Test.Plugin {
                 entry.PendingChange.Should().Be(PluginPendingChange.Update);
                 entry.PendingManifest.Version.ToString().Should().Be(targetVersion);
                 sut.HasPendingChanges.Should().BeTrue();
-                sut.IsVersionHistoryVisible = false;
                 Complete(Refresh(sut, validRepository.Url));
+                sut.HasCatalogError.Should().BeFalse();
+                validRepository.Requests.Should().HaveCount(3);
+                validRepository.Requests[0].Should().StartWith("GET /plugins/manifests HTTP/1.1");
+                validRepository.Requests[1].Should().StartWith($"GET /plugins/{current.Identifier}/versions HTTP/1.1");
+                validRepository.Requests[2].Should().StartWith("GET /plugins/manifests HTTP/1.1");
                 sut.SelectedPlugin = entry;
                 entry.RequiresRestart.Should().BeTrue();
                 sut.InstallSelectedVersionCommand.CanExecute(null).Should().BeFalse();

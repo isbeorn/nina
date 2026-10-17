@@ -93,7 +93,10 @@ namespace NINA.Test.View {
         public void Measurements_DoNotRetainOldLabelsAfterCapacityOrRenderCleanup() {
             var context = new TestPlot().CreateContext();
             var firstLabel = MeasureUniqueLabel(context);
-            for (int i = 0; i < 1024; i++) context.MeasureText($"label-{i}", "Segoe UI", 12, 400);
+            // The initial label plus 256 new labels crosses the 256-entry cache boundary.
+            for (int i = 0; i < 256; i++) {
+                context.MeasureText($"label-{i}", "Segoe UI", 12, 400);
+            }
 
             Collect();
             firstLabel.IsAlive.Should().BeFalse("the measurement cache must be bounded");

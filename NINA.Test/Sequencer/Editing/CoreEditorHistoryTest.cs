@@ -239,7 +239,7 @@ namespace NINA.Test.Sequencer.Editing {
         [TestCase(typeof(NINA.Sequencer.Conditions.AltitudeCondition))]
         [TestCase(typeof(NINA.Sequencer.Conditions.AboveHorizonCondition))]
         public void CoordinateCondition_MoveIntoTargetAndUndo_RestoresExplicitDefinitions(Type type) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             var condition = (NINA.Sequencer.Conditions.ISequenceCondition)scope.Create(type);
             scope.Root.Add(condition);
             var target = (DeepSkyObjectContainer)scope.Create(typeof(DeepSkyObjectContainer));

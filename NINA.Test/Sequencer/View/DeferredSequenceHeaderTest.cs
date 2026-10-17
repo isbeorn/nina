@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -251,6 +251,10 @@ namespace NINA.Test.Sequencer.View {
                 GC.WaitForPendingFinalizers();
                 Settle(scope);
                 GC.Collect();
+
+                if (!released.Header.IsAlive && !released.Model.IsAlive && !released.Template.IsAlive) {
+                    break;
+                }
             }
 
             released.Header.IsAlive.Should().BeFalse("the surviving scroll viewer must release the header's event subscription and pending work");

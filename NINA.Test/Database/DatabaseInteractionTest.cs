@@ -158,9 +158,9 @@ namespace NINA.Test.Database {
             var databasePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"earth-rotation-brackets-{Guid.NewGuid():N}.sqlite");
             var date = new DateTime(2016, 12, 31, 0, 0, 0, DateTimeKind.Utc);
             try {
+                EarthRotationTestDatabase.CreateEmpty(databasePath);
                 var database = new DatabaseInteraction($"Data Source={databasePath};Pooling=False;");
                 using (var context = database.GetContext()) {
-                    context.Database.ExecuteSqlCommand("DELETE FROM earthrotationparameters");
                     foreach (var row in new[] { (date, -0.4), (date.AddDays(1), 0.6) }) {
                         context.Database.ExecuteSqlCommand(
                             "INSERT OR REPLACE INTO earthrotationparameters (date,modifiedjuliandate,x,y,ut1_utc,lod,dx,dy) VALUES (@p0,@p1,0,0,@p2,1,0,0)",
@@ -203,9 +203,9 @@ namespace NINA.Test.Database {
             var invalidate = typeof(DatabaseInteraction).GetMethod("InvalidateEarthRotationCache", BindingFlags.NonPublic | BindingFlags.Static)!;
             var interceptor = new EarthRotationReadInterceptor();
             try {
+                EarthRotationTestDatabase.CreateEmpty(databasePath);
                 var database = new DatabaseInteraction($"Data Source={databasePath};Pooling=False;");
                 using (var context = database.GetContext()) {
-                    context.Database.ExecuteSqlCommand("DELETE FROM earthrotationparameters");
                     foreach (int hour in hours) {
                         var instant = date.AddHours(hour);
                         context.Database.ExecuteSqlCommand(
@@ -268,15 +268,18 @@ namespace NINA.Test.Database {
             var invalidate = typeof(DatabaseInteraction).GetMethod("InvalidateEarthRotationCache", BindingFlags.NonPublic | BindingFlags.Static)!;
             var interceptor = new EarthRotationReadInterceptor();
             try {
+                EarthRotationTestDatabase.CreateEmpty(databasePath);
                 var database = new DatabaseInteraction($"Data Source={databasePath};Pooling=False;");
                 using (var context = database.GetContext()) {
-                    context.Database.ExecuteSqlCommand("DELETE FROM earthrotationparameters");
+                    using var transaction = context.Database.BeginTransaction();
                     for (int day = 0; day <= 97; day++) {
                         var instant = date.AddDays(day);
                         context.Database.ExecuteSqlCommand(
                             "INSERT OR REPLACE INTO earthrotationparameters (date,modifiedjuliandate,x,y,ut1_utc,lod,dx,dy) VALUES (@p0,@p1,0,0,@p2,1,0,0)",
                             CoreUtil.DateTimeToUnixTimeStamp(instant), AstroUtil.GetJulianDate(instant) - 2400000.5, day * 0.001);
                     }
+
+                    transaction.Commit();
                 }
                 invalidate.Invoke(null, null);
                 DbInterception.Add(interceptor);
@@ -330,9 +333,9 @@ namespace NINA.Test.Database {
             var getStamp = typeof(DatabaseInteraction).GetMethod("GetEarthRotationCacheStamp", flags)!;
             try {
                 invalidate.Invoke(null, null);
+                EarthRotationTestDatabase.CreateEmpty(databasePath);
                 var database = new DatabaseInteraction($"Data Source={databasePath};Pooling=False;");
                 using (var context = database.GetContext()) {
-                    context.Database.ExecuteSqlCommand("DELETE FROM earthrotationparameters");
                     foreach (var row in new[] { (date, 0.1), (date.AddDays(1), 0.3) }) {
                         context.Database.ExecuteSqlCommand(
                             "INSERT OR REPLACE INTO earthrotationparameters (date,modifiedjuliandate,x,y,ut1_utc,lod,dx,dy) VALUES (@p0,@p1,0,0,@p2,1,0,0)",

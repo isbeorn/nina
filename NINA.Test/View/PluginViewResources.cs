@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Moq;
+using NINA.Core.Utility.ColorSchema;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Utility;
 using System.Collections;
@@ -27,6 +28,10 @@ namespace NINA.Test.View {
         private readonly Dictionary<Uri, WeakReference> originalSharedDictionaries;
         private readonly Window? originalMainWindow;
         private readonly NINA.Profile.Profile profile;
+        private readonly ColorSchema initialColorSchema;
+        private readonly Dictionary<object, object> fixtureResources;
+        private readonly ResourceDictionary[] fixtureDictionaries;
+        private readonly Dictionary<Uri, WeakReference> fixtureSharedDictionaries;
 
         public PluginViewResources() {
             application = Application.Current ?? new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
@@ -36,6 +41,7 @@ namespace NINA.Test.View {
             originalSharedDictionaries = SharedResourceDictionary.SharedDictionaries.ToDictionary(entry => entry.Key, entry => entry.Value);
             originalMainWindow = application.MainWindow;
             profile = new NINA.Profile.Profile();
+            initialColorSchema = profile.ColorSchemaSettings.ColorSchema;
 
             application.Resources.MergedDictionaries.Clear();
             application.Resources.Clear();
@@ -70,30 +76,46 @@ namespace NINA.Test.View {
                 foreach (string source in sources) {
                     application.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri(source, UriKind.Relative) });
                 }
+
+                fixtureResources = application.Resources.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key, entry => entry.Value!);
+                fixtureDictionaries = application.Resources.MergedDictionaries.ToArray();
+                fixtureSharedDictionaries = SharedResourceDictionary.SharedDictionaries.ToDictionary(entry => entry.Key, entry => entry.Value);
             } catch {
                 Dispose();
                 throw;
             }
         }
 
+        public void Reset() {
+            Restore(fixtureResources, fixtureDictionaries, fixtureSharedDictionaries);
+            profile.ColorSchemaSettings.ColorSchema = initialColorSchema;
+        }
+
         public void Dispose() {
+            Restore(originalResources, originalDictionaries, originalSharedDictionaries);
+            profile.Dispose();
+        }
+
+        private void Restore(
+            IReadOnlyDictionary<object, object> resources,
+            IEnumerable<ResourceDictionary> dictionaries,
+            IReadOnlyDictionary<Uri, WeakReference> sharedDictionaries) {
+            application.Dispatcher.VerifyAccess();
             application.MainWindow = originalMainWindow;
             application.Resources.MergedDictionaries.Clear();
             application.Resources.Clear();
-            foreach (var entry in originalResources) {
+            foreach (var entry in resources) {
                 application.Resources[entry.Key] = entry.Value;
             }
 
-            foreach (var dictionary in originalDictionaries) {
+            foreach (var dictionary in dictionaries) {
                 application.Resources.MergedDictionaries.Add(dictionary);
             }
 
             SharedResourceDictionary.SharedDictionaries.Clear();
-            foreach (var entry in originalSharedDictionaries) {
+            foreach (var entry in sharedDictionaries) {
                 SharedResourceDictionary.SharedDictionaries.Add(entry.Key, entry.Value);
             }
-
-            profile.Dispose();
         }
     }
 }

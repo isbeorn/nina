@@ -147,7 +147,7 @@ namespace NINA.Test.ViewModel {
             var profiles = new Mock<IProfileService>();
             profiles.SetupGet(service => service.ActiveProfile).Returns(() => currentProfile);
             var chooser = new ViewChooser(profiles.Object, hub, firstSettings, new List<IDevice> { first.Object, second.Object });
-            var equipment = RegressionEquipment(category, profiles.Object, chooser);
+            var equipment = RegressionEquipment(category, profiles.Object, chooser, initializeView: false);
             var window = Show(equipment.View);
             ClearNotifications();
             var pending = equipment.Connect();
@@ -198,7 +198,7 @@ namespace NINA.Test.ViewModel {
             var profiles = new Mock<IProfileService>();
             profiles.SetupGet(service => service.ActiveProfile).Returns(() => currentProfile);
             var chooser = new ViewChooser(profiles.Object, hub, settings, new List<IDevice> { source.Object });
-            var equipment = RegressionEquipment(category, profiles.Object, chooser);
+            var equipment = RegressionEquipment(category, profiles.Object, chooser, initializeView: false);
             var window = Show(equipment.View);
             try {
                 PumpUntilCompleted(equipment.Connect());
@@ -341,7 +341,7 @@ namespace NINA.Test.ViewModel {
             var hub = RegressionHub(category);
             var profiles = Mock.Of<IProfileService>(service => service.ActiveProfile == profile);
             var chooser = new ViewChooser(profiles, hub, settings, new List<IDevice> { first.Object, second.Object });
-            var equipment = RegressionEquipment(category, profiles, chooser);
+            var equipment = RegressionEquipment(category, profiles, chooser, initializeView: false);
             var window = Show(equipment.View);
             ClearNotifications();
             try {
@@ -410,19 +410,22 @@ namespace NINA.Test.ViewModel {
         }
 
         private static (object Vm, FrameworkElement View, Func<Task> Connect, Func<Task> Disconnect, string PollMethod) RegressionEquipment(
-                string category, IProfileService profiles, ViewChooser chooser) {
+                string category, IProfileService profiles, ViewChooser chooser, bool initializeView = true) {
             var status = Mock.Of<IApplicationStatusMediator>();
 #pragma warning disable CS0618 // Use production equipment commands with their existing worker-thread dispatch.
             if (category == "Safety") {
                 var vm = new SafetyMonitorVM(profiles, Mock.Of<ISafetyMonitorMediator>(), status, chooser);
-                return (vm, new SafetyMonitorView { DataContext = vm }, () => vm.ConnectCommand.ExecuteAsync(null), vm.Disconnect, "GetMonitorValues");
+                return (vm, initializeView ? new SafetyMonitorView { DataContext = vm } : new Border(),
+                    () => vm.ConnectCommand.ExecuteAsync(null), vm.Disconnect, "GetMonitorValues");
             }
             if (category == "Switch") {
                 var vm = new SwitchVM(profiles, status, Mock.Of<ISwitchMediator>(), chooser);
-                return (vm, new SwitchHubView { DataContext = vm }, () => vm.ConnectCommand.ExecuteAsync(null), vm.Disconnect, "GetSwitchValues");
+                return (vm, initializeView ? new SwitchHubView { DataContext = vm } : new Border(),
+                    () => vm.ConnectCommand.ExecuteAsync(null), vm.Disconnect, "GetSwitchValues");
             }
             var weather = new WeatherDataVM(profiles, Mock.Of<IWeatherDataMediator>(), status, chooser);
-            return (weather, new WeatherDataView { DataContext = weather }, () => weather.ConnectCommand.ExecuteAsync(null), weather.Disconnect, "GetWeatherDataValues");
+            return (weather, initializeView ? new WeatherDataView { DataContext = weather } : new Border(),
+                () => weather.ConnectCommand.ExecuteAsync(null), weather.Disconnect, "GetWeatherDataValues");
 #pragma warning restore CS0618
         }
     }

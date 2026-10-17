@@ -39,7 +39,7 @@ namespace NINA.Test.Sequencer.Editing {
         public void RemovedDso_IsCollectedAfterHistoryReleasesIt(
             [Values(false, true)] bool showView,
             [Values("disabled", "clear", "evict", "dispose")] string historyRelease) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: showView);
             if (historyRelease == "disabled") scope.History.IsEnabled = false;
             var removed = CreateAndRemoveTarget(scope, showView, retainCommand: false);
 
@@ -66,7 +66,7 @@ namespace NINA.Test.Sequencer.Editing {
 
         [Test]
         public void RetainedDropCommand_DoesNotRetainRemovedDso() {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             scope.History.IsEnabled = false;
             var removed = CreateAndRemoveTarget(scope, showView: false, retainCommand: true);
 

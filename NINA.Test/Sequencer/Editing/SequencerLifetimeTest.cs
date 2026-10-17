@@ -43,7 +43,7 @@ namespace NINA.Test.Sequencer.Editing {
         [TestCase(typeof(NINA.Sequencer.Trigger.Connect.ReconnectOnDownloadFailure), false)]
         [TestCase(typeof(NINA.Sequencer.Trigger.Connect.ReconnectOnDownloadFailure), true)]
         public void RemovedActiveTriggerAncestor_IsCollected(Type type, bool stillRunning) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             var references = InitializeAndRemoveTriggerAncestor(scope, type, stillRunning);
             try {
                 AssertCollected(references, scope.ClearServiceInvocations);
@@ -82,7 +82,7 @@ namespace NINA.Test.Sequencer.Editing {
 
         [TestCaseSource(nameof(CoreEntities))]
         public void RemovedEntity_IsCollected(Type type, bool showView) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: showView);
             var references = CreateAndRemove(scope, type, showView);
 
             AssertCollected(references, scope.ClearServiceInvocations);
@@ -93,16 +93,14 @@ namespace NINA.Test.Sequencer.Editing {
         public static IEnumerable<Type> CloneTypes => CoreEditorHistoryTest.CoreEntities.Where(type => type != typeof(SequenceRootContainer));
 
         [TestCaseSource(nameof(CloneTypes))]
-        [Ignore("These tests are slow. Run explicitly when needed.")]
         public void RetainedClone_DoesNotRetainDeletedSource(Type type) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             var original = CloneAndRemoveSource(scope, type);
             AssertCollected(new[] { ("clone source", original) });
             GC.KeepAlive(scope);
         }
 
         [TestCaseSource(nameof(CloneTypes))]
-        [Ignore("These tests are slow. Run explicitly when needed.")]
         public void UnloadedEditor_IsCollectedWhileEntityRemainsAttached(Type type) {
             using var scope = new CoreEditorTestScope();
             var references = ShowAndUnloadEditor(scope, type);
@@ -116,6 +114,10 @@ namespace NINA.Test.Sequencer.Editing {
             scope.Show(entity);
             var view = Descendants<FrameworkElement>(scope.Host).FirstOrDefault(element => element.TemplatedParent is ContentPresenter presenter
                 && ReferenceEquals(presenter.Content, entity));
+            if (scope.Host.ContentTemplate != null) {
+                view.Should().NotBeNull($"the compiled template for {type.Name} must produce an editor before its lifetime is checked");
+            }
+
             scope.Host.Content = null;
             scope.Host.DataContext = null;
             scope.Host.ContentTemplate = null;
@@ -157,6 +159,10 @@ namespace NINA.Test.Sequencer.Editing {
                     scope.Show(entity);
                     var view = Descendants<FrameworkElement>(scope.Host).FirstOrDefault(element => element.TemplatedParent is ContentPresenter presenter
                         && ReferenceEquals(presenter.Content, entity));
+                    if (scope.Host.ContentTemplate != null) {
+                        view.Should().NotBeNull($"the compiled template for {type.Name} must produce an editor before its lifetime is checked");
+                    }
+
                     // Instructions without settings have no editor template to retain.
                     if (view != null) references.Add(($"view {view.GetType().Name}", new WeakReference(view)));
                 } else Add(scope, entity);
@@ -175,7 +181,7 @@ namespace NINA.Test.Sequencer.Editing {
         [TestCase(1)]
         [TestCase(100)]
         public void RepeatedSymbolGraphRemoval_ReleasesConsumersAndStaticCacheEntries(int cycles) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             scope.History.IsEnabled = false;
             var global = new GlobalConstant();
             global.Expr = new Expression("10", global);
@@ -216,7 +222,7 @@ namespace NINA.Test.Sequencer.Editing {
         [TestCase(false)]
         [TestCase(true)]
         public void ClosedTemplateSession_IsCollected(bool delete) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             var references = OpenAndCloseTemplateSession(scope, delete);
             AssertCollected(references);
             GC.KeepAlive(scope);
@@ -251,7 +257,7 @@ namespace NINA.Test.Sequencer.Editing {
         [TestCase("condition")]
         [TestCase("trigger")]
         public void ReplacedRoot_ReleasesAllChildKinds(string childKind) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             var removed = ReplaceRoot(scope, childKind);
             try {
                 AssertCollected(removed.References);
@@ -379,7 +385,7 @@ namespace NINA.Test.Sequencer.Editing {
 
         [Test]
         public void DiscardedRedoBranch_ReleasesUndoneClone() {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             var clone = AddCloneAndDiscardRedo(scope);
             AssertCollected(new[] { ("undone clone", clone) });
             GC.KeepAlive(scope);

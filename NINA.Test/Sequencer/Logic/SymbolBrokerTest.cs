@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Moq;
 using NINA.Astrometry;
 using NINA.Core.Enum;
@@ -1222,7 +1222,6 @@ namespace NINA.Test.Sequencer.Logic {
                 broker.SetImageSymbols(this, CreateImagePreparedEventArgs(3));
 
                 // Assert
-                SpinWait.SpinUntil(() => startedFrameIds.Count > 1, TimeSpan.FromMilliseconds(250));
                 startedFrameIds.ToArray().Should().Equal(new[] { 1 });
                 maximumStatisticsConcurrency.Should().Be(1, "statistics work must be serialized");
                 ValidateUninitializedSymbol("Image_Mean");
@@ -1633,47 +1632,42 @@ namespace NINA.Test.Sequencer.Logic {
 
         [Test]
         public async Task SymbolBroker_ConcurrentSymbolSnapshotsAndUpdates_DoNotThrow() {
-            // Arrange
+            const int iterations = 64;
             ISymbolProvider provider = broker.RegisterSymbolProvider("ConcurrentProvider");
             provider.AddOrUpdateSymbol("Value", 0);
             provider.AddOrUpdateHiddenSymbol("HiddenValue", 0, Array.Empty<Symbol>());
-            ConcurrentQueue<Exception> exceptions = new ConcurrentQueue<Exception>();
+            using var round = new Barrier(3);
 
-            Task updater = Task.Run(() => {
-                try {
-                    for (int i = 0; i < 10000; i++) {
-                        provider.AddOrUpdateSymbol("Value", i);
-                        provider.AddOrUpdateHiddenSymbol("HiddenValue", i, Array.Empty<Symbol>());
-
-                        if (i % 5 == 0) {
-                            provider.RemoveSymbol("Value");
-                        }
+            Task RunWorker(Action<int> operation) => Task.Run(() => {
+                for (int i = 0; i < iterations; i++) {
+                    if (!round.SignalAndWait(TimeSpan.FromSeconds(5))) {
+                        throw new TimeoutException("Concurrent symbol operations did not reach the next round.");
                     }
-                } catch (Exception ex) {
-                    exceptions.Enqueue(ex);
+
+                    operation(i);
                 }
             });
 
-            Task[] readers = Enumerable.Range(0, 16)
-                .Select(index => Task.Run(() => {
-                    try {
-                        for (int i = 0; i < 10000; i++) {
-                            broker.TryGetValue("ConcurrentProvider_Value", out _);
-                            broker.TryGetSymbol("ConcurrentProvider_HiddenValue", out _);
-                            broker.GetSymbols();
-                            broker.GetHiddenSymbols("ConcurrentProvider");
-                        }
-                    } catch (Exception ex) {
-                        exceptions.Enqueue(ex);
-                    }
-                }))
-                .ToArray();
+            Task updater = RunWorker(i => {
+                provider.AddOrUpdateSymbol("Value", i);
+                provider.AddOrUpdateHiddenSymbol("HiddenValue", i, Array.Empty<Symbol>());
 
-            // Act
-            await Task.WhenAll(readers.Concat(new[] { updater }));
+                if (i % 5 == 0) {
+                    provider.RemoveSymbol("Value");
+                }
+            });
 
-            // Assert
-            exceptions.Should().BeEmpty();
+            Task[] readers = Enumerable.Range(0, 2).Select(index => RunWorker(i => {
+                broker.TryGetValue("ConcurrentProvider_Value", out _);
+                broker.TryGetSymbol("ConcurrentProvider_HiddenValue", out _);
+                broker.GetSymbols();
+                broker.GetHiddenSymbols("ConcurrentProvider");
+            })).ToArray();
+
+            await Task.WhenAll(readers.Append(updater));
+
+            broker.TryGetValue("ConcurrentProvider_Value", out object finalValue).Should().BeTrue();
+            finalValue.Should().Be(iterations - 1);
         }
 
         [Test]

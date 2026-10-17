@@ -20,6 +20,7 @@ using NINA.WPF.Base.Model;
 using NINA.WPF.Base.Utility.AutoFocus;
 using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem.Autofocus;
@@ -37,6 +38,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
         private Mock<IImageSaveMediator> imageSaveMediatorMock;
         private Mock<ISafetyMonitorMediator> safetyMonitorMediatorMock;
         private ImageHistoryVM imagehistory;
+        private IImageStatistics imageStatistics;
 
         [SetUp]
         public void Setup() {
@@ -62,6 +64,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected).Returns(Core.Enum.ImageHistoryEnum.Stars);
 
             imagehistory = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
+            imageStatistics = ImageStatistics.Create(new ImageProperties(2, 2, 16, false, 100, 200), new ushort[] { 300, 400, 600, 800 });
         }        
 
         [Test]
@@ -99,7 +102,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             for (int i = 0; i < exposuresToAdd; i++) {
                 var id = imagehistory.GetNextImageId();
                 imagehistory.Add(id, "LIGHT");
-                imagehistory.PopulateStatistics(i, ImageStatistics.Create(new ImageProperties(2, 2, 16, false, 100, 200), new ushort[] { 300, 400, 600, 800 }));
+                imagehistory.PopulateStatistics(i, imageStatistics);
             }
 
             var itemMock = new Mock<IExposureItem>();
@@ -124,7 +127,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             for (int i = 0; i < 3; i++) {
                 var id = imagehistory.GetNextImageId();
                 imagehistory.Add(id, "LIGHT");
-                imagehistory.PopulateStatistics(i, ImageStatistics.Create(new ImageProperties(2, 2, 16, false, 100, 200), new ushort[] { 300, 400, 600, 800 }));
+                imagehistory.PopulateStatistics(i, imageStatistics);
             }
             var afHistory = new AsyncObservableCollection<ImageHistoryPoint>();
             var report = new AutoFocusReport() { Timestamp = DateTime.Now - TimeSpan.FromMinutes(10) };
@@ -138,7 +141,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             for (int i = 0; i < exposuresToAdd; i++) {
                 var id = imagehistory.GetNextImageId();
                 imagehistory.Add(id, "LIGHT");
-                imagehistory.PopulateStatistics(i, ImageStatistics.Create(new ImageProperties(2, 2, 16, false, 100, 200), new ushort[] { 300, 400, 600, 800 }));
+                imagehistory.PopulateStatistics(i, imageStatistics);
             }
 
             var itemMock = new Mock<IExposureItem>();
@@ -163,7 +166,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             for (int i = 0; i < 3; i++) {
                 var id = imagehistory.GetNextImageId();
                 imagehistory.Add(id, "LIGHT");
-                imagehistory.PopulateStatistics(i, ImageStatistics.Create(new ImageProperties(2, 2, 16, false, 100, 200), new ushort[] { 300, 400, 600, 800 }));
+                imagehistory.PopulateStatistics(i, imageStatistics);
             }
             var afHistory = new AsyncObservableCollection<ImageHistoryPoint>();
             var report = new AutoFocusReport() { Timestamp = DateTime.Now - TimeSpan.FromMinutes(10) };
@@ -182,7 +185,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             for (int i = 0; i < exposuresToAdd; i++) {
                 var id = imagehistory.GetNextImageId();
                 imagehistory.Add(id, "LIGHT");
-                imagehistory.PopulateStatistics(i, ImageStatistics.Create(new ImageProperties(2, 2, 16, false, 100, 200), new ushort[] { 300, 400, 600, 800 }));
+                imagehistory.PopulateStatistics(i, imageStatistics);
             }
 
             var itemMock = new Mock<IExposureItem>();
@@ -218,7 +221,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             for (int i = 0; i < exposuresToAdd; i++) {
                 var id = imagehistory.GetNextImageId();
                 imagehistory.Add(id, "LIGHT");
-                imagehistory.PopulateStatistics(i, ImageStatistics.Create(new ImageProperties(2, 2, 16, false, 100, 200), new ushort[] { 300, 400, 600, 800 }));
+                imagehistory.PopulateStatistics(i, imageStatistics);
             }
 
             var itemMock = new Mock<IExposureItem>();
@@ -240,7 +243,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             for (int i = 0; i < 5; i++) {
                 var id = imagehistory.GetNextImageId();
                 imagehistory.Add(id, "LIGHT");
-                imagehistory.PopulateStatistics(i, ImageStatistics.Create(new ImageProperties(2, 2, 16, false, 100, 200), new ushort[] { 300, 400, 600, 800 }));
+                imagehistory.PopulateStatistics(i, imageStatistics);
             }
 
             var itemMock = new Mock<IExposureItem>();
@@ -271,7 +274,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             for (int i = 0; i < exposuresToAdd; i++) {
                 var id = imagehistory.GetNextImageId();
                 imagehistory.Add(id, "LIGHT");
-                imagehistory.PopulateStatistics(i, ImageStatistics.Create(new ImageProperties(2, 2, 16, false, 100, 200), new ushort[] { 300, 400, 600, 800 }));
+                imagehistory.PopulateStatistics(i, imageStatistics);
             }
 
             var itemMock = new Mock<IExposureItem>();

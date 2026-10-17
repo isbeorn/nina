@@ -89,7 +89,7 @@ namespace NINA.Test.PlateSolving {
                 Success = true
             };
             var seq = new CaptureSequence();
-            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 5, ReattemptDelay = TimeSpan.FromMilliseconds(5) };
+            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 5, ReattemptDelay = TimeSpan.Zero };
 
             imagingMediatorMock.Setup(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>())).ReturnsAsync(renderedImageMock.Object);
             imageSolverMock
@@ -121,7 +121,7 @@ namespace NINA.Test.PlateSolving {
                 Success = true
             };
             var seq = new CaptureSequence();
-            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 3, ReattemptDelay = TimeSpan.FromMilliseconds(5) };
+            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 3, ReattemptDelay = TimeSpan.Zero };
 
             imagingMediatorMock.Setup(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>())).ReturnsAsync(renderedImageMock.Object);
             imageSolverMock
@@ -149,7 +149,7 @@ namespace NINA.Test.PlateSolving {
                 Success = true
             };
             var seq = new CaptureSequence();
-            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 3, ReattemptDelay = TimeSpan.FromMilliseconds(5) };
+            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 3, ReattemptDelay = TimeSpan.Zero };
 
             imagingMediatorMock
                 .Setup(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
@@ -177,7 +177,7 @@ namespace NINA.Test.PlateSolving {
                 Success = true
             };
             var seq = new CaptureSequence();
-            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 5, ReattemptDelay = TimeSpan.FromMilliseconds(5) };
+            var parameter = new CaptureSolverParameter() { FocalLength = 700, Attempts = 5, ReattemptDelay = TimeSpan.Zero };
 
             imagingMediatorMock
                 .SetupSequence(x => x.CaptureAndPrepareImage(seq, It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))

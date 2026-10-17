@@ -61,6 +61,18 @@ The general pattern in this project is:
 - mock high-level collaborators
 - instantiate real production objects when the behavior under test is inside the object itself
 
+## Test Performance
+
+Review cases above 100 ms using test-result timings, including setup and teardown. Retain actual timing, persistence, native concurrency and compiled-view coverage where those paths are the behavior under test. Prefer completion signals over fixed sleeps and small controlled inputs for orchestration tests.
+
+`PluginViewResources` shares compiled resources within single-threaded STA fixtures while each case constructs fresh views and view models. Its per-case reset restores resource entries, merged dictionaries, the shared dictionary cache, the selected theme and the main window. Model-only sequencer lifetime/history cases can use `CoreEditorTestScope(initializeEditor: false)` to retain real history and ownership without constructing editors.
+
+Hub configuration screenshots are optional diagnostics. Set the NUnit test parameter `SaveTestPreviews` to `true` to attach both 96 and 144 DPI PNGs; normal runs retain layout and binding assertions without encoding unasserted screenshots.
+
+`Database/EarthRotationTestDatabase.cs` creates only the production Earth rotation schema for controlled query and numerical tests. These tests still use the real EF/SQLite provider. Preserve pool clearing and finalizer cleanup before deleting their files: context disposal and disabled pooling alone do not reliably release every native SQLite handle.
+
+Serialization fixtures own every deserialized graph they create. Cancel and await attachment-owned condition watchdogs before disposing mocked services; container block teardown alone does not stop child watchdogs.
+
 ## Test Assets
 
 `NINA.Test.csproj` copies sample files into the output directory, including:

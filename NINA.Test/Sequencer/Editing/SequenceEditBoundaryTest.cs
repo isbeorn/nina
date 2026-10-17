@@ -39,7 +39,7 @@ namespace NINA.Test.Sequencer.Editing {
 
         [Test]
         public void EditingTemplateContainer_DeleteBelongsToParentHistory() {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             var linked = OpenTemplate(scope);
             var originalSession = scope.History.ActiveHistory;
             linked.DetachCommand.Execute(null);
@@ -58,7 +58,7 @@ namespace NINA.Test.Sequencer.Editing {
 
         [Test]
         public void LinkedTargetDrop_AfterCollection_UndoPreservesEditorNegativeZero() {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             var linked = new LinkedTemplateContainer();
             var target = (DeepSkyObjectContainer)scope.Create(typeof(DeepSkyObjectContainer));
             linked.MaterializeFromTemplate(new TemplatedSequenceContainer(
@@ -84,7 +84,7 @@ namespace NINA.Test.Sequencer.Editing {
         [TestCase(false)]
         [TestCase(true)]
         public void CustomEditorContext_IsResolvedForTheEditorOwner(bool insideTemplate) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             var linked = OpenTemplate(scope);
             var nested = scope.History.ActiveHistory;
             var outside = new SequenceEditHistoryTest.PluginItem();
@@ -101,7 +101,7 @@ namespace NINA.Test.Sequencer.Editing {
         [TestCase(true)]
         [TestCase(false)]
         public void WholeTargetAssignment_RestoresNegativeZero(bool undo) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             var target = (DeepSkyObjectContainer)scope.Create(typeof(DeepSkyObjectContainer));
             scope.Root.Add(target);
             target.Target.InputCoordinates.Coordinates = new Coordinates(1, 0, Epoch.J2000, Coordinates.RAType.Hours);

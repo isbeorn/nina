@@ -51,13 +51,13 @@ public class NikonCameraTest {
     [Test]
     public async Task WaitUntilExposureIsReady_WhenCaptureCompletesBeforeImageArrives_WaitsForImageReady() {
         var sut = CreateCamera();
-        SetDownloadExposure(sut);
+        TaskCompletionSource<object> pendingExposure = SetDownloadExposure(sut);
 
         Task waitTask = sut.WaitUntilExposureIsReady(CancellationToken.None);
         RaiseCaptureComplete(sut);
 
-        Task firstCompletion = await Task.WhenAny(waitTask, Task.Delay(TimeSpan.FromMilliseconds(100)));
-        firstCompletion.Should().NotBeSameAs(waitTask);
+        pendingExposure.Task.IsCompleted.Should().BeFalse("capture completion must not signal that image data is ready");
+        waitTask.IsCompleted.Should().BeFalse();
 
         RaiseImageReady(sut);
 

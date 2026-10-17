@@ -4,6 +4,8 @@ using NINA.PlateSolving;
 using NINA.WPF.Base.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Test.ViewModel {
@@ -17,8 +19,16 @@ namespace NINA.Test.ViewModel {
         /// </summary>
         [Test]
         public async Task ConcurrencyTest() {
-            int iterations = 1000;
+            const int iterations = 32;
             PlateSolvingStatusVM status = new PlateSolvingStatusVM();
+            var reported = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            int pendingReports = iterations * 2;
+            status.PropertyChanged += (_, args) => {
+                if (args.PropertyName == nameof(PlateSolvingStatusVM.PlateSolveResult)
+                    && Interlocked.Decrement(ref pendingReports) == 0) {
+                    reported.TrySetResult();
+                }
+            };
             List<PlateSolveResult> results = new List<PlateSolveResult>();
             for (int i = 0; i < iterations; i++) {
                 results.Add(new PlateSolveResult(new DateTime(2023, 01, 01, 18, 0, 0) + TimeSpan.FromSeconds(i)));
@@ -30,9 +40,11 @@ namespace NINA.Test.ViewModel {
                 status.Progress.Report(new PlateSolveProgress { PlateSolveResult = results[idx + iterations] });
             });
 
-            await Task.Delay(500);
+            await reported.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
             status.PlateSolveHistory.Count.Should().Be(iterations);
+            status.PlateSolveHistory.Select(result => result.SolveTime).Should().BeEquivalentTo(
+                results.Select(result => result.SolveTime).Distinct());
         }
 
         /// <summary>

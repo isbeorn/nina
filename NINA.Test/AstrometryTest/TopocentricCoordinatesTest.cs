@@ -13,6 +13,7 @@ using FluentAssertions;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
+using NINA.Test.Database;
 using NUnit.Framework;
 using System;
 using System.IO;
@@ -108,7 +109,8 @@ namespace NINA.Test.AstrometryTest {
 
         private static TempEarthRotationDatabase CreateEarthRotationDatabase(params (DateTime Date, double Ut1MinusUtc)[] rows) {
             string databasePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"earth-rotation-{Guid.NewGuid():N}.sqlite");
-            string connectionString = $"Data Source={databasePath};";
+            EarthRotationTestDatabase.CreateEmpty(databasePath);
+            string connectionString = $"Data Source={databasePath};Pooling=False;";
             DatabaseInteraction databaseInteraction = new DatabaseInteraction(connectionString);
 
             using (var context = databaseInteraction.GetContext()) {

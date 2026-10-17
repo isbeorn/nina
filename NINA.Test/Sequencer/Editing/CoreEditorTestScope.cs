@@ -54,7 +54,7 @@ namespace NINA.Test.Sequencer.Editing {
         public SequenceEditHistory History { get; }
         public SequenceEditBehavior Behavior { get; }
 
-        public CoreEditorTestScope() {
+        public CoreEditorTestScope(bool initializeEditor = true) {
             var app = Application.Current ?? new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
             previousResources = app.Resources;
             previousWindow = app.MainWindow;
@@ -68,17 +68,20 @@ namespace NINA.Test.Sequencer.Editing {
             app.Resources.MergedDictionaries.Add(shared);
             previousProfile = sharedProfiles.ActiveProfile;
             typeof(NINA.Profile.ProfileService).GetProperty(nameof(IProfileService.ActiveProfile))!.SetValue(sharedProfiles, profile);
-            foreach (string resource in new[] { "StaticResources/SVGDictionary", "StaticResources/Brushes", "StaticResources/Converters", "Styles/TextBox", "Styles/CheckBox", "Styles/Expander", "Styles/Button", "Styles/TabControl", "Styles/ListView" }) {
-                app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri($"/NINA.WPF.Base;component/Resources/{resource}.xaml", UriKind.Relative) });
+            if (initializeEditor) {
+                foreach (string resource in new[] { "StaticResources/SVGDictionary", "StaticResources/Brushes", "StaticResources/Converters", "Styles/TextBox", "Styles/CheckBox", "Styles/Expander", "Styles/Button", "Styles/TabControl", "Styles/ListView" }) {
+                    app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri($"/NINA.WPF.Base;component/Resources/{resource}.xaml", UriKind.Relative) });
+                }
+                foreach (string resource in new[] { "ProgressStyle", "SequenceContainerStyles" }) {
+                    app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri($"/NINA.Sequencer;component/Resources/Styles/{resource}.xaml", UriKind.Relative) });
+                }
+                // Same exported resource dictionaries the plugin loader merges for built-in entities.
+                foreach (Type type in typeof(ISequenceEntity).Assembly.GetTypes().Where(t => typeof(ResourceDictionary).IsAssignableFrom(t)
+                    && t.GetCustomAttributes<ExportAttribute>().Any())) {
+                    app.Resources.MergedDictionaries.Add((ResourceDictionary)Activator.CreateInstance(type)!);
+                }
             }
-            foreach (string resource in new[] { "ProgressStyle", "SequenceContainerStyles" }) {
-                app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri($"/NINA.Sequencer;component/Resources/Styles/{resource}.xaml", UriKind.Relative) });
-            }
-            // Same exported resource dictionaries the plugin loader merges for built-in entities.
-            foreach (Type type in typeof(ISequenceEntity).Assembly.GetTypes().Where(t => typeof(ResourceDictionary).IsAssignableFrom(t)
-                && t.GetCustomAttributes<ExportAttribute>().Any())) {
-                app.Resources.MergedDictionaries.Add((ResourceDictionary)Activator.CreateInstance(type)!);
-            }
+
             Window = new Window { Width = 1600, Height = 900, Left = -32000, Top = -32000, ShowActivated = false, ShowInTaskbar = false, Content = Host };
             app.MainWindow = Window;
             NameScope.SetNameScope(Window, new NameScope());
@@ -87,7 +90,9 @@ namespace NINA.Test.Sequencer.Editing {
             Behavior = new SequenceEditBehavior { History = History };
             Behavior.Attach(Host);
             SequenceEditContext.SetHistory(Host, History);
-            Window.Show();
+            if (initializeEditor) {
+                Window.Show();
+            }
         }
 
         public ISequenceEntity Create(Type type, bool useRealWatchdog = false) {

@@ -51,7 +51,7 @@ namespace NINA.Test.View {
         private readonly List<Window> changelogHosts = new();
         private PluginViewResources resources = null!;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void SetUpResources() {
             resources = new PluginViewResources();
         }
@@ -63,6 +63,11 @@ namespace NINA.Test.View {
             }
 
             changelogHosts.Clear();
+            resources.Reset();
+        }
+
+        [OneTimeTearDown]
+        public void DisposeResources() {
             resources.Dispose();
         }
 
@@ -1641,8 +1646,8 @@ namespace NINA.Test.View {
         [Test]
         public void Showcase_DisplaysDownloadedImagesWithinTheDetailPane() {
             WithChangelogCache(_ => {
-                using var landscape = new LoopbackHttpServer(CreateScreenshot(1200, 600, Colors.SteelBlue), "image/png");
-                using var portrait = new LoopbackHttpServer(CreateScreenshot(600, 1200, Colors.DarkGoldenrod), "image/png");
+                using var landscape = new LoopbackHttpServer(CreateScreenshot(120, 60, Colors.SteelBlue), "image/png");
+                using var portrait = new LoopbackHttpServer(CreateScreenshot(60, 120, Colors.DarkGoldenrod), "image/png");
                 var manager = CreateManager();
                 manager.AvailablePlugins = [new(new PluginManifest {
                     Identifier = "gallery", Name = "Screenshot gallery fixture", Version = new PluginVersion("1.0.0.0"),
@@ -1696,7 +1701,7 @@ namespace NINA.Test.View {
         [TestCase("missing", 0)]
         public void Showcase_OmitsMissingAndFailedImagesAndHidesSingleImageNavigation(string scenario, int count) {
             WithChangelogCache(_ => {
-                using var valid = new LoopbackHttpServer(CreateScreenshot(1200, 600, Colors.SteelBlue), "image/png");
+                using var valid = new LoopbackHttpServer(CreateScreenshot(120, 60, Colors.SteelBlue), "image/png");
                 using var failure = new LoopbackHttpServer([], statusCode: 503);
                 string? primary = scenario switch {
                     "primary" or "duplicate" => valid.Url + "/image.png",

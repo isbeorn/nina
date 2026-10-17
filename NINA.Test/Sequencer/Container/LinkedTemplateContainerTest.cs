@@ -164,7 +164,8 @@ namespace NINA.Test.Sequencer.Container {
             ExecutionProbe executionProbe = new ExecutionProbe();
             Task executeTask = sut.Execute(Mock.Of<IProgress<ApplicationStatus>>(), CancellationToken.None);
 
-            await Task.Delay(100);
+            resolver.InitialLoadComplete.Should().BeFalse();
+            sut.LinkState.Should().Be(TemplateLinkState.Loading);
             executeTask.IsCompleted.Should().BeFalse();
 
             resolver.UpdateTemplates(new[] { CreateTemplate(reference, "Startup", new ProbeInstruction(executionProbe)) }, true, null);

@@ -38,7 +38,7 @@ namespace NINA.Test.Sequencer.Editing {
         [TestCase(false)]
         [TestCase(true)]
         public void ReloadedLibrary_ReleasesPreviousGraphsWhileControllerStaysAlive(bool targets) {
-            using var scope = new CoreEditorTestScope();
+            using var scope = new CoreEditorTestScope(initializeEditor: false);
             using var profile = new NINA.Profile.Profile();
             string directory = Path.Combine(TestContext.CurrentContext.WorkDirectory, "library-lifetime-" + Guid.NewGuid().ToString("N"));
             string emptyDirectory = Path.Combine(directory, "empty");
@@ -145,6 +145,10 @@ namespace NINA.Test.Sequencer.Editing {
             var timeout = Stopwatch.StartNew();
             while (!completed()) {
                 Drain();
+                if (completed()) {
+                    break;
+                }
+
                 if (timeout.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException("Library reload did not finish.");
                 Thread.Sleep(10);
             }

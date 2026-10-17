@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using ProfileModel = NINA.Profile.Profile;
@@ -187,6 +188,11 @@ namespace NINA.Test.ProfileTest {
             ProfileService service = CreateService();
             service.Profiles.Add(profile);
             service.SelectProfile(profile).Should().BeTrue();
+
+            // Autosave has separate integration coverage; this case checks synchronous helper notifications.
+            typeof(ProfileService).GetMethod("UnregisterChangedEventHandlers", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .Invoke(service, null);
+
             int localeChangedCount = 0;
             int locationChangedCount = 0;
             int horizonChangedCount = 0;
@@ -199,7 +205,6 @@ namespace NINA.Test.ProfileTest {
             service.ChangeLongitude(13.405d);
             service.ChangeElevation(34d);
             service.ChangeHorizon(string.Empty);
-            Thread.Sleep(1200);
 
             service.ActiveProfile.ApplicationSettings.Culture.Should().Be("de-DE");
             service.ActiveProfile.AstrometrySettings.Latitude.Should().Be(52.52d);
