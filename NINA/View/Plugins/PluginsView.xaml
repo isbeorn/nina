@@ -733,49 +733,29 @@
                             VerticalScrollBarVisibility="Disabled" />
                     </StackPanel>
                 </ScrollViewer>
-                <ScrollViewer
+                <Grid
                     x:Name="ShowcaseContent"
                     Grid.Row="2"
-                    DataContext="{Binding SelectedPlugin.DisplayManifest}"
-                    HorizontalScrollBarVisibility="Disabled"
-                    VerticalScrollBarVisibility="Auto"
+                    Margin="0,12,8,8"
                     Visibility="Collapsed">
-                    <StackPanel Margin="0,12,8,8">
-                        <i:Interaction.Behaviors>
-                            <behavior:BubbleScrollEvent />
-                        </i:Interaction.Behaviors>
-                        <TextBlock Text="{ns:Loc LblPluginManagerNoScreenshots}" TextWrapping="Wrap">
-                            <TextBlock.Style>
-                                <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding ElementName=FirstScreenshot, Path=HasImage}" Value="False" />
-                                                <Condition Binding="{Binding ElementName=SecondScreenshot, Path=HasImage}" Value="False" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <local:PluginImage
-                            x:Name="FirstScreenshot"
-                            MaxHeight="500"
-                            Margin="0,0,0,8"
-                            CacheVersion="{Binding Version, StringFormat='{}{0}'}"
-                            ImageUrl="{Binding Descriptions.ScreenshotURL}"
-                            UseFallback="False" />
-                        <local:PluginImage
-                            x:Name="SecondScreenshot"
-                            MaxHeight="500"
-                            Margin="0,0,0,8"
-                            CacheVersion="{Binding Version, StringFormat='{}{0}'}"
-                            ImageUrl="{Binding Descriptions.AltScreenshotURL}"
-                            UseFallback="False" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <ninactrl:ImageGallery x:Name="ScreenshotGallery" Grid.Row="1" ItemsSource="{Binding Images}" />
+                    <TextBlock
+                        VerticalAlignment="Top"
+                        Text="{ns:Loc LblPluginManagerNoScreenshots}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding IsEmpty, Converter={StaticResource VisibleWhenTrue}}" />
+                    <StackPanel
+                        x:Name="ShowcaseLoading"
+                        VerticalAlignment="Top"
+                        Visibility="{Binding IsLoading, Converter={StaticResource VisibleWhenTrue}}">
+                        <TextBlock Text="{ns:Loc LblPluginManagerLoadingScreenshots}" />
+                        <ProgressBar Margin="0,6,0,8" Style="{StaticResource LoadingProgressBar}" />
                     </StackPanel>
-                </ScrollViewer>
+                </Grid>
                 <Grid
                     x:Name="VersionsContent"
                     Grid.Row="2"

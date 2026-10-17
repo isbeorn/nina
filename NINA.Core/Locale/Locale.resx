@@ -8338,4 +8338,8 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve"><value>This changelog cannot be displayed here. Open it in your browser to read it.</value></data>
   <data name="LblPluginManagerChangelogStale" xml:space="preserve"><value>Could not refresh the changelog. Previously saved notes are shown. Retry to check again or open it in your browser.</value></data>
   <data name="LblPluginManagerChangelogFailed" xml:space="preserve"><value>Could not load the changelog. Retry or open it in your browser.</value></data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve"><value>Previous image</value></data>
+  <data name="LblImageGalleryNext" xml:space="preserve"><value>Next image</value></data>
+  <data name="LblImageGalleryImage" xml:space="preserve"><value>Image</value></data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve"><value>Loading screenshots...</value></data>
 </root>

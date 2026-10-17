@@ -35,10 +35,12 @@ namespace NINA.View.Plugins {
         private bool showingInstalled;
         private readonly double maximumListWidth;
         private readonly PluginChangelogVM changelog = new();
+        private readonly PluginShowcaseVM showcase = new();
 
         public PluginsView() {
             InitializeComponent();
             ChangelogContent.DataContext = changelog;
+            ShowcaseContent.DataContext = showcase;
             maximumListWidth = PluginListColumn.MaxWidth;
             Unloaded += OnUnloaded;
             IsVisibleChanged += OnVisibilityChanged;
@@ -74,6 +76,7 @@ namespace NINA.View.Plugins {
         private void OnVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e) {
             if (IsLoaded) {
                 changelog.SetActive(IsVisible && ChangelogTab.IsSelected && ChangelogTab.Visibility == Visibility.Visible);
+                showcase.SetActive(IsVisible && ShowcaseTab.IsSelected);
             }
         }
 
@@ -148,6 +151,9 @@ namespace NINA.View.Plugins {
 
             var displayedManifest = selectedEntry?.DisplayManifest;
             changelog.Select(displayedManifest?.ChangelogURL, displayedManifest?.Version?.ToString());
+            showcase.Select(displayedManifest?.Identifier,
+                [displayedManifest?.Descriptions?.ScreenshotURL, displayedManifest?.Descriptions?.AltScreenshotURL],
+                displayedManifest?.Version?.ToString());
             ChangelogTab.Visibility = string.IsNullOrWhiteSpace(displayedManifest?.ChangelogURL)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
@@ -205,6 +211,7 @@ namespace NINA.View.Plugins {
             ChangelogContent.Visibility = ChangelogTab.IsSelected ? Visibility.Visible : Visibility.Collapsed;
             changelog.SetActive(IsLoaded && IsVisible && ChangelogTab.IsSelected && ChangelogTab.Visibility == Visibility.Visible);
             ShowcaseContent.Visibility = ShowcaseTab.IsSelected ? Visibility.Visible : Visibility.Collapsed;
+            showcase.SetActive(IsLoaded && IsVisible && ShowcaseTab.IsSelected);
             VersionsContent.Visibility = VersionsTab.IsSelected ? Visibility.Visible : Visibility.Collapsed;
             InfoContent.Visibility = InfoTab.IsSelected ? Visibility.Visible : Visibility.Collapsed;
             SettingsContent.Visibility = showSettings ? Visibility.Visible : Visibility.Collapsed;

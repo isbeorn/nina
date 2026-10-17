@@ -1412,6 +1412,7 @@ namespace NINA.Test.View {
             string imageTestRoot = Path.Combine(TestContext.CurrentContext.WorkDirectory, "PluginArtwork", Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(imageTestRoot);
             CoreUtil.APPLICATIONTEMPPATH = imageTestRoot;
+            Window? host = null;
             try {
                 var view = new PluginsView { DataContext = manager };
                 Layout(view);
@@ -1426,9 +1427,10 @@ namespace NINA.Test.View {
                     }
                 }
 
-                var screenshot = (PluginImage)view.FindName("FirstScreenshot");
-                PumpUntil(() => screenshot.HasImage);
-                screenshot.ImageUrl.Should().Be(manifest.Descriptions.ScreenshotURL);
+                host = ShowChangelogView(view);
+                ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
+                var gallery = (ImageGallery)view.FindName("ScreenshotGallery");
+                PumpUntil(() => gallery.Items.Count == 1);
                 var versions = (ListBox)view.FindName("PluginVersions");
                 versions.Items.Cast<object>().Should().ContainSingle();
                 versions.SelectedValue.Should().BeSameAs(manager.SelectedVersion);
@@ -1439,9 +1441,286 @@ namespace NINA.Test.View {
                     .Select(link => link.NavigateUri.AbsoluteUri);
                 links.Should().BeEquivalentTo(manifest.Homepage, manifest.ChangelogURL, manifest.Repository, manifest.LicenseURL);
             } finally {
+                host?.Close();
+                changelogHosts.Remove(host!);
                 CoreUtil.APPLICATIONTEMPPATH = originalApplicationTempPath;
                 Directory.Delete(imageTestRoot, true);
             }
+        }
+
+        [TestCase("Persian Faint")]
+        [TestCase("Light")]
+        [TestCase("Dark Nebula")]
+        [TestCase("High Contrast")]
+        public void Showcase_FitsOneImageAndNavigatesWithArrowsAndDots(string schema) {
+            EnsureApplicationResources();
+            var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
+            profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
+            WithChangelogCache(_ => {
+                using var landscape = new LoopbackHttpServer(CreateScreenshot(1200, 600, Colors.SteelBlue), "image/png");
+                using var portrait = new LoopbackHttpServer(CreateScreenshot(600, 1200, Colors.DarkGoldenrod), "image/png");
+                var manager = CreateManager();
+                manager.AvailablePlugins = [new(new PluginManifest {
+                    Identifier = "gallery", Name = "Screenshot gallery fixture", Version = new PluginVersion("1.0.0.0"),
+                    Descriptions = new PluginDescription {
+                        ScreenshotURL = landscape.Url + "/landscape.png", AltScreenshotURL = portrait.Url + "/portrait.png"
+                    }
+                })];
+                var view = new PluginsView { DataContext = manager };
+                var host = ShowChangelogView(view);
+                host.WindowStyle = WindowStyle.None;
+                host.ResizeMode = ResizeMode.NoResize;
+                LayoutWindow(host, 800, 600);
+                ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
+                Layout(view, 800, 600);
+                view.ActualWidth.Should().BeApproximately(800, 0.1);
+                view.ActualHeight.Should().BeApproximately(600, 0.1);
+                var gallery = view.FindName("ShowcaseContent").Should().BeOfType<Grid>().Subject;
+                var images = (ImageGallery)view.FindName("ScreenshotGallery");
+                PumpUntil(() => images.Items.Count == 2);
+                Layout(view, 800, 600);
+                FindVisuals<ScrollViewer>(gallery).Should().BeEmpty();
+                var image = (System.Windows.Controls.Image)images.Template.FindName("PART_Image", images);
+                var previous = (Button)images.Template.FindName("PART_PreviousButton", images);
+                var next = (Button)images.Template.FindName("PART_NextButton", images);
+                previous.Style.Should().BeSameAs(view.FindResource("StandardButton"));
+                next.Style.Should().BeSameAs(view.FindResource("StandardButton"));
+                Contrast((SolidColorBrush)((System.Windows.Shapes.Path)previous.Content).Fill, (SolidColorBrush)previous.Background)
+                    .Should().BeGreaterThanOrEqualTo(3, "the navigation arrow remains readable against its native button background");
+                previous.Visibility.Should().Be(Visibility.Visible);
+                next.Visibility.Should().Be(Visibility.Visible);
+
+                void CheckImage(int index, double ratio) {
+                    Layout(view, 800, 600);
+                    images.SelectedIndex.Should().Be(index);
+                    image.Source.Should().BeSameAs(images.SelectedItem);
+                    image.Stretch.Should().Be(Stretch.Uniform);
+                    image.ActualWidth.Should().BeGreaterThan(0);
+                    image.ActualHeight.Should().BeGreaterThan(0);
+                    (image.ActualWidth / image.ActualHeight).Should().BeApproximately(ratio, 0.01);
+                    var bounds = image.TransformToAncestor(gallery).TransformBounds(new Rect(image.RenderSize));
+                    bounds.Left.Should().BeGreaterThanOrEqualTo(0);
+                    bounds.Top.Should().BeGreaterThanOrEqualTo(0);
+                    bounds.Right.Should().BeLessThanOrEqualTo(gallery.ActualWidth + 0.1);
+                    bounds.Bottom.Should().BeLessThanOrEqualTo(gallery.ActualHeight + 0.1);
+                }
+
+                void Click(Button button) => ((IInvokeProvider)new ButtonAutomationPeer(button).GetPattern(PatternInterface.Invoke)).Invoke();
+
+                images.SelectedIndex = 0;
+                CheckImage(0, 2);
+                Click(next);
+                CheckImage(1, 0.5);
+                Click(next);
+                CheckImage(0, 2);
+                Click(previous);
+                CheckImage(1, 0.5);
+                Click(previous);
+                CheckImage(0, 2);
+                var peer = new ListBoxAutomationPeer(images);
+                ((ISelectionItemProvider)peer.GetChildren()[1].GetPattern(PatternInterface.SelectionItem)).Select();
+                CheckImage(1, 0.5);
+                ((ISelectionItemProvider)peer.GetChildren()[0].GetPattern(PatternInterface.SelectionItem)).Select();
+                CheckImage(0, 2);
+                SavePreview(view, "PluginShowcase-" + schema.Replace(" ", "") + ".png", 800, 600);
+                LayoutWindow(host, 1200, 1000);
+                images.SelectedIndex = 1;
+                Layout(view, 1200, 1000);
+                image.ActualHeight.Should().BeGreaterThan(500, "the gallery is not capped at the old screenshot height");
+                (image.ActualWidth / image.ActualHeight).Should().BeApproximately(0.5, 0.01);
+                SavePreview(view, "PluginShowcase-Large-" + schema.Replace(" ", "") + ".png", 1200, 1000);
+            });
+        }
+
+        [TestCase("primary", 1)]
+        [TestCase("alternate", 1)]
+        [TestCase("failed-primary", 1)]
+        [TestCase("duplicate", 1)]
+        [TestCase("failed-both", 0)]
+        [TestCase("missing", 0)]
+        public void Showcase_OmitsMissingAndFailedImagesAndHidesSingleImageNavigation(string scenario, int count) {
+            EnsureApplicationResources();
+            WithChangelogCache(_ => {
+                using var valid = new LoopbackHttpServer(CreateScreenshot(1200, 600, Colors.SteelBlue), "image/png");
+                using var failure = new LoopbackHttpServer([], statusCode: 503);
+                string? primary = scenario switch {
+                    "primary" or "duplicate" => valid.Url + "/image.png",
+                    "failed-primary" or "failed-both" => failure.Url + "/broken.png",
+                    _ => null
+                };
+                string? alternate = scenario is "alternate" or "failed-primary" or "duplicate" ? valid.Url + "/image.png" : null;
+                var manager = CreateManager();
+                manager.AvailablePlugins = [new(new PluginManifest {
+                    Identifier = "partial-gallery", Name = "Partial gallery fixture", Version = new PluginVersion("1.0.0.0"),
+                    Descriptions = new PluginDescription { ScreenshotURL = primary, AltScreenshotURL = alternate }
+                })];
+                var view = new PluginsView { DataContext = manager };
+                ShowChangelogView(view);
+                valid.Requests.Should().BeEmpty("screenshots load when Showcase opens");
+                ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
+                var content = (FrameworkElement)view.FindName("ShowcaseContent");
+                var state = (PluginShowcaseVM)content.DataContext;
+                PumpUntil(() => !state.IsLoading);
+                Layout(view, 800, 600);
+                var gallery = (ImageGallery)view.FindName("ScreenshotGallery");
+                gallery.Items.Count.Should().Be(count);
+                state.IsEmpty.Should().Be(count == 0);
+                foreach (string name in new[] { "PART_PreviousButton", "PART_NextButton", "PART_Indicators" }) {
+                    ((FrameworkElement)gallery.Template.FindName(name, gallery)).Visibility.Should().Be(Visibility.Collapsed);
+                }
+
+                if (count == 1) {
+                    var image = (System.Windows.Controls.Image)gallery.Template.FindName("PART_Image", gallery);
+                    image.ActualWidth.Should().BeApproximately(gallery.ActualWidth, 0.1, "a single landscape image uses the pane width");
+                    gallery.SelectedIndex.Should().Be(0);
+                    valid.Requests.Should().ContainSingle();
+                }
+            });
+        }
+
+        [Test]
+        public void Showcase_IgnoresObsoleteDownloadsAndResetsSelectionForAnotherPlugin() {
+            EnsureApplicationResources();
+            WithChangelogCache(root => {
+                var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                using var slow = new LoopbackHttpServer(CreateScreenshot(100, 100, Colors.Red), "image/png", responseGate: gate.Task);
+                using var first = new LoopbackHttpServer(CreateScreenshot(200, 100, Colors.Blue), "image/png");
+                using var second = new LoopbackHttpServer(CreateScreenshot(100, 200, Colors.Green), "image/png");
+                var manager = CreateManager();
+                manager.AvailablePlugins = [
+                    new(new PluginManifest {
+                        Identifier = "old", Name = "A slow plugin", Version = new PluginVersion("1.0.0.0"),
+                        Descriptions = new PluginDescription { ScreenshotURL = slow.Url + "/old.png" }
+                    }),
+                    new(new PluginManifest {
+                        Identifier = "new", Name = "B current plugin", Version = new PluginVersion("1.0.0.0"),
+                        Descriptions = new PluginDescription { ScreenshotURL = first.Url + "/first.png", AltScreenshotURL = second.Url + "/second.png" }
+                    })
+                ];
+                var view = new PluginsView { DataContext = manager };
+                ShowChangelogView(view);
+                ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
+                var gallery = (ImageGallery)view.FindName("ScreenshotGallery");
+                var state = (PluginShowcaseVM)((FrameworkElement)view.FindName("ShowcaseContent")).DataContext;
+                try {
+                    PumpUntil(() => slow.RequestReceived.IsCompleted);
+                    state.IsLoading.Should().BeTrue();
+                    state.IsEmpty.Should().BeFalse();
+                    manager.SelectedPlugin = manager.FilteredPlugins.Single(entry => entry.Identifier == "new");
+                    PumpUntil(() => gallery.Items.Count == 2 && !state.IsLoading);
+                    Layout(view);
+                    gallery.SelectedIndex = 1;
+                    gate.TrySetResult();
+                    PumpUntil(() => Directory.GetFiles(Path.Combine(root, "Cache", "PluginIcons"), "*.png").Length == 3);
+                    Layout(view);
+                    gallery.Items.Count.Should().Be(2);
+                    gallery.SelectedIndex.Should().Be(1);
+                    gallery.Items.Cast<BitmapSource>().Select(image => image.PixelWidth).Should().Equal(200, 100);
+
+                    ((TabItem)view.FindName("DescriptionTab")).IsSelected = true;
+                    ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
+                    gallery.SelectedIndex.Should().Be(1, "switching detail tabs keeps the current screenshot");
+                    manager.SelectedPlugin = manager.FilteredPlugins.Single(entry => entry.Identifier == "old");
+                    PumpUntil(() => gallery.Items.Count == 1 && !state.IsLoading);
+                    gallery.SelectedIndex.Should().Be(0);
+                    manager.SelectedPlugin = manager.FilteredPlugins.Single(entry => entry.Identifier == "new");
+                    PumpUntil(() => gallery.Items.Count == 2 && !state.IsLoading);
+                    gallery.SelectedIndex.Should().Be(0, "a newly selected plugin starts with its first screenshot");
+                    first.Requests.Should().ContainSingle("returning to a plugin reuses its cached artwork");
+                    second.Requests.Should().ContainSingle();
+                } finally {
+                    gate.TrySetResult();
+                }
+            });
+        }
+
+        [Test]
+        public void Showcase_PreservesManifestOrderWhenTheAlternateDownloadsFirst() {
+            EnsureApplicationResources();
+            WithChangelogCache(root => {
+                var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                using var primary = new LoopbackHttpServer(CreateScreenshot(200, 100, Colors.Blue), "image/png", responseGate: gate.Task);
+                using var alternate = new LoopbackHttpServer(CreateScreenshot(100, 200, Colors.Green), "image/png");
+                var manager = CreateManager();
+                manager.AvailablePlugins = [new(new PluginManifest {
+                    Identifier = "order", Name = "Ordered gallery fixture", Version = new PluginVersion("1.0.0.0"),
+                    Descriptions = new PluginDescription { ScreenshotURL = primary.Url + "/first.png", AltScreenshotURL = alternate.Url + "/second.png" }
+                })];
+                var view = new PluginsView { DataContext = manager };
+                ShowChangelogView(view);
+                ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
+                var gallery = (ImageGallery)view.FindName("ScreenshotGallery");
+                var state = (PluginShowcaseVM)((FrameworkElement)view.FindName("ShowcaseContent")).DataContext;
+                try {
+                    string cacheDirectory = Path.Combine(root, "Cache", "PluginIcons");
+                    PumpUntil(() => Directory.Exists(cacheDirectory) && Directory.GetFiles(cacheDirectory, "*.png").Length == 1);
+                    state.IsLoading.Should().BeTrue();
+                    gate.TrySetResult();
+                    PumpUntil(() => !state.IsLoading);
+                    gallery.Items.Cast<BitmapSource>().Select(image => image.PixelWidth).Should().Equal(200, 100);
+                    gallery.SelectedIndex.Should().Be(0);
+                } finally {
+                    gate.TrySetResult();
+                }
+            });
+        }
+
+        [Test]
+        public void Showcase_UsesTheDisplayedVersionCacheAcrossSectionsAndRefresh() {
+            EnsureApplicationResources();
+            WithChangelogCache(root => {
+                using var server = new LoopbackHttpServer(responses: [
+                    new(CreateScreenshot(100, 100, Colors.Red)), new(CreateScreenshot(200, 100, Colors.Blue)),
+                    new(CreateScreenshot(300, 100, Colors.Green))
+                ], "image/png");
+                PluginManifest Manifest(string version) => new() {
+                    Identifier = "versioned-gallery", Name = "Versioned gallery fixture", Version = new PluginVersion(version),
+                    Descriptions = new PluginDescription { ScreenshotURL = server.Url + "/screenshot.png" }
+                };
+
+                var manager = CreateManager();
+                var installed = Manifest("1.0.0.0");
+                manager.InstalledPlugins = new Dictionary<IPluginManifest, bool> { [installed] = true };
+                manager.AvailablePlugins = [new(Manifest("2.0.0.0"))];
+                manager.SelectedTabIndex = 0;
+                var view = new PluginsView { DataContext = manager };
+                ShowChangelogView(view);
+                ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
+                var gallery = (ImageGallery)view.FindName("ScreenshotGallery");
+                var state = (PluginShowcaseVM)((FrameworkElement)view.FindName("ShowcaseContent")).DataContext;
+                void CheckImage(int width) {
+                    PumpUntil(() => !state.IsLoading && gallery.Items.Count == 1);
+                    ((BitmapSource)gallery.SelectedItem).PixelWidth.Should().Be(width);
+                }
+
+                CheckImage(100);
+                manager.SelectedTabIndex = 1;
+                ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
+                CheckImage(200);
+                manager.AvailablePlugins = [new(Manifest("3.0.0.0"))];
+                CheckImage(300);
+                manager.SelectedTabIndex = 0;
+                ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
+                CheckImage(100);
+                server.Requests.Should().HaveCount(3);
+                Directory.GetFiles(Path.Combine(root, "Cache", "PluginIcons"), "*.png").Should().HaveCount(3);
+            });
+        }
+
+        private static byte[] CreateScreenshot(int width, int height, Color color) {
+            byte[] pixels = new byte[width * height * 4];
+            for (int index = 0; index < pixels.Length; index += 4) {
+                pixels[index] = color.B;
+                pixels[index + 1] = color.G;
+                pixels[index + 2] = color.R;
+                pixels[index + 3] = color.A;
+            }
+
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(BitmapSource.Create(width, height, 96, 96, PixelFormats.Bgra32, null, pixels, width * 4)));
+            using var stream = new MemoryStream();
+            encoder.Save(stream);
+            return stream.ToArray();
         }
 
         [Test]
@@ -1462,7 +1741,7 @@ namespace NINA.Test.View {
                 ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
                 Layout(view);
                 var images = FindVisuals<PluginImage>(view).ToArray();
-                images.Should().HaveCount(4, "the list, header and both screenshots use the displayed version");
+                images.Should().HaveCount(2, "the list and header use the displayed version; Showcase loads its own cached images");
                 foreach (var image in images) {
                     image.CacheVersion.Should().NotBeNull($"the version binding is {BindingOperations.GetBindingExpression(image, PluginImage.CacheVersionProperty)?.Status}");
                     image.CacheVersion.Should().Be(section == 0 ? "1.0.0.0" : "2.0.0.0");
