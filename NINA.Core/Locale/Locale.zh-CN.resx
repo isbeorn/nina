@@ -8275,4 +8275,235 @@
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>由于五分钟没有操作，对链接模板 '{0}' 的未保存编辑已被丢弃。将继续使用已保存的模板。</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>展示</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>此插件暂无可用截图。</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>正在加载版本历史记录...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>部分版本历史记录无法加载。仍会显示可用版本。</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>某个插件库未提供版本历史记录。仍会显示其插件列表中的版本。</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>已配置的插件库中没有可用的兼容版本。</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>已安装版本会与已配置插件库提供的兼容版本一同显示。较早的版本可能不可用。版本更改将在重启 NINA 后生效。</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>安装版本</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>当前已安装</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>可回退</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>可升级</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>较旧版本</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>较新版本</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>回退到 {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>升级到 {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>安装 {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>使用"版本"中的操作安装或更换版本，然后重启 NINA。有关发布者提供的专用配置说明，请参阅插件主页。</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>搜索插件</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>所有标签</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>清除筛选条件</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>浏览可用插件</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>正在加载可用插件...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>无法加载可用插件。仍会显示之前的结果。请重试以再次检查。</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>无法访问部分插件库。仍会显示这些插件库之前的结果。</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>没有符合这些筛选条件的插件。清除筛选条件即可查看所有插件。</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>尚未安装任何插件。请浏览可用插件并选择安装。</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>加载失败</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>等待重启后移除</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>需要重启</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>正在安装插件...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>正在更新插件...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>正在移除插件...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>已请求取消...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>更新全部 ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>重启 NINA 后即可使用设置。</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>最低 NINA 版本：</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>源代码</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>重启 NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>插件更改需要重启才能生效。</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>有可用更新</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>已配置的插件库中没有可用的兼容插件。</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>此插件未提供设置。</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>在浏览器中打开更新日志</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>正在加载更新日志...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>无法在此处显示此更新日志。请在浏览器中打开阅读。</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>无法刷新更新日志。当前显示的是之前保存的内容。请重试以再次检查，或在浏览器中打开。</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>无法加载更新日志。请重试或在浏览器中打开。</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>上一张图像</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>下一张图像</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>图像</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>正在加载截图...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>附加信息</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA 安全集线器</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA 开关集线器</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA 气象集线器</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>添加设备</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>移除设备</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>平均周期</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>点击齿轮图标打开集线器设置。请至少选择一个设备，且不要重复添加设备或嵌套 NINA 集线器。</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>此集线器尚未配置任何设备。请点击齿轮图标打开设置并添加设备。</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>所有气象数据项都尚未指定来源设备。请点击齿轮图标打开集线器设置，并至少为一个数据项指定设备。</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>无法连接此设备。</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>集线器中的某个设备不可用。请重新连接集线器以继续。</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>该开关控制器不支持依据持久标识选择集线器通道。</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>所选集线器通道不存在、无法唯一确定或不可写入。</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>设置开关值后无法读取其状态。</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>添加要通过此集线器使用的设备。</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>此设备已断开连接。</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>不使用</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>已断开连接</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>安全</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>不安全</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>开关 {0} - {1}</value>
+  </data>
 </root>
