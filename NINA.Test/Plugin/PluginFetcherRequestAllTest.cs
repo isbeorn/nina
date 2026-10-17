@@ -39,6 +39,7 @@ namespace NINA.Test.Plugin {
                 CreateManifestJson("Compatible Spectroscopy Planner", "20e79561-6a8d-48fd-a584-13c4eb543fbf", minimumPluginApiVersion.ToString()) + "," +
                 CreateManifestJson("Future API Planner", "985a03bb-cb30-4256-a6f9-0370eed5673f", futureApplicationVersion.ToString()) + "," +
                 CreateManifestJson("Legacy API Planner", "d343d3b8-9a4a-4690-aefc-0bd9cd1de840", legacyApplicationVersion.ToString()) + "," +
+                CreateManifestJson("Known incompatible release", "a6c614f3-c3ab-423a-8be1-d480a253f07c", minimumPluginApiVersion.ToString()) + "," +
                 "{ 'Name': 'Invalid Missing Installer' }" +
                 "]";
             using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes(manifests), "application/json");
@@ -51,12 +52,36 @@ namespace NINA.Test.Plugin {
             plugins.Single().Identifier.Should().Be("20e79561-6a8d-48fd-a584-13c4eb543fbf");
         }
 
-        private static string CreateManifestJson(string name, string identifier, string minimumApplicationVersion) {
+        [TestCase("")]
+        [TestCase("/beta")]
+        public async Task RequestVersions_UsesTheRepositoryHistoryRouteAndRetainsOnlyCompatibleMatchingReleases(string repositoryPath) {
+            string identifier = Guid.NewGuid().ToString();
+            var minimum = CurrentMinimumApplicationVersion();
+            string manifests = "[" + string.Join(",", new[] {
+                CreateManifestJson("Current", identifier, minimum.ToString(), 2),
+                CreateManifestJson("Previous", identifier.ToUpperInvariant(), minimum.ToString()),
+                CreateManifestJson("Other plugin", Guid.NewGuid().ToString(), minimum.ToString()),
+                CreateManifestJson("Legacy", identifier, VersionBelow(minimum).ToString()),
+                CreateManifestJson("Future", identifier, new Version(minimum.Major + 1, 0, 0, 0).ToString()),
+                "{ 'Name': 'Invalid Missing Installer' }"
+            }) + "]";
+            using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes(manifests), "application/json");
+
+            var plugins = await new PluginFetcher(server.Url + repositoryPath).RequestVersions(identifier,
+                new PluginVersion(CoreUtil.Version), CancellationToken.None);
+
+            plugins.Select(plugin => plugin.Name).Should().Equal("Current", "Previous");
+            plugins.Select(plugin => plugin.Version.ToString()).Should().Equal("2.0.0.0", "1.0.0.0");
+            server.Requests.Should().ContainSingle().Which.Should().StartWith($"GET {repositoryPath}/plugins/{identifier}/versions HTTP/1.1");
+            server.Requests[0].Should().Contain("User-Agent: " + CoreUtil.UserAgent);
+        }
+
+        private static string CreateManifestJson(string name, string identifier, string minimumApplicationVersion, int major = 1) {
             return @"{
                 'Name': '" + name + @"',
                 'Identifier': '" + identifier + @"',
                 'Version': {
-                    'Major': 1,
+                    'Major': " + major + @",
                     'Minor': 0,
                     'Patch': 0,
                     'Build': 0
