@@ -164,21 +164,28 @@ namespace NINA.View.Plugins {
             }
         }
 
-        private void OnChangelogUpdated(object sender, DataTransferEventArgs e) {
-            if (changelog.DocumentUri != null && ChangelogMarkdown.Document != null) {
-                ResolveChangelogLinks(ChangelogMarkdown.Document);
+        private void OnMarkdownUpdated(object sender, DataTransferEventArgs e) {
+            if (sender is MdXaml.MarkdownScrollViewer viewer && viewer.Document is FlowDocument document) {
+                FormatMarkdown(document, viewer == ChangelogMarkdown ? changelog.DocumentUri : null);
             }
         }
 
-        private void ResolveChangelogLinks(DependencyObject element) {
-            if (element is Hyperlink link && link.CommandParameter is string target
+        private void FormatMarkdown(DependencyObject element, Uri documentUri) {
+            if (element is List list
+                && list.MarkerStyle is TextMarkerStyle.Disc or TextMarkerStyle.Circle
+                    or TextMarkerStyle.Box or TextMarkerStyle.Square) {
+                // MdXaml's local bullet values otherwise override the application's list style.
+                list.ClearValue(List.MarkerStyleProperty);
+            }
+
+            if (documentUri != null && element is Hyperlink link && link.CommandParameter is string target
                 && Uri.TryCreate(target, UriKind.RelativeOrAbsolute, out var uri) && !uri.IsAbsoluteUri) {
-                link.CommandParameter = new Uri(changelog.DocumentUri, uri).AbsoluteUri;
+                link.CommandParameter = new Uri(documentUri, uri).AbsoluteUri;
             }
 
             foreach (object child in LogicalTreeHelper.GetChildren(element)) {
                 if (child is DependencyObject dependencyObject) {
-                    ResolveChangelogLinks(dependencyObject);
+                    FormatMarkdown(dependencyObject, documentUri);
                 }
             }
         }

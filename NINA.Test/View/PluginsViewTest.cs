@@ -49,6 +49,48 @@ namespace NINA.Test.View {
     public class PluginsViewTest {
         private readonly List<Window> changelogHosts = new();
 
+        [TestCase("Persian Faint")]
+        [TestCase("Light")]
+        [TestCase("Dark Nebula")]
+        [TestCase("High Contrast")]
+        public void MarkdownLists_UseSquareBulletsAndPreserveNumbering(string schema) {
+            EnsureApplicationResources();
+            var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
+            profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
+            const string text = "### Dashes\n\n- Dash item\n    - Nested item\n\n### Asterisks\n\n* Asterisk item\n\n### Plus\n\n+ Plus item\n\n### Numbered\n\n7. Numbered item\n8. Another numbered item";
+            var manager = CreateManager();
+            manager.AvailablePlugins = [new(new PluginManifest {
+                Identifier = "lists", Name = "Markdown list fixture",
+                Descriptions = new PluginDescription {
+                    LongDescription = text
+                }
+            })];
+            var view = new PluginsView { DataContext = manager };
+            Layout(view, 800, 600);
+            var viewer = FindVisual<MdXaml.MarkdownScrollViewer>((ScrollViewer)view.FindName("DescriptionContent"))!;
+            var document = viewer.Document.Should().BeOfType<System.Windows.Documents.FlowDocument>().Subject;
+            var lists = document.Blocks.OfType<System.Windows.Documents.List>().ToArray();
+            var numbered = lists.Should().ContainSingle(list => list.MarkerStyle == TextMarkerStyle.Decimal).Which;
+            var parsedNumbered = new MdXaml.Markdown().Transform(text).Blocks.OfType<System.Windows.Documents.List>()
+                .Single(list => list.MarkerStyle == TextMarkerStyle.Decimal);
+            numbered.StartIndex.Should().Be(parsedNumbered.StartIndex);
+            numbered.ListItems.Count.Should().Be(2);
+            var unordered = lists.Where(list => list != numbered)
+                .Concat(lists.SelectMany(list => list.ListItems.SelectMany(item => item.Blocks.OfType<System.Windows.Documents.List>())))
+                .ToArray();
+            unordered.Should().HaveCount(4);
+            unordered.Should().OnlyContain(list => list.MarkerStyle == TextMarkerStyle.Box, "unordered lists use filled square bullets");
+            SavePreview(view, "PluginMarkdown-Bullets-" + schema.Replace(" ", "") + ".png", 800, 600);
+
+            manager.AvailablePlugins = [new(new PluginManifest {
+                Identifier = "replacement", Name = "Replacement list fixture",
+                Descriptions = new PluginDescription { LongDescription = "- Replacement item" }
+            })];
+            Layout(view, 800, 600);
+            viewer.Document.Should().BeOfType<System.Windows.Documents.FlowDocument>().Subject.Blocks
+                .OfType<System.Windows.Documents.List>().Should().ContainSingle().Which.MarkerStyle.Should().Be(TextMarkerStyle.Box);
+        }
+
         [Test]
         public void ChangelogDetachedView_DoesNotFetchUntilItIsShown() {
             EnsureApplicationResources();
@@ -85,7 +127,7 @@ namespace NINA.Test.View {
         public void ChangelogTab_LoadsMarkdownOnlyWhenOpenedAndRetainsBrowserLink() {
             EnsureApplicationResources();
             WithChangelogCache(_ => {
-                using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes("# Release notes\n\nFixed the fixture. [More](../guide.md)"), "text/markdown");
+                using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes("# Release notes\n\nFixed the fixture. [More](../guide.md)\n\n- Dash bullet"), "text/markdown");
                 var manifest = new PluginManifest {
                     Identifier = "changelog", Name = "Changelog fixture", Version = new PluginVersion("1.0.0.0"),
                     ChangelogURL = server.Url + "/docs/CHANGELOG.md"
@@ -107,6 +149,7 @@ namespace NINA.Test.View {
                 markdown.MarkdownStyle.Should().BeSameAs(view.FindResource("MarkdownStyle"));
                 markdown.AssetPathRoot.Should().Be(server.Url + "/docs/");
                 var document = markdown.Document.Should().BeOfType<System.Windows.Documents.FlowDocument>().Subject;
+                document.Blocks.OfType<System.Windows.Documents.List>().Should().ContainSingle().Which.MarkerStyle.Should().Be(TextMarkerStyle.Box);
                 var relativeLink = document.Blocks.OfType<System.Windows.Documents.Paragraph>()
                     .SelectMany(paragraph => paragraph.Inlines.OfType<System.Windows.Documents.Hyperlink>()).Single();
                 relativeLink.CommandParameter.Should().Be(server.Url + "/guide.md");

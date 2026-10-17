@@ -686,8 +686,9 @@
                         </i:Interaction.Behaviors>
                         <mdxam:MarkdownScrollViewer
                             ClickAction="OpenBrowser"
-                            Markdown="{Binding Descriptions.LongDescription}"
+                            Markdown="{Binding Descriptions.LongDescription, NotifyOnTargetUpdated=True}"
                             MarkdownStyle="{StaticResource MarkdownStyle}"
+                            TargetUpdated="OnMarkdownUpdated"
                             VerticalScrollBarVisibility="Disabled" />
                     </StackPanel>
                 </ScrollViewer>
@@ -728,7 +729,7 @@
                             ClickAction="OpenBrowser"
                             Markdown="{Binding Markdown, NotifyOnTargetUpdated=True}"
                             MarkdownStyle="{StaticResource MarkdownStyle}"
-                            TargetUpdated="OnChangelogUpdated"
+                            TargetUpdated="OnMarkdownUpdated"
                             VerticalScrollBarVisibility="Disabled" />
                     </StackPanel>
                 </ScrollViewer>
