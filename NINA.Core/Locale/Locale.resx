@@ -8342,4 +8342,5 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   <data name="LblImageGalleryNext" xml:space="preserve"><value>Next image</value></data>
   <data name="LblImageGalleryImage" xml:space="preserve"><value>Image</value></data>
   <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve"><value>Loading screenshots...</value></data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve"><value>Additional Info</value></data>
 </root>

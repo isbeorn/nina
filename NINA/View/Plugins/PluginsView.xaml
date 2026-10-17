@@ -671,7 +671,7 @@
                         HeaderTemplate="{StaticResource PluginTabCaption}" />
                     <TabItem
                         x:Name="InfoTab"
-                        Header="{ns:Loc LblInfo}"
+                        Header="{ns:Loc LblPluginManagerAdditionalInfo}"
                         HeaderTemplate="{StaticResource PluginTabCaption}" />
                 </TabControl>
                 <ScrollViewer
