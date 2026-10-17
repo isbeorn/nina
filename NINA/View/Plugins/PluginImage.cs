@@ -21,7 +21,7 @@ using System.Windows.Threading;
 namespace NINA.View.Plugins {
 
     public class PluginImage : System.Windows.Controls.Image {
-        private static readonly PluginImageCache sharedCache = new();
+        private static readonly PluginContentCache sharedCache = new();
         private int loadVersion;
 
         public static readonly DependencyProperty ImageUrlProperty = DependencyProperty.Register(
@@ -74,7 +74,7 @@ namespace NINA.View.Plugins {
 
             try {
                 var pending = await Dispatcher.InvokeAsync(
-                    () => version == loadVersion ? sharedCache.LoadAsync(uri, CacheVersion) : null,
+                    () => version == loadVersion ? sharedCache.LoadImageAsync(uri, CacheVersion) : null,
                     DispatcherPriority.DataBind).Task.ConfigureAwait(false);
                 if (pending == null) {
                     return;

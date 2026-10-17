@@ -17,6 +17,8 @@ using NINA.Core.Utility;
 using NINA.Test.Plugin;
 using NINA.View.Plugins;
 using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -48,6 +50,70 @@ namespace NINA.Test.View {
         }
 
         [Test]
+        public void ImagesAndChangelogs_KeepTheSameUrlAndVersionInSeparatePersistentFiles() {
+            using var server = new LoopbackHttpServer(responses: [
+                new(CreatePng(Colors.Red)),
+                new(Encoding.UTF8.GetBytes("# Changelog notes")),
+                new(CreatePng(Colors.Blue))
+            ], "text/plain");
+            var cache = new PluginContentCache();
+            var uri = new Uri(server.Url + "/content");
+            const string version = "1.0.0.0";
+
+            Load(cache, uri, version).Should().Be(Colors.Red);
+            var downloaded = cache.FetchChangelogAsync(uri, version, CancellationToken.None).GetAwaiter().GetResult();
+            downloaded.Markdown.Should().Be("# Changelog notes");
+            string imagePath = Directory.GetFiles(cacheDirectory, "*.png").Single();
+            string changelogDirectory = Path.Combine(testRoot, "Cache", "PluginChangelogs");
+            Directory.GetFiles(changelogDirectory, "*.json").Should().ContainSingle();
+
+            var persisted = new PluginContentCache();
+            Load(persisted, uri, version).Should().Be(Colors.Red);
+            persisted.ReadChangelog(uri, version).Markdown.Should().Be(downloaded.Markdown);
+            File.SetLastWriteTimeUtc(imagePath, DateTime.UtcNow.AddDays(-8));
+            Load(cache, uri, version).Should().Be(Colors.Blue);
+            persisted.ReadChangelog(uri, version).Markdown.Should().Be(downloaded.Markdown);
+            server.Requests.Should().HaveCount(3);
+            Directory.GetFiles(cacheDirectory, "*.tmp").Should().BeEmpty();
+            Directory.GetFiles(changelogDirectory, "*.tmp").Should().BeEmpty();
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        public void HistoricalUnversionedImage_IsReadWithoutChangingItsKey(string? version) {
+            using var server = new LoopbackHttpServer(CreatePng(Colors.Blue), "image/png");
+            var uri = new Uri(server.Url + "/icon.png");
+            string key = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(uri.AbsoluteUri)));
+            Directory.CreateDirectory(cacheDirectory);
+            File.WriteAllBytes(Path.Combine(cacheDirectory, key + ".png"), CreatePng(Colors.Red));
+
+            Load(new PluginContentCache(), uri, version).Should().Be(Colors.Red);
+            server.Requests.Should().BeEmpty();
+            Directory.GetFiles(cacheDirectory, "*.png").Should().ContainSingle();
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        public void HistoricalUnversionedChangelog_IsReadWithItsOriginalSeparator(string? version) {
+            var uri = new Uri("https://example.invalid/notes.md");
+            string key = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(uri.AbsoluteUri + "\n")));
+            string changelogDirectory = Path.Combine(testRoot, "Cache", "PluginChangelogs");
+            Directory.CreateDirectory(changelogDirectory);
+            File.WriteAllText(Path.Combine(changelogDirectory, key + ".json"), System.Text.Json.JsonSerializer.Serialize(new {
+                Markdown = "# Historical notes",
+                DocumentUri = uri.AbsoluteUri,
+                IsFresh = true
+            }));
+
+            var document = new PluginContentCache().ReadChangelog(uri, version)
+                .Should().BeOfType<PluginContentCache.ChangelogDocument>().Subject;
+            document.Markdown.Should().Be("# Historical notes");
+            document.DocumentUri.Should().Be(uri);
+            document.IsFresh.Should().BeTrue();
+            Directory.GetFiles(changelogDirectory, "*.json").Should().ContainSingle();
+        }
+
+        [Test]
         public void IconDownload_PersistsDecodedImageInTheLocalCache() {
             using var server = new LoopbackHttpServer(CreatePng(Colors.Red), "image/png");
             var image = new PluginImage { ImageUrl = server.Url + "/icon.png" };
@@ -64,11 +130,11 @@ namespace NINA.Test.View {
             Uri uri;
             using (var server = new LoopbackHttpServer(CreatePng(Colors.Red), "image/png")) {
                 uri = new Uri(server.Url + "/icon.png");
-                Load(new PluginImageCache(cacheDirectory), uri).Should().Be(Colors.Red);
+                Load(new PluginContentCache(cacheDirectory), uri).Should().Be(Colors.Red);
                 server.Requests.Should().ContainSingle();
             }
 
-            Load(new PluginImageCache(cacheDirectory), uri).Should().Be(Colors.Red);
+            Load(new PluginContentCache(cacheDirectory), uri).Should().Be(Colors.Red);
         }
 
         [TestCase(true)]
@@ -101,8 +167,8 @@ namespace NINA.Test.View {
             server.Requests.Should().HaveCount(2);
 
             var uri = new Uri(image.ImageUrl);
-            Load(new PluginImageCache(cacheDirectory), uri, "1.0.0.0").Should().Be(Colors.Red);
-            Load(new PluginImageCache(cacheDirectory), uri, "2.0.0.0").Should().Be(Colors.Blue);
+            Load(new PluginContentCache(cacheDirectory), uri, "1.0.0.0").Should().Be(Colors.Red);
+            Load(new PluginContentCache(cacheDirectory), uri, "2.0.0.0").Should().Be(Colors.Blue);
             server.Requests.Should().HaveCount(2);
         }
 
@@ -113,17 +179,17 @@ namespace NINA.Test.View {
                 new(CreatePng(Colors.Blue))
             ], "image/png");
             var uri = new Uri(server.Url + "/icon.png");
-            Load(new PluginImageCache(cacheDirectory), uri, "1.0.0.0").Should().Be(Colors.Red);
+            Load(new PluginContentCache(cacheDirectory), uri, "1.0.0.0").Should().Be(Colors.Red);
             string path = Directory.GetFiles(cacheDirectory, "*.png").Single();
             File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddDays(-7).AddMinutes(1));
 
-            Load(new PluginImageCache(cacheDirectory), uri, "1.0.0.0").Should().Be(Colors.Red);
+            Load(new PluginContentCache(cacheDirectory), uri, "1.0.0.0").Should().Be(Colors.Red);
             server.Requests.Should().ContainSingle();
             File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddDays(-7).AddMinutes(-1));
 
-            Load(new PluginImageCache(cacheDirectory), uri, "1.0.0.0").Should().Be(Colors.Blue);
+            Load(new PluginContentCache(cacheDirectory), uri, "1.0.0.0").Should().Be(Colors.Blue);
             server.Requests.Should().HaveCount(2);
-            Load(new PluginImageCache(cacheDirectory), uri, "1.0.0.0").Should().Be(Colors.Blue);
+            Load(new PluginContentCache(cacheDirectory), uri, "1.0.0.0").Should().Be(Colors.Blue);
             server.Requests.Should().HaveCount(2);
             Directory.GetFiles(cacheDirectory, "*.tmp").Should().BeEmpty();
         }
@@ -135,7 +201,7 @@ namespace NINA.Test.View {
                 new([], 503),
                 new(CreatePng(Colors.Blue))
             ], "image/png");
-            var cache = new PluginImageCache(cacheDirectory);
+            var cache = new PluginContentCache(cacheDirectory);
             var uri = new Uri(server.Url + "/icon.png");
             Load(cache, uri).Should().Be(Colors.Red);
             string path = Directory.GetFiles(cacheDirectory, "*.png").Single();
@@ -156,13 +222,13 @@ namespace NINA.Test.View {
                 new(CreatePng(Colors.Red)),
                 new(CreatePng(Colors.Blue))
             ], "image/png");
-            var cache = new PluginImageCache(cacheDirectory);
+            var cache = new PluginContentCache(cacheDirectory);
             var uri = new Uri(server.Url + "/icon.png");
             Load(cache, uri).Should().Be(Colors.Red);
             File.WriteAllBytes(Directory.GetFiles(cacheDirectory, "*.png").Single(), [1, 2, 3]);
 
             Load(cache, uri).Should().Be(Colors.Blue);
-            Load(new PluginImageCache(cacheDirectory), uri).Should().Be(Colors.Blue);
+            Load(new PluginContentCache(cacheDirectory), uri).Should().Be(Colors.Blue);
             server.Requests.Should().HaveCount(2);
         }
 
@@ -234,7 +300,7 @@ namespace NINA.Test.View {
                 new(CreatePng(Colors.Red)),
                 new(CreatePng(Colors.Blue))
             ], "image/png");
-            var cache = new PluginImageCache(cacheDirectory);
+            var cache = new PluginContentCache(cacheDirectory);
             var first = new Uri(server.Url + "/icon.png?version=1");
             var second = new Uri(server.Url + "/icon.png?version=2");
 
@@ -250,9 +316,9 @@ namespace NINA.Test.View {
         [Test]
         public void InvalidDownload_IsNotPersisted() {
             using var server = new LoopbackHttpServer([1, 2, 3], "image/png");
-            var cache = new PluginImageCache(cacheDirectory);
+            var cache = new PluginContentCache(cacheDirectory);
 
-            Action load = () => cache.LoadAsync(new Uri(server.Url + "/icon.png")).GetAwaiter().GetResult();
+            Action load = () => cache.LoadImageAsync(new Uri(server.Url + "/icon.png")).GetAwaiter().GetResult();
 
             load.Should().Throw<NotSupportedException>();
             Directory.Exists(cacheDirectory).Should().BeFalse();
@@ -269,8 +335,8 @@ namespace NINA.Test.View {
             Directory.GetFiles(cacheDirectory, "*.png").Should().ContainSingle();
         }
 
-        private static Color Load(PluginImageCache cache, Uri uri, string? version = null) {
-            var image = cache.LoadAsync(uri, version).GetAwaiter().GetResult();
+        private static Color Load(PluginContentCache cache, Uri uri, string? version = null) {
+            var image = cache.LoadImageAsync(uri, version).GetAwaiter().GetResult();
             image.IsFrozen.Should().BeTrue();
             return ReadColor(image);
         }

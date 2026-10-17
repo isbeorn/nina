@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace NINA.ViewModel.Plugins {
 
     internal partial class PluginChangelogVM : BaseINPC {
-        private readonly PluginChangelogCache cache = new();
+        private readonly PluginContentCache cache = new();
         private CancellationTokenSource download;
         private Uri uri;
         private string version;
@@ -96,7 +96,7 @@ namespace NINA.ViewModel.Plugins {
 
             var request = new CancellationTokenSource();
             download = request;
-            var cached = cache.Read(uri, version);
+            var cached = cache.ReadChangelog(uri, version);
             if (cached != null) {
                 Show(cached);
             }
@@ -112,7 +112,7 @@ namespace NINA.ViewModel.Plugins {
 
             IsLoading = true;
             try {
-                var document = await cache.FetchAsync(uri, version, request.Token);
+                var document = await cache.FetchChangelogAsync(uri, version, request.Token);
                 if (download != request || !active) {
                     return;
                 }
@@ -140,7 +140,7 @@ namespace NINA.ViewModel.Plugins {
             }
         }
 
-        private void Show(PluginChangelogCache.Document document) {
+        private void Show(PluginContentCache.ChangelogDocument document) {
             DocumentUri = document.DocumentUri;
             AssetPathRoot = new Uri(document.DocumentUri, ".").AbsoluteUri;
             Markdown = document.Markdown;

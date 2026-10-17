@@ -193,7 +193,7 @@ namespace NINA.Test.View {
                 try {
                     string url = server.Url + "/notes.md";
                     var uri = new Uri(url);
-                    new PluginChangelogCache().FetchAsync(uri, "1.0.0.0", CancellationToken.None).GetAwaiter().GetResult();
+                    new PluginContentCache().FetchChangelogAsync(uri, "1.0.0.0", CancellationToken.None).GetAwaiter().GetResult();
                     string path = Directory.GetFiles(Path.Combine(root, "Cache", "PluginChangelogs"), "*.json").Single();
                     File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddDays(-8));
                     DateTime timestamp = File.GetLastWriteTimeUtc(path);
