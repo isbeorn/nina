@@ -164,6 +164,15 @@ This allows you to safely return to a stable release if needed.
   - Added native drivers for Moravian Instruments cameras and integrated filter wheels
 
 ### **User Interface & Usability**
+- **Plugin Manager**
+  - Redesigned plugin browsing with a resizable list and detail pane using the active N.I.N.A. theme. Installed opens first, with Available kept as a separate section for browsing the catalog.
+  - Added search across plugin names, authors, descriptions and tags, plus multi-select tag filtering with counts for the current section. Installed and update indicators make plugin status visible in the list.
+  - Plugin details now have Settings, Description, Showcase, Versions and Info tabs for configuration, screenshots, installation guidance and project links. Existing plugin settings views remain available while browsing details.
+  - The Versions tab marks the installed release and offers compatible versions for upgrade or rollback when supplied by the repository. Older compatible releases remain accessible even when the latest release is incompatible. Repositories without a version-history route use the versions returned by their catalog.
+  - Update all applies to every eligible update regardless of filters. Pending restart and removal notices survive navigation and refresh, including after partially successful batch updates. Version changes take effect after restarting N.I.N.A.
+  - Plugin icons and screenshots are cached locally across application restarts, refreshed after seven days or when the plugin version changes.
+- **Initialization Progress**
+  - Plugins, Imaging and Sequencer now use consistent horizontal loading indicators during initialization.
 - **Sequencer**
   - Each intstruction container now has a colored border on the left side to better differentiate between them. This can be disabled in Options > Imaging > Sequence > Colored Container Borders
 - **Sky Atlas Improvements**  
