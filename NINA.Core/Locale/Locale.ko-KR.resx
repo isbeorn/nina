@@ -8301,4 +8301,235 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>연결된 템플릿 '{0}'의 저장하지 않은 편집 내용이 5분 동안 아무 작업이 없어 버려졌습니다. 저장된 템플릿으로 계속합니다.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>새로 고침</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>다시 시도</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>소개</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>버전</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>이 플러그인에는 스크린샷이 없습니다.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>버전 기록을 불러오는 중...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>일부 버전 기록을 불러오지 못했습니다. 사용 가능한 버전은 계속 표시됩니다.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>버전 기록을 제공하지 않는 저장소가 있습니다. 해당 저장소의 목록에 있는 버전은 계속 표시됩니다.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>설정된 저장소에 호환되는 버전이 없습니다.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>설치된 버전과 설정된 저장소에서 제공하는 호환 버전이 함께 표시됩니다. 이전 버전은 제공되지 않을 수 있습니다. 버전 변경 사항은 NINA를 다시 시작한 후 적용됩니다.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>버전 설치</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>현재 설치됨</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>이전 버전 설치 가능</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>업그레이드 가능</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>이전 버전</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>새 버전</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>{0} 버전으로 되돌리기</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>{0} 버전으로 업그레이드</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>{0} 설치</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>'버전' 탭에서 버전을 설치하거나 변경한 다음 NINA를 다시 시작하세요. 배포자의 별도 설정 지침은 플러그인 홈페이지를 참조하세요.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>플러그인 검색</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>모든 태그</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>필터 지우기</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>사용 가능한 플러그인 찾아보기</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>사용 가능한 플러그인을 불러오는 중...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>사용 가능한 플러그인을 불러오지 못했습니다. 이전 결과가 계속 표시됩니다. '다시 시도'를 눌러 다시 확인하세요.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>일부 플러그인 저장소에 연결하지 못했습니다. 해당 저장소의 이전 결과가 계속 표시됩니다.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>이 필터와 일치하는 플러그인이 없습니다. 모든 플러그인을 보려면 필터를 지우세요.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>설치된 플러그인이 없습니다. 사용 가능한 플러그인을 찾아 설치하세요.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>불러오기 실패</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>다시 시작 후 제거 예정</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>다시 시작 필요</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>플러그인 설치 중...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>플러그인 업데이트 중...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>플러그인 제거 중...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>취소 요청됨...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>전체 업데이트 ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>NINA를 다시 시작한 후 설정을 사용할 수 있습니다.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>필요한 최소 NINA 버전:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>소스 코드</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>NINA 다시 시작</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>플러그인 변경 사항을 적용하려면 다시 시작해야 합니다.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>업데이트 가능</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>설정된 저장소에 호환되는 플러그인이 없습니다.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>이 플러그인은 설정을 제공하지 않습니다.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>브라우저에서 변경 기록 열기</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>변경 기록을 불러오는 중...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>이 변경 기록은 여기에 표시할 수 없습니다. 브라우저에서 열어 확인하세요.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>변경 기록을 새로 고치지 못했습니다. 이전에 저장된 기록이 표시됩니다. '다시 시도'를 눌러 다시 확인하거나 브라우저에서 여세요.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>변경 기록을 불러오지 못했습니다. 다시 시도하거나 브라우저에서 여세요.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>이전 이미지</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>다음 이미지</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>이미지</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>스크린샷을 불러오는 중...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>추가 정보</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA 안전 허브</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA 스위치 허브</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA 날씨 허브</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>장치 추가</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>장치 제거</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>평균 산출 구간</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>톱니바퀴 아이콘으로 허브 설정을 여세요. 중복 장치나 다른 NINA 허브를 포함하지 않도록 장치를 하나 이상 선택하세요.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>이 허브에 설정된 장치가 없습니다. 톱니바퀴 아이콘으로 설정을 열고 장치를 추가하세요.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>소스 장치가 지정된 날씨 항목이 없습니다. 톱니바퀴 아이콘으로 허브 설정을 열고 하나 이상의 항목에 장치를 지정하세요.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>장치에 연결하지 못했습니다.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>허브의 장치를 사용할 수 없습니다. 계속하려면 허브의 연결을 끊었다가 다시 연결하세요.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>스위치 컨트롤러가 허브 채널을 일관되게 식별하여 선택하는 기능을 지원하지 않습니다.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>선택한 허브 채널이 없거나, 채널을 명확히 식별할 수 없거나, 값을 쓸 수 없는 채널입니다.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>스위치 값을 설정한 후 값을 읽지 못했습니다.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>이 허브에 연결할 장치를 추가하세요.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>장치의 연결이 끊어졌습니다.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>사용 안 함</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>연결 끊김</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>안전</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>안전하지 않음</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>스위치 {0} - {1}</value>
+  </data>
 </root>
