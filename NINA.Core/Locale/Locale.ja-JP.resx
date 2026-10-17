@@ -8248,4 +8248,235 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>5分間操作がなかったため、リンクされたテンプレート'{0}'の未保存の編集内容を破棄しました。保存済みのテンプレートで続行します。</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>再読み込み</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>再試行</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>紹介</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>バージョン</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>このプラグインのスクリーンショットはありません。</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>バージョン履歴を読み込み中...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>バージョン履歴の一部を読み込めませんでした。利用可能なバージョンは引き続き表示されます。</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>バージョン履歴を提供していないリポジトリがあります。そのリポジトリのカタログにあるバージョンは引き続き表示されます。</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>設定されたリポジトリに互換性のあるバージョンはありません。</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>インストール済みのバージョンと、設定されたリポジトリが提供する互換性のあるバージョンを表示します。古いバージョンは利用できない場合があります。バージョンの変更はNINAの再起動後に反映されます。</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>バージョンをインストール</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>インストール済み</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>旧バージョンに戻せます</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>アップグレード可能</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>古いバージョン</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>新しいバージョン</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>{0}に戻す</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>{0}にアップグレード</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>{0}をインストール</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>"バージョン"の操作でインストールまたはバージョンの変更を行い、NINAを再起動してください。提供元による個別の設定手順は、プラグインのホームページを参照してください。</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>プラグインを検索</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>すべてのタグ</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>フィルターをクリア</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>利用可能なプラグインを探す</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>利用可能なプラグインを読み込み中...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>利用可能なプラグインを読み込めませんでした。前回の結果を引き続き表示しています。もう一度確認するには再試行してください。</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>一部のプラグインリポジトリに接続できませんでした。それらのリポジトリについては、前回の結果を引き続き表示しています。</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>フィルター条件に一致するプラグインがありません。すべてのプラグインを表示するには、フィルターをクリアしてください。</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>プラグインがインストールされていません。利用可能なプラグインを探してインストールしてください。</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>読み込み失敗</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>削除待ち (再起動が必要)</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>再起動が必要</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>プラグインをインストール中...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>プラグインを更新中...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>プラグインを削除中...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>キャンセルを要求しました...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>すべて更新 ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>NINAの再起動後に設定が利用できるようになります。</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>必要なNINAの最小バージョン:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>ソースコード</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>NINAを再起動</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>プラグインの変更を反映するには再起動が必要です。</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>更新あり</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>設定されたリポジトリに互換性のあるプラグインはありません。</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>このプラグインには設定項目がありません。</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>ブラウザーで変更履歴を開く</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>変更履歴を読み込み中...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>この変更履歴はここでは表示できません。ブラウザーで開いて確認してください。</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>変更履歴を更新できませんでした。以前に保存された変更履歴を表示しています。再試行してもう一度確認するか、ブラウザーで開いてください。</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>変更履歴を読み込めませんでした。再試行するか、ブラウザーで開いてください。</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>前の画像</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>次の画像</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>画像</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>スクリーンショットを読み込み中...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>追加情報</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA セーフティハブ</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA スイッチハブ</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA 天気ハブ</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>デバイスを追加</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>デバイスを削除</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>平均化時間</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>歯車アイコンからハブ設定を開いてください。重複するデバイスや他のNINAハブを含めずに、少なくとも1つのデバイスを選択してください。</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>このハブにはデバイスが設定されていません。歯車アイコンから設定を開き、デバイスを追加してください。</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>どの天気データ項目にも取得元のデバイスが割り当てられていません。歯車アイコンからハブ設定を開き、少なくとも1つの項目にデバイスを割り当ててください。</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>デバイスに接続できませんでした。</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>ハブ内のデバイスが利用できません。続行するには、ハブを切断してから再接続してください。</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>このスイッチコントローラーは、永続的な識別情報によるハブのチャンネル選択に対応していません。</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>選択したハブのチャンネルは、見つからないか、一意に特定できないか、書き込みできません。</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>値を設定した後、スイッチの値を読み取れませんでした。</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>このハブで使用するデバイスを追加してください。</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>デバイスが切断されています。</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>未使用</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>切断済み</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>安全</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>安全でない</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>スイッチ {0} - {1}</value>
+  </data>
 </root>
