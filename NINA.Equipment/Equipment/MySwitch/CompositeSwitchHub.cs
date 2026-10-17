@@ -139,9 +139,9 @@ namespace NINA.Equipment.Equipment.MySwitch {
 
             public short ChannelId => Native.Id;
 
-            public string Name => string.Format(Loc.Instance["LblHubSwitchChannelName"], Id + 1, Native.Name);
+            public string Name => string.Format(Loc.Instance["LblHubSwitchChannelName"], Child.SourceNumber, Native.Name);
 
-            public string ExpressionName => $"S{Child.SourceNumber} C{Native.Id} {Child.Device.Name} {Native.Name}";
+            public string ExpressionName => $"S{Child.SourceNumber} C{Native.Id} {Native.Name}";
 
             public string Description => Native.Description;
 

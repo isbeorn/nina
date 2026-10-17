@@ -411,9 +411,9 @@ namespace NINA.Test.Equipment.Hubs {
             var identity = (ICompositeSwitchIdentity)writable;
             identity.DeviceId.Should().Be("a");
             identity.ChannelId.Should().Be(7);
-            writable.Name.Should().Be("Switch 1 - Power output");
+            writable.Name.Should().Be("Switch 9 - Power output");
             hub.Switches.Last().Name.Should().Be("Switch 2 - Power output");
-            SymbolBroker.SanitizeIdentifier(identity.ExpressionName).Should().Be("S9_C7_Same_display_name_Power_output");
+            SymbolBroker.SanitizeIdentifier(identity.ExpressionName).Should().Be("S9_C7_Power_output");
             writable.Value.Should().Be(3);
             writable.Minimum.Should().Be(-2);
             writable.Maximum.Should().Be(9);
@@ -423,6 +423,11 @@ namespace NINA.Test.Equipment.Hubs {
             ((INotifyPropertyChanged)writable).PropertyChanged += (_, e) => events.Add(e.PropertyName ?? string.Empty);
             notifier.Raise(x => x.PropertyChanged += null, new PropertyChangedEventArgs("Value"));
             events.Should().Equal("Value");
+            native.SetupGet(channel => channel.Name).Returns("Updated power output");
+            notifier.Raise(channel => channel.PropertyChanged += null, new PropertyChangedEventArgs("Name"));
+            events.Should().Equal("Value", "Name");
+            writable.Name.Should().Be("Switch 9 - Updated power output");
+
             writable.TargetValue = 6;
             writable.SetValue();
             writable.Poll().Should().BeTrue();
@@ -435,9 +440,39 @@ namespace NINA.Test.Equipment.Hubs {
             native.Object.TargetValue.Should().Be(6);
         }
 
-        [TestCase("USB power box (roof)", "Dew heater / 12V", "Switch 1 - Dew heater / 12V", "S2_C7_USB_power_box__roof__Dew_heater___12V")]
-        [TestCase("USB_box", "Output_2", "Switch 1 - Output_2", "S2_C7_USB_box_Output_2")]
-        [TestCase("\u00c9quipement 1", "Ventil\u00e1tor", "Switch 1 - Ventil\u00e1tor", "S2_C7__quipement_1_Ventil_tor")]
+        [TestCase(1, 2)]
+        [TestCase(9, 2)]
+        public async Task SwitchLabels_GroupWritableAndReadOnlyChannelsByConfiguredSource(int firstSource, int secondSource) {
+            var output = Mock.Of<IWritableSwitch>(channel => channel.Id == 7 && channel.Name == "Power");
+            var gauge = Mock.Of<ISwitch>(channel => channel.Id == 8 && channel.Name == "Voltage");
+            var otherOutput = Mock.Of<IWritableSwitch>(channel => channel.Id == 7 && channel.Name == "Power");
+            var first = Device<ISwitchHub>("first");
+            var second = Device<ISwitchHub>("second");
+            first.SetupGet(device => device.Switches).Returns(new ISwitch[] { output, gauge });
+            second.SetupGet(device => device.Switches).Returns(new ISwitch[] { otherOutput });
+            var hub = new CompositeSwitchHub("Hub");
+            hub.Configure(new[] { new HubDevice(firstSource, first.Object), new HubDevice(secondSource, second.Object) });
+            try {
+                (await hub.Connect(CancellationToken.None)).Should().BeTrue();
+
+                hub.Switches.Select(channel => channel.Name).Should().Equal(
+                    $"Switch {firstSource} - Power",
+                    $"Switch {firstSource} - Voltage",
+                    $"Switch {secondSource} - Power");
+                hub.Switches.Select(channel => channel.Id).Should().Equal((short)0, (short)1, (short)2);
+                hub.Switches.Cast<ICompositeSwitchIdentity>()
+                    .Select(channel => SymbolBroker.SanitizeIdentifier(channel.ExpressionName)).Should().Equal(
+                        $"S{firstSource}_C7_Power",
+                        $"S{firstSource}_C8_Voltage",
+                        $"S{secondSource}_C7_Power");
+            } finally {
+                hub.Disconnect();
+            }
+        }
+
+        [TestCase("USB power box (roof)", "Dew heater / 12V", "Switch 2 - Dew heater / 12V", "S2_C7_Dew_heater___12V")]
+        [TestCase("USB_box", "Output_2", "Switch 2 - Output_2", "S2_C7_Output_2")]
+        [TestCase("\u00c9quipement 1", "Ventil\u00e1tor", "Switch 2 - Ventil\u00e1tor", "S2_C7_Ventil_tor")]
         public async Task SwitchLabels_PreserveNativeTextAndExpressionIdentifiers(
                 string deviceName, string channelName, string label, string expressionIdentifier) {
             var native = Mock.Of<ISwitch>(channel => channel.Id == 7 && channel.Name == channelName);

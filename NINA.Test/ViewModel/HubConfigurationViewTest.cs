@@ -340,7 +340,7 @@ namespace NINA.Test.ViewModel {
                 if (category == "Switch") {
                     var labels = Descendants<TextBlock>(equipmentView).Where(label => label.IsVisible).Select(label => label.Text);
                     labels.Should().Contain("Switch 1 - Voltage / DC");
-                    labels.Should().Contain("Switch 2 - Dew heater (main)");
+                    labels.Should().Contain("Switch 1 - Dew heater (main)");
                     ((Border)deviceList.Content).BorderThickness.Top.Should().Be(0);
                     SavePreview(equipmentView, "HubSwitchReadableNames-96.png", 96);
                 }
