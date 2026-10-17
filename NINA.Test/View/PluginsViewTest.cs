@@ -35,6 +35,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Reflection;
+using System.Security.Cryptography;
 using NINA.Test.Plugin;
 using System.Text;
 using Xceed.Wpf.Toolkit;
@@ -1176,6 +1177,98 @@ namespace NINA.Test.View {
                 : [catalogOnly.Identifier, rememberedRemote.Identifier];
             list.Items.Cast<PluginEntryVM>().Select(entry => entry.Identifier).Should().BeEquivalentTo(expectedIdentifiers);
             manager.SelectedPlugin.Identifier.Should().Be(switchToInstalled ? rememberedLocal.Identifier : rememberedRemote.Identifier);
+        }
+
+        [TestCase(false, false)]
+        [TestCase(false, true)]
+        [TestCase(true, false)]
+        [TestCase(true, true)]
+        public void MutationProgress_UsesTheBottomStatusAreaAndTransitionsToRestart(bool update, bool cancel) {
+            EnsureApplicationResources();
+            WithChangelogCache(_ => {
+                var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                byte[] payload = Encoding.UTF8.GetBytes("Status area fixture");
+                string name = "Status fixture " + Guid.NewGuid().ToString("N");
+                using var download = new LoopbackHttpServer(payload, fileName: name + ".dll", responseGate: gate.Task);
+                var offered = new PluginManifest {
+                    Identifier = Guid.NewGuid().ToString(), Name = name, Version = new PluginVersion("2.0.0.0"),
+                    MinimumApplicationVersion = new PluginVersion(CoreUtil.Version),
+                    Installer = new PluginInstallerDetails {
+                        Type = InstallerType.DLL, URL = download.Url + "/download",
+                        Checksum = Convert.ToHexString(SHA256.HashData(payload)), ChecksumType = InstallerChecksum.SHA256
+                    }
+                };
+                var other = new PluginManifest { Identifier = "other-status", Name = "Other status fixture" };
+                var manager = CreateManager();
+                if (update) {
+                    var installed = new PluginManifest { Identifier = offered.Identifier, Name = name, Version = new PluginVersion("1.0.0.0") };
+                    manager.InstalledPlugins = new Dictionary<IPluginManifest, bool> { [installed] = true };
+                    string folder = Path.Combine(NINA.Plugin.Constants.UserExtensionsFolder, name);
+                    Directory.CreateDirectory(folder);
+                    File.WriteAllText(Path.Combine(folder, "Old.dll"), "old fixture");
+                }
+
+                manager.AvailablePlugins = [new(offered), new(other)];
+                manager.SelectedPlugin = manager.FilteredPlugins.Single(entry => entry.Identifier == offered.Identifier);
+                var view = new PluginsView { DataContext = manager };
+                var host = ShowChangelogView(view);
+                host.WindowStyle = WindowStyle.None;
+                host.ResizeMode = ResizeMode.NoResize;
+                LayoutWindow(host, 800, 600);
+                var restart = (Button)view.FindName("RestartPluginsButton");
+                var restartNotice = (FrameworkElement)restart.Parent;
+                var footer = ((Grid)view.Content).Children.OfType<Border>().Single(border => border.IsAncestorOf(restart));
+                var cancelButton = FindVisuals<Button>(view).Single(button => button.Command == manager.CancelInstallPluginCommand);
+                var progress = (FrameworkElement)cancelButton.Parent;
+                footer.Visibility.Should().Be(Visibility.Collapsed);
+                Task operation = update ? manager.UpdatePluginCommand.ExecuteAsync(null) : manager.InstallPluginCommand.ExecuteAsync(null);
+                try {
+                    PumpUntil(() => download.RequestReceived.IsCompleted);
+                    Layout(view, 800, 600);
+                    footer.Visibility.Should().Be(Visibility.Visible, "active changes belong to the shared bottom status area");
+                    footer.IsAncestorOf(progress).Should().BeTrue();
+                    progress.Visibility.Should().Be(Visibility.Visible);
+                    restartNotice.Visibility.Should().Be(Visibility.Collapsed);
+                    FindVisuals<TextBlock>(progress).Should().Contain(label => label.Text == NINA.Core.Locale.Loc.Instance[update ? "LblPluginManagerUpdating" : "LblPluginManagerInstalling"]);
+                    var browser = (FrameworkElement)view.FindName("BrowserGrid");
+                    progress.TransformToAncestor(view).TransformBounds(new Rect(progress.RenderSize)).Top.Should()
+                        .BeGreaterThanOrEqualTo(browser.TransformToAncestor(view).TransformBounds(new Rect(browser.RenderSize)).Bottom);
+                    FindVisual<ProgressBar>(progress)!.IsIndeterminate.Should().BeTrue();
+                    cancelButton.Style.Should().BeSameAs(view.FindResource("BackgroundButton"));
+
+                    var previousSuccess = manager.FilteredPlugins.Single(entry => entry.Identifier == other.Identifier);
+                    previousSuccess.PendingChange = PluginPendingChange.Install;
+                    manager.SearchText = other.Name;
+                    Layout(view, 800, 600);
+                    restartNotice.Visibility.Should().Be(Visibility.Visible, "earlier successful changes retain their restart notice");
+                    manager.RestartCommand.CanExecute(null).Should().BeFalse();
+                    SavePreview(view, $"PluginMutation-{(update ? "Update" : "Install")}.png", 800, 600);
+                    previousSuccess.PendingChange = PluginPendingChange.None;
+                    manager.SearchText = string.Empty;
+                    manager.SelectedTabIndex = 0;
+                    Layout(view, 800, 600);
+                    progress.Visibility.Should().Be(Visibility.Visible, "activity is independent of selection, filters and the current section");
+
+                    if (cancel) {
+                        ((IInvokeProvider)new ButtonAutomationPeer(cancelButton).GetPattern(PatternInterface.Invoke)).Invoke();
+                    } else {
+                        gate.TrySetResult();
+                    }
+
+                    PumpUntil(() => operation.IsCompleted);
+                    operation.GetAwaiter().GetResult();
+                    Layout(view, 800, 600);
+                    progress.Visibility.Should().Be(Visibility.Collapsed);
+                    manager.IsMutating.Should().BeFalse();
+                    footer.Visibility.Should().Be(cancel ? Visibility.Collapsed : Visibility.Visible);
+                    restartNotice.Visibility.Should().Be(cancel ? Visibility.Collapsed : Visibility.Visible);
+                } finally {
+                    manager.CancelInstallPluginCommand.Execute(null);
+                    gate.TrySetResult();
+                    PumpUntil(() => operation.IsCompleted);
+                    operation.GetAwaiter().GetResult();
+                }
+            });
         }
 
         [Test]

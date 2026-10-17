@@ -373,18 +373,6 @@
                     <ProgressBar Margin="0,4,0,0" Style="{StaticResource LoadingProgressBar}" />
                 </StackPanel>
             </DockPanel>
-            <DockPanel Margin="0,0,0,8" Visibility="{Binding IsMutating, Converter={StaticResource VisibleWhenTrue}}">
-                <Button
-                    Command="{Binding CancelInstallPluginCommand}"
-                    DockPanel.Dock="Right"
-                    Style="{StaticResource BackgroundButton}">
-                    <TextBlock Margin="12,6" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblCancel}" TextWrapping="Wrap" />
-                </Button>
-                <StackPanel Margin="0,0,12,0" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding ActivityText}" />
-                    <ProgressBar Margin="0,4,0,0" Style="{StaticResource LoadingProgressBar}" />
-                </StackPanel>
-            </DockPanel>
         </StackPanel>
         <Grid
             x:Name="BrowserGrid"
@@ -976,19 +964,38 @@
             Margin="5,0,12,8"
             Padding="8"
             BorderBrush="{StaticResource BorderBrush}"
-            BorderThickness="0,1,0,0"
-            Visibility="{Binding HasPendingChanges, Converter={StaticResource VisibleWhenTrue}}">
-            <DockPanel>
-                <Button
-                    x:Name="RestartPluginsButton"
-                    Margin="12,0,0,0"
-                    Command="{Binding RestartCommand}"
-                    DockPanel.Dock="Right"
-                    Style="{StaticResource StandardButton}">
-                    <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblPluginManagerRestartNina}" TextWrapping="Wrap" />
-                </Button>
-                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPluginManagerRestartNotice}" />
-            </DockPanel>
+            BorderThickness="0,1,0,0">
+            <Border.Visibility>
+                <MultiBinding Converter="{StaticResource BooleanOrToVisibilityCollapsedMultiConverter}">
+                    <Binding Path="IsMutating" />
+                    <Binding Path="HasPendingChanges" />
+                </MultiBinding>
+            </Border.Visibility>
+            <StackPanel>
+                <DockPanel Margin="0,0,0,8" Visibility="{Binding IsMutating, Converter={StaticResource VisibleWhenTrue}}">
+                    <Button
+                        Command="{Binding CancelInstallPluginCommand}"
+                        DockPanel.Dock="Right"
+                        Style="{StaticResource BackgroundButton}">
+                        <TextBlock Margin="12,6" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblCancel}" TextWrapping="Wrap" />
+                    </Button>
+                    <StackPanel Margin="0,0,12,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding ActivityText}" />
+                        <ProgressBar Margin="0,4,0,0" Style="{StaticResource LoadingProgressBar}" />
+                    </StackPanel>
+                </DockPanel>
+                <DockPanel Visibility="{Binding HasPendingChanges, Converter={StaticResource VisibleWhenTrue}}">
+                    <Button
+                        x:Name="RestartPluginsButton"
+                        Margin="12,0,0,0"
+                        Command="{Binding RestartCommand}"
+                        DockPanel.Dock="Right"
+                        Style="{StaticResource StandardButton}">
+                        <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblPluginManagerRestartNina}" TextWrapping="Wrap" />
+                    </Button>
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPluginManagerRestartNotice}" />
+                </DockPanel>
+            </StackPanel>
         </Border>
     </Grid>
 </UserControl>
