@@ -8287,4 +8287,235 @@ Isto é útil cando un activador integrado ten o tempo que necesitas, pero quere
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>As modificacións non gardadas no modelo ligado '{0}' descartáronse tras cinco minutos de inactividade. Continúase co modelo gardado.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Actualizar</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Tentar de novo</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Presentación</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Versións</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Non hai capturas de pantalla dispoñibles para este complemento.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Cargando o historial de versións...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Non se puido cargar parte do historial de versións. As versións dispoñibles séguense mostrando.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Un repositorio non fornece un historial de versións. As versións do seu catálogo séguense mostrando.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>Non hai versións compatibles dispoñibles nos repositorios configurados.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>A versión instalada móstrase xunto coas versións compatibles fornecidas polos repositorios configurados. É posible que as versións anteriores non estean dispoñibles. Os cambios de versión aplícanse despois de reiniciar NINA.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Instalar versión</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Instalada actualmente</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Versión anterior dispoñible</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Actualización dispoñible</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Versión anterior</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Versión posterior</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Volver á versión {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Actualizar á versión {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Instalar {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Usa a acción en Versións para instalar ou cambiar unha versión e despois reinicia NINA. Consulta a páxina web do complemento para ver as instrucións de configuración específicas do seu autor ou distribuidor.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Buscar complementos</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Todas as etiquetas</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Limpar filtros</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Explorar os complementos dispoñibles</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Cargando os complementos dispoñibles...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Non se puideron cargar os complementos dispoñibles. Os resultados anteriores séguense mostrando. Téntao de novo para volver comprobalo.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Non se puido acceder a algúns repositorios de complementos. Os resultados anteriores deses repositorios séguense mostrando.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Ningún complemento coincide con estes filtros. Limpa os filtros para ver todos os complementos.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Non hai complementos instalados. Explora os complementos dispoñibles para instalar un.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Erro ao cargar</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Eliminación pendente de reinicio</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Requírese reiniciar</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Instalando o complemento...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Actualizando o complemento...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Eliminando o complemento...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Solicitouse a cancelación...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Actualizar todos ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Os axustes estarán dispoñibles despois de reiniciar NINA.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Versión mínima de NINA:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Código fonte</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Reiniciar NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Os cambios nos complementos requiren reiniciar.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Actualización dispoñible</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>Non hai complementos compatibles dispoñibles nos repositorios configurados.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Este complemento non ofrece axustes.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Abrir o rexistro de cambios no navegador</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Cargando o rexistro de cambios...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Este rexistro de cambios non se pode mostrar aquí. Ábreo no navegador para lelo.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Non se puido actualizar o rexistro de cambios. Móstranse as notas gardadas anteriormente. Téntao de novo para volver comprobalo ou ábreo no navegador.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Non se puido cargar o rexistro de cambios. Téntao de novo ou ábreo no navegador.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Imaxe anterior</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Imaxe seguinte</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Imaxe</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Cargando as capturas de pantalla...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Información adicional</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>Concentrador de seguridade de NINA</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>Concentrador de interruptores de NINA</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>Concentrador meteorolóxico de NINA</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Engadir dispositivo</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Eliminar dispositivo</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Intervalo de cálculo da media</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Abre os axustes do concentrador coa icona da engrenaxe. Selecciona polo menos un dispositivo, sen duplicados nin concentradores NINA aniñados.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Non hai dispositivos configurados para este concentrador. Abre os axustes coa icona da engrenaxe e engade un dispositivo.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Ningún campo de datos meteorolóxicos ten un dispositivo de orixe. Abre os axustes do concentrador coa icona da engrenaxe e asigna un dispositivo a polo menos un campo.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Non se puido conectar o dispositivo.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Un dispositivo do concentrador non está dispoñible. Volve conectar o concentrador para continuar.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>O controlador de interruptores non admite a selección de canles do concentrador con identificadores estables.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>A canle seleccionada do concentrador non existe, é ambigua ou non permite escribir valores.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Non se puido ler o valor do interruptor despois de establecelo.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Engade os dispositivos que formarán parte deste concentrador.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>O dispositivo está desconectado.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Non usado</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Desconectado</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Seguro</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Inseguro</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Interruptor {0} - {1}</value>
+  </data>
 </root>
