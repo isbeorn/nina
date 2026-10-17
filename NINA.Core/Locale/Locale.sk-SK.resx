@@ -8285,4 +8285,235 @@ Hodí sa to, keď vstavaný spúšťač má potrebné časovanie, ale chcete vla
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Neuložené úpravy prepojenej šablóny '{0}' boli zahodené po piatich minútach nečinnosti. Pokračuje sa s uloženou šablónou.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Obnoviť</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Skúsiť znova</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Prezentácia</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Verzie</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Pre tento zásuvný modul nie sú dostupné žiadne snímky obrazovky.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Načítava sa história verzií...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Časť histórie verzií sa nepodarilo načítať. Dostupné verzie sa naďalej zobrazujú.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Jeden z repozitárov neposkytuje históriu verzií. Verzie z jeho katalógu sa naďalej zobrazujú.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>V nastavených repozitároch nie sú dostupné žiadne kompatibilné verzie.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>Nainštalovaná verzia sa zobrazuje spolu s kompatibilnými verziami z nastavených repozitárov. Staršie verzie nemusia byť dostupné. Zmeny verzie sa prejavia po reštartovaní NINA.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Nainštalovať verziu</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Aktuálne nainštalovaná</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Dostupný návrat na staršiu verziu</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Dostupný prechod na novšiu verziu</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Staršia verzia</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Novšia verzia</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Vrátiť sa na verziu {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Prejsť na novšiu verziu {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Nainštalovať {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Pomocou akcie na karte Verzie nainštalujte alebo zmeňte verziu a potom reštartujte NINA. Prípadné osobitné pokyny na nastavenie od autora nájdete na domovskej stránke zásuvného modulu.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Vyhľadať zásuvné moduly</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Všetky značky</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Vymazať filtre</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Prehľadávať dostupné zásuvné moduly</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Načítavajú sa dostupné zásuvné moduly...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Dostupné zásuvné moduly sa nepodarilo načítať. Naďalej sa zobrazujú predchádzajúce výsledky. Skúste to znova.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>K niektorým repozitárom zásuvných modulov sa nepodarilo pripojiť. Naďalej sa zobrazujú predchádzajúce výsledky z týchto repozitárov.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Týmto filtrom nevyhovujú žiadne zásuvné moduly. Vymažte filtre, aby sa zobrazili všetky zásuvné moduly.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Nie sú nainštalované žiadne zásuvné moduly. Ak chcete niektorý nainštalovať, prezrite si dostupné zásuvné moduly.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Načítanie zlyhalo</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Odstránenie čaká na reštart</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Vyžaduje sa reštart</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Inštaluje sa zásuvný modul...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Aktualizuje sa zásuvný modul...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Odstraňuje sa zásuvný modul...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Bolo vyžiadané zrušenie...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Aktualizovať všetko ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Nastavenia budú dostupné po reštartovaní NINA.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Minimálna verzia NINA:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Zdrojový kód</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Reštartovať NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Zmeny zásuvných modulov vyžadujú reštart.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Dostupná aktualizácia</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>V nastavených repozitároch nie sú dostupné žiadne kompatibilné zásuvné moduly.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Tento zásuvný modul neposkytuje nastavenia.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Otvoriť zoznam zmien v prehliadači</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Načítava sa zoznam zmien...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Tento zoznam zmien sa tu nedá zobraziť. Ak si ho chcete prečítať, otvorte ho v prehliadači.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Zoznam zmien sa nepodarilo obnoviť. Zobrazujú sa predtým uložené poznámky. Skúste to znova alebo ho otvorte v prehliadači.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Zoznam zmien sa nepodarilo načítať. Skúste to znova alebo ho otvorte v prehliadači.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Predchádzajúci obrázok</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Ďalší obrázok</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Obrázok</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Načítavajú sa snímky obrazovky...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Ďalšie informácie</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>Rozbočovač monitorov bezpečnosti NINA</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>Rozbočovač spínačov NINA</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>Rozbočovač údajov o počasí NINA</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Pridať zariadenie</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Odstrániť zariadenie</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Interval priemerovania</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Otvorte nastavenia rozbočovača pomocou ikony ozubeného kolesa. Vyberte aspoň jedno zariadenie bez duplicít a vnorených rozbočovačov NINA.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Pre tento rozbočovač nie sú nastavené žiadne zariadenia. Otvorte nastavenia pomocou ikony ozubeného kolesa a pridajte zariadenie.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Žiadna položka údajov o počasí nemá priradené zdrojové zariadenie. Otvorte nastavenia rozbočovača pomocou ikony ozubeného kolesa a priraďte zariadenie aspoň jednej položke.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Zariadenie sa nepodarilo pripojiť.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Zariadenie rozbočovača nie je dostupné. Ak chcete pokračovať, odpojte rozbočovač a znova ho pripojte.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Riadiaca jednotka spínačov nepodporuje výber kanálov rozbočovača podľa trvalých identifikátorov.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Vybraný kanál rozbočovača chýba, nie je jednoznačný alebo neumožňuje zápis.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Po nastavení hodnoty spínača sa jeho hodnotu nepodarilo načítať.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Pridajte zariadenia, ktoré budú súčasťou tohto rozbočovača.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Zariadenie je odpojené.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Nepoužíva sa</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Odpojené</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Bezpečné</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Nebezpečné</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Spínač {0} - {1}</value>
+  </data>
 </root>
