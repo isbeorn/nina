@@ -8285,4 +8285,235 @@ Detta är användbart när en inbyggd utlösare har rätt tidpunkt men du vill u
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Osparade ändringar i den länkade mallen '{0}' förkastades efter fem minuters inaktivitet. Fortsätter med den sparade mallen.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Uppdatera</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Försök igen</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Presentation</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Versioner</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Inga skärmbilder finns för detta insticksprogram.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Läser in versionshistorik...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Delar av versionshistoriken kunde inte läsas in. Tillgängliga versioner visas fortfarande.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Ett arkiv tillhandahåller ingen versionshistorik. Versioner från dess katalog visas fortfarande.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>Inga kompatibla versioner finns tillgängliga från de konfigurerade arkiven.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>Den installerade versionen visas tillsammans med kompatibla versioner från de konfigurerade arkiven. Tidigare versioner kan saknas. Versionsändringar börjar gälla när NINA har startats om.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Installera version</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>För närvarande installerad</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Återgång till äldre version möjlig</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Uppgradering tillgänglig</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Äldre version</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Nyare version</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Återgå till {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Uppgradera till {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Installera {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Använd åtgärden under Versioner för att installera eller byta version och starta sedan om NINA. Se insticksprogrammets webbplats för eventuella installationsanvisningar från utgivaren.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Sök insticksprogram</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Alla taggar</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Rensa filter</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Bläddra bland tillgängliga insticksprogram</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Läser in tillgängliga insticksprogram...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Det gick inte att läsa in tillgängliga insticksprogram. Tidigare resultat visas fortfarande. Försök igen.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Vissa insticksprogramarkiv kunde inte nås. Tidigare resultat från dessa arkiv visas fortfarande.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Inga insticksprogram matchar dessa filter. Rensa filtren för att se alla insticksprogram.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Inga insticksprogram är installerade. Bläddra bland tillgängliga insticksprogram för att installera ett.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Kunde inte läsas in</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Tas bort vid omstart</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Omstart krävs</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Installerar insticksprogram...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Uppdaterar insticksprogram...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Tar bort insticksprogram...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Avbrott begärt...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Uppdatera alla ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Inställningarna blir tillgängliga när NINA har startats om.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Lägsta NINA-version:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Källkod</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Starta om NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Ändringar av insticksprogram kräver en omstart.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Uppdatering tillgänglig</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>Inga kompatibla insticksprogram finns tillgängliga från de konfigurerade arkiven.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Detta insticksprogram har inga inställningar.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Öppna ändringsloggen i webbläsaren</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Läser in ändringslogg...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Denna ändringslogg kan inte visas här. Öppna den i webbläsaren för att läsa den.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Det gick inte att uppdatera ändringsloggen. Tidigare sparade anteckningar visas. Försök igen eller öppna den i webbläsaren.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Det gick inte att läsa in ändringsloggen. Försök igen eller öppna den i webbläsaren.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Föregående bild</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Nästa bild</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Bild</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Läser in skärmbilder...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Ytterligare information</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA:s säkerhetshubb</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA:s omkopplarhubb</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA:s väderhubb</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Lägg till enhet</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Ta bort enhet</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Medelvärdesperiod</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Öppna hubbinställningarna med kugghjulsikonen. Välj minst en enhet utan dubbletter eller nästlade NINA-hubbar.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Inga enheter har konfigurerats för denna hubb. Öppna inställningarna med kugghjulsikonen och lägg till en enhet.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Inga väderparametrar har en källenhet. Öppna hubbinställningarna med kugghjulsikonen och tilldela en enhet till minst en parameter.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Det gick inte att ansluta enheten.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>En enhet i hubben är inte tillgänglig. Koppla från hubben och anslut den igen för att fortsätta.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Omkopplarstyrenheten stöder inte val av hubbkanaler med beständig identitet.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Den valda hubbkanalen saknas, är tvetydig eller är inte skrivbar.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Det gick inte att läsa av omkopplaren efter att dess värde ställdes in.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Lägg till de enheter som ska ingå i denna hubb.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Enheten är frånkopplad.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Används inte</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Frånkopplad</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Säkert</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Osäkert</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Omkopplare {0} - {1}</value>
+  </data>
 </root>
