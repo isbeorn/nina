@@ -40,6 +40,50 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         protected bool Protect = false;
+        private bool hydratingCoordinates;
+
+        protected virtual bool UsesDataCoordinates => false;
+
+        protected void BindEffectiveCoordinates() {
+            if (UsesDataCoordinates && Data != null) {
+                Data.Coordinates = Coordinates;
+            }
+        }
+
+        [OnDeserializing]
+        private void BeginCoordinateDeserialization(StreamingContext context) {
+            hydratingCoordinates = true;
+        }
+
+        private bool UsesStandaloneCoordinates => !Inherited;
+
+        protected void ResolveEffectiveCoordinates() {
+            BindEffectiveCoordinates();
+            if (Inherited || Protect || hydratingCoordinates) {
+                return;
+            }
+
+            if (RaExpression.Definition.Length > 0) {
+                _ = Ra;
+                ApplyCoordinateExpression(RaExpression, true);
+            }
+            if (DecExpression.Definition.Length > 0) {
+                _ = Dec;
+                ApplyCoordinateExpression(DecExpression, false);
+            }
+        }
+
+        partial void PrepareExpressionValidation() {
+            ResolveEffectiveCoordinates();
+        }
+
+        private void ApplyCoordinateExpression(Expression expression, bool rightAscension) {
+            if (Inherited || Protect || hydratingCoordinates) {
+                return;
+            }
+
+            CoordinateExpressionSync.Apply(Coordinates, expression, rightAscension, ref Protect, ref lastRA, ref lastDec);
+        }
 
         // Restore coordinate configuration together: the normal component notifications rewrite
         // expression definitions. Expressions still evaluate against the current runtime values.
@@ -66,14 +110,30 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
-            // Fix up Ra and Dec Expressions (auto-update to existing sequences)
-            Coordinates c = Coordinates.Coordinates;
-            if (DecExpression.Definition.Length == 0 && c.Dec != 0) {
-                DecExpression.Definition = c.Dec.ToString(CultureInfo.InvariantCulture);
+            var legacy = UsesDataCoordinates ? Data?.Coordinates ?? Coordinates : Coordinates;
+            bool negativeZero = legacy?.NegativeDec ?? false;
+            var source = legacy?.Clone() ?? new InputCoordinates();
+            if (source.Coordinates.Dec == 0) {
+                source.NegativeDec = negativeZero;
             }
-            if (RaExpression.Definition.Length == 0 && c.RA != 0) {
-                RaExpression.Definition = c.RA.ToString(CultureInfo.InvariantCulture);
+            double legacyRa = source.Coordinates.RA;
+            double legacyDec = source.Coordinates.Dec;
+            bool previous = Protect;
+            Protect = true;
+            try {
+                Coordinates = source;
+                if (!Inherited && DecExpression.Definition.Length == 0 && legacyDec != 0) {
+                    DecExpression.Definition = legacyDec.ToString(CultureInfo.InvariantCulture);
+                }
+                if (!Inherited && RaExpression.Definition.Length == 0 && legacyRa != 0) {
+                    RaExpression.Definition = legacyRa.ToString(CultureInfo.InvariantCulture);
+                }
+            } finally {
+                hydratingCoordinates = false;
+                Protect = previous;
             }
+
+            ResolveEffectiveCoordinates();
         }
 
         private InputCoordinates coordinates;
@@ -102,6 +162,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
                     coordinates.PropertyChanged += Coordinates_PropertyChanged;
                 }
 
+                BindEffectiveCoordinates();
                 RaisePropertyChanged();
             }
         }
@@ -114,32 +175,18 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             clone.OffsetExpression = new Expression(original.OffsetExpression, clone.Parent, clone.OffsetExpressionValidator);
         }
 
-        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
+        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true, ValidateWhen = nameof(UsesStandaloneCoordinates))]
         public partial double Ra { get; set; }
         
         partial void RaExpressionValidator(Expression expr) {
-            // When the decimal value changes, we update the HMS values
-            InputCoordinates ic = new InputCoordinates();
-            Protect = true;
-            ic.Coordinates.RA = expr.Value;
-            Coordinates.RAHours = ic.RAHours;
-            Coordinates.RAMinutes = ic.RAMinutes;
-            Coordinates.RASeconds = ic.RASeconds;
-            Protect = false;
+            ApplyCoordinateExpression(expr, true);
         }
 
-        [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true)]
+        [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true, ValidateWhen = nameof(UsesStandaloneCoordinates))]
         public partial double Dec { get; set; }
 
         partial void DecExpressionValidator(Expression expr) {
-            // When the decimal value changes, we update the HMS values
-            InputCoordinates ic = new InputCoordinates();
-            Protect = true;
-            ic.Coordinates.Dec = expr.Value;
-            Coordinates.DecDegrees = ic.DecDegrees;
-            Coordinates.DecMinutes = ic.DecMinutes;
-            Coordinates.DecSeconds = ic.DecSeconds;
-            Protect = false;
+            ApplyCoordinateExpression(expr, false);
         }
 
         [JsonProperty]
@@ -189,38 +236,55 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             InputCoordinates ic = (InputCoordinates)sender;
             Coordinates c = ic.Coordinates;
 
-            if (Protect) return;
-
-            if (c.RA != lastRA) {
-                RaExpression.Definition = Math.Round(c.RA, 7).ToString(CultureInfo.InvariantCulture);
-            }
-            if (c.Dec != lastDec) {
-                DecExpression.Definition = Math.Round(c.Dec, 7).ToString(CultureInfo.InvariantCulture);
+            if (Protect || Inherited || hydratingCoordinates || c == null) {
+                return;
             }
 
-            lastRA = c.RA;
-            lastDec = c.Dec;
+            double ra = c.RA;
+            double dec = c.Dec;
+            bool previous = Protect;
+            Protect = true;
+            try {
+                if (ra != lastRA) {
+                    RaExpression.Definition = Math.Round(ra, 7).ToString(CultureInfo.InvariantCulture);
+                }
+                if (dec != lastDec) {
+                    DecExpression.Definition = Math.Round(dec, 7).ToString(CultureInfo.InvariantCulture);
+                }
+
+                lastRA = ra;
+                lastDec = dec;
+            } finally {
+                Protect = previous;
+            }
         }
 
         protected void ApplyInheritedCoordinates(ContextCoordinates coordinates) {
+            bool previous = Protect;
             Protect = true;
-            Coordinates.Coordinates = coordinates.Coordinates.Clone();
-            PositionAngle = coordinates.PositionAngle;
-            lastRA = Coordinates.Coordinates.RA;
-            lastDec = Coordinates.Coordinates.Dec;
-            Protect = false;
+            try {
+                Coordinates.Coordinates = coordinates.Coordinates.Clone();
+                PositionAngle = coordinates.PositionAngle;
+            } finally {
+                lastRA = Coordinates.Coordinates.RA;
+                lastDec = Coordinates.Coordinates.Dec;
+                Protect = previous;
+            }
         }
 
         private void ClearInheritedCoordinates() {
+            bool previous = Protect;
             Protect = true;
-            Coordinates = new InputCoordinates();
-            RaExpression.Definition = "0";
-            DecExpression.Definition = "0";
-            PositionAngleExpression.Definition = "0";
-            PositionAngle = 0;
-            lastRA = 0;
-            lastDec = 0;
-            Protect = false;
+            try {
+                Coordinates = new InputCoordinates();
+                RaExpression.Definition = "0";
+                DecExpression.Definition = "0";
+                PositionAngleExpression.Definition = "0";
+                lastRA = 0;
+                lastDec = 0;
+            } finally {
+                Protect = previous;
+            }
         }
 
         public override void AfterParentChanged() {
@@ -228,8 +292,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
             var coordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
             if (coordinates != null) {
-                ApplyInheritedCoordinates(coordinates);
                 Inherited = true;
+                BindEffectiveCoordinates();
+                ApplyInheritedCoordinates(coordinates);
             } else {
                 if (Inherited) {
                     ClearInheritedCoordinates();

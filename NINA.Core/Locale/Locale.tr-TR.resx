@@ -411,15 +411,18 @@ Bu iki nokta kullanılarak mevcut yükseklik hatası hesaplanır ve gösterilir<
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>Belirtilen odaklayıcı dişli boşluğu değerleri kaydedildi. IÇERİ: {0}, DIŞARI: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>BIAS ortalama değeri (16 bitte)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>BIAS orta değeri (16 bitte)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
@@ -539,6 +542,7 @@ varyasyonları için eşitlemeyi sağlayamayabilir</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>Bir Canon hatası oluştu: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Resmi çek ve platesolve uygula</value>
@@ -571,12 +575,12 @@ varyasyonları için eşitlemeyi sağlayamayabilir</value>
     <value>Değiştir</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>Pozlama Sayısı</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence has been modified since it was last saved (changes to {0}).
+    <value>Sekans, son kaydedildiğinden beri değiştirildi ({0} değişiklikleri).
         
-Do you want to continue and lose the changes anyway?</value>
+Yine de devam etmek ve değişiklikleri kaybetmek istiyor musunuz?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Modifiye edilen sekans kapanıyor</value>
@@ -969,6 +973,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Mevcut Ortalama</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Mevcut Pozisyon</value>
@@ -1018,6 +1023,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Şafak</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>Gün</value>
@@ -1170,10 +1176,10 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
     <value>Dither yapılacak tipik piksel sayısı. Dither, hedef merkezli normal bir dağılımı izler ve bu değer standart sapma olarak kabul edilir. Ditherlerin % 67'si bu mesafe içerisinde olacak</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>Minimum kaydırma hareketi</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>Ardışık Kundak Kaydırma konumları arasında hareket edilen minimum mesafe, ana kamera pikseli cinsinden. Mevcut rastgele davranışı korumak için 0 olarak ayarlayın. Bu değer Kaydırma Pikselleri değerini aşamaz.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Sadece RA'da Dither uygula</value>
@@ -1285,18 +1291,19 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>Alacakaranlık</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>Doğu</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
+    <value>Kamera Manual veya Bulb modunda değil. Mod kadranını Manual veya Bulb konumuna getirin. Kamerada Movie/Still anahtarı varsa Still konumuna getirin.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Bit ölçeklemeyi etkinleştir</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>8/10/12/14 bit görüntüleri 16 bite ölçekleyerek kaydet. Yalnızca yerel Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony ve ToupTek sürücüleri için geçerlidir.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Etkin</value>
@@ -1468,6 +1475,7 @@ Bu tetikleyici devre dışı bırakıldığında, uygulama sadece Pozlamayı Ba�
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>Düz kare panel ayarları</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Düz kare panelinden geçersiz cevap.</value>
@@ -1534,6 +1542,7 @@ Bu tetikleyici devre dışı bırakıldığında, uygulama sadece Pozlamayı Ba�
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>Düz kare sihirbazı ayarları</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>Düz kare sihirbazını iptal et</value>
@@ -1582,6 +1591,7 @@ Bu tetikleyici devre dışı bırakıldığında, uygulama sadece Pozlamayı Ba�
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>Odak oranı</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Odaklayıcı</value>
@@ -1599,16 +1609,16 @@ Bu tetikleyici devre dışı bırakıldığında, uygulama sadece Pozlamayı Ba�
     <value>Otomatik odaklama için kullanılan bir odak adımının boyutu. Bir adım kritik odak noktası toleransından daha az olmalıdır</value>
   </data>
   <data name="LblManualStepSmallMultiplier" xml:space="preserve">
-    <value>Small Step Multiplier</value>
+    <value>Küçük Adım Çarpanı</value>
   </data>
   <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+    <value>Küçük manuel odaklayıcı adımları için çarpan (varsayılan: 0,5)</value>
   </data>
   <data name="LblManualStepLargeMultiplier" xml:space="preserve">
-    <value>Large Step Multiplier</value>
+    <value>Büyük Adım Çarpanı</value>
   </data>
   <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+    <value>Büyük manuel odaklayıcı adımı için çarpan (varsayılan: 5,0)</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Dişli boşluğu İÇ/DIŞ</value>
@@ -1711,6 +1721,7 @@ Hesaplanan HFR: {2}
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>Takip sistemi beklenen ({0}sn + 10sn) sürede YerleşmeTamamlandı sinyali göndermedi. Atlanıyor.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Takipçi yenilemesi başarısız</value>
@@ -1987,12 +1998,14 @@ Hesaplanan HFR: {2}
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>Ortalama</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>Odaklayıcı dişli boşluğu hesapla</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>Orta değer</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>Meridyen geçişi başarısız</value>
@@ -2089,7 +2102,8 @@ Hesaplanan HFR: {2}
     <value>N.I.N.A'dan kundağa</value>
   </data>
   <data name="LblNo" xml:space="preserve">
-    <value>Yok</value>
+    <value>Hayır</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Kamera yok</value>
@@ -2379,9 +2393,11 @@ Hesaplanan HFR: {2}
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>PHD2 sunucu girişi</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>PHD2 Sunucu adı</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 ayarları</value>
@@ -2418,6 +2434,7 @@ Hesaplanan HFR: {2}
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>PHD2 profil kimliği {0} bulunamadı. {1} kullanılıyor</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>Piksel</value>
@@ -2427,18 +2444,22 @@ Hesaplanan HFR: {2}
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>Piksel ölçüsü</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Piksel başına düşen yay saniye cinsinden piksel ölçeği</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>Piksel boyu</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>Piksel boyu X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Piksel boyu Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Planetaryum</value>
@@ -2459,7 +2480,7 @@ Hesaplanan HFR: {2}
     <value>Planetaryum Özellikleri</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Import the currently selected planetarium object to update name and coordinates</value>
+    <value>Seçili planetaryum nesnesini içe aktararak adı ve koordinatları güncelle</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Seçili objenin koordinatları</value>
@@ -2492,7 +2513,7 @@ Hesaplanan HFR: {2}
     <value>İki plate solve denemesi arasındaki dakika olarak bekleme</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>{0} düzeltme denemesinden sonra merkezleme başarısız oldu</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Mevcut resme plate solve uygula</value>
@@ -2627,7 +2648,7 @@ Hesaplanan HFR: {2}
     <value>Raw dönüştürücü</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>DSLR ham dosyaları LibRaw ile dönüştürülür.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Gürültüyü e değerinde oku</value>
@@ -2636,7 +2657,7 @@ Hesaplanan HFR: {2}
     <value>Mod</value>
   </data>
   <data name="LblReadout" xml:space="preserve">
-    <value>Readout</value>
+    <value>Okuma</value>
   </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>Kameranın okuma moduna karşılık gelen sayısal bir değer</value>
@@ -2777,10 +2798,10 @@ Hesaplanan HFR: {2}
     <value>DSLR kameralar kendi sürücüleri kullanıldığında bu ayar dikkate alınmaz. Onun yerine kameranın RAW formatı kaydedilir!</value>
   </data>
   <data name="LblSaveNativeCameraRaw" xml:space="preserve">
-    <value>Save native camera RAW</value>
+    <value>Kameranın kendi RAW dosyası olarak kaydet</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>Bu seçenek etkinleştirildiğinde, Nikon ve Canon kameralarının yerel sürücülerinden alınan görüntüler kamera RAW dosyaları olarak kaydedilir. Devre dışı bırakıldığında ise görüntüler Seçenekler &gt; Görüntüleme &gt; Dosya Ayarları bölümündeki ayarlara göre kaydedilir.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Seçili profili kaydet ve bir daha sorma</value>
@@ -2958,7 +2979,7 @@ Bu şablon, başlangıçta varsayılan şablon yerine sekansı başlatmak için 
     <value>Çevir</value>
   </data>
   <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
+    <value>Dönüş başarısız</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Çevir ve merkezle</value>
@@ -3298,7 +3319,7 @@ Dikdörtgeni bahtinov yansımalı bir yıldızın üzerine sürükleyin. NINA ya
     <value>Hedefteki tüm sekans ögelerinin ilerlemesini sıfırla</value>
   </data>
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
+    <value>Mevcut Hedef Setindeki tüm hedeflerin ilerleme durumunu sıfırla</value>
   </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Sekansları çalıştırır</value>
@@ -3344,7 +3365,8 @@ Dikdörtgeni kadrajın örneklemek istediğiniz kısmına sürükleyin ve örnek
     <value>Ay</value>
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
-    <value>Özel</value>
+    <value>King</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>Özel</value>
@@ -3359,13 +3381,13 @@ Dikdörtgeni kadrajın örneklemek istediğiniz kısmına sürükleyin ve örnek
     <value>Güneye geçiş</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
-    <value>North</value>
+    <value>Kuzey</value>
   </data>
   <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
+    <value>Güney</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>Meridyenden geçiş saati</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Eğimler ve hiperbolik</value>
@@ -3418,9 +3440,11 @@ Dikdörtgeni kadrajın örneklemek istediğiniz kısmına sürükleyin ve örnek
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>Ortalama akım</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>Akım</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>Cihaz verisi</value>
@@ -3510,7 +3534,7 @@ Dikdörtgeni kadrajın örneklemek istediğiniz kısmına sürükleyin ve örnek
     <value>URL</value>
   </data>
   <data name="LblCopyURL" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>URL'yi kopyala</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB limiti</value>
@@ -3670,27 +3694,35 @@ Dikdörtgeni kadrajın örneklemek istediğiniz kısmına sürükleyin ve örnek
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
-    <value>GBRG</value>
+    <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>Renk sensörlerinin oluşturduğu görüntüler için FITS veya XISF uzantılı resimlerdeki BAYERPAT anahtar sözcüğü için kullanılacak Bayer deseni.
@@ -3698,6 +3730,7 @@ Varsayılan Otomatik seçeneği, kamera sürücüsünün sağlayabileceği herha
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Mevcut</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>Sekans sonu seçenekleri çalışıyor</value>
@@ -3722,6 +3755,7 @@ Varsayılan Otomatik seçeneği, kamera sürücüsünün sağlayabileceği herha
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Kamera Zaman Aşımı - Kamera {0} saniye pozlamadan sonra görüntüyü hazır olarak ayarlamadı</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Desen önizleme</value>
@@ -4062,7 +4096,8 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
     <value>Teleskop park edildi. Çevirmeden önce parktan çıkarmanız gerekir.</value>
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
-    <value>Sol taraf</value>
+    <value>Sütun tarafı</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Kamera Zaman Aşımı</value>
@@ -4326,13 +4361,13 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
     <value>Derin Uzay Objesi Yönerge Seti</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
-    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+    <value>Bu talimat setine gelindiğinde sekanslayıcı ifadesini kontrol eder. Sonuç doğruysa içindeki talimatlar bir kez çalıştırılır. Yanlışsa atlanır.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>Koşullu talimat seti bir ifade gerektirir.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>Koşullu Talimat Seti</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Bu yönerge setindeki tüm yönergeler paralel olarak çalıştırılır. Bu yönerge seti, tüm yönergeler tamamlanıncaya kadar herhangi bir koşulu veya tetikleyiciyi değerlendirmeyecektir.</value>
@@ -4384,6 +4419,7 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>Düz kare panel kapağını kapat</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Odaklayıcıyı belirlenen kesin pozisyona getirir</value>
@@ -4438,6 +4474,7 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Teleskopu park et</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>Teleskopu belirtilen yükseklik ve azimut koordinatlarına çevirir</value>
@@ -4456,6 +4493,7 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>Teleskopu parktan çıkar</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>Takibi ayarla</value>
@@ -4495,12 +4533,14 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>Zaman aralığı bekle</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>Ss: dd: ss biçiminde belirtilen zamanı bekler. Ayrıca, gün batımı, alacakaranlık, şafak ve gün doğumunu otomatik olarak doldurmak için bir yardımcı program kutusu mevcuttur</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>Zamanı bekle</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>Kaymadan sonra merkezleme</value>
@@ -4515,13 +4555,13 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
     <value>HFR artışı sonrası AF</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-    <value>HFR trend per filter</value>
+    <value>Filtre başına HFR eğilimi</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-    <value>When disabled, the HFR trend is evaluated across all filters combined. 
-This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
-and a temperature sensitive optics on a quickly changing ambient temperature. 
-Note: This mode requires that HFR differences between filters in your setup are small.</value>
+    <value>Devre dışı bırakıldığında, HFR eğilimi tüm filtreler birleştirilerek değerlendirilir. 
+Bu, özellikle sık filtre değişiklikleri ile görüntüleme yaparken
+ve hızla değişen ortam sıcaklığında sıcaklığa duyarlı optikler kullanıldığında otomatik odaklamanın daha erken devreye girmesine yardımcı olabilir. 
+Not: Bu mod, kurulumunuzdaki filtreler arasındaki HFR farklarının küçük olmasını gerektirir.</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>Son otomatik netleme çalışmasından veya sekans başlangıcından bu yana sıcaklık, derece olarak belirtilen miktarda değiştikten sonra bir otomatik netleme çalışmasını başlatmak için tetikleyici</value>
@@ -4542,34 +4582,34 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Meridyen geçişi</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
-    <value>Programmable Meridian Flip</value>
+    <value>Programlanabilir Meridyen Geçişi</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
-    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+    <value>Geçiş öncesinde ve sonrasında özelleştirilebilir eylemler içeren bir meridyen geçiş tetikleyicisi.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
-    <value>Before Flip Actions</value>
+    <value>Geçiş öncesi eylemler</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
-    <value>After Flip Actions</value>
+    <value>Geçiş sonrası eylemler</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting for the meridian flip.</value>
+    <value>Meridyen geçişini bekleme öncesindeki talimatlar.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after the meridian flip.</value>
+    <value>Meridyen geçişinden sonraki talimatlar.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
-    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+    <value>Bu adımları kısa tutun. Geçiş öncesi uzun adımlar meridyen geçişini geciktirebilir.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
-    <value>Wait For Flip Window</value>
+    <value>Geçiş penceresini bekleyin</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
-    <value>Resume Tracking and Flip</value>
+    <value>Takibi sürdür ve meridyen geçişini yap</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>Kundağın kararlı hale gelmesini bekle</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>Kameranın soğutucusu yok, sıcaklık ayarlanamaz</value>
@@ -4653,7 +4693,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Şablonlar</value>
   </data>
   <data name="LblLinkedTemplates" xml:space="preserve">
-    <value>Linked Templates</value>
+    <value>Bağlantılı Şablonlar</value>
   </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>Geçerli şablonlar</value>
@@ -4662,10 +4702,10 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Yeni bir şablon oluşturmak için buraya sekanstan bir sekans yönergesi indirin</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
-    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+    <value>Şablonu bırakırken Ctrl tuşunu basılı tutun; böylece şablon kopyalanmak yerine bağlantılı olarak eklenir.</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
-    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
+    <value>Bağlantılı bir şablon kaynak şablonla canlı bağlantısını korur. İçeriği sekans içinde salt okunur önizleme olarak gösterilir ve şablon değiştiğinde otomatik olarak yenilenir. Kaynak şablonu güncellemek için bağlantılı şablondaki "Şablonu Düzenle" seçeneğini kullanın. Bağımsız bir kopya istediğinizde şablonu normal şekilde bırakın.</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>Şablon üzerine kaydedilsin mi?</value>
@@ -4732,6 +4772,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>Düz kare panel kapağını aç</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Düz kare cihazının parlaklığını belirlenen değere ayarlar</value>
@@ -4744,6 +4785,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>Işığı aç/kapa</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>Belirtilen parametreler için denenmiş pozlama değerini arar ve düz poz alır</value>
@@ -5025,58 +5067,58 @@ Güvenlik monitörü sürekli güvenli ortam bildirirse sonsuz bir döngüye gir
     <value>Mevcut yönerge setini ve içeriğini, tekrar kullanmak üzere bir şablon olarak kaydet</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
-    <value>Linked Template</value>
+    <value>Bağlantılı Şablon</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
-    <value>Linked Template: {0}</value>
+    <value>Bağlantılı Şablon: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
-    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+    <value>Bir sekans şablonunu kopyalamak yerine ona canlı bağlantı ekler. Geçerli şablon içeriği sekans içinde incelenebilmesi için bu kapsayıcıda gösterilir, ancak "Şablonu Düzenle" etkinleştirilene kadar salt okunurdur. Kaynak şablon değiştiğinde bu kapsayıcı otomatik olarak en son sürüme güncellenir. Yürütme sırasında N.I.N.A. şablonların yüklenmesinin tamamlanmasını bekler, ardından geçerli şablon içeriğini yürütür. Bağlantılı şablon bir hedef kapsayıcıya dayanıyorsa şablon yine yalnızca yeniden kullanılabilir sekans yapısını saklar. Bu kullanımda hedefi seçmek için bağlantılı şablonun üzerine bir hedef bırakın. N.I.N.A. şablon her yenilendiğinde bu hedefi yeniden uygular. Birden fazla sekansın aynı şablonu izlemesi gerektiğinde bunu kullanın. Bağımsız bir kopya istediğinizde şablonu normal şekilde bırakın. Bağlantılı Şablonlar menüsünden bir tane ekleyin veya şablonu sekansa bırakırken Ctrl tuşunu basılı tutarak bağlantılı ekleyin.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
-    <value>Linked template preview</value>
+    <value>Bağlantılı şablon önizlemesi</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
-    <value>Editing linked template</value>
+    <value>Bağlantılı şablonu düzenleme</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
-    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+    <value>"{0}" şablonunun salt okunur önizlemesi. Kaynak şablonu değiştirmek için Şablonu Düzenle seçeneğini kullanın.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
-    <value>Editing the source template. Saving updates the template for every linked use.</value>
+    <value>Kaynak şablonu düzenleme. Kaydedildiğinde, şablon bağlantılı tüm kullanımlar için güncellenir.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
-    <value>Waiting for template "{0}" to finish loading.</value>
+    <value>"{0}" şablonunun yüklenmesinin tamamlanması bekleniyor.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
-    <value>Template "{0}" could not be found.</value>
+    <value>"{0}" şablonu bulunamadı.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
-    <value>This linked template does not have a valid source template.</value>
+    <value>Bu bağlantılı şablonun geçerli bir kaynak şablonu yok.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
-    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+    <value>Varsayılan şablonlar doğrudan düzenlenemez. Önce şablonu kullanıcı şablonu olarak kaydedin.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
-    <value>Edit Template</value>
+    <value>Şablonu Düzenle</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
-    <value>Save Template</value>
+    <value>Şablonu Kaydet</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
-    <value>Cancel Template Editing</value>
+    <value>Şablon Düzenlemeyi İptal Et</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
-    <value>Target: {0}</value>
+    <value>Hedef: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
-    <value>No target selected. Drop a target here or enter target details below.</value>
+    <value>Hedef seçilmedi. Buraya bir hedef ekleyin veya aşağıya hedef bilgilerini girin.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
-    <value>Use this target with the linked template</value>
+    <value>Bu hedefi, bağlantılı şablonla birlikte kullanın</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
-    <value>Select a target for this linked template before running the sequence.</value>
+    <value>Sekansı çalıştırmadan önce bu bağlantılı şablon için bir hedef seçin.</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>Güvenlik monitörü bağlanmadı</value>
@@ -5403,9 +5445,11 @@ Hızla değişen koşullar için, daha küçük bir örnek boyutu, örneğin hı
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>Hedef ufkun üzerindeyken döngü yapan ve ardından mevcut yönerge setini durduran koşul</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
-    <value>Yükseklik ufuk hizasının üstüne çıkıncaya kadar tekrarla</value>
+    <value>Hedef ufkun üzerinde olduğu sürece tekrarla</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>Hedef ufuk üzerine hiç çıkmayacak</value>
@@ -5537,7 +5581,7 @@ Hızla değişen koşullar için, daha küçük bir örnek boyutu, örneğin hı
     <value>Döndürücüyü belirtilen mekanik açıya hareket ettirir</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotate to mechanical angle</value>
+    <value>Mekanik açıya döndür</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridyen</value>
@@ -5638,11 +5682,11 @@ Yalnızca bir ASCOM kamera sürücüsü kullanıldığında geçerlidir!</value>
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Birincil oran</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>İkincil oran</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>Teleskop birincil eksende hareket edemiyor</value>
@@ -6121,7 +6165,7 @@ Görüntü başarılı bir şekilde tanımlandığında, döndürme kadrajlama i
     <value>Fotoğraf kaydedilemedi</value>
   </data>
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+    <value>Resim kaydedilemedi. Hedef konumda yeterli disk alanı olmayabilir.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Koordinatları teleskopun mevcut pozisyonundan al</value>
@@ -6278,19 +6322,19 @@ Lütfen bir güncelleme olup olmadığını kontrol edin.</value>
     <value>Gün</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>Gün</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>Ay</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>Yıl</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
     <value>Gözlem</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>Gözlem tarihini ve saatini şimdiki zamana ayarla</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>Komut</value>
@@ -6608,6 +6652,7 @@ Bu, "Kapağı hareket ettitmeden önce kundağı park et" ayarından SONRA değe
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>Kapak veya çatının açılması istendi fakat güvenlik monitörü cihaz bağlantısı kesildi. Açılma başarısız oldu.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>DİKKAT: Bu ayarlar, ekipmanınızın güvenliği ile ilgilidir. Dikkatli bir şekilde düşünülerek ve özel kurulumunuza aşina olduğunuz şekilde ayarlanmalıdırlar. Yalnızca N.I.N.A.'nın ekipman üzerindeki kontrolünü yönetirler ve N.I.N.A. çalışmıyorken veya söz konusu ekipmana bağlı değilken etkili değillerdir. Kubbe veya çatı güvenlik mekanizmaları, herhangi bir istenmeyen kapak veya çatı hareketini önlemek için her zaman bir donanım yedeğine ve elektrik kilitlerine sahip olmalıdır. Bu ayarların kubbe sürücünüzün ayarlarıyla çakışmamasını sağlamak sizin sorumluluğunuzdadır.</value>
@@ -6665,7 +6710,7 @@ Bu, "Kapağı hareket ettitmeden önce kundağı park et" ayarından SONRA değe
     <value>Hedeflenen çiğ ısıtıcı gücü</value>
   </data>
   <data name="LblColoredContainerBorders" xml:space="preserve">
-    <value>Colored Container Borders</value>
+    <value>Renkli Kutu Kenarlıkları</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Donanım hızlandırma</value>
@@ -6709,7 +6754,7 @@ Yalnızca hiçbir şekilde değiştirilmemesi gereken iyi bir işaretleme modeli
     <value>Bağlanmış ZWO cihazına atayabileceğiniz, en fazla 8 ASCII karakter uzunluğunda bir ad. Bu, aynı cihaz modelinin birden çok parçasını benzersiz bir şekilde tanımlamanıza olanak tanır.</value>
   </data>
   <data name="LblDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>Bağlı cihaza atayabileceğiniz, en fazla 8 ASCII karakter uzunluğunda bir ad. Bu, aynı modeldeki birden fazla cihazı benzersiz bir şekilde tanımlamanıza olanak tanır.</value>
   </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Tek yönlü</value>
@@ -6797,7 +6842,7 @@ Sebep: {0}</value>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>Düz kare sihirbazı {0} filtresinde başarısız.
 Sebep: {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>Düz kare için parlaklık belirlemesi başarısız - ışık kaynağı fazla parlak.
@@ -6921,18 +6966,23 @@ Daha aydınlık oluncaya kadar bekleyin veya pozlama süresini maksimum yapın.<
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>Genişleme</value>
@@ -6984,10 +7034,10 @@ Daha aydınlık oluncaya kadar bekleyin veya pozlama süresini maksimum yapın.<
     <value>Histogram'ı göster</value>
   </data>
   <data name="LblShowHorizon" xml:space="preserve">
-    <value>Show Local Horizon</value>
+    <value>Yerel ufuk hattını göster</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
-    <value>Show star measurements in arcseconds</value>
+    <value>Yıldızların ölçümlerini yay saniye biriminde göster</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Sadece bilgi için</value>
@@ -7063,10 +7113,10 @@ Ayrıca, kullanılan ASCOM sürücüsünün de bu 32 bit derinliği desteklemesi
     <value>{0} dakika geçtikten sonra teleskop park etmesi zaman aşımına uğradı.</value>
   </data>
   <data name="LblDomeParkTimeout" xml:space="preserve">
-    <value>Dome park has timed out after {0} minutes.</value>
+    <value>Kubbe parkı {0} dakika sonra zaman aşımına uğradı.</value>
   </data>
   <data name="LblDomeParkFailed" xml:space="preserve">
-    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+    <value>Kubbe hareketi durdu fakat sürücü park ettiğini onaylamadı.</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>{0} dakika geçtikten sonra teleskopun park pozisyonundan çıkması zaman aşımına uğradı.</value>
@@ -7123,23 +7173,25 @@ Ayrıca, kullanılan ASCOM sürücüsünün de bu 32 bit derinliği desteklemesi
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>IPv4 kullan</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>ASCOM Alpaca cihaz keşfi için IPv4 kullanın (Varsayılan: Açık)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>IPv6 Kullan</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>ASCOM Alpaca cihaz keşfi için IPv6 kullanın (Varsayılan: Kapalı)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Katalog görüntüsünü değiştir</value>
   </data>
   <data name="LblToggleShowAllCatalogues" xml:space="preserve">
-    <value>Show all catalogues</value>
+    <value>Tüm katalogları göster</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Hedef Alt.</value>
@@ -7182,6 +7234,7 @@ Ayrıca, kullanılan ASCOM sürücüsünün de bu 32 bit derinliği desteklemesi
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>Kapağın ya da çatının açılması istendi fakat güvenlik monitörü koşulların güvensiz olduğunu bildiriyor. Açma işlemi durduruldu.</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>Harici komut</value>
@@ -7212,16 +7265,16 @@ Ayrıca, kullanılan ASCOM sürücüsünün de bu 32 bit derinliği desteklemesi
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
-    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+    <value>Kaydedilmiş bir panel yerleşimi yapılandırma dosyasından Görüntüleme sekmesi düzenini yükler</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
-    <value>Load Imaging Layout</value>
+    <value>Görüntüleme Düzenini Yükle</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
-    <value>The selected file is not a valid Imaging layout backup</value>
+    <value>Seçilen dosya, geçerli bir görüntüleme düzeni yedeği değil</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
-    <value>Select an existing Imaging layout backup file</value>
+    <value>Mevcut bir görüntüleme düzeni yedekleme dosyasını seçin</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>Mevcut sekansı belirtilen dosya yoluna kaydeder</value>
@@ -7391,828 +7444,834 @@ Ayrıca, kullanılan ASCOM sürücüsünün de bu 32 bit derinliği desteklemesi
     <value>Civil dawn</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
-    <value>Refuse mount unpark if shutter is not open</value>
+    <value>Panjur açık değilse kundağı parktan çıkarma</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
-    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+    <value>Kubbe panjuru veya çatı açık değilken kundak parktan çıkarılamaz</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
-    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+    <value>Panjur veya çatı Kapalı, Kapanıyor, Açılıyor veya Hata durumundaysa kundağı parktan çıkarma girişimlerini reddet. Kundağın parktan çıkarılmasına yalnızca panjur veya çatı Açık durumunu bildirdiğinde izin verilir</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
-    <value>There is no civil dawn at your location today.</value>
+    <value>Bugün bulunduğunuz yerde sivil şafak yok.</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
-    <value>There is no civil dusk at your location today.</value>
+    <value>Bugün bulunduğunuz yerde sivil akşam alacakaranlığı yok.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
-    <value>There is no astronomical dawn at your location today.</value>
+    <value>Bugün bulunduğunuz yerde astronomik şafak yok.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
-    <value>There is no astronomical dusk at your location today.</value>
+    <value>Bugün bulunduğunuz yerde astronomik akşam alacakaranlığı yok.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
-    <value>There is no nautical dawn at your location today.</value>
+    <value>Bugün bulunduğunuz yerde denizcilik şafağı yok.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
-    <value>There is no nautical dusk at your location today.</value>
+    <value>Bugün bulunduğunuz yerde denizcilik akşam alacakaranlığı yok.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
-    <value>There is no sunrise at your location today.</value>
+    <value>Bugün bulunduğunuz yerde Güneş doğmuyor.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
-    <value>There is no sunset at your location today.</value>
+    <value>Bugün bulunduğunuz yerde Güneş batmıyor.</value>
   </data>
   <data name="LblUnableToConnectTo" xml:space="preserve">
-    <value>Unable to connect to {0}</value>
+    <value>{0} ile bağlantı kurulamıyor</value>
     <comment>Parameters: {0}=Url or device etc</comment>
   </data>
   <data name="LblCameraNoSupport16bit" xml:space="preserve">
-    <value>Camera does not support 16 bit mode</value>
+    <value>Kamera 16 bit modunu desteklemiyor</value>
   </data>
   <data name="LblExposureInProgress" xml:space="preserve">
-    <value>Another exposure still in progress. Cancel it to start another.</value>
+    <value>Başka bir pozlama hâlâ devam ediyor. Yenisini başlatmak için devam edeni iptal edin.</value>
   </data>
   <data name="LblFailedToConnectDevice" xml:space="preserve">
-    <value>Failed to connect {0}, {1}</value>
+    <value>{0} ile bağlantı kurulamadı: {1}</value>
     <comment>Parameters: 0=Device ID, 1=error message</comment>
   </data>
   <data name="LblGenericCameraError" xml:space="preserve">
-    <value>Camera reported a generic error and needs to be reconnected!</value>
+    <value>Kamera genel bir hata bildirdi ve yeniden bağlanması gerekiyor!</value>
   </data>
   <data name="LblCameraDisconnected" xml:space="preserve">
-    <value>Camera disconnected! Maybe USB connection was interrupted.</value>
+    <value>Kamera bağlantısı kesildi! USB bağlantısı kesilmiş olabilir.</value>
   </data>
   <data name="LblMetaGuideListenerError" xml:space="preserve">
-    <value>MetaGuide Listener Error: {0}</value>
+    <value>MetaGuide dinleyici hatası: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPostFailed" xml:space="preserve">
-    <value>Failed to post {0} message</value>
+    <value>{0} mesajı gönderilemedi</value>
     <comment>Parameters: {0}=message type</comment>
   </data>
   <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
-    <value>Guiding is not active. Unable to dither</value>
+    <value>Kılavuzlama etkin değil. Kaydırma (dither) yapılamıyor</value>
   </data>
   <data name="LblFailedCommsMGENDither" xml:space="preserve">
-    <value>Failed to communicate to MGEN during dithering</value>
+    <value>Dither yapılırken MGEN iletişimi başarısız</value>
   </data>
   <data name="LblPHDError" xml:space="preserve">
-    <value>PHD Error: {0}
-CODE: {1}</value>
+    <value>PHD Hatası: {0}
+KOD: {1}</value>
     <comment>Parameters: {0}=error message, {1}=error code</comment>
   </data>
   <data name="LblPHDErrorMsg" xml:space="preserve">
-    <value>PHD Error: {0}</value>
+    <value>PHD hatası: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblTWCNoAPIKey" xml:space="preserve">
-    <value>There is no TheWeatherCompany API key configured.</value>
+    <value>Tanımlanmış bir TheWeatherCompany API anahtarı yok.</value>
   </data>
   <data name="LblFileNotExist" xml:space="preserve">
-    <value>File {0} does not exist</value>
+    <value>{0} adlı dosya mevcut değil</value>
     <comment>Parameters: {0}=file path</comment>
   </data>
   <data name="LblASTAPNoOutputFile" xml:space="preserve">
-    <value>ASTAP - Plate solve failed. No output file found.</value>
+    <value>ASTAP - Alan Tanımlama başarısız. Çıktı dosyası bulunamadı.</value>
   </data>
   <data name="LblASTAPSolveFailed" xml:space="preserve">
-    <value>ASTAP - Plate solve failed.
+    <value>ASTAP - Alan Tanımlama başarısız.
 {0}
 {1}</value>
     <comment>Parameters: {0}=warning, {1}=error</comment>
   </data>
   <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
-    <value>Error plate solving with Astrometry.net. {0}</value>
+    <value>Astrometry.net ile Alan Tanımlama hatası {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblExposureOverMax" xml:space="preserve">
-    <value>The predicted exposure of {0}s is longer than the maximum allowed.
-Stopping sky flat acquisition.</value>
+    <value>Tahmin edilen {0} saniyelik pozlama süresi izin verilen maksimum süreden daha uzun.
+Gökyüzü düz kare çekimi durduruluyor.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblExposureUnderMin" xml:space="preserve">
-    <value>The predicted exposure of {0}s is shorter than the minimum allowed.
-Stopping sky flat acquisition.</value>
+    <value>Tahmin edilen {0} saniyelik pozlama süresi izin verilen minimum süreden daha kısa.
+Gökyüzü düz kare çekimi durduruluyor.</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
-    <value>Skyflat correction did not work and is outside of tolerance:
-first exposure time {0:#.####}
-current exposure time {1:#.####}
-elapsed time: {2:#.##}
-mean adu: {3:#.##}.
-The sky flat exposure time will be determined again and the exposure will be repeated.</value>
+    <value>Gökyüzü düz kare düzeltmesi işe yaramadı ve tolerans sınırları dışında:
+ilk pozlama süresi {0:#.####}
+mevcut pozlama süresi {1:#.####}
+geçen süre: {2:#.##}
+ortalama ADU: {3:#.##}.
+Gökyüzü düz kare pozlama süresi yeniden belirlenecek ve pozlama tekrarlanacak.</value>
     <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
   </data>
   <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
-    <value>Failed to restore previous filter position: {0}</value>
+    <value>Önceki filtre konumu geri yüklenemedi: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblFailedToChangeFilter" xml:space="preserve">
-    <value>Failed to change filter: {0}</value>
+    <value>Filtre değiştirilemedi: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSetShiftRateFailed" xml:space="preserve">
-    <value>Set shift rate failed. {0}</value>
+    <value>Kayma hızı ayarlanamadı. {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPrepareImageFailed" xml:space="preserve">
-    <value>Failed to prepare image for display: {0}</value>
+    <value>Resim görüntülenmek üzere hazırlanamadı: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
-    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+    <value>Değişen tek şey pozlama sayısı olduğunda, sekansı kaydetmek için uyarı vermeyin</value>
   </data>
   <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
-    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
-You'll normally be prompted to save the sequence to save the changed exposure count.
+    <value>Sekansınız değiştirilmemiş ancak çalıştırılmışsa, pozlama sayısı değişmiş olacaktır.
+Normalde, değiştirilen pozlama sayısını kaydetmek için sekansı kaydetmeniz istenir.
 
-If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+Pozlama sayısı sizin için önemli değilse, çalıştırma sonrasında sekansı kaydetmek zorunda kalmamak için bu seçeneği etkinleştirin.</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
-    <value>Day Rollover Time</value>
+    <value>Yeni güne geçiş saati</value>
   </data>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
-    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+    <value>Talimat belirli bir tarihe bağlı olmadığından, yeni güne geçiş görüntülenen saatte gerçekleşir.</value>
   </data>
   <data name="LblInitializing" xml:space="preserve">
-    <value>Initializing</value>
+    <value>Başlatılıyor</value>
   </data>
   <data name="LblOasisClearStallPrompt" xml:space="preserve">
-    <value>Clear stall?</value>
+    <value>Sıkışma durumu temizlensin mi?</value>
   </data>
   <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value>Focuser stalled. You need to manually clear stall.</value>
+    <value>Odaklayıcı motoru sıkıştı. Sıkışma durumunu elle temizlemeniz gerekiyor.</value>
   </data>
   <data name="LblBeepOnStartup" xml:space="preserve">
-    <value>Beep on startup</value>
+    <value>Başlangıçta bip sesi çıkar</value>
   </data>
   <data name="LblBeepOnMove" xml:space="preserve">
-    <value>Beep on move</value>
+    <value>Hareket ederken bip sesi çıkar</value>
   </data>
   <data name="LblOasisHeating" xml:space="preserve">
-    <value>Heating</value>
+    <value>Isıtma</value>
   </data>
   <data name="LblOasisHeatingTemperature" xml:space="preserve">
-    <value>Heating temperature</value>
+    <value>Isıtma sıcaklığı</value>
   </data>
   <data name="LblOasisStallDetection" xml:space="preserve">
-    <value>Stall detection</value>
+    <value>Sıkışma algılama</value>
   </data>
   <data name="LblOasisIsStalled" xml:space="preserve">
-    <value>Is stalled</value>
+    <value>Motor sıkışmış</value>
   </data>
   <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value>USB capacity</value>
+    <value>USB akım kapasitesi</value>
   </data>
   <data name="LblOasisSpeed" xml:space="preserve">
-    <value>Speed</value>
+    <value>Hız</value>
   </data>
   <data name="LblOasisClearStall" xml:space="preserve">
-    <value>Clear stall</value>
+    <value>Sıkışma durumunu temizle</value>
   </data>
   <data name="LblOasisDcPower" xml:space="preserve">
-    <value>DC power</value>
+    <value>DC Güç</value>
   </data>
   <data name="LblOasisBoardHeating" xml:space="preserve">
-    <value>Board heating</value>
+    <value>Kart ısıtması</value>
   </data>
   <data name="LblOasisHeatingPower" xml:space="preserve">
-    <value>Heating power</value>
+    <value>Isıtma gücü</value>
   </data>
   <data name="LblOasisBoardTemperature" xml:space="preserve">
-    <value>Board temperature</value>
+    <value>Kart sıcaklığı</value>
   </data>
   <data name="LblOasisSyncPosition" xml:space="preserve">
-    <value>Sync position</value>
+    <value>Senkronizasyon konumu</value>
   </data>
   <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
-    <value>Set current position to sync position?</value>
+    <value>Geçerli konumun değeri, girilen senkronizasyon konumu değerine ayarlansın mı?</value>
   </data>
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+    <value>Seçilen Oasis odaklayıcı mevcut değil. Lütfen bağlantıyı kontrol edin ve cihazları yeniden tarayın.</value>
   </data>
   <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
+    <value>Seçilen Oasis filtre çarkı mevcut değil. Lütfen bağlantıyı kontrol edin ve cihazları yeniden tarayın.</value>
   </data>
   <data name="LblOasisTurboMode" xml:space="preserve">
-    <value>Turbo mode</value>
+    <value>Turbo modu</value>
   </data>
   <data name="LblOasisDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Cihaz Kimliği</value>
   </data>
   <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Cihaz Kimliği</value>
   </data>
   <data name="LblOasisState" xml:space="preserve">
-    <value>State</value>
+    <value>Durum</value>
   </data>
   <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
-    <value>Sync focus offsets</value>
+    <value>Odak kayma değerlerini senkronize et</value>
   </data>
   <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
-    <value>Store focus offsets</value>
+    <value>Odak kayma değerlerini kaydet</value>
   </data>
   <data name="LblOasisSyncFilterNames" xml:space="preserve">
-    <value>Sync filter names</value>
+    <value>Filtre adlarını senkronize et</value>
   </data>
   <data name="LblOasisStoreFilterNames" xml:space="preserve">
-    <value>Store filter names</value>
+    <value>Filtre adlarını kaydet</value>
   </data>
   <data name="LblOasisAutorun" xml:space="preserve">
-    <value>Autorun</value>
+    <value>Otomatik çalıştır</value>
   </data>
   <data name="LblOasisSpeedTooltip" xml:space="preserve">
-    <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
+    <value>Ortam sıcaklığı çok düşük olduğunda filtrelerin sorunsuz değiştirilebilmesi için Normal veya Slow hızını seçin.</value>
   </data>
   <data name="LblOasisTurboModeTooltip" xml:space="preserve">
-    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port has at least 5V,1A power supply capacity.</value>
+    <value>Motor torkunu artırmak için turbo modunu etkinleştirin. Bu, ortam sıcaklığı çok düşük olduğunda yararlı olabilir. USB ana bilgisayar bağlantı noktasının en az 5V, 1A güç kaynağı kapasitesine sahip olduğundan emin olun.</value>
   </data>
   <data name="LblOasisAutorunTooltip" xml:space="preserve">
-    <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
+    <value>Güç açıldığında filtrelerin otomatik olarak son konuma geçmesini istiyorsanız bu seçeneği etkinleştirin.</value>
   </data>
   <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
-    <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
+    <value>Oasis cihazında depolanan odak sapmalarını okur ve NINA odak sapmalarını günceller.</value>
   </data>
   <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA focus offsets to the Oasis filter wheel.</value>
+    <value>NINA odak sapmalarını Oasis filtre çarkına yükler ve depolar.</value>
   </data>
   <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
-    <value>Reads the filter names stored on the Oasis device and updates the NINA filter labels.</value>
+    <value>Oasis cihazında depolanan filtre adlarını okur ve NINA filtre etiketlerini günceller.</value>
   </data>
   <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA filter names to the Oasis filter wheel.</value>
+    <value>NINA filtre adlarını Oasis filtre çarkına yükler ve depolar.</value>
   </data>
   <data name="LblOasisCounter" xml:space="preserve">
-    <value>Counter</value>
+    <value>Sayaç</value>
   </data>
   <data name="LblOasisCounterTooltip" xml:space="preserve">
-    <value>Indicator that shows how many filter slots have been rotated since the filter wheel powered up.</value>
+    <value>Filtre çarkı çalıştırıldığından beri kaç filtre yuvasının döndürüldüğünü gösteren gösterge.</value>
   </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
-    <value>ASCOM Alpaca IP Setup</value>
+    <value>ASCOM Alpaca IP kurulumu</value>
   </data>
   <data name="LblAlpacaDirectServiceType" xml:space="preserve">
-    <value>Service Type</value>
+    <value>Servis türü</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
   <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
-    <value>IP Address</value>
+    <value>IP Adresi</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
-    <value>Port</value>
+    <value>Bağlantı noktası</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
-    <value>Device Number</value>
+    <value>Cihaz numarası</value>
   </data>
   <data name="LblSymbols" xml:space="preserve">
-    <value>Symbols</value>
+    <value>Semboller</value>
   </data>
   <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
-    <value>No other data for {0}</value>
+    <value>{0} için başka veri yok</value>
     <comment>{0} will be filled with the category name</comment>
   </data>
   <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
-    <value>Additional Symbols:</value>
+    <value>Ek Semboller:</value>
     <comment>The prefix for additional data rows for symbol tooltips</comment>
   </data>
   <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
-    <value>Options:</value>
+    <value>Opsiyonlar:</value>
     <comment>The prefix per symbol for additional options</comment>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
-    <value>Click any symbol to copy it to the clipboard.</value>
+    <value>Panoya kopyalamak için herhangi bir sembole tıklayın.</value>
   </data>
   <data name="LblTrue" xml:space="preserve">
-    <value>True</value>
+    <value>Doğru</value>
   </data>
   <data name="LblFalse" xml:space="preserve">
-    <value>False</value>
+    <value>Yanlış</value>
   </data>
   <data name="LblDecimal" xml:space="preserve">
-    <value>(Decimal: </value>
+    <value>(Ondalık: </value>
     <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
   </data>
   <data name="LblWarnings" xml:space="preserve">
-    <value>Warning(s): {0}</value>
+    <value>Uyarı(lar): {0}</value>
   </data>
   <data name="LblNoErrors" xml:space="preserve">
-    <value>No errors</value>
+    <value>Hata yok</value>
   </data>
   <data name="LblErrors" xml:space="preserve">
-    <value>Error(s): {0}</value>
+    <value>Hata(lar): {0}</value>
   </data>
   <data name="LblNotEvaluated" xml:space="preserve">
-    <value>Not Evaluated</value>
+    <value>Değerlendirilmedi</value>
     <comment>As in, a variable is not yet evaluated</comment>
   </data>
   <data name="LblTomorrow" xml:space="preserve">
-    <value>tomorrow</value>
+    <value>yarın</value>
   </data>
   <data name="LblYesterday" xml:space="preserve">
-    <value>yesterday</value>
+    <value>dün</value>
   </data>
   <data name="LblUndefined" xml:space="preserve">
-    <value>Undefined</value>
+    <value>Tanımlanmamış</value>
     <comment>As in "Undefined: &lt;variable name&gt;"</comment>
   </data>
   <data name="LblSyntaxError" xml:space="preserve">
-    <value>Syntax error</value>
+    <value>Sözdizimi hatası</value>
     <comment>Used when an Expression can't be parsed</comment>
   </data>
   <data name="LblMustBeInteger" xml:space="preserve">
-    <value>Value must be an Integer</value>
+    <value>Değer bir tamsayı olmalıdır</value>
   </data>
   <data name="LblAnd" xml:space="preserve">
-    <value>and</value>
+    <value>ve</value>
   </data>
   <data name="LblAlreadyDefined" xml:space="preserve">
-    <value>is already defined</value>
+    <value>zaten tanımlanmış</value>
     <comment>As in &lt;variable&gt; is already defined</comment>
   </data>
   <data name="LblConstantVariable" xml:space="preserve">
-    <value>The Constant/Variable</value>
+    <value>Sabit/Değişken</value>
     <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
   </data>
   <data name="LblNoSymbols" xml:space="preserve">
-    <value>No defined Constant/Variable is used in this expression</value>
+    <value>Bu ifadede tanımlanmış Sabit/Değişken kullanılmamıştır</value>
   </data>
   <data name="LblNotYetDefined" xml:space="preserve">
-    <value> The Constant/Variable is not yet defined</value>
+    <value> Sabit/Değişken henüz tanımlanmadı</value>
   </data>
   <data name="LblValueBetween" xml:space="preserve">
-    <value>Value must be between {0} and {1}</value>
+    <value>Değer {0} ve {1} arasında olmalı</value>
   </data>
   <data name="LblVariable" xml:space="preserve">
-    <value>Variable:</value>
+    <value>Değişken:</value>
   </data>
   <data name="LblInitially" xml:space="preserve">
-    <value>Initially</value>
+    <value>Başlangıçta</value>
   </data>
   <data name="LblNewValue" xml:space="preserve">
-    <value>New Value</value>
+    <value>Yeni değer</value>
   </data>
   <data name="LblIsAmbiguous" xml:space="preserve">
-    <value>is ambiguous, use one of</value>
+    <value>belirsizdir, şunlardan birini kullanın</value>
     <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
   </data>
   <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
-    <value>Symbols</value>
+    <value>Semboller</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Defines a global variable for expressions anywhere in this sequence. Its initial value is assigned when this instruction runs, so place it before instructions that use it. Use Set Variable to change it later.</value>
+    <value>Bu sekansın herhangi bir yerindeki ifadeler için genel bir değişken tanımlar. İlk değeri bu komut çalıştırıldığında atanır; bu nedenle komutu değişkeni kullanan komutlardan önce yerleştirin. Değerini daha sonra değiştirmek için "Değişkeni ayarla" komutunu kullanın.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
-    <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
+    <value>Bu talimat setindeki ve onun iç içe talimat setlerindeki ifadeler için bir değişken tanımlar. İlk değeri bu komut çalıştırıldığında atanır. Değerini daha sonra değiştirmek için "Değişkeni ayarla" komutunu kullanın. Üst veya aynı düzeydeki talimat setlerinde görünmez.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
-    <value>Define Variable</value>
+    <value>Değişken tanımla</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
+    <value>Bu sekansın herhangi bir yerindeki ifadeler için adlandırılmış genel bir değer tanımlar. Sekans çalışmadan önce kullanılabilir. Değerini değiştirmek için bu komutu düzenleyin; "Değişkeni ayarla" bir sabiti değiştiremez.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
-    <value>Define Constant</value>
+    <value>Sabit tanımla</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
-    <value>Set Variable</value>
+    <value>Değişkeni ayarla</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+    <value>Değişken önceden tanımlanmışsa, değeri İfadenin sonucu olur</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
-    <value>Set Variable to Date/Time</value>
+    <value>Değişkeni Tarih/Saat olarak ayarla</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+    <value>Değişken önceden tanımlanmışsa, değeri belirtilen Tarih/Saat olacaktır</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
-    <value>Loop While</value>
+    <value>Koşul sağlandıkça döngü</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
-    <value>Loops while the Expression is not false</value>
+    <value>İfade yanlış olmadığı sürece döngü devam eder</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
-    <value>Wait Until</value>
+    <value>Oluncaya kadar bekle</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
-    <value>Waits until the Expression is true</value>
+    <value>İfade doğru olana kadar bekler</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
-    <value>Random double value between 0.0 and 1.0.</value>
+    <value>0,0 dahil ve 1,0 hariç olmak üzere rastgele çift duyarlıklı sayı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
-    <value>Current Unix timestamp in seconds.</value>
+    <value>Saniye cinsinden geçerli Unix zaman damgası.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
-    <value>Hour component (0-23) of a datetime or the current time.</value>
+    <value>Bir tarih-saat veya geçerli saatin saat bileşeni (0-23).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
-    <value>Minute component (0-59) of a datetime or the current time.</value>
+    <value>Bir tarih-saat veya geçerli saatin dakika bileşeni (0-59).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
-    <value>Day of the month (1-31) of a datetime or the current date.</value>
+    <value>Bir tarih-saat değerinin veya geçerli tarihin ay içindeki günü (1-31).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1-12) of a datetime or the current date.</value>
+    <value>Bir tarih-saat değerinin veya geçerli tarihin ayı (1-12).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
-    <value>Year component of a datetime or the current date.</value>
+    <value>Bir tarih-saat değerinin veya geçerli tarihin yıl bileşeni.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
-    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+    <value>Haftanın günü tamsayı olarak (0 = Pazar … 6 = Cumartesi).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
-    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+    <value>Tarih ve saat artı belirtilen dakika sayısı (Unix zaman damgası).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
-    <value>Datetime plus the specified hours (Unix timestamp).</value>
+    <value>Tarih ve saat artı belirtilen saatler (Unix zaman damgası).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
-    <value>Seconds elapsed since the given datetime (Unix timestamp).</value>
+    <value>Verilen tarih ve saatten (Unix zaman damgası) bu yana geçen saniye sayısı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
-    <value>Datetime formatted using the specified .NET format string.</value>
+    <value>Belirtilen .NET biçim dizesi kullanılarak biçimlendirilmiş tarih ve saat.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
-    <value>Whether the string starts with the specified prefix.</value>
+    <value>Dizenin belirtilen önekle başlayıp başlamadığı.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
-    <value>Length of the given string, or -1 if the value is not a string.</value>
+    <value>Verilen dizgenin uzunluğu veya değer bir dizge değilse -1.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
-    <value>Concatenation of two strings.</value>
+    <value>İki dizgenin birleştirilmesi.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
-    <value>Character at the specified zero-based index, or empty if out of bounds.</value>
+    <value>Belirtilen sıfır tabanlı dizindeki karakter veya sınırların dışındaysa boş.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
-    <value>Whether the string contains the specified substring.</value>
+    <value>Dizenin belirtilen alt dizeyi içerip içermediğini kontrol eder.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
-    <value>Whether the string ends with the specified suffix.</value>
+    <value>Dizenin belirtilen son ek ile bitip bitmediği.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
-    <value>Substring of the given string; empty if out of range.</value>
+    <value>Verilen dizgenin alt dizgesi; aralık dışında ise boş.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
-    <value>Lower-case version of the string (invariant).</value>
+    <value>Dizenin kültürden bağımsız olarak küçük harfe dönüştürülmüş hali.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
-    <value>Upper-case version of the string (invariant).</value>
+    <value>Dizenin kültürden bağımsız olarak büyük harfe dönüştürülmüş hali.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
-    <value>Absolute value of a number.</value>
+    <value>Bir sayının mutlak değeri.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
-    <value>Angle whose cosine is the specified number.</value>
+    <value>Kosinüsü belirtilen sayı olan açı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
-    <value>Angle whose sine is the specified number.</value>
+    <value>Sinüsü belirtilen sayı olan açı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
-    <value>Angle whose tangent is the specified number.</value>
+    <value>Tanjantı belirtilen sayı olan açı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
-    <value>Arithmetic mean of all arguments.</value>
+    <value>Tüm argümanların aritmetik ortalaması.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
-    <value>Smallest integer greater than or equal to the number.</value>
+    <value>Sayıdan büyük veya ona eşit olan en küçük tamsayı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
-    <value>Cosine of the specified angle.</value>
+    <value>Belirtilen açının kosinüsü.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
-    <value>e raised to the specified power.</value>
+    <value>e sayısının belirtilen kuvveti.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
-    <value>Largest integer less than or equal to the number.</value>
+    <value>Sayıdan küçük veya ona eşit olan en büyük tamsayı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
-    <value>IEEE remainder of x / y.</value>
+    <value>x / y işleminin IEEE kalanı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
-    <value>Natural logarithm of a number.</value>
+    <value>Bir sayının doğal logaritması.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
-    <value>Logarithm of a number.</value>
+    <value>Bir sayının logaritması.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
-    <value>Base-10 logarithm of a number.</value>
+    <value>Bir sayının 10 tabanında logaritması.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
-    <value>Larger of two numbers.</value>
+    <value>İki sayıdan büyük olanı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
-    <value>Smaller of two numbers.</value>
+    <value>İki sayıdan küçük olanı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
-    <value>Number raised to the specified power.</value>
+    <value>Sayının belirtilen kuvveti.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
-    <value>Rounded value to the nearest integer or specified decimal places.</value>
+    <value>En yakın tam sayıya veya belirtilen ondalık basamağa yuvarlanan değer.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
-    <value>Sign of a number.</value>
+    <value>Bir sayının işareti.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
-    <value>Sine of the specified angle.</value>
+    <value>Belirtilen açının sinüsü.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
-    <value>Square root of a number.</value>
+    <value>Bir sayının karekökü.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
-    <value>Tangent of the specified angle.</value>
+    <value>Belirtilen açının tanjantı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
-    <value>Integral part of a number.</value>
+    <value>Bir sayının tam kısmı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
-    <value>Mathematical modulus (x mod y). Result is in [0, y) for positive y.</value>
+    <value>Matematiksel modülo (x mod y). Sonuç, pozitif y için [0, y) aralığındadır.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
-    <value>Value clamped to the inclusive range [min, max].</value>
+    <value>Her iki sınır dahil [min, max] aralığıyla sınırlandırılmış değer.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
-    <value>Whether x is between min and max (inclusive).</value>
+    <value>x değerinin min ile max arasında olup olmadığı (iki sınır da dahil).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
-    <value>Conversion from radians to degrees.</value>
+    <value>Radyandan dereceye dönüştürme.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
-    <value>Conversion from degrees to radians.</value>
+    <value>Dereceden radyana dönüştürme.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
-    <value>Sum of all arguments.</value>
+    <value>Tüm argümanların toplamı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
-    <value>Whether an element is in a set of values.</value>
+    <value>Bir öğenin bir değerler kümesinde olup olmadığı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
-    <value>Conditional value based on a condition.</value>
+    <value>Bir koşula dayalı koşullu değer.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
-    <value>Conditional value based on multiple conditions, with a default.</value>
+    <value>Birden fazla koşula dayalı ve varsayılan değeri olan koşullu değer.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
-    <value>Whether a symbol name is defined in the symbol table.</value>
+    <value>Bir sembol adının sembol tablosunda tanımlanıp tanımlanmadığı.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
-    <value>Logical negation of a boolean value.</value>
+    <value>Bir boolean değerinin mantıksal olumsuzluğu.</value>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
-    <value>Click any function to copy it to the clipboard.</value>
+    <value>Herhangi bir işlevi tıklayarak panoya kopyalayabilirsiniz.</value>
   </data>
   <data name="Lbl_SymbolFunctions" xml:space="preserve">
-    <value>Functions</value>
+    <value>Fonksiyonlar</value>
   </data>
   <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
-    <value>Usage</value>
+    <value>Kullanım</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
-    <value>Function '{0}' expects no arguments, but got {1}.</value>
+    <value>'{0}' işlevi hiçbir argüman beklemiyordu, ancak {1} verildi.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
-    <value>Function '{0}' expects exactly one argument, but got {1}.</value>
+    <value>'{0}' işlevi tam olarak bir argüman bekliyor, ancak {1} argüman verildi.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
-    <value>Function '{0}' expects exactly {1} arguments, but got {2}.</value>
+    <value>'{0}' işlevi tam olarak {1} argüman bekliyor, ancak {2} argüman aldı.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
-    <value>Function '{0}' expects between {1} and {2} arguments, but got {3}.</value>
+    <value>'{0}' işlevi {1} ile {2} arasında argüman bekliyor, ancak {3} argüman alındı.</value>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
-    <value>Value must be greater than or equal to {0}.</value>
+    <value>Değer, {0}'dan büyük veya ona eşit olmalıdır.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
-    <value>Value must be greater than {0}.</value>
+    <value>Değer {0}'dan büyük olmalıdır.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
-    <value>Value must be between {0} and {1}.</value>
+    <value>Değer {0} ile {1} arasında olmalıdır (iki sınır da dahil).</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
-    <value>Value must be between {0} and less than {1}.</value>
+    <value>Değer en az {0} olmalı ve {1} değerinden küçük olmalıdır.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and up to {1}.</value>
+    <value>Değer {0} değerinden büyük ve en fazla {1} olmalıdır.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and less than {1}.</value>
+    <value>Değer, {0}'dan büyük ve {1}'den küçük olmalıdır.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
-    <value>Notification work area</value>
+    <value>Bildirim çalışma alanı</value>
   </data>
   <data name="LblNotificationCorner" xml:space="preserve">
-    <value>Notification corner</value>
+    <value>Bildirim köşesi</value>
   </data>
   <data name="LblNotificationTopLeft" xml:space="preserve">
-    <value>Top left</value>
+    <value>Üst sol</value>
   </data>
   <data name="LblNotificationTopRight" xml:space="preserve">
-    <value>Top right</value>
+    <value>Üst sağ</value>
   </data>
   <data name="LblNotificationBottomLeft" xml:space="preserve">
-    <value>Bottom left</value>
+    <value>Alt sol</value>
   </data>
   <data name="LblNotificationBottomRight" xml:space="preserve">
-    <value>Bottom right</value>
+    <value>Alt sağ</value>
   </data>
   <data name="LblNotificationPrimaryScreen" xml:space="preserve">
-    <value>Primary screen</value>
+    <value>Birincil ekran</value>
   </data>
   <data name="LblNotificationSameScreenAsApplication" xml:space="preserve">
-    <value>Same screen as application</value>
+    <value>Uygulama ile aynı ekran</value>
   </data>
   <data name="LblNotificationApplication" xml:space="preserve">
-    <value>Application</value>
+    <value>Uygulama</value>
   </data>
   <data name="LblCompressionZStandard" xml:space="preserve">
     <value>ZStandard</value>
   </data>
   <data name="LblMoravianFlashVersion" xml:space="preserve">
-    <value>Flash version</value>
+    <value>Flash sürümü</value>
     <comment>Version of an internal camera component stored in flash memory.
     This is a separate version from camera firmware and driver.</comment>
   </data>
   <data name="LblDimensions" xml:space="preserve">
-    <value>Dimensions</value>
+    <value>Boyutlar</value>
     <comment>Label for entering subframe dimensions</comment>
   </data>
   <data name="LblTop" xml:space="preserve">
-    <value>Top</value>
+    <value>Üst</value>
   </data>
   <data name="LblLeft" xml:space="preserve">
-    <value>Left</value>
+    <value>Sol</value>
   </data>
   <data name="LblSequencerExpressionValues" xml:space="preserve">
-    <value>Sequencer expressions values</value>
+    <value>Sekanslayıcı ifadelerinin değerleri</value>
   </data>
   <data name="LblEccentricity" xml:space="preserve">
-    <value>Eccentricity</value>
+    <value>Eksantriklik</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
-    <value>Custom Trigger</value>
+    <value>Özel Tetikleyici</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
-    <value>Use an existing trigger as the trigger source, then choose your own instructions to run when that trigger would normally fire.
-This is useful when a built-in trigger has the timing you need, but you want custom actions.</value>
+    <value>Mevcut bir tetikleyiciyi tetik kaynağı olarak kullanın, ardından bu tetikleyici normalde devreye girdiğinde çalıştırılmasını istediğiniz komutları seçin.
+Bu, yerleşik bir tetikleyicinin zamanlaması ihtiyacınıza uygun olduğu halde özel eylemler gerçekleştirmek istediğiniz durumlarda kullanışlıdır.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
-    <value>Trigger Source</value>
+    <value>Tetikleyici Kaynağı</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
-    <value>Custom Trigger Instructions</value>
+    <value>Özel Tetikleyici Talimatları</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
-    <value>Drop a trigger here to choose when the custom trigger runs.</value>
+    <value>Özel tetikleyicinin ne zaman çalışacağını seçmek için buraya bir tetikleyici ekleyin.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
-    <value>Drop instructions here to run when the selected trigger source fires.</value>
+    <value>Seçilen tetikleyici kaynağı devreye girdiğinde çalıştırılacak komutları buraya ekleyin.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
-    <value>ADD TRIGGER SOURCE</value>
+    <value>TETİKLEME KAYNAĞI EKLE</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
-    <value>ADD CUSTOM INSTRUCTIONS</value>
+    <value>ÖZEL TALİMATLAR EKLE</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
-    <value>Add a trigger source.</value>
+    <value>Bir tetikleyici kaynağı ekleyin.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
-    <value>Add at least one instruction.</value>
+    <value>En az bir komut ekleyin.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
-    <value>Trigger On Unsafe</value>
+    <value>Güvenli Olmadığında Tetikle</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Description" xml:space="preserve">
-    <value>Runs configured instructions when the safety monitor reports unsafe conditions or disconnects after being connected, waits until conditions are safe again, then runs follow-up instructions.</value>
+    <value>Güvenlik monitörü güvenli olmayan durumlar bildirdiğinde veya bağlandıktan sonra bağlantısı kesildiğinde, önceden ayarlanmış komutları çalıştırır; koşullar yeniden güvenli hale gelene kadar bekler, ardından takip komutlarını çalıştırır.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
-    <value>Before Waiting For Safety</value>
+    <value>Güvenli koşulları beklemeden önce</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description" xml:space="preserve">
-    <value>After Waiting For Safety</value>
+    <value>Güvenli koşulları bekledikten sonra</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting until conditions are safe again.</value>
+    <value>Koşulların yeniden güvenli olmasını beklemeye başlamadan önce çalıştırılan komutlar.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after conditions are safe again.</value>
+    <value>Koşullar yeniden güvenli hale geldikten sonra çalıştırılan komutlar.</value>
   </data>
   <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
-    <value>Show Star Mass in Guide Graph</value>
+    <value>Takip grafiğinde yıldız akısını göster</value>
   </data>
   <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
-    <value>Show Star SNR in Guide Graph</value>
+    <value>Takip grafiğinde yıldız SNR değerini göster</value>
   </data>
   <data name="LblStarMass" xml:space="preserve">
-    <value>Star Mass</value>
+    <value>Yıldız akısı</value>
   </data>
   <data name="LblStarSNR" xml:space="preserve">
-    <value>Star SNR</value>
+    <value>Yıldız SNR değeri</value>
   </data>
   <data name="Lbl_SequenceHistory_Undo" xml:space="preserve">
-    <value>Undo</value>
+    <value>Geri al</value>
   </data>
   <data name="Lbl_SequenceHistory_Redo" xml:space="preserve">
-    <value>Redo</value>
+    <value>Yinele</value>
   </data>
   <data name="Lbl_SequenceHistory_Title" xml:space="preserve">
-    <value>Edit history</value>
+    <value>Düzenleme geçmişi</value>
   </data>
   <data name="Lbl_SequenceHistory_Hint" xml:space="preserve">
-    <value>Select a state to undo or redo to it.</value>
+    <value>O duruma dönmek için bir durum seçin; gerekirse işlemler geri alınır veya yinelenir.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Mevcut</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
-    <value>(saved)</value>
+    <value>(kaydedildi)</value>
   </data>
   <data name="Lbl_SequenceHistory_Initial" xml:space="preserve">
-    <value>Earlier state</value>
+    <value>Önceki durum</value>
   </data>
   <data name="Lbl_SequenceHistory_UndoAction" xml:space="preserve">
-    <value>Undo {0}</value>
+    <value>Geri al: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_RedoAction" xml:space="preserve">
-    <value>Redo {0}</value>
+    <value>Yinele: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_EditAction" xml:space="preserve">
-    <value>Edit {0}: {1}</value>
+    <value>Düzenle: {0}: {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MoveAction" xml:space="preserve">
-    <value>Move {0}</value>
+    <value>Taşı: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_AddAction" xml:space="preserve">
-    <value>Add {0}</value>
+    <value>Ekle: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_Position" xml:space="preserve">
-    <value>Position {0}</value>
+    <value>Pozisyon {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PositionChange" xml:space="preserve">
-    <value>Position {0} -&gt; {1}</value>
+    <value>Pozisyon {0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_DeleteAction" xml:space="preserve">
-    <value>Delete {0}</value>
+    <value>Sil: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_DuplicateAction" xml:space="preserve">
-    <value>Duplicate {0}</value>
+    <value>Çoğalt: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PlaceAction" xml:space="preserve">
-    <value>Place item in {0}</value>
+    <value>Öğeyi şu konuma yerleştir: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_ToggleAction" xml:space="preserve">
-    <value>Enable/disable {0}</value>
+    <value>Etkinleştir/devre dışı bırak: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_ClearAction" xml:space="preserve">
-    <value>Clear sequence</value>
+    <value>Sekansı temizle</value>
   </data>
   <data name="Lbl_SequenceHistory_TargetAction" xml:space="preserve">
-    <value>Change target {0}</value>
+    <value>Hedefi değiştir: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_Conflict" xml:space="preserve">
-    <value>This edit cannot be restored because its configuration was changed outside edit history. The sequence has not been changed.</value>
+    <value>Bu düzenleme, yapılandırması düzenleme geçmişi dışında değiştirildiği için geri yüklenemez. Sekans değiştirilmemiştir.</value>
   </data>
   <data name="Lbl_SequenceHistory_Failed" xml:space="preserve">
-    <value>Restoring the edit failed. Edit history was cleared. Review the sequence before continuing.</value>
+    <value>Düzenleme geri yüklenemedi. Düzenleme geçmişi temizlendi. Devam etmeden önce sekansı gözden geçirin.</value>
   </data>
   <data name="Lbl_SequenceHistory_ValueChange" xml:space="preserve">
     <value>{0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_NoValue" xml:space="preserve">
-    <value>(empty)</value>
+    <value>(boş)</value>
   </data>
   <data name="Lbl_SequenceHistory_CoordinateValue" xml:space="preserve">
-    <value>RA {0}, Dec {1}, rotation {2} degrees ({3})</value>
+    <value>RA {0}, Dec {1}, dönüş açısı {2} derece ({3})</value>
   </data>
   <data name="Lbl_SequenceHistory_MoreChanges" xml:space="preserve">
-    <value>+ {0} more changes</value>
+    <value>+ {0} değişiklik daha</value>
   </data>
   <data name="Lbl_SequenceHistory_AddedDetail" xml:space="preserve">
-    <value>Added {0} to {1}</value>
+    <value>{1} içine eklendi: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_RemovedDetail" xml:space="preserve">
-    <value>Removed {0} from {1}</value>
+    <value>{1} içinden kaldırıldı: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_MovedDetail" xml:space="preserve">
     <value>{0}: {1} -&gt; {2}</value>
   </data>
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
-    <value>The edit could not be applied. The previous state and edit history were preserved.</value>
+    <value>Düzenleme uygulanamadı. Önceki durum ve düzenleme geçmişi korunmuştur.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
-    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+    <value>Şablon düzenlemesinin bitmesi bekleniyor. Kaydedilmemiş düzenlemeler {0} sonra atılacak, ardından kaydedilmiş şablon çalıştırılacak. Hemen devam etmek için kaydedin veya iptal edin.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
-    <value>Waiting for the template to finish saving.</value>
+    <value>Şablonun kaydedilmesi tamamlanana kadar bekleniyor.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
-    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
+    <value>Bağlantılı "{0}" şablonundaki kaydedilmemiş düzenlemeler beş dakika işlem yapılmadığı için atıldı. Kaydedilmiş şablonla devam ediliyor.</value>
   </data>
 </root>

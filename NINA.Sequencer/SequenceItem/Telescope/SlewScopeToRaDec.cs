@@ -89,12 +89,15 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         public bool Validate() {
+            ResolveEffectiveCoordinates();
             Issues.Clear();
             var info = telescopeMediator.GetInfo();
             if (!info.Connected) {
                 Issues.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
-            Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
+            if (!Inherited) {
+                Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
+            }
             RaisePropertyChanged("Issues");
             return Issues.Count == 0;
         }

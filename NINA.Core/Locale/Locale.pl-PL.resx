@@ -277,7 +277,7 @@ Czy aplikacja powinna samodzielnie uruchomić się po błędzie? (może prowadzi
     <value>ASTAP</value>
   </data>
   <data name="LblAstrometry" xml:space="preserve">
-    <value>Astrometry</value>
+    <value>Astrometria</value>
   </data>
   <data name="LblAstrometryNet" xml:space="preserve">
     <value>Astrometry.Net</value>
@@ -412,15 +412,18 @@ Dane z tych dwóch ekspozycji pozwolą na obliczenie i wyświetlenie wielkości 
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>Następujące wartości luzu wyciągu będą zapisane. DO: {0}, OD: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>Średnia wartość BIAS (w 16 bitach)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>Wartość mediany BIAS (w 16 bitach)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
@@ -471,7 +474,7 @@ Dec: {1}</value>
     <value>Przetasowanie bajtów</value>
   </data>
   <data name="LblCache" xml:space="preserve">
-    <value>Cache</value>
+    <value>Pamięć podręczna</value>
   </data>
   <data name="LblCalculateBias" xml:space="preserve">
     <value>Oblicz Bias</value>
@@ -518,7 +521,7 @@ w stanie zrekompensować zmiany temperatury otoczenia</value>
     <value>Opcje kamery</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Camera Parameters</value>
+    <value>Parametry kamery</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Stan kamery</value>
@@ -540,6 +543,7 @@ w stanie zrekompensować zmiany temperatury otoczenia</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>Wystąpił błąd Canon: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Przechwyć obraz i zastosuj Platesolve</value>
@@ -673,7 +677,7 @@ Czy mimo to chcesz kontynuować i stracić zmiany?</value>
     <value>Gwiazdozbiór Pompy</value>
   </data>
   <data name="LblConstellation_APS" xml:space="preserve">
-    <value>Apus</value>
+    <value>Rajski Ptak</value>
   </data>
   <data name="LblConstellation_AQL" xml:space="preserve">
     <value>Gwiazdozbiór Orła</value>
@@ -757,7 +761,7 @@ Czy mimo to chcesz kontynuować i stracić zmiany?</value>
     <value>Gwiazdozbiór Psów Gończych</value>
   </data>
   <data name="LblConstellation_CYG" xml:space="preserve">
-    <value>Cygnus</value>
+    <value>Łabędź</value>
   </data>
   <data name="LblConstellation_DEL" xml:space="preserve">
     <value>Gwiazdozbiór Delfina</value>
@@ -970,6 +974,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Bieżąca średnia</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Bieżąca pozycja</value>
@@ -1017,7 +1022,8 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Data w formacie YYYY-MM-DD_HH-mm-ss</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
-    <value>Ścieżka</value>
+    <value>Świt</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>Dni</value>
@@ -1044,7 +1050,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Debayerowanie zdjęcia</value>
   </data>
   <data name="LblDebug" xml:space="preserve">
-    <value>Debug</value>
+    <value>Debugowanie</value>
   </data>
   <data name="LblDec" xml:space="preserve">
     <value>Dec</value>
@@ -1155,7 +1161,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Odległość</value>
   </data>
   <data name="LblDither" xml:space="preserve">
-    <value>Dither</value>
+    <value>Dithering</value>
   </data>
   <data name="LblDitherEveryNoFrame" xml:space="preserve">
     <value>Dithering co #</value>
@@ -1170,10 +1176,10 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Liczba pikseli do ditheringu. Proces przebiega zgodnie z rozkładem normalnym skoncentrowanym wokół celu, a liczba pikseli jest odchyleniem standardowym. 67% operacji ditheringu pozostaje w tej odległości</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>Minimalne przesunięcie ditheringu</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>Minimalna liczba pikseli kamery głównej, o jaką przesuwa się obraz między kolejnymi pozycjami ditheringu montażu. Ustaw 0, aby zachować dotychczasowe losowe działanie. Wartość nie może przekraczać ustawienia "Piksele ditheringu".</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dithering tylko w osi RA</value>
@@ -1285,18 +1291,19 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>Zmierzch</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>Wschód</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
+    <value>Aparat nie jest ustawiony w trybie Manual lub Bulb. Ustaw pokrętło trybów na Manual lub Bulb. Jeśli aparat ma przełącznik Movie/Still, ustaw go na Still.</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Włącz skalowanie bitów</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>Zapisuj obrazy 8/10/12/14-bitowe z przeskalowaniem do 16 bitów. Dotyczy tylko natywnych sterowników Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony i ToupTek.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Włączone</value>
@@ -1468,6 +1475,7 @@ Jeśli wyzwalacz jest wyłączony, ten krok jest pomijany</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>Ustawienia panelu FLAT</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Niewłaściwa odpowiedź z flatownicy.</value>
@@ -1534,6 +1542,7 @@ Jeśli wyzwalacz jest wyłączony, ten krok jest pomijany</value>
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>Ustawienia Kreatora Flatów</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>Wstrzymaj Kreatora Flatów</value>
@@ -1581,7 +1590,8 @@ Jeśli wyzwalacz jest wyłączony, ten krok jest pomijany</value>
     <value>Długość ogniskowej</value>
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
-    <value>Średnica ogniskowej</value>
+    <value>Światłosiła</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Fokuser</value>
@@ -1599,16 +1609,16 @@ Jeśli wyzwalacz jest wyłączony, ten krok jest pomijany</value>
     <value>Wielkość jednego kroku automatycznego ustawienia ostrości. Jeden krok powinien być mniejszy niż zakres CFZ</value>
   </data>
   <data name="LblManualStepSmallMultiplier" xml:space="preserve">
-    <value>Small Step Multiplier</value>
+    <value>Mnożnik małego kroku</value>
   </data>
   <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+    <value>Mnożnik małego ręcznego kroku fokusera (domyślnie: 0,5)</value>
   </data>
   <data name="LblManualStepLargeMultiplier" xml:space="preserve">
-    <value>Large Step Multiplier</value>
+    <value>Mnożnik dużego kroku</value>
   </data>
   <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+    <value>Mnożnik dużego ręcznego kroku fokusera (domyślnie: 5,0)</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Luz IN/OUT</value>
@@ -1673,7 +1683,7 @@ Obliczone HFR: {2}</value>
     <value>Pojemność studni w e</value>
   </data>
   <data name="LblGain" xml:space="preserve">
-    <value>Gain</value>
+    <value>Wzmocnienie</value>
   </data>
   <data name="LblGainDescription" xml:space="preserve">
     <value>Gain kamery</value>
@@ -1710,6 +1720,7 @@ Obliczone HFR: {2}</value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>Guider nie wysłał informacji "SettleDone" po oczekiwanym czasie ({0}s + 10s). Pomiń.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Wznawianie przewodnika nie powiodło się</value>
@@ -1986,12 +1997,14 @@ Obliczone HFR: {2}</value>
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>Średnia</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>Zmierz luzy fokusera</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>Mediana</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>Meridian Flip nie powiodło się</value>
@@ -2089,6 +2102,7 @@ Obliczone HFR: {2}</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Nie</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Brak kamery</value>
@@ -2296,10 +2310,10 @@ Obliczone HFR: {2}</value>
     <value>Wewnętrzny klient API OpenWeatherMap</value>
   </data>
   <data name="LblOpenMeteoClientDescription" xml:space="preserve">
-    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+    <value>Korzysta z interfejsu prognozy pogody OpenMeteo. Dane pogodowe są odświeżane co 10 minut.</value>
   </data>
   <data name="LblOpenMeteoClientInfo" xml:space="preserve">
-    <value>NINA internal OpenMeteo API client</value>
+    <value>Wbudowany klient API OpenMeteo w NINA</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opcje</value>
@@ -2378,9 +2392,11 @@ Obliczone HFR: {2}</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>Port serwera PHD2</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>Nazwa hosta serwera PHD2</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Ustawienia PHD2</value>
@@ -2417,6 +2433,7 @@ Obliczone HFR: {2}</value>
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>Identyfikator profilu PHD2 {0} nie został znaleziony. Używając {1}</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>Piksele</value>
@@ -2425,19 +2442,23 @@ Obliczone HFR: {2}</value>
     <value>Max pikseli</value>
   </data>
   <data name="LblPixelScale" xml:space="preserve">
-    <value>Rozmiar piksela</value>
+    <value>Skala piksela</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Skala piksela w sekundach na piksel</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>Rozmiar piksela</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>Rozmiar piksela X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Rozmiar piksela Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Planetarium</value>
@@ -2491,7 +2512,7 @@ Obliczone HFR: {2}</value>
     <value>Opóźnienie, w minutach, pomiędzy dwoma próbami plate solve</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>Centrowanie nie powiodło się po {0} próbach korekty</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Plate solve wybranego obrazu</value>
@@ -2521,7 +2542,7 @@ Obliczone HFR: {2}</value>
     <value>Usługa plate solve dostarczona przez</value>
   </data>
   <data name="LblPlateSolver" xml:space="preserve">
-    <value>Plate Solver</value>
+    <value>Solver astrometryczny</value>
   </data>
   <data name="LblPlateSolveReattemptDelay" xml:space="preserve">
     <value>Oczekiwania na następną próbę plate solve: {0}</value>
@@ -2530,7 +2551,7 @@ Obliczone HFR: {2}</value>
     <value>Ustawienia Plate Solve</value>
   </data>
   <data name="LblPlateSolving" xml:space="preserve">
-    <value>Plate Solving</value>
+    <value>Rozwiązywanie astrometryczne</value>
   </data>
   <data name="LblCenterAfterDrift" xml:space="preserve">
     <value>Wyśrodkowanie po zbyt dużym dryfowaniu</value>
@@ -2626,7 +2647,7 @@ Obliczone HFR: {2}</value>
     <value>Konwerter RAW</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>Pliki RAW z aparatów DSLR są konwertowane przy użyciu LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Odczytaj szum in e</value>
@@ -2635,7 +2656,7 @@ Obliczone HFR: {2}</value>
     <value>Tryb</value>
   </data>
   <data name="LblReadout" xml:space="preserve">
-    <value>Readout</value>
+    <value>Odczyt</value>
   </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>Wartość liczbowa odpowiadająca trybowi odczytu kamery</value>
@@ -2776,10 +2797,10 @@ Obliczone HFR: {2}</value>
     <value>To ustawienie będzie zignorowane dla DSLRs podczas używania natywnego sterownika. Zostanie zachowany jako format RAW!</value>
   </data>
   <data name="LblSaveNativeCameraRaw" xml:space="preserve">
-    <value>Save native camera RAW</value>
+    <value>Zapisuj w natywnym formacie RAW aparatu</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>Gdy opcja jest włączona, obrazy z aparatów Nikon i Canon obsługiwanych natywnie są zapisywane jako pliki RAW aparatu. Gdy opcja jest wyłączona, obrazy są zapisywane zgodnie z ustawieniami w Opcje &gt; Obrazowanie &gt; Ustawienia obrazu.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Zapisz wybrany profil i nie pytaj ponownie</value>
@@ -2957,7 +2978,7 @@ Ten szablon będzie używany przy starcie do inicjowania sekwencji zamiast domy�
     <value>Przesuń</value>
   </data>
   <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
+    <value>Ruch teleskopu nie powiódł się</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Przesuń i wyśrodkuj</value>
@@ -3276,7 +3297,7 @@ Przeciągnij prostokąt na gwiazdę ze spajkami bahtinova. NINA spróbuje wykry�
     <value>Włącza/wyłącza automatyczne wykrywanie i analizę gwiazd (Half Flux Radius)</value>
   </data>
   <data name="LblToolTipLiveView" xml:space="preserve">
-    <value>Live View</value>
+    <value>Podgląd na żywo</value>
   </data>
   <data name="LblTooltipLoop" xml:space="preserve">
     <value>Włącz/wyłącz ekspozycje ciągle</value>
@@ -3297,7 +3318,7 @@ Przeciągnij prostokąt na gwiazdę ze spajkami bahtinova. NINA spróbuje wykry�
     <value>Resetuj postęp wszystkich elementów sekwencji w celu</value>
   </data>
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
+    <value>Wyzeruj postęp wszystkich celów w bieżącym zestawie celów</value>
   </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>Uruchamia sekwencje</value>
@@ -3334,7 +3355,7 @@ Przeciągnij prostokąt nad częścią ramki, na której chcesz wykonać podpró
     <value>Zatrzymano</value>
   </data>
   <data name="LblTrackingSidereal" xml:space="preserve">
-    <value>Sidereal</value>
+    <value>Gwiazdowe</value>
   </data>
   <data name="LblTrackingSolar" xml:space="preserve">
     <value>Słoneczny</value>
@@ -3343,7 +3364,8 @@ Przeciągnij prostokąt nad częścią ramki, na której chcesz wykonać podpró
     <value>Księżycowa</value>
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
-    <value>Gwiezdna</value>
+    <value>King</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>Własny</value>
@@ -3358,13 +3380,13 @@ Przeciągnij prostokąt nad częścią ramki, na której chcesz wykonać podpró
     <value>Przesunięcie na południe</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
-    <value>North</value>
+    <value>Północ</value>
   </data>
   <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
+    <value>Południe</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>Czas górowania</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Trendy i hiperbola</value>
@@ -3420,9 +3442,11 @@ Przeciągnij prostokąt nad częścią ramki, na której chcesz wykonać podpró
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>Średni prąd</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Bieżący</value>
+    <value>Prąd</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>Dane urządzenia</value>
@@ -3512,7 +3536,7 @@ Przeciągnij prostokąt nad częścią ramki, na której chcesz wykonać podpró
     <value>URL</value>
   </data>
   <data name="LblCopyURL" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>Kopiuj URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>Limit USB</value>
@@ -3672,27 +3696,35 @@ Przeciągnij prostokąt nad częścią ramki, na której chcesz wykonać podpró
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>Siatka Bayera używana dla słowa kluczowego BAYERPAT w nagłówkach obrazów FITS lub XISF dla obrazów generowanych przez czujnik koloru.
@@ -3700,6 +3732,7 @@ Domyślne ustawienie Auto wykorzystuje wzór określony przez sterownik aparatu.
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Bieżący</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>Uruchom ustawienia końca sekwencji</value>
@@ -3724,6 +3757,7 @@ Domyślne ustawienie Auto wykorzystuje wzór określony przez sterownik aparatu.
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Limit czasu kamery — kamera nie wyświetlała obrazu jako gotowy po czasie naświetlania + {0} sekund</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Wzór podglądu</value>
@@ -4019,7 +4053,7 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
     <value>Ustawienia automatycznego dostrajania ostrości filtrów</value>
   </data>
   <data name="LblMeridianFlipIn" xml:space="preserve">
-    <value>Meridian Flip w</value>
+    <value>Przełożenie montażu przez południk za</value>
   </data>
   <data name="LblMeridianFlipCenterFailed" xml:space="preserve">
     <value>Wyśrodkowanie nie powiodło się po wykonaniu Meridian Flip</value>
@@ -4065,6 +4099,7 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>Strona montażu</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Limit czasu kamery</value>
@@ -4100,7 +4135,7 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
     <value>Nie udało się wznowić prowadzenia po odzyskaniu intensywności gwiazdy</value>
   </data>
   <data name="LblSkyFlat" xml:space="preserve">
-    <value>Sky Flats</value>
+    <value>Flaty na niebie</value>
   </data>
   <data name="LblDomeFollowFailure" xml:space="preserve">
     <value>Błąd synchronizacji kopuły. Kopuła nie podąża już za teleskopem. {0}</value>
@@ -4328,13 +4363,13 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
     <value>Zestaw instrukcji dla obiektów DS</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
-    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+    <value>Sprawdza to wyrażenie sekwencera po dojściu do tego zestawu instrukcji. Jeśli jest prawdziwe, instrukcje wewnątrz zostaną wykonane raz. Jeśli jest fałszywe, zostaną pominięte.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>Warunkowy zestaw instrukcji wymaga wyrażenia.</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>Warunkowy zestaw instrukcji</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Wszystkie instrukcje w tym zestawie są wykonywane równolegle. Żadne warunki ani wyzwalacze nie są weryfikowane, dopóki wszystkie instrukcje nie zostaną wypełnione.</value>
@@ -4386,6 +4421,7 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>Zamknij osłonę flatownicy</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Ustawia ostrość fokusera do podanej pozycji bezwzględnej</value>
@@ -4403,7 +4439,7 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
     <value>Wysyła sygnał dithering do guidera</value>
   </data>
   <data name="Lbl_SequenceItem_Guider_Dither_Name" xml:space="preserve">
-    <value>Dither</value>
+    <value>Dithering</value>
   </data>
   <data name="Lbl_SequenceItem_Guider_StartGuiding_Description" xml:space="preserve">
     <value>Rozpocznij prowadzenie automatycznie</value>
@@ -4440,6 +4476,7 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Zaparkuj teleskop</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>Przesuwa teleskop do określonej wysokości i azymutu</value>
@@ -4457,7 +4494,8 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
     <value>Odparkuj teleskop</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
-    <value>Zaparkuj teleskop</value>
+    <value>Odparkuj teleskop</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>Ustaw śledzenie</value>
@@ -4497,12 +4535,14 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>Poczekaj na interwał czasu</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>Czeka przez określony czas w formacie gg:mm:ss. Czas zmierzchu, zachodu i wschodu słońca oraz czas świtu można wybrać automatycznie</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>Czas oczekiwania</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>Wyśrodkuj po dryfie</value>
@@ -4543,34 +4583,34 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
     <value>Odwrócenie meridianu</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
-    <value>Programmable Meridian Flip</value>
+    <value>Programowalne przełożenie montażu przez południk</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
-    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+    <value>Wyzwalacz przełożenia montażu przez południk z możliwością dostosowania działań przed przełożeniem i po nim.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
-    <value>Before Flip Actions</value>
+    <value>Działania przed przełożeniem</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
-    <value>After Flip Actions</value>
+    <value>Działania po przełożeniu</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting for the meridian flip.</value>
+    <value>Instrukcje wykonywane przed rozpoczęciem oczekiwania na przełożenie montażu przez południk.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after the meridian flip.</value>
+    <value>Instrukcje wykonywane po przełożeniu montażu przez południk.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
-    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+    <value>Te kroki powinny trwać krótko. Długotrwałe działania przed przełożeniem mogą opóźnić przełożenie montażu przez południk.</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
-    <value>Wait For Flip Window</value>
+    <value>Oczekiwanie na okno przełożenia</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
-    <value>Resume Tracking and Flip</value>
+    <value>Wznów śledzenie i przełóż montaż</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>Stabilizacja</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>Kamera nie posiada chłodzenia i nie jest w stanie ustawić temperatury</value>
@@ -4654,7 +4694,7 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
     <value>Szablony</value>
   </data>
   <data name="LblLinkedTemplates" xml:space="preserve">
-    <value>Linked Templates</value>
+    <value>Połączone szablony</value>
   </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>Domyślne szablony</value>
@@ -4663,10 +4703,10 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
     <value>Przeciągnij i upuść zestaw instrukcji z sekwencji tutaj, aby utworzyć nowy szablon</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
-    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+    <value>Przytrzymaj Ctrl podczas upuszczania szablonu, aby dodać go jako połączony, a nie jako kopię.</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
-    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
+    <value>Połączony szablon zachowuje aktywne połączenie z szablonem źródłowym. Jego zawartość jest wyświetlana w sekwencji jako podgląd tylko do odczytu i odświeża się automatycznie po zmianie szablonu. Użyj opcji "Edytuj szablon" w połączonym szablonie, aby zaktualizować szablon źródłowy. Upuść szablon w zwykły sposób, aby utworzyć niezależną kopię.</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>Zastąpić szablon?</value>
@@ -4733,6 +4773,7 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>Otwórz osłonę flatownicy</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Ustawia jasność flatownicy na określoną wartość</value>
@@ -4744,7 +4785,8 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
     <value>Włącz lub wyłącz światło flatownicy</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
-    <value>Alternatywne światło</value>
+    <value>Przełącz światło</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>Znajduje docelową wartość ekspozycji dla określonych parametrów i tworzy ekspozycje dla klatek flat</value>
@@ -5026,58 +5068,58 @@ Jeśli pozycja powyżej jest zestawem instrukcji, który nie jest rozszerzony, z
     <value>Zapisz bieżący zestaw instrukcji i całą jego zawartość jako szablon do ponownego użycia</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
-    <value>Linked Template</value>
+    <value>Połączony szablon</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
-    <value>Linked Template: {0}</value>
+    <value>Połączony szablon: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
-    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+    <value>Tworzy aktywne połączenie z szablonem sekwencji zamiast go kopiować. Bieżąca zawartość szablonu jest wyświetlana wewnątrz tego kontenera, aby można ją było przeglądać w sekwencji, ale pozostaje tylko do odczytu do momentu włączenia opcji "Edytuj szablon". Po zmianie szablonu źródłowego ten kontener automatycznie aktualizuje się do najnowszej wersji. Podczas wykonywania sekwencji N.I.N.A. czeka na zakończenie ładowania szablonów, a następnie wykonuje bieżącą zawartość szablonu. Jeśli połączony szablon opiera się na kontenerze celu, nadal przechowuje tylko strukturę sekwencji do ponownego użycia; upuść cel na połączonym szablonie, aby wybrać cel dla tego użycia, a N.I.N.A. zastosuje go ponownie przy każdym odświeżeniu szablonu. Użyj tej funkcji, gdy kilka sekwencji ma korzystać z tego samego szablonu; upuść szablon w zwykły sposób, aby utworzyć niezależną kopię. Dodaj szablon z menu "Połączone szablony" lub przytrzymaj Ctrl podczas upuszczania szablonu do sekwencji, aby dodać go jako połączony.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
-    <value>Linked template preview</value>
+    <value>Podgląd połączonego szablonu</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
-    <value>Editing linked template</value>
+    <value>Edycja połączonego szablonu</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
-    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+    <value>Podgląd "{0}" tylko do odczytu. Użyj opcji "Edytuj szablon", aby zmienić szablon źródłowy.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
-    <value>Editing the source template. Saving updates the template for every linked use.</value>
+    <value>Edycja szablonu źródłowego. Zapisanie zaktualizuje szablon we wszystkich połączonych użyciach.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
-    <value>Waiting for template "{0}" to finish loading.</value>
+    <value>Oczekiwanie na zakończenie ładowania szablonu "{0}".</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
-    <value>Template "{0}" could not be found.</value>
+    <value>Nie znaleziono szablonu "{0}".</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
-    <value>This linked template does not have a valid source template.</value>
+    <value>Ten połączony szablon nie ma prawidłowego szablonu źródłowego.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
-    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+    <value>Nie można bezpośrednio edytować domyślnych szablonów. Najpierw zapisz szablon jako szablon użytkownika.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
-    <value>Edit Template</value>
+    <value>Edytuj szablon</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
-    <value>Save Template</value>
+    <value>Zapisz szablon</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
-    <value>Cancel Template Editing</value>
+    <value>Anuluj edycję szablonu</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
-    <value>Target: {0}</value>
+    <value>Cel: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
-    <value>No target selected. Drop a target here or enter target details below.</value>
+    <value>Nie wybrano celu. Upuść tutaj cel lub wprowadź jego dane poniżej.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
-    <value>Use this target with the linked template</value>
+    <value>Użyj tego celu z połączonym szablonem</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
-    <value>Select a target for this linked template before running the sequence.</value>
+    <value>Wybierz cel dla tego połączonego szablonu przed uruchomieniem sekwencji.</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>Monitor Bezpieczeństwa nie jest podłączony</value>
@@ -5404,9 +5446,11 @@ Sekwencja może być zaplanowana od podstaw przy użyciu drobnych instrukcji, wy
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>Warunek, który powtarza sekwencję zdarzeń, dopóki cel znajduje się nad horyzontem, a następnie kończy sekwencję</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>Powtarzaj dopóki wysokość obiektu znajduje się nad horyzontem</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>Cel nigdy nie będzie powyżej horyzontu</value>
@@ -5538,10 +5582,10 @@ Sekwencja może być zaplanowana od podstaw przy użyciu drobnych instrukcji, wy
     <value>Przekręca rotator do określonego kąta mechanicznego</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotate to mechanical angle</value>
+    <value>Obróć do kąta mechanicznego</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
-    <value>Meridian</value>
+    <value>Południk</value>
   </data>
   <data name="LblAstronomicalDawn" xml:space="preserve">
     <value>Świt astronomiczny</value>
@@ -5636,11 +5680,11 @@ Dotyczy tylko sterownika kamery ASCOM!</value>
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Podstawowy krok</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>Pomocniczy krok</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>Teleskop nie może poruszać osi głównej</value>
@@ -6119,7 +6163,7 @@ Po pomyślnym obrazowaniu plate solving ustawiona zostanie rotacja kadru.</value
     <value>Nie udało się zapisać obrazu</value>
   </data>
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+    <value>Błąd podczas zapisywania obrazu. Być może brakuje miejsca na dysku docelowym.</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>Określ współrzędne aktualnej pozycji teleskopu</value>
@@ -6277,25 +6321,25 @@ Sprawdź, czy jest dostępna aktualizacja.</value>
     <value>Data</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>Dzień</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>Miesiąc</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>Rok</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
     <value>Obserwacja</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>Ustaw bieżącą datę i godzinę jako czas obserwacji</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>Polecenie</value>
   </data>
   <data name="LblRaw" xml:space="preserve">
-    <value>Raw</value>
+    <value>Surowe</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SendCommand_Description" xml:space="preserve">
     <value>Wysyła polecenie do wybranego urządzenia zgodnie z metodami ASCOM SendCommand. Wszelkie zwrócone dane wyjściowe są zapisane w głównym pliku dziennika N.I.N.A.</value>
@@ -6304,7 +6348,7 @@ Sprawdź, czy jest dostępna aktualizacja.</value>
     <value>Wyślij polecenie</value>
   </data>
   <data name="LblBoolean" xml:space="preserve">
-    <value>Boolean</value>
+    <value>Wartość logiczna</value>
   </data>
   <data name="LblDevice" xml:space="preserve">
     <value>Urządzenie</value>
@@ -6313,7 +6357,7 @@ Sprawdź, czy jest dostępna aktualizacja.</value>
     <value>Ciąg znaków</value>
   </data>
   <data name="LblBlind" xml:space="preserve">
-    <value>Blind</value>
+    <value>Bez odpowiedzi</value>
   </data>
   <data name="LblAction" xml:space="preserve">
     <value>Akcja</value>
@@ -6607,6 +6651,7 @@ Sprawdzane PO "Zaparkuj przed przesunięciem przesłony".</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>Zostało wydane polecenie otwarcia przesłony lub dachu, ale urządzenie monitorujące bezpieczeństwo zostało odłączone. Otwieranie zostało przerwane.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>UWAGA: Te ustawienia odnoszą się do bezpieczeństwa twojego sprzętu. Należy je starannie rozważyć i zaznajomić się z konkretną konfiguracją. „Technologia”, zgodnie z uwagą ogólną do technologii, służąca do „rozwoju”, „produkcji” lub „użytkowania” sprzętu wyszczególnionego w pozycjach 3A001.a.1 do 3A001.a.2, 3A001.a.2 lub 3A001.a.2, 3A001.a.2 lub 3A001.a.3. nie działa lub nie jest podłączony do danego urządzenia. Mechanizmy bezpieczeństwa montażu lub dachu powinny zawsze posiadać sprzętowe zapasowe zabezpieczenia i blokady elektryczne, aby zapobiec niepożądanemu ruchowi montażu lub dachu. Twoim obowiązkiem jest zapewnienie, aby te ustawienia nie kolidowały z ustawieniami sterownika kopuły.</value>
@@ -6664,7 +6709,7 @@ Sprawdzane PO "Zaparkuj przed przesunięciem przesłony".</value>
     <value>Docelowa siła grzałki</value>
   </data>
   <data name="LblColoredContainerBorders" xml:space="preserve">
-    <value>Colored Container Borders</value>
+    <value>Kolorowe obramowania kontenerów</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Przyspieszenie sprzętowe</value>
@@ -6708,7 +6753,7 @@ Opcję tę należy wyłączyć tylko wtedy, gdy dostępny jest dobry wzorzec map
     <value>Nazwa do 8 znaków ASCII, które możesz przypisać do podłączonego urządzenia ZWO. Pozwala to na unikalną identyfikację wielu elementów tego samego modelu urządzenia.</value>
   </data>
   <data name="LblDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>Nazwa o długości do 8 znaków ASCII, którą można przypisać podłączonemu urządzeniu. Pozwala to na jednoznaczną identyfikację wielu egzemplarzy tego samego modelu urządzenia.</value>
   </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Jednokierunkowy</value>
@@ -6717,7 +6762,7 @@ Opcję tę należy wyłączyć tylko wtedy, gdy dostępny jest dobry wzorzec map
     <value>Kalibruj</value>
   </data>
   <data name="LblNmeaSerialGnss" xml:space="preserve">
-    <value>NMEA serial GNSS</value>
+    <value>GNSS NMEA przez port szeregowy</value>
   </data>
   <data name="LblPrimaLuceLabEagle" xml:space="preserve">
     <value>PrimaLuceLab Eagle</value>
@@ -6796,7 +6841,7 @@ Powód: {0}</value>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>Kreator Flat nie powiódł się dla filtra {0}.
 Powód: {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>Nie udało się określić jasności Flat - źródło światła jest zbyt jasne.
@@ -6886,7 +6931,7 @@ Zwiększ minimalny czas ekspozycji lub poczekaj aż będzie jaśniejsze.</value>
     <value>Port TheSkyX</value>
   </data>
   <data name="LblZwoMonoBinMode" xml:space="preserve">
-    <value>Mono bin</value>
+    <value>Binning monochromatyczny</value>
   </data>
   <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
     <value>Po włączeniu aparat będzie uśredniał zebrane piksele w celu uzyskania obrazu monochromatycznego</value>
@@ -6919,19 +6964,24 @@ Zwiększ minimalny czas ekspozycji lub poczekaj aż będzie jaśniejsze.</value>
     <value>Katalog referencyjny</value>
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
-    <value>USNO UKAC2</value>
+    <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
-    <value>USNO UKAC3</value>
+    <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
-    <value>USNO UKAC4</value>
+    <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>B1.0 USNO</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>Rozszerzenie</value>
@@ -6983,10 +7033,10 @@ Zwiększ minimalny czas ekspozycji lub poczekaj aż będzie jaśniejsze.</value>
     <value>Pokaż Histogram</value>
   </data>
   <data name="LblShowHorizon" xml:space="preserve">
-    <value>Show Local Horizon</value>
+    <value>Pokaż lokalny horyzont</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
-    <value>Show star measurements in arcseconds</value>
+    <value>Pokazuj pomiary gwiazd w sekundach kątowych</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Tylko info</value>
@@ -7062,10 +7112,10 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <value>Przekroczono limit czasu dla {0} minut.</value>
   </data>
   <data name="LblDomeParkTimeout" xml:space="preserve">
-    <value>Dome park has timed out after {0} minutes.</value>
+    <value>Przekroczono limit czasu parkowania kopuły: {0} min.</value>
   </data>
   <data name="LblDomeParkFailed" xml:space="preserve">
-    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+    <value>Kopuła przestała się poruszać, ale sterownik nie potwierdził jej zaparkowania.</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>Upłynął limit czasu odparkowania teleskopu po {0} minutach.</value>
@@ -7122,23 +7172,25 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>Użyj IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>Użyj IPv4 do wyszukiwania urządzeń ASCOM Alpaca (domyślnie: włączony)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
-    <value>Użyj IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <value>Użyj IPv6</value>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>Użyj IPv6 do wyszukiwania urządzeń ASCOM Alpaca (domyślnie: wyłączony)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Przełącz wyświetlanie katalogu</value>
   </data>
   <data name="LblToggleShowAllCatalogues" xml:space="preserve">
-    <value>Show all catalogues</value>
+    <value>Pokaż wszystkie katalogi</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Cel Alt</value>
@@ -7180,7 +7232,8 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <value>Oczekiwanie na polecenie potwierdzenia anulowania</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>Zostało wydane polecenie otwarcia przesłony lub dachu, ale urządzenie monitorujące bezpieczeństwo zostało odłączone. Otwieranie zostało przerwane.</value>
+    <value>Zostało wydane polecenie otwarcia przesłony lub dachu, ale urządzenie monitorujące bezpieczeństwo zgłasza niebezpieczne warunki. Otwieranie zostało przerwane.</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>Polecenie zewnętrzne</value>
@@ -7211,16 +7264,16 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
-    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+    <value>Wczytuje układ karty Obrazowanie z zapisanego pliku konfiguracji paneli</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
-    <value>Load Imaging Layout</value>
+    <value>Wczytaj układ karty Obrazowanie</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
-    <value>The selected file is not a valid Imaging layout backup</value>
+    <value>Wybrany plik nie jest prawidłową kopią zapasową układu karty Obrazowanie</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
-    <value>Select an existing Imaging layout backup file</value>
+    <value>Wybierz istniejący plik kopii zapasowej układu karty Obrazowanie</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>Zapisuje bieżącą sekwencję w określonej ścieżce pliku</value>
@@ -7277,16 +7330,16 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <value>Pełny czas trwania</value>
   </data>
   <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
-    <value>Lock sequencer to prevent any manual edits or drag and drop</value>
+    <value>Zablokuj sekwencer, aby uniemożliwić ręczną edycję oraz przeciąganie i upuszczanie</value>
   </data>
   <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
-    <value>Unlock sequencer to allow manual edits and drag and drop</value>
+    <value>Odblokuj sekwencer, aby umożliwić ręczną edycję oraz przeciąganie i upuszczanie</value>
   </data>
   <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Disable all drag and drop in the sequencer and sidebar</value>
+    <value>Wyłącz przeciąganie i upuszczanie w sekwencerze i na pasku bocznym</value>
   </data>
   <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Enable all drag and drop in the sequencer and sidebar</value>
+    <value>Włącz przeciąganie i upuszczanie w sekwencerze i na pasku bocznym</value>
   </data>
   <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
     <value>Nieprawidłowa długość ogniskowej!</value>
@@ -7384,10 +7437,10 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
   <data name="LblCivilDusk" xml:space="preserve">
-    <value>Civil dusk</value>
+    <value>Zmierzch cywilny</value>
   </data>
   <data name="LblCivilDawn" xml:space="preserve">
-    <value>Civil dawn</value>
+    <value>Świt cywilny</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
     <value>Anuluj odparkowanie montażu, jeśli kopuła nie jest otwarta</value>
@@ -7539,115 +7592,115 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Inicjalizacja</value>
   </data>
   <data name="LblOasisClearStallPrompt" xml:space="preserve">
-    <value>Clear stall?</value>
+    <value>Skasować stan blokady?</value>
   </data>
   <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value>Focuser stalled. You need to manually clear stall.</value>
+    <value>Fokuser jest zablokowany. Skasuj stan blokady ręcznie.</value>
   </data>
   <data name="LblBeepOnStartup" xml:space="preserve">
-    <value>Beep on startup</value>
+    <value>Sygnał dźwiękowy przy starcie</value>
   </data>
   <data name="LblBeepOnMove" xml:space="preserve">
-    <value>Beep on move</value>
+    <value>Sygnał dźwiękowy przy ruchu</value>
   </data>
   <data name="LblOasisHeating" xml:space="preserve">
-    <value>Heating</value>
+    <value>Ogrzewanie</value>
   </data>
   <data name="LblOasisHeatingTemperature" xml:space="preserve">
-    <value>Heating temperature</value>
+    <value>Temperatura ogrzewania</value>
   </data>
   <data name="LblOasisStallDetection" xml:space="preserve">
-    <value>Stall detection</value>
+    <value>Wykrywanie blokady</value>
   </data>
   <data name="LblOasisIsStalled" xml:space="preserve">
-    <value>Is stalled</value>
+    <value>Jest zablokowany</value>
   </data>
   <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value>USB capacity</value>
+    <value>Wydajność prądowa USB</value>
   </data>
   <data name="LblOasisSpeed" xml:space="preserve">
-    <value>Speed</value>
+    <value>Prędkość</value>
   </data>
   <data name="LblOasisClearStall" xml:space="preserve">
-    <value>Clear stall</value>
+    <value>Skasuj stan blokady</value>
   </data>
   <data name="LblOasisDcPower" xml:space="preserve">
-    <value>DC power</value>
+    <value>Zasilanie DC</value>
   </data>
   <data name="LblOasisBoardHeating" xml:space="preserve">
-    <value>Board heating</value>
+    <value>Ogrzewanie płytki</value>
   </data>
   <data name="LblOasisHeatingPower" xml:space="preserve">
-    <value>Heating power</value>
+    <value>Moc grzewcza</value>
   </data>
   <data name="LblOasisBoardTemperature" xml:space="preserve">
-    <value>Board temperature</value>
+    <value>Temperatura płytki</value>
   </data>
   <data name="LblOasisSyncPosition" xml:space="preserve">
-    <value>Sync position</value>
+    <value>Pozycja synchronizacji</value>
   </data>
   <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
-    <value>Set current position to sync position?</value>
+    <value>Przypisać bieżącej pozycji wartość pozycji synchronizacji?</value>
   </data>
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
     <value>Wybrany focuser Oasis jest niedostępny. Sprawdź połączenie i ponownie przeskanuj urządzenia.</value>
   </data>
   <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
+    <value>Wybrane koło filtrowe Oasis jest niedostępne. Sprawdź połączenie i ponownie wyszukaj urządzenia.</value>
   </data>
   <data name="LblOasisTurboMode" xml:space="preserve">
-    <value>Turbo mode</value>
+    <value>Tryb Turbo</value>
   </data>
   <data name="LblOasisDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>ID urządzenia</value>
   </data>
   <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
-    <value>Device ID</value>
+    <value>ID urządzenia</value>
   </data>
   <data name="LblOasisState" xml:space="preserve">
-    <value>State</value>
+    <value>Stan</value>
   </data>
   <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
-    <value>Sync focus offsets</value>
+    <value>Synchronizuj przesunięcia ostrości</value>
   </data>
   <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
-    <value>Store focus offsets</value>
+    <value>Zachowaj przesunięcia ostrości</value>
   </data>
   <data name="LblOasisSyncFilterNames" xml:space="preserve">
-    <value>Sync filter names</value>
+    <value>Synchronizuj nazwy filtrów</value>
   </data>
   <data name="LblOasisStoreFilterNames" xml:space="preserve">
-    <value>Store filter names</value>
+    <value>Zapisz nazwy filtrów</value>
   </data>
   <data name="LblOasisAutorun" xml:space="preserve">
-    <value>Autorun</value>
+    <value>Automatyczne uruchamianie</value>
   </data>
   <data name="LblOasisSpeedTooltip" xml:space="preserve">
-    <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
+    <value>Wybierz prędkość Normal lub Slow, gdy temperatura otoczenia jest bardzo niska, aby zapewnić płynne przełączanie filtrów.</value>
   </data>
   <data name="LblOasisTurboModeTooltip" xml:space="preserve">
     <value>Włącz tryb turbo, aby zwiększyć moment obrotowy silnika. Może to być przydatne, gdy temperatura otoczenia jest bardzo niska. Upewnij się, że port hosta USB ma co najmniej 5V,1A moc zasilania.</value>
   </data>
   <data name="LblOasisAutorunTooltip" xml:space="preserve">
-    <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
+    <value>Włącz tę opcję, aby po włączeniu zasilania filtry były automatycznie ustawiane w ostatniej pozycji.</value>
   </data>
   <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
-    <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
+    <value>Odczytuje przesunięcia ostrości zapisane w urządzeniu Oasis i aktualizuje przesunięcia ostrości w NINA.</value>
   </data>
   <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA focus offsets to the Oasis filter wheel.</value>
+    <value>Przesyła i zapisuje przesunięcia ostrości z NINA w kole filtrowym Oasis.</value>
   </data>
   <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
-    <value>Reads the filter names stored on the Oasis device and updates the NINA filter labels.</value>
+    <value>Odczytuje nazwy filtrów przechowywane na urządzeniu Oasis i aktualizuje etykiety filtrów w NINA.</value>
   </data>
   <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA filter names to the Oasis filter wheel.</value>
+    <value>Przesyła i zapisuje nazwy filtrów z NINA w kole filtrowym Oasis.</value>
   </data>
   <data name="LblOasisCounter" xml:space="preserve">
-    <value>Counter</value>
+    <value>Licznik</value>
   </data>
   <data name="LblOasisCounterTooltip" xml:space="preserve">
-    <value>Indicator that shows how many filter slots have been rotated since the filter wheel powered up.</value>
+    <value>Wskaźnik pokazujący, o ile pozycji obróciło się koło filtrowe od włączenia jego zasilania.</value>
   </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>Bluetooth</value>
@@ -7670,161 +7723,161 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Numer urządzenia</value>
   </data>
   <data name="LblSymbols" xml:space="preserve">
-    <value>Symbols</value>
+    <value>Symbole</value>
   </data>
   <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
-    <value>No other data for {0}</value>
+    <value>Brak innych danych dla {0}</value>
     <comment>{0} will be filled with the category name</comment>
   </data>
   <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
-    <value>Additional Symbols:</value>
+    <value>Dodatkowe symbole:</value>
     <comment>The prefix for additional data rows for symbol tooltips</comment>
   </data>
   <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
-    <value>Options:</value>
+    <value>Opcje:</value>
     <comment>The prefix per symbol for additional options</comment>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
-    <value>Click any symbol to copy it to the clipboard.</value>
+    <value>Kliknij dowolny symbol, aby skopiować go do schowka.</value>
   </data>
   <data name="LblTrue" xml:space="preserve">
-    <value>True</value>
+    <value>Prawda</value>
   </data>
   <data name="LblFalse" xml:space="preserve">
-    <value>False</value>
+    <value>Fałsz</value>
   </data>
   <data name="LblDecimal" xml:space="preserve">
-    <value>(Decimal: </value>
+    <value>(Dziesiętne: </value>
     <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
   </data>
   <data name="LblWarnings" xml:space="preserve">
     <value>Ostrzeżenie(a): {0}</value>
   </data>
   <data name="LblNoErrors" xml:space="preserve">
-    <value>No errors</value>
+    <value>Brak błędów</value>
   </data>
   <data name="LblErrors" xml:space="preserve">
-    <value>Error(s): {0}</value>
+    <value>Błąd(y): {0}</value>
   </data>
   <data name="LblNotEvaluated" xml:space="preserve">
-    <value>Not Evaluated</value>
+    <value>Nie obliczono</value>
     <comment>As in, a variable is not yet evaluated</comment>
   </data>
   <data name="LblTomorrow" xml:space="preserve">
-    <value>tomorrow</value>
+    <value>jutro</value>
   </data>
   <data name="LblYesterday" xml:space="preserve">
-    <value>yesterday</value>
+    <value>wczoraj</value>
   </data>
   <data name="LblUndefined" xml:space="preserve">
-    <value>Undefined</value>
+    <value>Niezdefiniowane</value>
     <comment>As in "Undefined: &lt;variable name&gt;"</comment>
   </data>
   <data name="LblSyntaxError" xml:space="preserve">
-    <value>Syntax error</value>
+    <value>Błąd składni</value>
     <comment>Used when an Expression can't be parsed</comment>
   </data>
   <data name="LblMustBeInteger" xml:space="preserve">
-    <value>Value must be an Integer</value>
+    <value>Wartość musi być liczbą całkowitą</value>
   </data>
   <data name="LblAnd" xml:space="preserve">
-    <value>and</value>
+    <value>i</value>
   </data>
   <data name="LblAlreadyDefined" xml:space="preserve">
-    <value>is already defined</value>
+    <value>jest już zdefiniowana</value>
     <comment>As in &lt;variable&gt; is already defined</comment>
   </data>
   <data name="LblConstantVariable" xml:space="preserve">
-    <value>The Constant/Variable</value>
+    <value>Stała/zmienna</value>
     <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
   </data>
   <data name="LblNoSymbols" xml:space="preserve">
-    <value>No defined Constant/Variable is used in this expression</value>
+    <value>W tym wyrażeniu nie użyto zdefiniowanej stałej / zmiennej</value>
   </data>
   <data name="LblNotYetDefined" xml:space="preserve">
-    <value> The Constant/Variable is not yet defined</value>
+    <value> Stała/zmienna nie jest jeszcze zdefiniowana</value>
   </data>
   <data name="LblValueBetween" xml:space="preserve">
-    <value>Value must be between {0} and {1}</value>
+    <value>Wartość musi być pomiędzy {0} i {1}</value>
   </data>
   <data name="LblVariable" xml:space="preserve">
-    <value>Variable:</value>
+    <value>Zmienna:</value>
   </data>
   <data name="LblInitially" xml:space="preserve">
-    <value>Initially</value>
+    <value>Początkowo</value>
   </data>
   <data name="LblNewValue" xml:space="preserve">
-    <value>New Value</value>
+    <value>Nowa wartość</value>
   </data>
   <data name="LblIsAmbiguous" xml:space="preserve">
-    <value>is ambiguous, use one of</value>
+    <value>jest niejednoznaczny, użyj jednego z</value>
     <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
   </data>
   <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
-    <value>Symbols</value>
+    <value>Symbole</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Defines a global variable for expressions anywhere in this sequence. Its initial value is assigned when this instruction runs, so place it before instructions that use it. Use Set Variable to change it later.</value>
+    <value>Definiuje zmienną globalną dla wyrażeń w dowolnym miejscu tej sekwencji. Jej wartość początkowa jest przypisywana podczas wykonywania tej instrukcji, więc umieść ją przed instrukcjami, które korzystają z tej zmiennej. Aby później zmienić jej wartość, użyj instrukcji "Ustaw zmienną".</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
-    <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
+    <value>Definiuje zmienną dla wyrażeń w tym zestawie instrukcji i w zagnieżdżonych w nim zestawach instrukcji. Jej wartość początkowa jest przypisywana podczas wykonywania tej instrukcji. Aby później zmienić jej wartość, użyj instrukcji "Ustaw zmienną". Zmienna nie jest widoczna w nadrzędnych ani równorzędnych zestawach instrukcji.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
-    <value>Define Variable</value>
+    <value>Zdefiniuj zmienną</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
+    <value>Definiuje globalną nazwaną wartość dla wyrażeń w dowolnym miejscu tej sekwencji. Jest ona dostępna przed uruchomieniem sekwencji. Aby zmienić jej wartość, edytuj tę instrukcję; instrukcja "Ustaw zmienną" nie może zmienić stałej.</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
-    <value>Define Constant</value>
+    <value>Zdefiniuj stałą</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
-    <value>Set Variable</value>
+    <value>Ustaw zmienną</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+    <value>Jeśli zmienna została wcześniej zdefiniowana, jej wartość zostanie ustawiona na wynik wyrażenia</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
-    <value>Set Variable to Date/Time</value>
+    <value>Ustaw zmienną na datę/czas</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+    <value>Jeśli zmienna została wcześniej zdefiniowana, jej wartość zostanie ustawiona na określoną datę i czas</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
-    <value>Loop While</value>
+    <value>Pętla warunkowa</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
     <value>Pętle warunkowe, gdy wyrażenie nie jest fałszywe</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
-    <value>Wait Until</value>
+    <value>Poczekaj do</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
-    <value>Waits until the Expression is true</value>
+    <value>Czeka, aż wyrażenie będzie prawdziwe</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
     <value>Losowa wartość podwójna między 0.0 a 1.0.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
-    <value>Current Unix timestamp in seconds.</value>
+    <value>Bieżący uniksowy znacznik czasu w sekundach.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
-    <value>Hour component (0-23) of a datetime or the current time.</value>
+    <value>Godzina (0-23) wskazanej daty i czasu lub bieżącego czasu.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
-    <value>Minute component (0-59) of a datetime or the current time.</value>
+    <value>Minuta (0-59) wskazanej daty i czasu lub bieżącego czasu.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
-    <value>Day of the month (1-31) of a datetime or the current date.</value>
+    <value>Dzień miesiąca (1-31) wskazanej daty i czasu lub bieżącej daty.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1-12) of a datetime or the current date.</value>
+    <value>Miesiąc (1-12) wskazanej daty i czasu lub bieżącej daty.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
-    <value>Year component of a datetime or the current date.</value>
+    <value>Rok wskazanej daty i czasu lub bieżącej daty.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
-    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+    <value>Dzień tygodnia jako liczba całkowita (0 = niedziela … 6 = sobota).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
     <value>Data oraz określone minuty (Unix timestamp).</value>
@@ -7836,19 +7889,19 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Sekundy, które upłynęły od podanej daty (Unix timestamp).</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
-    <value>Datetime formatted using the specified .NET format string.</value>
+    <value>Data i czas sformatowane przy użyciu podanego ciągu formatu .NET.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
     <value>Czy ciąg zaczyna się od określonego prefiksu.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
-    <value>Length of the given string, or -1 if the value is not a string.</value>
+    <value>Długość podanego ciągu znaków lub -1, jeśli wartość nie jest ciągiem znaków.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
-    <value>Concatenation of two strings.</value>
+    <value>Konkatenacja dwóch ciągów.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
-    <value>Character at the specified zero-based index, or empty if out of bounds.</value>
+    <value>Znak pod podanym indeksem liczonym od zera lub pusty wynik, jeśli indeks jest poza zakresem.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
     <value>Czy ciąg zawiera określony podciąg.</value>
@@ -7857,7 +7910,7 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Czy ciąg kończy się określonym przyrostkiem.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
-    <value>Substring of the given string; empty if out of range.</value>
+    <value>Podciąg zadanego ciągu; pusty, jeśli poza zakresem.</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
     <value>Ciąg w małych literach (invariant).</value>
@@ -7866,70 +7919,70 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Ciąg w wielkich literach (invariant).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
-    <value>Absolute value of a number.</value>
+    <value>Wartość bezwzględna liczby.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
-    <value>Angle whose cosine is the specified number.</value>
+    <value>Kąt, którego cosinus jest równy podanej liczbie.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
-    <value>Angle whose sine is the specified number.</value>
+    <value>Kąt, którego sinus jest równy podanej liczbie.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
-    <value>Angle whose tangent is the specified number.</value>
+    <value>Kąt, którego tangens jest równy podanej liczbie.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
-    <value>Arithmetic mean of all arguments.</value>
+    <value>Średnia arytmetyczna wszystkich argumentów.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
-    <value>Smallest integer greater than or equal to the number.</value>
+    <value>Najmniejsza liczba całkowita większa lub równa liczbie.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
-    <value>Cosine of the specified angle.</value>
+    <value>Cosinus podanego kąta.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
-    <value>e raised to the specified power.</value>
+    <value>e podniesione do podanej potęgi.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
-    <value>Largest integer less than or equal to the number.</value>
+    <value>Największa liczba całkowita mniejsza lub równa liczbie.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
-    <value>IEEE remainder of x / y.</value>
+    <value>Reszta z dzielenia x / y zgodna ze standardem IEEE.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
-    <value>Natural logarithm of a number.</value>
+    <value>Logarytm naturalny liczby.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
-    <value>Logarithm of a number.</value>
+    <value>Logarytm liczby.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
-    <value>Base-10 logarithm of a number.</value>
+    <value>Logarytm dziesiętny liczby.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
-    <value>Larger of two numbers.</value>
+    <value>Większa z dwóch liczb.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
-    <value>Smaller of two numbers.</value>
+    <value>Mniejsza z dwóch liczb.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
-    <value>Number raised to the specified power.</value>
+    <value>Liczba podniesiona do podanej potęgi.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
-    <value>Rounded value to the nearest integer or specified decimal places.</value>
+    <value>Wartość zaokrąglona do najbliższej liczby całkowitej lub do określonej liczby miejsc po przecinku.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
-    <value>Sign of a number.</value>
+    <value>Znak liczby.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
-    <value>Sine of the specified angle.</value>
+    <value>Sinus podanego kąta.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
-    <value>Square root of a number.</value>
+    <value>Pierwiastek kwadratowy liczby.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
-    <value>Tangent of the specified angle.</value>
+    <value>Tangens podanego kąta.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
-    <value>Integral part of a number.</value>
+    <value>Część całkowita liczby.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
     <value>Matematyczne modulo (x mod y). Wynik w przedziale [0, y) dla dodatniego y.</value>
@@ -7941,22 +7994,22 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Czy x mieści się w pomiędzy min, a max (włącznie).</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
-    <value>Conversion from radians to degrees.</value>
+    <value>Konwersja z radianów na stopnie.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
     <value>Konwersja ze stopni na radiany.</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
-    <value>Sum of all arguments.</value>
+    <value>Suma wszystkich argumentów.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
     <value>Czy element znajduje się w zestawie wartości.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
-    <value>Conditional value based on a condition.</value>
+    <value>Wartość warunkowa oparta na warunku.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
-    <value>Conditional value based on multiple conditions, with a default.</value>
+    <value>Wartość warunkowa oparta na wielu warunkach, z wartością domyślną.</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
     <value>Czy nazwa symbolu jest zdefiniowana w tabeli symboli.</value>
@@ -7965,43 +8018,49 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>Logiczne zaprzeczenie wartości boolowskiej.</value>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
-    <value>Click any function to copy it to the clipboard.</value>
+    <value>Kliknij dowolną funkcję, aby skopiować ją do schowka.</value>
   </data>
   <data name="Lbl_SymbolFunctions" xml:space="preserve">
-    <value>Functions</value>
+    <value>Funkcje</value>
   </data>
   <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
-    <value>Usage</value>
+    <value>Użycie</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
-    <value>Function '{0}' expects no arguments, but got {1}.</value>
+    <value>Funkcja '{0}' nie przyjmuje argumentów, ale otrzymała {1}.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
-    <value>Function '{0}' expects exactly one argument, but got {1}.</value>
+    <value>Funkcja '{0}' oczekuje dokładnie jednego argumentu, a otrzymano {1}.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
-    <value>Function '{0}' expects exactly {1} arguments, but got {2}.</value>
+    <value>Funkcja '{0}' wymaga dokładnie tylu argumentów: {1}. Otrzymano: {2}.</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
-    <value>Function '{0}' expects between {1} and {2} arguments, but got {3}.</value>
+    <value>Funkcja '{0}' oczekuje liczby argumentów od {1} do {2}, ale otrzymała {3}.</value>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
-    <value>Value must be greater than or equal to {0}.</value>
+    <value>Wartość musi być większa lub równa {0}.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
-    <value>Value must be greater than {0}.</value>
+    <value>Wartość musi być większa niż {0}.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
-    <value>Value must be between {0} and {1}.</value>
+    <value>Wartość musi być nie mniejsza niż {0} i nie większa niż {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
-    <value>Value must be between {0} and less than {1}.</value>
+    <value>Wartość musi być większa lub równa {0} i mniejsza niż {1}.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and up to {1}.</value>
+    <value>Wartość musi być większa niż {0} i nie większa niż {1}.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and less than {1}.</value>
+    <value>Wartość musi być większa niż {0} i mniejsza niż {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>Obszar roboczy powiadomień</value>
@@ -8034,184 +8093,184 @@ Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uni
     <value>ZStandard</value>
   </data>
   <data name="LblMoravianFlashVersion" xml:space="preserve">
-    <value>Flash version</value>
+    <value>Wersja Flash</value>
     <comment>Version of an internal camera component stored in flash memory.
     This is a separate version from camera firmware and driver.</comment>
   </data>
   <data name="LblDimensions" xml:space="preserve">
-    <value>Dimensions</value>
+    <value>Wymiary</value>
     <comment>Label for entering subframe dimensions</comment>
   </data>
   <data name="LblTop" xml:space="preserve">
-    <value>Top</value>
+    <value>Góra</value>
   </data>
   <data name="LblLeft" xml:space="preserve">
-    <value>Left</value>
+    <value>Lewa</value>
   </data>
   <data name="LblSequencerExpressionValues" xml:space="preserve">
-    <value>Sequencer expressions values</value>
+    <value>Wartości wyrażeń sekwencji</value>
   </data>
   <data name="LblEccentricity" xml:space="preserve">
-    <value>Eccentricity</value>
+    <value>Mimośród</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
-    <value>Custom Trigger</value>
+    <value>Własny wyzwalacz</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
-    <value>Use an existing trigger as the trigger source, then choose your own instructions to run when that trigger would normally fire.
-This is useful when a built-in trigger has the timing you need, but you want custom actions.</value>
+    <value>Użyj istniejącego wyzwalacza jako źródła wyzwalania, a następnie wybierz własne instrukcje wykonywane wtedy, gdy ten wyzwalacz normalnie by zadziałał.
+Jest to przydatne, gdy wbudowany wyzwalacz działa w odpowiednim momencie, ale chcesz wykonać własne działania.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
-    <value>Trigger Source</value>
+    <value>Źródło wyzwalania</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
-    <value>Custom Trigger Instructions</value>
+    <value>Instrukcje własnego wyzwalacza</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
-    <value>Drop a trigger here to choose when the custom trigger runs.</value>
+    <value>Upuść tutaj wyzwalacz, aby określić, kiedy uruchamia się własny wyzwalacz.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
-    <value>Drop instructions here to run when the selected trigger source fires.</value>
+    <value>Upuść tutaj instrukcje, które mają być wykonywane po zadziałaniu wybranego źródła wyzwalania.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
-    <value>ADD TRIGGER SOURCE</value>
+    <value>DODAJ ŹRÓDŁO WYZWALANIA</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
-    <value>ADD CUSTOM INSTRUCTIONS</value>
+    <value>DODAJ WŁASNE INSTRUKCJE</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
-    <value>Add a trigger source.</value>
+    <value>Dodaj źródło wyzwalania.</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
-    <value>Add at least one instruction.</value>
+    <value>Dodaj co najmniej jedną instrukcję.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
-    <value>Trigger On Unsafe</value>
+    <value>Reaguj na niebezpieczne warunki</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Description" xml:space="preserve">
-    <value>Runs configured instructions when the safety monitor reports unsafe conditions or disconnects after being connected, waits until conditions are safe again, then runs follow-up instructions.</value>
+    <value>Wykonuje skonfigurowane instrukcje, gdy monitor bezpieczeństwa zgłosi niebezpieczne warunki lub rozłączy się po wcześniejszym połączeniu, czeka na przywrócenie bezpiecznych warunków, a następnie wykonuje dalsze instrukcje.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
-    <value>Before Waiting For Safety</value>
+    <value>Przed oczekiwaniem na bezpieczne warunki</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description" xml:space="preserve">
-    <value>After Waiting For Safety</value>
+    <value>Po oczekiwaniu na bezpieczne warunki</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting until conditions are safe again.</value>
+    <value>Instrukcje wykonywane przed rozpoczęciem oczekiwania na przywrócenie bezpiecznych warunków.</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after conditions are safe again.</value>
+    <value>Instrukcje wykonywane po przywróceniu bezpiecznych warunków.</value>
   </data>
   <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
-    <value>Show Star Mass in Guide Graph</value>
+    <value>Pokaż wielkość gwiazdy na wykresie prowadzenia</value>
   </data>
   <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
-    <value>Show Star SNR in Guide Graph</value>
+    <value>Pokaż SNR gwiazdy na wykresie prowadzenia</value>
   </data>
   <data name="LblStarMass" xml:space="preserve">
-    <value>Star Mass</value>
+    <value>Wielkość gwiazdy</value>
   </data>
   <data name="LblStarSNR" xml:space="preserve">
-    <value>Star SNR</value>
+    <value>SNR gwiazdy</value>
   </data>
   <data name="Lbl_SequenceHistory_Undo" xml:space="preserve">
-    <value>Undo</value>
+    <value>Cofnij</value>
   </data>
   <data name="Lbl_SequenceHistory_Redo" xml:space="preserve">
-    <value>Redo</value>
+    <value>Ponów</value>
   </data>
   <data name="Lbl_SequenceHistory_Title" xml:space="preserve">
-    <value>Edit history</value>
+    <value>Historia edycji</value>
   </data>
   <data name="Lbl_SequenceHistory_Hint" xml:space="preserve">
-    <value>Select a state to undo or redo to it.</value>
+    <value>Wybierz stan, który chcesz przywrócić przez cofnięcie lub ponowienie zmian.</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Bieżący</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
-    <value>(saved)</value>
+    <value>(zapisano)</value>
   </data>
   <data name="Lbl_SequenceHistory_Initial" xml:space="preserve">
-    <value>Earlier state</value>
+    <value>Wcześniejszy stan</value>
   </data>
   <data name="Lbl_SequenceHistory_UndoAction" xml:space="preserve">
-    <value>Undo {0}</value>
+    <value>Cofnij: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_RedoAction" xml:space="preserve">
-    <value>Redo {0}</value>
+    <value>Ponów: {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_EditAction" xml:space="preserve">
-    <value>Edit {0}: {1}</value>
+    <value>Edytuj {0}: {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MoveAction" xml:space="preserve">
-    <value>Move {0}</value>
+    <value>Przenieś {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_AddAction" xml:space="preserve">
-    <value>Add {0}</value>
+    <value>Dodaj {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_Position" xml:space="preserve">
-    <value>Position {0}</value>
+    <value>Pozycja {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PositionChange" xml:space="preserve">
-    <value>Position {0} -&gt; {1}</value>
+    <value>Pozycja {0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_DeleteAction" xml:space="preserve">
-    <value>Delete {0}</value>
+    <value>Usuń {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_DuplicateAction" xml:space="preserve">
-    <value>Duplicate {0}</value>
+    <value>Duplikuj {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PlaceAction" xml:space="preserve">
-    <value>Place item in {0}</value>
+    <value>Umieść element w {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_ToggleAction" xml:space="preserve">
-    <value>Enable/disable {0}</value>
+    <value>Włącz/wyłącz {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_ClearAction" xml:space="preserve">
-    <value>Clear sequence</value>
+    <value>Wyczyść sekwencję</value>
   </data>
   <data name="Lbl_SequenceHistory_TargetAction" xml:space="preserve">
-    <value>Change target {0}</value>
+    <value>Zmień cel {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_Conflict" xml:space="preserve">
-    <value>This edit cannot be restored because its configuration was changed outside edit history. The sequence has not been changed.</value>
+    <value>Nie można przywrócić tej zmiany, ponieważ jej konfiguracja została zmodyfikowana poza historią edycji. Sekwencja nie została zmieniona.</value>
   </data>
   <data name="Lbl_SequenceHistory_Failed" xml:space="preserve">
-    <value>Restoring the edit failed. Edit history was cleared. Review the sequence before continuing.</value>
+    <value>Nie udało się przywrócić zmiany. Historia edycji została wyczyszczona. Sprawdź sekwencję przed kontynuowaniem.</value>
   </data>
   <data name="Lbl_SequenceHistory_ValueChange" xml:space="preserve">
     <value>{0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_NoValue" xml:space="preserve">
-    <value>(empty)</value>
+    <value>(puste)</value>
   </data>
   <data name="Lbl_SequenceHistory_CoordinateValue" xml:space="preserve">
-    <value>RA {0}, Dec {1}, rotation {2} degrees ({3})</value>
+    <value>RA {0}, Dec {1}, obrót {2} stopni ({3})</value>
   </data>
   <data name="Lbl_SequenceHistory_MoreChanges" xml:space="preserve">
-    <value>+ {0} more changes</value>
+    <value>+ {0} kolejnych zmian</value>
   </data>
   <data name="Lbl_SequenceHistory_AddedDetail" xml:space="preserve">
-    <value>Added {0} to {1}</value>
+    <value>Dodano {0} do {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_RemovedDetail" xml:space="preserve">
-    <value>Removed {0} from {1}</value>
+    <value>Usunięto {0} z {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MovedDetail" xml:space="preserve">
     <value>{0}: {1} -&gt; {2}</value>
   </data>
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
-    <value>The edit could not be applied. The previous state and edit history were preserved.</value>
+    <value>Nie udało się zastosować zmiany. Poprzedni stan i historia edycji zostały zachowane.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
-    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+    <value>Oczekiwanie na zakończenie edycji szablonu. Niezapisane zmiany zostaną odrzucone za {0}, a następnie zostanie uruchomiony zapisany szablon. Wybierz "Zapisz" lub "Anuluj", aby kontynuować teraz.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
-    <value>Waiting for the template to finish saving.</value>
+    <value>Oczekiwanie na zakończenie zapisywania szablonu.</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
-    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
+    <value>Niezapisane zmiany w połączonym szablonie '{0}' zostały odrzucone po pięciu minutach bezczynności. Kontynuowanie z zapisanym szablonem.</value>
   </data>
 </root>

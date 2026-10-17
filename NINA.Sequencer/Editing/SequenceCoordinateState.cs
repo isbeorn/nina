@@ -27,18 +27,26 @@ namespace NINA.Sequencer.Editing {
         internal static void RestoreCoordinates(InputCoordinates coordinates, Expression ra, Expression dec, Coordinates value,
             bool negativeDec, string raDefinition, string decDefinition, ref bool protect, ref double lastRA, ref double lastDec) {
             bool previous = protect;
+            protect = true;
             try {
                 ra.Definition = raDefinition;
                 dec.Definition = decDefinition;
                 Coordinates restored = value.Clone();
-                if (ra.IsExpression && ra.IsValid) restored.RA = ra.Value;
-                if (dec.IsExpression && dec.IsValid) restored.Dec = dec.Value;
-                protect = true;
+                double raValue = ra.EvaluatedValue;
+                double decValue = dec.EvaluatedValue;
+                if (ra.IsExpression && ra.IsValid && ra.Error == null && double.IsFinite(raValue)) {
+                    restored.RA = raValue;
+                }
+                if (dec.IsExpression && dec.IsValid && dec.Error == null && double.IsFinite(decValue)) {
+                    restored.Dec = decValue;
+                }
                 coordinates.Coordinates = restored;
                 coordinates.NegativeDec = restored.Dec == 0 ? negativeDec : restored.Dec < 0;
                 lastRA = restored.RA;
                 lastDec = restored.Dec;
-            } finally { protect = previous; }
+            } finally {
+                protect = previous;
+            }
         }
 
         public static bool Equal(SequenceCoordinateState left, SequenceCoordinateState right) =>

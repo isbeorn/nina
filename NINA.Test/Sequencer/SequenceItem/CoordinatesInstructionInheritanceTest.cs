@@ -47,7 +47,8 @@ using System.Windows.Media;
 namespace NINA.Test.Sequencer.SequenceItem {
 
     [TestFixture]
-    public class CoordinatesInstructionInheritanceTest {
+    [NonParallelizable]
+    public partial class CoordinatesInstructionInheritanceTest {
         private const double Tolerance = 1e-10;
         private const string CenterInstruction = nameof(Center);
         private const string CenterAndRotateInstruction = nameof(CenterAndRotate);

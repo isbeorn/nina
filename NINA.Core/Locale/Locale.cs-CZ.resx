@@ -241,7 +241,7 @@ Má se aplikace pokusit zotavit z chyby? (Může vést k neočekávanému chová
     <value>obl.min</value>
   </data>
   <data name="LblMaxArcmin" xml:space="preserve">
-    <value>Max arcmin</value>
+    <value>Max. arcmin</value>
   </data>
   <data name="LblArcsec" xml:space="preserve">
     <value>arcsec</value>
@@ -415,15 +415,18 @@ Z těchto dvou souřadnic se vypočítá a zobrazí aktuální chybu azimutu</va
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>Budou uloženy následující hodnoty zpětné vůle zaostření. VSTUP: {0}, VÝSTUP: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>Střední hodnota BIAS (v 16bit)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
-    <value>Střední hodnota BIAS (v 16bit)</value>
+    <value>Medián hodnot BIAS (v 16bit)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
@@ -542,6 +545,7 @@ Filtr: {3}</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>Na fotoaparátu Canon došlo k chybě: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Pořídí Obraz a Astrometrii</value>
@@ -971,6 +975,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Aktuální Průměr</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Aktuální Pozice</value>
@@ -1019,6 +1024,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Rozbřesk</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>Dny</value>
@@ -1286,6 +1292,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>Soumrak</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>Východ</value>
@@ -1469,6 +1476,7 @@ Když je tato aktivace deaktivována, aplikace pouze přeskočí Start expozice 
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>Nastavení Flat Boxu</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Neplatná odpověď z Flat Boxu.</value>
@@ -1535,6 +1543,7 @@ Když je tato aktivace deaktivována, aplikace pouze přeskočí Start expozice 
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>Průvodce Nastavení Flat</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>Zrušit Průvodce Flat</value>
@@ -1583,6 +1592,7 @@ Když je tato aktivace deaktivována, aplikace pouze přeskočí Start expozice 
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>Světelnost</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Zaostření</value>
@@ -1713,6 +1723,7 @@ Vypočtené HFR: {2}
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>Pointace neposlala zprávu SettleDone po očekávaném čase ({0} s + 10 s).
 Přeskočit.</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Obnova pointace selhala</value>
@@ -1787,7 +1798,7 @@ Přeskočit.</value>
     <value>Vodorovné Panely</value>
   </data>
   <data name="LblHost" xml:space="preserve">
-    <value>Host</value>
+    <value>Hostitel</value>
   </data>
   <data name="LblHour" xml:space="preserve">
     <value>Hodina</value>
@@ -1989,12 +2000,14 @@ Přeskočit.</value>
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>Průměr</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>Změřit Zpětnou vůli Zaostření</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
-    <value>Střední</value>
+    <value>Medián</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>Překlopení Poledníku selhalo</value>
@@ -2015,7 +2028,7 @@ Přeskočit.</value>
     <value>Nastavení MetaGuide</value>
   </data>
   <data name="LblMetaGuidePort" xml:space="preserve">
-    <value>MetaGuide Port</value>
+    <value>Port MetaGuide</value>
   </data>
   <data name="LblMin" xml:space="preserve">
     <value>Min</value>
@@ -2092,6 +2105,7 @@ Přeskočit.</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Ne</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Žádná kamera</value>
@@ -2323,7 +2337,7 @@ Přeskočit.</value>
     <value>Parabola</value>
   </data>
   <data name="LblPark" xml:space="preserve">
-    <value>Park</value>
+    <value>Zaparkovat</value>
   </data>
   <data name="LblParkEnabledButTelescopeCannotPark" xml:space="preserve">
     <value>Dalekohled je nastaven tak, aby parkoval na konci sekvence, ale není toho schopen</value>
@@ -2381,9 +2395,11 @@ Přeskočit.</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>Port Serveru PHD2</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>Název Hostitele Serveru PHD2</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Nastavení PHD2</value>
@@ -2420,6 +2436,7 @@ Klient odpojen od synchronizované služby PHD2.
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>Profilové ID {0} PHD2 nebylo nalezeno. Použit {1}</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>Pixely</value>
@@ -2429,18 +2446,22 @@ Klient odpojen od synchronizované služby PHD2.
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>Měřítko Pixelu</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Měřítko pixelů v úhlových sekundách na pixel</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>Velikost Pixelu</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>Velikost Pixelu X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Velikost Pixelu Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Planetárium</value>
@@ -3242,7 +3263,7 @@ Měla by se nastavení synchronizovat?</value>
     <value>Časová Zóna</value>
   </data>
   <data name="LblTimeOffset" xml:space="preserve">
-    <value>Offset</value>
+    <value>Časový posun</value>
   </data>
   <data name="LblTimeOffsetTooltip" xml:space="preserve">
     <value>Offset v minutách od zadané denní doby</value>
@@ -3346,7 +3367,8 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
     <value>Měsíční</value>
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
-    <value>Speciální</value>
+    <value>King</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>Vlastní</value>
@@ -3423,9 +3445,11 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>Průměrný Proud</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Aktuální</value>
+    <value>Proud</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>Data Zařízení</value>
@@ -3518,7 +3542,7 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
     <value>Zkopírovat URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
-    <value>USB Limit</value>
+    <value>Limit USB</value>
   </data>
   <data name="LblUseBlindSolveFailover" xml:space="preserve">
     <value>Astrometrie selhala. Spustit Řešení Naslepo?</value>
@@ -3675,27 +3699,35 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>Matice Bayer, která se má použít pro klíčové slovo BAYERPAT v záhlaví obrázku FITS nebo XISF pro obrázky generované barevnými senzory.
@@ -3703,6 +3735,7 @@ Výchozí nastavení Auto používá jakoukoli matici, kterou může poskytnout 
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Aktuální</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>Spuštění možnosti konce sekvence</value>
@@ -3727,6 +3760,7 @@ Výchozí nastavení Auto používá jakoukoli matici, kterou může poskytnout 
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Časový limit kamery - kamera nebyla schopná připravit snímek po expoziční době + {0} sekundách</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Náhled Vzoru</value>
@@ -4068,6 +4102,7 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>Poloha Dalekohledu</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Časový limit Kamery</value>
@@ -4310,7 +4345,7 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
     <value>Uplynulý</value>
   </data>
   <data name="LblHFRTrend" xml:space="preserve">
-    <value>HFR Trend</value>
+    <value>Trend HFR</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopCondition_Description" xml:space="preserve">
     <value>Podmínka cyklu sekvence kontejneru pro zadaný počet cyklů</value>
@@ -4389,6 +4424,7 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>Zavřít Kryt FlatBoxu</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Pohyb zaostřením do dané absolutní polohy</value>
@@ -4406,7 +4442,7 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
     <value>Odešle signál ditheringu do pointace</value>
   </data>
   <data name="Lbl_SequenceItem_Guider_Dither_Name" xml:space="preserve">
-    <value>Dither</value>
+    <value>Dithering</value>
   </data>
   <data name="Lbl_SequenceItem_Guider_StartGuiding_Description" xml:space="preserve">
     <value>Zahájit automatickou pointaci</value>
@@ -4443,6 +4479,7 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>Parkovat Dalekohled</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>Přejet dalekohledem na danou výšku a souřadnice azimutu</value>
@@ -4461,6 +4498,7 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>Odparkovat Dalekohled</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>Sledování</value>
@@ -4500,12 +4538,14 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>Čeká na Zadaný Čas</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>Čeká na zadaný čas ve formátu hh:mm:ss. Kromě toho je k dispozici nástroj, který automaticky vyplní informace o západu slunce, soumraku, úsvitu a východu slunce</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>Čeká na Čas</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>Vycentrovat Po Posunu</value>
@@ -4737,6 +4777,7 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>Otevřít kryt FlatBoxu</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Nastaví jas flat zařízení na zadanou hodnotu</value>
@@ -4749,6 +4790,7 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>Přepínač Světla</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>Vyhledá hodnotu expozice z průvodce pro zadané parametry a provede flat expozice</value>
@@ -4776,7 +4818,7 @@ Sem přidejte sekvence objektů DSO nebo přidejte cíle prostřednictvím Atlas
     <value>Konec</value>
   </data>
   <data name="Lbl_SequenceContainer_StartAreaContainer_Name" xml:space="preserve">
-    <value>Start</value>
+    <value>Začátek</value>
   </data>
   <data name="Lbl_SequenceContainer_TargetAreaContainer_Name" xml:space="preserve">
     <value>Cíle</value>
@@ -5237,7 +5279,7 @@ Tam lze sekvenci naplánovat od nuly pomocí jemných podrobných pokynů, spou�
     <value>Čeká na Zaparkování Dalekohledu</value>
   </data>
   <data name="LblWeatherUndergroundAPIKey" xml:space="preserve">
-    <value>API Weather Underground</value>
+    <value>Klíč API Weather Underground</value>
   </data>
   <data name="LblWeatherUndergroundStationID" xml:space="preserve">
     <value>Id Stanice Weather Underground</value>
@@ -5408,9 +5450,11 @@ Menší číslo pomůže rychleji reagovat na změnu ohniska, například u tepl
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>Podmínka, která se opakuje, dokud je cíl nad horizontem, poté se zastaví aktuální sadu instrukcí</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>Cyklus Dokud je Výška Nad Horizontem</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>Cíl nikdy nebude nad obzorem</value>
@@ -5643,11 +5687,11 @@ Má význam pouze při použití ovladače kamery ASCOM!</value>
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>Primární rychlost</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>Sekundární rychlost</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>Dalekohled nemůže pohybovat primární osou</value>
@@ -5854,10 +5898,10 @@ Výchozí chování je pokračovat v chybách, ale pro některé instrukce můž
     <value>Není instalován</value>
   </data>
   <data name="LblVendor" xml:space="preserve">
-    <value>Vendor</value>
+    <value>Výrobce</value>
   </data>
   <data name="LblVendorSDKs" xml:space="preserve">
-    <value>Vendor SDKs</value>
+    <value>SDK výrobců</value>
   </data>
   <data name="LblTelescopeUnparkCancelled" xml:space="preserve">
     <value>Operace odparkovat zrušena</value>
@@ -6310,7 +6354,7 @@ Zkontrolujte, zda je k dispozici aktualizace.</value>
     <value>Poslat Příkaz</value>
   </data>
   <data name="LblBoolean" xml:space="preserve">
-    <value>Boolean</value>
+    <value>Logická hodnota</value>
   </data>
   <data name="LblDevice" xml:space="preserve">
     <value>Zařízení</value>
@@ -6613,6 +6657,7 @@ Toto se vyhodnotí PO nastavení "Zaparkovat montáž před pohybem štěrbiny".
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>Bylo přikázáno otevřít štěrbinu nebo střechu, ale bezpečnostní monitor je odpojeno. Otevření bylo zrušeno.</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>UPOZORNĚNÍ: Tato nastavení se týkají bezpečnosti vašeho zařízení. Je třeba je nastavit s pečlivou rozvahou a s ohledem na znalosti konkrétního nastavení. Řídí se jimi pouze ovládání zařízení systémem N.I.N.A. a NEJSOU v platnosti, pokud systém N.I.N.A. není spuštěn nebo není k danému zařízení připojen. Bezpečnostní mechanismy kopule nebo střechy by vždy měly mít hardwarovou zálohu a elektrické blokování, aby se zabránilo nežádoucímu pohybu štěrbiny nebo střechy. Je vaší odpovědností zajistit, aby tato nastavení nebyla v rozporu s nastavením ovladače kopule.</value>
@@ -6802,7 +6847,7 @@ Důvod: {0}</value>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>Flat Průvodce selhal pro filtr {0}.
 Důvod: {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>Nepodařilo se určit jas pro flaty - zdroj světla je příliš jasný.
@@ -6886,10 +6931,10 @@ Prodlužte minimální dobu expozice nebo počkejte, až bude jasnější.</valu
     <value>TheSkyX ObrazovýZdroj</value>
   </data>
   <data name="LblTSXHost" xml:space="preserve">
-    <value>TheSkyX Host</value>
+    <value>Hostitel TheSkyX</value>
   </data>
   <data name="LblTSXPort" xml:space="preserve">
-    <value>TheSkyX Port</value>
+    <value>Port TheSkyX</value>
   </data>
   <data name="LblZwoMonoBinMode" xml:space="preserve">
     <value>Černobílý binning</value>
@@ -6925,19 +6970,24 @@ Prodlužte minimální dobu expozice nebo počkejte, až bude jasnější.</valu
     <value>Referenční katalog</value>
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
-    <value>Referenční katalog</value>
+    <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
-    <value>Referenční katalog</value>
+    <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>Rozšíření</value>
@@ -6952,10 +7002,10 @@ Prodlužte minimální dobu expozice nebo počkejte, až bude jasnější.</valu
     <value>Maximální (slabší) magnituda pro výběr hvězd z referenčního katalogu (min = 2.0, max = 20.0, výchozí = 20.0)</value>
   </data>
   <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
-    <value>AllSky API host</value>
+    <value>Hostitel API AllSky</value>
   </data>
   <data name="LblPinPointAllSkyApiHostToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API host (výchozí = nova.astrometry.net)</value>
+    <value>Hostitel API Astrometry.net/AllSky (výchozí = nova.astrometry.net)</value>
   </data>
   <data name="LblPinPointAllSkyApiKey" xml:space="preserve">
     <value>API klíč AllSky</value>
@@ -7128,17 +7178,19 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>Použít IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>Použít IPv4 pro detekci zařízení ASCOM Alpaca (Výchozí: zapnuto)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
-    <value>Použít IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <value>Použít IPv6</value>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
-    <value>Použít IPv6 pro detekci zařízení ASCOM Alpaca (Výchozí: zapnuto)</value>
+    <value>Použít IPv6 pro detekci zařízení ASCOM Alpaca (Výchozí: vypnuto)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Přepnout Katalog Zobrazení</value>
@@ -7186,7 +7238,8 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
     <value>Čeká se na pokyn k potvrzení zrušení</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>Bylo přikázáno otevřít štěrbinu nebo střechu, ale bezpečnostní monitor je odpojeno. Otevření bylo zrušeno.</value>
+    <value>Bylo přikázáno otevřít štěrbinu nebo střechu, ale bezpečnostní monitor hlásí nebezpečné podmínky. Otevření bylo zrušeno.</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>Externí Příkaz</value>
@@ -7627,7 +7680,7 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
     <value>Uložit názvy filtrů</value>
   </data>
   <data name="LblOasisAutorun" xml:space="preserve">
-    <value>Autorun</value>
+    <value>Automatické nastavení poslední polohy</value>
   </data>
   <data name="LblOasisSpeedTooltip" xml:space="preserve">
     <value>Pokud je okolní teplota velmi nízká, vyberte normální nebo pomalou rychlost, aby bylo zajištěno plynulé přepínání filtrů.</value>
@@ -7825,7 +7878,7 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
     <value>Den v měsíci (1–31) datumu a času nebo aktuálního data.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1-12) of a datetime or the current date.</value>
+    <value>Měsíc (1-12) z hodnoty data a času nebo z aktuálního data.</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
     <value>Rok jako součást data a času nebo aktuálního data.</value>
@@ -7994,21 +8047,27 @@ Pokud pro vás počet expozic není důležitý, povolte tuto možnost, abyste n
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
     <value>Hodnota musí být větší nebo rovna {0}.</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
     <value>Hodnota musí být větší než {0}.</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
     <value>Hodnota musí být mezi {0} a {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
     <value>Hodnota musí být mezi {0} a menší než {1}.</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>Hodnota musí být větší než {0} a menší než {1}.</value>
+    <value>Hodnota musí být větší než {0} a menší nebo rovna {1}.</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
     <value>Hodnota musí být větší než {0} a menší než {1}.</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>Pracovní oblast oznámení</value>
@@ -8186,7 +8245,7 @@ To se hodí v případě, že vestavěný spouštěč má sice požadované nač
     <value>Tuto úpravu nelze obnovit, protože její konfigurace byla změněna mimo historii úprav. Sekvence nebyla změněna.</value>
   </data>
   <data name="Lbl_SequenceHistory_Failed" xml:space="preserve">
-    <value>Restoring the edit failed. Edit history was cleared. Review the sequence before continuing.</value>
+    <value>Obnovení úpravy se nezdařilo. Historie úprav byla vymazána. Než budete pokračovat, zkontrolujte sekvenci.</value>
   </data>
   <data name="Lbl_SequenceHistory_ValueChange" xml:space="preserve">
     <value>{0} -&gt; {1}</value>

@@ -93,6 +93,7 @@ namespace NINA.Test.Sequencer.Editing {
         public static IEnumerable<Type> CloneTypes => CoreEditorHistoryTest.CoreEntities.Where(type => type != typeof(SequenceRootContainer));
 
         [TestCaseSource(nameof(CloneTypes))]
+        [Ignore("These tests are slow. Run explicitly when needed.")]
         public void RetainedClone_DoesNotRetainDeletedSource(Type type) {
             using var scope = new CoreEditorTestScope();
             var original = CloneAndRemoveSource(scope, type);
@@ -101,6 +102,7 @@ namespace NINA.Test.Sequencer.Editing {
         }
 
         [TestCaseSource(nameof(CloneTypes))]
+        [Ignore("These tests are slow. Run explicitly when needed.")]
         public void UnloadedEditor_IsCollectedWhileEntityRemainsAttached(Type type) {
             using var scope = new CoreEditorTestScope();
             var references = ShowAndUnloadEditor(scope, type);

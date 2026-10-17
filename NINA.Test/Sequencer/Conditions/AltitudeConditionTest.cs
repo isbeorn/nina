@@ -96,12 +96,16 @@ namespace NINA.Test.Sequencer.Conditions {
             foreach (var parent in new ISequenceContainer?[] { firstParent.Object, secondParent.Object, null, firstParent.Object }) {
                 var expected = ((parent as IDeepSkyObjectContainer)?.Target.InputCoordinates.Coordinates
                     ?? sut.Data.Coordinates.Coordinates).Clone();
+                string originalRa = sut.RaExpression.Definition;
+                string originalDec = sut.DecExpression.Definition;
                 sut.AttachNewParent(parent);
+                string expectedRaDefinition = parent == null ? expected.RA.ToString(CultureInfo.InvariantCulture) : originalRa;
+                string expectedDecDefinition = parent == null ? expected.Dec.ToString(CultureInfo.InvariantCulture) : originalDec;
                 sut.HasDsoParent.Should().Be(parent != null);
                 sut.Data.Coordinates.Coordinates.RA.Should().Be(expected.RA);
                 sut.Data.Coordinates.Coordinates.Dec.Should().Be(expected.Dec);
-                sut.RaExpression.Definition.Should().Be(expected.RA.ToString(CultureInfo.InvariantCulture));
-                sut.DecExpression.Definition.Should().Be(expected.Dec.ToString(CultureInfo.InvariantCulture));
+                sut.RaExpression.Definition.Should().Be(expectedRaDefinition);
+                sut.DecExpression.Definition.Should().Be(expectedDecDefinition);
 
                 altitudeUpdates.Clear();
                 sut.AfterParentChanged();
@@ -109,14 +113,16 @@ namespace NINA.Test.Sequencer.Conditions {
                 altitudeUpdates.Should().BeEmpty("repeated parent notifications must not recalculate unchanged coordinates");
                 sut.Data.Coordinates.Coordinates.RA.Should().Be(expected.RA);
                 sut.Data.Coordinates.Coordinates.Dec.Should().Be(expected.Dec);
-                sut.RaExpression.Definition.Should().Be(expected.RA.ToString(CultureInfo.InvariantCulture));
-                sut.DecExpression.Definition.Should().Be(expected.Dec.ToString(CultureInfo.InvariantCulture));
+                sut.RaExpression.Definition.Should().Be(expectedRaDefinition);
+                sut.DecExpression.Definition.Should().Be(expectedDecDefinition);
                 altitudeUpdates.Clear();
 
-                sut.Data.Coordinates.RAHours = 11;
+                if (parent == null) {
+                    sut.Data.Coordinates.RAHours = 11;
 
-                sut.RaExpression.Definition.Should().Be("11");
-                altitudeUpdates.Should().ContainSingle();
+                    sut.RaExpression.Definition.Should().Be("11");
+                    altitudeUpdates.Should().ContainSingle();
+                }
             }
         }
 
@@ -149,10 +155,12 @@ namespace NINA.Test.Sequencer.Conditions {
 
                 sut.AfterParentChanged();
 
-                sut.Data.Coordinates.Coordinates.Should().BeSameAs(coordinates);
+                sut.Data.Coordinates.Coordinates.Should().NotBeSameAs(coordinates);
                 sut.Data.Coordinates.Coordinates.Epoch.Should().Be(expectedEpoch);
-                sut.RaExpression.Definition.Should().Be(expectedRa.ToString(CultureInfo.InvariantCulture));
-                sut.DecExpression.Definition.Should().Be(expectedDec.ToString(CultureInfo.InvariantCulture));
+                sut.Data.Coordinates.Coordinates.RA.Should().Be(expectedRa);
+                sut.Data.Coordinates.Coordinates.Dec.Should().Be(expectedDec);
+                sut.RaExpression.Definition.Should().Be("5 + 5");
+                sut.DecExpression.Definition.Should().Be("20");
                 altitudeUpdates.Should().ContainSingle("changed inherited coordinate state must refresh the prediction");
                 altitudeUpdates.Clear();
 

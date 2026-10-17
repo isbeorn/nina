@@ -9,6 +9,7 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #endregion "copyright"
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NINA.Core.Locale;
 using NINA.Core.Model;
@@ -33,7 +34,7 @@ using RelayCommand = NINA.Core.Utility.RelayCommand;
 
 namespace NINA.ViewModel.Plugins {
 
-    public class PluginsVM : BaseVM, IPluginsVM {
+    public partial class PluginsVM : BaseVM, IPluginsVM {
         private IPluginLoader pluginProvider;
 
         public PluginsVM(IPluginLoader pluginProvider, IProfileService profileService) : base(profileService) {
@@ -149,12 +150,15 @@ namespace NINA.ViewModel.Plugins {
         private Task<bool> UpdateAllPlugins() {
             return Task.Run(async () => {
                 using (installCts = new CancellationTokenSource()) {
+                    var updatesInstalled = false;
+
                     try {
                         var installer = new PluginInstaller();
                         foreach (var manifest in AvailablePlugins.Where(x => x.State == PluginState.UpdateAvailable)) {
                             try {
                                 await installer.Install(manifest, true, installCts.Token);
                                 manifest.State = PluginState.InstalledAndRequiresRestart;
+                                updatesInstalled = true;
                             } catch (OperationCanceledException) {
                                 throw;
                             } catch (Exception ex) {
@@ -164,7 +168,12 @@ namespace NINA.ViewModel.Plugins {
                         }
                     } catch (OperationCanceledException) {
                     }
+
                     AvailablePluginUpdateCount = AvailablePlugins.Where(x => x.State == PluginState.UpdateAvailable)?.Count() ?? 0;
+                    if (updatesInstalled && AvailablePluginUpdateCount == 0) {
+                        UpdateAllPluginsRequiresRestart = true;
+                    }
+
                     return true;
                 }
             });
@@ -222,6 +231,9 @@ namespace NINA.ViewModel.Plugins {
                 }
             }
         }
+
+        [ObservableProperty]
+        public partial bool UpdateAllPluginsRequiresRestart { get; private set; }
 
         private IList<ExtendedPluginManifest> availablePlugins;
 

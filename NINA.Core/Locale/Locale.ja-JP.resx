@@ -175,7 +175,7 @@
     <value>Altairカメラ設定</value>
   </data>
   <data name="LblAltAz" xml:space="preserve">
-    <value>Alt/Az</value>
+    <value>高度/方位角</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>ユーザー色設定選択</value>
@@ -411,15 +411,18 @@
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>このフォーカサーバックラッシュ値が登録されます。内方向: {0}, 外方向: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>ベータ</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>BIASの平均値(16ビットにて）</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>BIASの中央値(16ビット)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>ビニング</value>
@@ -538,6 +541,7 @@
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>Canonエラーが発生しました：{0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>画像を取得してプレートソルブ処理します。。</value>
@@ -570,12 +574,12 @@
     <value>変更</value>
   </data>
   <data name="LblExposureCount" xml:space="preserve">
-    <value>Exposure count</value>
+    <value>露出数</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence has been modified since it was last saved (changes to {0}).
+    <value>最後の保存以降にシーケンスが変更されています（変更箇所: {0}）。
         
-Do you want to continue and lose the changes anyway?</value>
+変更を破棄して続行しますか？</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>変更されたシーケンスを閉じます。</value>
@@ -966,6 +970,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>現在の平均値</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>現在のポジション</value>
@@ -1014,6 +1019,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>薄明始</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>日</value>
@@ -1166,10 +1172,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>ディザリングする一般的なピクセル数。ディザリングは、ターゲットを中心とした正規分布に従い、この値を標準偏差とします。67% のディザリングはこの距離内に収まります。</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>ディザリングの最小移動量</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>連続する架台ディザーの位置間の最小移動量（メインカメラのピクセル数）。0に設定すると、従来のランダムな動作を維持します。「デザリングピクセル」を超える値は設定できません。</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>赤経のみデザリグ</value>
@@ -1281,18 +1287,19 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>薄明終</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>東</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
+    <value>カメラがマニュアルモードまたはバルブモードに設定されていません。モードダイヤルをマニュアルまたはバルブに設定してください。カメラに動画/静止画切り替えスイッチがある場合は、静止画に設定してください。</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>ビットスケーリングをオンにする。</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>8/10/12/14ビット画像を16ビットにスケーリングして保存します。Altair、Canon、Moravian、Nikon、Omegon、RisingCam、SVBonyおよびToupTekのネイティブドライバーを使用する場合にのみ適用されます。</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>オン</value>
@@ -1462,6 +1469,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
     <value>フラットパネル設定</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>フラットパネルより無効な応答を得ました。</value>
@@ -1528,6 +1536,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>フラットウィザード設定</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>フラットウィザードのキャンセル</value>
@@ -1576,6 +1585,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>焦点比</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>フォーカサー</value>
@@ -1593,16 +1603,16 @@ Do you want to continue and lose the changes anyway?</value>
     <value>フォーカスのワンステップサイズ。ワンステップは焦点公差限界点よりも小さいほうが望ましい。</value>
   </data>
   <data name="LblManualStepSmallMultiplier" xml:space="preserve">
-    <value>Small Step Multiplier</value>
+    <value>小さいステップの乗数</value>
   </data>
   <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+    <value>手動フォーカサーの小さいステップ用の乗数（デフォルト：0.5）</value>
   </data>
   <data name="LblManualStepLargeMultiplier" xml:space="preserve">
-    <value>Large Step Multiplier</value>
+    <value>大きいステップの乗数</value>
   </data>
   <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+    <value>手動フォーカサーの大きいステップ用の乗数（デフォルト：5.0）</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>バックラッシュ　IN側/OUT側</value>
@@ -1704,6 +1714,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>ガイドカメラが、予定時間（{0}秒＋10秒）が経過しても、SettleDoneメッセージを送信しませんでした。スキップしています。</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>ガイダー再開失敗</value>
@@ -1980,12 +1991,14 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>算術平均</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>フォーカサーバックラッシュの測定</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>中央値</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>子午線フリップに失敗しました。</value>
@@ -2083,6 +2096,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>いいえ</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>カメラ無し</value>
@@ -2372,9 +2386,11 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>PHD2サーバーポート</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>PHD2サーバーのホスト名</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2設定</value>
@@ -2410,6 +2426,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>PHD2のプロファイル ID {0} が見つかりません。 {1} を使用します。</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>ピクセル</value>
@@ -2419,18 +2436,22 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>ピクセルスケール</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>秒角/ピクセル表示のピクセルスケール</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>ピクセルサイズ</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>ピクセルサイズ X</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>ピクセルサイズ Y</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>プラネタリウム</value>
@@ -2451,7 +2472,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>プラネタリウムの選択</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Import the currently selected planetarium object to update name and coordinates</value>
+    <value>名前と座標の更新のため、現在選択されているプラネタリウム・オブジェクトをインポート</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>選択された対象からの座標</value>
@@ -2484,7 +2505,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>プレートソルブ２回間の遅延分</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>センタリングの修正を{0}回試みましたが失敗しました</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>プレートソルブ現行画像</value>
@@ -2628,7 +2649,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>モード</value>
   </data>
   <data name="LblReadout" xml:space="preserve">
-    <value>Readout</value>
+    <value>読み出し</value>
   </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>カメラの読み出しモードに対応する数値</value>
@@ -2769,10 +2790,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>一眼レフのネイティブドライバーを使っているとき、この設定は無視されます。画像はカメラのRAW形式で保存されます。</value>
   </data>
   <data name="LblSaveNativeCameraRaw" xml:space="preserve">
-    <value>Save native camera RAW</value>
+    <value>ネイティブカメラのRAW保存</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>有効にすると、ネイティブドライバーを使用するNikonおよびCanonカメラの画像をカメラのRAWファイルとして保存します。無効にすると、オプション &gt; 撮像 &gt; ファイル設定に従って画像を保存します。</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>選択されたプロファイルを保存して、次回は質問しない。</value>
@@ -2890,10 +2911,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>ガイド開始再試行</value>
   </data>
   <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
-    <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
+    <value>指定した時間が経過してもガイダーからガイド中の通知がない場合、StartGuidingコマンドの復旧を試みます。</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutTooltip" xml:space="preserve">
-    <value>Timeout in seconds before abandoning a StartGuiding command before attempting to a retry.</value>
+    <value>StartGuidingコマンドを断念して再試行するまでのタイムアウト時間（秒）。</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPath" xml:space="preserve">
     <value>SharpCap Sensor Analysisフォルダ</value>
@@ -2950,7 +2971,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>導入</value>
   </data>
   <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
+    <value>導入に失敗しました</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>導入と中心合わせ</value>
@@ -3203,7 +3224,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>カメラ温度</value>
   </data>
   <data name="LblTertiaryBackground" xml:space="preserve">
-    <value>Tertiary Background</value>
+    <value>三次背景</value>
   </data>
   <data name="LblTheSkyX" xml:space="preserve">
     <value>TheSkyX</value>
@@ -3288,7 +3309,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>ターゲット内で全てのシーケンスアイテムの進捗をリセットする。</value>
   </data>
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
+    <value>現在のターゲットセット内のすべてのターゲットの進行状況をリセット</value>
   </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>シーケンスを開始します。</value>
@@ -3313,7 +3334,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>ToupTekカメラ設定</value>
   </data>
   <data name="LblTrace" xml:space="preserve">
-    <value>Trace</value>
+    <value>トレース</value>
   </data>
   <data name="LblTracking" xml:space="preserve">
     <value>追尾</value>
@@ -3335,6 +3356,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
     <value>キング</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>カスタム</value>
@@ -3343,7 +3365,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>カスタム ({0:0.####}, {1:0.####})</value>
   </data>
   <data name="LblTransitNorth" xml:space="preserve">
-    <value>Transit North</value>
+    <value>子午線北通過</value>
   </data>
   <data name="LblTransitSouth" xml:space="preserve">
     <value>子午線南通過</value>
@@ -3352,10 +3374,10 @@ Do you want to continue and lose the changes anyway?</value>
     <value>北</value>
   </data>
   <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
+    <value>南</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
+    <value>通過時刻</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>トレンドと双曲線</value>
@@ -3410,9 +3432,11 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>平均電流</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>電流</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>装置データ</value>
@@ -3502,7 +3526,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>URL</value>
   </data>
   <data name="LblCopyURL" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>URLをコピー</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB限界</value>
@@ -3662,34 +3686,43 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
     <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>カラーセンサーから生成される画像のFITSやXISF画像ヘッダー内にあるBAYERPATキーワードに使用されるベイヤー配列です。
 デフォルト設定のAuto(オート）はカメラドライバーが使用する任意の配列です。DSLRカメラには適応されません。</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
-    <value>電流</value>
+    <value>現在</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>シーケンス終了時のオプション</value>
@@ -3714,6 +3747,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>カメラのタイムアウト - カメラは露出時間+ {0} 秒後に画像を準備できませんでした</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>パターンプリビュー</value>
@@ -4051,6 +4085,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>ピアサイド</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>カメラのタイムアウト</value>
@@ -4311,7 +4346,7 @@ Do you want to continue and lose the changes anyway?</value>
     <value>順次命令セットのように動作しますが、内部でディープスカイオブジェクトを指定することができ、 必要に応じて内部のすべての命令に座標と回転が自動的に入力されます。</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
-    <value>Deep Sky Object Instruction Set</value>
+    <value>ディープスカイオブジェクトの命令セット</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
     <value>命令セットに到達したとき、このシーケンサー式が検査されます。真の場合は、内部の命令が一度実行され、偽の場合は、スキップされます。</value>
@@ -4372,6 +4407,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>フラットパネルに蓋をする</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>フォーカサーを指定された絶対位置に移動します</value>
@@ -4426,6 +4462,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>望遠鏡のパーク</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>所定の高度と方位角座標に望遠鏡を移動させます</value>
@@ -4444,6 +4481,7 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>望遠鏡のパーク解除</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>追尾に設定</value>
@@ -4483,12 +4521,14 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>指定時間待機</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>指定された時間（hh:mm:ss 形式）待機します。さらに、ユーティリティボックスが利用でき、そこには日没、夕暮れ、夜明け、日の出用の情報が自動的に設定されます。</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>指定時間待機</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>ドリフト後に再中央化</value>
@@ -4503,13 +4543,13 @@ Do you want to continue and lose the changes anyway?</value>
     <value>HFR増加後のオートフォーカス</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-    <value>HFR trend per filter</value>
+    <value>フィルターごとのHFRトレンド</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-    <value>When disabled, the HFR trend is evaluated across all filters combined. 
-This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
-and a temperature sensitive optics on a quickly changing ambient temperature. 
-Note: This mode requires that HFR differences between filters in your setup are small.</value>
+    <value>無効にすると、すべてのフィルターをまとめてHFRトレンドを評価します。
+これにより、特にフィルターを頻繁に交換し、温度変化に敏感な光学系を使用していて、
+外気温が急変する場合に、オートフォーカスをより早く実行できます。
+注意: このモードでは、使用するフィルター間のHFRの差が小さい必要があります。</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>前回のオートフォーカス実行またはシーケンス開始後で、気温が設定値だけ変化した後に、オートフォーカスを開始するトリガー</value>
@@ -4641,7 +4681,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>テンプレート</value>
   </data>
   <data name="LblLinkedTemplates" xml:space="preserve">
-    <value>Linked Templates</value>
+    <value>リンクされたテンプレート</value>
   </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>デフォルトのテンプレート</value>
@@ -4650,10 +4690,10 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>シーケンスからシーケンス命令セットをここにドロップして、新しいテンプレートを作成</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
-    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+    <value>テンプレートをドロップしている間、Ctrlキーを押したままにすると、複写されたテンプレートではなく、リンクされたテンプレートとして追加されます。</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
-    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
+    <value>リンクされたテンプレートは、ソーステンプレートへのライブリンクを維持します。内容はシーケンス内に読み取り専用のプレビューとして表示され、テンプレートの変更時に自動更新されます。ソーステンプレートを更新するには、リンクされたテンプレートの"テンプレート編集"を使用してください。独立したコピーが必要な場合は、通常どおりドロップしてください。</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>テンプレートを上書きしますか？</value>
@@ -4720,6 +4760,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>フラットパネルの蓋を開く</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>フラット装置の明るさを、指定した値に設定します</value>
@@ -4732,6 +4773,7 @@ Note: This mode requires that HFR differences between filters in your setup are 
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>ライトの切り替え</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>指定されたパラメータで露出時間を調べ、フラットを撮影します</value>
@@ -4865,13 +4907,13 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>目標セットを開く</value>
   </data>
   <data name="Lbl_OldSequencer_Title" xml:space="preserve">
-    <value>Legacy Sequencer</value>
+    <value>従来のシーケンサー</value>
   </data>
   <data name="Lbl_OldSequencer_EndOfSequenceHeader" xml:space="preserve">
     <value>最後の目標終了のオプション</value>
   </data>
   <data name="Lbl_OldSequencer_Template" xml:space="preserve">
-    <value>Legacy Sequence Template</value>
+    <value>従来のシーケンステンプレート</value>
   </data>
   <data name="Lbl_OldSequencer_ImportTarget" xml:space="preserve">
     <value>目標のインポート</value>
@@ -5013,58 +5055,58 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>現在の命令セットとすべてのコンテンツを、再使用するためのテンプレートとして保存します</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
-    <value>Linked Template</value>
+    <value>リンクされたテンプレート</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
-    <value>Linked Template: {0}</value>
+    <value>リンクされたテンプレート: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
-    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+    <value>シーケンステンプレートをコピーする代わりに、ソーステンプレートへのライブリンクを追加します。このコンテナ内に現在のテンプレート内容が表示されるため、シーケンス内で内容を確認できます。ただし、"テンプレート編集"を有効にするまでは読み取り専用です。ソーステンプレートが変更されると、このコンテナは自動的に最新バージョンに更新されます。実行中、N.I.N.A.はテンプレートの読み込み完了を待ってから、現在のテンプレート内容を実行します。リンクされたテンプレートがターゲットコンテナに基づく場合でも、テンプレートには再利用可能なシーケンス構造のみが保存されます。この使用箇所のターゲットを選択するには、リンクされたテンプレートにターゲットをドロップしてください。N.I.N.A.はテンプレートが更新されるたびに、そのターゲットを再適用します。複数のシーケンスで同じテンプレートに従わせる場合に使用してください。独立したコピーが必要な場合は、通常どおりテンプレートをドロップしてください。"リンクされたテンプレート"メニューから追加するか、Ctrlキーを押しながらテンプレートをシーケンスにドロップすると、リンクとして追加できます。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
-    <value>Linked template preview</value>
+    <value>リンクされたテンプレートのプレビュー</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
-    <value>Editing linked template</value>
+    <value>リンクされたテンプレートの編集</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
-    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+    <value>"{0}" の読み取り専用プレビュー。 テンプレート編集を使用して、ソーステンプレートを変更します。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
-    <value>Editing the source template. Saving updates the template for every linked use.</value>
+    <value>ソーステンプレートを編集中です。保存すると、このテンプレートをリンクしているすべての箇所に変更が反映されます。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
-    <value>Waiting for template "{0}" to finish loading.</value>
+    <value>テンプレート"{0}"の読み込みが完了するのを待っています。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
-    <value>Template "{0}" could not be found.</value>
+    <value>テンプレート "{0}" が見つかりませんでした。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
-    <value>This linked template does not have a valid source template.</value>
+    <value>このリンクされたテンプレートには、有効なソーステンプレートがありません。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
-    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+    <value>デフォルトのテンプレートは直接編集できません。最初に、このテンプレートをユーザーテンプレートとして保存してください。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
-    <value>Edit Template</value>
+    <value>テンプレート編集</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
-    <value>Save Template</value>
+    <value>テンプレート保存</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
-    <value>Cancel Template Editing</value>
+    <value>テンプレート編集の取り消し</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
-    <value>Target: {0}</value>
+    <value>ターゲット: {0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
-    <value>No target selected. Drop a target here or enter target details below.</value>
+    <value>ターゲットが選択されていません。ここにターゲットをドロップするか、以下にターゲットの詳細を入力してください。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
-    <value>Use this target with the linked template</value>
+    <value>リンクされたテンプレートにこのターゲットを使用</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
-    <value>Select a target for this linked template before running the sequence.</value>
+    <value>シーケンスを実行する前に、このリンクされたテンプレートのターゲットを選択してください。</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>セーフティモニターが接続されていません</value>
@@ -5189,8 +5231,8 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>高度なシーケンスを作成しますか？</value>
   </data>
   <data name="Lbl_OldSequencer_BuildAdvanced_Text" xml:space="preserve">
-    <value>Are you sure to export the sequence to the advanced sequence?
-Note: Advanced sequences are NOT backwards compatible and it is not possible to revert to the legacy sequence!</value>
+    <value>このシーケンスを高度なシーケンスにエクスポートしますか？
+注意: 高度なシーケンスには後方互換性がなく、従来のシーケンスに戻すことはできません！</value>
   </data>
   <data name="Lbl_OldSequencer_SwitchToAdvanced" xml:space="preserve">
     <value>高度なシーケンサー</value>
@@ -5200,10 +5242,10 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
 これにより、細粒度命令・トリガー・条件を使用して、シーケンスをゼロから計画できます。</value>
   </data>
   <data name="LblDisableSimpleSequencer" xml:space="preserve">
-    <value>Disable Legacy Sequencer</value>
+    <value>従来のシーケンサーを無効にする</value>
   </data>
   <data name="LblDisableSimpleSequencerTooltip" xml:space="preserve">
-    <value>This will disable the legacy sequencer and directly show the advanced sequencer in the sequence tab.</value>
+    <value>従来のシーケンサーを無効にし、シーケンスタブに高度なシーケンサーを直接表示します。</value>
   </data>
   <data name="Lbl_Sequencer_SwitchToOverview" xml:space="preserve">
     <value>シーケンサーダッシュボードへの切り替え</value>
@@ -5388,9 +5430,11 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>目標が地平線の上にある間ループし、その後で現在の命令セットを停止する条件</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>高度が地平線より上にある間ループ</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>目標は決して地平線の上に来ることはありません</value>
@@ -5620,11 +5664,11 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>赤経軸回転速度</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>赤緯軸回転速度</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>望遠鏡は赤経軸を動かすことができません</value>
@@ -6103,7 +6147,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>画像の保存に失敗しました</value>
   </data>
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+    <value>画像の保存に失敗しました。保存先のディスクの空き領域が不足している可能性があります。</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>現在の鏡筒の位置から座標を取得</value>
@@ -6259,19 +6303,19 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>日付</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>日</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>月</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>年</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
     <value>観察</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>観測日時を現在の日時に戻す</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>命令</value>
@@ -6584,6 +6628,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
     <value>シャッターまたは屋根を開くように命令されましたが、セーフティモニター装置が切断されています。開放は中止されました。</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>注意: これらの設定は機器の安全性に関連しています。慎重に考慮するとともに、設定に関するご自分の知識を十分活用する必要があります。これらはN.I.N.A.が行う機器の制御のみを管理するものであり、N.I.N.A.が当該機器に接続されていなかったり、機器を運用していなかったりする場合は無効になります。 シャッターや屋根の望ましくない動きを防ぐため、ドームまたは屋根の安全機構は常に、ハードウェアバックアップと電気的連動装置を備えている必要があります。 これらの設定がドームドライバーの設定と矛盾していないことについて、自己責任で確認をお願いします。</value>
@@ -6686,7 +6731,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>接続されたZWOデバイスに割り当てられる、最大8文字までのASCII文字の名前。 これにより、同じデバイス型の複数の装置を一意に識別できます。</value>
   </data>
   <data name="LblDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>接続されたデバイスに割り当てられる、最大8文字までのASCII文字の名前。 これにより、同じデバイス型の複数の装置を一意に識別できます。</value>
   </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>単方向性</value>
@@ -6772,7 +6817,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>フィルター {0}のフラットウィザードが失敗しました。原因 : {1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>フラットの明るさを決定できませんでした。光源が明るすぎます。
@@ -6896,18 +6941,23 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>拡張</value>
@@ -6959,7 +7009,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>ヒストグラムを表示</value>
   </data>
   <data name="LblShowHorizon" xml:space="preserve">
-    <value>Show Local Horizon</value>
+    <value>観測地の地平線を表示</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
     <value>秒角単位で星の測定値を表示</value>
@@ -7037,10 +7087,10 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>望遠鏡のパークは {0} 分経過後にタイムアウトしました。</value>
   </data>
   <data name="LblDomeParkTimeout" xml:space="preserve">
-    <value>Dome park has timed out after {0} minutes.</value>
+    <value>ドームパークは {0} 分後にタイムアウトしました。</value>
   </data>
   <data name="LblDomeParkFailed" xml:space="preserve">
-    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+    <value>ドームは停止しましたが、ドライバーからパーク完了の確認が得られませんでした。</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>望遠鏡のアンパークは {0} 分経過後にタイムアウトしました。</value>
@@ -7097,23 +7147,25 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>IPv4を使用</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>ASCOM Alpacaのデバイス検出に IPv4を使用 (デフォルト: オン)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>IPv6を使用</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>ASCOM Alpacaのデバイス検出にIPv6を使用 (デフォルト: オフ)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>カタログ表示の切り替え</value>
   </data>
   <data name="LblToggleShowAllCatalogues" xml:space="preserve">
-    <value>Show all catalogues</value>
+    <value>すべてのカタログを表示</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>目標高度</value>
@@ -7156,6 +7208,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>シャッターまたは屋根を開くように命令されましたが、安全な状態ではないとセーフティモニター装置が報告しています。開放は中止されました。</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>外部コマンド</value>
@@ -7186,16 +7239,16 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
-    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+    <value>保存したドック構成ファイルから撮像タブのレイアウトを読み込みます</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
-    <value>Load Imaging Layout</value>
+    <value>撮像レイアウトを読み込む</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
-    <value>The selected file is not a valid Imaging layout backup</value>
+    <value>選択したファイルは有効な撮像レイアウトのバックアップではありません</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
-    <value>Select an existing Imaging layout backup file</value>
+    <value>既存の撮像レイアウトのバックアップファイルを選択してください</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>指定したファイルパスに現在のシーケンスを保存します</value>
@@ -7219,16 +7272,16 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>ウェザー・アンダーグラウンドのAPI要求が失敗しました: {0}</value>
   </data>
   <data name="LblZwoResetZeroPosition" xml:space="preserve">
-    <value>Set current position to zero</value>
+    <value>現在位置をゼロに設定</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
     <value>リバース</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
-    <value>Set max step</value>
+    <value>最大位置（ステップ数）を設定</value>
   </data>
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
-    <value>Set current position to zero?</value>
+    <value>現在位置をゼロに設定しますか？</value>
   </data>
   <data name="LblCrosshair" xml:space="preserve">
     <value>十字線</value>
@@ -7249,7 +7302,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>警告: 子午線反転の設定で「鏡筒の軸の向きを使用」は無効になっており、子午線近くにあるドーム内の赤道儀で、アライメントの問題を引き起こす可能性があります。 ドームは子午線反転が正確に子午線で起こると仮定しますので、マウントがまだ反転していない場合、アラインメントのエラーが起きる可能性があります.</value>
   </data>
   <data name="LblCompleteDuration" xml:space="preserve">
-    <value>Complete duration</value>
+    <value>全期間</value>
   </data>
   <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
     <value>手動の編集とドラッグ&amp;ドロップができないように、シーケンサーをロックする</value>
@@ -7359,213 +7412,213 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
   <data name="LblCivilDusk" xml:space="preserve">
-    <value>Civil dusk</value>
+    <value>市民薄明の終わり</value>
   </data>
   <data name="LblCivilDawn" xml:space="preserve">
     <value>市民薄明</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
-    <value>Refuse mount unpark if shutter is not open</value>
+    <value>シャッターが開いていない場合に架台のパーク解除を不許可</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
-    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+    <value>ドームのシャッターまたは屋根が開いていなければ、架台のパーク解除ができません</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
-    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+    <value>シャッターや屋根の状態が「閉鎖」「閉鎖中」「開放中」「エラー発生」の場合、架台のパーク解除を不許可にします。架台のパーク解除が許可されるのは、シャッターまたは屋根の状態が「開放」であると報告された場合だけです。</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
-    <value>There is no civil dawn at your location today.</value>
+    <value>今日の観測地では市民薄明の開始時刻がありません。</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
-    <value>There is no civil dusk at your location today.</value>
+    <value>今日の観測地では市民薄明の終了時刻がありません。</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
-    <value>There is no astronomical dawn at your location today.</value>
+    <value>今日の観測地では天文薄明の開始時刻がありません。</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
-    <value>There is no astronomical dusk at your location today.</value>
+    <value>今日の観測地では天文薄明の終了時刻がありません。</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
-    <value>There is no nautical dawn at your location today.</value>
+    <value>今日の観測地では航海薄明の開始時刻がありません。</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
-    <value>There is no nautical dusk at your location today.</value>
+    <value>今日の観測地では航海薄明の終了時刻がありません。</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
-    <value>There is no sunrise at your location today.</value>
+    <value>今日の観測地では日の出が起きません。</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
-    <value>There is no sunset at your location today.</value>
+    <value>今日の観測地では日没が起きません。</value>
   </data>
   <data name="LblUnableToConnectTo" xml:space="preserve">
-    <value>Unable to connect to {0}</value>
+    <value>{0} へ接続できません</value>
     <comment>Parameters: {0}=Url or device etc</comment>
   </data>
   <data name="LblCameraNoSupport16bit" xml:space="preserve">
-    <value>Camera does not support 16 bit mode</value>
+    <value>カメラは16ビットモードをサポートしていません</value>
   </data>
   <data name="LblExposureInProgress" xml:space="preserve">
-    <value>Another exposure still in progress. Cancel it to start another.</value>
+    <value>別の撮影がまだ進行中です。新しい撮影を開始するには、進行中の撮影をキャンセルしてください。</value>
   </data>
   <data name="LblFailedToConnectDevice" xml:space="preserve">
-    <value>Failed to connect {0}, {1}</value>
+    <value>{0}への接続に失敗しました: {1}</value>
     <comment>Parameters: 0=Device ID, 1=error message</comment>
   </data>
   <data name="LblGenericCameraError" xml:space="preserve">
-    <value>Camera reported a generic error and needs to be reconnected!</value>
+    <value>カメラが一般的なエラーを報告しました。再接続する必要があります!</value>
   </data>
   <data name="LblCameraDisconnected" xml:space="preserve">
-    <value>Camera disconnected! Maybe USB connection was interrupted.</value>
+    <value>カメラが切断されました！USB接続が遮断されている可能性があります。</value>
   </data>
   <data name="LblMetaGuideListenerError" xml:space="preserve">
-    <value>MetaGuide Listener Error: {0}</value>
+    <value>MetaGuideリスナーエラー: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPostFailed" xml:space="preserve">
-    <value>Failed to post {0} message</value>
+    <value>{0} メッセージの投稿に失敗しました</value>
     <comment>Parameters: {0}=message type</comment>
   </data>
   <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
-    <value>Guiding is not active. Unable to dither</value>
+    <value>ガイドが行われていません。ディザリングできません。</value>
   </data>
   <data name="LblFailedCommsMGENDither" xml:space="preserve">
-    <value>Failed to communicate to MGEN during dithering</value>
+    <value>ディザリング中にMGENと通信できませんでした</value>
   </data>
   <data name="LblPHDError" xml:space="preserve">
-    <value>PHD Error: {0}
-CODE: {1}</value>
+    <value>PHDエラー: {0}
+コード: {1}</value>
     <comment>Parameters: {0}=error message, {1}=error code</comment>
   </data>
   <data name="LblPHDErrorMsg" xml:space="preserve">
-    <value>PHD Error: {0}</value>
+    <value>PHDエラー: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblTWCNoAPIKey" xml:space="preserve">
-    <value>There is no TheWeatherCompany API key configured.</value>
+    <value>TheWeatherCompanyのAPIキーが設定されていません。</value>
   </data>
   <data name="LblFileNotExist" xml:space="preserve">
-    <value>File {0} does not exist</value>
+    <value>ファイル {0} は存在しません</value>
     <comment>Parameters: {0}=file path</comment>
   </data>
   <data name="LblASTAPNoOutputFile" xml:space="preserve">
-    <value>ASTAP - Plate solve failed. No output file found.</value>
+    <value>ASTAP - プレートソルブに失敗しました。出力ファイルが見つかりません。</value>
   </data>
   <data name="LblASTAPSolveFailed" xml:space="preserve">
-    <value>ASTAP - Plate solve failed.
+    <value>ASTAP-プレートソルブに失敗しました。
 {0}
 {1}</value>
     <comment>Parameters: {0}=warning, {1}=error</comment>
   </data>
   <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
-    <value>Error plate solving with Astrometry.net. {0}</value>
+    <value>Astrometry.netのプレートソルブエラー。 {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblExposureOverMax" xml:space="preserve">
-    <value>The predicted exposure of {0}s is longer than the maximum allowed.
-Stopping sky flat acquisition.</value>
+    <value>予測露出時間{0}秒は、最大許容値を超えています。
+スカイフラットの取得を停止しています。</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblExposureUnderMin" xml:space="preserve">
-    <value>The predicted exposure of {0}s is shorter than the minimum allowed.
-Stopping sky flat acquisition.</value>
+    <value>予測露出時間{0}秒は、最小許容値を下回っています。
+スカイフラットの取得を停止しています。</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
-    <value>Skyflat correction did not work and is outside of tolerance:
-first exposure time {0:#.####}
-current exposure time {1:#.####}
-elapsed time: {2:#.##}
-mean adu: {3:#.##}.
-The sky flat exposure time will be determined again and the exposure will be repeated.</value>
+    <value>スカイフラット補正は動作しませんでした。許容範囲を越えています。
+最初の露出時間：{0:#.####}
+現在の露出時間：{1:#.####}
+経過時間：{2:#.##}
+平均ADU：{3:#.##}。
+スカイフラットの露出時間は計算し直され、再度露出が行われます。</value>
     <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
   </data>
   <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
-    <value>Failed to restore previous filter position: {0}</value>
+    <value>以前のフィルタ位置を復元できませんでした: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblFailedToChangeFilter" xml:space="preserve">
-    <value>Failed to change filter: {0}</value>
+    <value>フィルタの変更に失敗しました: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSetShiftRateFailed" xml:space="preserve">
-    <value>Set shift rate failed. {0}</value>
+    <value>シフトレートの設定に失敗しました。 {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPrepareImageFailed" xml:space="preserve">
-    <value>Failed to prepare image for display: {0}</value>
+    <value>画像表示の準備に失敗しました: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
-    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+    <value>変更が露出数だけのときは、シーケンスを保存する指示を表示しない。</value>
   </data>
   <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
-    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
-You'll normally be prompted to save the sequence to save the changed exposure count.
+    <value>シーケンスを編集せずに実行した場合でも、露出数は変化します。
+通常は、変更された露出数を保存するためにシーケンスの保存を求められます。
 
-If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+露出数の保存が重要でない場合は、このオプションを有効にすると、実行後にシーケンスを保存する必要がなくなります。</value>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
-    <value>Day Rollover Time</value>
+    <value>日付の切り替え時刻</value>
   </data>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
-    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+    <value>この命令には日付が指定されていないため、表示された切り替え時刻に新しい日へ切り替わります。</value>
   </data>
   <data name="LblInitializing" xml:space="preserve">
-    <value>Initializing</value>
+    <value>初期化中</value>
   </data>
   <data name="LblOasisClearStallPrompt" xml:space="preserve">
-    <value>Clear stall?</value>
+    <value>ストール状態を解除しますか？</value>
   </data>
   <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value>Focuser stalled. You need to manually clear stall.</value>
+    <value>フォーカサーがストールしました。手動でストール状態を解除する必要があります。</value>
   </data>
   <data name="LblBeepOnStartup" xml:space="preserve">
-    <value>Beep on startup</value>
+    <value>起動時にビープ音</value>
   </data>
   <data name="LblBeepOnMove" xml:space="preserve">
-    <value>Beep on move</value>
+    <value>移動時にビープ音</value>
   </data>
   <data name="LblOasisHeating" xml:space="preserve">
-    <value>Heating</value>
+    <value>加熱</value>
   </data>
   <data name="LblOasisHeatingTemperature" xml:space="preserve">
-    <value>Heating temperature</value>
+    <value>加熱温度</value>
   </data>
   <data name="LblOasisStallDetection" xml:space="preserve">
-    <value>Stall detection</value>
+    <value>ストール検出</value>
   </data>
   <data name="LblOasisIsStalled" xml:space="preserve">
-    <value>Is stalled</value>
+    <value>ストール状態</value>
   </data>
   <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value>USB capacity</value>
+    <value>USB給電容量</value>
   </data>
   <data name="LblOasisSpeed" xml:space="preserve">
-    <value>Speed</value>
+    <value>速度</value>
   </data>
   <data name="LblOasisClearStall" xml:space="preserve">
-    <value>Clear stall</value>
+    <value>ストール状態の解除</value>
   </data>
   <data name="LblOasisDcPower" xml:space="preserve">
-    <value>DC power</value>
+    <value>直流電源</value>
   </data>
   <data name="LblOasisBoardHeating" xml:space="preserve">
-    <value>Board heating</value>
+    <value>基板加熱中</value>
   </data>
   <data name="LblOasisHeatingPower" xml:space="preserve">
-    <value>Heating power</value>
+    <value>加熱出力</value>
   </data>
   <data name="LblOasisBoardTemperature" xml:space="preserve">
-    <value>Board temperature</value>
+    <value>基板温度</value>
   </data>
   <data name="LblOasisSyncPosition" xml:space="preserve">
-    <value>Sync position</value>
+    <value>同期位置</value>
   </data>
   <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
-    <value>Set current position to sync position?</value>
+    <value>現在位置を、入力した同期位置の値に設定しますか？</value>
   </data>
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+    <value>選択したOasisフォーカサーは利用できません。デバイスの接続を確認し、再スキャンしてください。</value>
   </data>
   <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
     <value>選択したOasisフィルターホイールは利用できません。デバイスの接続を確認し、再スキャンしてください。</value>
@@ -7574,409 +7627,415 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>ターボモード</value>
   </data>
   <data name="LblOasisDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>デバイスID</value>
   </data>
   <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
-    <value>Device ID</value>
+    <value>デバイスID</value>
   </data>
   <data name="LblOasisState" xml:space="preserve">
-    <value>State</value>
+    <value>状態</value>
   </data>
   <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
-    <value>Sync focus offsets</value>
+    <value>フォーカスオフセットを同期</value>
   </data>
   <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
-    <value>Store focus offsets</value>
+    <value>フォーカスオフセットを保存</value>
   </data>
   <data name="LblOasisSyncFilterNames" xml:space="preserve">
-    <value>Sync filter names</value>
+    <value>フィルター名を同期</value>
   </data>
   <data name="LblOasisStoreFilterNames" xml:space="preserve">
-    <value>Store filter names</value>
+    <value>フィルター名を保存</value>
   </data>
   <data name="LblOasisAutorun" xml:space="preserve">
-    <value>Autorun</value>
+    <value>オートラン</value>
   </data>
   <data name="LblOasisSpeedTooltip" xml:space="preserve">
-    <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
+    <value>周囲温度が非常に低い場合は、速度にNormalまたはSlowを選択すると、フィルターをスムーズに切り替えることができます。</value>
   </data>
   <data name="LblOasisTurboModeTooltip" xml:space="preserve">
-    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port has at least 5V,1A power supply capacity.</value>
+    <value>モーターのトルクを上げるためにターボモードを有効にします。これは、周囲温度が非常に低い場合に役立つ場合があります。 USBホストポートに少なくとも5V 1Aの電源容量があることを確認してください。</value>
   </data>
   <data name="LblOasisAutorunTooltip" xml:space="preserve">
-    <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
+    <value>電源投入時にフィルターを最後の位置に自動的に切り替える場合、このオプションを有効にします。</value>
   </data>
   <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
-    <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
+    <value>Oasisデバイスに保存されたフォーカスオフセットを読み取り、NINAフォーカスオフセットを更新します。</value>
   </data>
   <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA focus offsets to the Oasis filter wheel.</value>
+    <value>NINAフォーカスオフセットを、Oasisフィルターホイールにアップロードして保存します。</value>
   </data>
   <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
-    <value>Reads the filter names stored on the Oasis device and updates the NINA filter labels.</value>
+    <value>Oasisデバイスに保存されたフィルター名を読み取り、NINAフィルターラベルを更新します。</value>
   </data>
   <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA filter names to the Oasis filter wheel.</value>
+    <value>NINAフィルター名を、Oasisフィルターホイールにアップロードして保存します。</value>
   </data>
   <data name="LblOasisCounter" xml:space="preserve">
-    <value>Counter</value>
+    <value>カウンター</value>
   </data>
   <data name="LblOasisCounterTooltip" xml:space="preserve">
-    <value>Indicator that shows how many filter slots have been rotated since the filter wheel powered up.</value>
+    <value>フィルターホイールの電源投入後に、いくつのフィルタースロットが回転したかを示すインジケーター。</value>
   </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
-    <value>ASCOM Alpaca IP Setup</value>
+    <value>ASCOM Alpaca IP設定</value>
   </data>
   <data name="LblAlpacaDirectServiceType" xml:space="preserve">
-    <value>Service Type</value>
+    <value>サービスタイプ</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
   <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
-    <value>IP Address</value>
+    <value>IPアドレス</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
     <value>ポート</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
-    <value>Device Number</value>
+    <value>デバイス番号</value>
   </data>
   <data name="LblSymbols" xml:space="preserve">
-    <value>Symbols</value>
+    <value>シンボル</value>
   </data>
   <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
-    <value>No other data for {0}</value>
+    <value>{0} の他のデータなし</value>
     <comment>{0} will be filled with the category name</comment>
   </data>
   <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
-    <value>Additional Symbols:</value>
+    <value>追加シンボル:</value>
     <comment>The prefix for additional data rows for symbol tooltips</comment>
   </data>
   <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
-    <value>Options:</value>
+    <value>オプション：</value>
     <comment>The prefix per symbol for additional options</comment>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
-    <value>Click any symbol to copy it to the clipboard.</value>
+    <value>シンボルをクリックすると、クリップボードにコピーします。</value>
   </data>
   <data name="LblTrue" xml:space="preserve">
-    <value>True</value>
+    <value>真</value>
   </data>
   <data name="LblFalse" xml:space="preserve">
-    <value>False</value>
+    <value>偽</value>
   </data>
   <data name="LblDecimal" xml:space="preserve">
-    <value>(Decimal: </value>
+    <value>(10進数: </value>
     <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
   </data>
   <data name="LblWarnings" xml:space="preserve">
-    <value>Warning(s): {0}</value>
+    <value>警告： {0}</value>
   </data>
   <data name="LblNoErrors" xml:space="preserve">
-    <value>No errors</value>
+    <value>エラーなし</value>
   </data>
   <data name="LblErrors" xml:space="preserve">
-    <value>Error(s): {0}</value>
+    <value>エラー： {0}</value>
   </data>
   <data name="LblNotEvaluated" xml:space="preserve">
-    <value>Not Evaluated</value>
+    <value>未評価</value>
     <comment>As in, a variable is not yet evaluated</comment>
   </data>
   <data name="LblTomorrow" xml:space="preserve">
-    <value>tomorrow</value>
+    <value>明日</value>
   </data>
   <data name="LblYesterday" xml:space="preserve">
-    <value>yesterday</value>
+    <value>昨日</value>
   </data>
   <data name="LblUndefined" xml:space="preserve">
-    <value>Undefined</value>
+    <value>未定義</value>
     <comment>As in "Undefined: &lt;variable name&gt;"</comment>
   </data>
   <data name="LblSyntaxError" xml:space="preserve">
-    <value>Syntax error</value>
+    <value>構文エラー</value>
     <comment>Used when an Expression can't be parsed</comment>
   </data>
   <data name="LblMustBeInteger" xml:space="preserve">
-    <value>Value must be an Integer</value>
+    <value>値は整数でなければなりません</value>
   </data>
   <data name="LblAnd" xml:space="preserve">
-    <value>and</value>
+    <value>および</value>
   </data>
   <data name="LblAlreadyDefined" xml:space="preserve">
-    <value>is already defined</value>
+    <value>定義済みです</value>
     <comment>As in &lt;variable&gt; is already defined</comment>
   </data>
   <data name="LblConstantVariable" xml:space="preserve">
-    <value>The Constant/Variable</value>
+    <value>定数/変数</value>
     <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
   </data>
   <data name="LblNoSymbols" xml:space="preserve">
-    <value>No defined Constant/Variable is used in this expression</value>
+    <value>式内で定義済みの定数/変数が使われていません</value>
   </data>
   <data name="LblNotYetDefined" xml:space="preserve">
-    <value> The Constant/Variable is not yet defined</value>
+    <value>定数/変数はまだ定義されていません</value>
   </data>
   <data name="LblValueBetween" xml:space="preserve">
-    <value>Value must be between {0} and {1}</value>
+    <value>値は {0}と{1}の間でなければなりません</value>
   </data>
   <data name="LblVariable" xml:space="preserve">
-    <value>Variable:</value>
+    <value>変数：</value>
   </data>
   <data name="LblInitially" xml:space="preserve">
-    <value>Initially</value>
+    <value>最初は</value>
   </data>
   <data name="LblNewValue" xml:space="preserve">
-    <value>New Value</value>
+    <value>新しい値</value>
   </data>
   <data name="LblIsAmbiguous" xml:space="preserve">
-    <value>is ambiguous, use one of</value>
+    <value>曖昧ですので、次のどれかを使ってください</value>
     <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
   </data>
   <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
-    <value>Symbols</value>
+    <value>シンボル</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Defines a global variable for expressions anywhere in this sequence. Its initial value is assigned when this instruction runs, so place it before instructions that use it. Use Set Variable to change it later.</value>
+    <value>このシーケンス内のどこからでも式で参照できるグローバル変数を定義します。初期値はこの命令の実行時に代入されるため、この変数を使用する命令より前に配置してください。後から値を変更するには、「変数を設定」を使用します。</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
-    <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
+    <value>この命令セットと、その内部にネストされた命令セット内の式で参照できる変数を定義します。初期値はこの命令の実行時に代入されます。後から値を変更するには、「変数を設定」を使用します。親や同じ階層の他の命令セットからは参照できません。</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
-    <value>Define Variable</value>
+    <value>変数を定義</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
+    <value>このシーケンス内のどこからでも式で参照できる、名前付きのグローバルな値を定義します。シーケンスの実行前から使用できます。値を変更するには、この命令を編集してください。「変数を設定」では定数を変更できません。</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
-    <value>Define Constant</value>
+    <value>定数を定義</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
-    <value>Set Variable</value>
+    <value>変数を設定</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+    <value>変数が事前に定義されていると、その値は式の結果となります</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
-    <value>Set Variable to Date/Time</value>
+    <value>変数を日付/時刻に設定</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+    <value>変数が事前に定義されていると、その値は指定された日付/時刻になります</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
-    <value>Loop While</value>
+    <value>～の間ループ</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
-    <value>Loops while the Expression is not false</value>
+    <value>式が偽でない間ループします</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
-    <value>Wait Until</value>
+    <value>～まで待機</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
-    <value>Waits until the Expression is true</value>
+    <value>式が真になるまで待機します</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
-    <value>Random double value between 0.0 and 1.0.</value>
+    <value>0.0から1.0の間のランダムな倍精度浮動小数点数値</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
-    <value>Current Unix timestamp in seconds.</value>
+    <value>現在のUNIXタイムスタンプ（秒）</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
-    <value>Hour component (0-23) of a datetime or the current time.</value>
+    <value>日時または現在時刻の時の成分（0～23）</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
-    <value>Minute component (0-59) of a datetime or the current time.</value>
+    <value>日時または現在時刻の分の成分（0～59）</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
-    <value>Day of the month (1-31) of a datetime or the current date.</value>
+    <value>指定した日時、または現在の日付の日（1～31）</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1-12) of a datetime or the current date.</value>
+    <value>指定した日時、または現在の日付の月（1～12）</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
-    <value>Year component of a datetime or the current date.</value>
+    <value>指定した日時、または現在の日付の年</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
-    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+    <value>整数で表した曜日（0=日曜日･･･6=土曜日）</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
-    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+    <value>指定した日時に、指定した分数を加えた日時（Unixタイムスタンプ）</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
-    <value>Datetime plus the specified hours (Unix timestamp).</value>
+    <value>指定した日時に、指定した時間数を加えた日時（Unixタイムスタンプ）</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
-    <value>Seconds elapsed since the given datetime (Unix timestamp).</value>
+    <value>指定した日時（Unixタイムスタンプ）からの経過秒数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
-    <value>Datetime formatted using the specified .NET format string.</value>
+    <value>指定した.NET書式文字列で書式設定した日時。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
-    <value>Whether the string starts with the specified prefix.</value>
+    <value>文字列が指定した接頭辞で始まるかどうか。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
-    <value>Length of the given string, or -1 if the value is not a string.</value>
+    <value>指定した文字列の長さ。値が文字列でない場合は-1。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
-    <value>Concatenation of two strings.</value>
+    <value>2つの文字列を連結した結果。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
-    <value>Character at the specified zero-based index, or empty if out of bounds.</value>
+    <value>指定した0始まりのインデックスにある文字。範囲外の場合は空文字列。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
-    <value>Whether the string contains the specified substring.</value>
+    <value>文字列に指定した部分文字列が含まれるかどうか。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
-    <value>Whether the string ends with the specified suffix.</value>
+    <value>文字列が指定した接尾辞で終わるかどうか。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
-    <value>Substring of the given string; empty if out of range.</value>
+    <value>指定した文字列の部分文字列。範囲外の場合は空文字列。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
-    <value>Lower-case version of the string (invariant).</value>
+    <value>文字列を小文字に変換した結果（カルチャに依存しない変換）。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
-    <value>Upper-case version of the string (invariant).</value>
+    <value>文字列を大文字に変換した結果（カルチャに依存しない変換）。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
-    <value>Absolute value of a number.</value>
+    <value>数値の絶対値。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
-    <value>Angle whose cosine is the specified number.</value>
+    <value>指定した数を余弦とする角度。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
-    <value>Angle whose sine is the specified number.</value>
+    <value>指定した数を正弦とする角度。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
-    <value>Angle whose tangent is the specified number.</value>
+    <value>指定した数を正接とする角度。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
-    <value>Arithmetic mean of all arguments.</value>
+    <value>すべての引数の算術平均。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
-    <value>Smallest integer greater than or equal to the number.</value>
+    <value>指定した数以上の最小の整数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
-    <value>Cosine of the specified angle.</value>
+    <value>指定した角度の余弦。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
-    <value>e raised to the specified power.</value>
+    <value>eを指定した指数で累乗した値。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
-    <value>Largest integer less than or equal to the number.</value>
+    <value>指定した数以下の最大の整数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
-    <value>IEEE remainder of x / y.</value>
+    <value>IEEE規格に従って求めたx / yの剰余。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
-    <value>Natural logarithm of a number.</value>
+    <value>数値の自然対数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
-    <value>Logarithm of a number.</value>
+    <value>数値の対数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
-    <value>Base-10 logarithm of a number.</value>
+    <value>数値の常用対数（底10）。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
-    <value>Larger of two numbers.</value>
+    <value>2つの数のうち大きい方。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
-    <value>Smaller of two numbers.</value>
+    <value>2つの数のうち小さい方。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
-    <value>Number raised to the specified power.</value>
+    <value>数値を指定した指数で累乗した値。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
-    <value>Rounded value to the nearest integer or specified decimal places.</value>
+    <value>最も近い整数、または指定した小数点以下の桁数に丸めた値。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
-    <value>Sign of a number.</value>
+    <value>数値の符号。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
-    <value>Sine of the specified angle.</value>
+    <value>指定した角度の正弦。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
-    <value>Square root of a number.</value>
+    <value>数値の平方根。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
-    <value>Tangent of the specified angle.</value>
+    <value>指定した角度の正接。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
-    <value>Integral part of a number.</value>
+    <value>数値の整数部。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
-    <value>Mathematical modulus (x mod y). Result is in [0, y) for positive y.</value>
+    <value>数学的な剰余（x mod y）。yが正の場合、結果は[0, y)の範囲。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
-    <value>Value clamped to the inclusive range [min, max].</value>
+    <value>両端を含む範囲[min, max]に制限した値。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
-    <value>Whether x is between min and max (inclusive).</value>
+    <value>xがmin以上max以下の範囲内にあるかどうか。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
-    <value>Conversion from radians to degrees.</value>
+    <value>ラジアンから度への変換。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
-    <value>Conversion from degrees to radians.</value>
+    <value>度からラジアンへの変換。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
-    <value>Sum of all arguments.</value>
+    <value>すべての引数の合計。</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
-    <value>Whether an element is in a set of values.</value>
+    <value>要素が値の集合に含まれるかどうか。</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
-    <value>Conditional value based on a condition.</value>
+    <value>条件に応じて選択される値。</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
-    <value>Conditional value based on multiple conditions, with a default.</value>
+    <value>複数の条件に応じて選択される値。既定値あり。</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
-    <value>Whether a symbol name is defined in the symbol table.</value>
+    <value>シンボル名がシンボルテーブルに定義されているかどうか。</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
-    <value>Logical negation of a boolean value.</value>
+    <value>ブール値の論理否定。</value>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
-    <value>Click any function to copy it to the clipboard.</value>
+    <value>関数をクリックすると、クリップボードにコピーします。</value>
   </data>
   <data name="Lbl_SymbolFunctions" xml:space="preserve">
-    <value>Functions</value>
+    <value>関数</value>
   </data>
   <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
-    <value>Usage</value>
+    <value>使用方法</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
-    <value>Function '{0}' expects no arguments, but got {1}.</value>
+    <value>関数'{0}'は引数を取りませんが、{1}個指定されています。</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
-    <value>Function '{0}' expects exactly one argument, but got {1}.</value>
+    <value>関数'{0}'には引数がちょうど1個必要ですが、{1}個指定されています。</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
-    <value>Function '{0}' expects exactly {1} arguments, but got {2}.</value>
+    <value>関数'{0}'には引数がちょうど{1}個必要ですが、{2}個指定されています。</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
-    <value>Function '{0}' expects between {1} and {2} arguments, but got {3}.</value>
+    <value>関数'{0}' は{1}～{2}個の引数を要求していますが、 {3}個でした。</value>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
-    <value>Value must be greater than or equal to {0}.</value>
+    <value>値は{0}以上でなければなりません。</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
-    <value>Value must be greater than {0}.</value>
+    <value>値は{0}より大きくなければなりません。</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
-    <value>Value must be between {0} and {1}.</value>
+    <value>値は{0}以上、{1}以下でなければなりません。</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
-    <value>Value must be between {0} and less than {1}.</value>
+    <value>値は{0}以上、{1}未満でなければなりません。</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and up to {1}.</value>
+    <value>値は{0}より大きく、{1}以下でなければなりません。</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and less than {1}.</value>
+    <value>値は{0}より大きく、{1}未満でなければなりません。</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>通知作業エリア</value>
@@ -8009,44 +8068,44 @@ If exposure count is not important to you, enable this option to avoid having to
     <value>ZStandard</value>
   </data>
   <data name="LblMoravianFlashVersion" xml:space="preserve">
-    <value>Flash version</value>
+    <value>フラッシュ・バージョン</value>
     <comment>Version of an internal camera component stored in flash memory.
     This is a separate version from camera firmware and driver.</comment>
   </data>
   <data name="LblDimensions" xml:space="preserve">
-    <value>Dimensions</value>
+    <value>寸法</value>
     <comment>Label for entering subframe dimensions</comment>
   </data>
   <data name="LblTop" xml:space="preserve">
-    <value>Top</value>
+    <value>上</value>
   </data>
   <data name="LblLeft" xml:space="preserve">
-    <value>Left</value>
+    <value>左</value>
   </data>
   <data name="LblSequencerExpressionValues" xml:space="preserve">
-    <value>Sequencer expressions values</value>
+    <value>シーケンサーの式の値</value>
   </data>
   <data name="LblEccentricity" xml:space="preserve">
-    <value>Eccentricity</value>
+    <value>離心率</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
     <value>カスタムトリガー</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
-    <value>Use an existing trigger as the trigger source, then choose your own instructions to run when that trigger would normally fire.
-This is useful when a built-in trigger has the timing you need, but you want custom actions.</value>
+    <value>既存のトリガーをトリガーソースとして使用し、そのトリガーが通常発動するタイミングで実行する独自の命令を選択します。
+組み込みトリガーの発動タイミングを利用しつつ、実行する処理を独自に指定したい場合に便利です。</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
-    <value>Trigger Source</value>
+    <value>トリガーソース</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
-    <value>Custom Trigger Instructions</value>
+    <value>カスタムトリガー命令</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
-    <value>Drop a trigger here to choose when the custom trigger runs.</value>
+    <value>ここにトリガーをドロップし、いつカスタムトリガーを実行するのかを選択します。</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
-    <value>Drop instructions here to run when the selected trigger source fires.</value>
+    <value>選択したトリガーソースが動作するときに実行する命令をここにドロップします。</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
     <value>トリガーソースの追加</value>
@@ -8055,138 +8114,138 @@ This is useful when a built-in trigger has the timing you need, but you want cus
     <value>独自命令の追加</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
-    <value>Add a trigger source.</value>
+    <value>トリガーソースを追加してください。</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
-    <value>Add at least one instruction.</value>
+    <value>少なくとも1つの命令を追加してください。</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
-    <value>Trigger On Unsafe</value>
+    <value>危険な時に動作</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Description" xml:space="preserve">
-    <value>Runs configured instructions when the safety monitor reports unsafe conditions or disconnects after being connected, waits until conditions are safe again, then runs follow-up instructions.</value>
+    <value>セーフティモニターが危険な状態を報告したり、接続後に切断したりした場合に、設定された命令を実行し、状態が再び安全になるまで待機し、その後でフォローアップ命令を実行します。</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
-    <value>Before Waiting For Safety</value>
+    <value>安全になるまで待機する前</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description" xml:space="preserve">
-    <value>After Waiting For Safety</value>
+    <value>安全になるまで待機した後</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting until conditions are safe again.</value>
+    <value>状態が安全になるまで待つ前に実行される命令。</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after conditions are safe again.</value>
+    <value>状態が再度安全になった後で実行される命令。</value>
   </data>
   <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
-    <value>Show Star Mass in Guide Graph</value>
+    <value>ガイドグラフに星像の明るさを表示</value>
   </data>
   <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
-    <value>Show Star SNR in Guide Graph</value>
+    <value>ガイドグラフに星像のSNRを表示</value>
   </data>
   <data name="LblStarMass" xml:space="preserve">
-    <value>Star Mass</value>
+    <value>星像の明るさ</value>
   </data>
   <data name="LblStarSNR" xml:space="preserve">
-    <value>Star SNR</value>
+    <value>星像のSNR</value>
   </data>
   <data name="Lbl_SequenceHistory_Undo" xml:space="preserve">
-    <value>Undo</value>
+    <value>元に戻す</value>
   </data>
   <data name="Lbl_SequenceHistory_Redo" xml:space="preserve">
-    <value>Redo</value>
+    <value>やり直し</value>
   </data>
   <data name="Lbl_SequenceHistory_Title" xml:space="preserve">
-    <value>Edit history</value>
+    <value>編集履歴</value>
   </data>
   <data name="Lbl_SequenceHistory_Hint" xml:space="preserve">
-    <value>Select a state to undo or redo to it.</value>
+    <value>状態を選択すると、その状態まで元に戻すか、やり直します。</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>現在</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
-    <value>(saved)</value>
+    <value>(保存済み)</value>
   </data>
   <data name="Lbl_SequenceHistory_Initial" xml:space="preserve">
-    <value>Earlier state</value>
+    <value>以前の状態</value>
   </data>
   <data name="Lbl_SequenceHistory_UndoAction" xml:space="preserve">
-    <value>Undo {0}</value>
+    <value>{0} を元に戻す</value>
   </data>
   <data name="Lbl_SequenceHistory_RedoAction" xml:space="preserve">
-    <value>Redo {0}</value>
+    <value>{0} をやり直す</value>
   </data>
   <data name="Lbl_SequenceHistory_EditAction" xml:space="preserve">
-    <value>Edit {0}: {1}</value>
+    <value>編集 {0}: {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MoveAction" xml:space="preserve">
-    <value>Move {0}</value>
+    <value>{0}を移動</value>
   </data>
   <data name="Lbl_SequenceHistory_AddAction" xml:space="preserve">
-    <value>Add {0}</value>
+    <value>{0} を追加</value>
   </data>
   <data name="Lbl_SequenceHistory_Position" xml:space="preserve">
-    <value>Position {0}</value>
+    <value>位置 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PositionChange" xml:space="preserve">
-    <value>Position {0} -&gt; {1}</value>
+    <value>ポジション {0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_DeleteAction" xml:space="preserve">
-    <value>Delete {0}</value>
+    <value>{0} を削除</value>
   </data>
   <data name="Lbl_SequenceHistory_DuplicateAction" xml:space="preserve">
-    <value>Duplicate {0}</value>
+    <value>{0}を複製</value>
   </data>
   <data name="Lbl_SequenceHistory_PlaceAction" xml:space="preserve">
-    <value>Place item in {0}</value>
+    <value>アイテムを {0} に置く</value>
   </data>
   <data name="Lbl_SequenceHistory_ToggleAction" xml:space="preserve">
-    <value>Enable/disable {0}</value>
+    <value>{0}を有効/無効にする</value>
   </data>
   <data name="Lbl_SequenceHistory_ClearAction" xml:space="preserve">
-    <value>Clear sequence</value>
+    <value>シーケンスを消去</value>
   </data>
   <data name="Lbl_SequenceHistory_TargetAction" xml:space="preserve">
-    <value>Change target {0}</value>
+    <value>ターゲット {0}を変更</value>
   </data>
   <data name="Lbl_SequenceHistory_Conflict" xml:space="preserve">
-    <value>This edit cannot be restored because its configuration was changed outside edit history. The sequence has not been changed.</value>
+    <value>設定が編集履歴の外で変更されたため、この編集は復元できません。シーケンスは変更されていません。</value>
   </data>
   <data name="Lbl_SequenceHistory_Failed" xml:space="preserve">
-    <value>Restoring the edit failed. Edit history was cleared. Review the sequence before continuing.</value>
+    <value>編集の復元に失敗しました。編集履歴をクリアしました。続行する前にシーケンスを確認してください。</value>
   </data>
   <data name="Lbl_SequenceHistory_ValueChange" xml:space="preserve">
     <value>{0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_NoValue" xml:space="preserve">
-    <value>(empty)</value>
+    <value>(空)</value>
   </data>
   <data name="Lbl_SequenceHistory_CoordinateValue" xml:space="preserve">
-    <value>RA {0}, Dec {1}, rotation {2} degrees ({3})</value>
+    <value>赤経{0}, 赤緯{1}, 回転 {2} 度 ({3})</value>
   </data>
   <data name="Lbl_SequenceHistory_MoreChanges" xml:space="preserve">
-    <value>+ {0} more changes</value>
+    <value>+ ほか{0}件の変更</value>
   </data>
   <data name="Lbl_SequenceHistory_AddedDetail" xml:space="preserve">
-    <value>Added {0} to {1}</value>
+    <value>{0} を {1}に追加しました</value>
   </data>
   <data name="Lbl_SequenceHistory_RemovedDetail" xml:space="preserve">
-    <value>Removed {0} from {1}</value>
+    <value>{0} を {1}から削除しました</value>
   </data>
   <data name="Lbl_SequenceHistory_MovedDetail" xml:space="preserve">
     <value>{0}: {1} -&gt; {2}</value>
   </data>
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
-    <value>The edit could not be applied. The previous state and edit history were preserved.</value>
+    <value>編集を適用できませんでした。以前の状態と編集履歴は維持されています。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
-    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+    <value>テンプレートの編集を待機中です。{0}後に未保存の編集内容を破棄し、保存済みのテンプレートを実行します。保存するか編集を取り消すと、すぐに続行します。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
-    <value>Waiting for the template to finish saving.</value>
+    <value>テンプレートの保存が完了するのを待機中です。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
-    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
+    <value>5分間操作がなかったため、リンクされたテンプレート'{0}'の未保存の編集内容を破棄しました。保存済みのテンプレートで続行します。</value>
   </data>
 </root>

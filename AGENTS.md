@@ -28,7 +28,8 @@ Use the relevant route when more context is needed. Guidance already loaded for 
 - Keep C# declarations readable: separate constructors, properties, methods and type declarations with one blank line. Keep related fields together and separate field groups from other members. Match the surrounding same-line brace style.
 - Within methods, separate guard clauses and distinct logical steps with blank lines. Expand control-flow bodies and long expressions instead of compressing them onto one line; wrap long parameter and argument lists consistently. Review new and touched code for this spacing before handoff, even when an automatic formatter preserves compact code.
 - Follow surrounding XAML style; there is no repository-wide XAML formatter configuration.
-- Prefer modern C# supported by the project and `CommunityToolkit.Mvvm` for new or refactored MVVM code where it fits.
+- Prefer modern C# supported by the project.
+- Use `CommunityToolkit.Mvvm` source generators for new or refactored MVVM code whenever they can express the required behavior. Use `[ObservableProperty]`, `[RelayCommand]` and notification attributes instead of handwritten boilerplate; prefer annotated partial properties when supported to preserve accessor visibility. Use generated `On<Property>Changing` and `On<Property>Changed` partial hooks for necessary setter side effects. Preserve public contracts, notification behavior and threading requirements; retain handwritten members when the generators cannot preserve them.
 - Avoid new warnings. Report any intentional deferral with its reason.
 
 ## NINA-Specific Constraints

@@ -186,6 +186,15 @@
       <ComponentGroupRef Id="uk_UA_files" />
       <ComponentGroupRef Id="hu_HU_files" />
       <ComponentGroupRef Id="eu_ES_files" />
+      <ComponentGroupRef Id="ro_RO_files" />
+      <ComponentGroupRef Id="fi_FI_files" />
+      <ComponentGroupRef Id="id_ID_files" />
+      <ComponentGroupRef Id="vi_VN_files" />
+      <ComponentGroupRef Id="bg_BG_files" />
+      <ComponentGroupRef Id="sk_SK_files" />
+      <ComponentGroupRef Id="hr_HR_files" />
+      <ComponentGroupRef Id="hi_IN_files" />
+      <ComponentGroupRef Id="pt_BR_files" />
       <ComponentGroupRef Id="DocumentationComponent" />
     </Feature>
     <InstallExecuteSequence>
@@ -296,6 +305,15 @@
           <Directory Id="en_US" Name="en-US" />
           <Directory Id="en_GB" Name="en-GB" />
           <Directory Id="eu_ES" Name="eu-ES" />
+          <Directory Id="ro_RO" Name="ro-RO" />
+          <Directory Id="fi_FI" Name="fi-FI" />
+          <Directory Id="id_ID" Name="id-ID" />
+          <Directory Id="vi_VN" Name="vi-VN" />
+          <Directory Id="bg_BG" Name="bg-BG" />
+          <Directory Id="sk_SK" Name="sk-SK" />
+          <Directory Id="hr_HR" Name="hr-HR" />
+          <Directory Id="hi_IN" Name="hi-IN" />
+          <Directory Id="pt_BR" Name="pt-BR" />
           <Directory Id="de_DE" Name="de-DE" />
           <Directory Id="ja_JP" Name="ja-JP" />
           <Directory Id="da_DK" Name="da-DK" />
@@ -1779,6 +1797,70 @@
     <ComponentGroup Id="eu_ES_files" Directory="eu_ES">
       <Component Id="eu_ES_NINA.Core.resources.dll" Guid="eda55c1e-b932-4177-8d19-c88c3ecdabdc">
         <File Id="eu_ES_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA_TargetDir)eu-ES\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ro_RO_files" Directory="ro_RO">
+      <Component Id="ro_RO_NINA.Core.resources.dll" Guid="54fae0b1-c6fa-4535-8ec7-2a971f8b70a5">
+        <File Id="ro_RO_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA.Core_TargetDir)ro-RO\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="fi_FI_files" Directory="fi_FI">
+      <Component Id="fi_FI_NINA.Core.resources.dll" Guid="ae9850c6-3f22-43e0-b86f-c3f668a459fd">
+        <File Id="fi_FI_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA.Core_TargetDir)fi-FI\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="id_ID_files" Directory="id_ID">
+      <Component Id="id_ID_NINA.Core.resources.dll" Guid="ca5608b9-1575-4ae8-84c6-174d96496980">
+        <File Id="id_ID_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA.Core_TargetDir)id-ID\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="vi_VN_files" Directory="vi_VN">
+      <Component Id="vi_VN_NINA.Core.resources.dll" Guid="6bd0ca7e-45a4-4317-b841-5884a1f544bc">
+        <File Id="vi_VN_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA.Core_TargetDir)vi-VN\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="bg_BG_files" Directory="bg_BG">
+      <Component Id="bg_BG_NINA.Core.resources.dll" Guid="c07ef067-268a-4a6f-ae26-dc05dedece99">
+        <File Id="bg_BG_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA.Core_TargetDir)bg-BG\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="sk_SK_files" Directory="sk_SK">
+      <Component Id="sk_SK_NINA.Core.resources.dll" Guid="79624a43-c09c-4db8-a7b9-503ad2e1fe38">
+        <File Id="sk_SK_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA.Core_TargetDir)sk-SK\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="hr_HR_files" Directory="hr_HR">
+      <Component Id="hr_HR_NINA.Core.resources.dll" Guid="dee3da9c-5fdd-4da8-bc5f-56dc4f927631">
+        <File Id="hr_HR_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA.Core_TargetDir)hr-HR\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="hi_IN_files" Directory="hi_IN">
+      <Component Id="hi_IN_NINA.Core.resources.dll" Guid="7c0c1ed3-28f4-40bf-8166-2ad9430cf553">
+        <File Id="hi_IN_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA.Core_TargetDir)hi-IN\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="pt_BR_files" Directory="pt_BR">
+      <Component Id="pt_BR_NINA.Core.resources.dll" Guid="72b32266-74c9-4975-9123-6ec911c3e80b">
+        <File Id="pt_BR_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA.Core_TargetDir)pt-BR\NINA.Core.resources.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

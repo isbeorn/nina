@@ -175,7 +175,7 @@
     <value>Altair 相机设置</value>
   </data>
   <data name="LblAltAz" xml:space="preserve">
-    <value>Alt/Az</value>
+    <value>高度角/方位角</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>替换UI颜色方案</value>
@@ -419,15 +419,18 @@
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
     <value>将保存以下电调的回差值。 IN: {0}, OUT: {1}</value>
+    <comment>{0}=inward focuser backlash; {1}=outward focuser backlash. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>测试版</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>偏置平均值(16 bit)</value>
+    <comment>Arithmetic mean pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>偏置中位数(16 bit)</value>
+    <comment>Statistical median pixel level of a BIAS calibration frame.</comment>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>合并像素</value>
@@ -525,7 +528,7 @@
     <value>相机选项</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Camera Parameters</value>
+    <value>相机参数</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>相机状态</value>
@@ -547,6 +550,7 @@
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>佳能相机出现错误: {0}</value>
+    <comment>{0}=Canon SDK error description. Preserve the .NET placeholder.</comment>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>采集图像并解析</value>
@@ -976,6 +980,7 @@
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>当前平均值</value>
+    <comment>Arithmetic mean pixel value of the current image.</comment>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>当前位置</value>
@@ -1025,6 +1030,7 @@
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>黎明</value>
+    <comment>Morning twilight before sunrise; paired with Dusk (evening twilight).</comment>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>天数</value>
@@ -1177,10 +1183,10 @@
     <value>抖动数值（像素），这个值是标准偏差，以被导星为中心执行抖动，其中67%的抖动将在这个距离内</value>
   </data>
   <data name="LblMountDitherMinimumPixels" xml:space="preserve">
-    <value>Minimum dither movement</value>
+    <value>最小抖动位移</value>
   </data>
   <data name="LblMountDitherMinimumPixelsTooltip" xml:space="preserve">
-    <value>Minimum number of main camera pixels moved between successive Mount Dither positions. Set to 0 to preserve the existing random behavior. The value cannot exceed Dither Pixels.</value>
+    <value>连续两次赤道仪抖动位置之间移动的最小距离，以主相机像素为单位。设为 0 可保留现有的随机行为。此值不能超过 "抖动像素"。</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>仅抖动赤经</value>
@@ -1292,18 +1298,19 @@
   </data>
   <data name="LblDusk" xml:space="preserve">
     <value>黄昏</value>
+    <comment>Evening twilight after sunset; paired with Dawn (morning twilight).</comment>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>东面</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to Manual or Bulb mode. Set the mode dial to Manual or Bulb. If the camera has a Movie/Still switch, set it to Still.</value>
+    <value>相机未设为手动或 B 门模式。请将模式转盘设为手动 (Manual) 或 B 门 (Bulb)。如果相机具有视频/照片切换开关，请将其设为照片。</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>开启位扩增</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
+    <value>将 8/10/12/14 位图像缩放为 16 位后保存。仅适用于原生 Altair、Canon、Moravian、Nikon、Omegon、RisingCam、SVBony 和 ToupTek 驱动。</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>已启用</value>
@@ -1474,7 +1481,8 @@
     <value>你想断开平场板连接吗？</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
-    <value>平场向导设置</value>
+    <value>平场板设置</value>
+    <comment>Settings for the flat-panel hardware, including its brightness.</comment>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>平场板无法链接</value>
@@ -1541,6 +1549,7 @@
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
     <value>平场向导设置</value>
+    <comment>Settings for the Flat Wizard workflow that determines flat-frame exposures.</comment>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
     <value>取消平场向导</value>
@@ -1589,6 +1598,7 @@
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
     <value>焦比</value>
+    <comment>Optical f-number: telescope focal length divided by aperture diameter.</comment>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>电调</value>
@@ -1606,16 +1616,16 @@
     <value>每个自动对焦点相隔的步长。步长应小于临界焦点的容差值</value>
   </data>
   <data name="LblManualStepSmallMultiplier" xml:space="preserve">
-    <value>Small Step Multiplier</value>
+    <value>小步长倍率</value>
   </data>
   <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for small manual focuser step (default: 0.5)</value>
+    <value>手动调焦小步长的倍率（默认：0.5）</value>
   </data>
   <data name="LblManualStepLargeMultiplier" xml:space="preserve">
-    <value>Large Step Multiplier</value>
+    <value>大步长倍率</value>
   </data>
   <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
-    <value>Multiplier for large manual focuser step (default: 5.0)</value>
+    <value>手动调焦大步长的倍率（默认：5.0）</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>回差 向内/向外</value>
@@ -1718,6 +1728,7 @@
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>导星软件没有在预定时间({0}s + 10s)后返回“已稳定”消息。跳过。</value>
+    <comment>SettleDone is a PHD2 event name. {0}=timeout in seconds; preserve the placeholder and fixed extra 10 seconds.</comment>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>导星恢复失败</value>
@@ -1909,7 +1920,7 @@
     <value>加载配置文件</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
+    <value>所选配置文件正被另一个 N.I.N.A. 实例使用，或因未知问题而无法加载。详情请查看日志文件。</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>加载序列</value>
@@ -1994,12 +2005,14 @@
   </data>
   <data name="LblMean" xml:space="preserve">
     <value>均值</value>
+    <comment>Statistical arithmetic mean of image pixel values.</comment>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
     <value>测量电调回差</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
     <value>中值</value>
+    <comment>Statistical median of image pixel values.</comment>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>中天翻转失败</value>
@@ -2097,6 +2110,7 @@
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>否</value>
+    <comment>Negative answer on a Yes/No confirmation button.</comment>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>没有相机</value>
@@ -2304,10 +2318,10 @@
     <value>NINA OWM API 客户端</value>
   </data>
   <data name="LblOpenMeteoClientDescription" xml:space="preserve">
-    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+    <value>使用 OpenMeteo 的天气预报 API。天气数据每 10 分钟刷新一次。</value>
   </data>
   <data name="LblOpenMeteoClientInfo" xml:space="preserve">
-    <value>NINA internal OpenMeteo API client</value>
+    <value>NINA 内置的 OpenMeteo API 客户端</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>选项</value>
@@ -2386,9 +2400,11 @@
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>PHD2 服务器端口</value>
+    <comment>Numeric TCP port used to connect to the PHD2 server.</comment>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>PHD2 服务器主机名</value>
+    <comment>Hostname or IP address of the PHD2 server.</comment>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 设置</value>
@@ -2421,6 +2437,7 @@
   </data>
   <data name="LblPhd2ProfileNotFound" xml:space="preserve">
     <value>未找到PHD2配置文件 ID {0} 。正在使用 {1}</value>
+    <comment>{0}=missing PHD2 profile ID; {1}=fallback profile name. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblPixels" xml:space="preserve">
     <value>像素</value>
@@ -2430,18 +2447,22 @@
   </data>
   <data name="LblPixelScale" xml:space="preserve">
     <value>像素比例</value>
+    <comment>Angular sky coverage of one image pixel, measured in arcseconds per pixel.</comment>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>每像素对应的角秒</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
     <value>像素大小</value>
+    <comment>Physical size of a sensor pixel, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
     <value>X像素大小</value>
+    <comment>Physical pixel width along the sensor X axis, measured in micrometers.</comment>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
     <value>Y像素大小</value>
+    <comment>Physical pixel height along the sensor Y axis, measured in micrometers.</comment>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>第三方星图</value>
@@ -2495,7 +2516,7 @@
     <value>解析失败后再次尝试的间隔（分钟）</value>
   </data>
   <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
-    <value>Centering failed after {0} correction attempts</value>
+    <value>经过 {0} 次校正尝试后，居中仍然失败</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>解析当前图像</value>
@@ -2630,7 +2651,7 @@
     <value>Raw格式转换器</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>DSLR raw files are converted with LibRaw.</value>
+    <value>使用 LibRaw 转换单反相机的 RAW 文件。</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>读出噪声（e）</value>
@@ -2639,7 +2660,7 @@
     <value>模式</value>
   </data>
   <data name="LblReadout" xml:space="preserve">
-    <value>Readout</value>
+    <value>读出</value>
   </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>与摄像头读出模式相对应的数字值</value>
@@ -2780,10 +2801,10 @@
     <value>对于使用原生驱动时的DSLR，忽略图像文件格式设置。将保存为RAW格式！</value>
   </data>
   <data name="LblSaveNativeCameraRaw" xml:space="preserve">
-    <value>Save native camera RAW</value>
+    <value>保存相机原生 RAW 文件</value>
   </data>
   <data name="LblSaveNativeCameraRawTooltip" xml:space="preserve">
-    <value>When enabled, native Nikon and Canon camera images are saved as camera RAW files. When disabled, images are saved using Options > Imaging > File Settings.</value>
+    <value>启用时，通过原生驱动连接的 Nikon 和 Canon 相机图像将保存为相机 RAW 文件。禁用时，将按 "选项 &gt; 主控台 &gt; 文件设置" 保存图像。</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>保存选定的配置文件，下次不再询问</value>
@@ -2961,7 +2982,7 @@
     <value>指向</value>
   </data>
   <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
+    <value>指向失败</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>指向并居中</value>
@@ -3300,7 +3321,7 @@
     <value>重置当前所有序列项的进度</value>
   </data>
   <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
+    <value>重置当前目标组中所有目标的进度</value>
   </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
     <value>开始序列拍摄</value>
@@ -3347,6 +3368,7 @@
   </data>
   <data name="LblTrackingKing" xml:space="preserve">
     <value>King (补偿大气折射)</value>
+    <comment>Named telescope tracking rate. Keep the name King untranslated.</comment>
   </data>
   <data name="LblTrackingCustom" xml:space="preserve">
     <value>自定义</value>
@@ -3361,10 +3383,10 @@
     <value>转向南天</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
-    <value>North</value>
+    <value>北</value>
   </data>
   <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
+    <value>南</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>中天时间</value>
@@ -3422,9 +3444,11 @@
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
     <value>平均电流</value>
+    <comment>Average electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
     <value>电流</value>
+    <comment>Electrical current, measured in amperes.</comment>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
     <value>设备数据</value>
@@ -3514,7 +3538,7 @@
     <value>URL</value>
   </data>
   <data name="LblCopyURL" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>复制 URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
     <value>USB 限制</value>
@@ -3674,27 +3698,35 @@
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternBGRG" xml:space="preserve">
     <value>BGRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
     <value>GBGR</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRBG" xml:space="preserve">
     <value>GRBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternGRGB" xml:space="preserve">
     <value>GRGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGBG" xml:space="preserve">
-    <value>GRGB</value>
+    <value>RGBG</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternRGGB" xml:space="preserve">
     <value>RGGB</value>
+    <comment>Bayer color-filter pattern identifier. Keep these four letters and their order unchanged.</comment>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
     <value>用于在FITS 或 XISF 图像头中记录相机使用的 BAYERPAT（拜尔阵列）关键字。
@@ -3702,6 +3734,7 @@
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>当前的</value>
+    <comment>Means the filter currently in use, as shown in the filter selector.</comment>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>正在运行序列结束选项...</value>
@@ -3726,6 +3759,7 @@
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>相机超时 - 相机在曝光完成后 {0} 秒仍没有将图像状态设置为就绪</value>
+    <comment>{0}=additional timeout in seconds after the exposure ends. Preserve the placeholder instead of inserting a fixed number.</comment>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>图片名预览</value>
@@ -4067,6 +4101,7 @@
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>镜筒偏向</value>
+    <comment>Telescope mount pier-side designation (east or west).</comment>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>相机超时</value>
@@ -4303,7 +4338,7 @@
     <value>数量</value>
   </data>
   <data name="LblDelta" xml:space="preserve">
-    <value>Delta</value>
+    <value>温差</value>
   </data>
   <data name="LblElapsed" xml:space="preserve">
     <value>已耗时</value>
@@ -4330,13 +4365,13 @@
     <value>深空目标指令集</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
-    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+    <value>执行到此指令集时，检查此序列器表达式。如果为真，内部指令运行一次；如果为假，则跳过这些指令。</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
-    <value>Conditional Instruction Set requires an expression.</value>
+    <value>条件指令集需要一个表达式。</value>
   </data>
   <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
-    <value>Conditional Instruction Set</value>
+    <value>条件指令集</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>此指令集中的所有指令并行运行。在所有指令完成之前，此指令集不会计算任何条件或触发器。</value>
@@ -4388,6 +4423,7 @@
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
     <value>关闭平场镜头盖</value>
+    <comment>Closes a motorized flat-panel cover over the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>移动电调到指定位置</value>
@@ -4442,6 +4478,7 @@
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Name" xml:space="preserve">
     <value>停放望远镜</value>
+    <comment>Scope refers to the telescope mount. This action places it in its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
     <value>将望远镜指向到给定的高度角和方位角</value>
@@ -4460,6 +4497,7 @@
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Name" xml:space="preserve">
     <value>解除停放望远镜</value>
+    <comment>Scope refers to the telescope mount. This action releases it from its parked state.</comment>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Name" xml:space="preserve">
     <value>设置跟踪</value>
@@ -4499,12 +4537,14 @@
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTimeSpan_Name" xml:space="preserve">
     <value>等待时间</value>
+    <comment>Sequence instruction that waits for an elapsed duration in seconds.</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Description" xml:space="preserve">
     <value>等待到指定时刻，格式 hh:mm:ss。另外，可以使用下拉选框自动设置为日落、黄昏、晨光、日出等的时刻</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitForTime_Name" xml:space="preserve">
     <value>等待到达时刻</value>
+    <comment>Sequence instruction that waits until a chosen time of day or an astronomical event time.</comment>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
     <value>偏移后居中</value>
@@ -4544,34 +4584,34 @@
     <value>中天翻转</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
-    <value>Programmable Meridian Flip</value>
+    <value>可编程中天翻转</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
-    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+    <value>可自定义翻转前后操作的中天翻转触发器。</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
-    <value>Before Flip Actions</value>
+    <value>翻转前操作</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
-    <value>After Flip Actions</value>
+    <value>翻转后操作</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting for the meridian flip.</value>
+    <value>在等待中天翻转之前运行的指令。</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after the meridian flip.</value>
+    <value>中天翻转后运行的指令。</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
-    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+    <value>请保持这些步骤简短。翻转前的操作耗时过长可能会延迟中天翻转。</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
-    <value>Wait For Flip Window</value>
+    <value>等待翻转时间窗口</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
-    <value>Resume Tracking and Flip</value>
+    <value>恢复跟踪并翻转</value>
   </data>
   <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
-    <value>Settle</value>
+    <value>稳定</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>相机没有制冷，无法设置温度</value>
@@ -4655,7 +4695,7 @@
     <value>模板</value>
   </data>
   <data name="LblLinkedTemplates" xml:space="preserve">
-    <value>Linked Templates</value>
+    <value>链接模板</value>
   </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>默认模板</value>
@@ -4664,10 +4704,10 @@
     <value>将序列指令集从此处拖放到此处创建一个新模板</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
-    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+    <value>拖放模板时按住 Ctrl，可添加链接而不是副本。</value>
   </data>
   <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
-    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
+    <value>链接模板始终与源模板保持关联。其内容在序列中显示为只读预览，并在模板更改时自动刷新。使用链接模板上的 "编辑模板" 可更新源模板。如果需要独立副本，请正常拖放模板。</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>覆盖已有模板？</value>
@@ -4734,6 +4774,7 @@
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
     <value>打开平场镜头盖</value>
+    <comment>Opens a motorized flat-panel cover to uncover the telescope aperture.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>设置平场光源的亮度值</value>
@@ -4746,6 +4787,7 @@
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_ToggleLight_Name" xml:space="preserve">
     <value>切换灯光</value>
+    <comment>Light refers to the flat panel illumination. Toggle switches it on or off.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
     <value>根据“训练过的平场曝光时间”，拍摄平场</value>
@@ -5027,58 +5069,58 @@
     <value>保存当前指令及其所有内容作为重新使用的模板</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
-    <value>Linked Template</value>
+    <value>链接模板</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
-    <value>Linked Template: {0}</value>
+    <value>链接模板：{0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
-    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+    <value>建立与序列模板的实时关联，而不是复制模板。此容器会显示模板的当前内容，便于在序列中查看；在启用 "编辑模板" 之前，内容为只读。源模板更改时，此容器会自动更新至最新版本。执行时，N.I.N.A. 会等待模板加载完成，再执行模板的当前内容。如果链接模板基于目标容器，模板仍然只保存可重用的序列结构；将目标拖放到链接模板上，可为本次使用选择目标，N.I.N.A. 会在每次刷新模板时重新应用该目标。需要多个序列使用同一模板时，可使用此功能；如果需要独立副本，请正常拖放模板。可从 "链接模板" 菜单添加，也可在将模板拖放到序列时按住 Ctrl，以链接方式添加。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
-    <value>Linked template preview</value>
+    <value>链接模板预览</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
-    <value>Editing linked template</value>
+    <value>正在编辑链接模板</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
-    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+    <value>"{0}" 的只读预览。使用 "编辑模板" 可更改源模板。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
-    <value>Editing the source template. Saving updates the template for every linked use.</value>
+    <value>正在编辑源模板。保存后，所有使用该模板的链接都会更新。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
-    <value>Waiting for template "{0}" to finish loading.</value>
+    <value>正在等待模板 "{0}" 加载完成。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
-    <value>Template "{0}" could not be found.</value>
+    <value>找不到模板 "{0}"。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
-    <value>This linked template does not have a valid source template.</value>
+    <value>此链接模板没有有效的源模板。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
-    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+    <value>无法直接编辑默认模板。请先将其另存为用户模板。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
-    <value>Edit Template</value>
+    <value>编辑模板</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
-    <value>Save Template</value>
+    <value>保存模板</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
-    <value>Cancel Template Editing</value>
+    <value>取消编辑模板</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
-    <value>Target: {0}</value>
+    <value>目标：{0}</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
-    <value>No target selected. Drop a target here or enter target details below.</value>
+    <value>尚未选择目标。请将目标拖放到此处，或在下方输入目标详情。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
-    <value>Use this target with the linked template</value>
+    <value>将此目标用于链接模板</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
-    <value>Select a target for this linked template before running the sequence.</value>
+    <value>请在运行序列之前为此链接模板选择目标。</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>安全监视器尚未连接</value>
@@ -5405,9 +5447,11 @@
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Description" xml:space="preserve">
     <value>目标在地平线上方时循环。如果使用了自定义地平线，则使用该高度而不是0</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>目标高于地平线时循环</value>
+    <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>目标永远不会升到地平线上</value>
@@ -5539,7 +5583,7 @@
     <value>将旋转器转到指定的机械角度</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotate to mechanical angle</value>
+    <value>旋转至机械角度</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>中天</value>
@@ -5640,11 +5684,11 @@
   </data>
   <data name="LblPrimaryRate" xml:space="preserve">
     <value>主轴速率</value>
-    <comment>Primary telescope axis rate</comment>
+    <comment>Manual slew speed for the primary telescope axis.</comment>
   </data>
   <data name="LblSecondaryRate" xml:space="preserve">
     <value>次轴速率</value>
-    <comment>Secondary telescope axis rate</comment>
+    <comment>Manual slew speed for the secondary telescope axis.</comment>
   </data>
   <data name="LblTelescopeCannotMovePrimaryAxis" xml:space="preserve">
     <value>望远镜主轴无法移动</value>
@@ -6123,7 +6167,7 @@
     <value>保存图像失败</value>
   </data>
   <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+    <value>保存图像失败。目标磁盘的可用空间可能已耗尽。</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
     <value>从望远镜获取坐标</value>
@@ -6279,19 +6323,19 @@
     <value>日期</value>
   </data>
   <data name="LblDay" xml:space="preserve">
-    <value>Day</value>
+    <value>日</value>
   </data>
   <data name="LblMonth" xml:space="preserve">
-    <value>Month</value>
+    <value>月</value>
   </data>
   <data name="LblYear" xml:space="preserve">
-    <value>Year</value>
+    <value>年</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
     <value>观测信息</value>
   </data>
   <data name="LblResetObservationTimeToCurrentTime" xml:space="preserve">
-    <value>Reset observation date and time to the current time</value>
+    <value>将观测日期和时间重置为当前时间</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
     <value>命令</value>
@@ -6608,7 +6652,8 @@
     <value>如果安全监视器未连接，则NINA将拒绝打开天窗或平顶</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>天窗和圆顶被要求打开，但安全监视器尚未连接，打开程序已被终止。</value>
+    <value>已请求打开圆顶天窗或屋顶，但安全监视器设备未连接。已中止打开操作。</value>
+    <comment>Opening is refused because the safety monitor is disconnected.</comment>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>注意：这些设置与您的设备安全相关。配置前，请确保熟悉您的整套设备，并经过仔细考虑。这些设置仅管理N.I.N.A.对设备的直接控制，如果N.I.N.A未运行或未连接到相关设备，它们将无法生效。确保圆顶拥有可靠的电源保障和硬件保护设施，以防止任何意外的移动。您有责任确保这些设置不会与圆顶驱动程序的设置冲突。</value>
@@ -6666,7 +6711,7 @@
     <value>防结露加热强度</value>
   </data>
   <data name="LblColoredContainerBorders" xml:space="preserve">
-    <value>Colored Container Borders</value>
+    <value>彩色容器边框</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>硬件加速</value>
@@ -6799,7 +6844,7 @@
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
     <value>滤镜 {0} 的平场助手运行失败。
 原因：{1}</value>
-    <comment>When flat wizard fails in multi mode</comment>
+    <comment>Flat Wizard failure in multi-filter mode. {0}=filter name; {1}=failure reason. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
     <value>无法确定平场板亮度 - 光源太亮。
@@ -6923,18 +6968,23 @@
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac3" xml:space="preserve">
     <value>USNO UCAC3</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUcac4" xml:space="preserve">
     <value>USNO UCAC4</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoA" xml:space="preserve">
     <value>USNO A2.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointCatUsnoB" xml:space="preserve">
     <value>USNO B1.0</value>
+    <comment>Star catalogue name and version identifier. Keep the source text unchanged.</comment>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
     <value>扩展</value>
@@ -6986,10 +7036,10 @@
     <value>显示直方图</value>
   </data>
   <data name="LblShowHorizon" xml:space="preserve">
-    <value>Show Local Horizon</value>
+    <value>显示本地地平线</value>
   </data>
   <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
-    <value>Show star measurements in arcseconds</value>
+    <value>以角秒显示星点测量值</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>仅显示信息</value>
@@ -7065,10 +7115,10 @@
     <value>望远镜停放命令在 {0} 分钟后超时。</value>
   </data>
   <data name="LblDomeParkTimeout" xml:space="preserve">
-    <value>Dome park has timed out after {0} minutes.</value>
+    <value>圆顶停放在 {0} 分钟后超时。</value>
   </data>
   <data name="LblDomeParkFailed" xml:space="preserve">
-    <value>Dome stopped moving but the driver did not confirm it is parked.</value>
+    <value>圆顶已停止移动，但驱动未确认其已停放。</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
     <value>望远镜解除停放命令在 {0} 分钟后超时。</value>
@@ -7125,23 +7175,25 @@
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>使用 IPv4</value>
-    <comment>If ASCOM Alpaca should use IPv4</comment>
+    <comment>Network protocol version identifier. Keep IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>使用IPv4来搜寻 ASCOM Alpaca 设备(默认：开启)</value>
+    <comment>ASCOM Alpaca discovery over IPv4. Keep the protocol identifier IPv4 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
     <value>使用 IPv6</value>
-    <comment>If ASCOM Alpaca should use IPv6</comment>
+    <comment>Network protocol version identifier. Keep IPv6 unchanged.</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>使用IPv6来搜寻 ASCOM Alpaca 设备(默认：关闭)</value>
+    <comment>ASCOM Alpaca discovery over IPv6. Keep the protocol identifier IPv6 unchanged.</comment>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>切换目录显示</value>
   </data>
   <data name="LblToggleShowAllCatalogues" xml:space="preserve">
-    <value>Show all catalogues</value>
+    <value>显示所有星表</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>目标高度角</value>
@@ -7183,7 +7235,8 @@
     <value>等待确认取消的命令</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>要求打开天窗和圆顶，但安全监视器尚未连接。已中止打开程序。</value>
+    <value>已请求打开圆顶天窗或屋顶，但安全监视器设备报告环境不安全。已中止打开操作。</value>
+    <comment>Opening is refused because a connected safety monitor reports unsafe conditions.</comment>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>外部命令</value>
@@ -7214,16 +7267,16 @@
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Description" xml:space="preserve">
-    <value>Loads an Imaging tab layout from a saved dock configuration file</value>
+    <value>从已保存的停靠布局配置文件加载主控台选项卡布局</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Name" xml:space="preserve">
-    <value>Load Imaging Layout</value>
+    <value>加载主控台布局</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidLayout" xml:space="preserve">
-    <value>The selected file is not a valid Imaging layout backup</value>
+    <value>所选文件不是有效的主控台布局备份</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_LoadImagingLayout_Validation_InvalidPath" xml:space="preserve">
-    <value>Select an existing Imaging layout backup file</value>
+    <value>请选择现有的主控台布局备份文件</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
     <value>将当前序列保存至指定文件夹</value>
@@ -7277,120 +7330,120 @@
     <value>警告：在中天翻转设置中禁用了“使用赤道仪方向”，这可能导致圆顶与赤道仪对齐的问题。圆顶将假定与赤道仪完全同步翻转。如果赤道仪还没有翻转，这个假定将导致误差。</value>
   </data>
   <data name="LblCompleteDuration" xml:space="preserve">
-    <value>Complete duration</value>
+    <value>整个时段</value>
   </data>
   <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
-    <value>Lock sequencer to prevent any manual edits or drag and drop</value>
+    <value>锁定序列器，禁止所有手动编辑和拖放操作</value>
   </data>
   <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
-    <value>Unlock sequencer to allow manual edits and drag and drop</value>
+    <value>解锁序列器，允许手动编辑和拖放操作</value>
   </data>
   <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Disable all drag and drop in the sequencer and sidebar</value>
+    <value>禁用序列器和侧边栏中的所有拖放操作</value>
   </data>
   <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Enable all drag and drop in the sequencer and sidebar</value>
+    <value>启用序列器和侧边栏中的所有拖放操作</value>
   </data>
   <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
-    <value>Invalid focal length!</value>
+    <value>焦距无效！</value>
   </data>
   <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
-    <value>Unable to load image - please enter your telescope's effective focal length in the camera parameter section!</value>
+    <value>无法加载图像 - 请在相机参数部分输入望远镜的有效焦距！</value>
   </data>
   <data name="LblSiteName" xml:space="preserve">
-    <value>Site name</value>
+    <value>观测站名称</value>
     <comment>Observatory site</comment>
   </data>
   <data name="LblObservatory" xml:space="preserve">
-    <value>Observatory</value>
+    <value>天文台</value>
   </data>
   <data name="LblObserver" xml:space="preserve">
-    <value>Observer</value>
+    <value>观测者</value>
     <comment>The person who is doing the observations</comment>
   </data>
   <data name="LblDomeFollowingShort" xml:space="preserve">
-    <value>Following</value>
+    <value>跟随中</value>
     <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
   </data>
   <data name="LblDomeFollowingViaNINA" xml:space="preserve">
-    <value>Dome following via N.I.N.A.</value>
+    <value>通过 N.I.N.A. 控制圆顶跟随</value>
   </data>
   <data name="LblDomeFollowingViaDriver" xml:space="preserve">
-    <value>via Driver</value>
+    <value>通过驱动控制</value>
     <comment>If the dome following logic is managed by the driver</comment>
   </data>
   <data name="LblWorldMap" xml:space="preserve">
-    <value>World Map</value>
+    <value>世界地图</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
-    <value>Connect Equipment</value>
+    <value>连接设备</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
-    <value>For the selected device, the device save in the profile will be connected.</value>
+    <value>对于选定的设备类型，连接配置文件中保存的设备。</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
     <value>连接</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
-    <value>Disconnect Equipment</value>
+    <value>断开设备</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
-    <value>Disconnects the selected device</value>
+    <value>断开选定设备的连接</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
-    <value>Connect All Equipment</value>
+    <value>连接所有设备</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
-    <value>Connect to all devices that are saved in the profile</value>
+    <value>连接配置文件中保存的所有设备</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
-    <value>Disconnect All Equipment</value>
+    <value>断开所有设备</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
-    <value>Disconnects all currently connected devices</value>
+    <value>断开所有当前已连接的设备</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
-    <value>Reconnect Camera On Download Failure</value>
+    <value>下载失败时重新连接相机</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
-    <value>A trigger that will fire when the camera failed to download an exposure and will try to reconnect the camera. When reconnecting the cooler state and dew heater state will also be restored.</value>
+    <value>相机下载曝光图像失败时触发，并尝试重新连接相机。重新连接时，还会恢复制冷器和除露加热器的状态。</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
-    <value>Reconnect Equipment</value>
+    <value>重新连接设备</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
-    <value>A trigger that will fire when the selected device is disconnected and will try to reconnect to it.</value>
+    <value>选定设备断开连接时触发，并尝试重新连接该设备。</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
-    <value>Switch Profile</value>
+    <value>切换配置文件</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
-    <value>Disconnects all devices that are currently connected, switches to the specified profile and reconnects all devices of the specified profile.</value>
+    <value>断开所有当前已连接的设备，切换到指定的配置文件，并重新连接指定配置文件中的所有设备。</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
     <value></value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
-    <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
+    <value>经过 {0} 次尝试后，仍无法确定旋转角度。旋转器的反向标志是否设置正确？</value>
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
-    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+    <value>锁定面板以防止关闭或重新排列，或解锁面板以进行调整。</value>
   </data>
   <data name="LblGnssFix2D" xml:space="preserve">
-    <value>Current fix is 2D. A 3D fix is required</value>
+    <value>当前为二维定位，需要三维定位</value>
   </data>
   <data name="LblMJDFormatDescription" xml:space="preserve">
-    <value>Modified Julian Date</value>
+    <value>修正儒略日</value>
   </data>
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
-    <value>Open cover when done</value>
+    <value>完成后打开盖板</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
   <data name="LblCivilDusk" xml:space="preserve">
-    <value>Civil dusk</value>
+    <value>民用昏影</value>
   </data>
   <data name="LblCivilDawn" xml:space="preserve">
-    <value>Civil dawn</value>
+    <value>民用晨光</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
     <value>天窗未打开时不要解除停放</value>
@@ -7595,61 +7648,61 @@
     <value>选择的 Oasis 电调不可用。请检查连接并重新扫描设备。</value>
   </data>
   <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
-    <value>Selected Oasis filter wheel is not availble. Please check connection and rescan for devices.</value>
+    <value>所选 Oasis 滤镜轮不可用。请检查连接并重新扫描设备。</value>
   </data>
   <data name="LblOasisTurboMode" xml:space="preserve">
-    <value>Turbo mode</value>
+    <value>增强模式</value>
   </data>
   <data name="LblOasisDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>设备ID</value>
   </data>
   <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
-    <value>Device ID</value>
+    <value>设备ID</value>
   </data>
   <data name="LblOasisState" xml:space="preserve">
-    <value>State</value>
+    <value>状态</value>
   </data>
   <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
-    <value>Sync focus offsets</value>
+    <value>同步焦点偏移</value>
   </data>
   <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
-    <value>Store focus offsets</value>
+    <value>保存焦点偏移</value>
   </data>
   <data name="LblOasisSyncFilterNames" xml:space="preserve">
-    <value>Sync filter names</value>
+    <value>同步滤镜名称</value>
   </data>
   <data name="LblOasisStoreFilterNames" xml:space="preserve">
-    <value>Store filter names</value>
+    <value>保存滤镜名称</value>
   </data>
   <data name="LblOasisAutorun" xml:space="preserve">
-    <value>Autorun</value>
+    <value>自动运行</value>
   </data>
   <data name="LblOasisSpeedTooltip" xml:space="preserve">
-    <value>Select Normal or Slow speed when ambient temperature is very low to ensure filters can be switched smoothly.</value>
+    <value>在环境温度非常低时，请将速度设为 Normal 或 Slow，以确保滤镜能够顺利切换。</value>
   </data>
   <data name="LblOasisTurboModeTooltip" xml:space="preserve">
-    <value>Enable turbo mode to increase motor torque. This may be useful when ambient temperature is very low. Make sure the USB host port has at least 5V,1A power supply capacity.</value>
+    <value>启用增强模式以增加电机扭矩。这在环境温度非常低时可能有帮助。请确保主机 USB 端口至少具有 5V、1A 的供电能力。</value>
   </data>
   <data name="LblOasisAutorunTooltip" xml:space="preserve">
-    <value>Enable this option when you want the filters to be automatically switched to the last position during power up.</value>
+    <value>启用此选项后，滤镜轮将在上电时自动切换到上次的位置。</value>
   </data>
   <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
-    <value>Reads the focus offsets stored on the Oasis device and updates the NINA focus offsets.</value>
+    <value>读取Oasis滤镜轮记录的焦点偏移值并更新至NINA。</value>
   </data>
   <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA focus offsets to the Oasis filter wheel.</value>
+    <value>将 NINA 的焦点偏移值上传并保存到 Oasis 滤镜轮。</value>
   </data>
   <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
-    <value>Reads the filter names stored on the Oasis device and updates the NINA filter labels.</value>
+    <value>读取Oasis滤镜轮记录的滤镜名称并更新至NINA。</value>
   </data>
   <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
-    <value>Uploads and stores the NINA filter names to the Oasis filter wheel.</value>
+    <value>将 NINA 的滤镜名称上传并保存到 Oasis 滤镜轮。</value>
   </data>
   <data name="LblOasisCounter" xml:space="preserve">
-    <value>Counter</value>
+    <value>计数器</value>
   </data>
   <data name="LblOasisCounterTooltip" xml:space="preserve">
-    <value>Indicator that shows how many filter slots have been rotated since the filter wheel powered up.</value>
+    <value>指示器将显示自从上电之后，滤镜轮总共转过多少个槽位。</value>
   </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>蓝牙</value>
@@ -7672,338 +7725,344 @@
     <value>设备编号</value>
   </data>
   <data name="LblSymbols" xml:space="preserve">
-    <value>Symbols</value>
+    <value>记号</value>
   </data>
   <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
-    <value>No other data for {0}</value>
+    <value>{0} 没有其他数据</value>
     <comment>{0} will be filled with the category name</comment>
   </data>
   <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
-    <value>Additional Symbols:</value>
+    <value>附加记号：</value>
     <comment>The prefix for additional data rows for symbol tooltips</comment>
   </data>
   <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
-    <value>Options:</value>
+    <value>选项：</value>
     <comment>The prefix per symbol for additional options</comment>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
-    <value>Click any symbol to copy it to the clipboard.</value>
+    <value>点击任何符号，将其复制到剪贴板。</value>
   </data>
   <data name="LblTrue" xml:space="preserve">
-    <value>True</value>
+    <value>真</value>
   </data>
   <data name="LblFalse" xml:space="preserve">
-    <value>False</value>
+    <value>假</value>
   </data>
   <data name="LblDecimal" xml:space="preserve">
-    <value>(Decimal: </value>
+    <value>(十进制： </value>
     <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
   </data>
   <data name="LblWarnings" xml:space="preserve">
-    <value>Warning(s): {0}</value>
+    <value>警告： {0}</value>
   </data>
   <data name="LblNoErrors" xml:space="preserve">
-    <value>No errors</value>
+    <value>没有错误</value>
   </data>
   <data name="LblErrors" xml:space="preserve">
-    <value>Error(s): {0}</value>
+    <value>错误： {0}</value>
   </data>
   <data name="LblNotEvaluated" xml:space="preserve">
-    <value>Not Evaluated</value>
+    <value>尚未求值</value>
     <comment>As in, a variable is not yet evaluated</comment>
   </data>
   <data name="LblTomorrow" xml:space="preserve">
-    <value>tomorrow</value>
+    <value>明天</value>
   </data>
   <data name="LblYesterday" xml:space="preserve">
-    <value>yesterday</value>
+    <value>昨天</value>
   </data>
   <data name="LblUndefined" xml:space="preserve">
-    <value>Undefined</value>
+    <value>未定义</value>
     <comment>As in "Undefined: &lt;variable name&gt;"</comment>
   </data>
   <data name="LblSyntaxError" xml:space="preserve">
-    <value>Syntax error</value>
+    <value>语法错误</value>
     <comment>Used when an Expression can't be parsed</comment>
   </data>
   <data name="LblMustBeInteger" xml:space="preserve">
-    <value>Value must be an Integer</value>
+    <value>值必须是整数</value>
   </data>
   <data name="LblAnd" xml:space="preserve">
-    <value>and</value>
+    <value>和</value>
   </data>
   <data name="LblAlreadyDefined" xml:space="preserve">
-    <value>is already defined</value>
+    <value>已被定义</value>
     <comment>As in &lt;variable&gt; is already defined</comment>
   </data>
   <data name="LblConstantVariable" xml:space="preserve">
-    <value>The Constant/Variable</value>
+    <value>常量/变量</value>
     <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
   </data>
   <data name="LblNoSymbols" xml:space="preserve">
-    <value>No defined Constant/Variable is used in this expression</value>
+    <value>此表达式未使用任何已定义的常量/变量</value>
   </data>
   <data name="LblNotYetDefined" xml:space="preserve">
-    <value> The Constant/Variable is not yet defined</value>
+    <value> 常量/变量尚未定义</value>
   </data>
   <data name="LblValueBetween" xml:space="preserve">
-    <value>Value must be between {0} and {1}</value>
+    <value>值必须介于 {0} 和 {1} 之间</value>
   </data>
   <data name="LblVariable" xml:space="preserve">
-    <value>Variable:</value>
+    <value>变量：</value>
   </data>
   <data name="LblInitially" xml:space="preserve">
-    <value>Initially</value>
+    <value>初始值</value>
   </data>
   <data name="LblNewValue" xml:space="preserve">
-    <value>New Value</value>
+    <value>新值</value>
   </data>
   <data name="LblIsAmbiguous" xml:space="preserve">
-    <value>is ambiguous, use one of</value>
+    <value>存在歧义，请使用以下名称之一</value>
     <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
   </data>
   <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
-    <value>Symbols</value>
+    <value>记号</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
-    <value>Defines a global variable for expressions anywhere in this sequence. Its initial value is assigned when this instruction runs, so place it before instructions that use it. Use Set Variable to change it later.</value>
+    <value>定义一个全局变量，可供此序列中任何位置的表达式使用。此指令运行时才会赋予初始值，因此请将其放在使用该变量的指令之前。之后可使用 "设置变量" 更改其值。</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineScopedVariable_Description" xml:space="preserve">
-    <value>Defines a variable for expressions in this instruction set and its nested instruction sets. Its initial value is assigned when this instruction runs. Use Set Variable to change it later. It is not visible in parent or sibling instruction sets.</value>
+    <value>定义一个变量，可供此指令集及其嵌套指令集中的表达式使用。此指令运行时才会赋予初始值。之后可使用 "设置变量" 更改其值。父级或同级指令集无法访问此变量。</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
-    <value>Define Variable</value>
+    <value>定义变量</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
-    <value>Defines a global named value for expressions anywhere in this sequence. It is available before the sequence runs. Edit this instruction to change its value; Set Variable cannot change a constant.</value>
+    <value>定义一个具有全局名称的值，可供此序列中任何位置的表达式使用。序列运行之前即可使用此值。请编辑此指令以更改其值；"设置变量" 无法更改常量。</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
-    <value>Define Constant</value>
+    <value>定义常量</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
-    <value>Set Variable</value>
+    <value>设置变量</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+    <value>若此变量先前已被定义，其值将更新为该表达式的结果</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
-    <value>Set Variable to Date/Time</value>
+    <value>设置变量为日期/时间</value>
   </data>
   <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
-    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+    <value>若此变量先前已被定义，其值将更新为指定的日期/时间</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
-    <value>Loop While</value>
+    <value>当...时循环</value>
   </data>
   <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
-    <value>Loops while the Expression is not false</value>
+    <value>当表达式不为假时循环</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
-    <value>Wait Until</value>
+    <value>等待直到...</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
-    <value>Waits until the Expression is true</value>
+    <value>等待直到表达式为真</value>
   </data>
   <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
-    <value>Random double value between 0.0 and 1.0.</value>
+    <value>0.0 和 1.0 之间的随机双精度浮点数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
-    <value>Current Unix timestamp in seconds.</value>
+    <value>当前 Unix 时间戳（秒）。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
-    <value>Hour component (0-23) of a datetime or the current time.</value>
+    <value>某个日期时间或当前时间的小时数 (0-23)。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
-    <value>Minute component (0-59) of a datetime or the current time.</value>
+    <value>某个日期时间或当前时间的分钟数 (0-59)。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
-    <value>Day of the month (1-31) of a datetime or the current date.</value>
+    <value>日期时间或当前日期中的日 (1-31)。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
-    <value>Month (1-12) of a datetime or the current date.</value>
+    <value>日期时间或当前日期的月份 (1-12)。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
-    <value>Year component of a datetime or the current date.</value>
+    <value>某个日期时间或当前日期的年份数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
-    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+    <value>以整数表示星期几（0 = 周日 ... 6 = 周六）。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
-    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+    <value>日期时间加上指定的分钟数(Unix时间戳)。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
-    <value>Datetime plus the specified hours (Unix timestamp).</value>
+    <value>日期时间加上指定的小时数(Unix时间戳)。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
-    <value>Seconds elapsed since the given datetime (Unix timestamp).</value>
+    <value>自给定日期时间（Unix 时间戳）起经过的秒数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
-    <value>Datetime formatted using the specified .NET format string.</value>
+    <value>使用指定的 .NET 格式字符串格式化日期时间。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
-    <value>Whether the string starts with the specified prefix.</value>
+    <value>字符串是否以指定的前缀开始。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
-    <value>Length of the given string, or -1 if the value is not a string.</value>
+    <value>给定字符串的长度，如果值不是字符串则为 -1。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
-    <value>Concatenation of two strings.</value>
+    <value>两个字符串的连接。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
-    <value>Character at the specified zero-based index, or empty if out of bounds.</value>
+    <value>返回指定零基索引处的字符，若索引越界则返回空字符串。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
-    <value>Whether the string contains the specified substring.</value>
+    <value>字符串是否包含指定的子字符串。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
-    <value>Whether the string ends with the specified suffix.</value>
+    <value>字符串是否以指定的后缀结尾。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
-    <value>Substring of the given string; empty if out of range.</value>
+    <value>给定字符串的子字符串；如果超出范围，则为空。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
-    <value>Lower-case version of the string (invariant).</value>
+    <value>按固定区域性规则转换为小写的字符串。</value>
   </data>
   <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
-    <value>Upper-case version of the string (invariant).</value>
+    <value>按固定区域性规则转换为大写的字符串。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
-    <value>Absolute value of a number.</value>
+    <value>某数字的绝对值。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
-    <value>Angle whose cosine is the specified number.</value>
+    <value>余弦值等于指定数值的角度。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
-    <value>Angle whose sine is the specified number.</value>
+    <value>正弦值等于指定数值的角度。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
-    <value>Angle whose tangent is the specified number.</value>
+    <value>正切值等于指定数值的角度。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
-    <value>Arithmetic mean of all arguments.</value>
+    <value>所有参数的算术平均值。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
-    <value>Smallest integer greater than or equal to the number.</value>
+    <value>大于或等于该数的最小整数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
-    <value>Cosine of the specified angle.</value>
+    <value>指定角的余弦值。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
-    <value>e raised to the specified power.</value>
+    <value>e 的指定次幂。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
-    <value>Largest integer less than or equal to the number.</value>
+    <value>小于或等于该数的最大整数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
-    <value>IEEE remainder of x / y.</value>
+    <value>x / y 的 IEEE 余数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
-    <value>Natural logarithm of a number.</value>
+    <value>某数的自然对数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
-    <value>Logarithm of a number.</value>
+    <value>某数的对数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
-    <value>Base-10 logarithm of a number.</value>
+    <value>某数以 10 为底的对数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
-    <value>Larger of two numbers.</value>
+    <value>两个数中较大的数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
-    <value>Smaller of two numbers.</value>
+    <value>两个数中较小的数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
-    <value>Number raised to the specified power.</value>
+    <value>某数的指定次幂。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
-    <value>Rounded value to the nearest integer or specified decimal places.</value>
+    <value>舍入至最接近的整数或指定的小数位数。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
-    <value>Sign of a number.</value>
+    <value>某数字的符号。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
-    <value>Sine of the specified angle.</value>
+    <value>指定角的正弦值。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
-    <value>Square root of a number.</value>
+    <value>某数字的平方根。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
-    <value>Tangent of the specified angle.</value>
+    <value>指定角的正切值。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
-    <value>Integral part of a number.</value>
+    <value>某数字的整数部分。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
-    <value>Mathematical modulus (x mod y). Result is in [0, y) for positive y.</value>
+    <value>数学模运算 (x mod y)。当 y 为正数时，结果落在 [0, y) 区间内。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
-    <value>Value clamped to the inclusive range [min, max].</value>
+    <value>此数值被限制在闭区间 [min, max]之内。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
-    <value>Whether x is between min and max (inclusive).</value>
+    <value>x 是否介于 min 和 max 之间（包含两端）。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
-    <value>Conversion from radians to degrees.</value>
+    <value>从弧度转换为度值。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
-    <value>Conversion from degrees to radians.</value>
+    <value>从度转换为弧度。</value>
   </data>
   <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
-    <value>Sum of all arguments.</value>
+    <value>所有参数之和。</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
-    <value>Whether an element is in a set of values.</value>
+    <value>元素是否在一组值中。</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
-    <value>Conditional value based on a condition.</value>
+    <value>根据条件返回相应的值。</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
-    <value>Conditional value based on multiple conditions, with a default.</value>
+    <value>根据多个条件返回相应的值，并设有默认值。</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
-    <value>Whether a symbol name is defined in the symbol table.</value>
+    <value>记号表中是否定义了此记号名称。</value>
   </data>
   <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
-    <value>Logical negation of a boolean value.</value>
+    <value>对布尔值进行逻辑取反。</value>
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
-    <value>Click any function to copy it to the clipboard.</value>
+    <value>点击任何函数，将其复制到剪贴板。</value>
   </data>
   <data name="Lbl_SymbolFunctions" xml:space="preserve">
-    <value>Functions</value>
+    <value>函数</value>
   </data>
   <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
-    <value>Usage</value>
+    <value>用法</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
-    <value>Function '{0}' expects no arguments, but got {1}.</value>
+    <value>函数 '{0}' 不需要参数，但输入了 {1} 个。</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
-    <value>Function '{0}' expects exactly one argument, but got {1}.</value>
+    <value>函数 '{0}' 需要恰好一个参数，但输入了 {1} 个。</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
-    <value>Function '{0}' expects exactly {1} arguments, but got {2}.</value>
+    <value>函数 '{0}' 需要恰好 {1} 个参数，但输入了 {2} 个。</value>
   </data>
   <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
-    <value>Function '{0}' expects between {1} and {2} arguments, but got {3}.</value>
+    <value>函数 '{0}' 需要 {1} 到 {2} 个参数，但输入了 {3} 个。</value>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
-    <value>Value must be greater than or equal to {0}.</value>
+    <value>该值必须大于或等于 {0}。</value>
+    <comment>{0} is an inclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
-    <value>Value must be greater than {0}.</value>
+    <value>该值必须大于 {0}。</value>
+    <comment>{0} is an exclusive lower bound. Preserve the .NET placeholder.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
-    <value>Value must be between {0} and {1}.</value>
+    <value>该值必须介于 {0} 和 {1} 之间（包含两端）。</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
-    <value>Value must be between {0} and less than {1}.</value>
+    <value>该值必须大于或等于 {0} 且小于 {1}。</value>
+    <comment>{0}=lower bound, included; {1}=upper bound, excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and up to {1}.</value>
+    <value>该值必须大于 {0} 且不超过 {1}。</value>
+    <comment>{0}=lower bound, excluded; {1}=upper bound, included. Preserve both .NET placeholders.</comment>
   </data>
   <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
-    <value>Value must be greater than {0} and less than {1}.</value>
+    <value>该值必须大于 {0} 且小于 {1}。</value>
+    <comment>{0}=lower bound; {1}=upper bound. Both bounds are excluded. Preserve both .NET placeholders.</comment>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>通知显示窗口</value>
@@ -8036,184 +8095,184 @@
     <value>ZStandard</value>
   </data>
   <data name="LblMoravianFlashVersion" xml:space="preserve">
-    <value>Flash version</value>
+    <value>闪存版本</value>
     <comment>Version of an internal camera component stored in flash memory.
     This is a separate version from camera firmware and driver.</comment>
   </data>
   <data name="LblDimensions" xml:space="preserve">
-    <value>Dimensions</value>
+    <value>尺寸</value>
     <comment>Label for entering subframe dimensions</comment>
   </data>
   <data name="LblTop" xml:space="preserve">
-    <value>Top</value>
+    <value>顶端</value>
   </data>
   <data name="LblLeft" xml:space="preserve">
-    <value>Left</value>
+    <value>左侧</value>
   </data>
   <data name="LblSequencerExpressionValues" xml:space="preserve">
-    <value>Sequencer expressions values</value>
+    <value>序列器表达式值</value>
   </data>
   <data name="LblEccentricity" xml:space="preserve">
-    <value>Eccentricity</value>
+    <value>离心率</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
-    <value>Custom Trigger</value>
+    <value>自定义触发器</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
-    <value>Use an existing trigger as the trigger source, then choose your own instructions to run when that trigger would normally fire.
-This is useful when a built-in trigger has the timing you need, but you want custom actions.</value>
+    <value>使用现有触发器作为触发源，并自行选择该触发器通常触发时要运行的指令。
+当内置触发器的触发时机符合需求，但需要自定义操作时，可以使用此功能。</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
-    <value>Trigger Source</value>
+    <value>触发源</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
-    <value>Custom Trigger Instructions</value>
+    <value>自定义触发指令</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
-    <value>Drop a trigger here to choose when the custom trigger runs.</value>
+    <value>将触发器拖放到此处，以选择自定义触发器的运行时机。</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
-    <value>Drop instructions here to run when the selected trigger source fires.</value>
+    <value>将指令拖放到此处，在选定的触发源触发时运行。</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
-    <value>ADD TRIGGER SOURCE</value>
+    <value>添加触发源</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
-    <value>ADD CUSTOM INSTRUCTIONS</value>
+    <value>添加自定义指令</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
-    <value>Add a trigger source.</value>
+    <value>请添加触发源。</value>
   </data>
   <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
-    <value>Add at least one instruction.</value>
+    <value>请至少添加一条指令。</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
-    <value>Trigger On Unsafe</value>
+    <value>不安全时触发</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Description" xml:space="preserve">
-    <value>Runs configured instructions when the safety monitor reports unsafe conditions or disconnects after being connected, waits until conditions are safe again, then runs follow-up instructions.</value>
+    <value>当安全监视器报告情况不安全，或在连接后断开时，运行已配置的指令，等待情况再次安全，然后运行后续指令。</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
-    <value>Before Waiting For Safety</value>
+    <value>等待安全之前</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description" xml:space="preserve">
-    <value>After Waiting For Safety</value>
+    <value>等待安全之后</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run before waiting until conditions are safe again.</value>
+    <value>在等待情况再次安全之前运行的指令。</value>
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
-    <value>Instructions that run after conditions are safe again.</value>
+    <value>情况再次安全后运行的指令。</value>
   </data>
   <data name="LblPHD2GuideChartShowStarMass" xml:space="preserve">
-    <value>Show Star Mass in Guide Graph</value>
+    <value>在导星曲线中显示星点通量</value>
   </data>
   <data name="LblPHD2GuideChartShowSNR" xml:space="preserve">
-    <value>Show Star SNR in Guide Graph</value>
+    <value>在导星曲线中显示星点信噪比</value>
   </data>
   <data name="LblStarMass" xml:space="preserve">
-    <value>Star Mass</value>
+    <value>星点通量</value>
   </data>
   <data name="LblStarSNR" xml:space="preserve">
-    <value>Star SNR</value>
+    <value>星点信噪比</value>
   </data>
   <data name="Lbl_SequenceHistory_Undo" xml:space="preserve">
-    <value>Undo</value>
+    <value>撤销</value>
   </data>
   <data name="Lbl_SequenceHistory_Redo" xml:space="preserve">
-    <value>Redo</value>
+    <value>重做</value>
   </data>
   <data name="Lbl_SequenceHistory_Title" xml:space="preserve">
-    <value>Edit history</value>
+    <value>编辑历史</value>
   </data>
   <data name="Lbl_SequenceHistory_Hint" xml:space="preserve">
-    <value>Select a state to undo or redo to it.</value>
+    <value>选择一个状态，撤销或重做到该状态。</value>
   </data>
   <data name="Lbl_SequenceHistory_Current" xml:space="preserve">
-    <value>Current</value>
+    <value>当前</value>
   </data>
   <data name="Lbl_SequenceHistory_Saved" xml:space="preserve">
-    <value>(saved)</value>
+    <value>(已保存)</value>
   </data>
   <data name="Lbl_SequenceHistory_Initial" xml:space="preserve">
-    <value>Earlier state</value>
+    <value>先前状态</value>
   </data>
   <data name="Lbl_SequenceHistory_UndoAction" xml:space="preserve">
-    <value>Undo {0}</value>
+    <value>撤销 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_RedoAction" xml:space="preserve">
-    <value>Redo {0}</value>
+    <value>重做 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_EditAction" xml:space="preserve">
-    <value>Edit {0}: {1}</value>
+    <value>编辑 {0}：{1}</value>
   </data>
   <data name="Lbl_SequenceHistory_MoveAction" xml:space="preserve">
-    <value>Move {0}</value>
+    <value>移动 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_AddAction" xml:space="preserve">
-    <value>Add {0}</value>
+    <value>添加 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_Position" xml:space="preserve">
-    <value>Position {0}</value>
+    <value>位置 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PositionChange" xml:space="preserve">
-    <value>Position {0} -&gt; {1}</value>
+    <value>位置 {0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_DeleteAction" xml:space="preserve">
-    <value>Delete {0}</value>
+    <value>删除 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_DuplicateAction" xml:space="preserve">
-    <value>Duplicate {0}</value>
+    <value>复制 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_PlaceAction" xml:space="preserve">
-    <value>Place item in {0}</value>
+    <value>将条目放入 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_ToggleAction" xml:space="preserve">
-    <value>Enable/disable {0}</value>
+    <value>启用/禁用 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_ClearAction" xml:space="preserve">
-    <value>Clear sequence</value>
+    <value>清空序列</value>
   </data>
   <data name="Lbl_SequenceHistory_TargetAction" xml:space="preserve">
-    <value>Change target {0}</value>
+    <value>更改目标 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_Conflict" xml:space="preserve">
-    <value>This edit cannot be restored because its configuration was changed outside edit history. The sequence has not been changed.</value>
+    <value>由于其配置在编辑历史之外发生了更改，无法恢复此次编辑。序列未被更改。</value>
   </data>
   <data name="Lbl_SequenceHistory_Failed" xml:space="preserve">
-    <value>Restoring the edit failed. Edit history was cleared. Review the sequence before continuing.</value>
+    <value>恢复编辑失败。编辑历史已清空。请在继续之前检查序列。</value>
   </data>
   <data name="Lbl_SequenceHistory_ValueChange" xml:space="preserve">
     <value>{0} -&gt; {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_NoValue" xml:space="preserve">
-    <value>(empty)</value>
+    <value>(空)</value>
   </data>
   <data name="Lbl_SequenceHistory_CoordinateValue" xml:space="preserve">
-    <value>RA {0}, Dec {1}, rotation {2} degrees ({3})</value>
+    <value>赤经 {0}，赤纬 {1}，旋转角度 {2} 度 ({3})</value>
   </data>
   <data name="Lbl_SequenceHistory_MoreChanges" xml:space="preserve">
-    <value>+ {0} more changes</value>
+    <value>+ 另外 {0} 项更改</value>
   </data>
   <data name="Lbl_SequenceHistory_AddedDetail" xml:space="preserve">
-    <value>Added {0} to {1}</value>
+    <value>已将 {0} 添加到 {1}</value>
   </data>
   <data name="Lbl_SequenceHistory_RemovedDetail" xml:space="preserve">
-    <value>Removed {0} from {1}</value>
+    <value>已从 {1} 移除 {0}</value>
   </data>
   <data name="Lbl_SequenceHistory_MovedDetail" xml:space="preserve">
-    <value>{0}: {1} -&gt; {2}</value>
+    <value>{0}：{1} -&gt; {2}</value>
   </data>
   <data name="Lbl_SequenceHistory_RestoredFailure" xml:space="preserve">
-    <value>The edit could not be applied. The previous state and edit history were preserved.</value>
+    <value>无法应用此次编辑。先前状态和编辑历史已保留。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForEdits" xml:space="preserve">
-    <value>Waiting for template editing. Unsaved edits will be discarded in {0}, then the saved template will run. Save or Cancel to continue now.</value>
+    <value>正在等待模板编辑结束。将在 {0} 后丢弃未保存的编辑，然后运行已保存的模板。点击 "保存" 或 "取消" 可立即继续。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_WaitingForSave" xml:space="preserve">
-    <value>Waiting for the template to finish saving.</value>
+    <value>正在等待模板保存完成。</value>
   </data>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
-    <value>Unsaved edits to linked template '{0}' were discarded after five minutes of inactivity. Continuing with the saved template.</value>
+    <value>由于五分钟没有操作，对链接模板 '{0}' 的未保存编辑已被丢弃。将继续使用已保存的模板。</value>
   </data>
 </root>

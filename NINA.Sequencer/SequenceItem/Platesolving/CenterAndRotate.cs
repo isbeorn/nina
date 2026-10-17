@@ -240,6 +240,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         }
 
         public new bool Validate() {
+            ResolveEffectiveCoordinates();
             Issues.Clear();
             var info = telescopeMediator.GetInfo();
             if (!info.Connected) {
@@ -248,7 +249,10 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             if (!rotatorMediator.GetInfo().Connected) {
                 Issues.Add(Loc.Instance["LblRotatorNotConnected"]);
             }
-            Expression.ValidateExpressions(Issues, RaExpression, DecExpression, PositionAngleExpression);
+            Expression.ValidateExpressions(Issues, PositionAngleExpression);
+            if (!Inherited) {
+                Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
+            }
             RaisePropertyChanged("Issues");
             return Issues.Count == 0;
         }
