@@ -452,17 +452,17 @@ namespace NINA.Test.Sequencer.Logic {
                 };
 
                 broker.UpdateDeviceInfo(info);
-                ValidateSymbol("Gauge_S3_C0_Voltage", true, 12d);
-                ValidateSymbol("Switch_S3_C1_Relay", true, 0.5d);
-                switchSettingsMock.Object.KnownReadonlySwitchSymbols.Should().Equal("S3_C0_Voltage");
-                switchSettingsMock.Object.KnownWritableSwitchSymbols.Should().Equal("S3_C1_Relay");
+                ValidateSymbol("Gauge_S3_C1_Voltage", true, 12d);
+                ValidateSymbol("Switch_S3_C2_Relay", true, 0.5d);
+                switchSettingsMock.Object.KnownReadonlySwitchSymbols.Should().Equal("S3_C1_Voltage");
+                switchSettingsMock.Object.KnownWritableSwitchSymbols.Should().Equal("S3_C2_Relay");
                 broker.UpdateDeviceInfo(new SwitchInfo { Connected = false });
-                ValidateUninitializedSymbol("Gauge_S3_C0_Voltage");
-                ValidateUninitializedSymbol("Switch_S3_C1_Relay");
+                ValidateUninitializedSymbol("Gauge_S3_C1_Voltage");
+                ValidateUninitializedSymbol("Switch_S3_C2_Relay");
                 child.SetupGet(device => device.Name).Returns("Renamed roof box");
                 broker.UpdateDeviceInfo(info);
-                ValidateSymbol("Gauge_S3_C0_Voltage", true, 12d);
-                ValidateSymbol("Switch_S3_C1_Relay", true, 0.5d);
+                ValidateSymbol("Gauge_S3_C1_Voltage", true, 12d);
+                ValidateSymbol("Switch_S3_C2_Relay", true, 0.5d);
             } finally {
                 hub.Disconnect();
             }
