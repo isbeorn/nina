@@ -58,7 +58,6 @@ This allows you to safely return to a stable release if needed.
 - Canceling a native Nikon automatic shutter exposure no longer sends an unsupported Bulb termination command that could terminate N.I.N.A.
 
 ## Improvements
-- Plugin details now include a Changelog tab for reading Markdown release notes, with a browser link for other formats. Notes are cached for seven days per plugin version and remain available when a refresh fails.
 - The advanced sequencer now keeps the last 100 configuration edits in memory with Undo, Redo and an Edit History sidebar tab showing affected items, their locations and before/after values. History remains available during unlocked execution and preserves sequence objects and unrelated progress. Standard plugin fields participate automatically; custom plugin editors can opt in through the editor history context. The history list keeps its rows stable during editing and replay. Entries name the edited item and show compact locations, position changes and readable selection labels. Full paths can be expanded without navigating history, and moves omit incidental shifts of neighboring items. Field edits inside compound instructions such as Smart Exposure use the visible instruction's name and position. Core editor coverage includes compound exposure and flat inputs, expression text and stepper controls, coordinate fields, time-provider changes and programmable meridian-flip action sets. Optional custom property and attachment-state providers let plugins capture configuration side effects through the same path as core entities; ordinary fields need no additional interface. Template-instance edits and custom editors now resolve the correct history independently of focus. Whole-target undo preserves the sign of zero declination. Replay keeps history available for retry when a failed edit has been fully rolled back.
 - "Cool Camera" now waits until the sensor enters the target temperature tolerance whether approaching from above or below.
 - The Legacy Sequencer can now reset progress for every target in the current Target Set with one confirmed action.
@@ -166,14 +165,14 @@ This allows you to safely return to a stable release if needed.
 
 ### **User Interface & Usability**
 - **Plugin Manager**
-  - Redesigned plugin browsing with a resizable list and detail pane using the active N.I.N.A. theme. Installed opens first, with Available kept as a separate section for browsing the catalog.
-  - Added search across plugin names, authors, descriptions and tags, plus multi-select tag filtering with counts for the current section. Installed and update indicators make plugin status visible in the list.
-  - Plugin details now have Settings, Description, Changelog, Showcase, Versions and Info tabs for configuration, release notes, screenshots, installation guidance and project links. Existing plugin settings views remain available while browsing details.
-  - The Versions tab marks the installed release and offers compatible versions for upgrade or rollback when supplied by the repository. Older compatible releases remain accessible even when the latest release is incompatible. Repositories without a version-history route use the versions returned by their catalog.
-  - Update all applies to every eligible update regardless of filters. Pending restart and removal notices survive navigation and refresh, including after partially successful batch updates. Version changes take effect after restarting N.I.N.A.
-  - Plugin icons and screenshots are cached locally across application restarts, refreshed after seven days or when the plugin version changes.
+  - Browse plugins in a resizable list with details alongside it. Installed opens first, while Available remains separate for discovering plugins.
+  - Search by name, author, description or tag and select multiple tags to narrow the list. Tag filters show counts for the current section, and list labels identify installed plugins and available updates.
+  - Configure installed plugins, read changelogs within N.I.N.A. and view screenshots in a gallery. Additional Info brings together installation guidance and project links.
+  - The Versions tab highlights the installed release and lets you switch to older or newer compatible versions where available, even when the latest release requires a newer N.I.N.A.
+  - Update all includes every available update, even when filters hide some plugins. Refresh and installation progress appear at the bottom alongside restart reminders that stay visible as you browse. Plugin changes take effect after restarting N.I.N.A.
+  - Plugin images and changelogs are saved between sessions for faster browsing and remain available if a refresh fails.
 - **Initialization Progress**
-  - Plugins, Imaging and Sequencer now use consistent horizontal loading indicators during initialization.
+  - Plugins, Imaging and Sequencer now use matching horizontal progress bars while loading.
 - **Sequencer**
   - Each intstruction container now has a colored border on the left side to better differentiate between them. This can be disabled in Options > Imaging > Sequence > Colored Container Borders
 - **Sky Atlas Improvements**  
