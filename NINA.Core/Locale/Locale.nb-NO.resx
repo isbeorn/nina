@@ -8266,4 +8266,235 @@ Dette er nyttig når en innebygd trigger har tidspunktet du trenger, men du vil 
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Ulagrede endringer i den koblede malen '{0}' ble forkastet etter fem minutters inaktivitet. Fortsetter med den lagrede malen.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Oppdater</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Prøv igjen</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Presentasjon</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Versjoner</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Ingen skjermbilder er tilgjengelige for dette programtillegget.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Laster inn versjonshistorikk...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Noe av versjonshistorikken kunne ikke lastes inn. Tilgjengelige versjoner vises fortsatt.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>En tilleggskilde tilbyr ikke versjonshistorikk. Versjonene fra katalogen til kilden vises fortsatt.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>Ingen kompatible versjoner er tilgjengelige fra de konfigurerte tilleggskildene.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>Den installerte versjonen vises sammen med kompatible versjoner fra de konfigurerte tilleggskildene. Tidligere versjoner er ikke alltid tilgjengelige. Versjonsendringer trer i kraft etter at NINA er startet på nytt.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Installer versjon</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Installert versjon</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Nedgradering tilgjengelig</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Oppgradering tilgjengelig</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Eldre versjon</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Nyere versjon</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Nedgrader til {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Oppgrader til {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Installer {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Bruk handlingen under Versjoner til å installere eller bytte versjon. Start deretter NINA på nytt. Se hjemmesiden til programtillegget for eventuelle oppsettsinstruksjoner fra utgiveren.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Søk etter programtillegg</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Alle emneknagger</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Nullstill filtre</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Bla gjennom tilgjengelige programtillegg</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Laster inn tilgjengelige programtillegg...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Kunne ikke laste inn tilgjengelige programtillegg. Tidligere resultater vises fortsatt. Prøv igjen for å hente oppdaterte resultater.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Kunne ikke kontakte enkelte tilleggskilder. Tidligere resultater fra disse kildene vises fortsatt.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Ingen programtillegg samsvarer med disse filtrene. Nullstill filtrene for å se alle programtillegg.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Ingen programtillegg er installert. Bla gjennom tilgjengelige programtillegg for å installere et.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Innlasting mislyktes</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Fjerning venter på omstart</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Omstart kreves</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Installerer programtillegg...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Oppdaterer programtillegg...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Fjerner programtillegg...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Forespørsel om avbrytelse sendt...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Oppdater alle ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Innstillingene blir tilgjengelige etter at NINA er startet på nytt.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Minimumsversjon av NINA:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Kildekode</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Start NINA på nytt</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Endringer i programtillegg krever omstart.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Oppdatering tilgjengelig</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>Ingen kompatible programtillegg er tilgjengelige fra de konfigurerte tilleggskildene.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Dette programtillegget har ingen innstillinger.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Åpne endringslogg i nettleseren</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Laster inn endringslogg...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Denne endringsloggen kan ikke vises her. Åpne den i nettleseren for å lese den.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Kunne ikke oppdatere endringsloggen. Tidligere lagrede merknader vises. Prøv igjen for å hente oppdaterte merknader eller åpne endringsloggen i nettleseren.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Kunne ikke laste inn endringsloggen. Prøv igjen eller åpne den i nettleseren.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Forrige bilde</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Neste bilde</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Bilde</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Laster inn skjermbilder...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Tilleggsinformasjon</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA-sikkerhetshub</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA-bryterhub</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA-værhub</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Legg til enhet</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Fjern enhet</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Midlingsperiode</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Åpne innstillingene for huben med tannhjulikonet. Velg minst én enhet. Unngå duplikater og NINA-huber som underenheter.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Ingen enheter er konfigurert for denne huben. Åpne innstillingene med tannhjulikonet og legg til en enhet.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Ingen værmålinger er tilordnet en kildeenhet. Åpne innstillingene for huben med tannhjulikonet og tilordne en enhet til minst én måling.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Kunne ikke koble til enheten.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>En enhet i huben er utilgjengelig. Koble huben fra og til igjen for å fortsette.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Bryterkontrolleren støtter ikke valg av hubkanal basert på en vedvarende og entydig kanalidentitet.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Den valgte hubkanalen mangler, er ikke entydig eller kan ikke styres.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Kunne ikke lese av bryteren etter at verdien ble satt.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Legg til enhetene som skal inngå i denne huben.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Enheten er frakoblet.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Ikke i bruk</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Frakoblet</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Trygg</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Utrygg</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Bryter {0} - {1}</value>
+  </data>
 </root>
