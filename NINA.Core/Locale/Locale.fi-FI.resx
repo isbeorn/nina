@@ -8285,4 +8285,235 @@ Tästä on hyötyä, kun sisäisen laukaisimen ajoitus sopii tarpeeseesi mutta h
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Linkitetyn mallin '{0}' tallentamattomat muutokset hylättiin viiden minuutin toimettomuuden jälkeen. Jatketaan tallennetulla mallilla.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Päivitä</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Yritä uudelleen</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Esittely</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Versiot</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Tälle liitännäiselle ei ole saatavilla kuvakaappauksia.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Ladataan versiohistoriaa...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Osaa versiohistoriasta ei voitu ladata. Saatavilla olevat versiot näytetään silti.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Yksi liitännäisvarastoista ei tarjoa versiohistoriaa. Sen luettelossa olevat versiot näytetään silti.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>Määritetyistä liitännäisvarastoista ei ole saatavilla yhteensopivia versioita.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>Asennettu versio näytetään määritettyjen liitännäisvarastojen tarjoamien yhteensopivien versioiden rinnalla. Aiempia versioita ei välttämättä ole saatavilla. Versionvaihdot tulevat voimaan NINAn uudelleenkäynnistyksen jälkeen.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Asenna versio</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Nyt asennettuna</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Aiempaan versioon voi palata</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Uudempi versio saatavilla</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Vanhempi versio</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Uudempi versio</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Palaa versioon {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Päivitä versioon {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Asenna {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Asenna tai vaihda versio Versiot-osion toiminnolla ja käynnistä sitten NINA uudelleen. Katso mahdolliset julkaisijan omat asennusohjeet liitännäisen kotisivulta.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Etsi liitännäisiä</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Kaikki tunnisteet</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Tyhjennä suodattimet</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Selaa saatavilla olevia liitännäisiä</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Ladataan saatavilla olevia liitännäisiä...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Saatavilla olevia liitännäisiä ei voitu ladata. Aiemmat tulokset näytetään edelleen. Tarkista uudelleen valitsemalla Yritä uudelleen.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Osaan liitännäisvarastoista ei saatu yhteyttä. Näiden varastojen aiemmat tulokset näytetään edelleen.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Mikään liitännäinen ei vastaa näitä suodattimia. Näytä kaikki liitännäiset tyhjentämällä suodattimet.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Liitännäisiä ei ole asennettu. Asenna liitännäinen selaamalla saatavilla olevia liitännäisiä.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Lataaminen epäonnistui</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Poisto odottaa uudelleenkäynnistystä</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Uudelleenkäynnistys on tarpeen</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Asennetaan liitännäistä...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Päivitetään liitännäistä...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Poistetaan liitännäistä...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Peruutusta pyydetty...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Päivitä kaikki ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Asetukset ovat käytettävissä NINAn uudelleenkäynnistyksen jälkeen.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>NINAn vähimmäisversio:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Lähdekoodi</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Käynnistä NINA uudelleen</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Liitännäisten muutokset vaativat uudelleenkäynnistyksen.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Päivitys saatavilla</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>Määritetyistä liitännäisvarastoista ei ole saatavilla yhteensopivia liitännäisiä.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Tällä liitännäisellä ei ole asetuksia.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Avaa muutosloki selaimessa</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Ladataan muutoslokia...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Tätä muutoslokia ei voi näyttää tässä. Avaa se selaimessa lukeaksesi sen.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Muutoslokia ei voitu päivittää. Aiemmin tallennetut muutosmerkinnät näytetään. Yritä uudelleen tai avaa muutosloki selaimessa.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Muutoslokia ei voitu ladata. Yritä uudelleen tai avaa se selaimessa.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Edellinen kuva</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Seuraava kuva</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Kuva</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Ladataan kuvakaappauksia...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Lisätiedot</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA-turvallisuusvalvontakeskus</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA-kytkinkeskus</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA-säätietokeskus</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Lisää laite</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Poista laite</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Keskiarvon laskentajakso</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Avaa keskuksen asetukset hammasrataskuvakkeesta. Valitse vähintään yksi laite. Älä lisää samaa laitetta useammin kuin kerran äläkä muita NINA-keskuksia.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Tälle keskukselle ei ole määritetty laitteita. Avaa asetukset hammasrataskuvakkeesta ja lisää laite.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Yhdellekään säätietokentälle ei ole määritetty lähdelaitetta. Avaa keskuksen asetukset hammasrataskuvakkeesta ja määritä laite vähintään yhdelle kentälle.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Yhteyden muodostaminen laitteeseen epäonnistui.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Keskuksen laite ei ole käytettävissä. Jatka katkaisemalla keskuksen yhteys ja muodostamalla se uudelleen.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Kytkinohjain ei tue keskuksen kanavien pysyvään tunnistukseen perustuvaa valintaa.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Valittu keskuksen kanava puuttuu, sitä ei voi tunnistaa yksiselitteisesti tai se ei ole ohjattavissa.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Kytkimen arvoa ei voitu lukea sen asettamisen jälkeen.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Lisää laitteet, joita tämä keskus käyttää.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Laitteen yhteys on katkaistu.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Ei käytössä</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Yhteys katkaistu</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Turvallinen</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Turvaton</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Kytkin {0} - {1}</value>
+  </data>
 </root>
