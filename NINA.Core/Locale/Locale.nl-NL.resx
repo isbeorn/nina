@@ -8273,4 +8273,235 @@ Dit is handig als een ingebouwde trigger het juiste moment bepaalt, maar u aange
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Niet-opgeslagen wijzigingen aan gekoppeld sjabloon '{0}' zijn na vijf minuten inactiviteit verworpen. Er wordt doorgegaan met het opgeslagen sjabloon.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Vernieuwen</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Opnieuw proberen</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Presentatie</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Versies</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Er zijn geen schermafbeeldingen beschikbaar voor deze plugin.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Versiegeschiedenis laden...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Een deel van de versiegeschiedenis kon niet worden geladen. Beschikbare versies worden nog steeds getoond.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Een repository biedt geen versiegeschiedenis aan. Versies uit de catalogus van die repository worden nog steeds getoond.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>Er zijn geen compatibele versies beschikbaar via de ingestelde repository's.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>De geïnstalleerde versie wordt getoond naast de compatibele versies uit de ingestelde repository's. Eerdere versies zijn mogelijk niet beschikbaar. Versiewijzigingen worden van kracht nadat NINA opnieuw is gestart.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Versie installeren</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Momenteel geïnstalleerd</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Teruggaan naar een oudere versie mogelijk</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Nieuwere versie beschikbaar</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Oudere versie</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Nieuwere versie</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Teruggaan naar {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Bijwerken naar {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>{0} installeren</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Gebruik de actie op het tabblad Versies om een versie te installeren of van versie te wisselen en start NINA daarna opnieuw. Raadpleeg de website van de plugin voor eventuele installatie-instructies van de aanbieder.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Plugins zoeken</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Alle tags</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Filters wissen</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Beschikbare plugins bekijken</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Beschikbare plugins laden...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Beschikbare plugins konden niet worden geladen. Eerdere resultaten worden nog steeds getoond. Probeer het opnieuw om nogmaals te controleren.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Sommige pluginrepository's konden niet worden bereikt. Eerdere resultaten uit die repository's worden nog steeds getoond.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Er zijn geen plugins die aan deze filters voldoen. Wis de filters om alle plugins te zien.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Er zijn geen plugins geïnstalleerd. Bekijk de beschikbare plugins om er een te installeren.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Laden mislukt</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Wordt verwijderd na herstart</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Opnieuw starten vereist</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Plugin installeren...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Plugin bijwerken...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Plugin verwijderen...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Annulering aangevraagd...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Alles bijwerken ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>De instellingen zijn beschikbaar nadat NINA opnieuw is gestart.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Minimale NINA-versie:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Broncode</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>NINA opnieuw starten</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>NINA moet opnieuw worden gestart om pluginwijzigingen toe te passen.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Update beschikbaar</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>Er zijn geen compatibele plugins beschikbaar via de ingestelde repository's.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Deze plugin heeft geen instellingen.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Wijzigingslogboek openen in browser</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Wijzigingslogboek laden...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Dit wijzigingslogboek kan hier niet worden weergegeven. Open het in uw browser om het te lezen.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Het wijzigingslogboek kon niet worden vernieuwd. Eerder opgeslagen notities worden getoond. Probeer het opnieuw om nogmaals te controleren of open het in uw browser.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Het wijzigingslogboek kon niet worden geladen. Probeer het opnieuw of open het in uw browser.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Vorige afbeelding</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Volgende afbeelding</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Afbeelding</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Schermafbeeldingen laden...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Aanvullende informatie</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA-veiligheidshub</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA-schakelhub</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA-weerhub</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Apparaat toevoegen</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Apparaat verwijderen</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Middelingsperiode</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Open de hubinstellingen via het tandwielpictogram. Selecteer ten minste één apparaat, zonder dubbele apparaten of geneste NINA-hubs.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Er zijn geen apparaten ingesteld voor deze hub. Open de instellingen via het tandwielpictogram en voeg een apparaat toe.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Aan geen enkel weerveld is een bronapparaat toegewezen. Open de hubinstellingen via het tandwielpictogram en wijs een apparaat toe aan ten minste één veld.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Er kon geen verbinding worden gemaakt met het apparaat.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Een apparaat van de hub is niet beschikbaar. Verbreek de verbinding met de hub en maak opnieuw verbinding om door te gaan.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>De schakelcontroller ondersteunt geen selectie van hubkanalen met een vaste identiteit.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Het geselecteerde hubkanaal ontbreekt, is niet eenduidig te bepalen of is niet instelbaar.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>De schakelaar kon niet worden uitgelezen na het instellen van de waarde.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Voeg de apparaten toe die u in deze hub wilt gebruiken.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Het apparaat is niet verbonden.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Niet gebruikt</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Niet verbonden</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Veilig</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Onveilig</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Schakelaar {0} - {1}</value>
+  </data>
 </root>
