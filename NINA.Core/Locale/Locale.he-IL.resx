@@ -8285,4 +8285,235 @@ HFR מחושב: {2}
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>עריכות שלא נשמרו בתבנית המקושרת '{0}' נמחקו לאחר חמש דקות ללא פעילות. המשך עם התבנית השמורה.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>רענון</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>ניסיון חוזר</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>הצגת התוסף</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>גרסאות</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>אין צילומי מסך זמינים לתוסף זה.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>טעינת היסטוריית הגרסאות...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>לא ניתן לטעון חלק מהיסטוריית הגרסאות. הגרסאות הזמינות עדיין מוצגות.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>אחד המאגרים אינו מספק היסטוריית גרסאות. הגרסאות מהקטלוג שלו עדיין מוצגות.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>אין גרסאות תואמות זמינות במאגרים שהוגדרו.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>הגרסה המותקנת מוצגת לצד גרסאות תואמות שמספקים המאגרים שהוגדרו. ייתכן שגרסאות קודמות אינן זמינות. שינויי גרסה נכנסים לתוקף לאחר הפעלה מחדש של NINA.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>התקנת גרסה</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>מותקנת כעת</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>אפשר לחזור לגרסה קודמת</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>שדרוג זמין</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>גרסה ישנה יותר</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>גרסה חדשה יותר</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>חזרה לגרסה {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>שדרוג לגרסה {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>התקנת {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>יש להשתמש בפעולה תחת "גרסאות" כדי להתקין גרסה או להחליפה ולאחר מכן להפעיל מחדש את NINA. יש לעיין בדף הבית של התוסף לקבלת הוראות הגדרה של המפיץ, אם קיימות.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>חיפוש תוספים</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>כל התגיות</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>איפוס המסננים</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>עיון בתוספים הזמינים</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>טעינת התוספים הזמינים...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>לא ניתן לטעון את התוספים הזמינים. התוצאות הקודמות עדיין מוצגות. יש לנסות שוב כדי לבדוק מחדש.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>לא ניתן להתחבר לחלק ממאגרי התוספים. התוצאות הקודמות ממאגרים אלה עדיין מוצגות.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>לא נמצאו תוספים התואמים למסננים אלה. יש לאפס את המסננים כדי להציג את כל התוספים.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>אין תוספים מותקנים. אפשר לעיין בתוספים הזמינים ולהתקין תוסף.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>הטעינה נכשלה</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>ההסרה ממתינה להפעלה מחדש</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>נדרשת הפעלה מחדש</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>התקנת התוסף...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>עדכון התוסף...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>הסרת התוסף...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>התקבלה בקשת ביטול...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>עדכון הכול ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>ההגדרות יהיו זמינות לאחר הפעלה מחדש של NINA.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>גרסת NINA מזערית:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>קוד מקור</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>הפעלה מחדש של NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>שינויים בתוספים מחייבים הפעלה מחדש.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>עדכון זמין</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>אין תוספים תואמים זמינים במאגרים שהוגדרו.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>תוסף זה אינו מספק הגדרות.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>פתיחת יומן השינויים בדפדפן</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>טעינת יומן השינויים...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>לא ניתן להציג כאן יומן שינויים זה. יש לפתוח אותו בדפדפן כדי לקרוא אותו.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>לא ניתן לרענן את יומן השינויים. מוצגות ההערות שנשמרו קודם. יש לנסות שוב כדי לבדוק מחדש או לפתוח אותו בדפדפן.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>לא ניתן לטעון את יומן השינויים. יש לנסות שוב או לפתוח אותו בדפדפן.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>התמונה הקודמת</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>התמונה הבאה</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>תמונה</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>טעינת צילומי המסך...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>מידע נוסף</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>רכזת הבטיחות של NINA</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>רכזת המתגים של NINA</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>רכזת מזג האוויר של NINA</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>הוספת התקן</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>הסרת התקן</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>משך המיצוע</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>יש לפתוח את הגדרות הרכזת באמצעות סמל גלגל השיניים. יש לבחור לפחות התקן אחד, ללא כפילויות או רכזות NINA מקוננות.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>לא הוגדרו התקנים לרכזת זו. יש לפתוח את ההגדרות באמצעות סמל גלגל השיניים ולהוסיף התקן.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>לא הוגדר התקן מקור לאף שדה של נתוני מזג האוויר. יש לפתוח את הגדרות הרכזת באמצעות סמל גלגל השיניים ולהקצות התקן לשדה אחד לפחות.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>לא ניתן לחבר את ההתקן.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>אחד ההתקנים ברכזת אינו זמין. יש לנתק את הרכזת ולחבר אותה מחדש כדי להמשיך.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>בקר המתגים אינו תומך בבחירת ערוץ ברכזת באמצעות מזהה קבוע.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>הערוץ שנבחר ברכזת חסר, זיהויו אינו חד-משמעי או שלא ניתן לכתוב אליו.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>קריאת ערך המתג לאחר הגדרתו נכשלה.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>יש להוסיף את ההתקנים שייכללו ברכזת זו.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>ההתקן מנותק.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>לא בשימוש</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>מנותק</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>בטוח</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>לא בטוח</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>מתג {0} - {1}</value>
+  </data>
 </root>
