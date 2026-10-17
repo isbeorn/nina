@@ -8278,4 +8278,235 @@ Cette fonctionnalité est utile lorsqu'un déclencheur intégré correspond au m
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Les modifications non enregistrées du modèle lié '{0}' ont été abandonnées après cinq minutes d'inactivité. Poursuite de l'exécution avec le modèle enregistré.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Actualiser</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Réessayer</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Présentation</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Versions</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Aucune capture d'écran n'est disponible pour ce plugin.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Chargement de l'historique des versions...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Une partie de l'historique des versions n'a pas pu être chargée. Les versions publiées disponibles restent affichées.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Un dépôt ne fournit pas d'historique des versions. Les versions publiées figurant dans son catalogue restent affichées.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>Aucune version publiée compatible n'est disponible dans les dépôts configurés.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>La version installée est affichée aux côtés des versions publiées compatibles fournies par les dépôts configurés. Les versions antérieures peuvent être indisponibles. Les changements de version prennent effet après le redémarrage de NINA.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Installer une version</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Version actuellement installée</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Retour à une version antérieure disponible</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Version plus récente disponible</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Version antérieure</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Version plus récente</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Revenir à la version {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Passer à la version {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Installer {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Utilisez l'action proposée dans Versions pour installer ou changer de version, puis redémarrez NINA. Consultez la page d'accueil du plugin pour connaître les instructions de configuration propres à son éditeur.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Rechercher des plugins</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Toutes les étiquettes</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Effacer les filtres</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Parcourir les plugins disponibles</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Chargement des plugins disponibles...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Impossible de charger les plugins disponibles. Les résultats précédents restent affichés. Réessayez pour vérifier à nouveau.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Certains dépôts de plugins sont inaccessibles. Les résultats précédents provenant de ces dépôts restent affichés.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Aucun plugin ne correspond à ces filtres. Effacez les filtres pour afficher tous les plugins.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Aucun plugin n'est installé. Parcourez les plugins disponibles pour en installer un.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Échec du chargement</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Suppression au prochain redémarrage</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Redémarrage requis</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Installation du plugin...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Mise à jour du plugin...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Suppression du plugin...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Annulation demandée...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Tout mettre à jour ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Les paramètres seront disponibles après le redémarrage de NINA.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Version minimale de NINA :</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Code source</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Redémarrer NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Les modifications des plugins nécessitent un redémarrage.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Mise à jour disponible</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>Aucun plugin compatible n'est disponible dans les dépôts configurés.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Ce plugin ne propose pas de paramètres.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Ouvrir l'historique des modifications dans le navigateur</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Chargement de l'historique des modifications...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Cet historique des modifications ne peut pas être affiché ici. Ouvrez-le dans votre navigateur pour le lire.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Impossible d'actualiser l'historique des modifications. Les notes précédemment enregistrées sont affichées. Réessayez pour vérifier à nouveau ou ouvrez-le dans votre navigateur.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Impossible de charger l'historique des modifications. Réessayez ou ouvrez-le dans votre navigateur.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Image précédente</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Image suivante</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Chargement des captures d'écran...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Informations complémentaires</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>Concentrateur de sécurité NINA</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>Concentrateur de commutateurs NINA</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>Concentrateur météo NINA</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Ajouter un appareil</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Retirer un appareil</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Période de moyennage</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Ouvrez les paramètres du concentrateur à l'aide de l'icône d'engrenage. Sélectionnez au moins un appareil, sans doublons ni concentrateurs NINA imbriqués.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Aucun appareil n'est configuré pour ce concentrateur. Ouvrez les paramètres à l'aide de l'icône d'engrenage et ajoutez un appareil.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Aucune mesure météo n'a d'appareil source. Ouvrez les paramètres du concentrateur à l'aide de l'icône d'engrenage et attribuez un appareil à au moins une mesure.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Impossible de connecter l'appareil.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Un appareil du concentrateur est indisponible. Reconnectez le concentrateur pour continuer.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Le contrôleur de commutateurs ne permet pas de sélectionner les canaux du concentrateur par un identifiant stable.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Le canal sélectionné du concentrateur est introuvable, ambigu ou n'accepte pas de valeur.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Impossible de lire la valeur du commutateur après l'avoir définie.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Ajoutez les appareils qui contribueront au fonctionnement de ce concentrateur.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>L'appareil est déconnecté.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Non utilisé</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Déconnecté</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Conditions sûres</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Conditions non sûres</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Commutateur {0} - {1}</value>
+  </data>
 </root>
