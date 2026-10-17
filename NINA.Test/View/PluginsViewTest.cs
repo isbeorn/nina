@@ -47,6 +47,356 @@ namespace NINA.Test.View {
     [NonParallelizable]
     [SingleThreaded]
     public class PluginsViewTest {
+        private readonly List<Window> changelogHosts = new();
+
+        [Test]
+        public void ChangelogDetachedView_DoesNotFetchUntilItIsShown() {
+            EnsureApplicationResources();
+            WithChangelogCache(_ => {
+                var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes("# Visible notes"), "text/markdown", responseGate: gate.Task);
+                var manager = CreateManager();
+                manager.AvailablePlugins = [new(new PluginManifest {
+                    Identifier = "detached", Name = "Detached fixture", ChangelogURL = server.Url + "/notes.md"
+                })];
+                var view = new PluginsView { DataContext = manager };
+                try {
+                    Layout(view);
+                    ((TabItem)view.FindName("ChangelogTab")).IsSelected = true;
+                    Layout(view);
+                    var state = (PluginChangelogVM)((FrameworkElement)view.FindName("ChangelogContent")).DataContext;
+                    view.IsLoaded.Should().BeFalse();
+                    state.IsLoading.Should().BeFalse("detached views must not start a download");
+                    server.Requests.Should().BeEmpty();
+
+                    ShowChangelogView(view);
+                    PumpUntil(() => server.RequestReceived.IsCompleted);
+                    gate.TrySetResult();
+                    var markdown = (MdXaml.MarkdownScrollViewer)view.FindName("ChangelogMarkdown");
+                    PumpUntil(() => markdown.Markdown == "# Visible notes");
+                } finally {
+                    view.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
+                    gate.TrySetResult();
+                }
+            });
+        }
+
+        [Test]
+        public void ChangelogTab_LoadsMarkdownOnlyWhenOpenedAndRetainsBrowserLink() {
+            EnsureApplicationResources();
+            WithChangelogCache(_ => {
+                using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes("# Release notes\n\nFixed the fixture. [More](../guide.md)"), "text/markdown");
+                var manifest = new PluginManifest {
+                    Identifier = "changelog", Name = "Changelog fixture", Version = new PluginVersion("1.0.0.0"),
+                    ChangelogURL = server.Url + "/docs/CHANGELOG.md"
+                };
+                var manager = CreateManager();
+                manager.AvailablePlugins = [new(manifest)];
+                var view = new PluginsView { DataContext = manager };
+                ShowChangelogView(view);
+                var tab = view.FindName("ChangelogTab").Should().BeOfType<TabItem>().Subject;
+                var tabs = (TabControl)view.FindName("DetailsNavigation");
+                tabs.Items.IndexOf(tab).Should().Be(tabs.Items.IndexOf(view.FindName("DescriptionTab")) + 1);
+                tab.Visibility.Should().Be(Visibility.Visible);
+                server.Requests.Should().BeEmpty();
+
+                tab.IsSelected = true;
+                Layout(view);
+                var markdown = view.FindName("ChangelogMarkdown").Should().BeOfType<MdXaml.MarkdownScrollViewer>().Subject;
+                PumpUntil(() => markdown.Markdown?.Contains("Fixed the fixture.") == true);
+                markdown.MarkdownStyle.Should().BeSameAs(view.FindResource("MarkdownStyle"));
+                markdown.AssetPathRoot.Should().Be(server.Url + "/docs/");
+                var document = markdown.Document.Should().BeOfType<System.Windows.Documents.FlowDocument>().Subject;
+                var relativeLink = document.Blocks.OfType<System.Windows.Documents.Paragraph>()
+                    .SelectMany(paragraph => paragraph.Inlines.OfType<System.Windows.Documents.Hyperlink>()).Single();
+                relativeLink.CommandParameter.Should().Be(server.Url + "/guide.md");
+                new System.Windows.Documents.TextRange(document.ContentStart, document.ContentEnd)
+                    .Text.Should().Contain("Release notes").And.Contain("Fixed the fixture.");
+                Layout(view);
+                SavePreview(view, "PluginChangelog-Markdown.png", 1000, 700);
+                var browser = (TextBlock)view.FindName("ChangelogBrowserLink");
+                browser.Inlines.OfType<System.Windows.Documents.Hyperlink>().Single().NavigateUri.AbsoluteUri.Should().Be(manifest.ChangelogURL);
+                ((FrameworkElement)view.FindName("ChangelogContent")).Visibility.Should().Be(Visibility.Visible);
+                ((TabItem)view.FindName("DescriptionTab")).IsSelected = true;
+                Layout(view);
+                ((FrameworkElement)view.FindName("ChangelogContent")).Visibility.Should().Be(Visibility.Collapsed);
+
+                manager.AvailablePlugins = [new(new PluginManifest { Identifier = "no-changelog", Name = "No changelog" })];
+                Layout(view);
+                tab.Visibility.Should().Be(Visibility.Collapsed);
+            });
+        }
+
+        [Test]
+        public void ChangelogRetry_UsesTheBoundButtonAfterAFailedRequest() {
+            EnsureApplicationResources();
+            WithChangelogCache(_ => {
+                using var server = new LoopbackHttpServer(responses: [
+                    new([], 503), new(Encoding.UTF8.GetBytes("# Recovered notes"))
+                ], "text/markdown");
+                var manager = CreateManager();
+                manager.AvailablePlugins = [new(new PluginManifest {
+                    Identifier = "retry", Name = "Retry fixture", ChangelogURL = server.Url + "/notes.md"
+                })];
+                var view = new PluginsView { DataContext = manager };
+                ShowChangelogView(view);
+                ((TabItem)view.FindName("ChangelogTab")).IsSelected = true;
+                var content = (FrameworkElement)view.FindName("ChangelogContent");
+                var state = (PluginChangelogVM)content.DataContext;
+                var retry = (Button)view.FindName("RetryChangelogButton");
+                PumpUntil(() => state.CanRetry);
+                Layout(view);
+                state.Notice.Should().Be(NINA.Core.Locale.Loc.Instance["LblPluginManagerChangelogFailed"]);
+                retry.Visibility.Should().Be(Visibility.Visible);
+                retry.Style.Should().BeSameAs(view.FindResource("StandardButton"));
+                ((IInvokeProvider)new ButtonAutomationPeer(retry).GetPattern(PatternInterface.Invoke)).Invoke();
+                var markdown = (MdXaml.MarkdownScrollViewer)view.FindName("ChangelogMarkdown");
+                PumpUntil(() => markdown.Markdown == "# Recovered notes");
+                state.Notice.Should().BeEmpty();
+                state.CanRetry.Should().BeFalse();
+                server.Requests.Should().HaveCount(2);
+            });
+        }
+
+        [Test]
+        public void ChangelogHtml_ShowsLocalizedBrowserFallbackWithoutRenderingHtml() {
+            EnsureApplicationResources();
+            WithChangelogCache(root => {
+                using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes("<html><body>Website notes</body></html>"), "text/html");
+                var manager = CreateManager();
+                manager.AvailablePlugins = [new(new PluginManifest {
+                    Identifier = "html", Name = "HTML fixture", ChangelogURL = server.Url + "/releases"
+                })];
+                var view = new PluginsView { DataContext = manager };
+                ShowChangelogView(view);
+                ((TabItem)view.FindName("ChangelogTab")).IsSelected = true;
+                var state = (PluginChangelogVM)((FrameworkElement)view.FindName("ChangelogContent")).DataContext;
+                PumpUntil(() => state.CanRetry);
+                Layout(view);
+                state.Notice.Should().Be(NINA.Core.Locale.Loc.Instance["LblPluginManagerChangelogUnsupported"]);
+                ((MdXaml.MarkdownScrollViewer)view.FindName("ChangelogMarkdown")).Markdown.Should().BeEmpty();
+                ((TextBlock)view.FindName("ChangelogBrowserLink")).Inlines.OfType<System.Windows.Documents.Hyperlink>()
+                    .Single().NavigateUri.AbsoluteUri.Should().Be(server.Url + "/releases");
+                Directory.Exists(Path.Combine(root, "Cache", "PluginChangelogs")).Should().BeFalse();
+            });
+        }
+
+        [Test]
+        public void ChangelogExpiredCache_ShowsSavedNotesDuringRefreshAndRetainsThemForRetry() {
+            EnsureApplicationResources();
+            WithChangelogCache(root => {
+                var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                using var server = new LoopbackHttpServer(responses: [
+                    new(Encoding.UTF8.GetBytes("# Saved notes")), new([], 503, gate.Task),
+                    new(Encoding.UTF8.GetBytes("# Updated notes"))
+                ], "text/markdown");
+                try {
+                    string url = server.Url + "/notes.md";
+                    var uri = new Uri(url);
+                    new PluginChangelogCache().FetchAsync(uri, "1.0.0.0", CancellationToken.None).GetAwaiter().GetResult();
+                    string path = Directory.GetFiles(Path.Combine(root, "Cache", "PluginChangelogs"), "*.json").Single();
+                    File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddDays(-8));
+                    DateTime timestamp = File.GetLastWriteTimeUtc(path);
+                    var manager = CreateManager();
+                    manager.AvailablePlugins = [new(new PluginManifest {
+                        Identifier = "stale", Name = "Stale fixture", Version = new PluginVersion("1.0.0.0"), ChangelogURL = url
+                    })];
+                    var view = new PluginsView { DataContext = manager };
+                    ShowChangelogView(view);
+                    ((TabItem)view.FindName("ChangelogTab")).IsSelected = true;
+                    Layout(view);
+                    var state = (PluginChangelogVM)((FrameworkElement)view.FindName("ChangelogContent")).DataContext;
+                    var markdown = (MdXaml.MarkdownScrollViewer)view.FindName("ChangelogMarkdown");
+                    markdown.Markdown.Should().Be("# Saved notes");
+                    state.IsLoading.Should().BeTrue();
+                    PumpUntil(() => server.Requests.Count == 2);
+                    gate.TrySetResult();
+                    PumpUntil(() => state.CanRetry);
+                    state.Notice.Should().Be(NINA.Core.Locale.Loc.Instance["LblPluginManagerChangelogStale"]);
+                    markdown.Markdown.Should().Be("# Saved notes");
+                    File.GetLastWriteTimeUtc(path).Should().Be(timestamp);
+                    ((Button)view.FindName("RetryChangelogButton")).Command.Execute(null);
+                    PumpUntil(() => markdown.Markdown == "# Updated notes");
+
+                    var reopened = new PluginsView { DataContext = manager };
+                    ShowChangelogView(reopened);
+                    ((TabItem)reopened.FindName("ChangelogTab")).IsSelected = true;
+                    Layout(reopened);
+                    ((MdXaml.MarkdownScrollViewer)reopened.FindName("ChangelogMarkdown")).Markdown.Should().Be("# Updated notes");
+                    server.Requests.Should().HaveCount(3, "a fresh persisted document avoids another request in a new view");
+                } finally {
+                    gate.TrySetResult();
+                }
+            });
+        }
+
+        [TestCase("selection")]
+        [TestCase("version")]
+        [TestCase("url")]
+        public void ChangelogObsoleteDownload_DoesNotReachAnotherDisplayedManifest(string change) {
+            EnsureApplicationResources();
+            WithChangelogCache(_ => {
+                var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                using var oldServer = new LoopbackHttpServer(responses: [
+                    new(Encoding.UTF8.GetBytes("# Obsolete notes"), Gate: gate.Task),
+                    new(Encoding.UTF8.GetBytes("# Current notes"))
+                ], "text/markdown");
+                using var newServer = new LoopbackHttpServer(Encoding.UTF8.GetBytes("# Current notes"), "text/markdown");
+                try {
+                    var manager = CreateManager();
+                    var original = new PluginManifest {
+                        Identifier = "original", Name = "Original fixture", Version = new PluginVersion("1.0.0.0"),
+                        ChangelogURL = oldServer.Url + "/notes.md"
+                    };
+                    manager.AvailablePlugins = [new(original)];
+                    var view = new PluginsView { DataContext = manager };
+                    ShowChangelogView(view);
+                    ((TabItem)view.FindName("ChangelogTab")).IsSelected = true;
+                    PumpUntil(() => oldServer.RequestReceived.IsCompleted);
+
+                    var replacement = new PluginManifest {
+                        Identifier = change == "selection" ? "replacement" : original.Identifier,
+                        Name = original.Name, Version = new PluginVersion(change == "version" ? "2.0.0.0" : "1.0.0.0"),
+                        ChangelogURL = (change == "version" ? oldServer.Url : newServer.Url) + "/notes.md"
+                    };
+                    manager.AvailablePlugins = [new(replacement)];
+                    Layout(view);
+                    ((TabItem)view.FindName("ChangelogTab")).IsSelected = true;
+                    var markdown = (MdXaml.MarkdownScrollViewer)view.FindName("ChangelogMarkdown");
+                    if (change == "version") {
+                        markdown.Markdown.Should().BeEmpty();
+                        gate.TrySetResult();
+                    }
+
+                    PumpUntil(() => markdown.Markdown == "# Current notes");
+                    gate.TrySetResult();
+                    oldServer.Dispose();
+                    Layout(view);
+                    markdown.Markdown.Should().Be("# Current notes");
+                } finally {
+                    gate.TrySetResult();
+                }
+            });
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ChangelogTabHideAndViewUnload_CancelPendingDisplay(bool unload) {
+            EnsureApplicationResources();
+            WithChangelogCache(root => {
+                var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes("# Obsolete notes"), "text/markdown", responseGate: gate.Task);
+                try {
+                    var manager = CreateManager();
+                    manager.AvailablePlugins = [new(new PluginManifest {
+                        Identifier = "cancel", Name = "Cancel fixture", ChangelogURL = server.Url + "/notes.md"
+                    })];
+                    var view = new PluginsView { DataContext = manager };
+                    var host = ShowChangelogView(view);
+                    ((TabItem)view.FindName("ChangelogTab")).IsSelected = true;
+                    PumpUntil(() => server.RequestReceived.IsCompleted);
+                    var state = (PluginChangelogVM)((FrameworkElement)view.FindName("ChangelogContent")).DataContext;
+                    if (unload) {
+                        host.Content = null;
+                        PumpUntil(() => !view.IsLoaded);
+                    } else {
+                        ((TabItem)view.FindName("DescriptionTab")).IsSelected = true;
+                    }
+
+                    state.IsLoading.Should().BeFalse();
+                    gate.TrySetResult();
+                    server.Dispose();
+                    Layout(view);
+                    state.Markdown.Should().BeEmpty();
+                    Directory.Exists(Path.Combine(root, "Cache", "PluginChangelogs")).Should().BeFalse();
+                } finally {
+                    gate.TrySetResult();
+                }
+            });
+        }
+
+        [Test]
+        public void Changelog_UsesEachSectionsDisplayedManifestAndCachedVersion() {
+            EnsureApplicationResources();
+            WithChangelogCache(_ => {
+                using var server = new LoopbackHttpServer(responses: [
+                    new(Encoding.UTF8.GetBytes("# Installed notes")), new(Encoding.UTF8.GetBytes("# Offered notes"))
+                ], "text/markdown");
+                var installed = new PluginManifest {
+                    Identifier = "displayed", Name = "Displayed fixture", Version = new PluginVersion("1.0.0.0"),
+                    ChangelogURL = server.Url + "/notes.md"
+                };
+                var offered = new PluginManifest {
+                    Identifier = installed.Identifier, Name = installed.Name, Version = new PluginVersion("2.0.0.0"),
+                    ChangelogURL = installed.ChangelogURL
+                };
+                var manager = CreateManager();
+                manager.InstalledPlugins = new Dictionary<IPluginManifest, bool> { [installed] = true };
+                manager.AvailablePlugins = [new(offered)];
+                manager.SelectedTabIndex = 0;
+                var view = new PluginsView { DataContext = manager };
+                ShowChangelogView(view);
+                var tab = (TabItem)view.FindName("ChangelogTab");
+                var markdown = (MdXaml.MarkdownScrollViewer)view.FindName("ChangelogMarkdown");
+                tab.IsSelected = true;
+                PumpUntil(() => markdown.Markdown == "# Installed notes");
+                manager.SelectedTabIndex = 1;
+                Layout(view);
+                tab.IsSelected = true;
+                PumpUntil(() => markdown.Markdown == "# Offered notes");
+                manager.SelectedTabIndex = 0;
+                Layout(view);
+                tab.IsSelected = true;
+                Layout(view);
+                markdown.Markdown.Should().Be("# Installed notes");
+                server.Requests.Should().HaveCount(2);
+            });
+        }
+
+        [Test]
+        public void ChangelogHiddenView_RemainsCancelledAfterEntryNotificationsAndResumesWhenShown() {
+            EnsureApplicationResources();
+            WithChangelogCache(_ => {
+                var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                using var server = new LoopbackHttpServer(responses: [
+                    new(Encoding.UTF8.GetBytes("# Obsolete notes"), Gate: gate.Task),
+                    new(Encoding.UTF8.GetBytes("# Visible notes"))
+                ], "text/markdown");
+                var manager = CreateManager();
+                typeof(PluginsVM).GetField("firstTime", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(manager, false);
+                manager.AvailablePlugins = [new(new PluginManifest {
+                    Identifier = "visibility", Name = "Visibility fixture", ChangelogURL = server.Url + "/notes.md"
+                })];
+                var view = new PluginsView { DataContext = manager };
+                var host = new Window {
+                    Width = 1000, Height = 700, Left = -20000, Top = -20000,
+                    ShowInTaskbar = false, ShowActivated = false, Content = view
+                };
+                try {
+                    host.Show();
+                    Layout(view);
+                    ((TabItem)view.FindName("ChangelogTab")).IsSelected = true;
+                    PumpUntil(() => server.RequestReceived.IsCompleted);
+                    var state = (PluginChangelogVM)((FrameworkElement)view.FindName("ChangelogContent")).DataContext;
+                    host.Hide();
+                    manager.SelectedPlugin.OperationError = "Hidden notification fixture";
+                    Layout(view);
+                    state.IsLoading.Should().BeFalse();
+                    server.Requests.Should().ContainSingle();
+                    gate.TrySetResult();
+                    state.Markdown.Should().BeEmpty();
+
+                    host.Show();
+                    Layout(view);
+                    var markdown = (MdXaml.MarkdownScrollViewer)view.FindName("ChangelogMarkdown");
+                    PumpUntil(() => markdown.Markdown == "# Visible notes");
+                    server.Requests.Should().HaveCount(2);
+                } finally {
+                    gate.TrySetResult();
+                    host.Close();
+                }
+            });
+        }
 
         [Test]
         public void Constructor_ProvidesSharedSearchAndSidebarNavigation() {
@@ -917,7 +1267,7 @@ namespace NINA.Test.View {
         [Test]
         public void Settings_UsesLoadedManifestAndRetainsItsViewAcrossDetailTabsAndRefresh() {
             EnsureApplicationResources();
-            var original = new SettingsManifest { Identifier = "settings", Name = "Settings test", OptionsValue = "Original" };
+            var original = new SettingsManifest { Identifier = "settings", Name = "Settings test", OptionsValue = "Original", ChangelogURL = "invalid-changelog" };
             var second = new SettingsManifest { Identifier = "second", Name = "Second test", OptionsValue = "Second" };
             var missing = new PluginManifest { Identifier = "missing", Name = "No settings" };
             var factory = new FrameworkElementFactory(typeof(TextBox));
@@ -953,7 +1303,7 @@ namespace NINA.Test.View {
                 editor.Text = "Edited through the plugin view";
                 original.OptionsValue.Should().Be(editor.Text);
 
-                foreach (string name in new[] { "Description", "Showcase", "Versions", "Info" }) {
+                foreach (string name in new[] { "Description", "Changelog", "Showcase", "Versions", "Info" }) {
                     ((TabItem)view.FindName(name + "Tab")).IsSelected = true;
                     Layout(view);
                     ((FrameworkElement)view.FindName(name + "Content")).Visibility.Should().Be(Visibility.Visible);
@@ -1617,6 +1967,40 @@ namespace NINA.Test.View {
             var bitmap = new RenderTargetBitmap(1440, 1120, 96, 96, PixelFormats.Pbgra32);
             bitmap.Render(view);
             bitmap.PixelWidth.Should().Be(1440);
+        }
+
+        private void WithChangelogCache(Action<string> verify) {
+            string originalPath = CoreUtil.APPLICATIONTEMPPATH;
+            var originalContext = SynchronizationContext.Current;
+            string root = Path.Combine(TestContext.CurrentContext.WorkDirectory, "PluginChangelogView", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(root);
+            CoreUtil.APPLICATIONTEMPPATH = root;
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            try {
+                verify(root);
+            } finally {
+                foreach (var host in changelogHosts) {
+                    host.Close();
+                }
+
+                changelogHosts.Clear();
+                SynchronizationContext.SetSynchronizationContext(originalContext);
+                CoreUtil.APPLICATIONTEMPPATH = originalPath;
+                Directory.Delete(root, true);
+            }
+        }
+
+        private Window ShowChangelogView(PluginsView view) {
+            var manager = (PluginsVM)view.DataContext;
+            typeof(PluginsVM).GetField("firstTime", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(manager, false);
+            var host = new Window {
+                Width = 1000, Height = 700, Left = -20000, Top = -20000,
+                ShowInTaskbar = false, ShowActivated = false, Content = view
+            };
+            changelogHosts.Add(host);
+            host.Show();
+            Layout(view);
+            return host;
         }
 
         private static PluginsVM CreateManager() {

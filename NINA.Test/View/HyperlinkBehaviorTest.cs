@@ -249,7 +249,7 @@ namespace NINA.Test.View {
                 host.UpdateLayout();
             }
 
-            int[] expectedLinkCounts = [8, 26, 93, 5, 5, 5, 1];
+            int[] expectedLinkCounts = [8, 26, 93, 5, 6, 6, 1];
             foreach ((UserControl view, int expectedCount) in compiledViews.Zip(expectedLinkCounts)) {
                 Hyperlink[] hyperlinks = FindLogicalDescendants<Hyperlink>(view).ToArray();
                 hyperlinks.Should().HaveCount(expectedCount, $"{view.GetType().Name} must contribute its own hyperlinks");

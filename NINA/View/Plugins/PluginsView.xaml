@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     Copyright (c) 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
@@ -657,6 +657,11 @@
                         HeaderTemplate="{StaticResource PluginTabCaption}"
                         IsSelected="True" />
                     <TabItem
+                        x:Name="ChangelogTab"
+                        Header="{ns:Loc LblChangelog}"
+                        HeaderTemplate="{StaticResource PluginTabCaption}"
+                        Visibility="Collapsed" />
+                    <TabItem
                         x:Name="ShowcaseTab"
                         Header="{ns:Loc LblPluginManagerShowcase}"
                         HeaderTemplate="{StaticResource PluginTabCaption}" />
@@ -683,6 +688,47 @@
                             ClickAction="OpenBrowser"
                             Markdown="{Binding Descriptions.LongDescription}"
                             MarkdownStyle="{StaticResource MarkdownStyle}"
+                            VerticalScrollBarVisibility="Disabled" />
+                    </StackPanel>
+                </ScrollViewer>
+                <ScrollViewer
+                    x:Name="ChangelogContent"
+                    Grid.Row="2"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto"
+                    Visibility="Collapsed">
+                    <StackPanel Margin="0,12,8,8">
+                        <i:Interaction.Behaviors>
+                            <behavior:BubbleScrollEvent />
+                        </i:Interaction.Behaviors>
+                        <TextBlock x:Name="ChangelogBrowserLink" Margin="0,0,0,12" TextWrapping="Wrap"><Hyperlink NavigateUri="{Binding BrowserUrl}">
+                                <Run Text="{ns:Loc LblPluginManagerOpenChangelog}" />
+                            </Hyperlink></TextBlock>
+                        <StackPanel Margin="0,0,0,12" Visibility="{Binding IsLoading, Converter={StaticResource VisibleWhenTrue}}">
+                            <TextBlock Text="{ns:Loc LblPluginManagerLoadingChangelog}" />
+                            <ProgressBar Margin="0,6,0,0" Style="{StaticResource LoadingProgressBar}" />
+                        </StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,12"
+                            Text="{Binding Notice}"
+                            TextWrapping="Wrap"
+                            Visibility="{Binding Notice, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+                        <Button
+                            x:Name="RetryChangelogButton"
+                            Margin="0,0,0,12"
+                            HorizontalAlignment="Left"
+                            Command="{Binding RetryCommand}"
+                            Style="{StaticResource StandardButton}"
+                            Visibility="{Binding CanRetry, Converter={StaticResource VisibleWhenTrue}}">
+                            <TextBlock Margin="12,6" Foreground="{StaticResource ButtonForegroundBrush}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblPluginManagerRetry}" TextWrapping="Wrap" />
+                        </Button>
+                        <mdxam:MarkdownScrollViewer
+                            x:Name="ChangelogMarkdown"
+                            AssetPathRoot="{Binding AssetPathRoot, NotifyOnTargetUpdated=True}"
+                            ClickAction="OpenBrowser"
+                            Markdown="{Binding Markdown, NotifyOnTargetUpdated=True}"
+                            MarkdownStyle="{StaticResource MarkdownStyle}"
+                            TargetUpdated="OnChangelogUpdated"
                             VerticalScrollBarVisibility="Disabled" />
                     </StackPanel>
                 </ScrollViewer>

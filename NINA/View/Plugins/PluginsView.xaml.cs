@@ -17,6 +17,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Windows.Data;
+using System.Windows.Documents;
 using NINA.Plugin.Interfaces;
 using NINA.ViewModel.Plugins;
 
@@ -32,11 +34,14 @@ namespace NINA.View.Plugins {
         private DataTemplate optionsTemplate;
         private bool showingInstalled;
         private readonly double maximumListWidth;
+        private readonly PluginChangelogVM changelog = new();
 
         public PluginsView() {
             InitializeComponent();
+            ChangelogContent.DataContext = changelog;
             maximumListWidth = PluginListColumn.MaxWidth;
             Unloaded += OnUnloaded;
+            IsVisibleChanged += OnVisibilityChanged;
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
@@ -64,6 +69,12 @@ namespace NINA.View.Plugins {
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
             AttachManager(null);
+        }
+
+        private void OnVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            if (IsLoaded) {
+                changelog.SetActive(IsVisible && ChangelogTab.IsSelected && ChangelogTab.Visibility == Visibility.Visible);
+            }
         }
 
         private async void FetchInitialCatalog() {
@@ -135,12 +146,40 @@ namespace NINA.View.Plugins {
                 DescriptionTab.IsSelected = !SettingsTab.IsSelected;
             }
 
+            var displayedManifest = selectedEntry?.DisplayManifest;
+            changelog.Select(displayedManifest?.ChangelogURL, displayedManifest?.Version?.ToString());
+            ChangelogTab.Visibility = string.IsNullOrWhiteSpace(displayedManifest?.ChangelogURL)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+            if (ChangelogTab.IsSelected && ChangelogTab.Visibility != Visibility.Visible) {
+                DescriptionTab.IsSelected = true;
+            }
+
             UpdateDetailContent();
         }
 
         private void OnDetailsSelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (e.Source == DetailsNavigation) {
                 UpdateDetailContent();
+            }
+        }
+
+        private void OnChangelogUpdated(object sender, DataTransferEventArgs e) {
+            if (changelog.DocumentUri != null && ChangelogMarkdown.Document != null) {
+                ResolveChangelogLinks(ChangelogMarkdown.Document);
+            }
+        }
+
+        private void ResolveChangelogLinks(DependencyObject element) {
+            if (element is Hyperlink link && link.CommandParameter is string target
+                && Uri.TryCreate(target, UriKind.RelativeOrAbsolute, out var uri) && !uri.IsAbsoluteUri) {
+                link.CommandParameter = new Uri(changelog.DocumentUri, uri).AbsoluteUri;
+            }
+
+            foreach (object child in LogicalTreeHelper.GetChildren(element)) {
+                if (child is DependencyObject dependencyObject) {
+                    ResolveChangelogLinks(dependencyObject);
+                }
             }
         }
 
@@ -156,6 +195,8 @@ namespace NINA.View.Plugins {
             }
 
             DescriptionContent.Visibility = DescriptionTab.IsSelected ? Visibility.Visible : Visibility.Collapsed;
+            ChangelogContent.Visibility = ChangelogTab.IsSelected ? Visibility.Visible : Visibility.Collapsed;
+            changelog.SetActive(IsLoaded && IsVisible && ChangelogTab.IsSelected && ChangelogTab.Visibility == Visibility.Visible);
             ShowcaseContent.Visibility = ShowcaseTab.IsSelected ? Visibility.Visible : Visibility.Collapsed;
             VersionsContent.Visibility = VersionsTab.IsSelected ? Visibility.Visible : Visibility.Collapsed;
             InfoContent.Visibility = InfoTab.IsSelected ? Visibility.Visible : Visibility.Collapsed;
