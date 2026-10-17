@@ -16,8 +16,10 @@ using FluentAssertions;
 using Moq;
 using NINA.Core.Locale;
 using NINA.CustomControlLibrary;
+using NINA.Profile;
 using NINA.Profile.Interfaces;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
@@ -213,25 +215,58 @@ namespace NINA.Test.View {
         [TestCase("Light")]
         [TestCase("Dark Nebula")]
         [TestCase("High Contrast")]
-        public void Navigation_UsesNativeButtonStyleAndThemeBrushes(string schema) {
+        public void Navigation_TracksThemeChangesWithoutRecreatingTheGallery(string schema) {
             var profile = new NINA.Profile.Profile();
-            profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
             var gallery = CreateGallery(CreateImages(3), profile);
-            var previous = Part<Button>(gallery, "PART_PreviousButton");
-            previous.Style.Should().BeSameAs(gallery.FindResource("StandardButton"));
-            ((SolidColorBrush)previous.Background).Color.Should().Be(profile.ColorSchemaSettings.ColorSchema.ButtonBackgroundColor);
-            var path = (System.Windows.Shapes.Path)previous.Content;
-            ((SolidColorBrush)path.Fill).Color.Should().Be(profile.ColorSchemaSettings.ColorSchema.ButtonForegroundColor);
+            profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
+            Layout(gallery);
+
+            foreach (var button in new[] { Part<Button>(gallery, "PART_PreviousButton"), Part<Button>(gallery, "PART_NextButton") }) {
+                var path = (System.Windows.Shapes.Path)button.Content;
+                ((SolidColorBrush)path.Fill).Color.Should().Be(((SolidColorBrush)button.Foreground).Color,
+                    "navigation icons must follow the native button's foreground, including the Light theme");
+                ((SolidColorBrush)button.Background).Color.Should().Be(profile.ColorSchemaSettings.ColorSchema.BackgroundColor);
+            }
+
             var dot = Indicator(gallery, 0);
             var shape = (Ellipse)dot.Template.FindName("Indicator", dot);
             ((SolidColorBrush)shape.Fill).Color.Should().Be(profile.ColorSchemaSettings.ColorSchema.PrimaryColor);
         }
 
-        private ImageGallery CreateGallery(ObservableCollection<ImageSource> images, NINA.Profile.Profile? profile = null) {
+        [Test]
+        public void ProfileSwitch_UpdatesNavigationColorsAndPreservesSelection() {
+            using var original = new NINA.Profile.Profile();
+            using var replacement = new NINA.Profile.Profile();
+            original.ColorSchemaSettings.ColorSchema = original.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == "Light");
+            replacement.ColorSchemaSettings.ColorSchema = replacement.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == "Dark Nebula");
+            NINA.Profile.Interfaces.IProfile active = original;
+            var profiles = new Mock<IProfileService>();
+            var notifications = profiles.As<INotifyPropertyChanged>();
+            profiles.SetupGet(service => service.ActiveProfile).Returns(() => active);
+            var images = CreateImages(3);
+            var gallery = CreateGallery(images, original, profiles.Object);
+            gallery.SelectedIndex = 1;
+            var arrow = (System.Windows.Shapes.Path)Part<Button>(gallery, "PART_NextButton").Content;
+            ((SolidColorBrush)arrow.Fill).Color.Should().Be(original.ColorSchemaSettings.ColorSchema.PrimaryColor);
+
+            active = replacement;
+            notifications.Raise(service => service.PropertyChanged += null,
+                new PropertyChangedEventArgs(nameof(IProfileService.ActiveProfile)));
+            profiles.Raise(service => service.ProfileChanged += null, new ProfileChangedEventArgs(original, replacement));
+            Layout(gallery);
+
+            ((SolidColorBrush)arrow.Fill).Color.Should().Be(replacement.ColorSchemaSettings.ColorSchema.PrimaryColor);
+            ((SolidColorBrush)Part<Button>(gallery, "PART_NextButton").Background).Color
+                .Should().Be(replacement.ColorSchemaSettings.ColorSchema.BackgroundColor);
+            Part<WpfImage>(gallery, "PART_Image").Source.Should().BeSameAs(images[1]);
+            gallery.SelectedIndex.Should().Be(1);
+        }
+
+        private ImageGallery CreateGallery(ObservableCollection<ImageSource> images, NINA.Profile.Profile? profile = null, IProfileService? profiles = null) {
             var app = Application.Current ?? new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
             profile ??= new NINA.Profile.Profile();
             var gallery = new ImageGallery { ItemsSource = images, Width = 500, Height = 300 };
-            var profileService = Mock.Of<IProfileService>(service => service.ActiveProfile == profile);
+            var profileService = profiles ?? Mock.Of<IProfileService>(service => service.ActiveProfile == profile);
             app.Resources["ProfileService"] = profileService;
             gallery.Resources["ProfileService"] = profileService;
             string[] sources = [

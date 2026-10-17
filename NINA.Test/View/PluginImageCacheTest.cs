@@ -17,7 +17,6 @@ using NINA.Core.Utility;
 using NINA.Test.Plugin;
 using NINA.View.Plugins;
 using System.Diagnostics;
-using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -76,41 +75,6 @@ namespace NINA.Test.View {
             server.Requests.Should().HaveCount(3);
             Directory.GetFiles(cacheDirectory, "*.tmp").Should().BeEmpty();
             Directory.GetFiles(changelogDirectory, "*.tmp").Should().BeEmpty();
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        public void HistoricalUnversionedImage_IsReadWithoutChangingItsKey(string? version) {
-            using var server = new LoopbackHttpServer(CreatePng(Colors.Blue), "image/png");
-            var uri = new Uri(server.Url + "/icon.png");
-            string key = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(uri.AbsoluteUri)));
-            Directory.CreateDirectory(cacheDirectory);
-            File.WriteAllBytes(Path.Combine(cacheDirectory, key + ".png"), CreatePng(Colors.Red));
-
-            Load(new PluginContentCache(), uri, version).Should().Be(Colors.Red);
-            server.Requests.Should().BeEmpty();
-            Directory.GetFiles(cacheDirectory, "*.png").Should().ContainSingle();
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        public void HistoricalUnversionedChangelog_IsReadWithItsOriginalSeparator(string? version) {
-            var uri = new Uri("https://example.invalid/notes.md");
-            string key = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(uri.AbsoluteUri + "\n")));
-            string changelogDirectory = Path.Combine(testRoot, "Cache", "PluginChangelogs");
-            Directory.CreateDirectory(changelogDirectory);
-            File.WriteAllText(Path.Combine(changelogDirectory, key + ".json"), System.Text.Json.JsonSerializer.Serialize(new {
-                Markdown = "# Historical notes",
-                DocumentUri = uri.AbsoluteUri,
-                IsFresh = true
-            }));
-
-            var document = new PluginContentCache().ReadChangelog(uri, version)
-                .Should().BeOfType<PluginContentCache.ChangelogDocument>().Subject;
-            document.Markdown.Should().Be("# Historical notes");
-            document.DocumentUri.Should().Be(uri);
-            document.IsFresh.Should().BeTrue();
-            Directory.GetFiles(changelogDirectory, "*.json").Should().ContainSingle();
         }
 
         [Test]

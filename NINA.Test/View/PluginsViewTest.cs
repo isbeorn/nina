@@ -49,13 +49,28 @@ namespace NINA.Test.View {
     [SingleThreaded]
     public class PluginsViewTest {
         private readonly List<Window> changelogHosts = new();
+        private PluginViewResources resources = null!;
+
+        [SetUp]
+        public void SetUpResources() {
+            resources = new PluginViewResources();
+        }
+
+        [TearDown]
+        public void RestoreResources() {
+            foreach (var host in changelogHosts) {
+                host.Close();
+            }
+
+            changelogHosts.Clear();
+            resources.Dispose();
+        }
 
         [TestCase("Persian Faint")]
         [TestCase("Light")]
         [TestCase("Dark Nebula")]
         [TestCase("High Contrast")]
         public void MarkdownLists_UseSquareBulletsAndPreserveNumbering(string schema) {
-            EnsureApplicationResources();
             var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
             profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
             const string text = "### Dashes\n\n- Dash item\n    - Nested item\n\n### Asterisks\n\n* Asterisk item\n\n### Plus\n\n+ Plus item\n\n### Numbered\n\n7. Numbered item\n8. Another numbered item";
@@ -81,7 +96,6 @@ namespace NINA.Test.View {
                 .ToArray();
             unordered.Should().HaveCount(4);
             unordered.Should().OnlyContain(list => list.MarkerStyle == TextMarkerStyle.Box, "unordered lists use filled square bullets");
-            SavePreview(view, "PluginMarkdown-Bullets-" + schema.Replace(" ", "") + ".png", 800, 600);
 
             manager.AvailablePlugins = [new(new PluginManifest {
                 Identifier = "replacement", Name = "Replacement list fixture",
@@ -94,7 +108,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void ChangelogDetachedView_DoesNotFetchUntilItIsShown() {
-            EnsureApplicationResources();
             WithChangelogCache(_ => {
                 var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes("# Visible notes"), "text/markdown", responseGate: gate.Task);
@@ -126,7 +139,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void ChangelogTab_LoadsMarkdownOnlyWhenOpenedAndRetainsBrowserLink() {
-            EnsureApplicationResources();
             WithChangelogCache(_ => {
                 using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes("# Release notes\n\nFixed the fixture. [More](../guide.md)\n\n- Dash bullet"), "text/markdown");
                 var manifest = new PluginManifest {
@@ -157,7 +169,6 @@ namespace NINA.Test.View {
                 new System.Windows.Documents.TextRange(document.ContentStart, document.ContentEnd)
                     .Text.Should().Contain("Release notes").And.Contain("Fixed the fixture.");
                 Layout(view);
-                SavePreview(view, "PluginChangelog-Markdown.png", 1000, 700);
                 var browser = (TextBlock)view.FindName("ChangelogBrowserLink");
                 browser.Inlines.OfType<System.Windows.Documents.Hyperlink>().Single().NavigateUri.AbsoluteUri.Should().Be(manifest.ChangelogURL);
                 ((FrameworkElement)view.FindName("ChangelogContent")).Visibility.Should().Be(Visibility.Visible);
@@ -173,7 +184,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void ChangelogRetry_UsesTheBoundButtonAfterAFailedRequest() {
-            EnsureApplicationResources();
             WithChangelogCache(_ => {
                 using var server = new LoopbackHttpServer(responses: [
                     new([], 503), new(Encoding.UTF8.GetBytes("# Recovered notes"))
@@ -204,7 +214,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void ChangelogHtml_ShowsLocalizedBrowserFallbackWithoutRenderingHtml() {
-            EnsureApplicationResources();
             WithChangelogCache(root => {
                 using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes("<html><body>Website notes</body></html>"), "text/html");
                 var manager = CreateManager();
@@ -227,7 +236,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void ChangelogExpiredCache_ShowsSavedNotesDuringRefreshAndRetainsThemForRetry() {
-            EnsureApplicationResources();
             WithChangelogCache(root => {
                 var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 using var server = new LoopbackHttpServer(responses: [
@@ -278,7 +286,6 @@ namespace NINA.Test.View {
         [TestCase("version")]
         [TestCase("url")]
         public void ChangelogObsoleteDownload_DoesNotReachAnotherDisplayedManifest(string change) {
-            EnsureApplicationResources();
             WithChangelogCache(_ => {
                 var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 using var oldServer = new LoopbackHttpServer(responses: [
@@ -326,7 +333,6 @@ namespace NINA.Test.View {
         [TestCase(false)]
         [TestCase(true)]
         public void ChangelogTabHideAndViewUnload_CancelPendingDisplay(bool unload) {
-            EnsureApplicationResources();
             WithChangelogCache(root => {
                 var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 using var server = new LoopbackHttpServer(Encoding.UTF8.GetBytes("# Obsolete notes"), "text/markdown", responseGate: gate.Task);
@@ -361,7 +367,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Changelog_UsesEachSectionsDisplayedManifestAndCachedVersion() {
-            EnsureApplicationResources();
             WithChangelogCache(_ => {
                 using var server = new LoopbackHttpServer(responses: [
                     new(Encoding.UTF8.GetBytes("# Installed notes")), new(Encoding.UTF8.GetBytes("# Offered notes"))
@@ -399,7 +404,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void ChangelogHiddenView_RemainsCancelledAfterEntryNotificationsAndResumesWhenShown() {
-            EnsureApplicationResources();
             WithChangelogCache(_ => {
                 var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 using var server = new LoopbackHttpServer(responses: [
@@ -444,7 +448,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Constructor_ProvidesSharedSearchAndSidebarNavigation() {
-            EnsureApplicationResources();
             var view = new PluginsView();
 
             var search = view.FindName("PluginSearch").Should().BeOfType<HintTextBox>().Subject;
@@ -463,7 +466,6 @@ namespace NINA.Test.View {
         [TestCase("Dark Nebula")]
         [TestCase("High Contrast")]
         public void BrowserRows_AlignFiltersAndShowCompactStateMarkers(string schema) {
-            EnsureApplicationResources();
             var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
             profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
             var manager = CreateManager();
@@ -523,7 +525,6 @@ namespace NINA.Test.View {
                     .Visibility.Should().Be(Visibility.Collapsed);
             }
 
-            SavePreview(view, $"PluginBrowserRows-Available-{schema.Replace(' ', '-')}.png", 720, 560);
             manager.SelectedTabIndex = 0;
             Layout(view, 720, 560);
             row = (ListBoxItem)list.ItemContainerGenerator.ContainerFromIndex(0);
@@ -531,7 +532,6 @@ namespace NINA.Test.View {
                 .Visibility.Should().Be(Visibility.Collapsed);
             FindVisuals<TextBlock>(row).Single(label => label.Text == NINA.Core.Locale.Loc.Instance["LblUpdate"])
                 .Visibility.Should().Be(Visibility.Visible);
-            SavePreview(view, $"PluginBrowserRows-Installed-{schema.Replace(' ', '-')}.png", 720, 560);
             manager.SelectedTabIndex = 1;
             manager.AvailablePlugins = [new(installed), new(remote), new(current)];
             Layout(view, 720, 560);
@@ -550,7 +550,6 @@ namespace NINA.Test.View {
         [TestCase("Dark Nebula")]
         [TestCase("High Contrast")]
         public void Tags_CheckSeveralValuesAndRetainThemAcrossSectionChanges(string schema) {
-            EnsureApplicationResources();
             var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
             profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
             var manager = CreateManager();
@@ -596,7 +595,6 @@ namespace NINA.Test.View {
                 var popup = (System.Windows.Controls.Primitives.Popup)tags.Template.FindName("PART_Popup", tags);
                 var popupContent = (Border)popup.Child;
                 ((SolidColorBrush)popupContent.Background).Color.Should().Be(profile.ColorSchemaSettings.ColorSchema.BackgroundColor);
-                SavePreview(popupContent, $"PluginTags-{schema.Replace(' ', '-')}.png", (int)Math.Ceiling(popupContent.ActualWidth), (int)Math.Ceiling(popupContent.ActualHeight));
                 manager.SearchText = "Imaging fixture";
                 LayoutWindow(host, 1000, 700);
                 manager.FilteredPlugins.Should().ContainSingle().Which.Identifier.Should().Be(imaging.Identifier);
@@ -624,7 +622,6 @@ namespace NINA.Test.View {
                 ((IToggleProvider)new CheckBoxAutomationPeer(installedCheck).GetPattern(PatternInterface.Toggle)).Toggle();
                 LayoutWindow(host, 1000, 700);
                 manager.FilteredPlugins.Should().ContainSingle().Which.Identifier.Should().Be(focus.Identifier);
-                SavePreview(popupContent, $"PluginTags-Installed-{schema.Replace(' ', '-')}.png", (int)Math.Ceiling(popupContent.ActualWidth), (int)Math.Ceiling(popupContent.ActualHeight));
                 tags.IsDropDownOpen = false;
                 manager.SelectedTabIndex = 1;
                 LayoutWindow(host, 1000, 700);
@@ -665,7 +662,6 @@ namespace NINA.Test.View {
         [TestCase(false)]
         [TestCase(true)]
         public void Tags_OmittedFromThePickerRemainSearchableAndVisibleInDetails(bool installed) {
-            EnsureApplicationResources();
             var manager = CreateManager();
             typeof(PluginsVM).GetField("firstTime", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(manager, false);
             var first = new PluginManifest {
@@ -703,7 +699,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Controls_UseSharedNinaButtonAndTabStyles() {
-            EnsureApplicationResources();
             var manager = CreateManager();
             manager.AvailablePlugins = [new(new PluginManifest {
                 Identifier = "native-controls", Name = "Native controls fixture", Version = new PluginVersion("1.0.0.0")
@@ -744,7 +739,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Installed_ShowsAllLocalPluginsWithUpdatesFirstAndOnlySearchAndTagFilters() {
-            EnsureApplicationResources();
             var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
             profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == "Persian Faint");
             var manager = CreateManager();
@@ -803,7 +797,6 @@ namespace NINA.Test.View {
                 updateAll.IsKeyboardFocusWithin.Should().BeTrue("Update all follows the tag filter on Installed");
                 updateAll.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)).Should().BeTrue();
                 list.IsKeyboardFocusWithin.Should().BeTrue();
-                SavePreview(view, "PluginNativeControls-Installed.png", 720, 560);
                 search.Text = "Current";
                 LayoutWindow(host, 720, 560);
                 list.Items.Cast<PluginEntryVM>().Should().ContainSingle().Which.Identifier.Should().Be(current.Identifier);
@@ -844,7 +837,6 @@ namespace NINA.Test.View {
         [TestCase("Dark Nebula")]
         [TestCase("High Contrast")]
         public void Lists_UseNinaSelectionAndHoverColors(string schema) {
-            EnsureApplicationResources();
             var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
             var manager = CreateManager();
             manager.AvailablePlugins = [new(new PluginManifest {
@@ -885,7 +877,6 @@ namespace NINA.Test.View {
         [TestCase("Description")]
         [TestCase("Settings")]
         public void DetailPages_BubbleWheelInputPastNestedScrollers(string page) {
-            EnsureApplicationResources();
             var manifest = new PluginManifest {
                 Identifier = "wheel-input", Name = "Wheel input fixture", Version = new PluginVersion("1.0.0.0"),
                 Descriptions = new PluginDescription { LongDescription = string.Join("\n\n", Enumerable.Repeat("Description paragraph for scrolling verification.", 100)) }
@@ -939,7 +930,6 @@ namespace NINA.Test.View {
         [TestCase(404)]
         [TestCase(405)]
         public void Versions_UsesHistoryRouteOrCatalogFallbackAndReusesTheResult(int historyStatusCode) {
-            EnsureApplicationResources();
             var manager = CreateManager();
             var latest = new PluginManifest {
                 Identifier = Guid.NewGuid().ToString(), Name = "Release history", Author = "Test Observatory",
@@ -989,7 +979,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Navigation_InstalledAvailableInstalled_KeepsOnlyInstalledRowsWithReadOnlyLoadedMetadata() {
-            EnsureApplicationResources();
             var installed = new ReadOnlyLoadedManifest();
             var catalogOnly = new PluginManifest { Identifier = "catalog-only", Name = "Catalog only plugin" };
             var offered = new PluginManifest {
@@ -1046,7 +1035,6 @@ namespace NINA.Test.View {
         [TestCase(false)]
         [TestCase(true)]
         public void Navigation_UsesTheVisibleTabToSeparateInstalledAndCatalogPlugins(bool collapsed) {
-            EnsureApplicationResources();
             bool previousCollapsed = NINA.Properties.Settings.Default.CollapsedSidebar;
             NINA.Properties.Settings.Default.CollapsedSidebar = collapsed;
             var manager = CreateManager();
@@ -1110,7 +1098,6 @@ namespace NINA.Test.View {
                     manager.IsInstalledTab.Should().Be(direction == FocusNavigationDirection.Up);
                 }
 
-                SavePreview(view, $"PluginSidebar-{(collapsed ? "Collapsed" : "Expanded")}.png", 1000, 700);
                 installedTab.Header = "Installed plugins with a deliberately long translated label";
                 Layout(view);
                 navigation.ActualWidth.Should().Be(collapsed ? 40 : 65);
@@ -1128,7 +1115,6 @@ namespace NINA.Test.View {
         [TestCase(true)]
         [TestCase(false)]
         public void Navigation_SwitchDuringListRebinding_UsesTheNewSection(bool switchToInstalled) {
-            EnsureApplicationResources();
             var manager = CreateManager();
             var installed = new PluginManifest { Identifier = "local", Name = "Local plugin" };
             var catalogOnly = new PluginManifest { Identifier = "remote", Name = "Remote plugin" };
@@ -1181,7 +1167,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void CatalogRefresh_PublishesResultsToTheBoundListOnTheUiThread() {
-            EnsureApplicationResources();
             var manager = CreateManager();
             var view = new PluginsView { DataContext = manager };
             Layout(view);
@@ -1231,7 +1216,6 @@ namespace NINA.Test.View {
         [TestCase("cancel", true)]
         [TestCase("failure", true)]
         public void CatalogProgress_UsesTheBottomStatusAreaAndRetainsRestartNotice(string outcome, bool pendingRestart) {
-            EnsureApplicationResources();
             WithChangelogCache(_ => {
                 var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 using var repository = new LoopbackHttpServer(Encoding.UTF8.GetBytes("[]"), "application/json",
@@ -1277,7 +1261,6 @@ namespace NINA.Test.View {
                     manager.SelectedTabIndex = 0;
                     LayoutWindow(host, 800, 600);
                     progress.Visibility.Should().Be(Visibility.Visible);
-                    SavePreview(view, $"PluginCatalogProgress-{pendingRestart}.png", 800, 600);
 
                     if (outcome == "cancel") {
                         ((IInvokeProvider)new ButtonAutomationPeer(cancel).GetPattern(PatternInterface.Invoke)).Invoke();
@@ -1307,7 +1290,6 @@ namespace NINA.Test.View {
         [TestCase(true, false)]
         [TestCase(true, true)]
         public void MutationProgress_UsesTheBottomStatusAreaAndTransitionsToRestart(bool update, bool cancel) {
-            EnsureApplicationResources();
             WithChangelogCache(_ => {
                 var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 byte[] payload = Encoding.UTF8.GetBytes("Status area fixture");
@@ -1365,7 +1347,6 @@ namespace NINA.Test.View {
                     Layout(view, 800, 600);
                     restartNotice.Visibility.Should().Be(Visibility.Visible, "earlier successful changes retain their restart notice");
                     manager.RestartCommand.CanExecute(null).Should().BeFalse();
-                    SavePreview(view, $"PluginMutation-{(update ? "Update" : "Install")}.png", 800, 600);
                     previousSuccess.PendingChange = PluginPendingChange.None;
                     manager.SearchText = string.Empty;
                     manager.SelectedTabIndex = 0;
@@ -1396,7 +1377,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void OperationErrors_StayVisibleAcrossFiltersSectionsAndSelectionChanges() {
-            EnsureApplicationResources();
             var manager = CreateManager();
             var failed = new PluginManifest { Identifier = "failed", Name = "Failed plugin", Version = new PluginVersion("1.0.0.0") };
             var other = new PluginManifest { Identifier = "other", Name = "Other plugin", Version = new PluginVersion("1.0.0.0") };
@@ -1430,7 +1410,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Settings_KeepApplicationTextAndHyperlinkStyles() {
-            EnsureApplicationResources();
             var manifest = new SettingsManifest { Identifier = "settings-styles", Name = "Settings style fixture" };
             var factory = new FrameworkElementFactory(typeof(TextBlock));
             factory.SetValue(TextBlock.TextProperty, "Plugin settings label");
@@ -1454,7 +1433,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void ListWidth_UsesTheDeclaredMaximumAndPreservesTheDetailMinimum() {
-            EnsureApplicationResources();
             var view = new PluginsView { DataContext = CreateManager() };
             var browser = (Grid)view.FindName("BrowserGrid");
             var column = browser.ColumnDefinitions[0];
@@ -1471,7 +1449,6 @@ namespace NINA.Test.View {
         [TestCase(180)]
         [TestCase(1000)]
         public void Settings_StarSizedPluginRowsStartAtTheTopAndScrollWhenNeeded(int formHeight) {
-            EnsureApplicationResources();
             var manifest = new SettingsManifest { Identifier = "settings-layout", Name = "Settings layout fixture" };
             var template = new DataTemplate { VisualTree = new FrameworkElementFactory(typeof(Grid)) };
             string optionsKey = manifest.Name + DataTemplatePostfix.Options;
@@ -1517,7 +1494,6 @@ namespace NINA.Test.View {
                     scroll.ScrollableHeight.Should().Be(0);
                 }
 
-                SavePreview(view, $"PluginSettings-TopAligned-{formHeight}.png", 1000, 700);
             } finally {
                 Application.Current.Resources.Remove(optionsKey);
             }
@@ -1525,7 +1501,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Settings_UsesLoadedManifestAndRetainsItsViewAcrossDetailTabsAndRefresh() {
-            EnsureApplicationResources();
             var original = new SettingsManifest { Identifier = "settings", Name = "Settings test", OptionsValue = "Original", ChangelogURL = "invalid-changelog" };
             var second = new SettingsManifest { Identifier = "second", Name = "Second test", OptionsValue = "Second" };
             var missing = new PluginManifest { Identifier = "missing", Name = "No settings" };
@@ -1608,7 +1583,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void DetailTabs_SeparateDescriptionScreenshotsVersionsAndPublisherInformation() {
-            EnsureApplicationResources();
             var bitmap = BitmapSource.Create(2, 2, 96, 96, PixelFormats.Bgra32, null, new byte[16], 8);
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
@@ -1664,14 +1638,8 @@ namespace NINA.Test.View {
             }
         }
 
-        [TestCase("Persian Faint")]
-        [TestCase("Light")]
-        [TestCase("Dark Nebula")]
-        [TestCase("High Contrast")]
-        public void Showcase_FitsOneImageAndNavigatesWithArrowsAndDots(string schema) {
-            EnsureApplicationResources();
-            var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
-            profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
+        [Test]
+        public void Showcase_DisplaysDownloadedImagesWithinTheDetailPane() {
             WithChangelogCache(_ => {
                 using var landscape = new LoopbackHttpServer(CreateScreenshot(1200, 600, Colors.SteelBlue), "image/png");
                 using var portrait = new LoopbackHttpServer(CreateScreenshot(600, 1200, Colors.DarkGoldenrod), "image/png");
@@ -1684,67 +1652,39 @@ namespace NINA.Test.View {
                 })];
                 var view = new PluginsView { DataContext = manager };
                 var host = ShowChangelogView(view);
-                host.WindowStyle = WindowStyle.None;
-                host.ResizeMode = ResizeMode.NoResize;
                 LayoutWindow(host, 800, 600);
                 ((TabItem)view.FindName("ShowcaseTab")).IsSelected = true;
+                var content = (Grid)view.FindName("ShowcaseContent");
+                var gallery = (ImageGallery)view.FindName("ScreenshotGallery");
+                PumpUntil(() => gallery.Items.Count == 2);
                 Layout(view, 800, 600);
-                view.ActualWidth.Should().BeApproximately(800, 0.1);
-                view.ActualHeight.Should().BeApproximately(600, 0.1);
-                var gallery = view.FindName("ShowcaseContent").Should().BeOfType<Grid>().Subject;
-                var images = (ImageGallery)view.FindName("ScreenshotGallery");
-                PumpUntil(() => images.Items.Count == 2);
-                Layout(view, 800, 600);
-                FindVisuals<ScrollViewer>(gallery).Should().BeEmpty();
-                var image = (System.Windows.Controls.Image)images.Template.FindName("PART_Image", images);
-                var previous = (Button)images.Template.FindName("PART_PreviousButton", images);
-                var next = (Button)images.Template.FindName("PART_NextButton", images);
-                previous.Style.Should().BeSameAs(view.FindResource("StandardButton"));
-                next.Style.Should().BeSameAs(view.FindResource("StandardButton"));
-                Contrast((SolidColorBrush)((System.Windows.Shapes.Path)previous.Content).Fill, (SolidColorBrush)previous.Background)
-                    .Should().BeGreaterThanOrEqualTo(3, "the navigation arrow remains readable against its native button background");
-                previous.Visibility.Should().Be(Visibility.Visible);
-                next.Visibility.Should().Be(Visibility.Visible);
 
-                void CheckImage(int index, double ratio) {
+                content.IsVisible.Should().BeTrue();
+                FindVisuals<ScrollViewer>(content).Should().BeEmpty();
+                gallery.ActualHeight.Should().BeApproximately(content.ActualHeight, 1,
+                    "the gallery uses the available showcase pane rather than a fixed screenshot viewport");
+                var image = (System.Windows.Controls.Image)gallery.Template.FindName("PART_Image", gallery);
+                foreach (var (index, ratio) in new[] { (0, 2.0), (1, 0.5) }) {
+                    gallery.SelectedIndex = index;
                     Layout(view, 800, 600);
-                    images.SelectedIndex.Should().Be(index);
-                    image.Source.Should().BeSameAs(images.SelectedItem);
-                    image.Stretch.Should().Be(Stretch.Uniform);
-                    image.ActualWidth.Should().BeGreaterThan(0);
+                    image.Source.Should().BeSameAs(gallery.SelectedItem);
                     image.ActualHeight.Should().BeGreaterThan(0);
                     (image.ActualWidth / image.ActualHeight).Should().BeApproximately(ratio, 0.01);
-                    var bounds = image.TransformToAncestor(gallery).TransformBounds(new Rect(image.RenderSize));
+                    var bounds = image.TransformToAncestor(content).TransformBounds(new Rect(image.RenderSize));
                     bounds.Left.Should().BeGreaterThanOrEqualTo(0);
                     bounds.Top.Should().BeGreaterThanOrEqualTo(0);
-                    bounds.Right.Should().BeLessThanOrEqualTo(gallery.ActualWidth + 0.1);
-                    bounds.Bottom.Should().BeLessThanOrEqualTo(gallery.ActualHeight + 0.1);
+                    bounds.Right.Should().BeLessThanOrEqualTo(content.ActualWidth + 1);
+                    bounds.Bottom.Should().BeLessThanOrEqualTo(content.ActualHeight + 1);
                 }
 
-                void Click(Button button) => ((IInvokeProvider)new ButtonAutomationPeer(button).GetPattern(PatternInterface.Invoke)).Invoke();
-
-                images.SelectedIndex = 0;
-                CheckImage(0, 2);
-                Click(next);
-                CheckImage(1, 0.5);
-                Click(next);
-                CheckImage(0, 2);
-                Click(previous);
-                CheckImage(1, 0.5);
-                Click(previous);
-                CheckImage(0, 2);
-                var peer = new ListBoxAutomationPeer(images);
-                ((ISelectionItemProvider)peer.GetChildren()[1].GetPattern(PatternInterface.SelectionItem)).Select();
-                CheckImage(1, 0.5);
-                ((ISelectionItemProvider)peer.GetChildren()[0].GetPattern(PatternInterface.SelectionItem)).Select();
-                CheckImage(0, 2);
-                SavePreview(view, "PluginShowcase-" + schema.Replace(" ", "") + ".png", 800, 600);
-                LayoutWindow(host, 1200, 1000);
-                images.SelectedIndex = 1;
-                Layout(view, 1200, 1000);
-                image.ActualHeight.Should().BeGreaterThan(500, "the gallery is not capped at the old screenshot height");
-                (image.ActualWidth / image.ActualHeight).Should().BeApproximately(0.5, 0.01);
-                SavePreview(view, "PluginShowcase-Large-" + schema.Replace(" ", "") + ".png", 1200, 1000);
+                LayoutWindow(host, 800, 450);
+                double smallerPaneHeight = content.ActualHeight;
+                double smallerImageHeight = image.ActualHeight;
+                LayoutWindow(host, 800, 600);
+                content.ActualHeight.Should().BeGreaterThan(smallerPaneHeight);
+                gallery.ActualHeight.Should().BeApproximately(content.ActualHeight, 1);
+                image.ActualHeight.Should().BeGreaterThan(smallerImageHeight,
+                    "the portrait image must use the additional space when the showcase pane grows");
             });
         }
 
@@ -1755,7 +1695,6 @@ namespace NINA.Test.View {
         [TestCase("failed-both", 0)]
         [TestCase("missing", 0)]
         public void Showcase_OmitsMissingAndFailedImagesAndHidesSingleImageNavigation(string scenario, int count) {
-            EnsureApplicationResources();
             WithChangelogCache(_ => {
                 using var valid = new LoopbackHttpServer(CreateScreenshot(1200, 600, Colors.SteelBlue), "image/png");
                 using var failure = new LoopbackHttpServer([], statusCode: 503);
@@ -1796,7 +1735,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Showcase_IgnoresObsoleteDownloadsAndResetsSelectionForAnotherPlugin() {
-            EnsureApplicationResources();
             WithChangelogCache(root => {
                 var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 using var slow = new LoopbackHttpServer(CreateScreenshot(100, 100, Colors.Red), "image/png", responseGate: gate.Task);
@@ -1852,7 +1790,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Showcase_PreservesManifestOrderWhenTheAlternateDownloadsFirst() {
-            EnsureApplicationResources();
             WithChangelogCache(root => {
                 var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 using var primary = new LoopbackHttpServer(CreateScreenshot(200, 100, Colors.Blue), "image/png", responseGate: gate.Task);
@@ -1883,7 +1820,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Showcase_UsesTheDisplayedVersionCacheAcrossSectionsAndRefresh() {
-            EnsureApplicationResources();
             WithChangelogCache(root => {
                 using var server = new LoopbackHttpServer(responses: [
                     new(CreateScreenshot(100, 100, Colors.Red)), new(CreateScreenshot(200, 100, Colors.Blue)),
@@ -1941,7 +1877,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void ArtworkCacheVersion_TracksTheDisplayedManifestAcrossSectionsAndRefresh() {
-            EnsureApplicationResources();
             var manager = CreateManager();
             var installed = new PluginManifest {
                 Identifier = "artwork", Name = "Artwork fixture", Version = new PluginVersion("1.0.0.0")
@@ -1977,7 +1912,6 @@ namespace NINA.Test.View {
         [TestCase("1.0.0.0", "LblPluginManagerRollbackAvailable", "LblPluginManagerRollBackTo")]
         [TestCase("3.0.0.0", "LblPluginManagerUpgradeAvailable", "LblPluginManagerUpgradeTo")]
         public void VersionRows_MarkTheInstalledReleaseAndExplainTheSelectedChange(string offeredVersion, string statusKey, string actionKey) {
-            EnsureApplicationResources();
             var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
             profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == "Persian Faint");
             var manager = CreateManager();
@@ -2016,12 +1950,6 @@ namespace NINA.Test.View {
             currentMarker.Visibility.Should().Be(Visibility.Visible);
             action.IsEnabled.Should().BeTrue();
             FindVisual<TextBlock>(action)!.Text.Should().Be(string.Format(NINA.Core.Locale.Loc.Instance[actionKey], offeredVersion));
-            var bitmap = new RenderTargetBitmap(720, 560, 96, 96, PixelFormats.Pbgra32);
-            bitmap.Render(view);
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            using var output = File.Create(Path.Combine(TestContext.CurrentContext.WorkDirectory, $"PluginVersionStates-{offeredVersion}.png"));
-            encoder.Save(output);
         }
 
         [TestCase("Persian Faint")]
@@ -2029,7 +1957,6 @@ namespace NINA.Test.View {
         [TestCase("Dark Nebula")]
         [TestCase("High Contrast")]
         public void Versions_FillThePaneAndShowTheActionBesideTheSelectedRelease(string schema) {
-            EnsureApplicationResources();
             var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
             profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
             var manager = CreateManager();
@@ -2052,6 +1979,7 @@ namespace NINA.Test.View {
             var view = new PluginsView { DataContext = manager };
             var host = new Window {
                 Width = 1000, Height = 900, Left = -20000, Top = -20000,
+                MaxHeight = 900,
                 WindowStyle = WindowStyle.None, ResizeMode = ResizeMode.NoResize,
                 ShowInTaskbar = false, ShowActivated = false, Content = view
             };
@@ -2062,10 +1990,13 @@ namespace NINA.Test.View {
                 PumpUntil(() => !manager.IsLoadingVersions);
                 LayoutWindow(host, 1000, 900);
                 var list = (ListBox)view.FindName("PluginVersions");
-                list.ActualHeight.Should().BeGreaterThan(300, "the release list must use the remaining detail height instead of a fixed 240-DIP viewport");
-                double originalHeight = list.ActualHeight;
-                LayoutWindow(host, 1000, 1100);
-                list.ActualHeight.Should().BeApproximately(originalHeight + 200, 1);
+                var pane = (Grid)view.FindName("VersionsContent");
+                double remainingHeight = pane.ActualHeight - list.TranslatePoint(new Point(), pane).Y;
+                list.ActualHeight.Should().BeApproximately(remainingHeight, 1,
+                    "the release list must fill the available pane even when Windows limits the host size");
+                LayoutWindow(host, 1000, 600);
+                remainingHeight = pane.ActualHeight - list.TranslatePoint(new Point(), pane).Y;
+                list.ActualHeight.Should().BeApproximately(remainingHeight, 1);
                 LayoutWindow(host, 1000, 900);
 
                 var installed = list.Items.Cast<PluginVersionVM>().Single(version => version.IsInstalled);
@@ -2092,17 +2023,8 @@ namespace NINA.Test.View {
                 currentBorder.BorderThickness.Left.Should().BeGreaterThanOrEqualTo(2);
                 currentBorder.BorderThickness.Top.Should().BeGreaterThan(0);
                 AssertBrushColor(installedRow.Foreground, view.FindResource("PrimaryBrush"));
-                var selectedBorder = (Border)selectedRow.Template.FindName("RowBorder", selectedRow);
                 AssertBrushColor(FindVisual<TextBlock>(selectedRow)!.Foreground, view.FindResource("PrimaryBrush"));
                 AssertBrushColor(FindVisual<TextBlock>(action)!.Foreground, view.FindResource("ButtonForegroundBrush"));
-
-                var bitmap = new RenderTargetBitmap(1000, 900, 96, 96, PixelFormats.Pbgra32);
-                bitmap.Render(view);
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                using (var output = File.Create(Path.Combine(TestContext.CurrentContext.WorkDirectory, $"PluginVersionLayout-{schema.Replace(' ', '-')}.png"))) {
-                    encoder.Save(output);
-                }
 
                 FindVisual<TextBlock>(action)!.Text = "Roll back to this release using a deliberately long translated label";
                 LayoutWindow(host, 720, 560);
@@ -2112,7 +2034,14 @@ namespace NINA.Test.View {
                 list.ActualHeight.Should().BeGreaterThan(50);
                 view.LayoutTransform = new ScaleTransform(2, 2);
                 LayoutWindow(host, 1440, 1120);
+                list.ScrollIntoView(older);
+                LayoutWindow(host, 1440, 1120);
+                selectedRow = (ListBoxItem)list.ItemContainerGenerator.ContainerFromItem(older);
+                action = FindVisual<Button>(selectedRow)!;
+                FindVisual<TextBlock>(action)!.Text = "Roll back to this release using a deliberately long translated label";
+                LayoutWindow(host, 1440, 1120);
                 bounds = action.TransformToAncestor(list).TransformBounds(new Rect(action.RenderSize));
+                bounds.Left.Should().BeGreaterThanOrEqualTo(0);
                 bounds.Right.Should().BeLessThanOrEqualTo(list.ActualWidth);
 
                 var viewport = FindVisual<ScrollViewer>(list)!;
@@ -2143,7 +2072,6 @@ namespace NINA.Test.View {
         [TestCase("Dark Nebula")]
         [TestCase("High Contrast")]
         public void Versions_ShowsThePluginVersionSeparatelyFromTheRequiredNinaVersion(string schema) {
-            EnsureApplicationResources();
             var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
             profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
             var manager = CreateManager();
@@ -2154,13 +2082,6 @@ namespace NINA.Test.View {
             var view = new PluginsView { DataContext = manager };
             ((TabItem)view.FindName("VersionsTab")).IsSelected = true;
             Layout(view, 720, 560);
-            var bitmap = new RenderTargetBitmap(720, 560, 96, 96, PixelFormats.Pbgra32);
-            bitmap.Render(view);
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            using (var output = File.Create(Path.Combine(TestContext.CurrentContext.WorkDirectory, $"PluginVersions-{schema.Replace(' ', '-')}.png"))) {
-                encoder.Save(output);
-            }
 
             var versions = (ListBox)view.FindName("PluginVersions");
             var row = (ListBoxItem)versions.ItemContainerGenerator.ContainerFromIndex(0);
@@ -2183,7 +2104,6 @@ namespace NINA.Test.View {
         [TestCase("Dark Nebula", 1000, 700)]
         [TestCase("High Contrast", 720, 560)]
         public void ThemeAndNarrowLayout_KeepActionsInsideThePluginArea(string schema, int width, int height) {
-            EnsureApplicationResources();
             var profile = ((IProfileService)Application.Current.Resources["ProfileService"]).ActiveProfile;
             profile.ColorSchemaSettings.ColorSchema = profile.ColorSchemaSettings.ColorSchemas.Items.Single(item => item.Name == schema);
             var manager = CreateManager();
@@ -2310,10 +2230,6 @@ namespace NINA.Test.View {
                     (byte)Math.Round(backgroundColor.B + (hintBrush.Color.B - backgroundColor.B) * hintOpacity));
                 Contrast(new SolidColorBrush(hintColor), new SolidColorBrush(backgroundColor))
                     .Should().BeGreaterThanOrEqualTo(4.5, "the search hint must remain readable in " + schema);
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                using var output = File.Create(Path.Combine(TestContext.CurrentContext.WorkDirectory, $"PluginManager-{schema.Replace(' ', '-')}.png"));
-                encoder.Save(output);
 
                 var offered = manager.AvailablePlugins.Single();
                 var installed = new PluginManifest {
@@ -2364,7 +2280,6 @@ namespace NINA.Test.View {
                 heading.ActualWidth.Should().BeGreaterThan(0);
                 var headingBounds = heading.TransformToAncestor(details).TransformBounds(new Rect(heading.RenderSize));
                 headingBounds.Right.Should().BeLessThanOrEqualTo(updateBounds.Left);
-                SavePreview(view, $"PluginHeaderActions-Installed-{schema.Replace(' ', '-')}.png", width, height);
 
                 manager.SelectedTabIndex = 1;
                 Layout(view, width, height);
@@ -2388,7 +2303,6 @@ namespace NINA.Test.View {
                 }
 
                 errors.Messages.Should().BeEmpty();
-                SavePreview(view, $"PluginHeaderActions-LongLabels-{schema.Replace(' ', '-')}.png", width, height);
             } finally {
                 PresentationTraceSources.DataBindingSource.Listeners.Remove(errors);
             }
@@ -2396,7 +2310,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void Images_UseFallbackForMissingUrlsAndOmitMissingScreenshots() {
-            EnsureApplicationResources();
             var image = new PluginImage { ImageUrl = " " };
             image.Source.Should().NotBeNull();
             image.HasImage.Should().BeTrue();
@@ -2407,7 +2320,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void KeyboardAndFilterControls_UseTheBoundManager() {
-            EnsureApplicationResources();
             var manager = CreateManager();
             typeof(PluginsVM).GetField("firstTime", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(manager, false);
             manager.AvailablePlugins = new List<ExtendedPluginManifest> {
@@ -2489,7 +2401,6 @@ namespace NINA.Test.View {
 
         [Test]
         public void ResizeAndDoubleScale_PreserveTheDetailMinimum() {
-            EnsureApplicationResources();
             var manager = CreateManager();
             var view = new PluginsView { DataContext = manager };
             Layout(view);
@@ -2502,9 +2413,6 @@ namespace NINA.Test.View {
             view.LayoutTransform = new ScaleTransform(2, 2);
             Layout(view, 1440, 1120);
             browser.ColumnDefinitions[2].ActualWidth.Should().BeGreaterThanOrEqualTo(320);
-            var bitmap = new RenderTargetBitmap(1440, 1120, 96, 96, PixelFormats.Pbgra32);
-            bitmap.Render(view);
-            bitmap.PixelWidth.Should().Be(1440);
         }
 
         private void WithChangelogCache(Action<string> verify) {
@@ -2569,15 +2477,6 @@ namespace NINA.Test.View {
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => frame.Continue = false));
             Dispatcher.PushFrame(frame);
             host.UpdateLayout();
-        }
-
-        private static void SavePreview(Visual visual, string filename, int width, int height) {
-            var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
-            bitmap.Render(visual);
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            using var output = File.Create(Path.Combine(TestContext.CurrentContext.WorkDirectory, filename));
-            encoder.Save(output);
         }
 
         private static void RaiseWheel(UIElement target, int delta) {
@@ -2721,43 +2620,5 @@ namespace NINA.Test.View {
             public override void WriteLine(string? message) => Write(message);
         }
 
-        private static void EnsureApplicationResources() {
-            var app = Application.Current ?? new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-            const string marker = "PluginsViewTest.ResourcesLoaded";
-            if (app.Resources.Contains(marker)) {
-                return;
-            }
-
-            var profile = new NINA.Profile.Profile();
-            app.Resources["ProfileService"] = Mock.Of<IProfileService>(service => service.ActiveProfile == profile);
-            string[] sources = [
-                "/NINA.WPF.Base;component/Resources/StaticResources/SVGDictionary.xaml",
-                "/NINA.WPF.Base;component/Resources/StaticResources/Brushes.xaml",
-                "/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml",
-                "/NINA;component/Resources/StaticResources/DataTemplates.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/Button.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/Path.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/TextBlock.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/TextBox.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/TabControl.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/CheckBox.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/ListView.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/GroupBox.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/ScrollViewer.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/ComboBox.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/GridSplitter.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/ProgressBar.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/Tooltip.xaml",
-                "/NINA.WPF.Base;component/Resources/Styles/Hyperlink.xaml",
-                "/NINA;component/Resources/Styles/Markdown.xaml"
-            ];
-            foreach (string source in sources) {
-                app.Resources.MergedDictionaries.Add(new ResourceDictionary {
-                    Source = new Uri(source, UriKind.Relative)
-                });
-            }
-
-            app.Resources[marker] = true;
-        }
     }
 }

@@ -44,14 +44,23 @@ namespace NINA.Test.View {
     [NonParallelizable]
     [SingleThreaded]
     public class PluginNavigationDuringRefreshTest {
+        private PluginViewResources resources = null!;
+
+        [SetUp]
+        public void SetUpResources() {
+            resources = new PluginViewResources();
+        }
+
+        [TearDown]
+        public void RestoreResources() {
+            resources.Dispose();
+        }
 
         [TestCase(true, false)]
         [TestCase(false, false)]
         [TestCase(true, true)]
         [TestCase(false, true)]
         public void HeaderMouseInputAndCatalogCompletion_KeepTheVisibleSectionConsistent(bool finishOnInstalled, bool completeWhileUnloaded) {
-            typeof(PluginsViewTest).GetMethod("EnsureApplicationResources", BindingFlags.Static | BindingFlags.NonPublic)!
-                .Invoke(null, null);
             var loader = new Mock<IPluginLoader>();
             loader.SetupGet(value => value.Plugins).Returns(new Dictionary<IPluginManifest, bool>());
             loader.Setup(value => value.Load()).Returns(Task.CompletedTask);
@@ -152,8 +161,6 @@ namespace NINA.Test.View {
         [TestCase(314159)]
         [TestCase(8675309)]
         public void MixedClickSequence_KeepsMainNavigationAndVisibleMembershipConsistent(int seed) {
-            typeof(PluginsViewTest).GetMethod("EnsureApplicationResources", BindingFlags.Static | BindingFlags.NonPublic)!
-                .Invoke(null, null);
             var loader = new Mock<IPluginLoader>();
             loader.SetupGet(value => value.Plugins).Returns(new Dictionary<IPluginManifest, bool>());
             loader.Setup(value => value.Load()).Returns(Task.CompletedTask);

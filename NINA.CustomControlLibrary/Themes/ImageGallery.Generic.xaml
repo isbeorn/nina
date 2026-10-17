@@ -95,7 +95,7 @@
                                 Width="14"
                                 Height="14"
                                 Data="{DynamicResource ArrowLeftSVG}"
-                                Fill="{DynamicResource ButtonForegroundBrush}"
+                                Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                 Stretch="Uniform" />
                         </Button>
                         <Button
@@ -114,7 +114,7 @@
                                 Width="14"
                                 Height="14"
                                 Data="{DynamicResource ArrowRightSVG}"
-                                Fill="{DynamicResource ButtonForegroundBrush}"
+                                Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                 Stretch="Uniform" />
                         </Button>
                         <ItemsPresenter
