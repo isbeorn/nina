@@ -8274,4 +8274,235 @@ Bu, yerleşik bir tetikleyicinin zamanlaması ihtiyacınıza uygun olduğu halde
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Bağlantılı "{0}" şablonundaki kaydedilmemiş düzenlemeler beş dakika işlem yapılmadığı için atıldı. Kaydedilmiş şablonla devam ediliyor.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Yeniden dene</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Tanıtım</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Sürümler</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Bu eklenti için ekran görüntüsü yok.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Sürüm geçmişi yükleniyor...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Sürüm geçmişinin bir kısmı yüklenemedi. Mevcut sürümler gösterilmeye devam ediyor.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Bir depo sürüm geçmişi sağlamıyor. Kataloğundaki sürümler gösterilmeye devam ediyor.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>Yapılandırılmış depolarda uyumlu sürüm bulunmuyor.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>Kurulu sürüm, yapılandırılmış depoların sağladığı uyumlu sürümlerle birlikte gösterilir. Önceki sürümler mevcut olmayabilir. Sürüm değişiklikleri NINA yeniden başlatıldıktan sonra geçerli olur.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Sürümü kur</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Şu anda kurulu</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Eski sürüme dönülebilir</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Yeni sürüme yükseltilebilir</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Daha eski sürüm</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Daha yeni sürüm</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>{0} sürümüne dön</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>{0} sürümüne yükselt</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>{0} sürümünü kur</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Bir sürümü kurmak veya değiştirmek için Sürümler bölümündeki işlemi kullanın, ardından NINA uygulamasını yeniden başlatın. Yayıncıya özel kurulum talimatları için eklentinin ana sayfasına bakın.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Eklenti ara</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Tüm etiketler</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Filtreleri temizle</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Mevcut eklentilere göz at</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Mevcut eklentiler yükleniyor...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Mevcut eklentiler yüklenemedi. Önceki sonuçlar gösterilmeye devam ediyor. Tekrar kontrol etmek için yeniden deneyin.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Bazı eklenti depolarına ulaşılamadı. Bu depolardan alınan önceki sonuçlar gösterilmeye devam ediyor.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Bu filtrelerle eşleşen eklenti yok. Tüm eklentileri görmek için filtreleri temizleyin.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Kurulu eklenti yok. Bir eklenti kurmak için mevcut eklentilere göz atın.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Yüklenemedi</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Kaldırma için yeniden başlatma bekleniyor</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Yeniden başlatma gerekli</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Eklenti kuruluyor...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Eklenti güncelleniyor...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Eklenti kaldırılıyor...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>İptal istendi...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Tümünü güncelle ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Ayarlar, NINA yeniden başlatıldıktan sonra kullanılabilir olacak.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Gerekli en düşük NINA sürümü:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Kaynak kodu</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>NINA uygulamasını yeniden başlat</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Eklenti değişiklikleri için yeniden başlatma gerekir.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Güncelleme mevcut</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>Yapılandırılmış depolarda uyumlu eklenti bulunmuyor.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Bu eklentinin ayarları yok.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Değişim kaydını tarayıcıda aç</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Değişim kaydı yükleniyor...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Bu değişim kaydı burada görüntülenemiyor. Okumak için tarayıcınızda açın.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Değişim kaydı yenilenemedi. Daha önce kaydedilmiş notlar gösteriliyor. Tekrar kontrol etmek için yeniden deneyin veya tarayıcınızda açın.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Değişim kaydı yüklenemedi. Yeniden deneyin veya tarayıcınızda açın.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Önceki resim</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Sonraki resim</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Resim</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Ekran görüntüleri yükleniyor...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Ek bilgi</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>NINA Güvenlik Çoklayıcısı</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>NINA Anahtar Çoklayıcısı</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>NINA Meteoroloji Çoklayıcısı</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Cihaz ekle</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Cihazı kaldır</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Ortalama alma süresi</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Dişli simgesini kullanarak çoklayıcı ayarlarını açın. En az bir cihaz seçin. Aynı cihazı birden fazla kez seçmeyin ve NINA çoklayıcılarını iç içe kullanmayın.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Bu çoklayıcı için yapılandırılmış cihaz yok. Dişli simgesini kullanarak ayarları açın ve bir cihaz ekleyin.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Hiçbir meteoroloji alanına kaynak cihaz atanmamış. Dişli simgesini kullanarak çoklayıcı ayarlarını açın ve en az bir alana cihaz atayın.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Cihaza bağlanılamadı.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Çoklayıcıdaki bir cihaz kullanılamıyor. Devam etmek için çoklayıcının bağlantısını kesip yeniden bağlayın.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Anahtar denetleyicisi, çoklayıcı kanallarının kalıcı kimliklerle seçilmesini desteklemiyor.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Seçilen çoklayıcı kanalı bulunamıyor, belirsiz veya yazılabilir değil.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Anahtarın değeri ayarlandıktan sonra okunamadı.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Bu çoklayıcıya veri veya işlev sağlayacak cihazları ekleyin.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Cihaz bağlı değil.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Kullanılmıyor</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Bağlı değil</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Güvenli</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Güvensiz</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Anahtar {0} - {1}</value>
+  </data>
 </root>
