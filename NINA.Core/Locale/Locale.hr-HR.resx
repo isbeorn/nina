@@ -8285,4 +8285,235 @@ To je korisno kada ugrađeni okidač ima odgovarajući trenutak aktivacije, ali 
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Nespremljene izmjene povezanog predloška '{0}' odbačene su nakon pet minuta neaktivnosti. Nastavljanje sa spremljenim predloškom.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Osvježi</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Pokušaj ponovno</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Predstavljanje</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Verzije</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Za ovaj dodatak nema dostupnih snimki zaslona.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Učitavanje povijesti verzija...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Dio povijesti verzija nije moguće učitati. Dostupna izdanja i dalje su prikazana.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Jedan repozitorij ne pruža povijest verzija. Izdanja iz njegova kataloga i dalje su prikazana.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>U postavljenim repozitorijima nema dostupnih kompatibilnih izdanja.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>Instalirana verzija prikazana je uz kompatibilna izdanja iz postavljenih repozitorija. Starija izdanja možda nisu dostupna. Promjene verzije primjenjuju se nakon ponovnog pokretanja programa NINA.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Instaliraj verziju</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Trenutačno instalirano</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Dostupan povratak na stariju verziju</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Dostupna nadogradnja</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Starija verzija</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Novija verzija</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Vrati na {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Nadogradi na {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Instaliraj {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Za instalaciju ili promjenu izdanja upotrijebite radnju na kartici Verzije, a zatim ponovno pokrenite program NINA. Upute za postavljanje koje je naveo autor dodatka potražite na početnoj stranici dodatka.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Pretraži dodatke</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Sve oznake</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Očisti filtre</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Pregledaj dostupne dodatke</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Učitavanje dostupnih dodataka...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Nije moguće učitati dostupne dodatke. Prethodni rezultati i dalje su prikazani. Ponovite provjeru.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Neki repozitoriji dodataka nisu dostupni. Prethodni rezultati iz tih repozitorija i dalje su prikazani.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Nijedan dodatak ne odgovara ovim filtrima. Očistite filtre za prikaz svih dodataka.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Nema instaliranih dodataka. Pregledajte dostupne dodatke kako biste instalirali neki od njih.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Učitavanje nije uspjelo</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Uklanjanje čeka ponovno pokretanje</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Potrebno je ponovno pokretanje</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Instalacija dodatka...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Ažuriranje dodatka...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Uklanjanje dodatka...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Zatraženo je otkazivanje...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Ažuriraj sve ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Postavke će biti dostupne nakon ponovnog pokretanja programa NINA.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Najmanja potrebna verzija programa NINA:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Izvorni kod</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Ponovno pokreni program NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Za primjenu promjena dodataka potrebno je ponovno pokretanje.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Dostupno ažuriranje</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>U postavljenim repozitorijima nema dostupnih kompatibilnih dodataka.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>Ovaj dodatak nema postavke.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Otvori popis promjena u pregledniku</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Učitavanje popisa promjena...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Ovaj popis promjena nije moguće prikazati ovdje. Otvorite ga u pregledniku kako biste ga pročitali.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Nije moguće osvježiti popis promjena. Prikazane su prethodno spremljene bilješke. Ponovite provjeru ili otvorite popis promjena u pregledniku.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Nije moguće učitati popis promjena. Pokušajte ponovno ili ga otvorite u pregledniku.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Prethodna slika</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Sljedeća slika</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Slika</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Učitavanje snimki zaslona...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Dodatne informacije</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>Sigurnosno čvorište NINA</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>Sklopno čvorište NINA</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>Meteorološko čvorište NINA</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Dodaj uređaj</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Ukloni uređaj</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Razdoblje usrednjavanja</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Otvorite postavke čvorišta ikonom zupčanika. Odaberite barem jedan uređaj bez duplikata ili ugniježđenih čvorišta NINA.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Za ovo čvorište nije postavljen nijedan uređaj. Otvorite postavke ikonom zupčanika i dodajte uređaj.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Nijednom polju meteoroloških podataka nije dodijeljen uređaj kao izvor. Otvorite postavke čvorišta ikonom zupčanika i dodijelite uređaj barem jednom polju.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Nije moguće povezati uređaj.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Uređaj čvorišta nije dostupan. Odspojite i ponovno povežite čvorište za nastavak.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Upravljački uređaj sklopki ne podržava pouzdan odabir kanala čvorišta.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Odabrani kanal čvorišta nedostaje, nije jednoznačan ili ne dopušta postavljanje vrijednosti.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Nakon postavljanja vrijednosti nije bilo moguće očitati sklopku.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Dodajte uređaje koji će pružati podatke ili funkcije ovom čvorištu.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Uređaj je odspojen.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Ne koristi se</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Odspojeno</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Sigurno</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Nesigurno</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Sklopka {0} - {1}</value>
+  </data>
 </root>
