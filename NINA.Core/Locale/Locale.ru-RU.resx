@@ -8278,4 +8278,235 @@ Dec: {1}</value>
   <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTimeout" xml:space="preserve">
     <value>Несохранённые изменения связанного шаблона '{0}' отброшены после пяти минут бездействия. Продолжение с сохранённым шаблоном.</value>
   </data>
+  <data name="LblPluginManagerRefresh" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="LblPluginManagerRetry" xml:space="preserve">
+    <value>Повторить</value>
+  </data>
+  <data name="LblPluginManagerShowcase" xml:space="preserve">
+    <value>Обзор</value>
+  </data>
+  <data name="LblPluginManagerVersions" xml:space="preserve">
+    <value>Версии</value>
+  </data>
+  <data name="LblPluginManagerNoScreenshots" xml:space="preserve">
+    <value>Для этого плагина нет снимков экрана.</value>
+  </data>
+  <data name="LblPluginManagerLoadingVersions" xml:space="preserve">
+    <value>Загрузка истории версий...</value>
+  </data>
+  <data name="LblPluginManagerHistoryFailed" xml:space="preserve">
+    <value>Не удалось загрузить часть истории версий. Доступные версии по-прежнему отображаются.</value>
+  </data>
+  <data name="LblPluginManagerHistoryUnsupported" xml:space="preserve">
+    <value>Репозиторий не предоставляет историю версий. Версии из его каталога по-прежнему отображаются.</value>
+  </data>
+  <data name="LblPluginManagerNoVersions" xml:space="preserve">
+    <value>В настроенных репозиториях нет совместимых версий.</value>
+  </data>
+  <data name="LblPluginManagerVersionHistoryHint" xml:space="preserve">
+    <value>Установленная версия показана вместе с совместимыми версиями из настроенных репозиториев. Более ранние версии могут быть недоступны. Смена версии применяется после перезапуска NINA.</value>
+  </data>
+  <data name="LblPluginManagerInstallVersion" xml:space="preserve">
+    <value>Установить версию</value>
+  </data>
+  <data name="LblPluginManagerCurrentlyInstalled" xml:space="preserve">
+    <value>Установлена сейчас</value>
+  </data>
+  <data name="LblPluginManagerRollbackAvailable" xml:space="preserve">
+    <value>Доступен откат</value>
+  </data>
+  <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
+    <value>Доступно обновление</value>
+  </data>
+  <data name="LblPluginManagerOlderVersion" xml:space="preserve">
+    <value>Более старая версия</value>
+  </data>
+  <data name="LblPluginManagerNewerVersion" xml:space="preserve">
+    <value>Более новая версия</value>
+  </data>
+  <data name="LblPluginManagerRollBackTo" xml:space="preserve">
+    <value>Вернуться к версии {0}</value>
+  </data>
+  <data name="LblPluginManagerUpgradeTo" xml:space="preserve">
+    <value>Обновить до версии {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallVersionFormat" xml:space="preserve">
+    <value>Установить {0}</value>
+  </data>
+  <data name="LblPluginManagerInstallHelp" xml:space="preserve">
+    <value>Чтобы установить или сменить версию, воспользуйтесь действием на вкладке "Версии", затем перезапустите NINA. Инструкции автора по настройке см. на домашней странице плагина.</value>
+  </data>
+  <data name="LblPluginManagerSearch" xml:space="preserve">
+    <value>Поиск плагинов</value>
+  </data>
+  <data name="LblPluginManagerAllTags" xml:space="preserve">
+    <value>Все теги</value>
+  </data>
+  <data name="LblPluginManagerTagCount" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="LblPluginManagerClearFilters" xml:space="preserve">
+    <value>Сбросить фильтры</value>
+  </data>
+  <data name="LblPluginManagerBrowseAvailable" xml:space="preserve">
+    <value>Просмотреть доступные плагины</value>
+  </data>
+  <data name="LblPluginManagerLoadingCatalog" xml:space="preserve">
+    <value>Загрузка доступных плагинов...</value>
+  </data>
+  <data name="LblPluginManagerCatalogFailed" xml:space="preserve">
+    <value>Не удалось загрузить доступные плагины. По-прежнему показаны предыдущие результаты. Повторите попытку, чтобы проверить ещё раз.</value>
+  </data>
+  <data name="LblPluginManagerCatalogPartial" xml:space="preserve">
+    <value>Не удалось связаться с некоторыми репозиториями плагинов. По-прежнему показаны предыдущие результаты из этих репозиториев.</value>
+  </data>
+  <data name="LblPluginManagerNoMatches" xml:space="preserve">
+    <value>Нет плагинов, соответствующих этим фильтрам. Сбросьте фильтры, чтобы увидеть все плагины.</value>
+  </data>
+  <data name="LblPluginManagerNoInstalled" xml:space="preserve">
+    <value>Плагины не установлены. Просмотрите доступные плагины и выберите один для установки.</value>
+  </data>
+  <data name="LblPluginManagerFailedToLoad" xml:space="preserve">
+    <value>Не удалось загрузить</value>
+  </data>
+  <data name="LblPluginManagerRemovalPending" xml:space="preserve">
+    <value>Будет удалён после перезапуска</value>
+  </data>
+  <data name="LblPluginManagerPendingRestart" xml:space="preserve">
+    <value>Требуется перезапуск</value>
+  </data>
+  <data name="LblPluginManagerInstalling" xml:space="preserve">
+    <value>Установка плагина...</value>
+  </data>
+  <data name="LblPluginManagerUpdating" xml:space="preserve">
+    <value>Обновление плагина...</value>
+  </data>
+  <data name="LblPluginManagerRemoving" xml:space="preserve">
+    <value>Удаление плагина...</value>
+  </data>
+  <data name="LblPluginManagerCancelling" xml:space="preserve">
+    <value>Запрошена отмена...</value>
+  </data>
+  <data name="LblPluginManagerUpdateAllCount" xml:space="preserve">
+    <value>Обновить все ({0})</value>
+  </data>
+  <data name="LblPluginManagerSettingsAfterRestart" xml:space="preserve">
+    <value>Настройки будут доступны после перезапуска NINA.</value>
+  </data>
+  <data name="LblPluginManagerRequiresNina" xml:space="preserve">
+    <value>Минимальная версия NINA:</value>
+  </data>
+  <data name="LblPluginManagerSourceCode" xml:space="preserve">
+    <value>Исходный код</value>
+  </data>
+  <data name="LblPluginManagerRestartNina" xml:space="preserve">
+    <value>Перезапустить NINA</value>
+  </data>
+  <data name="LblPluginManagerRestartNotice" xml:space="preserve">
+    <value>Для применения изменений плагинов требуется перезапуск.</value>
+  </data>
+  <data name="LblPluginManagerUpdateAvailable" xml:space="preserve">
+    <value>Доступно обновление</value>
+  </data>
+  <data name="LblPluginManagerNoAvailable" xml:space="preserve">
+    <value>В настроенных репозиториях нет совместимых плагинов.</value>
+  </data>
+  <data name="LblPluginManagerNoSettings" xml:space="preserve">
+    <value>У этого плагина нет настроек.</value>
+  </data>
+  <data name="LblPluginManagerOpenChangelog" xml:space="preserve">
+    <value>Открыть список изменений в браузере</value>
+  </data>
+  <data name="LblPluginManagerLoadingChangelog" xml:space="preserve">
+    <value>Загрузка списка изменений...</value>
+  </data>
+  <data name="LblPluginManagerChangelogUnsupported" xml:space="preserve">
+    <value>Этот список изменений нельзя отобразить здесь. Откройте его в браузере для просмотра.</value>
+  </data>
+  <data name="LblPluginManagerChangelogStale" xml:space="preserve">
+    <value>Не удалось обновить список изменений. Показаны ранее сохранённые записи. Повторите попытку или откройте список изменений в браузере.</value>
+  </data>
+  <data name="LblPluginManagerChangelogFailed" xml:space="preserve">
+    <value>Не удалось загрузить список изменений. Повторите попытку или откройте его в браузере.</value>
+  </data>
+  <data name="LblImageGalleryPrevious" xml:space="preserve">
+    <value>Предыдущее изображение</value>
+  </data>
+  <data name="LblImageGalleryNext" xml:space="preserve">
+    <value>Следующее изображение</value>
+  </data>
+  <data name="LblImageGalleryImage" xml:space="preserve">
+    <value>Изображение</value>
+  </data>
+  <data name="LblPluginManagerLoadingScreenshots" xml:space="preserve">
+    <value>Загрузка снимков экрана...</value>
+  </data>
+  <data name="LblPluginManagerAdditionalInfo" xml:space="preserve">
+    <value>Дополнительная информация</value>
+  </data>
+  <data name="LblSafetyMonitorHub" xml:space="preserve">
+    <value>Хаб безопасности NINA</value>
+  </data>
+  <data name="LblSwitchHub" xml:space="preserve">
+    <value>Хаб переключателей NINA</value>
+  </data>
+  <data name="LblWeatherDataHub" xml:space="preserve">
+    <value>Хаб метеоданных NINA</value>
+  </data>
+  <data name="LblHubAddDevice" xml:space="preserve">
+    <value>Добавить устройство</value>
+  </data>
+  <data name="LblHubRemoveDevice" xml:space="preserve">
+    <value>Удалить устройство</value>
+  </data>
+  <data name="LblHubAveragePeriod" xml:space="preserve">
+    <value>Период усреднения</value>
+  </data>
+  <data name="LblEquipmentHubInvalidConfiguration" xml:space="preserve">
+    <value>Откройте настройки хаба с помощью значка шестерёнки. Выберите хотя бы одно устройство. Повторы устройств и вложенные хабы NINA недопустимы.</value>
+  </data>
+  <data name="LblEquipmentHubNoDevices" xml:space="preserve">
+    <value>Для этого хаба не настроено ни одного устройства. Откройте настройки с помощью значка шестерёнки и добавьте устройство.</value>
+  </data>
+  <data name="LblEquipmentHubNoSources" xml:space="preserve">
+    <value>Ни для одного метеопараметра не задано устройство-источник. Откройте настройки хаба с помощью значка шестерёнки и назначьте устройство хотя бы одному параметру.</value>
+  </data>
+  <data name="LblEquipmentHubConnectionFailed" xml:space="preserve">
+    <value>Не удалось подключить устройство.</value>
+  </data>
+  <data name="LblEquipmentHubSessionFault" xml:space="preserve">
+    <value>Одно из устройств хаба недоступно. Переподключите хаб, чтобы продолжить.</value>
+  </data>
+  <data name="LblHubSwitchIdentityUnsupported" xml:space="preserve">
+    <value>Контроллер переключателей не поддерживает выбор каналов хаба по постоянным идентификаторам.</value>
+  </data>
+  <data name="LblHubSwitchTargetInvalid" xml:space="preserve">
+    <value>Выбранный канал хаба отсутствует, не может быть определён однозначно или недоступен для записи.</value>
+  </data>
+  <data name="LblHubSwitchPollFailed" xml:space="preserve">
+    <value>Не удалось опросить переключатель после установки его значения.</value>
+  </data>
+  <data name="LblHubAddDeviceHint" xml:space="preserve">
+    <value>Добавьте устройства, которые будут использоваться этим хабом.</value>
+  </data>
+  <data name="LblEquipmentHubDeviceDisconnected" xml:space="preserve">
+    <value>Устройство отключено.</value>
+  </data>
+  <data name="LblEquipmentHubNotUsed" xml:space="preserve">
+    <value>Не используется</value>
+  </data>
+  <data name="LblEquipmentHubDisconnected" xml:space="preserve">
+    <value>Отключено</value>
+  </data>
+  <data name="LblEquipmentHubSafe" xml:space="preserve">
+    <value>Безопасно</value>
+  </data>
+  <data name="LblEquipmentHubUnsafe" xml:space="preserve">
+    <value>Небезопасно</value>
+  </data>
+  <data name="LblHubSwitchChannelName" xml:space="preserve">
+    <value>Переключатель {0} - {1}</value>
+  </data>
 </root>
