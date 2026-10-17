@@ -1179,6 +1179,84 @@ namespace NINA.Test.View {
             manager.SelectedPlugin.Identifier.Should().Be(switchToInstalled ? rememberedLocal.Identifier : rememberedRemote.Identifier);
         }
 
+        [TestCase("complete", false)]
+        [TestCase("cancel", false)]
+        [TestCase("failure", false)]
+        [TestCase("complete", true)]
+        [TestCase("cancel", true)]
+        [TestCase("failure", true)]
+        public void CatalogProgress_UsesTheBottomStatusAreaAndRetainsRestartNotice(string outcome, bool pendingRestart) {
+            EnsureApplicationResources();
+            WithChangelogCache(_ => {
+                var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                using var repository = new LoopbackHttpServer(Encoding.UTF8.GetBytes("[]"), "application/json",
+                    responseGate: gate.Task, statusCode: outcome == "failure" ? 503 : 200);
+                var manifest = new PluginManifest {
+                    Identifier = "refresh-footer", Name = "Refresh footer fixture", Version = new PluginVersion("1.0.0.0")
+                };
+                var manager = CreateManager();
+                manager.InstalledPlugins = new Dictionary<IPluginManifest, bool> { [manifest] = true };
+                manager.AvailablePlugins = [new(manifest)];
+                manager.SelectedPlugin.PendingChange = pendingRestart ? PluginPendingChange.Update : PluginPendingChange.None;
+                manager.SelectedTabIndex = 0;
+                var view = new PluginsView { DataContext = manager };
+                var host = ShowChangelogView(view);
+                host.WindowStyle = WindowStyle.None;
+                host.ResizeMode = ResizeMode.NoResize;
+                LayoutWindow(host, 800, 600);
+                var restart = (Button)view.FindName("RestartPluginsButton");
+                var restartNotice = (FrameworkElement)restart.Parent;
+                var footer = ((Grid)view.Content).Children.OfType<Border>().Single(border => border.IsAncestorOf(restart));
+                var browser = (FrameworkElement)view.FindName("BrowserGrid");
+                double browserTop = browser.TransformToAncestor(view).Transform(new Point()).Y;
+                var cancel = FindVisuals<Button>(view).Single(button => button.Command == manager.CancelFetchPluginsCommand);
+                var progress = (FrameworkElement)cancel.Parent;
+                footer.Visibility.Should().Be(pendingRestart ? Visibility.Visible : Visibility.Collapsed);
+                var fetch = typeof(PluginsVM).GetMethod("FetchRepositories", BindingFlags.Instance | BindingFlags.NonPublic)!;
+                var refresh = (Task)fetch.Invoke(manager, [new[] { repository.Url }])!;
+                try {
+                    PumpUntil(() => repository.RequestReceived.IsCompleted);
+                    LayoutWindow(host, 800, 600);
+                    footer.Visibility.Should().Be(Visibility.Visible, "catalog loading belongs to the shared bottom status area");
+                    footer.IsAncestorOf(progress).Should().BeTrue();
+                    progress.Visibility.Should().Be(Visibility.Visible);
+                    FindVisuals<TextBlock>(progress).Should().Contain(label => label.Text == NINA.Core.Locale.Loc.Instance["LblPluginManagerLoadingCatalog"]);
+                    FindVisual<ProgressBar>(progress)!.IsIndeterminate.Should().BeTrue();
+                    cancel.Style.Should().BeSameAs(view.FindResource("BackgroundButton"));
+                    browser.TransformToAncestor(view).Transform(new Point()).Y.Should().BeApproximately(browserTop, 0.1);
+                    progress.TransformToAncestor(view).TransformBounds(new Rect(progress.RenderSize)).Top.Should()
+                        .BeGreaterThanOrEqualTo(browser.TransformToAncestor(view).TransformBounds(new Rect(browser.RenderSize)).Bottom);
+                    restartNotice.Visibility.Should().Be(pendingRestart ? Visibility.Visible : Visibility.Collapsed);
+                    manager.SelectedTabIndex = 1;
+                    manager.SearchText = "No matching fixture";
+                    manager.SelectedTabIndex = 0;
+                    LayoutWindow(host, 800, 600);
+                    progress.Visibility.Should().Be(Visibility.Visible);
+                    SavePreview(view, $"PluginCatalogProgress-{pendingRestart}.png", 800, 600);
+
+                    if (outcome == "cancel") {
+                        ((IInvokeProvider)new ButtonAutomationPeer(cancel).GetPattern(PatternInterface.Invoke)).Invoke();
+                    } else {
+                        gate.TrySetResult();
+                    }
+
+                    PumpUntil(() => refresh.IsCompleted);
+                    refresh.GetAwaiter().GetResult();
+                    LayoutWindow(host, 800, 600);
+                    manager.IsFetching.Should().BeFalse();
+                    manager.HasCatalogError.Should().Be(outcome == "failure");
+                    progress.Visibility.Should().Be(Visibility.Collapsed);
+                    footer.Visibility.Should().Be(pendingRestart ? Visibility.Visible : Visibility.Collapsed);
+                    restartNotice.Visibility.Should().Be(pendingRestart ? Visibility.Visible : Visibility.Collapsed);
+                } finally {
+                    manager.CancelFetchPluginsCommand.Execute(null);
+                    gate.TrySetResult();
+                    PumpUntil(() => refresh.IsCompleted);
+                    refresh.GetAwaiter().GetResult();
+                }
+            });
+        }
+
         [TestCase(false, false)]
         [TestCase(false, true)]
         [TestCase(true, false)]

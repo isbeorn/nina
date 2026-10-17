@@ -361,18 +361,6 @@
                     <TextBlock Foreground="{StaticResource NotificationErrorTextBrush}" Text="{Binding OperationErrors}" TextWrapping="Wrap" />
                 </ScrollViewer>
             </Border>
-            <DockPanel Margin="0,0,0,8" Visibility="{Binding IsFetching, Converter={StaticResource VisibleWhenTrue}}">
-                <Button
-                    Command="{Binding CancelFetchPluginsCommand}"
-                    DockPanel.Dock="Right"
-                    Style="{StaticResource BackgroundButton}">
-                    <TextBlock Margin="12,6" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblCancel}" TextWrapping="Wrap" />
-                </Button>
-                <StackPanel Margin="0,0,12,0" VerticalAlignment="Center">
-                    <TextBlock Text="{ns:Loc LblPluginManagerLoadingCatalog}" />
-                    <ProgressBar Margin="0,4,0,0" Style="{StaticResource LoadingProgressBar}" />
-                </StackPanel>
-            </DockPanel>
         </StackPanel>
         <Grid
             x:Name="BrowserGrid"
@@ -968,10 +956,23 @@
             <Border.Visibility>
                 <MultiBinding Converter="{StaticResource BooleanOrToVisibilityCollapsedMultiConverter}">
                     <Binding Path="IsMutating" />
+                    <Binding Path="IsFetching" />
                     <Binding Path="HasPendingChanges" />
                 </MultiBinding>
             </Border.Visibility>
             <StackPanel>
+                <DockPanel Margin="0,0,0,8" Visibility="{Binding IsFetching, Converter={StaticResource VisibleWhenTrue}}">
+                    <Button
+                        Command="{Binding CancelFetchPluginsCommand}"
+                        DockPanel.Dock="Right"
+                        Style="{StaticResource BackgroundButton}">
+                        <TextBlock Margin="12,6" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Style="{StaticResource StandardTextBlock}" Text="{ns:Loc LblCancel}" TextWrapping="Wrap" />
+                    </Button>
+                    <StackPanel Margin="0,0,12,0" VerticalAlignment="Center">
+                        <TextBlock Text="{ns:Loc LblPluginManagerLoadingCatalog}" />
+                        <ProgressBar Margin="0,4,0,0" Style="{StaticResource LoadingProgressBar}" />
+                    </StackPanel>
+                </DockPanel>
                 <DockPanel Margin="0,0,0,8" Visibility="{Binding IsMutating, Converter={StaticResource VisibleWhenTrue}}">
                     <Button
                         Command="{Binding CancelInstallPluginCommand}"
