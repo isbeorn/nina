@@ -8310,7 +8310,7 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
     <value>Versión anterior disponible</value>
   </data>
   <data name="LblPluginManagerUpgradeAvailable" xml:space="preserve">
-    <value>Versión posterior disponible</value>
+    <value>Actualización disponible</value>
   </data>
   <data name="LblPluginManagerOlderVersion" xml:space="preserve">
     <value>Versión anterior</value>
