@@ -20,6 +20,13 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces;
 using System;
 using System.Collections.Generic;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Image.Interfaces;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.PlateSolving {
 
@@ -47,17 +54,55 @@ namespace NINA.PlateSolving {
     }
 
     public static class PlateSolverFactory {
-        private static readonly PlateSolverProviderRegistry providerRegistry = new PlateSolverProviderRegistry();
+        private static readonly object providerSync = new object();
+        private static IReadOnlyList<IPlateSolverProvider> registeredProviders = Array.AsReadOnly(Array.Empty<IPlateSolverProvider>());
+        private static Dictionary<string, IPlateSolverProvider> providersById = new Dictionary<string, IPlateSolverProvider>(StringComparer.Ordinal);
 
-        public static IReadOnlyList<IPlateSolverProvider> Providers => providerRegistry.Providers;
-
-        public static event EventHandler ProvidersChanged {
-            add => providerRegistry.Changed += value;
-            remove => providerRegistry.Changed -= value;
+        public static IReadOnlyList<IPlateSolverProvider> Providers {
+            get {
+                lock (providerSync) {
+                    return registeredProviders;
+                }
+            }
         }
 
+        public static event EventHandler ProvidersChanged;
+
         public static void RegisterProviders(IEnumerable<IPlateSolverProvider> providers) {
-            providerRegistry.Replace(providers);
+            ArgumentNullException.ThrowIfNull(providers);
+            var valid = new Dictionary<string, IPlateSolverProvider>(StringComparer.Ordinal);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var provider in providers) {
+                try {
+                    var id = provider?.Id;
+                    if (string.IsNullOrWhiteSpace(id)) {
+                        Logger.Warning("Ignoring a plate solver provider without a stable ID");
+                        continue;
+                    }
+
+                    if (!seen.Add(id)) {
+                        valid.Remove(id);
+                        Logger.Warning($"Conflicting plate solver provider ID '{id}'; all providers with this ID are unavailable");
+                        continue;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(provider.Name) || (!provider.SupportsPrimary && !provider.SupportsBlind)) {
+                        Logger.Warning($"Ignoring invalid plate solver provider '{id}'");
+                        continue;
+                    }
+
+                    valid.Add(id, provider);
+                } catch (Exception ex) {
+                    Logger.Error("Failed to inspect a plate solver provider", ex);
+                }
+            }
+
+            lock (providerSync) {
+                providersById = valid;
+                registeredProviders = Array.AsReadOnly(valid.Values.ToArray());
+            }
+
+            ProvidersChanged?.Invoke(null, EventArgs.Empty);
         }
 
         /// <summary>
@@ -81,7 +126,7 @@ namespace NINA.PlateSolving {
 
         public static IPlateSolver GetPlateSolver(IPlateSolveSettings plateSolveSettings) {
             if (!string.IsNullOrEmpty(plateSolveSettings.PlateSolverProviderId)) {
-                return new ProviderPlateSolver(providerRegistry, plateSolveSettings.PlateSolverProviderId, false, plateSolveSettings);
+                return new ProviderPlateSolver(plateSolveSettings.PlateSolverProviderId, false, plateSolveSettings);
             }
 
             return GetPlateSolver(plateSolveSettings, plateSolveSettings.PlateSolverType);
@@ -89,7 +134,7 @@ namespace NINA.PlateSolving {
 
         public static IPlateSolver GetBlindSolver(IPlateSolveSettings plateSolveSettings) {
             if (!string.IsNullOrEmpty(plateSolveSettings.BlindSolverProviderId)) {
-                return new ProviderPlateSolver(providerRegistry, plateSolveSettings.BlindSolverProviderId, true, plateSolveSettings);
+                return new ProviderPlateSolver(plateSolveSettings.BlindSolverProviderId, true, plateSolveSettings);
             }
 
             var type = plateSolveSettings.BlindSolverType switch {
@@ -102,6 +147,31 @@ namespace NINA.PlateSolving {
             };
 
             return GetPlateSolver(plateSolveSettings, type);
+        }
+
+        private sealed class ProviderPlateSolver : IPlateSolver {
+            private readonly Lazy<IPlateSolver> solver;
+
+            public ProviderPlateSolver(string id, bool blind, IPlateSolveSettings settings) {
+                solver = new Lazy<IPlateSolver>(() => {
+                    IPlateSolverProvider provider;
+                    lock (providerSync) {
+                        providersById.TryGetValue(id, out provider);
+                    }
+
+                    if (provider == null || (blind ? !provider.SupportsBlind : !provider.SupportsPrimary)) {
+                        throw new InvalidOperationException(string.Format(Loc.Instance["LblPlateSolverProviderUnavailable"], provider?.Name ?? id));
+                    }
+
+                    return provider.CreateSolver(settings)
+                        ?? throw new InvalidOperationException(string.Format(Loc.Instance["LblPlateSolverProviderCreationFailed"], provider.Name));
+                }, LazyThreadSafetyMode.ExecutionAndPublication);
+            }
+
+            public Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+                canceltoken.ThrowIfCancellationRequested();
+                return solver.Value.SolveAsync(source, parameter, progress, canceltoken);
+            }
         }
     }
 }
