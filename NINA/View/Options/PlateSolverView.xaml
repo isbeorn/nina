@@ -60,8 +60,10 @@
                             MinWidth="150"
                             MaxHeight="30"
                             Margin="10,0,0,0"
-                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:PlateSolverEnum}}}"
-                            SelectedItem="{Binding PlateSolverType}" />
+                            x:Name="PrimarySolverChoice"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding DataContext.PlateSolvers, ElementName=UC}"
+                            SelectedItem="{Binding DataContext.SelectedPlateSolver, ElementName=UC}" />
                     </StackPanel>
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock
@@ -72,8 +74,10 @@
                             MinWidth="150"
                             MaxHeight="30"
                             Margin="10,0,0,0"
-                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:BlindSolverEnum}}}"
-                            SelectedItem="{Binding BlindSolverType}" />
+                            x:Name="BlindSolverChoice"
+                            DisplayMemberPath="Key"
+                            ItemsSource="{Binding DataContext.BlindSolvers, ElementName=UC}"
+                            SelectedItem="{Binding DataContext.SelectedBlindSolver, ElementName=UC}" />
                     </StackPanel>
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock
@@ -1000,7 +1004,6 @@
                     </StackPanel>
                 </DataTemplate>
 
-                <local:BlindSolverSettingsVisibilityConverter x:Key="BlindSolverSettingsVisibilityConverter" />
                 <local:PlateSolverSettingsTemplateSelector
                     x:Key="PlateSolveSettingSelector"
                     ASPSTemplate="{StaticResource ASPSTemplate}"
@@ -1013,19 +1016,22 @@
                     TSXTemplate="{StaticResource TSXTemplate}" />
             </Grid.Resources>
             <GroupBox Margin="0,10,0,0" Header="{ns:Loc LblPlateSolveSettings}">
-                <ContentControl Content="{Binding PlateSolverType}" ContentTemplateSelector="{StaticResource PlateSolveSettingSelector}" />
+                <ContentControl x:Name="PrimarySolverSettings" Content="{Binding DataContext.PlateSolverSettings, ElementName=UC}" ContentTemplateSelector="{StaticResource PlateSolveSettingSelector}" />
             </GroupBox>
             <GroupBox
                 Grid.Column="1"
                 Margin="0,10,0,0"
                 Header="{ns:Loc LblBlindSolveSettings}">
-                <GroupBox.Visibility>
-                    <MultiBinding Converter="{StaticResource BlindSolverSettingsVisibilityConverter}">
-                        <Binding Path="PlateSolverType" />
-                        <Binding Path="BlindSolverType" />
-                    </MultiBinding>
-                </GroupBox.Visibility>
-                <ContentControl Content="{Binding BlindSolverType}" ContentTemplateSelector="{StaticResource PlateSolveSettingSelector}" />
+                <GroupBox.Style>
+                    <Style TargetType="GroupBox" BasedOn="{StaticResource {x:Type GroupBox}}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.ShowBlindSolverSettings, ElementName=UC}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
+                <ContentControl x:Name="BlindSolverSettings" Content="{Binding DataContext.BlindSolverSettings, ElementName=UC}" ContentTemplateSelector="{StaticResource PlateSolveSettingSelector}" />
             </GroupBox>
         </Grid>
     </Grid>

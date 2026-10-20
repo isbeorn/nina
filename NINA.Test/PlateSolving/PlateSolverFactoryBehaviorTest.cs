@@ -25,7 +25,8 @@ using NINA.Profile.Interfaces;
 namespace NINA.Test.PlateSolving {
 
     [TestFixture]
-    public class PlateSolverFactoryBehaviorTest {
+    [NonParallelizable]
+    public partial class PlateSolverFactoryBehaviorTest {
 
         private Mock<IPlateSolveSettings> settings;
 
@@ -76,6 +77,7 @@ namespace NINA.Test.PlateSolving {
             IPlateSolver solver = PlateSolverFactory.GetPlateSolver(settings.Object);
 
             solver.Should().BeOfType(expectedType);
+            new PlateSolverFactoryProxy().GetPlateSolver(settings.Object).Should().BeOfType(expectedType).And.NotBeSameAs(solver);
         }
 
         /// <summary>
@@ -89,6 +91,7 @@ namespace NINA.Test.PlateSolving {
             IPlateSolver solver = PlateSolverFactory.GetBlindSolver(settings.Object);
 
             solver.Should().BeOfType(expectedType);
+            new PlateSolverFactoryProxy().GetBlindSolver(settings.Object).Should().BeOfType(expectedType).And.NotBeSameAs(solver);
         }
 
         /// <summary>

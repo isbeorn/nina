@@ -58,6 +58,7 @@ This allows you to safely return to a stable release if needed.
 - Canceling a native Nikon automatic shutter exposure no longer sends an unsupported Bulb termination command that could terminate N.I.N.A.
 
 ## Improvements
+- Plugins can now provide primary and blind plate solvers, including optional embedded settings. Profiles retain unavailable plugin selections and report an error only when those solvers are used.
 - **Equipment hubs**
     - Combine multiple Safety Monitor, Switch or Weather devices by selecting a N.I.N.A. hub in the driver list. Choose its devices through the gear button and see their connection status and any errors on the equipment screen.
     - The safety hub considers conditions safe only when every device is connected and reports safe. Each device's safety status is shown separately.

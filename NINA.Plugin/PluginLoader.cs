@@ -25,6 +25,7 @@ using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Image.ImageAnalysis;
 using NINA.Image.Interfaces;
 using NINA.PlateSolving.Interfaces;
+using NINA.PlateSolving;
 using NINA.Plugin.Interfaces;
 using NINA.Plugin.ManifestDefinition;
 using NINA.Profile.Interfaces;
@@ -331,6 +332,8 @@ namespace NINA.Plugin {
                         await LoadPlugin(file, (i + 1) / (double)files.Count);
                     }
 
+                    PlateSolverFactory.RegisterProviders(plateSolverProviders);
+
                     initialized = true;
                     Logger.Debug($"Time to load all plugins {sw.Elapsed}");
                 } catch (Exception ex) {
@@ -370,6 +373,7 @@ namespace NINA.Plugin {
                         container.ComposeParts(manifestImport);
 
                         var manifest = manifestImport.PluginManifestImport;
+                        int providerCount = plateSolverProviders.Count;
 
                         try {
                             if (!PluginVersion.IsPluginCompatible(manifest.MinimumApplicationVersion, applicationVersion)) {
@@ -414,6 +418,8 @@ namespace NINA.Plugin {
 
                             Logger.Info($"Successfully loaded plugin {manifest.Name} version {manifest.Version} by {manifest.Author}");
                         } catch (Exception ex) {
+                            plateSolverProviders.RemoveRange(providerCount, plateSolverProviders.Count - providerCount);
+
                             //Manifest ok - plugin composition failed
                             var failedManifest = new PluginManifest {
                                 Author = manifest.Author,
@@ -559,11 +565,19 @@ namespace NINA.Plugin {
                 });
                 Upgraders = Upgraders.Concat(upgraderImports).ToList();
 
+                foreach (var export in parts.PlateSolverProviderImports) {
+                    try {
+                        plateSolverProviders.Add(export.Value);
+                    } catch (Exception ex) {
+                        Logger.Error($"Failed to construct a plate solver provider from '{pluginName}'", ex);
+                    }
+                }
             } catch (Exception ex) {
                 Logger.Error(ex);
                 throw;
             }
         }
+
         private CompositionContainer GetContainer(ComposablePartCatalog catalog) {
             var container = new CompositionContainer(catalog, CompositionOptions.DisableSilentRejection | CompositionOptions.IsThreadSafe);
             container.ComposeExportedValue(profileService);
@@ -610,6 +624,8 @@ namespace NINA.Plugin {
 
             return container;
         }
+
+        private readonly List<IPlateSolverProvider> plateSolverProviders = new List<IPlateSolverProvider>();
 
         private bool initialized = false;
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
@@ -806,6 +822,9 @@ namespace NINA.Plugin {
     }
 
     public class PartsImport {
+
+        [ImportMany(typeof(IPlateSolverProvider))]
+        public IEnumerable<Lazy<IPlateSolverProvider>> PlateSolverProviderImports { get; private set; }
 
         [ImportMany(typeof(ISequenceItem))]
         public IEnumerable<Lazy<ISequenceItem, IDictionary<string, object>>> ItemImports { get; private set; }

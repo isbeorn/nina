@@ -52,5 +52,9 @@ namespace NINA.Profile.Interfaces {
         double PinPointExpansion { get; set; }
         string PinPointAllSkyApiKey { get; set; }
         string PinPointAllSkyApiHost { get; set; }
+
+        string PlateSolverProviderId { get; set; }
+
+        string BlindSolverProviderId { get; set; }
     }
 }

@@ -32,6 +32,29 @@ namespace NINA.Test.ProfileTest {
             }
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void PlateSolverSelections_LoadAndClonePreserveUnknownIdsAndLegacyEnums(bool clone) {
+            using var original = new ProfileModel("Plugin solver selection");
+            original.PlateSolveSettings.PlateSolverType = NINA.Core.Enum.PlateSolverEnum.LOCAL;
+            original.PlateSolveSettings.BlindSolverType = NINA.Core.Enum.BlindSolverEnum.PLATESOLVE3;
+            var selections = original.PlateSolveSettings;
+            selections.PlateSolverProviderId = "missing.primary";
+            selections.BlindSolverProviderId = "missing.blind";
+            original.Save();
+            if (!clone) {
+                original.Dispose();
+            }
+
+            using IProfile restored = clone ? ProfileModel.Clone(original) : ProfileModel.Load(original.Location);
+
+            var restoredSelections = restored.PlateSolveSettings;
+            restoredSelections.PlateSolverProviderId.Should().Be("missing.primary");
+            restoredSelections.BlindSolverProviderId.Should().Be("missing.blind");
+            restored.PlateSolveSettings.PlateSolverType.Should().Be(NINA.Core.Enum.PlateSolverEnum.LOCAL);
+            restored.PlateSolveSettings.BlindSolverType.Should().Be(NINA.Core.Enum.BlindSolverEnum.PLATESOLVE3);
+        }
+
         [TestCase(false, false)]
         [TestCase(false, true)]
         [TestCase(true, false)]

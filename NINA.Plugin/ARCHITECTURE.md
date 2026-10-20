@@ -112,3 +112,9 @@ That is expected: the plugin layer is an integration surface, not a low-level pr
 - New sequence entities intended for plugin discovery must use MEF export metadata consistently, because `PluginLoader` applies labels, icons, and categories from that metadata.
 - Keep versioned folder behavior intact; the loader, installer, and updater all rely on the same directory conventions from `Constants.cs`.
 - Avoid pushing app-specific logic into plugins directly when the plugin surface can be formalized here.
+
+## Plate Solver Exports
+
+The loader also imports lazy `IPlateSolverProvider` exports. Composition stages them without publishing, successful manifest initialization retains them and completion of plugin loading publishes one validated `PlateSolverFactory` snapshot. Invalid provider constructors or metadata are isolated; duplicate stable IDs exclude every conflicting export. Existing resource dictionary imports provide optional settings templates targeted to each concrete provider type.
+
+Manifest and extension parts use separate MEF containers. A MEF Shared provider/manifest dependency is shared only within its own container. Plugins must explicitly bridge any engine/cache ownership to the existing manifest `Teardown`; no new host lifecycle callback or container lifetime change is introduced. See the [plate-solving architecture](../NINA.Platesolving/ARCHITECTURE.md#plugin-plate-solver-providers) for selection and factory behavior.

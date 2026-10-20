@@ -28,6 +28,8 @@ using NINA.Equipment.Exceptions;
 using NINA.Equipment.Interfaces;
 using NINA.Image.ImageAnalysis;
 using NINA.Plugin;
+using NINA.PlateSolving;
+using NINA.PlateSolving.Interfaces;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.InputBox;
@@ -91,6 +93,7 @@ namespace NINA.ViewModel {
             profileService.LocaleChanged += (object sender, EventArgs e) => {
                 RecreatePatterns();
                 RaisePropertyChanged(nameof(FileTypes));
+                RefreshPlateSolvers(true);
             };
 
             profileService.LocationChanged += (object sender, EventArgs e) => {
@@ -123,6 +126,136 @@ namespace NINA.ViewModel {
             FilePatternsExpanded = !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternBIAS)
                 || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternDARK)
                 || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT);
+
+            PlateSolverFactory.ProvidersChanged += (_, _) => RefreshPlateSolvers(true);
+            RefreshPlateSolvers(true);
+        }
+
+        private IPlateSolveSettings plateSolveSettings;
+        private bool updatingPlateSolvers;
+
+        [ObservableProperty]
+        private ObservableCollection<KeyValuePair<string, object>> plateSolvers;
+
+        [ObservableProperty]
+        private ObservableCollection<KeyValuePair<string, object>> blindSolvers;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(PlateSolverSettings), nameof(ShowBlindSolverSettings))]
+        private object selectedPlateSolver;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(BlindSolverSettings), nameof(ShowBlindSolverSettings))]
+        private object selectedBlindSolver;
+
+        public object PlateSolverSettings => SelectedPlateSolver is KeyValuePair<string, object> choice ? choice.Value : null;
+
+        public object BlindSolverSettings => SelectedBlindSolver is KeyValuePair<string, object> choice ? choice.Value : null;
+
+        public bool ShowBlindSolverSettings => SolverIdentity(PlateSolverSettings) != SolverIdentity(BlindSolverSettings);
+
+        partial void OnSelectedPlateSolverChanged(object value) => SelectSolver(PlateSolverSettings, false);
+
+        partial void OnSelectedBlindSolverChanged(object value) => SelectSolver(BlindSolverSettings, true);
+
+        private void SelectSolver(object value, bool blind) {
+            if (updatingPlateSolvers || value == null) {
+                return;
+            }
+
+            updatingPlateSolvers = true;
+            try {
+                if (value is PlateSolverEnum primary) {
+                    plateSolveSettings.PlateSolverType = primary;
+                } else if (value is BlindSolverEnum fallback) {
+                    plateSolveSettings.BlindSolverType = fallback;
+                } else {
+                    var id = value is IPlateSolverProvider provider ? provider.Id : (string)value;
+                    if (blind) {
+                        plateSolveSettings.BlindSolverProviderId = id;
+                    } else {
+                        plateSolveSettings.PlateSolverProviderId = id;
+                    }
+                }
+            } finally {
+                updatingPlateSolvers = false;
+            }
+        }
+
+        private void PlateSolveSettingsChanged(object sender, PropertyChangedEventArgs e) {
+            if (string.IsNullOrEmpty(e.PropertyName)
+                || e.PropertyName is nameof(IPlateSolveSettings.PlateSolverType) or nameof(IPlateSolveSettings.BlindSolverType)
+                    or nameof(IPlateSolveSettings.PlateSolverProviderId) or nameof(IPlateSolveSettings.BlindSolverProviderId)) {
+                RefreshPlateSolvers();
+            }
+        }
+
+        private void RefreshPlateSolvers(bool rebuildChoices = false) {
+            var dispatcher = Application.Current?.Dispatcher;
+            if (dispatcher != null && !dispatcher.CheckAccess()) {
+                dispatcher.BeginInvoke(new Action(() => RefreshPlateSolvers(rebuildChoices)));
+                return;
+            }
+
+            if (updatingPlateSolvers) {
+                return;
+            }
+
+            updatingPlateSolvers = true;
+            try {
+                if (!ReferenceEquals(plateSolveSettings, ActiveProfile.PlateSolveSettings)) {
+                    if (plateSolveSettings != null) {
+                        plateSolveSettings.PropertyChanged -= PlateSolveSettingsChanged;
+                    }
+
+                    plateSolveSettings = ActiveProfile.PlateSolveSettings;
+                    plateSolveSettings.PropertyChanged += PlateSolveSettingsChanged;
+                    rebuildChoices = true;
+                }
+
+                if (rebuildChoices) {
+                    var providers = PlateSolverFactory.Providers;
+                    PlateSolvers = SolverChoices<PlateSolverEnum>(providers.Where(p => p.SupportsPrimary));
+                    BlindSolvers = SolverChoices<BlindSolverEnum>(providers.Where(p => p.SupportsBlind));
+                }
+
+                SelectedPlateSolver = SolverSelection(PlateSolvers, plateSolveSettings.PlateSolverProviderId, plateSolveSettings.PlateSolverType);
+                SelectedBlindSolver = SolverSelection(BlindSolvers, plateSolveSettings.BlindSolverProviderId, plateSolveSettings.BlindSolverType);
+            } finally {
+                updatingPlateSolvers = false;
+            }
+        }
+
+        private static ObservableCollection<KeyValuePair<string, object>> SolverChoices<T>(IEnumerable<IPlateSolverProvider> providers) where T : struct, Enum {
+            var converter = TypeDescriptor.GetConverter(typeof(T));
+            return new ObservableCollection<KeyValuePair<string, object>>(
+                Enum.GetValues<T>().Select(value => new KeyValuePair<string, object>(converter.ConvertToString(value), value))
+                    .Concat(providers.Select(provider => new KeyValuePair<string, object>(provider.Name, provider))));
+        }
+
+        private static object SolverSelection(ObservableCollection<KeyValuePair<string, object>> choices, string id, object builtin) {
+            if (string.IsNullOrEmpty(id)) {
+                return choices.FirstOrDefault(choice => Equals(choice.Value, builtin));
+            }
+
+            var selected = choices.FirstOrDefault(choice => choice.Value is IPlateSolverProvider provider
+                ? string.Equals(provider.Id, id, StringComparison.Ordinal)
+                : Equals(choice.Value, id));
+            if (selected.Value == null) {
+                selected = new KeyValuePair<string, object>(string.Format(Loc.Instance["LblPlateSolverProviderMissingChoice"], id), id);
+                choices.Add(selected);
+            }
+
+            return selected;
+        }
+
+        private static string SolverIdentity(object solver) {
+            return solver switch {
+                IPlateSolverProvider provider => "plugin:" + provider.Id,
+                string id => "plugin:" + id,
+                BlindSolverEnum.PINPOINT => "builtin:" + nameof(PlateSolverEnum.PINPONT),
+                _ => "builtin:" + solver
+            };
         }
 
         private bool CanCloneProfile => SelectedProfile != null;
@@ -372,6 +505,7 @@ namespace NINA.ViewModel {
         }
 
         private void ProfileChanged() {
+            RefreshPlateSolvers(true);
             RaisePropertyChanged(nameof(ActiveProfile));
             RaisePropertyChanged(nameof(IndexFiles));
 

@@ -36,6 +36,8 @@ namespace NINA.Profile {
         protected override void SetDefaultValues() {
             plateSolverType = PlateSolverEnum.ASTAP;
             blindSolverType = BlindSolverEnum.ASTAP;
+            plateSolverProviderId = null;
+            blindSolverProviderId = null;
             blindFailoverEnabled = true;
             astrometryURL = "http://nova.astrometry.net";
             astrometryAPIKey = string.Empty;
@@ -82,6 +84,8 @@ namespace NINA.Profile {
         public PlateSolverEnum PlateSolverType {
             get => plateSolverType;
             set {
+                PlateSolverProviderId = null;
+
                 if (plateSolverType != value) {
                     plateSolverType = value;
                     RaisePropertyChanged();
@@ -95,8 +99,36 @@ namespace NINA.Profile {
         public BlindSolverEnum BlindSolverType {
             get => blindSolverType;
             set {
+                BlindSolverProviderId = null;
+
                 if (blindSolverType != value) {
                     blindSolverType = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string plateSolverProviderId;
+        private string blindSolverProviderId;
+
+        // Ordered after the legacy enum members so deserialization does not clear the overrides.
+        [DataMember(Order = 1)]
+        public string PlateSolverProviderId {
+            get => plateSolverProviderId;
+            set {
+                if (plateSolverProviderId != value) {
+                    plateSolverProviderId = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [DataMember(Order = 1)]
+        public string BlindSolverProviderId {
+            get => blindSolverProviderId;
+            set {
+                if (blindSolverProviderId != value) {
+                    blindSolverProviderId = value;
                     RaisePropertyChanged();
                 }
             }

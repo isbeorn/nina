@@ -32,7 +32,8 @@ using NINA.PlateSolving.Interfaces;
 namespace NINA.Test.PlateSolving {
 
     [TestFixture]
-    public class ImageSolverTest {
+    [NonParallelizable]
+    public partial class ImageSolverTest {
         private Mock<IPlateSolver> plateSolverMock;
         private Mock<IPlateSolver> blindSolverMock;
 

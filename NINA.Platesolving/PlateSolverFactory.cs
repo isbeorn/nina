@@ -18,6 +18,8 @@ using NINA.Core.Enum;
 using NINA.PlateSolving.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace NINA.PlateSolving {
 
@@ -45,6 +47,18 @@ namespace NINA.PlateSolving {
     }
 
     public static class PlateSolverFactory {
+        private static readonly PlateSolverProviderRegistry providerRegistry = new PlateSolverProviderRegistry();
+
+        public static IReadOnlyList<IPlateSolverProvider> Providers => providerRegistry.Providers;
+
+        public static event EventHandler ProvidersChanged {
+            add => providerRegistry.Changed += value;
+            remove => providerRegistry.Changed -= value;
+        }
+
+        public static void RegisterProviders(IEnumerable<IPlateSolverProvider> providers) {
+            providerRegistry.Replace(providers);
+        }
 
         /// <summary>
         /// Creates an instance of a Platesolver depending on the solver
@@ -66,10 +80,18 @@ namespace NINA.PlateSolving {
         }
 
         public static IPlateSolver GetPlateSolver(IPlateSolveSettings plateSolveSettings) {
+            if (!string.IsNullOrEmpty(plateSolveSettings.PlateSolverProviderId)) {
+                return new ProviderPlateSolver(providerRegistry, plateSolveSettings.PlateSolverProviderId, false, plateSolveSettings);
+            }
+
             return GetPlateSolver(plateSolveSettings, plateSolveSettings.PlateSolverType);
         }
 
         public static IPlateSolver GetBlindSolver(IPlateSolveSettings plateSolveSettings) {
+            if (!string.IsNullOrEmpty(plateSolveSettings.BlindSolverProviderId)) {
+                return new ProviderPlateSolver(providerRegistry, plateSolveSettings.BlindSolverProviderId, true, plateSolveSettings);
+            }
+
             var type = plateSolveSettings.BlindSolverType switch {
                 BlindSolverEnum.ASTROMETRY_NET => PlateSolverEnum.ASTROMETRY_NET,
                 BlindSolverEnum.LOCAL => PlateSolverEnum.LOCAL,

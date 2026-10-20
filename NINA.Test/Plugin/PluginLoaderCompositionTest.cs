@@ -55,7 +55,7 @@ namespace NINA.Test.Plugin {
 
     [TestFixture]
     [NonParallelizable]
-    public class PluginLoaderCompositionTest {
+    public partial class PluginLoaderCompositionTest {
 
         /// <summary>
         /// Verifies that plugin composition imports sequence entities and assigns MEF metadata,

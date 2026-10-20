@@ -1,4 +1,5 @@
 ﻿using NINA.Core.Enum;
+using NINA.PlateSolving.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,8 +36,10 @@ namespace NINA.View.Options {
                 return PinpointTemplate;
             } else if (item is PlateSolverEnum.TSX_IMAGELINK) {
                 return TSXTemplate;
+            } else if (item is IPlateSolverProvider provider && container is FrameworkElement element) {
+                return element.TryFindResource(new DataTemplateKey(provider.GetType())) as DataTemplate ?? new DataTemplate();
             } else {
-                return base.SelectTemplate(item, container);
+                return new DataTemplate();
             }
         }
     }
