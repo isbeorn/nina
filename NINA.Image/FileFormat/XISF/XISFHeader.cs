@@ -12,18 +12,18 @@
 
 #endregion "copyright"
 
-using NINA.Core.Enum;
-using NINA.Image.ImageData;
 using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Utility;
+using NINA.Image.ImageData;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using NINA.Core.Utility;
-using System.Collections.Generic;
 
 namespace NINA.Image.FileFormat.XISF {
     /*
@@ -36,9 +36,9 @@ namespace NINA.Image.FileFormat.XISF {
         public XElement Image { get; private set; }
         public uint Size { get; private set; }
 
-        private XElement Xisf;
-        private XNamespace xmlns = XNamespace.Get("http://www.pixinsight.com/xisf");
-        private XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
+        private readonly XElement Xisf;
+        private readonly XNamespace xmlns = XNamespace.Get("http://www.pixinsight.com/xisf");
+        private readonly XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
 
         /// <summary>
         /// Create a new XISF Header
@@ -59,7 +59,7 @@ namespace NINA.Image.FileFormat.XISF {
             Xisf.Add(MetaData);
 
             Content = new XDocument(
-                new XDeclaration("1.0", "UTF-8", null), 
+                new XDeclaration("1.0", "UTF-8", null),
                 Xisf
             );
         }
@@ -513,7 +513,7 @@ namespace NINA.Image.FileFormat.XISF {
                 AddImageFITSKeyword("FOCALLEN", metaData.Telescope.FocalLength, "[mm] Focal length");
 
                 if (!double.IsNaN(metaData.Telescope.FocalRatio) && metaData.Telescope.FocalRatio > 0) {
-                    double aperture = (metaData.Telescope.FocalLength / metaData.Telescope.FocalRatio) / 1e3;
+                    double aperture = metaData.Telescope.FocalLength / metaData.Telescope.FocalRatio / 1e3;
                     AddImageProperty(XISFImageProperty.Instrument.Telescope.Aperture, aperture, "[m] Aperture", false);
                     AddImageFITSKeyword("FOCRATIO", metaData.Telescope.FocalRatio, "Focal ratio");
                 }
@@ -579,7 +579,7 @@ namespace NINA.Image.FileFormat.XISF {
             if (metaData.Focuser.Position.HasValue) {
                 if (!double.IsNaN(metaData.Focuser.StepSize)) {
                     /* steps * step size (microns) converted to millimetres, single-precision float */
-                    float focusDistance = (float)((metaData.Focuser.Position.Value * metaData.Focuser.StepSize) / 1000.0);
+                    float focusDistance = (float)(metaData.Focuser.Position.Value * metaData.Focuser.StepSize / 1000.0);
                     AddImageProperty(XISFImageProperty.Instrument.Focuser.Position, focusDistance);
                 }
 
@@ -690,6 +690,9 @@ namespace NINA.Image.FileFormat.XISF {
                     case StringMetaDataHeader s:
                         AddImageFITSKeyword(s.Key, s.Value, s.Comment);
                         break;
+                    case UIntMetaDataHeader u:
+                        AddImageFITSKeyword(u.Key, u.Value, u.Comment);
+                        break;
                     case IntMetaDataHeader i:
                         AddImageFITSKeyword(i.Key, i.Value, i.Comment);
                         break;
@@ -790,6 +793,10 @@ namespace NINA.Image.FileFormat.XISF {
             AddImageFITSKeywordInternal(name, "'" + value.ToString("yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture) + "'", comment);
         }
 
+        public void AddImageFITSKeyword(string name, uint value, string comment = "") {
+            AddImageFITSKeywordInternal(name, value.ToString(CultureInfo.InvariantCulture), comment);
+        }
+
         public void AddImageFITSKeyword(string name, int value, string comment = "") {
             AddImageFITSKeywordInternal(name, value.ToString(CultureInfo.InvariantCulture), comment);
         }
@@ -858,7 +865,7 @@ namespace NINA.Image.FileFormat.XISF {
         }
 
         // filters control characters but allows only properly-formed surrogate sequences
-        private static Regex _invalidXMLChars = new Regex(
+        private static readonly Regex _invalidXMLChars = new Regex(
             @"(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFEFF\uFFFE\uFFFF]",
             RegexOptions.Compiled);
 
@@ -877,7 +884,7 @@ namespace NINA.Image.FileFormat.XISF {
         /// <param name="imageProperties"></param>
         /// <param name="imageType"></param>
         public void AddImageMetaData(ImageProperties imageProperties, string imageType, XISFSampleFormat format = XISFSampleFormat.UInt16) {
-            if (imageType == "SNAPSHOT") { imageType = "LIGHT"; } 
+            if (imageType == "SNAPSHOT") { imageType = "LIGHT"; }
 
             XElement image = new XElement(xmlns + "Image",
                     new XAttribute("geometry", imageProperties.Width + ":" + imageProperties.Height + ":" + "1"),

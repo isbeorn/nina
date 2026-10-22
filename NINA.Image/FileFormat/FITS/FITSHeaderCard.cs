@@ -20,12 +20,12 @@ namespace NINA.Image.FileFormat.FITS {
 
     public class FITSHeaderCard {
         /* Extended ascii encoding*/
-        private static Encoding ascii = Encoding.GetEncoding("iso-8859-1");
+        private static readonly Encoding ascii = Encoding.GetEncoding("iso-8859-1");
 
         public FITSHeaderCard(string key, string value, string comment) {
             this.Key = key;
             if (value == null) { value = string.Empty; }
-            
+
             /*
              * FITS Standard 4.0, Section 4.2.1:
              * A single quote is represented within a string as two successive single quotes
@@ -54,7 +54,7 @@ namespace NINA.Image.FileFormat.FITS {
                 comment = comment.Substring(0, commentLength);
             }
 
-            
+
             this.Value = $"'{value}'".PadRight(totalLength - commentLength - commentSeparatorLenght + 2);
             this.Comment = comment;
         }
@@ -70,7 +70,7 @@ namespace NINA.Image.FileFormat.FITS {
 
         public FITSHeaderCard(string key, double value, string comment) {
             this.Key = key;
-            this.Value = (value.ToString("0.0##############", CultureInfo.InvariantCulture));
+            this.Value = value.ToString("0.0##############", CultureInfo.InvariantCulture);
             if (comment?.Length > 45) {
                 comment = comment.Substring(0, 45);
             }
@@ -82,6 +82,15 @@ namespace NINA.Image.FileFormat.FITS {
             this.Value = @"'" + value.ToString("yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture) + @"'";
             if (comment?.Length > 40) {
                 comment = comment.Substring(0, 40);
+            }
+            this.Comment = comment;
+        }
+
+        public FITSHeaderCard(string key, uint value, string comment) {
+            this.Key = key;
+            this.Value = value.ToString(CultureInfo.InvariantCulture);
+            if (comment?.Length > 45) {
+                comment = comment.Substring(0, 45);
             }
             this.Comment = comment;
         }

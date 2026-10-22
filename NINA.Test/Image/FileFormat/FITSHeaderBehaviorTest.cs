@@ -3,10 +3,6 @@ using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Image.FileFormat.FITS;
 using NINA.Image.ImageData;
-using NUnit.Framework;
-using System;
-using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace NINA.Test.Image.FileFormat {
@@ -255,6 +251,79 @@ namespace NINA.Test.Image.FileFormat {
             metadata.Image.ExposureTime.Should().Be(double.NaN);
             metadata.Camera.Gain.Should().Be(0);
             metadata.Camera.PixelSize.Should().Be(double.NaN);
+        }
+
+        /// <summary>
+        /// Verifies GenericHeaders are written as FITS cards by PopulateFromMetaData and round-trip through ExtractMetaData.
+        /// </summary>
+        [Test]
+        public void PopulateFromMetaData_WritesAndExtractsGenericHeaders() {
+            var source = new ImageMetaData();
+            source.Camera.Offset = 50;
+            source.GenericHeaders.Add(new StringMetaDataHeader("CTYPE1", "RA---TAN", "WCS projection"));
+            source.GenericHeaders.Add(new StringMetaDataHeader("CTYPE2", "DEC--TAN", "WCS projection"));
+            source.GenericHeaders.Add(new UIntMetaDataHeader("NAXIS", 2, "Number of axes"));
+            source.GenericHeaders.Add(new IntMetaDataHeader("OFFSET", 0, "Data offset"));
+            source.GenericHeaders.Add(new DateTimeMetaDataHeader("DATE-OBS", new DateTime(2025, 3, 4, 22, 10, 30, DateTimeKind.Utc), "Observation start time"));
+            source.GenericHeaders.Add(new DoubleMetaDataHeader("CRPIX1", 150.0, "Reference pixel X"));
+            source.GenericHeaders.Add(new DoubleMetaDataHeader("CRPIX2", 100.0, "Reference pixel Y"));
+            source.GenericHeaders.Add(new DoubleMetaDataHeader("CRVAL1", 201.5, "Reference RA"));
+            source.GenericHeaders.Add(new DoubleMetaDataHeader("CRVAL2", -43.25, "Reference Dec"));
+            source.GenericHeaders.Add(new DoubleMetaDataHeader("CD1_1", -0.00027, "CD matrix"));
+            source.GenericHeaders.Add(new DoubleMetaDataHeader("CD1_2", 0.0, "CD matrix"));
+            source.GenericHeaders.Add(new DoubleMetaDataHeader("CD2_1", 0.0, "CD matrix"));
+            source.GenericHeaders.Add(new DoubleMetaDataHeader("CD2_2", 0.00027, "CD matrix"));
+
+            var header = new FITSHeader(width: 300, height: 200);
+            header.PopulateFromMetaData(source);
+
+            ImageMetaData extracted = header.ExtractMetaData();
+
+            // --- Raw card values as written ---
+            string CardValue(string key) => header.HeaderCards.Single(x => x.Key == key).OriginalValue;
+
+            using (Assert.EnterMultipleScope()) {
+                CardValue("CTYPE1").Should().Be("RA---TAN");
+                CardValue("CTYPE2").Should().Be("DEC--TAN");
+                CardValue("NAXIS").Should().Be("2");      // constructor writes NAXIS first; generic NAXIS is ignored
+                CardValue("OFFSET").Should().Be("50");    // Camera.Offset written first; generic OFFSET=0 is ignored
+                CardValue("DATE-OBS").Should().Be("2025-03-04T22:10:30.0000000");
+                CardValue("CRPIX1").Should().Be("150.0");
+                CardValue("CRPIX2").Should().Be("100.0");
+                CardValue("CRVAL1").Should().Be("201.5");
+                CardValue("CRVAL2").Should().Be("-43.25");
+                CardValue("CD1_1").Should().Be("-0.00027");
+                CardValue("CD1_2").Should().Be("0.0");
+                CardValue("CD2_1").Should().Be("0.0");
+                CardValue("CD2_2").Should().Be("0.00027");
+            }
+
+            // --- Round-tripped GenericHeaders ---
+            T Generic<T>(string key) where T : IGenericMetaDataHeader =>
+                extracted.GenericHeaders.OfType<T>().Single(h => h.Key == key);
+
+            using (Assert.EnterMultipleScope()) {
+                Generic<StringMetaDataHeader>("CTYPE1").Value.Should().Be("RA---TAN");
+                Generic<StringMetaDataHeader>("CTYPE2").Value.Should().Be("DEC--TAN");
+                Generic<IntMetaDataHeader>("NAXIS").Value.Should().Be(2);
+                Generic<IntMetaDataHeader>("OFFSET").Value.Should().Be(50);
+                Generic<StringMetaDataHeader>("DATE-OBS").Value.Should().Be("2025-03-04T22:10:30.0000000");
+                Generic<DoubleMetaDataHeader>("CRPIX1").Value.Should().BeApproximately(150.0, 1e-8);
+                Generic<DoubleMetaDataHeader>("CRPIX2").Value.Should().BeApproximately(100.0, 1e-8);
+                Generic<DoubleMetaDataHeader>("CRVAL1").Value.Should().BeApproximately(201.5, 1e-8);
+                Generic<DoubleMetaDataHeader>("CRVAL2").Value.Should().BeApproximately(-43.25, 1e-8);
+                Generic<DoubleMetaDataHeader>("CD1_1").Value.Should().BeApproximately(-0.00027, 1e-12);
+                Generic<DoubleMetaDataHeader>("CD1_2").Value.Should().BeApproximately(0.0, 1e-12);
+                Generic<DoubleMetaDataHeader>("CD2_1").Value.Should().BeApproximately(0.0, 1e-12);
+                Generic<DoubleMetaDataHeader>("CD2_2").Value.Should().BeApproximately(0.00027, 1e-12);
+            }
+
+            // --- WCS built from the generic headers ---
+            extracted.WorldCoordinateSystem.Should().NotBeNull();
+            extracted.WorldCoordinateSystem.Point.X.Should().BeApproximately(150.0, 1e-8);
+            extracted.WorldCoordinateSystem.Point.Y.Should().BeApproximately(100.0, 1e-8);
+            extracted.WorldCoordinateSystem.Coordinates.RADegrees.Should().BeApproximately(201.5, 1e-8);
+            extracted.WorldCoordinateSystem.Coordinates.Dec.Should().BeApproximately(-43.25, 1e-8);
         }
     }
 }

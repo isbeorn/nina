@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using static NINA.Image.FileFormat.FITS.CfitsioNative;
-using NINA.Image.ImageData;
-using System.Globalization;
+﻿using NINA.Astrometry;
 using NINA.Core.Enum;
-using NINA.Astrometry;
 using NINA.Core.Utility;
+using NINA.Image.ImageData;
+using System;
+using System.Globalization;
+using System.Linq;
+using static NINA.Image.FileFormat.FITS.CfitsioNative;
 
 namespace NINA.Image.FileFormat.FITS {
     public class CFitsioFITS {
-        private nint filePtr;
+        private readonly nint filePtr;
 
         private CFitsioFITS(string filePath, COMPRESSION compression) {
             CfitsioNative.fits_create_diskfile(out var ptr, filePath, out var status);
@@ -64,6 +60,11 @@ namespace NINA.Image.FileFormat.FITS {
         public void AddHeader(string keyword, string value, string comment) {
             CfitsioNative.fits_update_key_str(filePtr, keyword, value, comment, out var status);
             LogErrorStatus("fits_update_key_str", status);
+        }
+
+        public void AddHeader(string keyword, uint value, string comment) {
+            CfitsioNative.fits_update_key_lng(filePtr, keyword, value, comment, out var status);
+            LogErrorStatus("fits_update_key_lng", status);
         }
 
         public void AddHeader(string keyword, int value, string comment) {
@@ -373,6 +374,9 @@ namespace NINA.Image.FileFormat.FITS {
                 switch (elem) {
                     case StringMetaDataHeader s:
                         AddHeader(s.Key, s.Value, s.Comment);
+                        break;
+                    case UIntMetaDataHeader u:
+                        AddHeader(u.Key, u.Value, u.Comment);
                         break;
                     case IntMetaDataHeader i:
                         AddHeader(i.Key, i.Value, i.Comment);

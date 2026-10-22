@@ -3,10 +3,6 @@ using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Image.FileFormat.XISF;
 using NINA.Image.ImageData;
-using NUnit.Framework;
-using System;
-using System.IO;
-using System.Linq;
 using System.Xml.Linq;
 
 namespace NINA.Test.Image.FileFormat {
@@ -115,6 +111,48 @@ namespace NINA.Test.Image.FileFormat {
             extracted.WorldCoordinateSystem.Coordinates.Dec.Should().BeApproximately(-43.25, 1e-8);
             extracted.WorldCoordinateSystem.PixelScaleX.Should().BeApproximately(0.972, 1e-8);
             extracted.WorldCoordinateSystem.PixelScaleY.Should().BeApproximately(0.972, 1e-8);
+
+            // FitsHeaders tests
+            string? FitsValue(string key) {
+                return header.Image.Elements()
+                .Single(x => x.Name.LocalName == "FITSKeyword" && x.Attribute("name")?.Value == key)
+                .Attribute("value")?.Value;
+            }
+
+            using (Assert.EnterMultipleScope()) {
+                FitsValue("CTYPE1").Should().Be("'RA---TAN'");
+                FitsValue("CTYPE2").Should().Be("'DEC--TAN'");
+                FitsValue("OFFSET").Should().Be("50");
+                FitsValue("DATE-OBS").Should().Be("'2025-03-04T22:10:30.0000000'");
+                FitsValue("CRPIX1").Should().Be("150.0");
+                FitsValue("CRPIX2").Should().Be("100.0");
+                FitsValue("CRVAL1").Should().Be("201.5");
+                FitsValue("CRVAL2").Should().Be("-43.25");
+                FitsValue("CD1_1").Should().Be("-0.00027");
+                FitsValue("CD1_2").Should().Be("0.0");
+                FitsValue("CD2_1").Should().Be("0.0");
+                FitsValue("CD2_2").Should().Be("0.00027");
+            }
+
+            // GenericHeaders tests
+            T Generic<T>(string key) where T : IGenericMetaDataHeader =>
+                extracted.GenericHeaders.OfType<T>().Single(h => h.Key == key);
+
+            using (Assert.EnterMultipleScope()) {
+                Generic<StringMetaDataHeader>("CTYPE1").Value.Should().Be("RA---TAN");
+                Generic<StringMetaDataHeader>("CTYPE2").Value.Should().Be("DEC--TAN");
+                Generic<DoubleMetaDataHeader>("CRPIX1").Value.Should().BeApproximately(150.0, 1e-8);
+                Generic<DoubleMetaDataHeader>("CRPIX2").Value.Should().BeApproximately(100.0, 1e-8);
+                Generic<DoubleMetaDataHeader>("CRVAL1").Value.Should().BeApproximately(201.5, 1e-8);
+                Generic<DoubleMetaDataHeader>("CRVAL2").Value.Should().BeApproximately(-43.25, 1e-8);
+                Generic<DoubleMetaDataHeader>("CD1_1").Value.Should().BeApproximately(-0.00027, 1e-12);
+                Generic<DoubleMetaDataHeader>("CD1_2").Value.Should().BeApproximately(0.0, 1e-12);
+                Generic<DoubleMetaDataHeader>("CD2_1").Value.Should().BeApproximately(0.0, 1e-12);
+                Generic<DoubleMetaDataHeader>("CD2_2").Value.Should().BeApproximately(0.00027, 1e-12);
+                Generic<IntMetaDataHeader>("MARS").Value.Should().Be(4);
+                Generic<IntMetaDataHeader>("SATURN").Value.Should().Be(6);
+                Generic<StringMetaDataHeader>("HAL9K").Value.Should().Be("1992-01-12T22:10:30.0000000");
+            }
         }
 
         /// <summary>
@@ -184,6 +222,9 @@ namespace NINA.Test.Image.FileFormat {
             metadata.WeatherData.WindDirection = 270.0;
             metadata.WeatherData.WindGust = 10.0;
             metadata.WeatherData.WindSpeed = 5.0;
+            metadata.GenericHeaders.Add(new UIntMetaDataHeader("MARS", 4, "Mars is the fourth planet from the Sun"));
+            metadata.GenericHeaders.Add(new IntMetaDataHeader("SATURN", 6, "Saturn is the sixth planet from the Sun"));
+            metadata.GenericHeaders.Add(new DateTimeMetaDataHeader("HAL9K", new DateTime(1992, 1, 12, 22, 10, 30, DateTimeKind.Utc), "HAL9000 woke up"));
             metadata.GenericHeaders.Add(new StringMetaDataHeader("CTYPE1", "RA---TAN", "WCS projection"));
             metadata.GenericHeaders.Add(new StringMetaDataHeader("CTYPE2", "DEC--TAN", "WCS projection"));
             metadata.GenericHeaders.Add(new DoubleMetaDataHeader("CRPIX1", 150.0, "Reference pixel X"));
