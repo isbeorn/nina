@@ -8516,12 +8516,12 @@ Se il conteggio delle esposizioni non è importante, abilita questa opzione per 
     <value>Interruttore {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>Il risolutore astrometrico '{0}' non è disponibile. Controlla che il relativo plugin sia installato o seleziona un altro risolutore.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Impossibile avviare il risolutore astrometrico '{0}'. Controlla le impostazioni del plugin.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (non disponibile)</value>
   </data>
 </root>
