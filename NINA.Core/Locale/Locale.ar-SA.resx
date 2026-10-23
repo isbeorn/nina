@@ -8514,12 +8514,12 @@ This is useful when a built-in trigger has the timing you need, but you want cus
     <value>المفتاح {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>برنامج حل الإحداثيات '{0}' غير متاح. تأكد من تثبيت الإضافة الخاصة به أو اختر برنامج حل إحداثيات آخر.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>تعذر بدء تشغيل برنامج حل الإحداثيات '{0}'. تحقق من إعدادات الإضافة.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (غير متاح)</value>
   </data>
 </root>
