@@ -8502,4 +8502,13 @@ Isto é útil quando uma ação incorporada tem o momento de ativação de que p
   <data name="LblHubSwitchChannelName" xml:space="preserve">
     <value>Interruptor {0} - {1}</value>
   </data>
+  <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
+    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+  </data>
+  <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
+    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+  </data>
+  <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
+    <value>{0} (not available)</value>
+  </data>
 </root>
