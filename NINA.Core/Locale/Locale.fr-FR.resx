@@ -8510,12 +8510,12 @@ Cette fonctionnalité est utile lorsqu'un déclencheur intégré correspond au m
     <value>Commutateur {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>Le solveur astrométrique '{0}' n'est pas disponible. Vérifiez que son plugin est installé ou sélectionnez un autre solveur.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Impossible de démarrer le solveur astrométrique '{0}'. Vérifiez les paramètres du plugin.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (indisponible)</value>
   </data>
 </root>
