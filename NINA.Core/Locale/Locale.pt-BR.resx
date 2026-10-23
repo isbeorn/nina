@@ -8517,12 +8517,12 @@ Isso é útil quando um gatilho integrado tem o momento de acionamento desejado,
     <value>Dispositivo de comutação {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>O solucionador astrométrico '{0}' não está disponível. Verifique se o plugin está instalado ou selecione outro solucionador.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Não foi possível iniciar o solucionador astrométrico '{0}'. Verifique as configurações do plugin.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (indisponível)</value>
   </data>
 </root>
