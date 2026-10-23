@@ -8517,12 +8517,12 @@ SharpCap इंस्टॉल होने और सेंसर विश्�
     <value>स्विच {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>प्लेट सॉल्वर '{0}' उपलब्ध नहीं है। उसके प्लगइन के इंस्टॉल होने की जांच करें या कोई दूसरा सॉल्वर चुनें।</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>प्लेट सॉल्वर '{0}' शुरू नहीं हो सका। प्लगइन की सेटिंग जांचें।</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (उपलब्ध नहीं)</value>
   </data>
 </root>
