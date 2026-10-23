@@ -8502,10 +8502,10 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
     <value>Interruptor {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>El solucionador de placas '{0}' no está disponible. Compruebe que su plugin está instalado o seleccione otro programa.</value>
+    <value>El resolutor astrométrico '{0}' no está disponible. Compruebe que su plugin está instalado o seleccione otro resolutor.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>No se pudo iniciar el solucionador de placas '{0}'. Compruebe la configuración del plugin.</value>
+    <value>No se pudo iniciar el resolutor astrométrico '{0}'. Compruebe la configuración del plugin.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
     <value>{0} (no disponible)</value>
