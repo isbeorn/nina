@@ -8509,12 +8509,12 @@ This is useful when a built-in trigger has the timing you need, but you want cus
     <value>Commutador {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>El solucionador de plaques '{0}' no està disponible. Comprova que el seu complement estigui instal·lat o selecciona un altre solucionador.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>No s'ha pogut iniciar el solucionador de plaques '{0}'. Comprova la configuració del complement.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (no disponible)</value>
   </data>
 </root>
