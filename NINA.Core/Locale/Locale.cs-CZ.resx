@@ -8511,4 +8511,13 @@ To se hodí v případě, že vestavěný spouštěč má sice požadované nač
   <data name="LblHubSwitchChannelName" xml:space="preserve">
     <value>Přepínač {0} - {1}</value>
   </data>
+  <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
+    <value>Program pro astrometrii '{0}' není k dispozici. Zkontrolujte, zda je nainstalován jeho plugin, nebo vyberte jiný program.</value>
+  </data>
+  <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
+    <value>Program pro astrometrii'{0}' se nepodařilo spustit. Zkontrolujte nastavení pluginu.</value>
+  </data>
+  <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
+    <value>{0} (není k dispozici)</value>
+  </data>
 </root>
