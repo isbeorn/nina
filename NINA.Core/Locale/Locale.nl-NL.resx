@@ -8505,12 +8505,12 @@ Dit is handig als een ingebouwde trigger het juiste moment bepaalt, maar u aange
     <value>Schakelaar {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>Plate solver '{0}' is niet beschikbaar. Controleer of de bijbehorende plugin is geïnstalleerd of kies een andere solver.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Plate solver '{0}' kon niet worden gestart. Controleer de instellingen van de plugin.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (niet beschikbaar)</value>
   </data>
 </root>
