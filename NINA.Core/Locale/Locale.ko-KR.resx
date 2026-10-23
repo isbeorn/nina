@@ -8533,12 +8533,12 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>스위치 {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>플레이트솔버 '{0}'을(를) 사용할 수 없습니다. 해당 플러그인이 설치되어 있는지 확인하거나 다른 솔버를 선택하세요.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>플레이트솔버 '{0}'을(를) 시작하지 못했습니다. 플러그인 설정을 확인하세요.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (사용 불가)</value>
   </data>
 </root>
