@@ -8517,12 +8517,12 @@ Dec: {1}</value>
     <value>Перемикач {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>Астрометричний розв'язувач '{0}' недоступний. Перевірте, чи встановлено його плагін, або виберіть інший розв'язувач.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Не вдалося запустити астрометричний розв'язувач '{0}'. Перевірте налаштування плагіна.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (недоступний)</value>
   </data>
 </root>
