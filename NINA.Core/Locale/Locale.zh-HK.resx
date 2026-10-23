@@ -8517,12 +8517,12 @@
     <value>開關 {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>解析工具 '{0}' 無法使用。請檢查是否已安裝其插件，或選擇其他解析工具。</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>無法啟動解析工具 '{0}'。請檢查插件設定。</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (無法使用)</value>
   </data>
 </root>
