@@ -8479,4 +8479,13 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
   <data name="LblHubSwitchChannelName" xml:space="preserve">
     <value>スイッチ {0} - {1}</value>
   </data>
+  <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
+    <value>プレートソルバー '{0}' は利用できません。プラグインがインストールされているか確認するか、又は別のソルバーを選択してください。</value>
+  </data>
+  <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
+    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+  </data>
+  <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
+    <value>{0} (not available)</value>
+  </data>
 </root>
