@@ -8519,12 +8519,12 @@ Isto é útil cando un activador integrado ten o tempo que necesitas, pero quere
     <value>Interruptor {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>O programa de astrometría '{0}' non está dispoñible. Comproba que o seu plugin está instalado ou selecciona outro programa de astrometría.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Non se puido iniciar o programa de astrometría '{0}'. Comproba a configuración do seu plugin.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (non dispoñible)</value>
   </data>
 </root>
