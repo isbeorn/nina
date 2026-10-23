@@ -8507,12 +8507,12 @@
     <value>开关 {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>解析工具 '{0}' 不可用。请检查是否已安装其插件，或选择其他解析工具。</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>无法启动解析工具 '{0}'。请检查插件设置。</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (不可用)</value>
   </data>
 </root>
