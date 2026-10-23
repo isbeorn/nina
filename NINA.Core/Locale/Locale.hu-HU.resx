@@ -8511,12 +8511,12 @@ Ez akkor hasznos, ha egy beépített indítófeltétel időzítése pont megfele
     <value>Kapcsoló {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>A következő csillagmező-azonosító nem érhető el: '{0}'. Ellenőrizze, hogy telepítve van-e a bővítménye, vagy válasszon másik csillagmező-azonosítót.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>A következő csillagmező-azonosítót nem sikerült elindítani: '{0}'. Ellenőrizze a bővítmény beállításait.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (nem érhető el)</value>
   </data>
 </root>
