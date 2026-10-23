@@ -8517,12 +8517,12 @@ Detta är användbart när en inbyggd utlösare har rätt tidpunkt men du vill u
     <value>Omkopplare {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>Den astrometriska lösaren '{0}' är inte tillgänglig. Kontrollera att dess insticksprogram är installerat eller välj en annan lösare.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Den astrometriska lösaren '{0}' kunde inte startas. Kontrollera insticksprogrammets inställningar.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (inte tillgänglig)</value>
   </data>
 </root>
