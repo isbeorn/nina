@@ -8482,12 +8482,12 @@ Hau erabilgarria da barneko abiarazle batek behar duzun denbora-unea duenean, ba
     <value>{0}. etengailua - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>'{0}' eremu-ebazlea ez dago erabilgarri. Egiaztatu haren plugina instalatuta dagoela edo hautatu beste ebazle bat.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Ezin izan da '{0}' eremu-ebazlea abiarazi. Egiaztatu pluginaren ezarpenak.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (ez dago erabilgarri)</value>
   </data>
 </root>
