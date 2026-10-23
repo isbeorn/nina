@@ -8509,12 +8509,12 @@ Det er nyttigt, når en indbygget udløser har det rette tidspunkt, men du ønsk
     <value>Kontakt {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>Stjernefeltløseren '{0}' er ikke tilgængelig. Kontroller, at dens plugin er installeret, eller vælg en anden stjernefeltløser.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Stjernefeltløseren '{0}' kunne ikke startes. Kontroller pluginets indstillinger.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (ikke tilgængelig)</value>
   </data>
 </root>
