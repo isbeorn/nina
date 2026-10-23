@@ -126,26 +126,18 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                     var orientation = (float)solveResult.PositionAngle;
                     rotatorMediator.Sync(orientation);
 
-                    var prevTargetRotation = targetRotation;
-                    targetRotation = rotatorMediator.GetTargetPosition(prevTargetRotation);
-                    if (Math.Abs(targetRotation - prevTargetRotation) > 0.1) {
-                        Logger.Info($"Rotator target position {PositionAngle} adjusted to {targetRotation} to be within the allowed mechanical range");
-                        Notification.ShowInformation(string.Format(Loc.Instance["LblRotatorRangeAdjusted"], targetRotation));
+                    targetRotation = rotatorMediator.GetTargetPosition((float)PositionAngle);
+                    if (Math.Abs(AstroUtil.EuclidianModulus(targetRotation - PositionAngle + 180, 360) - 180) > 0.1) {
+                        if (profileService.ActiveProfile.RotatorSettings.RangeType != Core.Enum.RotatorRangeTypeEnum.LITERAL) {
+                            Logger.Info($"Rotator target position {PositionAngle} adjusted to {targetRotation}");
+                        }
                     }
 
                     rotationDistance = targetRotation - orientation;
-                    if (profileService.ActiveProfile.RotatorSettings.RangeType == Core.Enum.RotatorRangeTypeEnum.FULL) {
-                        // If the full rotation range is allowed, then consider the 180-degree rotated orientation as well in case it is closer
-                        var movement = AstroUtil.EuclidianModulus(rotationDistance, 180);
-                        var movement2 = movement - 180;
-
-                        if (movement < Math.Abs(movement2)) {
-                            rotationDistance = movement;
-                        } else {
-                            targetRotation = AstroUtil.EuclidianModulus(targetRotation + 180, 360);
-                            Logger.Info($"Changing rotation target to {targetRotation} instead since it is closer to the current position");
-                            rotationDistance = movement2;
-                        }
+                    var rangeType = profileService.ActiveProfile.RotatorSettings.RangeType;
+                    if (rangeType == Core.Enum.RotatorRangeTypeEnum.FULL || rangeType == Core.Enum.RotatorRangeTypeEnum.LITERAL) {
+                        // Unrestricted range, so take the shortest signed path
+                        rotationDistance = AstroUtil.EuclidianModulus(rotationDistance + 180, 360) - 180;
                     }
 
                     if (!Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(profileService.ActiveProfile.PlateSolveSettings.RotationTolerance), true)) {
