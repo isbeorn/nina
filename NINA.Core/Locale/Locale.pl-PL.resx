@@ -8505,12 +8505,12 @@ Jest to przydatne, gdy wbudowany wyzwalacz działa w odpowiednim momencie, ale c
     <value>Przełącznik {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>Solver astrometryczny '{0}' jest niedostępny. Sprawdź, czy jego wtyczka jest zainstalowana, lub wybierz inny solver.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Nie udało się uruchomić solvera astrometrycznego '{0}'. Sprawdź ustawienia wtyczki.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (niedostępny)</value>
   </data>
 </root>
