@@ -8517,12 +8517,12 @@ To je korisno kada ugrađeni okidač ima odgovarajući trenutak aktivacije, ali 
     <value>Sklopka {0} - {1}</value>
   </data>
   <data name="LblPlateSolverProviderUnavailable" xml:space="preserve">
-    <value>Plate solver '{0}' is not available. Check that its plugin is installed or select another solver.</value>
+    <value>Astrometrijski rješavač '{0}' nije dostupan. Provjerite je li njegov dodatak instaliran ili odaberite drugi rješavač.</value>
   </data>
   <data name="LblPlateSolverProviderCreationFailed" xml:space="preserve">
-    <value>Plate solver '{0}' could not be started. Check the plugin's settings.</value>
+    <value>Nije bilo moguće pokrenuti astrometrijski rješavač '{0}'. Provjerite postavke dodatka.</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
-    <value>{0} (not available)</value>
+    <value>{0} (nije dostupan)</value>
   </data>
 </root>
