@@ -1545,17 +1545,23 @@ Abiarazle hau desaktibatuta dagoenean, aplikazioak Esposizioa hasi urratsa salta
   <data name="LblFlatWizardCapture" xml:space="preserve">
     <value>Flat-laguntzailearen kaptura</value>
   </data>
-  <data name="LblFLICameraSetup" xml:space="preserve">
-    <value>FLI kamera konfigurazioa</value>
+  <data name="LblFLIFloodDuration" xml:space="preserve">
+    <value>Flood duration</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Gainezkatze-pixel-bateratzea</value>
+    <value>Flood binning (X / Y)</value>
   </data>
-  <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>Gainezkatze-iraupena</value>
+  <data name="LblFLIFloodBinAuto" xml:space="preserve">
+    <value>Automatic flood binning</value>
+  </data>
+  <data name="LblFLIFloodBinAutoTooltip" xml:space="preserve">
+    <value>When enabled, the RBI pre-flash flood frame uses the same binning as the exposure that follows it. When disabled, the flood binning X and Y values specified below are used.</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Esposizio aurreko garbiketa-kopurua</value>
+    <value>Flush count</value>
+  </data>
+  <data name="LblFLIRBIBackgroundFlush" xml:space="preserve">
+    <value>Background flush</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>Egin itzulia</value>
@@ -1568,6 +1574,9 @@ Abiarazle hau desaktibatuta dagoenean, aplikazioak Esposizioa hasi urratsa salta
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
     <value>Gainezkatu argazki azkarretarako</value>
+  </data>
+  <data name="LblFLIKeepShutterOpen" xml:space="preserve">
+    <value>Keep shutter open</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>Foku-distantzia</value>
@@ -8489,5 +8498,11 @@ Hau erabilgarria da barneko abiarazle batek behar duzun denbora-unea duenean, ba
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
     <value>{0} (ez dago erabilgarri)</value>
+  </data>
+  <data name="LblHardwareVersion" xml:space="preserve">
+    <value>Hardware version</value>
+  </data>
+  <data name="LblFLIFlatFlood" xml:space="preserve">
+    <value>Flood for flat frames</value>
   </data>
 </root>
