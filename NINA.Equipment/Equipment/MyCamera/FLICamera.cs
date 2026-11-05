@@ -922,6 +922,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         private bool IsSnap { get; set; } = false;
+        private bool IsFlat { get; set; } = false;
 
         public void StartExposure(CaptureSequence sequence) {
             bool isDarkFrame;
@@ -929,6 +930,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             uint rv;
 
             IsSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT;
+            IsFlat = sequence.ImageType == CaptureSequence.ImageTypes.FLAT;
             rbiAbortRequested = false;
 
             ValidateExposureParameters(sequence);
@@ -947,7 +949,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
              */
             var rbiSettings = RbiExposureSettings.None;
 
-            if (FLIEnableFloodFlush && (!IsSnap || FLIEnableSnapshotFloodFlush)) {
+            if (FLIEnableFloodFlush && (!IsSnap || FLIEnableSnapshotFloodFlush) && (!IsFlat || FLIEnableFlatFloodFlush)) {
                 rbiSettings = new RbiExposureSettings(
                     Performed: true,
                     FlushCount: FLIFlushCount,
@@ -974,7 +976,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
              * Darks and Bias frames both get set to same type.
              */
             isDarkFrame = sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
-                sequence.ImageType == CaptureSequence.ImageTypes.DARK;
+                          sequence.ImageType == CaptureSequence.ImageTypes.DARK;
 
             FrameType = isDarkFrame ? LibFLI.FLIFrameType.DARK : LibFLI.FLIFrameType.NORMAL;
 
@@ -1395,6 +1397,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
 
             return true;
+        }
+
+        public bool FLIEnableFlatFloodFlush {
+            get => profileService.ActiveProfile.CameraSettings.FLIEnableFlatFloodFlush;
+            set {
+                profileService.ActiveProfile.CameraSettings.FLIEnableFlatFloodFlush = value;
+                RaisePropertyChanged();
+            }
         }
 
         public bool FLIEnableSnapshotFloodFlush {

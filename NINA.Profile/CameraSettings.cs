@@ -55,6 +55,7 @@ namespace NINA.Profile {
             fliFlushCount = 2;
             fliFloodBinAuto = false;
             fliFloodBin = new BinningMode(1, 4);
+            fliEnableFlatFloodFlush = false;
             fliEnableSnapshotFloodFlush = false;
             fliKeepShutterOpen = false;
             fliIncludeOverscan = false;
@@ -377,6 +378,19 @@ namespace NINA.Profile {
             set {
                 if (fliKeepShutterOpen != value) {
                     fliKeepShutterOpen = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fliEnableFlatFloodFlush;
+
+        [DataMember]
+        public bool FLIEnableFlatFloodFlush {
+            get => fliEnableFlatFloodFlush;
+            set {
+                if (fliEnableFlatFloodFlush != value) {
+                    fliEnableFlatFloodFlush = value;
                     RaisePropertyChanged();
                 }
             }

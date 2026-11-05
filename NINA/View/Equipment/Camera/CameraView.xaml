@@ -1132,6 +1132,15 @@
                                                         <TextBlock
                                                             Width="178"
                                                             VerticalAlignment="Center"
+                                                            Text="{ns:Loc LblFLIFlatFlood}" />
+                                                        <CheckBox HorizontalAlignment="Left" IsChecked="{Binding FLIEnableFlatFloodFlush}" />
+                                                    </StackPanel>
+                                                </DockPanel>
+                                                <DockPanel Margin="0,6,0,0" IsEnabled="{Binding FLIEnableFloodFlush}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock
+                                                            Width="178"
+                                                            VerticalAlignment="Center"
                                                             Text="{ns:Loc LblFLISnapshotFlood}" />
                                                         <CheckBox HorizontalAlignment="Left" IsChecked="{Binding FLIEnableSnapshotFloodFlush}" />
                                                     </StackPanel>

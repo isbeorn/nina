@@ -40,6 +40,7 @@ namespace NINA.Profile.Interfaces {
         BayerPatternEnum BayerPattern { get; set; }
         bool FLIEnableFloodFlush { get; set; }
         bool RBIBackgroundFlush { get; set; }
+        bool FLIEnableFlatFloodFlush { get; set; }
         bool FLIEnableSnapshotFloodFlush { get; set; }
         bool FLIKeepShutterOpen { get; set; }
         bool FLIIncludeOverscan { get; set; }

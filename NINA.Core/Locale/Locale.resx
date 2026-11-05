@@ -8427,4 +8427,7 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   <data name="LblHardwareVersion" xml:space="preserve">
     <value>Hardware version</value>
   </data>
+  <data name="LblFLIFlatFlood" xml:space="preserve">
+    <value>Flood for flat frames</value>
+  </data>
 </root>
