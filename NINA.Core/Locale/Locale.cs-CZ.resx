@@ -1564,22 +1564,22 @@ Když je tato aktivace deaktivována, aplikace pouze přeskočí Start expozice 
     <value>Průvodce Flat Snímáním</value>
   </data>
   <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>Flood duration</value>
+    <value>Doba předzáblesku</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Flood binning (X / Y)</value>
+    <value>Binning předzáblesku (X / Y)</value>
   </data>
   <data name="LblFLIFloodBinAuto" xml:space="preserve">
-    <value>Automatic flood binning</value>
+    <value>Automatický binning předzáblesku</value>
   </data>
   <data name="LblFLIFloodBinAutoTooltip" xml:space="preserve">
-    <value>When enabled, the RBI pre-flash flood frame uses the same binning as the exposure that follows it. When disabled, the flood binning X and Y values specified below are used.</value>
+    <value>Je-li tato možnost zapnutá, snímek předzáblesku RBI používá stejný binning jako následující expozice. Je-li vypnutá, použijí se níže nastavené hodnoty binningu předzáblesku X a Y</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Flush count</value>
+    <value>Počet vyprázdnění snímače</value>
   </data>
   <data name="LblFLIRBIBackgroundFlush" xml:space="preserve">
-    <value>Background flush</value>
+    <value>Vyprazdňování snímače na pozadí</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>Provést překlopení</value>
@@ -1594,7 +1594,7 @@ Když je tato aktivace deaktivována, aplikace pouze přeskočí Start expozice 
     <value>Zaplavení pro snímky</value>
   </data>
   <data name="LblFLIKeepShutterOpen" xml:space="preserve">
-    <value>Keep shutter open</value>
+    <value>Ponechat závěrku otevřenou</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>Ohnisková Vzdálenost</value>
@@ -8530,9 +8530,9 @@ To se hodí v případě, že vestavěný spouštěč má sice požadované nač
     <value>{0} (není k dispozici)</value>
   </data>
   <data name="LblHardwareVersion" xml:space="preserve">
-    <value>Hardware version</value>
+    <value>Verze hardwaru</value>
   </data>
   <data name="LblFLIFlatFlood" xml:space="preserve">
-    <value>Flood for flat frames</value>
+    <value>Předzáblesk pro flat snímky</value>
   </data>
 </root>
