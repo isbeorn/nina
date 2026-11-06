@@ -1560,17 +1560,23 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblFlatWizardCapture" xml:space="preserve">
     <value>플랫 마법사 캡처</value>
   </data>
-  <data name="LblFLICameraSetup" xml:space="preserve">
-    <value>FLI 카메라 설정</value>
+  <data name="LblFLIFloodDuration" xml:space="preserve">
+    <value>Flood duration</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>플러드 비닝</value>
+    <value>Flood binning (X / Y)</value>
   </data>
-  <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>플러드 기간</value>
+  <data name="LblFLIFloodBinAuto" xml:space="preserve">
+    <value>Automatic flood binning</value>
+  </data>
+  <data name="LblFLIFloodBinAutoTooltip" xml:space="preserve">
+    <value>When enabled, the RBI pre-flash flood frame uses the same binning as the exposure that follows it. When disabled, the flood binning X and Y values specified below are used.</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>노출 전 플러시 수</value>
+    <value>Flush count</value>
+  </data>
+  <data name="LblFLIRBIBackgroundFlush" xml:space="preserve">
+    <value>Background flush</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>플립</value>
@@ -1583,6 +1589,9 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
     <value>스냅샷 플러드</value>
+  </data>
+  <data name="LblFLIKeepShutterOpen" xml:space="preserve">
+    <value>Keep shutter open</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>초점거리</value>
@@ -8540,5 +8549,11 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
     <value>{0} (사용 불가)</value>
+  </data>
+  <data name="LblHardwareVersion" xml:space="preserve">
+    <value>Hardware version</value>
+  </data>
+  <data name="LblFLIFlatFlood" xml:space="preserve">
+    <value>Flood for flat frames</value>
   </data>
 </root>

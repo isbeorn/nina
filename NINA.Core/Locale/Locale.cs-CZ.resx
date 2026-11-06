@@ -1563,17 +1563,23 @@ Když je tato aktivace deaktivována, aplikace pouze přeskočí Start expozice 
   <data name="LblFlatWizardCapture" xml:space="preserve">
     <value>Průvodce Flat Snímáním</value>
   </data>
-  <data name="LblFLICameraSetup" xml:space="preserve">
-    <value>Nastavení Kamery FLI</value>
+  <data name="LblFLIFloodDuration" xml:space="preserve">
+    <value>Doba předzáblesku</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Zaplavení Binning</value>
+    <value>Binning předzáblesku (X / Y)</value>
   </data>
-  <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>Doba trvání Zaplavení</value>
+  <data name="LblFLIFloodBinAuto" xml:space="preserve">
+    <value>Automatický binning předzáblesku</value>
+  </data>
+  <data name="LblFLIFloodBinAutoTooltip" xml:space="preserve">
+    <value>Je-li tato možnost zapnutá, snímek předzáblesku RBI používá stejný binning jako následující expozice. Je-li vypnutá, použijí se níže nastavené hodnoty binningu předzáblesku X a Y</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Počet Pře-expozic Před Expozicí</value>
+    <value>Počet vyprázdnění snímače</value>
+  </data>
+  <data name="LblFLIRBIBackgroundFlush" xml:space="preserve">
+    <value>Vyprazdňování snímače na pozadí</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>Provést překlopení</value>
@@ -1586,6 +1592,9 @@ Když je tato aktivace deaktivována, aplikace pouze přeskočí Start expozice 
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
     <value>Zaplavení pro snímky</value>
+  </data>
+  <data name="LblFLIKeepShutterOpen" xml:space="preserve">
+    <value>Ponechat závěrku otevřenou</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>Ohnisková Vzdálenost</value>
@@ -8519,5 +8528,11 @@ To se hodí v případě, že vestavěný spouštěč má sice požadované nač
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
     <value>{0} (není k dispozici)</value>
+  </data>
+  <data name="LblHardwareVersion" xml:space="preserve">
+    <value>Verze hardwaru</value>
+  </data>
+  <data name="LblFLIFlatFlood" xml:space="preserve">
+    <value>Předzáblesk pro flat snímky</value>
   </data>
 </root>

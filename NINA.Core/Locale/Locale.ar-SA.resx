@@ -1570,17 +1570,23 @@ Do you want to continue and lose the changes anyway?</value>
   <data name="LblFlatWizardCapture" xml:space="preserve">
     <value>التقاط من برنامج Flat Wizard</value>
   </data>
-  <data name="LblFLICameraSetup" xml:space="preserve">
-    <value>إعداد كاميرا FLI</value>
+  <data name="LblFLIFloodDuration" xml:space="preserve">
+    <value>Flood duration</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>تضمين الفائض</value>
+    <value>Flood binning (X / Y)</value>
   </data>
-  <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>مدة الفائض</value>
+  <data name="LblFLIFloodBinAuto" xml:space="preserve">
+    <value>Automatic flood binning</value>
+  </data>
+  <data name="LblFLIFloodBinAutoTooltip" xml:space="preserve">
+    <value>When enabled, the RBI pre-flash flood frame uses the same binning as the exposure that follows it. When disabled, the flood binning X and Y values specified below are used.</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>عدد التدفق قبل التعريض</value>
+    <value>Flush count</value>
+  </data>
+  <data name="LblFLIRBIBackgroundFlush" xml:space="preserve">
+    <value>Background flush</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>نفذ الإنقلاب الزوالي</value>
@@ -1593,6 +1599,9 @@ Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
     <value>تدفق للقطات</value>
+  </data>
+  <data name="LblFLIKeepShutterOpen" xml:space="preserve">
+    <value>Keep shutter open</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>الطول البؤري</value>
@@ -8521,5 +8530,11 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
     <value>{0} (غير متاح)</value>
+  </data>
+  <data name="LblHardwareVersion" xml:space="preserve">
+    <value>Hardware version</value>
+  </data>
+  <data name="LblFLIFlatFlood" xml:space="preserve">
+    <value>Flood for flat frames</value>
   </data>
 </root>

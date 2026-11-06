@@ -1571,17 +1571,23 @@ Cando este desencadeador estea desactivado, a aplicación omite o inicio de expo
   <data name="LblFlatWizardCapture" xml:space="preserve">
     <value>Captura do Asistente de Flat</value>
   </data>
-  <data name="LblFLICameraSetup" xml:space="preserve">
-    <value>Config. Cámara FLI</value>
+  <data name="LblFLIFloodDuration" xml:space="preserve">
+    <value>Flood duration</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Fluxo de Binning</value>
+    <value>Flood binning (X / Y)</value>
   </data>
-  <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>Duración Fluxo</value>
+  <data name="LblFLIFloodBinAuto" xml:space="preserve">
+    <value>Automatic flood binning</value>
+  </data>
+  <data name="LblFLIFloodBinAutoTooltip" xml:space="preserve">
+    <value>When enabled, the RBI pre-flash flood frame uses the same binning as the exposure that follows it. When disabled, the flood binning X and Y values specified below are used.</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Contador Flush antes da exposición</value>
+    <value>Flush count</value>
+  </data>
+  <data name="LblFLIRBIBackgroundFlush" xml:space="preserve">
+    <value>Background flush</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>Facer volteo meridiano</value>
@@ -1594,6 +1600,9 @@ Cando este desencadeador estea desactivado, a aplicación omite o inicio de expo
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
     <value>Fluxo para snapshots</value>
+  </data>
+  <data name="LblFLIKeepShutterOpen" xml:space="preserve">
+    <value>Keep shutter open</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>Lonxitude Focal</value>
@@ -8526,5 +8535,11 @@ Isto é útil cando un activador integrado ten o tempo que necesitas, pero quere
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
     <value>{0} (non dispoñible)</value>
+  </data>
+  <data name="LblHardwareVersion" xml:space="preserve">
+    <value>Hardware version</value>
+  </data>
+  <data name="LblFLIFlatFlood" xml:space="preserve">
+    <value>Flood for flat frames</value>
   </data>
 </root>
