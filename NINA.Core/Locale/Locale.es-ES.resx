@@ -1562,22 +1562,22 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
     <value>Captura del Asistente de Flats</value>
   </data>
   <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>Flood duration</value>
+    <value>Duración del flujo</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Flood binning (X / Y)</value>
+    <value>Binning de flujo (X / Y)</value>
   </data>
   <data name="LblFLIFloodBinAuto" xml:space="preserve">
-    <value>Automatic flood binning</value>
+    <value>Fijación automática del flujo</value>
   </data>
   <data name="LblFLIFloodBinAutoTooltip" xml:space="preserve">
-    <value>When enabled, the RBI pre-flash flood frame uses the same binning as the exposure that follows it. When disabled, the flood binning X and Y values specified below are used.</value>
+    <value>Cuando está activado, la inundación del sensor con el pre-flash de mitigación de RBI (Residual Bulk Image o Imagen Residual del Sustrato) utiliza el mismo binning que la exposición que le sigue. Cuando está desactivado, se usarán los valores X e Y del binning de la inundación especificados a continuación.</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Flush count</value>
+    <value>Conteo de limpieza de carga eléctrica residual</value>
   </data>
   <data name="LblFLIRBIBackgroundFlush" xml:space="preserve">
-    <value>Background flush</value>
+    <value>Limpieza de carga eléctrica del sensor en segundo plano</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>Hacer el cambio de meridiano</value>
@@ -1592,7 +1592,7 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
     <value>Flujo de capturas</value>
   </data>
   <data name="LblFLIKeepShutterOpen" xml:space="preserve">
-    <value>Keep shutter open</value>
+    <value>Mantener la abertura de observación abierta</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>Longitud Focal</value>
@@ -8520,9 +8520,9 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
     <value>{0} (no disponible)</value>
   </data>
   <data name="LblHardwareVersion" xml:space="preserve">
-    <value>Hardware version</value>
+    <value>Versión de hardware</value>
   </data>
   <data name="LblFLIFlatFlood" xml:space="preserve">
-    <value>Flood for flat frames</value>
+    <value>Inundación de iluminación para tomas de flats</value>
   </data>
 </root>
