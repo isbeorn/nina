@@ -55,29 +55,62 @@ namespace NINA.Core.Model {
             }
         }
 
+        /// <summary>Placeholder for a column without a value at the azimuth of that line</summary>
+        private const string NO_VALUE = "-";
+
+        /// <summary>Number of columns of a line with an azimuth and a lower value</summary>
+        private const int COLUMNS_LOWER_ONLY = 2;
+
+        /// <summary>Number of columns of a line with an azimuth, a lower and an upper value</summary>
+        private const int COLUMNS_LOWER_AND_UPPER = 3;
+
+        private const int AZIMUTH_COLUMN = 0;
+
+        private const int LOWER_COLUMN = 1;
+
+        private const int UPPER_COLUMN = 2;
+
         /// <param name="horizonMap">A map containing azimuth->altitude mappings</param>
-        private CustomHorizon(IDictionary<double, double> horizonMap) {
+        /// <param name="embeddedUpper">Optional upper horizon that was read from the third column of the same file</param>
+        private CustomHorizon(IDictionary<double, double> horizonMap, CustomHorizon embeddedUpper = null) {
             this.azimuths = horizonMap.Keys.ToArray();
             this.altitudes = horizonMap.Values.ToArray();
             hasFiniteSearchVertices = azimuths.All(x => double.IsFinite(x) && x >= 0 && x <= 360)
                 && altitudes.All(double.IsFinite);
 
-            if (hasFiniteSearchVertices && altitudes.All(x => x == altitudes[0])) {
+            if (hasFiniteSearchVertices && altitudes.Length > 0 && altitudes.All(x => x == altitudes[0])) {
                 FlatSearchAltitude = altitudes[0];
             }
+
+            this.EmbeddedUpper = embeddedUpper;
         }
 
+        /// <summary>
+        /// Upper horizon (maximum available altitude per azimuth) that was defined in the optional third column
+        /// of the file this horizon was read from. Null if the file does not contain upper values.
+        /// </summary>
+        public CustomHorizon EmbeddedUpper { get; }
+
+        /// <summary>
+        /// False if the file only contained upper values and therefore does not define any lower horizon
+        /// </summary>
+        public bool HasLowerData => azimuths.Length > 0;
+
         public double GetAltitude(double azimuth) {
+            if (azimuths.Length == 0) {
+                return 0;
+            }
+
             if (azimuth < 0 || azimuth > 359) { azimuth = Utility.CoreUtil.EuclidianModulus(azimuth, 360); }
             return Accord.Math.Tools.Interpolate1D(azimuth, azimuths, altitudes, 0, 0);
         }
 
         public double GetMaxAltitude() {
-            return this.altitudes.Max();
+            return azimuths.Length == 0 ? 0 : this.altitudes.Max();
         }
 
         public double GetMinAltitude() {
-            return this.altitudes.Min();
+            return azimuths.Length == 0 ? 0 : this.altitudes.Min();
         }
 
         private static void GroomHorizonData(SortedDictionary<double, double> horizonMap) {
@@ -109,9 +142,12 @@ namespace NINA.Core.Model {
 
         /// <summary>
         /// Creates an instance of the custom horizon object to calculate horizon altitude based on a given azimuth out of a NINA-standard file that specifies the horizon
-        /// The Horizon file must consist of a list of azimuth and alitutde pairs that are separated by a space and line breaks
+        /// The Horizon file must consist of a list of azimuth and alitutde pairs (optionally followed by an upper altitude, see below) that are separated by a space and line breaks
         /// A minimum of two points are required to approximate the horizon
         /// Lines starting with '#' character will be treated as comments and therefore ignored
+        /// An optional third column defines an upper horizon (maximum available altitude, e.g. a balcony).
+        /// Both the lower and the upper value are optional per line, a '-' means "no value at this azimuth".
+        /// Every column is interpolated independently from the lines that provide a value for it.
         /// </summary>
         /// <example>
         /// # File Example
@@ -121,25 +157,47 @@ namespace NINA.Core.Model {
         /// 270 20
         /// 360 10
         /// </example>
+        /// <example>
+        /// # Azimuth Lower Upper
+        /// 0   12  -
+        /// 140 -   60
+        /// 160 28  70
+        /// 200 30  -
+        /// </example>
         /// <param name="filePath">The file pointing to the horizon file</param>
         /// <returns>An instance of CustomHorizon</returns>
         public static CustomHorizon FromReader_Standard(TextReader sr) {
             var horizonMap = new SortedDictionary<double, double>();
+            var upperMap = new SortedDictionary<double, double>();
 
             string line;
             while ((line = sr.ReadLine()?.Trim()) != null) {
                 // Lines starting with # are comments
                 if (!line.StartsWith("#") && !string.IsNullOrEmpty(line)) {
                     var columns = line.Split(new char[] { '\t', ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (columns.Length == 2) {
-                        if (double.TryParse(columns[0], NumberStyles.Any, CultureInfo.InvariantCulture, out var azimuth)) {
-                            if (double.TryParse(columns[1], NumberStyles.Any, CultureInfo.InvariantCulture, out var altitude)) {
-                                horizonMap[azimuth] = altitude;
-                            } else {
-                                Logger.Warning($"Invalid value for altitude {columns[0]}");
+                    if (columns.Length == COLUMNS_LOWER_ONLY || columns.Length == COLUMNS_LOWER_AND_UPPER) {
+                        if (double.TryParse(columns[AZIMUTH_COLUMN], NumberStyles.Any, CultureInfo.InvariantCulture, out var azimuth)) {
+                            var hasLower = columns[LOWER_COLUMN] != NO_VALUE;
+                            var hasUpper = columns.Length == COLUMNS_LOWER_AND_UPPER && columns[UPPER_COLUMN] != NO_VALUE;
+                            if (!hasLower && !hasUpper) {
+                                Logger.Warning($"Invalid line for horizon values {line}");
+                            }
+                            if (hasLower) {
+                                if (double.TryParse(columns[LOWER_COLUMN], NumberStyles.Any, CultureInfo.InvariantCulture, out var altitude)) {
+                                    horizonMap[azimuth] = altitude;
+                                } else {
+                                    Logger.Warning($"Invalid value for altitude {columns[LOWER_COLUMN]}");
+                                }
+                            }
+                            if (hasUpper) {
+                                if (double.TryParse(columns[UPPER_COLUMN], NumberStyles.Any, CultureInfo.InvariantCulture, out var upperAltitude)) {
+                                    upperMap[azimuth] = upperAltitude;
+                                } else {
+                                    Logger.Warning($"Invalid value for upper altitude {columns[UPPER_COLUMN]}");
+                                }
                             }
                         } else {
-                            Logger.Warning($"Invalid value for azimuth {columns[0]}");
+                            Logger.Warning($"Invalid value for azimuth {columns[AZIMUTH_COLUMN]}");
                         }
                     } else {
                         Logger.Warning($"Invalid line for horizon values {line}");
@@ -147,8 +205,17 @@ namespace NINA.Core.Model {
                 }
             }
 
-            GroomHorizonData(horizonMap);
-            return new CustomHorizon(horizonMap);
+            CustomHorizon upper = null;
+            if (upperMap.Count > 0) {
+                GroomHorizonData(upperMap);
+                upper = new CustomHorizon(upperMap);
+            }
+
+            // A file that only defines upper values has no lower horizon. Without any upper values the usual validation applies.
+            if (horizonMap.Count > 0 || upper == null) {
+                GroomHorizonData(horizonMap);
+            }
+            return new CustomHorizon(horizonMap, upper);
         }
 
         public static CustomHorizon FromReader_MW4(StreamReader sr) {

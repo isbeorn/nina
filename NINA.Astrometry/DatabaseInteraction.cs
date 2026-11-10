@@ -426,9 +426,17 @@ namespace NINA.Astrometry {
             return GetDeepSkyObjects(null as Func<SkyObjectBase, Task<BitmapSource>>, horizon, searchParams, token);
         }
 
-        public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
+        public Task<List<DeepSkyObject>> GetDeepSkyObjects(
             Func<SkyObjectBase, Task<BitmapSource>> imageFactory,
             CustomHorizon horizon,
+            DeepSkyObjectSearchParams searchParams,
+            CancellationToken token) {
+            return GetDeepSkyObjects(imageFactory, SkyWindow.From(horizon), searchParams, token);
+        }
+
+        public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
+            Func<SkyObjectBase, Task<BitmapSource>> imageFactory,
+            SkyWindow skyWindow,
             DeepSkyObjectSearchParams searchParams,
             CancellationToken token) {
             using (MyStopWatch.Measure()) {
@@ -583,7 +591,7 @@ namespace NINA.Astrometry {
                             var row = group.First();
                             var id = row.id;
                             var coords = new Coordinates(row.ra, row.dec, Epoch.J2000, Coordinates.RAType.Degrees);
-                            var dso = new DeepSkyObject(row.id, coords, imageFactory, horizon);
+                            var dso = new DeepSkyObject(row.id, coords, imageFactory, skyWindow);
 
                             dso.DSOType = row.dsotype;
 

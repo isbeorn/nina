@@ -110,8 +110,14 @@ namespace NINA.Profile {
             set {
                 horizon = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(SkyWindow));
             }
         }
+
+        /// <summary>
+        /// Lower horizon and the optional upper horizon from the third column of the horizon file
+        /// </summary>
+        public SkyWindow SkyWindow => SkyWindow.From(horizon);
 
         private string observer;
 

@@ -189,6 +189,11 @@ This allows you to safely return to a stable release if needed.
   - Plugins, Imaging and Sequencer now use matching horizontal progress bars while loading.
 - **Sequencer**
   - Each intstruction container now has a colored border on the left side to better differentiate between them. This can be disabled in Options > Imaging > Sequence > Colored Container Borders
+- **Upper Horizon**
+  - The horizon file can now optionally define an upper horizon (maximum available altitude, e.g. a balcony) in a third column: `azimuth lower upper`. Both values are optional per line, a `-` means no value at that azimuth, and each column is interpolated independently. Files with two columns work as before.
+  - A target is available between the lower and the upper horizon. They are shown in the altitude charts, used by the Sky Atlas filter and by `Wait until Above horizon` / `Loop while Altitude Above Horizon`.
+  - Both instructions have a separate `Upper offset` (default 0°) as safety margin below the upper horizon. It is only shown if an upper horizon is defined. The existing `Offset` keeps applying to the lower horizon only.
+  - Horizon files that contain the upper column cannot be loaded by earlier N.I.N.A. versions.
 - **Sky Atlas Improvements**  
   - Deep sky objects can now be filtered and sorted by their upper transit time
 - **Framing Assistant Improvements** 

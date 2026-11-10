@@ -102,8 +102,16 @@ namespace NINA.Astrometry {
             : this(id, coords, null as Func<SkyObjectBase, Task<BitmapSource>>, customHorizon) {
         }
 
+        public DeepSkyObject(string id, Coordinates coords, SkyWindow skyWindow)
+            : this(id, coords, null as Func<SkyObjectBase, Task<BitmapSource>>, skyWindow) {
+        }
+
         public DeepSkyObject(string id, Coordinates coords, Func<SkyObjectBase, Task<BitmapSource>> imageFactory, CustomHorizon customHorizon)
-            : base(id, imageFactory, customHorizon) {
+            : this(id, coords, imageFactory, SkyWindow.From(customHorizon)) {
+        }
+
+        public DeepSkyObject(string id, Coordinates coords, Func<SkyObjectBase, Task<BitmapSource>> imageFactory, SkyWindow skyWindow)
+            : base(id, imageFactory, skyWindow) {
             _coordinates = coords;
             Moon = new MoonInfo(_coordinates);
             DeepSkyObjectDailyRefresher.Instance.Register(this);
@@ -164,6 +172,10 @@ namespace NINA.Astrometry {
 
             Altitudes.Clear();
             Horizon.Clear();
+            UpperHorizon.Clear();
+
+            var needLower = skyWindow?.HasLower == true;
+            var needUpper = skyWindow?.HasUpper == true;
 
             var siderealTime = AstroUtil.GetLocalSiderealTime(start, _longitude);
             var hourAngle = AstroUtil.GetHourAngle(siderealTime, Coordinates.RA);
@@ -174,10 +186,18 @@ namespace NINA.Astrometry {
 
                 Altitudes.Add(new DataPoint(DateTimeAxis.ToDouble(start), altitude));
 
-                if (customHorizon != null) {
+                if (needLower || needUpper) {
                     var azimuth = AstroUtil.GetAzimuth(degAngle, altitude, _latitude, Coordinates.Dec);
-                    var horizonAltitude = customHorizon.GetAltitude(azimuth);
-                    Horizon.Add(new DataPoint(DateTimeAxis.ToDouble(start), horizonAltitude));
+                    if (needLower) {
+                        var horizonAltitude = skyWindow.GetLower(azimuth);
+                        Horizon.Add(new DataPoint(DateTimeAxis.ToDouble(start), horizonAltitude));
+                    }
+
+                    // Only evaluated if an upper horizon is defined as this method is called very often
+                    if (needUpper) {
+                        var upperAltitude = skyWindow.GetUpper(azimuth);
+                        UpperHorizon.Add(new DataPoint(DateTimeAxis.ToDouble(start), upperAltitude));
+                    }
                 }
 
                 start = start.AddHours(0.1);

@@ -173,6 +173,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             clone.PositionAngleExpression = new Expression(original.PositionAngleExpression, clone.Parent, clone.PositionAngleExpressionValidator);
             clone.Coordinates = original.Coordinates?.Clone();
             clone.OffsetExpression = new Expression(original.OffsetExpression, clone.Parent, clone.OffsetExpressionValidator);
+            clone.UpperOffsetExpression = new Expression(original.UpperOffsetExpression, clone.Parent, clone.UpperOffsetExpressionValidator);
         }
 
         [IsExpression(Default = 0, Range = [0, 24], HasValidator = true, ValidateWhen = nameof(UsesStandaloneCoordinates))]
@@ -211,6 +212,21 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         partial void OffsetExpressionValidator(Expression expr) {
             if (expr.Error == null && Data != null) {
                 Data.Offset = expr.Value;
+            }
+        }
+
+        /// <summary>
+        /// Signed safety margin below the upper horizon: the target has to stay at or below [upper horizon] - UpperOffset,
+        /// so a positive value lowers the limit and a negative value raises it.
+        /// Independent of <see cref="Offset"/>, which only applies to the lower horizon.
+        /// Only used by instructions that wait for a sky window (e.g. WaitUntilAboveHorizon).
+        /// </summary>
+        [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true)]
+        public partial double UpperOffset { get; set; }
+
+        partial void UpperOffsetExpressionValidator(Expression expr) {
+            if (expr.Error == null && Data != null) {
+                Data.UpperOffset = expr.Value;
             }
         }
 

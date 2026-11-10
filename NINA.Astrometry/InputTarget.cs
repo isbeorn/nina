@@ -36,10 +36,13 @@ namespace NINA.Astrometry {
             RaiseCoordinatesChanged();
         }
 
-        public InputTarget(Angle latitude, Angle longitude, CustomHorizon horizon) {
+        public InputTarget(Angle latitude, Angle longitude, CustomHorizon horizon) : this(latitude, longitude, SkyWindow.From(horizon)) {
+        }
+
+        public InputTarget(Angle latitude, Angle longitude, SkyWindow skyWindow) {
             this.latitude = latitude;
             this.longitude = longitude;
-            DeepSkyObject = new DeepSkyObject(string.Empty, new Coordinates(Angle.Zero, Angle.Zero, Epoch.J2000), string.Empty, horizon);
+            DeepSkyObject = new DeepSkyObject(string.Empty, new Coordinates(Angle.Zero, Angle.Zero, Epoch.J2000), skyWindow);
             DeepSkyObject.SetDateAndPosition(NighttimeCalculator.GetReferenceDate(DateTime.Now), latitude.Degree, longitude.Degree);
             InputCoordinates = new InputCoordinates();
         }

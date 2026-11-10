@@ -124,6 +124,14 @@
                     TrackerFormatString="X: {2:HH:mm}h&#x0a;Y: {4:0.00}&#176;"
                     Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
 
+                <oxy:AreaSeries
+                    ConstantY2="90"
+                    DataFieldX="Key"
+                    DataFieldY="Value"
+                    ItemsSource="{Binding UpperHorizon}"
+                    TrackerFormatString="X: {2:HH:mm}h&#x0a;Y: {4:0.00}&#176;"
+                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
+
 
                 <oxy:AreaSeries
                     DataFieldX="Key"

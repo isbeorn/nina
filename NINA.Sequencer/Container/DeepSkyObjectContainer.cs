@@ -91,7 +91,7 @@ namespace NINA.Sequencer.Container {
                 this, static (owner, sender, args) => owner.Target_OnCoordinatesChanged(sender, args)).Handle;
             Task.Run(() => NighttimeData = nighttimeCalculator.Calculate());
             ExposureInfoList = new AsyncObservableCollection<ExposureInfo>();
-            Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
+            Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.SkyWindow);
             CoordsToFramingCommand = new GalaSoft.MvvmLight.Command.RelayCommand(SendCoordinatesToFraming);
             CoordsFromPlanetariumCommand = new GalaSoft.MvvmLight.Command.RelayCommand(GetCoordsFromPlanetarium);
             // Bind the weak command to the container, not a temporary constructor closure.
@@ -117,7 +117,7 @@ namespace NINA.Sequencer.Container {
         }
 
         private void ProfileService_HorizonChanged(object sender, EventArgs e) {
-            Target?.DeepSkyObject?.SetCustomHorizon(profileService.ActiveProfile.AstrometrySettings.Horizon);
+            Target?.DeepSkyObject?.SetSkyWindow(profileService.ActiveProfile.AstrometrySettings.SkyWindow);
         }
 
         private void ProfileService_LocationChanged(object sender, EventArgs e) {
@@ -198,7 +198,7 @@ namespace NINA.Sequencer.Container {
                 Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem)),
                 Triggers = new ObservableCollection<ISequenceTrigger>(Triggers.Select(t => t.Clone() as ISequenceTrigger)),
                 Conditions = new ObservableCollection<ISequenceCondition>(Conditions.Select(t => t.Clone() as ISequenceCondition)),
-                Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon),
+                Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.SkyWindow),
                 ExposureInfoListExpanded = ExposureInfoListExpanded,
                 ExposureInfoList = new AsyncObservableCollection<ExposureInfo>(ExposureInfoList)
             };
@@ -229,7 +229,7 @@ namespace NINA.Sequencer.Container {
 
         private async Task<bool> CoordsToFraming() {
             if (Target.DeepSkyObject?.Coordinates != null) {
-                var dso = new DeepSkyObject(Target.DeepSkyObject.Name, Target.DeepSkyObject.Coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
+                var dso = new DeepSkyObject(Target.DeepSkyObject.Name, Target.DeepSkyObject.Coordinates, profileService.ActiveProfile.AstrometrySettings.SkyWindow);
                 dso.RotationPositionAngle = Target.PositionAngle;
                 applicationMediator.ChangeTab(ApplicationTab.FRAMINGASSISTANT);
                 return await framingAssistantVM.SetCoordinates(dso);

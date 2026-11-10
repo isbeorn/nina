@@ -28,11 +28,14 @@ namespace NINA.Astrometry.Interfaces {
         DataPoint MaxAltitude { get; }
         List<DataPoint> Altitudes { get; }
         List<DataPoint> Horizon { get; }
+        // Default implementations keep existing implementors of this interface (e.g. in plugins) compiling
+        List<DataPoint> UpperHorizon => new List<DataPoint>();
         List<string> AlsoKnownAs { get; set; }
         bool DoesTransitSouth { get; }
         BitmapSource Image { get; }
 
         void SetDateAndPosition(DateTime start, double latitude, double longitude);
         void SetCustomHorizon(CustomHorizon customHorizon);
+        void SetSkyWindow(SkyWindow skyWindow) => SetCustomHorizon(skyWindow?.Lower);
     }
 }

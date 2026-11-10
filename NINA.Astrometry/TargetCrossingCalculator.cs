@@ -57,6 +57,17 @@ namespace NINA.Astrometry {
 
         internal CustomHorizon Horizon { get; }
 
+        /// <summary>
+        /// Optional upper horizon. If set, the target has to stay at or below it (minus <see cref="UpperOffset"/> as a safety margin)
+        /// to be inside the available sky. Not used for the setting only comparison.
+        /// </summary>
+        internal CustomHorizon Upper { get; }
+
+        /// <summary>
+        /// Safety margin below the upper horizon. Independent of <see cref="Offset"/>, which only applies to the lower horizon.
+        /// </summary>
+        internal double UpperOffset { get; }
+
         internal double Offset { get; }
 
         internal TargetCrossingComparison Comparison { get; }
@@ -68,7 +79,9 @@ namespace NINA.Astrometry {
             double elevation,
             CustomHorizon horizon,
             double offset,
-            TargetCrossingComparison comparison) {
+            TargetCrossingComparison comparison,
+            CustomHorizon upper = null,
+            double upperOffset = 0) {
             var normalized = double.IsFinite(coordinates.RADegrees) && double.IsFinite(coordinates.Dec) && Math.Abs(coordinates.Dec) <= 90
                 ? coordinates.Transform(Epoch.J2000) : coordinates;
             rightAscension = normalized.RARadians;
@@ -78,6 +91,8 @@ namespace NINA.Astrometry {
             Longitude = longitude;
             Elevation = elevation;
             Horizon = horizon;
+            Upper = upper;
+            UpperOffset = upperOffset;
             Offset = offset;
             Comparison = comparison;
         }
@@ -90,20 +105,37 @@ namespace NINA.Astrometry {
                 && Longitude == other.Longitude
                 && Elevation == other.Elevation
                 && ReferenceEquals(Horizon, other.Horizon)
+                && ReferenceEquals(Upper, other.Upper)
+                && UpperOffset == other.UpperOffset
                 && Offset == other.Offset
                 && Comparison == other.Comparison;
         }
 
         internal double TargetAltitude(TargetPosition position) => Offset + (Horizon?.GetAltitude(position.Azimuth) ?? 0);
 
+        /// <summary>
+        /// Upper horizon at the position's azimuth minus <see cref="UpperOffset"/>. 90 without an upper horizon.
+        /// </summary>
+        internal double UpperAltitude(TargetPosition position) {
+            if (Upper == null) {
+                return SkyWindow.DefaultUpperAltitude;
+            }
+
+            return Upper.GetAltitude(position.Azimuth) - UpperOffset;
+        }
+
+        private bool IsAboveUpper(TargetPosition position) => Upper != null && position.Altitude > UpperAltitude(position);
+
         internal bool Qualifies(TargetPosition position) {
             var difference = position.Altitude - TargetAltitude(position);
 
+            // The "above" comparisons mean "inside the available sky". The "below" comparisons are their counterpart
+            // and therefore also qualify when the target is above the upper horizon.
             return Comparison switch {
-                TargetCrossingComparison.AboveInclusive => difference >= 0,
-                TargetCrossingComparison.AboveStrict => difference > 0,
-                TargetCrossingComparison.BelowInclusive => difference <= 0,
-                TargetCrossingComparison.BelowStrict => difference < 0,
+                TargetCrossingComparison.AboveInclusive => difference >= 0 && !IsAboveUpper(position),
+                TargetCrossingComparison.AboveStrict => difference > 0 && !IsAboveUpper(position),
+                TargetCrossingComparison.BelowInclusive => difference <= 0 || IsAboveUpper(position),
+                TargetCrossingComparison.BelowStrict => difference < 0 || IsAboveUpper(position),
                 _ => !position.IsRising && difference < 0
             };
         }
@@ -143,7 +175,9 @@ namespace NINA.Astrometry {
             && double.IsFinite(Longitude)
             && double.IsFinite(Elevation)
             && double.IsFinite(Offset)
-            && (Horizon == null || Horizon.HasFiniteSearchVertices);
+            && double.IsFinite(UpperOffset)
+            && (Horizon == null || Horizon.HasFiniteSearchVertices)
+            && (Upper == null || Upper.HasFiniteSearchVertices);
     }
 
     internal sealed class TargetCrossingCalculator {
@@ -186,7 +220,9 @@ namespace NINA.Astrometry {
             }
 
             var end = utc.AddHours(24);
-            if (request.Horizon == null || request.Horizon.FlatSearchAltitude.HasValue) {
+            // The flat seed only locates the crossing of the lower horizon. With an upper horizon the target can
+            // also become available by dropping below it, so the chronological search is required.
+            if (request.Upper == null && (request.Horizon == null || request.Horizon.FlatSearchAltitude.HasValue)) {
                 var seeded = FindFlat(utc, end, first.Value);
                 if (seeded.HasValue) {
                     return seeded.Value;
@@ -365,11 +401,22 @@ namespace NINA.Astrometry {
 
             var minimum = Math.Max(-90, position.Altitude - radius) - maxHorizon - request.Offset;
             var maximum = Math.Min(90, position.Altitude + radius) - minHorizon - request.Offset;
+
+            // Distances to the upper limit (altitude - (upper - offset)) over the reachable area.
+            // Positive: above the upper horizon everywhere, negative: below it everywhere.
+            var aboveUpperEverywhere = false;
+            var belowUpperEverywhere = request.Upper == null;
+            if (request.Upper != null) {
+                request.Upper.GetSearchAltitudeBounds(position.Azimuth, azimuthRadius, out var minUpper, out var maxUpper);
+                aboveUpperEverywhere = Math.Max(-90, position.Altitude - radius) - maxUpper + request.UpperOffset > 0;
+                belowUpperEverywhere = Math.Min(90, position.Altitude + radius) - minUpper + request.UpperOffset <= 0;
+            }
+
             return request.Comparison switch {
-                TargetCrossingComparison.AboveInclusive => maximum < 0,
-                TargetCrossingComparison.AboveStrict => maximum <= 0,
-                TargetCrossingComparison.BelowInclusive => minimum > 0,
-                TargetCrossingComparison.BelowStrict => minimum >= 0,
+                TargetCrossingComparison.AboveInclusive => maximum < 0 || aboveUpperEverywhere,
+                TargetCrossingComparison.AboveStrict => maximum <= 0 || aboveUpperEverywhere,
+                TargetCrossingComparison.BelowInclusive => minimum > 0 && belowUpperEverywhere,
+                TargetCrossingComparison.BelowStrict => minimum >= 0 && belowUpperEverywhere,
                 _ => minimum >= 0 || (!reachesPole && position.Azimuth - azimuthRadius >= 0 && position.Azimuth + azimuthRadius < 180)
             };
         }

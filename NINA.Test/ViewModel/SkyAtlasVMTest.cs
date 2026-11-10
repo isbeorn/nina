@@ -14,6 +14,7 @@
 
 using FluentAssertions;
 using NINA.Astrometry;
+using NINA.Core.Model;
 using NINA.ViewModel;
 using NUnit.Framework;
 using System;
@@ -37,7 +38,7 @@ namespace NINA.Test.ViewModel {
                 referenceDate.AddHours(3),
                 latitude: 0,
                 siderealTimeAtReferenceDate: 0,
-                customHorizon: null,
+                skyWindow: null,
                 minimumDuration: 2,
                 token: CancellationToken.None);
 
@@ -57,12 +58,48 @@ namespace NINA.Test.ViewModel {
                 referenceDate.AddHours(10),
                 latitude: 0,
                 siderealTimeAtReferenceDate: 0,
-                customHorizon: null,
+                skyWindow: null,
                 minimumDuration: 1,
                 token: CancellationToken.None);
 
             result.Should().BeFalse();
             GetAltitudeCache(dso).Should().BeNull();
+        }
+
+        // The equator object at latitude 0 transits at the zenith at the reference time, so its altitude is 90 - |hour angle|
+        // and it is above an upper horizon of 60 degrees during the first two hours only.
+        private static bool IsAvailableForDuration(SkyWindow? skyWindow, double windowHours, double minimumDuration) {
+            var referenceDate = new DateTime(2024, 1, 1, 12, 0, 0, DateTimeKind.Local);
+            var dso = new DeepSkyObject("Equator", new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Hours), null);
+
+            return SkyAtlasVM.IsAboveHorizonForDuration(
+                dso,
+                referenceDate,
+                referenceDate,
+                referenceDate.AddHours(windowHours),
+                latitude: 0,
+                siderealTimeAtReferenceDate: 0,
+                skyWindow: skyWindow!,
+                minimumDuration: minimumDuration,
+                token: CancellationToken.None);
+        }
+
+        [Test]
+        public void IsAboveHorizonForDuration_FullInterval_RejectsObjectAboveTheUpperHorizon() {
+            IsAvailableForDuration(null, windowHours: 3, minimumDuration: double.MaxValue).Should().BeTrue();
+
+            IsAvailableForDuration(HorizonTestData.Dual(null, 60), windowHours: 3, minimumDuration: double.MaxValue).Should().BeFalse();
+        }
+
+        [Test]
+        public void IsAboveHorizonForDuration_RequiresTheDurationBelowTheUpperHorizon() {
+            var upper = HorizonTestData.Dual(null, 60);
+
+            // Without the upper horizon the object is up for the whole window
+            IsAvailableForDuration(null, windowHours: 4, minimumDuration: 3).Should().BeTrue();
+            // With it only the last two of the four hours count
+            IsAvailableForDuration(upper, windowHours: 4, minimumDuration: 3).Should().BeFalse();
+            IsAvailableForDuration(upper, windowHours: 4, minimumDuration: 1).Should().BeTrue();
         }
 
         private static object? GetAltitudeCache(DeepSkyObject dso) {
