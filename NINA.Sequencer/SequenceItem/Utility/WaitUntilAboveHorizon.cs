@@ -47,6 +47,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public WaitUntilAboveHorizon(IProfileService profileService) : base() {
             Data = new WaitLoopData(profileService, true, GetType().Name);
             Data.Offset = 30;
+            // An explicit definition instead of the grey default hint
+            UpperOffsetExpression.Definition = "0";
             BindEffectiveCoordinates();
             ProfileService = profileService;
         }
@@ -62,10 +64,24 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             clone.Coordinates = clone.Data.Coordinates;
             return clone;
         }
+
         [OnDeserialized]
         public new void OnDeserialized(StreamingContext context) {
             if (OffsetExpression.Definition.Length == 0) {
                 OffsetExpression.Definition = Data.Offset.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the numeric offsets consumed by the shared altitude calculator from their expressions
+        /// </summary>
+        private void RefreshOffsets() {
+            if (OffsetExpression.Definition.Length > 0) {
+                _ = Offset;
+            }
+
+            if (UpperOffsetExpression.Definition.Length > 0) {
+                _ = UpperOffset;
             }
         }
 
@@ -75,16 +91,18 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             do {
-                if (OffsetExpression.Definition.Length > 0) {
-                    _ = Offset;
-                }
+                RefreshOffsets();
 
                 var valid = Data.UpdateCurrentTargetPosition(Data.Coordinates.Coordinates.DateTime.Now);
+
+                var aboveUpperHorizon = valid && Data.HasUpperHorizon && Data.CurrentAltitude > Data.UpperTargetAltitude;
                 progress?.Report(new ApplicationStatus() {
-                    Status = string.Format(Loc.Instance["Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_Progress"], Math.Round(Data.CurrentAltitude, 2), Math.Round(Data.TargetAltitude, 2))
+                    Status = aboveUpperHorizon
+                        ? string.Format(Loc.Instance["Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_ProgressUpper"], Math.Round(Data.CurrentAltitude, 2), Math.Round(Data.UpperTargetAltitude, 2))
+                        : string.Format(Loc.Instance["Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_Progress"], Math.Round(Data.CurrentAltitude, 2), Math.Round(Data.TargetAltitude, 2))
                 });
 
-                if (valid && Data.CurrentAltitude > Data.TargetAltitude) {
+                if (valid && Data.CurrentAltitude > Data.TargetAltitude && !aboveUpperHorizon) {
                     Logger.Info("WaitUntilAboveHorizon finished: " + Data.CurrentAltitude + " > " + Data.TargetAltitude + " Offset = " + Data.Offset);
                     break;
                 } else {
@@ -99,11 +117,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public void CalculateExpectedTime() {
-            if (OffsetExpression.Definition.Length > 0) {
-                _ = Offset;
-            }
+            CalculateTargetCrossing();
+        }
 
-            Data.CalculateTargetExpectedTime(DateTime.Now, TargetCrossingComparison.AboveStrict);
+        private TargetCrossingResult CalculateTargetCrossing() {
+            RefreshOffsets();
+
+            return Data.CalculateTargetExpectedTime(DateTime.Now, TargetCrossingComparison.AboveStrict);
         }
 
 
@@ -118,9 +138,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public bool Validate() {
             ResolveEffectiveCoordinates();
-            if (OffsetExpression.Definition.Length > 0) {
-                _ = Offset;
-            }
+            RefreshOffsets();
             Issues.Clear();
 
             var maxAlt = AstroUtil.GetAltitude(0, Data.Latitude, Data.Coordinates.Coordinates.Dec);
@@ -130,10 +148,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 Issues.Add(Loc.Instance["LblUnreachableAltitudeForHorizon"]);
                 Data.ExpectedTime = "--";
             } else {
-                CalculateExpectedTime();
+                var crossing = CalculateTargetCrossing();
+                if (Data.HasUpperHorizon && crossing.Status == TargetCrossingStatus.NoEvent) {
+                    // Within the next 24 hours the target is never between the lower and the upper horizon
+                    Issues.Add(Loc.Instance["LblUnreachableTargetForSkyWindow"]);
+                    Data.ExpectedTime = "--";
+                }
             }
 
-            Expression.ValidateExpressions(Issues, OffsetExpression);
+            Expression.ValidateExpressions(Issues, OffsetExpression, UpperOffsetExpression);
             if (!Inherited) {
                 Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
             }

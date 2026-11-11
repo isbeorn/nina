@@ -437,11 +437,11 @@ namespace NINA.ViewModel {
                         return Task.FromResult(image);
                     };
                     
-                    var customHorizon = profileService.ActiveProfile.AstrometrySettings.Horizon;
+                    var skyWindow = profileService.ActiveProfile.AstrometrySettings.SkyWindow;
 
                     IEnumerable<DeepSkyObject> result = await db.GetDeepSkyObjects(
                         imageFactory,
-                        customHorizon,
+                        skyWindow,
                         searchParams,
                         _searchTokenSource.Token
                     );
@@ -481,7 +481,7 @@ namespace NINA.ViewModel {
                                     throughDate,
                                     latitude,
                                     siderealTimeAtReferenceDate,
-                                    customHorizon,
+                                    skyWindow,
                                     minimumDuration,
                                     _searchTokenSource.Token);
                             };
@@ -614,7 +614,7 @@ namespace NINA.ViewModel {
             DateTime throughDate,
             double latitude,
             double siderealTimeAtReferenceDate,
-            CustomHorizon customHorizon,
+            SkyWindow skyWindow,
             double minimumDuration,
             CancellationToken token) {
             // Without coordinates there is no RA/Dec to sample, so the candidate cannot pass.
@@ -638,11 +638,11 @@ namespace NINA.ViewModel {
             var hourAngleAtReferenceDate = AstroUtil.GetHourAngle(siderealTimeAtReferenceDate, coords.RA);
             if (minimumDuration == double.MaxValue) {
                 // "Full selected interval" mode: every sampled point in the selected window must
-                // remain above the configured horizon.
+                // remain above the lower and (if configured) at or below the upper horizon.
                 for (var sample = firstSample; sample <= lastSample; sample++) {
                     token.ThrowIfCancellationRequested();
-                    var (altitude, horizonAltitude) = GetAltitudeAndHorizonAltitudeAtSample(coords, latitude, customHorizon, hourAngleAtReferenceDate, sample);
-                    if (altitude <= horizonAltitude) {
+                    var (altitude, lowerAltitude, upperAltitude) = GetAltitudeAndLimitsAtSample(coords, latitude, skyWindow, hourAngleAtReferenceDate, sample);
+                    if (altitude <= lowerAltitude || altitude > upperAltitude) {
                         return false;
                     }
                 }
@@ -662,10 +662,10 @@ namespace NINA.ViewModel {
             for (var sample = firstSample; sample <= lastSample; sample++) {
                 token.ThrowIfCancellationRequested();
                 var sampleTime = referenceDate.AddHours(sample * ALTITUDE_SAMPLE_HOURS);
-                var (altitude, horizonAltitude) = GetAltitudeAndHorizonAltitudeAtSample(coords, latitude, customHorizon, hourAngleAtReferenceDate, sample);
+                var (altitude, lowerAltitude, upperAltitude) = GetAltitudeAndLimitsAtSample(coords, latitude, skyWindow, hourAngleAtReferenceDate, sample);
 
-                if (altitude < horizonAltitude) {
-                    // Falling below the horizon breaks the current run; use this sample as the
+                if (altitude < lowerAltitude || altitude > upperAltitude) {
+                    // Falling below the lower or rising above the upper horizon breaks the current run; use this sample as the
                     // reset point for the next above-horizon candidate duration.
                     firstAboveHorizon = sampleTime;
                     continue;
@@ -680,23 +680,25 @@ namespace NINA.ViewModel {
             return false;
         }
 
-        private static (double Altitude, double HorizonAltitude) GetAltitudeAndHorizonAltitudeAtSample(
+        private static (double Altitude, double LowerAltitude, double UpperAltitude) GetAltitudeAndLimitsAtSample(
             Coordinates coords,
             double latitude,
-            CustomHorizon customHorizon,
+            SkyWindow skyWindow,
             double hourAngleAtReferenceDate,
             int sample) {
             var hourAngle = hourAngleAtReferenceDate + (sample * ALTITUDE_SAMPLE_HOURS);
             var hourAngleDegrees = AstroUtil.HoursToDegrees(hourAngle);
             var altitude = AstroUtil.GetAltitude(hourAngleDegrees, latitude, coords.Dec);
-            var horizonAltitude = 0d;
+            var lowerAltitude = SkyWindow.DefaultLowerAltitude;
+            var upperAltitude = SkyWindow.DefaultUpperAltitude;
 
-            if (customHorizon != null) {
+            if (skyWindow != null && (skyWindow.HasLower || skyWindow.HasUpper)) {
                 var azimuth = AstroUtil.GetAzimuth(hourAngleDegrees, altitude, latitude, coords.Dec);
-                horizonAltitude = customHorizon.GetAltitude(azimuth);
+                lowerAltitude = skyWindow.GetLower(azimuth);
+                upperAltitude = skyWindow.GetUpper(azimuth);
             }
 
-            return (altitude, horizonAltitude);
+            return (altitude, lowerAltitude, upperAltitude);
         }
 
         private void InitializeElevationFilters() {

@@ -64,11 +64,14 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 Observer.Elevation,
                 UseCustomHorizon ? Horizon : null,
                 Offset,
-                comparison);
+                comparison,
+                HasUpperHorizon ? SkyWindow.Upper : null,
+                UpperOffset);
 
         private void ClearCurrentTargetPosition() {
             CurrentAltitude = double.NaN;
             TargetAltitude = double.NaN;
+            UpperTargetAltitude = SkyWindow.DefaultUpperAltitude;
             IsRising = false;
         }
 
@@ -84,6 +87,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             CurrentAltitude = current.Altitude;
             IsRising = current.IsRising;
             TargetAltitude = request.TargetAltitude(current);
+            UpperTargetAltitude = request.UpperAltitude(current);
         }
 
         internal bool UpdateCurrentTargetPosition(DateTime time) {
@@ -167,7 +171,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             this.profileService = profileService;
             Latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
             Longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
-            Horizon = profileService.ActiveProfile.AstrometrySettings.Horizon;
+            // Snapshot of the configured horizons at creation time (same behavior as before for the lower horizon).
+            // Falls back to the plain lower horizon if the settings do not provide a sky window
+            var astrometrySettings = profileService.ActiveProfile.AstrometrySettings;
+            SkyWindow = astrometrySettings.SkyWindow ?? SkyWindow.From(astrometrySettings.Horizon);
             Elevation = profileService.ActiveProfile.AstrometrySettings.Elevation;
             Observer = new ObserverInfo() { Latitude = Latitude, Longitude = Longitude, Elevation = Elevation };
             ExpectedDateTime = DateTime.MinValue;
@@ -186,6 +193,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             return new WaitLoopData(this) {
                 Coordinates = Coordinates == null ? new InputCoordinates() : Coordinates.Clone(),
                 Offset = Offset,
+                UpperOffset = UpperOffset,
                 Comparator = Comparator,
                 Name = Name,
                 UseCustomHorizon = UseCustomHorizon
@@ -238,7 +246,60 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public double Latitude { get; private set; }
         public double Longitude { get; private set; }
         public double Elevation { get; private set; }
-        public CustomHorizon Horizon { get; set; }
+
+        /// <summary>
+        /// Combination of the lower and the optional upper horizon.
+        /// </summary>
+        public SkyWindow SkyWindow { get; set; }
+
+        /// <summary>
+        /// Lower horizon of the sky window. Setting a horizon replaces the whole window: the horizon itself and the
+        /// upper horizon embedded in it (none for a horizon without upper values), like every other entry point does.
+        /// </summary>
+        public CustomHorizon Horizon {
+            get => SkyWindow?.Lower;
+            set => SkyWindow = SkyWindow.From(value);
+        }
+
+        /// <summary>
+        /// True if the custom horizon is used and an upper horizon limits the available sky
+        /// </summary>
+        public bool HasUpperHorizon => UseCustomHorizon && SkyWindow?.HasUpper == true;
+
+        private double upperOffset;
+
+        /// <summary>
+        /// Safety margin below the upper horizon: the target has to stay at or below [upper horizon] - UpperOffset.
+        /// Independent of <see cref="Offset"/>, which only applies to the lower horizon. Defaults to 0 (the upper horizon as it is).
+        /// Not serialized: the owning instruction persists it as an expression and synchronizes the value here.
+        /// </summary>
+        public double UpperOffset {
+            get => upperOffset;
+            set {
+                if (upperOffset == value) {
+                    return;
+                }
+
+                upperOffset = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double upperTargetAltitude = SkyWindow.DefaultUpperAltitude;
+
+        /// <summary>
+        /// Maximum altitude (upper horizon at the target azimuth minus <see cref="UpperOffset"/>). 90 if no upper horizon is used.
+        /// Updated together with <see cref="TargetAltitude"/> by the target position / expected time calculation.
+        /// </summary>
+        public double UpperTargetAltitude {
+            get => upperTargetAltitude;
+            private set {
+                if (upperTargetAltitude != value) {
+                    upperTargetAltitude = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
         public ObserverInfo Observer { get; private set; }
         
         public double TargetAltitude {

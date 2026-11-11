@@ -407,6 +407,14 @@
         <TextBlock VerticalAlignment="Center" Text=" " />
         <TextBlock VerticalAlignment="Center" Text="{Binding TargetAltitude, StringFormat={}{0:0.##}}" />
         <TextBlock VerticalAlignment="Center" Text="°" />
+        <StackPanel Orientation="Horizontal" Visibility="{Binding HasUpperHorizon, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <TextBlock VerticalAlignment="Center" Text=" ≤ " />
+            <TextBlock
+                VerticalAlignment="Center"
+                Text="{Binding UpperTargetAltitude, StringFormat={}{0:0.##}}"
+                ToolTip="{ns:Loc LblUpperHorizonLimit}" />
+            <TextBlock VerticalAlignment="Center" Text="°" />
+        </StackPanel>
         <TextBlock
             Margin="8,0,0,0"
             VerticalAlignment="Center"
@@ -632,6 +640,15 @@
                             VerticalAlignment="Center"
                             Text="&lt;" />
                         <logic:ExprControl Exp="{Binding OffsetExpression}" />
+                    </StackPanel>
+                    <StackPanel
+                        Margin="10,0,0,0"
+                        Orientation="Horizontal"
+                        Visibility="{Binding Data.HasUpperHorizon, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <logic:ExprControl
+                            Exp="{Binding UpperOffsetExpression}"
+                            Label="{ns:Loc LblUpperOffset}"
+                            ToolTip="{ns:Loc LblUpperOffsetTooltip}" />
                     </StackPanel>
                     <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding HasDsoParent}" />
                 </StackPanel>
