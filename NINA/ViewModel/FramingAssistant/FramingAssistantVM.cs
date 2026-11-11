@@ -458,13 +458,14 @@ namespace NINA.ViewModel.FramingAssistant {
                 ImageCacheInfo = Cache.Cache;
                 _selectedImageCacheInfo = (XElement)ImageCacheInfo?.FirstNode ?? null;
 
-                // Load available cache sources
-                var sources = Cache.GetAvailableCacheSources();
-                if (!sources.SequenceEqual(new[] { CacheSkySurvey.Default }))
-                    AvailableCacheSources = sources;
-                else
-                    AvailableCacheSources = null;
-                SelectedCacheSource = CacheSkySurvey.Default;
+                // Sky atlas cache sources are only available when the cache directory is set up with subfolder caches
+                // Keep the previous selection when it is still available
+                var previousSource = _selectedSkyAtlasCacheSource;
+                var sources = Cache.GetSkyAtlasCacheSources();
+                AvailableSkyAtlasCacheSources = sources.Count > 0 ? sources : null;
+                Cache.LoadSkyAtlasCacheSource(previousSource);
+                _selectedSkyAtlasCacheSource = Cache.SelectedSkyAtlasCacheSource;
+                RaisePropertyChanged(nameof(SelectedSkyAtlasCacheSource));
 
                 RaisePropertyChanged(nameof(ImageCacheInfo));
             } catch (Exception ex) {
@@ -955,27 +956,25 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private List<string> _availableCacheSources;
+        private IReadOnlyList<string> _availableSkyAtlasCacheSources;
 
-        public List<string> AvailableCacheSources {
-            get => _availableCacheSources;
+        public IReadOnlyList<string> AvailableSkyAtlasCacheSources {
+            get => _availableSkyAtlasCacheSources;
             set {
-                _availableCacheSources = value;
+                _availableSkyAtlasCacheSources = value;
                 RaisePropertyChanged();
             }
         }
 
-        private string _selectedCacheSource = CacheSkySurvey.Default;
+        private string _selectedSkyAtlasCacheSource;
 
-        public string SelectedCacheSource {
-            get => _selectedCacheSource;
+        public string SelectedSkyAtlasCacheSource {
+            get => _selectedSkyAtlasCacheSource;
             set {
-                if (_selectedCacheSource != value) {
-                    _selectedCacheSource = value;
-                    if (Cache != null) {
-                        Cache.LoadCacheSource(value);
-                        ImageCacheInfo = Cache.GetActiveCacheElement();
-                        RaisePropertyChanged(nameof(ImageCacheInfo));
+                if (_selectedSkyAtlasCacheSource != value) {
+                    _selectedSkyAtlasCacheSource = value;
+                    if (Cache != null && value != null) {
+                        Cache.LoadSkyAtlasCacheSource(value);
                         try {
                             SkyMapAnnotator?.ClearImagesForViewport();
                             SkyMapAnnotator?.UpdateSkyMap();
@@ -1201,11 +1200,6 @@ namespace NINA.ViewModel.FramingAssistant {
                         SkyMapAnnotator.UseCachedImages = IsX64;
                     } else {
                         SkyMapAnnotator.UseCachedImages = false;
-                    }
-
-                    // Load cache from selected source if SKYATLAS is selected
-                    if (FramingAssistantSource == SkySurveySource.SKYATLAS && Cache != null) {
-                        Cache.LoadCacheSource(SelectedCacheSource);
                     }
 
                     if (Cache != null && DSO != null) {
