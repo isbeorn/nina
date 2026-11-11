@@ -60,13 +60,13 @@ namespace NINA.WPF.Base.SkySurvey {
             ArgumentOutOfRangeException.ThrowIfLessThan(maximumEstimatedBytes, 1);
             this.decodedImageCapacity = decodedImageCapacity;
             this.maximumEstimatedBytes = maximumEstimatedBytes;
-            tiles = cache?.Cache?.Elements("Image").Select(element => new ImageTile(
+            tiles = cache?.SkyAtlasCache?.Elements("Image").Select(element => new ImageTile(
                 double.Parse(element.Attribute("RA").Value, CultureInfo.InvariantCulture),
                 double.Parse(element.Attribute("Dec").Value, CultureInfo.InvariantCulture),
                 double.Parse(element.Attribute("FoVW").Value, CultureInfo.InvariantCulture),
                 double.Parse(element.Attribute("FoVH").Value, CultureInfo.InvariantCulture),
                 double.Parse(element.Attribute("Rotation").Value, CultureInfo.InvariantCulture),
-                Path.Combine(cache.framingAssistantCachePath, element.Attribute("FileName").Value))).ToArray()
+                Path.Combine(cache.SkyAtlasCachePath, element.Attribute("FileName").Value))).ToArray()
                 ?? [];
         }
 

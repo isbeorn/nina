@@ -2971,6 +2971,9 @@ This template will be used on startup to initialize the sequence instead of the 
   <data name="LblSkyAtlas" xml:space="preserve">
     <value>Sky Atlas</value>
   </data>
+  <data name="LblSkyAtlasCacheSource" xml:space="preserve">
+    <value>Cache source</value>
+  </data>
   <data name="LblSkyAtlasImageDirectory" xml:space="preserve">
     <value>Sky Atlas Image Directory</value>
   </data>
