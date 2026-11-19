@@ -739,7 +739,7 @@ namespace NINA.ViewModel {
             TransitTimesThrough = new AsyncObservableCollection<KeyValuePair<DateTime, string>>(dates.OrderBy(x => x.Key));
             
             MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(0, Loc.Instance["LblAny"]));
-            for (int i = 10; i <= 80; i += 10) {
+            for (int i = 10; i <= 85; i += 5) {
                 MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(i, i + "°"));
             }
             MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(ALTITUDEABOVEHORIZONFILTER, Loc.Instance["LblAboveHorizon"]));

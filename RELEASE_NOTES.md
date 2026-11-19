@@ -87,6 +87,7 @@ This allows you to safely return to a stable release if needed.
 - Native Nikon and Canon camera drivers can now be configured to use the file format selection, such as FITS or XISF, instead of always saving native camera RAW files.
 - Sky brightness readings in the Weather device windows have been increased from 2 decimal places to 5 so that measurements obtained in low light conditions are adequately displayed.
 - Improved Sky Atlas search performance.
+- The Sky Atlas minimum altitude filter can now be selected in 5° steps up to 85°, instead of 10° steps up to 80°, allowing finer control over which targets a search returns.
 - Added a Utility sequencer instruction that loads a saved Imaging tab layout during a sequence.
 - **Offline framing sky map improvements**
     - All map layers and camera framing rectangles now refresh continuously while dragging, with substantially lower rendering overhead, fewer temporary allocations and bounded decoded-image memory use.
