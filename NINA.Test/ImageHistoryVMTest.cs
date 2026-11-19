@@ -119,6 +119,26 @@ namespace NINA.Test {
         }
 
         [Test]
+        public void AppendAutoFocusPoint_AfterClearingHistoryWithSpecificFilter_RecordsReport() {
+            profileServiceMock.SetupGet(x => x.ActiveProfile).Returns(CreateProfile());
+            var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
+            const string filter = "Red";
+
+            sut.Add(1, "LIGHT");
+            sut.AppendImageProperties(new ImageSavedEventArgs {
+                Filter = filter,
+                MetaData = new ImageMetaData { Image = new ImageParameter { Id = 1 } }
+            });
+            sut.SelectedFilter = filter;
+            sut.PlotClear();
+
+            sut.AppendAutoFocusPoint(new AutoFocusReport { Filter = filter });
+
+            sut.AutoFocusPoints.Should().ContainSingle().Which.AutoFocusPoint.Filter.Should().Be(filter);
+            sut.AutoFocusPointsView.Should().BeEmpty();
+        }
+
+        [Test]
         public void ImageHistory_ClearPlot_Test() {
             var profile = CreateProfile();
             profile.ImageHistorySettings.ImageHistoryLeftSelected = ImageHistoryEnum.HFR;
