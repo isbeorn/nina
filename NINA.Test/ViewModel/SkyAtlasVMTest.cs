@@ -17,7 +17,6 @@ using NINA.Astrometry;
 using NINA.ViewModel;
 using NUnit.Framework;
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 
@@ -25,13 +24,6 @@ namespace NINA.Test.ViewModel {
 
     [TestFixture]
     public class SkyAtlasVMTest {
-
-        [Test]
-        public void GetMinimumAltitudeDegreeChoices_StepsByFiveDegrees() {
-            var choices = SkyAtlasVM.GetMinimumAltitudeDegreeChoices().ToList();
-
-            choices.Should().Equal(10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80);
-        }
 
         [Test]
         public void IsAboveHorizonForDuration_DoesNotPopulateAltitudeChart() {

@@ -605,13 +605,6 @@ namespace NINA.ViewModel {
         private const double ALTITUDE_SAMPLE_HOURS = 0.1;
         private const int ALTITUDE_SAMPLE_COUNT = 240;
 
-        // Exposed so the selectable minimum altitudes can be verified without constructing the view model.
-        internal static IEnumerable<int> GetMinimumAltitudeDegreeChoices() {
-            for (int i = 10; i <= 80; i += 5) {
-                yield return i;
-            }
-        }
-
         // Keep the above-horizon filter aligned with the chart's 0.1h sampling grid without
         // populating SkyObjectBase.Altitudes/Horizon for every search result.
         internal static bool IsAboveHorizonForDuration(
@@ -746,8 +739,8 @@ namespace NINA.ViewModel {
             TransitTimesThrough = new AsyncObservableCollection<KeyValuePair<DateTime, string>>(dates.OrderBy(x => x.Key));
             
             MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(0, Loc.Instance["LblAny"]));
-            foreach (var degrees in GetMinimumAltitudeDegreeChoices()) {
-                MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(degrees, degrees + "°"));
+            for (int i = 10; i <= 80; i += 5) {
+                MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(i, i + "°"));
             }
             MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(ALTITUDEABOVEHORIZONFILTER, Loc.Instance["LblAboveHorizon"]));
 
