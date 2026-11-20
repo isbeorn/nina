@@ -15,6 +15,7 @@
 using NINA.Astrometry;
 using NINA.Core.Utility;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -27,56 +28,153 @@ using System.Xml.Linq;
 namespace NINA.WPF.Base.SkySurvey {
 
     public class CacheSkySurvey {
+        public const string DefaultCacheName = "Default";
+        public const string UserCacheName = "User Cache";
+        private const string CacheInfoFileName = "CacheInfo.xml";
+
         public readonly string framingAssistantCachePath;
-        private string framingAssistantCachInfo;
+        private readonly Dictionary<string, XElement> skyAtlasCaches = new Dictionary<string, XElement>(StringComparer.OrdinalIgnoreCase);
+        private string userCachePath;
+        private string userCacheInfoPath;
 
         public CacheSkySurvey(string framingAssistantCachePath) {
             this.framingAssistantCachePath = framingAssistantCachePath;
-            this.framingAssistantCachInfo = Path.Combine(framingAssistantCachePath, "CacheInfo.xml");
             Initialize();
         }
+
+        /// <summary>
+        /// True when the cache directory contains cache subfolders. In this mode the root directory holds no cache of its own:
+        /// sky atlas caches live in their own subfolders and newly saved images go to the reserved "User Cache" subfolder
+        /// </summary>
+        public bool IsMultiCache { get; private set; }
+
+        /// <summary>
+        /// Name of the subfolder cache that is used for the offline sky map. Null when not in multi cache mode
+        /// </summary>
+        public string SelectedSkyAtlasCacheSource { get; private set; }
 
         private void Initialize() {
             if (!Directory.Exists(framingAssistantCachePath)) {
                 Directory.CreateDirectory(framingAssistantCachePath);
             }
 
-            if (!File.Exists(framingAssistantCachInfo)) {
-                XElement info = new XElement("ImageCacheInfo");
-                info.Save(framingAssistantCachInfo);
-                Cache = info;
-                return;
-            } else {
-                Cache = XElement.Load(framingAssistantCachInfo);
+            skyAtlasCaches.Clear();
+            IsMultiCache = GetCacheSubfolders().Count > 0;
 
-                /* Ensure Backwards compatibility with v1.6.0.2 */
-                var elements = Cache.Elements("Image").Where(x => x.Attribute("Id") == null);
-                foreach (var element in elements) {
-                    element.Add(new XAttribute("Id", Guid.NewGuid()));
+            if (IsMultiCache) {
+                MigrateRootCache();
+                userCachePath = Path.Combine(framingAssistantCachePath, UserCacheName);
+            } else {
+                userCachePath = framingAssistantCachePath;
+            }
+            userCacheInfoPath = Path.Combine(userCachePath, CacheInfoFileName);
+
+            if (File.Exists(userCacheInfoPath)) {
+                Cache = LoadCacheInfo(userCacheInfoPath);
+            } else {
+                Cache = new XElement("ImageCacheInfo");
+                if (!IsMultiCache) {
+                    // The user cache folder of the multi cache mode is only created once an image is saved
+                    Cache.Save(userCacheInfoPath);
                 }
-                elements = Cache.Elements("Image").Where(x => x.Attribute("Source") == null);
-                foreach (var element in elements) {
-                    if (element.Attribute("Rotation").Value != "0") {
-                        element.Add(new XAttribute("Source", nameof(FileSkySurvey)));
-                    } else {
-                        element.Add(new XAttribute("Source", nameof(NASASkySurvey)));
-                    }
-                }
+            }
+
+            var sources = GetSkyAtlasCacheSources();
+            if (!sources.Contains(SelectedSkyAtlasCacheSource, StringComparer.OrdinalIgnoreCase)) {
+                SelectedSkyAtlasCacheSource =
+                    sources.FirstOrDefault(x => string.Equals(x, DefaultCacheName, StringComparison.OrdinalIgnoreCase))
+                    ?? sources.FirstOrDefault();
             }
         }
 
-        public void Clear() {
-            System.IO.DirectoryInfo di = new DirectoryInfo(framingAssistantCachePath);
+        private static XElement LoadCacheInfo(string cacheInfoPath) {
+            var cache = XElement.Load(cacheInfoPath);
 
-            foreach (FileInfo file in di.GetFiles()) {
-                file.Delete();
+            /* Ensure Backwards compatibility with v1.6.0.2 */
+            var elements = cache.Elements("Image").Where(x => x.Attribute("Id") == null);
+            foreach (var element in elements) {
+                element.Add(new XAttribute("Id", Guid.NewGuid()));
             }
-            foreach (DirectoryInfo dir in di.GetDirectories()) {
-                dir.Delete(true);
+            elements = cache.Elements("Image").Where(x => x.Attribute("Source") == null);
+            foreach (var element in elements) {
+                if (element.Attribute("Rotation").Value != "0") {
+                    element.Add(new XAttribute("Source", nameof(FileSkySurvey)));
+                } else {
+                    element.Add(new XAttribute("Source", nameof(NASASkySurvey)));
+                }
+            }
+            return cache;
+        }
+
+        /// <summary>
+        /// Names of all direct subfolders that contain a CacheInfo.xml
+        /// </summary>
+        private List<string> GetCacheSubfolders() {
+            try {
+                return Directory.GetDirectories(framingAssistantCachePath)
+                    .Where(x => File.Exists(Path.Combine(x, CacheInfoFileName)))
+                    .Select(Path.GetFileName)
+                    .OrderBy(x => x, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+            } catch (Exception ex) {
+                Logger.Error("Error scanning cache subfolders", ex);
+                return new List<string>();
+            }
+        }
+
+        /// <summary>
+        /// A cache is either a single root cache or a set of subfolder caches, but never a mix.
+        /// When subfolder caches exist next to a root cache with entries, all direct root files are moved into a new "Default" subfolder
+        /// </summary>
+        private void MigrateRootCache() {
+            var rootCacheInfo = Path.Combine(framingAssistantCachePath, CacheInfoFileName);
+            if (!File.Exists(rootCacheInfo)) {
+                return;
+            }
+
+            try {
+                if (!XElement.Load(rootCacheInfo).Elements("Image").Any()) {
+                    return;
+                }
+
+                var target = Path.Combine(framingAssistantCachePath, DefaultCacheName);
+                for (var i = 1; Directory.Exists(target) || File.Exists(target); i++) {
+                    target = Path.Combine(framingAssistantCachePath, $"{DefaultCacheName} ({i})");
+                }
+                Directory.CreateDirectory(target);
+
+                // CacheInfo.xml is moved last, so that an interrupted migration is picked up again on the next start
+                var files = Directory.GetFiles(framingAssistantCachePath)
+                    .OrderBy(x => string.Equals(Path.GetFileName(x), CacheInfoFileName, StringComparison.OrdinalIgnoreCase));
+                foreach (var file in files) {
+                    File.Move(file, Path.Combine(target, Path.GetFileName(file)));
+                }
+                Logger.Info($"Migrated root sky survey cache to {target}");
+            } catch (Exception ex) {
+                Logger.Error("Failed to migrate root sky survey cache into a subfolder", ex);
+            }
+        }
+
+        /// <summary>
+        /// Clears the cache for saved images. In multi cache mode only the "User Cache" is cleared and the sky atlas caches are kept
+        /// </summary>
+        public void Clear() {
+            if (IsMultiCache) {
+                if (Directory.Exists(userCachePath)) {
+                    Directory.Delete(userCachePath, true);
+                }
+            } else {
+                System.IO.DirectoryInfo di = new DirectoryInfo(framingAssistantCachePath);
+
+                foreach (FileInfo file in di.GetFiles()) {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in di.GetDirectories()) {
+                    dir.Delete(true);
+                }
             }
             Initialize();
         }
-
 
         public void DeleteFromCache(XElement element) {
             if(Cache != null && element != null) {
@@ -84,7 +182,7 @@ namespace NINA.WPF.Base.SkySurvey {
                 var fileNameAttribute = element.Attribute("FileName");
 
                 if(fileNameAttribute != null) {
-                    var fullFileName = Path.Combine(framingAssistantCachePath, fileNameAttribute.Value);                 
+                    var fullFileName = Path.Combine(userCachePath, fileNameAttribute.Value);                 
                     var thumbnailBig = CacheImage.GetImagePathForThumbnail(fullFileName, CacheImage.BigThumbnailSize);
                     var thumbnailMedium = CacheImage.GetImagePathForThumbnail(fullFileName, CacheImage.MediumThumbnailSize);
                     var thumbnailSmall = CacheImage.GetImagePathForThumbnail(fullFileName, CacheImage.SmallThumbnailSize);
@@ -105,7 +203,7 @@ namespace NINA.WPF.Base.SkySurvey {
                 }
 
                 element.Remove();
-                Cache.Save(framingAssistantCachInfo);
+                Cache.Save(userCacheInfoPath);
             }
         }
 
@@ -130,12 +228,12 @@ namespace NINA.WPF.Base.SkySurvey {
                     ).FirstOrDefault();
 
                     if (element == null) {
-                        if (!Directory.Exists(framingAssistantCachePath)) {
-                            Directory.CreateDirectory(framingAssistantCachePath);
+                        if (!Directory.Exists(userCachePath)) {
+                            Directory.CreateDirectory(userCachePath);
                         }
 
                         var sanitizedName = CoreUtil.ReplaceAllInvalidFilenameChars(skySurveyImage.Name);
-                        var originalImgFilePath = Path.Combine(framingAssistantCachePath, sanitizedName + ".jpg");
+                        var originalImgFilePath = Path.Combine(userCachePath, sanitizedName + ".jpg");
 
 
                         originalImgFilePath = RestoreNameFromUniqueBracket(originalImgFilePath);
@@ -167,7 +265,7 @@ namespace NINA.WPF.Base.SkySurvey {
                         );
 
                         Cache.Add(xml);
-                        Cache.Save(framingAssistantCachInfo);
+                        Cache.Save(userCacheInfoPath);
                         return xml;
                     }
                 }
@@ -199,7 +297,7 @@ namespace NINA.WPF.Base.SkySurvey {
             if (matches.Groups.Count == 4 && !string.IsNullOrEmpty(matches.Groups[2].Value)) {
                 var originalFileName = matches.Groups[1].Value + "." + matches.Groups[3].Value;
 
-                path = Path.Combine(framingAssistantCachePath, originalFileName);
+                path = Path.Combine(userCachePath, originalFileName);
             }
             return path;
         }
@@ -278,7 +376,7 @@ namespace NINA.WPF.Base.SkySurvey {
 
         private BitmapSource LoadJpg(string filename) {
             if (!Path.IsPathRooted(filename)) {
-                filename = Path.Combine(framingAssistantCachePath, filename);
+                filename = Path.Combine(userCachePath, filename);
             }
 
             JpegBitmapDecoder JpgDec = new JpegBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
@@ -296,6 +394,60 @@ namespace NINA.WPF.Base.SkySurvey {
             }
 
             return image;
+        }
+
+        /// <summary>
+        /// Names of the subfolder caches that can be used for the offline sky map. Empty when not in multi cache mode
+        /// </summary>
+        public IReadOnlyList<string> GetSkyAtlasCacheSources() {
+            if (!IsMultiCache) {
+                return new List<string>();
+            }
+            return GetCacheSubfolders().Where(x => !string.Equals(x, UserCacheName, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        /// <summary>
+        /// Selects the subfolder cache that is used for the offline sky map
+        /// </summary>
+        public void LoadSkyAtlasCacheSource(string source) {
+            if (GetSkyAtlasCacheSources().Contains(source, StringComparer.OrdinalIgnoreCase)) {
+                SelectedSkyAtlasCacheSource = source;
+            }
+        }
+
+        /// <summary>
+        /// Directory of the cache that is used for the offline sky map
+        /// </summary>
+        public string SkyAtlasCachePath =>
+            IsMultiCache && SelectedSkyAtlasCacheSource != null
+                ? Path.Combine(framingAssistantCachePath, SelectedSkyAtlasCacheSource)
+                : framingAssistantCachePath;
+
+        /// <summary>
+        /// Cache info of the cache that is used for the offline sky map.
+        /// This is the single root cache, or the selected subfolder cache in multi cache mode
+        /// </summary>
+        public XElement SkyAtlasCache {
+            get {
+                if (!IsMultiCache) {
+                    return Cache;
+                }
+                if (SelectedSkyAtlasCacheSource == null) {
+                    return new XElement("ImageCacheInfo");
+                }
+                lock (skyAtlasCaches) {
+                    if (!skyAtlasCaches.TryGetValue(SelectedSkyAtlasCacheSource, out var cache)) {
+                        try {
+                            cache = LoadCacheInfo(Path.Combine(SkyAtlasCachePath, CacheInfoFileName));
+                        } catch (Exception ex) {
+                            Logger.Error($"Error loading sky atlas cache {SelectedSkyAtlasCacheSource}", ex);
+                            cache = new XElement("ImageCacheInfo");
+                        }
+                        skyAtlasCaches[SelectedSkyAtlasCacheSource] = cache;
+                    }
+                    return cache;
+                }
+            }
         }
     }
 }

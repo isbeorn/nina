@@ -93,7 +93,7 @@ namespace NINA.WPF.Base.SkySurvey {
                 double maxSize = 600;
 
                 var l = new List<CacheImage>();
-                foreach (var entry in cache.Cache.Elements("Image")) {
+                foreach (var entry in cache.SkyAtlasCache.Elements("Image")) {
                     double fovW = double.Parse(entry.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
                     double fovH = double.Parse(entry.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
 
@@ -104,7 +104,7 @@ namespace NINA.WPF.Base.SkySurvey {
                     double ra = double.Parse(entry.Attribute("RA").Value, CultureInfo.InvariantCulture);
                     double dec = double.Parse(entry.Attribute("Dec").Value, CultureInfo.InvariantCulture);
                     double rotation = double.Parse(entry.Attribute("Rotation").Value, CultureInfo.InvariantCulture);
-                    string path = Path.Combine(cache.framingAssistantCachePath, entry.Attribute("FileName").Value);
+                    string path = Path.Combine(cache.SkyAtlasCachePath, entry.Attribute("FileName").Value);
 
                     if (AstroUtil.ArcminToArcsec(fovW) > minSize && AstroUtil.ArcminToArcsec(fovH) > minSize) {
                         var image = new CacheImage(ra, dec, fovW, fovH, rotation, path);

@@ -175,6 +175,204 @@ namespace NINA.Test.SkySurvey {
         }
 
         /// <summary>
+        /// Verifies that a cache directory without subfolder caches keeps the legacy single root cache behavior.
+        /// This protects existing setups: no sky atlas sources are offered and the sky map reads the root cache.
+        /// </summary>
+        [Test]
+        public void SingleCache_WithoutSubfolders_UsesRootCacheForSkyAtlas() {
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage("Root Target", 1, 2, 0, 30, 30, "NASASkySurvey"));
+
+            cache.IsMultiCache.Should().BeFalse();
+            cache.GetSkyAtlasCacheSources().Should().BeEmpty();
+            cache.SelectedSkyAtlasCacheSource.Should().BeNull();
+            cache.SkyAtlasCache.Should().BeSameAs(cache.Cache);
+            cache.SkyAtlasCachePath.Should().Be(cachePath);
+        }
+
+        /// <summary>
+        /// Verifies that subfolders without a CacheInfo.xml are not treated as caches.
+        /// This protects the single cache mode from being switched by unrelated folders.
+        /// </summary>
+        [Test]
+        public void SingleCache_SubfolderWithoutCacheInfo_IsIgnored() {
+            Directory.CreateDirectory(Path.Combine(cachePath, "Not A Cache"));
+
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+
+            cache.IsMultiCache.Should().BeFalse();
+            File.Exists(Path.Combine(cachePath, "CacheInfo.xml")).Should().BeTrue();
+        }
+
+        /// <summary>
+        /// Verifies that only subfolder caches are offered as sky atlas sources and that the reserved user cache is excluded.
+        /// This protects the rule that a cache directory is never a mix of root and subfolder caches.
+        /// </summary>
+        [Test]
+        public void MultiCache_ListsOnlySubfolderCachesAndExcludesUserCache() {
+            CreateSubfolderCache("Narrowband", "nb.jpg");
+            CreateSubfolderCache("DSS", "dss.jpg");
+            CreateSubfolderCache(CacheSkySurvey.UserCacheName, "user.jpg");
+
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+
+            cache.IsMultiCache.Should().BeTrue();
+            cache.GetSkyAtlasCacheSources().Should().Equal("DSS", "Narrowband");
+            cache.SelectedSkyAtlasCacheSource.Should().Be("DSS");
+            File.Exists(Path.Combine(cachePath, "CacheInfo.xml")).Should().BeFalse();
+        }
+
+        /// <summary>
+        /// Verifies that selecting a sky atlas source switches the cache info and path used for the offline sky map.
+        /// This protects the framing assistant selector from rendering tiles of a different cache.
+        /// </summary>
+        [Test]
+        public void MultiCache_LoadSkyAtlasCacheSource_SwitchesSkyAtlasCache() {
+            CreateSubfolderCache("DSS", "dss.jpg");
+            CreateSubfolderCache("Narrowband", "nb.jpg");
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+
+            cache.LoadSkyAtlasCacheSource("Narrowband");
+
+            cache.SelectedSkyAtlasCacheSource.Should().Be("Narrowband");
+            cache.SkyAtlasCachePath.Should().Be(Path.Combine(cachePath, "Narrowband"));
+            cache.SkyAtlasCache.Elements("Image").Should().ContainSingle()
+                .Which.Attribute("FileName")!.Value.Should().Be("nb.jpg");
+
+            cache.LoadSkyAtlasCacheSource("Unknown");
+            cache.SelectedSkyAtlasCacheSource.Should().Be("Narrowband");
+        }
+
+        /// <summary>
+        /// Verifies that a root cache with entries is moved into a new Default subfolder once subfolder caches exist.
+        /// This protects existing user caches when additional cache packs are dropped into the cache directory.
+        /// </summary>
+        [Test]
+        public void MultiCache_RootCacheWithEntries_IsMigratedToDefault() {
+            CacheSkySurvey singleCache = new CacheSkySurvey(cachePath);
+            XElement saved = singleCache.SaveImageToCache(CreateSkySurveyImage("Root Target", 1, 2, 0, 30, 30, "NASASkySurvey"));
+            string fileName = saved.Attribute("FileName")!.Value;
+            CreateSubfolderCache("Narrowband", "nb.jpg");
+
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+
+            string defaultPath = Path.Combine(cachePath, CacheSkySurvey.DefaultCacheName);
+            Directory.GetFiles(cachePath).Should().BeEmpty();
+            File.Exists(Path.Combine(defaultPath, "CacheInfo.xml")).Should().BeTrue();
+            File.Exists(Path.Combine(defaultPath, fileName)).Should().BeTrue();
+            cache.GetSkyAtlasCacheSources().Should().Equal(CacheSkySurvey.DefaultCacheName, "Narrowband");
+            cache.SelectedSkyAtlasCacheSource.Should().Be(CacheSkySurvey.DefaultCacheName);
+            cache.SkyAtlasCache.Elements("Image").Should().ContainSingle();
+            cache.Cache.Elements("Image").Should().BeEmpty();
+        }
+
+        /// <summary>
+        /// Verifies that the root cache migration does not merge into an already existing Default folder.
+        /// This protects unrelated user data in a folder that happens to use the reserved name.
+        /// </summary>
+        [Test]
+        public void MultiCache_RootCacheWithEntriesAndExistingDefault_IsMigratedToNumberedDefault() {
+            CacheSkySurvey singleCache = new CacheSkySurvey(cachePath);
+            singleCache.SaveImageToCache(CreateSkySurveyImage("Root Target", 1, 2, 0, 30, 30, "NASASkySurvey"));
+            CreateSubfolderCache(CacheSkySurvey.DefaultCacheName, "existing.jpg");
+
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+
+            Directory.GetFiles(cachePath).Should().BeEmpty();
+            cache.GetSkyAtlasCacheSources().Should().Equal(CacheSkySurvey.DefaultCacheName, "Default (1)");
+            XElement.Load(Path.Combine(cachePath, CacheSkySurvey.DefaultCacheName, "CacheInfo.xml"))
+                .Elements("Image").Should().ContainSingle().Which.Attribute("FileName")!.Value.Should().Be("existing.jpg");
+            File.Exists(Path.Combine(cachePath, "Default (1)", "CacheInfo.xml")).Should().BeTrue();
+        }
+
+        /// <summary>
+        /// Verifies that an empty root CacheInfo.xml is neither migrated nor recreated in multi cache mode.
+        /// This protects multi cache setups from getting an empty Default source.
+        /// </summary>
+        [Test]
+        public void MultiCache_EmptyRootCache_IsNotMigratedAndNotRecreated() {
+            CreateSubfolderCache("Narrowband", "nb.jpg");
+
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.Clear();
+
+            cache.GetSkyAtlasCacheSources().Should().Equal("Narrowband");
+            Directory.Exists(Path.Combine(cachePath, CacheSkySurvey.DefaultCacheName)).Should().BeFalse();
+            File.Exists(Path.Combine(cachePath, "CacheInfo.xml")).Should().BeFalse();
+
+            new XElement("ImageCacheInfo").Save(Path.Combine(cachePath, "CacheInfo.xml"));
+            cache = new CacheSkySurvey(cachePath);
+
+            cache.GetSkyAtlasCacheSources().Should().Equal("Narrowband");
+            Directory.Exists(Path.Combine(cachePath, CacheSkySurvey.DefaultCacheName)).Should().BeFalse();
+        }
+
+        /// <summary>
+        /// Verifies that newly saved images go to the reserved user cache in multi cache mode and can be restored and deleted from there.
+        /// This protects sky atlas cache packs from being modified by online and file survey downloads.
+        /// </summary>
+        [Test]
+        public async Task MultiCache_SaveImageToCache_UsesUserCache() {
+            CreateSubfolderCache("Narrowband", "nb.jpg");
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            SkySurveyImage image = CreateSkySurveyImage("User Target", 3, 4, 0, 30, 30, "NASASkySurvey");
+
+            XElement element = cache.SaveImageToCache(image);
+
+            string userCachePath = Path.Combine(cachePath, CacheSkySurvey.UserCacheName);
+            string imagePath = Path.Combine(userCachePath, element.Attribute("FileName")!.Value);
+            File.Exists(imagePath).Should().BeTrue();
+            File.Exists(Path.Combine(userCachePath, "CacheInfo.xml")).Should().BeTrue();
+            Directory.GetFiles(cachePath).Should().BeEmpty();
+            cache.GetSkyAtlasCacheSources().Should().Equal("Narrowband");
+            cache.SkyAtlasCache.Elements("Image").Should().ContainSingle()
+                .Which.Attribute("FileName")!.Value.Should().Be("nb.jpg");
+
+            CacheSkySurvey reloaded = new CacheSkySurvey(cachePath);
+            reloaded.Cache.Elements("Image").Should().ContainSingle();
+            SkySurveyImage restored = await reloaded.GetImage("NASASkySurvey", image.Coordinates.RA, image.Coordinates.Dec, image.Rotation, image.FoVWidth);
+            restored.Should().NotBeNull();
+
+            reloaded.DeleteFromCache(reloaded.Cache.Elements("Image").Single());
+            File.Exists(imagePath).Should().BeFalse();
+            reloaded.Cache.Elements("Image").Should().BeEmpty();
+        }
+
+        /// <summary>
+        /// Verifies that clearing the cache in multi cache mode only removes the user cache.
+        /// This protects downloaded sky atlas cache packs from being deleted by the clear cache action.
+        /// </summary>
+        [Test]
+        public void MultiCache_Clear_RemovesOnlyUserCache() {
+            CreateSubfolderCache("Narrowband", "nb.jpg");
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+            cache.SaveImageToCache(CreateSkySurveyImage("User Target", 3, 4, 0, 30, 30, "NASASkySurvey"));
+
+            cache.Clear();
+
+            Directory.Exists(Path.Combine(cachePath, CacheSkySurvey.UserCacheName)).Should().BeFalse();
+            File.Exists(Path.Combine(cachePath, "Narrowband", "nb.jpg")).Should().BeTrue();
+            cache.IsMultiCache.Should().BeTrue();
+            cache.Cache.Elements("Image").Should().BeEmpty();
+            cache.SkyAtlasCache.Elements("Image").Should().ContainSingle();
+        }
+
+        /// <summary>
+        /// Verifies that a sky atlas cache with an unreadable CacheInfo.xml yields an empty cache instead of throwing.
+        /// This protects the framing assistant from a single broken cache pack.
+        /// </summary>
+        [Test]
+        public void MultiCache_InvalidCacheInfo_ReturnsEmptySkyAtlasCache() {
+            Directory.CreateDirectory(Path.Combine(cachePath, "Broken"));
+            File.WriteAllText(Path.Combine(cachePath, "Broken", "CacheInfo.xml"), "<ImageCacheInfo><Image");
+
+            CacheSkySurvey cache = new CacheSkySurvey(cachePath);
+
+            cache.SelectedSkyAtlasCacheSource.Should().Be("Broken");
+            cache.SkyAtlasCache.Elements("Image").Should().BeEmpty();
+        }
+
+        /// <summary>
         /// Verifies that CacheImage selects the smallest cached thumbnail when the plate is much smaller than the viewport.
         /// This protects the performance-sensitive overlay path from loading full-resolution images unnecessarily.
         /// </summary>
@@ -514,6 +712,23 @@ namespace NINA.Test.SkySurvey {
                 FoVHeight = fovHeight,
                 Image = CreateBitmapSource()
             };
+        }
+
+        private void CreateSubfolderCache(string name, string fileName) {
+            string path = Path.Combine(cachePath, name);
+            Directory.CreateDirectory(path);
+            File.WriteAllBytes(Path.Combine(path, fileName), []);
+            new XElement("ImageCacheInfo",
+                new XElement("Image",
+                    new XAttribute("Id", Guid.NewGuid()),
+                    new XAttribute("RA", "1"),
+                    new XAttribute("Dec", "2"),
+                    new XAttribute("Rotation", "0"),
+                    new XAttribute("FoVW", "30"),
+                    new XAttribute("FoVH", "30"),
+                    new XAttribute("FileName", fileName),
+                    new XAttribute("Source", "NASASkySurvey"),
+                    new XAttribute("Name", name))).Save(Path.Combine(path, "CacheInfo.xml"));
         }
 
         private static BitmapSource CreateBitmapSource() {
