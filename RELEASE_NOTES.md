@@ -22,6 +22,7 @@ This allows you to safely return to a stable release if needed.
 - The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
 
 ## Bugfixes
+- Fixed successful autofocus runs being reported as failures when HFR History was cleared with a specific filter selected.
 - Dropping a saved target onto a DSO container now reliably updates its coordinates and target details, including after the container has been open for some time.
 - Removed symbol containers and replaced sequences now release cached scopes and background condition checks. Symbols also register correctly when restored after deletion.
 - Validation issues for Loop, Loop While and Moon Illumination conditions now start with an empty list and notify the UI when validation results change.
