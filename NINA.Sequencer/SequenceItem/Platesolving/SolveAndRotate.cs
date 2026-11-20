@@ -18,7 +18,6 @@ using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
-using NINA.Core.Utility.Notification;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
@@ -26,7 +25,6 @@ using NINA.PlateSolving;
 using NINA.PlateSolving.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Generators;
-using NINA.Sequencer.Logic;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using NINA.WPF.Base.ViewModel;
@@ -54,7 +52,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         protected IGuiderMediator guiderMediator;
         protected IPlateSolverFactory plateSolverFactory;
         protected IWindowServiceFactory windowServiceFactory;
-        private IRotatorMediator rotatorMediator;
+        private readonly IRotatorMediator rotatorMediator;
         public PlateSolvingStatusVM PlateSolveStatusVM { get; } = new PlateSolvingStatusVM();
 
         [ImportingConstructor]
@@ -109,11 +107,9 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
 
             bool stoppedGuiding = false;
             try {
-                float rotationDistance = float.MaxValue;
+                bool withinTolerance;
 
                 stoppedGuiding = await guiderMediator.StopGuiding(token);
-
-                var targetRotation = (float)PositionAngle;
 
                 /* Loop until the rotation is within tolerances*/
                 var attempts = 0;
@@ -126,51 +122,44 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                     var orientation = (float)solveResult.PositionAngle;
                     rotatorMediator.Sync(orientation);
 
-                    var prevTargetRotation = targetRotation;
-                    targetRotation = rotatorMediator.GetTargetPosition(prevTargetRotation);
-                    if (Math.Abs(targetRotation - prevTargetRotation) > 0.1) {
-                        Logger.Info($"Rotator target position {PositionAngle} adjusted to {targetRotation} to be within the allowed mechanical range");
-                        Notification.ShowInformation(string.Format(Loc.Instance["LblRotatorRangeAdjusted"], targetRotation));
+                    var targetRotation = rotatorMediator.GetTargetPosition((float)PositionAngle);
+
+                    var rangeType = profileService.ActiveProfile.RotatorSettings.RangeType;
+                    var rotationTolerance = profileService.ActiveProfile.PlateSolveSettings.RotationTolerance;
+
+                    if (rangeType != Core.Enum.RotatorRangeTypeEnum.LITERAL
+                        && Math.Abs(AstroUtil.EuclidianModulus(targetRotation - PositionAngle + 180, 360) - 180) > rotationTolerance) {
+                        Logger.Info($"Rotator target position {PositionAngle} adjusted to {targetRotation}");
                     }
 
-                    rotationDistance = targetRotation - orientation;
-                    if (profileService.ActiveProfile.RotatorSettings.RangeType == Core.Enum.RotatorRangeTypeEnum.FULL) {
-                        // If the full rotation range is allowed, then consider the 180-degree rotated orientation as well in case it is closer
-                        var movement = AstroUtil.EuclidianModulus(rotationDistance, 180);
-                        var movement2 = movement - 180;
+                    var rotationDistance = targetRotation - orientation;
 
-                        if (movement < Math.Abs(movement2)) {
-                            rotationDistance = movement;
-                        } else {
-                            targetRotation = AstroUtil.EuclidianModulus(targetRotation + 180, 360);
-                            Logger.Info($"Changing rotation target to {targetRotation} instead since it is closer to the current position");
-                            rotationDistance = movement2;
+                    // Outside of LITERAL, the opposing angle frames the same field and is considered equal
+                    var oneEightyIsEqual = rangeType != Core.Enum.RotatorRangeTypeEnum.LITERAL;
+                    withinTolerance = Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(rotationTolerance), oneEightyIsEqual);
+
+                    if (!withinTolerance) {
+                        if (++attempts >= 10) {
+                            throw new SequenceEntityFailedException(string.Format(Loc.Instance["Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts"], 10));
                         }
-                    }
 
-                    if (!Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(profileService.ActiveProfile.PlateSolveSettings.RotationTolerance), true)) {
-                        Logger.Info($"Rotator not inside tolerance {profileService.ActiveProfile.PlateSolveSettings.RotationTolerance} - Current {orientation}° / Target: {PositionAngle}° - Moving rotator relatively by {rotationDistance}°");
+                        Logger.Info($"Rotator not inside tolerance {rotationTolerance} - Current {orientation}° / Target: {targetRotation}° - Moving rotator relatively by {rotationDistance}°");
 
                         progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblRotating"] });
                         await rotatorMediator.MoveRelative(rotationDistance, token);
                         progress?.Report(new ApplicationStatus() { Status = string.Empty });
                         token.ThrowIfCancellationRequested();
                     }
-
-                    attempts++;
-                    if (attempts >= 10) {
-                        throw new SequenceEntityFailedException(string.Format(Loc.Instance["Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts"], 10));
-                    }
-                } while (!Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(profileService.ActiveProfile.PlateSolveSettings.RotationTolerance), true));
+                } while (!withinTolerance);
             } finally {
                 if (stoppedGuiding) {
                     try {
                         var restartedGuiding = await guiderMediator.StartGuiding(false, progress, token);
                         if (!restartedGuiding) {
-                            Logger.Error("Failed to resume guiding after CenterAndRotate");
+                            Logger.Error("Failed to resume guiding after SolveAndRotate");
                         }
                     } catch (Exception e) {
-                        Logger.Error("Failed to resume guiding after CenterAndRotate", e);
+                        Logger.Error("Failed to resume guiding after SolveAndRotate", e);
                     }
                 }
 

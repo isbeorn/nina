@@ -379,9 +379,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
         }
 
         [Test]
-        [TestCase(160, 260, -80)]
-        [TestCase(160, 170, 10)]
-        public async Task Execute_FullRotatorRange_PlateSolveSuccess_RotationOffOneTime_NoException(double first, double second, double movement) {
+        [TestCase(160, 260, 80, -80)]
+        [TestCase(160, 170, 170, 10)]
+        public async Task Execute_FullRotatorRange_PlateSolveSuccess_RotationOffOneTime_NoException(double first, double second, double adjustedTarget, double movement) {
             var service = new Mock<IWindowService>();
             var coordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(20), Epoch.J2000);
 
@@ -398,9 +398,10 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
             windowServiceFactoryMock.Setup(x => x.Create()).Returns(service.Object);
 
             profileServiceMock.SetupGet(x => x.ActiveProfile.RotatorSettings.RangeType).Returns(RotatorRangeTypeEnum.FULL);
+            // GetTargetPosition performs the FULL range reciprocal adjustment, so the first call returns the adjusted target
             rotatorMediatorMock
                 .SetupSequence(x => x.GetTargetPosition(It.IsAny<float>()))
-                .Returns((float)(second))
+                .Returns((float)(adjustedTarget))
                 .Returns((float)(second));
 
             guiderMediatorMock.Setup(x => x.StopGuiding(It.IsAny<CancellationToken>())).ReturnsAsync(true);
@@ -535,6 +536,56 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
             rotatorMediatorMock.Verify(x => x.Sync(It.Is<float>(r => r == first)), Times.Once);
             rotatorMediatorMock.Verify(x => x.Sync(It.Is<float>(r => r == second)), Times.Once);
             rotatorMediatorMock.Verify(x => x.MoveRelative(It.Is<float>(r => r == movement), cts.Token), Times.Once);
+
+            captureSolver.Verify(x => x.Solve(It.IsAny<CaptureSequence>(), It.IsAny<CaptureSolverParameter>(), It.Is<IProgress<PlateSolveProgress>>(p => p == sut.PlateSolveStatusVM.Progress), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+            centeringSolver.Verify(x => x.Center(It.IsAny<CaptureSequence>(), It.IsAny<CenterSolveParameter>(), It.Is<IProgress<PlateSolveProgress>>(p => p == sut.PlateSolveStatusVM.Progress), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        [TestCase(160, 260, 100, Description = "LITERAL keeps requested angle even though reciprocal 80 is closer")]
+        [TestCase(160, 170, 10, Description = "LITERAL direct move")]
+        [TestCase(173, 355, -178, Description = "LITERAL uses shortest signed relative offset")]
+        [TestCase(10, 350, -20, Description = "LITERAL wraps across 0 going negative")]
+        [TestCase(350, 10, 20, Description = "LITERAL wraps across 0 going positive")]
+        public async Task Execute_LiteralRotatorRange_PlateSolveSuccess_RotationOffOneTime_NoException(double first, double second, double movement) {
+            var service = new Mock<IWindowService>();
+            var coordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(20), Epoch.J2000);
+
+            telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo { Connected = true, AtPark = false });
+
+            var captureSolver = new Mock<ICaptureSolver>();
+            captureSolver.SetupSequence(x => x.Solve(It.IsAny<CaptureSequence>(), It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PlateSolveResult { Success = true, Coordinates = coordinates, PositionAngle = first })
+                .ReturnsAsync(new PlateSolveResult { Success = true, Coordinates = coordinates, PositionAngle = second });
+
+            var centeringSolver = new Mock<ICenteringSolver>();
+            centeringSolver.Setup(x => x.Center(It.IsAny<CaptureSequence>(), It.IsAny<CenterSolveParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new PlateSolveResult { Success = true, Coordinates = coordinates });
+
+            windowServiceFactoryMock.Setup(x => x.Create()).Returns(service.Object);
+
+            profileServiceMock.SetupGet(x => x.ActiveProfile.RotatorSettings.RangeType).Returns(RotatorRangeTypeEnum.LITERAL);
+            // LITERAL never substitutes the reciprocal, so GetTargetPosition returns the requested angle unchanged
+            rotatorMediatorMock.Setup(x => x.GetTargetPosition(It.IsAny<float>())).Returns((float p) => p);
+
+            guiderMediatorMock.Setup(x => x.StopGuiding(It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+            profileServiceMock.SetupGet(x => x.ActiveProfile.PlateSolveSettings).Returns(new Mock<IPlateSolveSettings>().Object);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.TelescopeSettings).Returns(new Mock<ITelescopeSettings>().Object);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.CameraSettings).Returns(new Mock<ICameraSettings>().Object);
+
+            plateSolverFactoryMock.Setup(x => x.GetPlateSolver(It.IsAny<IPlateSolveSettings>())).Returns(new Mock<IPlateSolver>().Object);
+            plateSolverFactoryMock.Setup(x => x.GetBlindSolver(It.IsAny<IPlateSolveSettings>())).Returns(new Mock<IPlateSolver>().Object);
+            plateSolverFactoryMock.Setup(x => x.GetCaptureSolver(It.IsAny<IPlateSolver>(), It.IsAny<IPlateSolver>(), It.IsAny<IImagingMediator>(), It.IsAny<IFilterWheelMediator>())).Returns(captureSolver.Object);
+            plateSolverFactoryMock.Setup(x => x.GetCenteringSolver(It.IsAny<IPlateSolver>(), It.IsAny<IPlateSolver>(), It.IsAny<IImagingMediator>(), It.IsAny<ITelescopeMediator>(), It.IsAny<IFilterWheelMediator>(), It.IsAny<IDomeMediator>(), It.IsAny<IDomeFollower>())).Returns(centeringSolver.Object);
+
+            sut.PositionAngle = second;
+            var cts = new CancellationTokenSource();
+            await sut.Execute(default, cts.Token);
+
+            rotatorMediatorMock.Verify(x => x.GetTargetPosition(It.Is<float>(r => r == (float)second)), Times.Exactly(2));
+            rotatorMediatorMock.Verify(x => x.Sync(It.Is<float>(r => r == first)), Times.Once);
+            rotatorMediatorMock.Verify(x => x.Sync(It.Is<float>(r => r == second)), Times.Once);
+            rotatorMediatorMock.Verify(x => x.MoveRelative(It.Is<float>(r => Math.Abs(r - movement) < 0.001), cts.Token), Times.Once);
 
             captureSolver.Verify(x => x.Solve(It.IsAny<CaptureSequence>(), It.IsAny<CaptureSolverParameter>(), It.Is<IProgress<PlateSolveProgress>>(p => p == sut.PlateSolveStatusVM.Progress), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
             centeringSolver.Verify(x => x.Center(It.IsAny<CaptureSequence>(), It.IsAny<CenterSolveParameter>(), It.Is<IProgress<PlateSolveProgress>>(p => p == sut.PlateSolveStatusVM.Progress), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
