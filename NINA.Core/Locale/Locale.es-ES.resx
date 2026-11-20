@@ -1561,17 +1561,23 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
   <data name="LblFlatWizardCapture" xml:space="preserve">
     <value>Captura del Asistente de Flats</value>
   </data>
-  <data name="LblFLICameraSetup" xml:space="preserve">
-    <value>Configuración Camara FLI</value>
-  </data>
-  <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Flujo de Binning</value>
-  </data>
   <data name="LblFLIFloodDuration" xml:space="preserve">
     <value>Duración del flujo</value>
   </data>
+  <data name="LblFLIFloodBin" xml:space="preserve">
+    <value>Binning de flujo (X / Y)</value>
+  </data>
+  <data name="LblFLIFloodBinAuto" xml:space="preserve">
+    <value>Fijación automática del flujo</value>
+  </data>
+  <data name="LblFLIFloodBinAutoTooltip" xml:space="preserve">
+    <value>Cuando está activado, la inundación del sensor con el pre-flash de mitigación de RBI (Residual Bulk Image o Imagen Residual del Sustrato) utiliza el mismo binning que la exposición que le sigue. Cuando está desactivado, se usarán los valores X e Y del binning de la inundación especificados a continuación.</value>
+  </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Medir tiempo de pre-exposición</value>
+    <value>Conteo de limpieza de carga eléctrica residual</value>
+  </data>
+  <data name="LblFLIRBIBackgroundFlush" xml:space="preserve">
+    <value>Limpieza de carga eléctrica del sensor en segundo plano</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>Hacer el cambio de meridiano</value>
@@ -1584,6 +1590,9 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
     <value>Flujo de capturas</value>
+  </data>
+  <data name="LblFLIKeepShutterOpen" xml:space="preserve">
+    <value>Mantener la abertura de observación abierta</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>Longitud Focal</value>
@@ -8509,5 +8518,11 @@ Si el recuento de las exposiciones no es importante para ti, activa esta opción
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
     <value>{0} (no disponible)</value>
+  </data>
+  <data name="LblHardwareVersion" xml:space="preserve">
+    <value>Versión de hardware</value>
+  </data>
+  <data name="LblFLIFlatFlood" xml:space="preserve">
+    <value>Inundación de iluminación para tomas de flats</value>
   </data>
 </root>

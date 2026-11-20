@@ -1563,17 +1563,23 @@ Dec: {1}</value>
   <data name="LblFlatWizardCapture" xml:space="preserve">
     <value>Захват помощником флетов</value>
   </data>
-  <data name="LblFLICameraSetup" xml:space="preserve">
-    <value>Настройка камер FLI</value>
+  <data name="LblFLIFloodDuration" xml:space="preserve">
+    <value>Flood duration</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Заполнение биннига</value>
+    <value>Flood binning (X / Y)</value>
   </data>
-  <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>Время заполнения</value>
+  <data name="LblFLIFloodBinAuto" xml:space="preserve">
+    <value>Automatic flood binning</value>
+  </data>
+  <data name="LblFLIFloodBinAutoTooltip" xml:space="preserve">
+    <value>When enabled, the RBI pre-flash flood frame uses the same binning as the exposure that follows it. When disabled, the flood binning X and Y values specified below are used.</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Число предэкспозиционных наполнений</value>
+    <value>Flush count</value>
+  </data>
+  <data name="LblFLIRBIBackgroundFlush" xml:space="preserve">
+    <value>Background flush</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>Сделать перекладку</value>
@@ -1586,6 +1592,9 @@ Dec: {1}</value>
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
     <value>Заполнение для снимков</value>
+  </data>
+  <data name="LblFLIKeepShutterOpen" xml:space="preserve">
+    <value>Keep shutter open</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>Фокусное расстояние</value>
@@ -8517,5 +8526,11 @@ Dec: {1}</value>
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
     <value>{0} (недоступен)</value>
+  </data>
+  <data name="LblHardwareVersion" xml:space="preserve">
+    <value>Hardware version</value>
+  </data>
+  <data name="LblFLIFlatFlood" xml:space="preserve">
+    <value>Flood for flat frames</value>
   </data>
 </root>

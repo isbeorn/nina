@@ -1570,17 +1570,23 @@ Ako je taj okidač isključen, aplikacija će preskočiti početak ekspozicije i
   <data name="LblFlatWizardCapture" xml:space="preserve">
     <value>Snimanje čarobnjakom za flat snimke</value>
   </data>
-  <data name="LblFLICameraSetup" xml:space="preserve">
-    <value>Postavljanje kamere FLI</value>
+  <data name="LblFLIFloodDuration" xml:space="preserve">
+    <value>Flood duration</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Združivanje piksela pri osvjetljavanju senzora</value>
+    <value>Flood binning (X / Y)</value>
   </data>
-  <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>Trajanje osvjetljavanja senzora</value>
+  <data name="LblFLIFloodBinAuto" xml:space="preserve">
+    <value>Automatic flood binning</value>
+  </data>
+  <data name="LblFLIFloodBinAutoTooltip" xml:space="preserve">
+    <value>When enabled, the RBI pre-flash flood frame uses the same binning as the exposure that follows it. When disabled, the flood binning X and Y values specified below are used.</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Broj pražnjenja prije ekspozicije</value>
+    <value>Flush count</value>
+  </data>
+  <data name="LblFLIRBIBackgroundFlush" xml:space="preserve">
+    <value>Background flush</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>Izvrši preokret</value>
@@ -1593,6 +1599,9 @@ Ako je taj okidač isključen, aplikacija će preskočiti početak ekspozicije i
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
     <value>Osvjetljavanje senzora za probne snimke</value>
+  </data>
+  <data name="LblFLIKeepShutterOpen" xml:space="preserve">
+    <value>Keep shutter open</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>Žarišna duljina</value>
@@ -8524,5 +8533,11 @@ To je korisno kada ugrađeni okidač ima odgovarajući trenutak aktivacije, ali 
   </data>
   <data name="LblPlateSolverProviderMissingChoice" xml:space="preserve">
     <value>{0} (nije dostupan)</value>
+  </data>
+  <data name="LblHardwareVersion" xml:space="preserve">
+    <value>Hardware version</value>
+  </data>
+  <data name="LblFLIFlatFlood" xml:space="preserve">
+    <value>Flood for flat frames</value>
   </data>
 </root>
