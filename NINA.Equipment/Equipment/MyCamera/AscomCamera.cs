@@ -648,11 +648,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     await CoreUtil.Wait(TimeSpan.FromMilliseconds(10), token);
                 }
 
-                if (HasLastExposureStartTime && HasLastExposureDuration) {
-                    lastExposureStartTime = (DateTime)LastExposureStartTime;
-                    lastExposureEndTime = lastExposureStartTime + TimeSpan.FromSeconds(LastExposureDuration ?? double.NaN);
-                } else {
-                    lastExposureEndTime = DateTime.UtcNow;
+                lastExposureEndTime = DateTime.UtcNow;
+
+                if (HasLastExposureStartTime && HasLastExposureDuration
+                    && LastExposureStartTime is DateTime startTime && startTime != DateTime.MinValue
+                    && LastExposureDuration is double duration && duration >= 0
+                    && duration < (DateTime.MaxValue - startTime).TotalSeconds) {
+                    lastExposureStartTime = startTime;
+                    lastExposureEndTime = startTime.AddSeconds(duration);
                 }
             }
         }

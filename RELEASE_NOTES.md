@@ -55,6 +55,7 @@ This allows you to safely return to a stable release if needed.
 - QHY cameras now really have their cooler turned off when they are disconnected. The cooler shutdown was skipped on every disconnect, so a camera that was cooling kept regulating to its old set point after being disconnected or after N.I.N.A. was closed, while the next session reported the cooler as off.
 - Captures now switch to the exposure's readout mode before applying gain and offset, so the first frame after a mode change is digitized and logged with the settings for that mode.
 - ASCOM cameras that report extremely large binning ranges no longer take minutes to connect while N.I.N.A. builds the selectable binning modes.
+- ASCOM camera downloads now use N.I.N.A.'s exposure timestamps when the driver reports a missing or invalid exposure start time.
 - Canceling a native Nikon automatic shutter exposure no longer sends an unsupported Bulb termination command that could terminate N.I.N.A.
 
 ## Improvements
