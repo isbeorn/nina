@@ -17,6 +17,8 @@ using FluentAssertions;
 using Moq;
 using NINA.Core.Model.Equipment;
 using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Model;
+using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using System.Threading;
@@ -118,7 +120,43 @@ namespace NINA.Test.Equipment.Camera {
             camera.BinningModes.Should().OnlyContain(mode => mode.X == mode.Y);
         }
 
-        private static (AscomCamera Camera, Mock<ICameraV4> Driver) CreateCamera(short maxBinX, short maxBinY, bool canAsymmetricBin) {
+        [TestCase(null, 60)]
+        [TestCase("", 60)]
+        [TestCase("invalid", 60)]
+        [TestCase("2026-09-10T01:02:03Z", double.NaN)]
+        public async Task DownloadExposure_WhenDriverTimingIsInvalid_UsesObservedTimestamps(string? timestamp, double duration) {
+            var factory = new Mock<IExposureDataFactory>();
+            factory.Setup(x => x.CreateFlipped2DExposureData(It.IsAny<Array>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<ImageMetaData>()))
+                .Returns<Array, int, bool, ImageMetaData>((pixels, bitDepth, isBayered, metadata) =>
+                    new Flipped2DExposureData(pixels, bitDepth, isBayered, metadata, Mock.Of<IImageDataFactory>()));
+
+            var (camera, driver) = CreateCamera(1, 1, false, factory.Object);
+            driver.SetupGet(x => x.LastExposureStartTime).Returns(timestamp!);
+            driver.SetupGet(x => x.LastExposureDuration).Returns(duration);
+            driver.SetupGet(x => x.BinX).Returns(1);
+            driver.SetupGet(x => x.BinY).Returns(1);
+            driver.SetupGet(x => x.CameraXSize).Returns(2);
+            driver.SetupGet(x => x.CameraYSize).Returns(2);
+            driver.SetupGet(x => x.ReadoutModes).Returns(new List<string> { "Default" });
+            driver.SetupGet(x => x.ImageReady).Returns(true);
+            driver.SetupGet(x => x.ImageArray).Returns(new int[,] { { 42, 43 }, { 44, 45 } });
+            await camera.Connect(CancellationToken.None);
+
+            var before = DateTime.UtcNow;
+            camera.StartExposure(new CaptureSequence { ExposureTime = 2 });
+            await camera.WaitUntilExposureIsReady(CancellationToken.None);
+            var after = DateTime.UtcNow;
+
+            var frame = await camera.DownloadExposure(CancellationToken.None);
+
+            frame.Should().NotBeNull();
+            driver.VerifyGet(x => x.ImageArray, Times.Once);
+            frame.MetaData.Image.ExposureStart.Should().BeOnOrAfter(before).And.BeOnOrBefore(after);
+            frame.MetaData.Image.ExposureMidPoint.Should().BeOnOrAfter(frame.MetaData.Image.ExposureStart).And.BeOnOrBefore(after);
+        }
+
+        private static (AscomCamera Camera, Mock<ICameraV4> Driver) CreateCamera(
+            short maxBinX, short maxBinY, bool canAsymmetricBin, IExposureDataFactory? exposureDataFactory = null) {
             var driver = new Mock<ICameraV4>();
             driver.SetupProperty(x => x.Connected, false);
             driver.SetupGet(x => x.SensorType).Returns(SensorType.Monochrome);
@@ -128,8 +166,8 @@ namespace NINA.Test.Equipment.Camera {
             driver.SetupGet(x => x.Name).Returns("Test ASCOM Camera");
 
             var profileService = new Mock<IProfileService>();
-            var exposureDataFactory = new Mock<IExposureDataFactory>();
-            var camera = new TestAscomCamera(driver.Object, profileService.Object, exposureDataFactory.Object);
+            profileService.SetupGet(x => x.ActiveProfile.CameraSettings.ASCOMAllowUnevenPixelDimension).Returns(false);
+            var camera = new TestAscomCamera(driver.Object, profileService.Object, exposureDataFactory ?? Mock.Of<IExposureDataFactory>());
             return (camera, driver);
         }
 
