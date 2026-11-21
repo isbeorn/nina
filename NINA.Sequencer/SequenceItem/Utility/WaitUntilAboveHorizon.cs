@@ -19,6 +19,7 @@ using NINA.Sequencer.Validations;
 using NINA.Astrometry;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.Threading;
@@ -27,6 +28,7 @@ using NINA.Core.Locale;
 using NINA.Core.Utility;
 using static NINA.Sequencer.Utility.ItemUtility;
 using NINA.Sequencer.SequenceItem.Telescope;
+using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
 using System.Runtime.Serialization;
 
@@ -38,8 +40,9 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
+    [UsesExpressions]
 
-    public class WaitUntilAboveHorizon : CoordinatesInstruction, IValidatable {
+    public partial class WaitUntilAboveHorizon : CoordinatesInstruction, IValidatable {
 
         private IProfileService ProfileService;
 
@@ -49,6 +52,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             Data.Offset = 30;
             // An explicit definition instead of the grey default hint
             UpperOffsetExpression.Definition = "0";
+            PropertyChanged += RebindReplacedUpperOffsetExpression;
             BindEffectiveCoordinates();
             ProfileService = profileService;
         }
@@ -57,12 +61,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            WaitUntilAboveHorizon clone = new WaitUntilAboveHorizon(this);
+        partial void AfterClone(WaitUntilAboveHorizon clone) {
             UpdateExpressions(clone, this);
             clone.Data = Data.Clone();
             clone.Coordinates = clone.Data.Coordinates;
-            return clone;
         }
 
         [OnDeserialized]
@@ -73,7 +75,37 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         /// <summary>
-        /// Refreshes the numeric offsets consumed by the shared altitude calculator from their expressions
+        /// Signed safety margin below the upper horizon: the target has to stay at or below [upper horizon] - UpperOffset,
+        /// so a positive value lowers the limit and a negative value raises it.
+        /// Independent of <see cref="CoordinatesInstruction.Offset"/>, which only applies to the lower horizon.
+        /// </summary>
+        [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true)]
+        public partial double UpperOffset { get; set; }
+
+        partial void UpperOffsetExpressionValidator(Expression expr) {
+            if (expr.Error == null && Data != null) {
+                Data.UpperOffset = expr.Value;
+            }
+        }
+
+        /// <summary>
+        /// Binds a replaced <see cref="UpperOffsetExpression"/> to this item as its context and validator. Plain
+        /// <c>[UsesExpressions]</c> does not do that (generated validation does), and without them the offset would neither
+        /// resolve variables nor follow later edits.
+        /// </summary>
+        private void RebindReplacedUpperOffsetExpression(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName != nameof(UpperOffsetExpression)) {
+                return;
+            }
+
+            UpperOffsetExpression.Context = this;
+            UpperOffsetExpression.Validator = UpperOffsetExpressionValidator;
+        }
+
+        /// <summary>
+        /// Evaluates the offset expressions and gives the shared altitude calculator the evaluated values. The upper offset
+        /// is handed over explicitly, because its validator only runs when the value changes and the data can be replaced
+        /// after the expression (e.g. while cloning).
         /// </summary>
         private void RefreshOffsets() {
             if (OffsetExpression.Definition.Length > 0) {
@@ -83,6 +115,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             if (UpperOffsetExpression.Definition.Length > 0) {
                 _ = UpperOffset;
             }
+
+            // The validator only runs when the value changes, and the data can have been replaced since (e.g. by cloning),
+            // so the calculator is given the evaluated value explicitly.
+            UpperOffsetExpressionValidator(UpperOffsetExpression);
         }
 
         protected override bool UsesDataCoordinates => true;
@@ -156,7 +192,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 }
             }
 
-            Expression.ValidateExpressions(Issues, OffsetExpression, UpperOffsetExpression);
+            Expression.ValidateExpressions(Issues, OffsetExpression, PositionAngleExpression);
+            ValidateOwnExpressions(Issues);
             if (!Inherited) {
                 Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
             }

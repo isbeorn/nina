@@ -606,7 +606,8 @@ namespace NINA.ViewModel {
         private const int ALTITUDE_SAMPLE_COUNT = 240;
 
         // Keep the above-horizon filter aligned with the chart's 0.1h sampling grid without
-        // populating SkyObjectBase.Altitudes/Horizon for every search result.
+        // populating SkyObjectBase.Altitudes/Horizon for every search result. A target that can exceed an upper horizon is
+        // instead evaluated over the exact window (see SkyWindowAvailability); the lower horizon keeps the grid.
         internal static bool IsAboveHorizonForDuration(
             DeepSkyObject dso,
             DateTime referenceDate,
@@ -627,20 +628,29 @@ namespace NINA.ViewModel {
             // used by DSO altitude charts, then clamp it to the reference day.
             var firstSample = Math.Max(0, (int)Math.Ceiling(((fromDate - referenceDate).TotalHours / ALTITUDE_SAMPLE_HOURS) - 1e-9));
             var lastSample = Math.Min(ALTITUDE_SAMPLE_COUNT - 1, (int)Math.Floor(((throughDate - referenceDate).TotalHours / ALTITUDE_SAMPLE_HOURS) + 1e-9));
+            // Convert RA to the hour angle at the reference date once. Each following sample is
+            // just a fixed 0.1h step from that reference hour angle.
+            var hourAngleAtReferenceDate = AstroUtil.GetHourAngle(siderealTimeAtReferenceDate, coords.RA);
+
+            // An upper horizon can be exceeded between two samples, so the window of such a target is searched in finer steps.
+            if (SkyWindowAvailability.CanExceedUpperHorizon(coords, latitude, skyWindow)) {
+                var availability = new SkyWindowAvailability(coords, latitude, skyWindow, hourAngleAtReferenceDate, ALTITUDE_SAMPLE_HOURS);
+
+                return availability.IsAvailable(referenceDate, fromDate, throughDate, firstSample, lastSample, minimumDuration, token);
+            }
+
             if (firstSample > lastSample) {
                 // An empty clamped window only satisfies the "entire interval" sentinel case,
                 // matching the previous behavior where All() over an empty sequence returned true.
                 return minimumDuration == double.MaxValue;
             }
 
-            // Convert RA to the hour angle at the reference date once. Each following sample is
-            // just a fixed 0.1h step from that reference hour angle.
-            var hourAngleAtReferenceDate = AstroUtil.GetHourAngle(siderealTimeAtReferenceDate, coords.RA);
             if (minimumDuration == double.MaxValue) {
                 // "Full selected interval" mode: every sampled point in the selected window must
                 // remain above the lower and (if configured) at or below the upper horizon.
                 for (var sample = firstSample; sample <= lastSample; sample++) {
                     token.ThrowIfCancellationRequested();
+
                     var (altitude, lowerAltitude, upperAltitude) = GetAltitudeAndLimitsAtSample(coords, latitude, skyWindow, hourAngleAtReferenceDate, sample);
                     if (altitude <= lowerAltitude || altitude > upperAltitude) {
                         return false;
@@ -661,6 +671,7 @@ namespace NINA.ViewModel {
             var firstAboveHorizon = referenceDate.AddHours(firstSample * ALTITUDE_SAMPLE_HOURS);
             for (var sample = firstSample; sample <= lastSample; sample++) {
                 token.ThrowIfCancellationRequested();
+
                 var sampleTime = referenceDate.AddHours(sample * ALTITUDE_SAMPLE_HOURS);
                 var (altitude, lowerAltitude, upperAltitude) = GetAltitudeAndLimitsAtSample(coords, latitude, skyWindow, hourAngleAtReferenceDate, sample);
 
@@ -686,19 +697,7 @@ namespace NINA.ViewModel {
             SkyWindow skyWindow,
             double hourAngleAtReferenceDate,
             int sample) {
-            var hourAngle = hourAngleAtReferenceDate + (sample * ALTITUDE_SAMPLE_HOURS);
-            var hourAngleDegrees = AstroUtil.HoursToDegrees(hourAngle);
-            var altitude = AstroUtil.GetAltitude(hourAngleDegrees, latitude, coords.Dec);
-            var lowerAltitude = SkyWindow.DefaultLowerAltitude;
-            var upperAltitude = SkyWindow.DefaultUpperAltitude;
-
-            if (skyWindow != null && (skyWindow.HasLower || skyWindow.HasUpper)) {
-                var azimuth = AstroUtil.GetAzimuth(hourAngleDegrees, altitude, latitude, coords.Dec);
-                lowerAltitude = skyWindow.GetLower(azimuth);
-                upperAltitude = skyWindow.GetUpper(azimuth);
-            }
-
-            return (altitude, lowerAltitude, upperAltitude);
+            return SkyWindowAvailability.GetAltitudeAndLimits(coords, latitude, skyWindow, hourAngleAtReferenceDate + (sample * ALTITUDE_SAMPLE_HOURS));
         }
 
         private void InitializeElevationFilters() {

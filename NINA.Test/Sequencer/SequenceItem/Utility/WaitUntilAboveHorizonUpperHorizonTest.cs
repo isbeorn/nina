@@ -18,6 +18,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Utility;
 using NUnit.Framework;
 using static NINA.Test.HorizonTestData;
@@ -117,6 +118,35 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var clone = (WaitUntilAboveHorizon)sut.Clone();
 
             clone.UpperOffsetExpression.Definition.Should().Be("7");
+            clone.UpperOffset.Should().Be(7);
+            clone.Data.UpperOffset.Should().Be(7);
+        }
+
+        [Test]
+        public void ReplacedUpperOffsetExpression_IsBoundToTheItemAndSynchronizedToTheData() {
+            settings.Horizon = Dual(altitude - 20, altitude + 5);
+            var sut = CreateSut();
+
+            sut.UpperOffsetExpression = new Expression(sut.UpperOffsetExpression, null) { Definition = "7" };
+
+            sut.UpperOffsetExpression.Context.Should().BeSameAs(sut);
+            sut.UpperOffsetExpression.Validator.Should().NotBeNull();
+            sut.UpperOffset.Should().Be(7);
+
+            // The calculator reads the value from the data, which is synchronized before it is used
+            sut.CalculateExpectedTime();
+            sut.Data.UpperOffset.Should().Be(7);
+        }
+
+        [Test]
+        public void Clone_OfAnUnevaluatedFormula_GivesTheCalculatorTheEvaluatedValue() {
+            settings.Horizon = Dual(altitude - 20, altitude + 5);
+            var source = CreateSut();
+            source.UpperOffsetExpression.Definition = "3 + 4";
+
+            var clone = (WaitUntilAboveHorizon)source.Clone();
+            clone.CalculateExpectedTime();
+
             clone.UpperOffset.Should().Be(7);
             clone.Data.UpperOffset.Should().Be(7);
         }
