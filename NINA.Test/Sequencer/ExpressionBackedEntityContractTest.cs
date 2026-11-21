@@ -114,6 +114,7 @@ namespace NINA.Test.Sequencer {
             [nameof(WaitForSunAltitude)] = () => new WaitForSunAltitude(CreateProfileService()),
             [nameof(WaitForTimeSpan)] = () => new WaitForTimeSpan(),
             [nameof(WaitUntil)] = () => new WaitUntil(CreateSafetyMonitorMediator(), CreateSequenceMediator(), CreateProfileService()),
+            [nameof(WaitUntilAboveHorizon)] = () => new WaitUntilAboveHorizon(CreateProfileService()),
             [nameof(WarmCamera)] = () => new WarmCamera(CreateCameraMediator()),
         };
 
@@ -141,8 +142,8 @@ namespace NINA.Test.Sequencer {
                 .Any(a => a.MemberName == "GenerateValidation" && Equals(a.TypedValue.Value, true)));
             handwritten.Select(type => type.Name).Should().BeEquivalentTo(new[] {
                 nameof(ConditionalContainer), nameof(AutoBrightnessFlat), nameof(AutoExposureFlat),
-                nameof(SmartExposure), nameof(TakeManyExposures)
-            }, "these containers explicitly compose inherited and child validation; new entities should opt in");
+                nameof(SmartExposure), nameof(TakeManyExposures), nameof(WaitUntilAboveHorizon)
+            }, "these entities explicitly compose inherited and child validation; new entities should opt in");
         }
 
         [TestCaseSource(nameof(GeneratedValidationEntityCases))]

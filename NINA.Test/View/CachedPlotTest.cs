@@ -163,6 +163,29 @@ namespace NINA.Test.View {
             plot.Tag.Should().BeNull();
         }
 
+        [Test]
+        public void AltitudeChart_RendersTheUpperHorizonSeries() {
+            using var scope = new CoreEditorTestScope();
+            var referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
+            var target = new InputTarget(Angle.ByDegree(52), Angle.ByDegree(13), HorizonTestData.Dual(10, 70));
+            target.InputCoordinates.Coordinates = new Coordinates(Angle.ByHours(8), Angle.ByDegree(40), Epoch.J2000);
+            var chart = new AltitudeChart {
+                Width = 600, Height = 240, DataContext = target.DeepSkyObject,
+                NighttimeData = new NighttimeData(referenceDate, referenceDate, AstroUtil.MoonPhase.FullMoon, 50, null, null, null, null, null)
+            };
+            scope.Host.Content = chart;
+            scope.Host.UpdateLayout();
+            Drain();
+
+            var plot = Descendants<CachedPlot>(chart).Single();
+            plot.ActualModel.GetLastPlotException().Should().BeNull();
+            target.DeepSkyObject.UpperHorizon.Should().NotBeEmpty();
+            var upper = plot.ActualModel.Series.OfType<OxyPlot.Series.AreaSeries>()
+                .Single(series => ReferenceEquals(series.ItemsSource, target.DeepSkyObject.UpperHorizon));
+            upper.ItemsSource.Cast<DataPoint>().Should().Equal(target.DeepSkyObject.UpperHorizon);
+            upper.ConstantY2.Should().Be(90);
+        }
+
         private static void AssertRenderedData(OxyPlot.Series.LineSeries line, List<DataPoint> expected) {
             line.ItemsSource.Cast<DataPoint>().Should().Equal(expected);
             var peak = expected.MaxBy(point => point.Y);

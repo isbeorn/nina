@@ -4,7 +4,7 @@ Audited on 2026-09-18. This inventory covers the 104 built-in MEF entity types, 
 
 `NINA.Test/Sequencer/Editing/CoreEditorHistoryTest.cs` discovers the entity exports rather than maintaining a separate type list. `CoreEditorTestScope` constructs real entities with mocked services and loads the exported resource dictionaries into an offscreen STA window. Each editable text, selection and checkbox binding must change the accepted model value, create one entry and restore that value through both undo and redo. Forwarding bindings are followed for assertions on the model, not just the control's displayed text. Generated numeric properties are checked by expression definition.
 
-The baseline catalog exercises 267 input instances. The linked-template target test separately exercises all eight override fields. Counts include shared editors each time an entity uses them, including the numeric and expression forms of gain. Zero means the entity has no parameter inputs in its own template; its shared structural controls still use the command paths below. The test's `AUDIT` output lists the resolved fields for each type. This catalog is embedded by the test project and enforced as the expected export and field inventory, including repeated fields. Input commits use routed focus departure.
+The baseline catalog exercises 269 input instances. The linked-template target test separately exercises all eight override fields. Counts include shared editors each time an entity uses them, including the numeric and expression forms of gain. Zero means the entity has no parameter inputs in its own template; its shared structural controls still use the command paths below. The test's `AUDIT` output lists the resolved fields for each type. This catalog is embedded by the test project and enforced as the expected export and field inventory, including repeated fields. Input commits use routed focus departure.
 
 ## Additional interaction checks
 
@@ -55,7 +55,7 @@ When adding a core input, run the catalog test and inspect its `AUDIT` row. Chec
 
 | Entity | Input instances | Resolved fields |
 | --- | ---: | --- |
-| AboveHorizonCondition | 10 | AboveHorizonCondition.OffsetExpression, InputCoordinates.RAHours, InputCoordinates.RAMinutes, InputCoordinates.RASeconds, AboveHorizonCondition.RaExpression, InputCoordinates.DecDegrees, InputCoordinates.DecMinutes, InputCoordinates.DecSeconds, AboveHorizonCondition.DecExpression, AboveHorizonCondition.PositionAngleExpression |
+| AboveHorizonCondition | 11 | AboveHorizonCondition.OffsetExpression, AboveHorizonCondition.UpperOffsetExpression, InputCoordinates.RAHours, InputCoordinates.RAMinutes, InputCoordinates.RASeconds, AboveHorizonCondition.RaExpression, InputCoordinates.DecDegrees, InputCoordinates.DecMinutes, InputCoordinates.DecSeconds, AboveHorizonCondition.DecExpression, AboveHorizonCondition.PositionAngleExpression |
 | AltitudeCondition | 10 | AltitudeCondition.OffsetExpression, InputCoordinates.RAHours, InputCoordinates.RAMinutes, InputCoordinates.RASeconds, AltitudeCondition.RaExpression, InputCoordinates.DecDegrees, InputCoordinates.DecMinutes, InputCoordinates.DecSeconds, AltitudeCondition.DecExpression, AltitudeCondition.PositionAngleExpression |
 | LoopCondition | 1 | LoopCondition.IterationsExpression |
 | LoopWhile | 1 | LoopWhile.PredicateExpression |
@@ -143,7 +143,7 @@ When adding a core input, run the catalog test and inspect its `AUDIT` row. Chec
 | WaitForTime | 5 | WaitForTime.SelectedProvider, WaitForTime.Hours, WaitForTime.Minutes, WaitForTime.Seconds, WaitForTime.MinutesOffset |
 | WaitForTimeSpan | 1 | WaitForTimeSpan.TimeExpression |
 | WaitUntil | 1 | WaitUntil.PredicateExpression |
-| WaitUntilAboveHorizon | 10 | WaitUntilAboveHorizon.OffsetExpression, InputCoordinates.RAHours, InputCoordinates.RAMinutes, InputCoordinates.RASeconds, WaitUntilAboveHorizon.RaExpression, InputCoordinates.DecDegrees, InputCoordinates.DecMinutes, InputCoordinates.DecSeconds, WaitUntilAboveHorizon.DecExpression, WaitUntilAboveHorizon.PositionAngleExpression |
+| WaitUntilAboveHorizon | 11 | WaitUntilAboveHorizon.OffsetExpression, WaitUntilAboveHorizon.UpperOffsetExpression, InputCoordinates.RAHours, InputCoordinates.RAMinutes, InputCoordinates.RASeconds, WaitUntilAboveHorizon.RaExpression, InputCoordinates.DecDegrees, InputCoordinates.DecMinutes, InputCoordinates.DecSeconds, WaitUntilAboveHorizon.DecExpression, WaitUntilAboveHorizon.PositionAngleExpression |
 | AutofocusAfterExposures | 1 | AutofocusAfterExposures.AfterExposuresExpression |
 | AutofocusAfterFilterChange | 0 | No parameter inputs |
 | AutofocusAfterHFRIncreaseTrigger | 3 | AutofocusAfterHFRIncreaseTrigger.SampleSizeExpression, AutofocusAfterHFRIncreaseTrigger.AmountExpression, AutofocusAfterHFRIncreaseTrigger.TrendPerFilter |

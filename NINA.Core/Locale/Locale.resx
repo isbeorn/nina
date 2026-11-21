@@ -5446,7 +5446,7 @@ For quickly changing conditions a smaller sample size will help to respond more 
     <value>Custom Horizon</value>
   </data>
   <data name="LblCustomHorizonTooltip" xml:space="preserve">
-    <value>Load a custom horizon file to be used to determine local horizon limits and display the limit in the altitude charts.</value>
+    <value>Load a custom horizon file to be used to determine local horizon limits and display the limit in the altitude charts. Each line is 'azimuth lower [upper]'. The optional third column defines an upper horizon (e.g. a balcony), a '-' means no value at that azimuth.</value>
   </data>
   <data name="LblFailedToLoadCustomHorizon" xml:space="preserve">
     <value>Failed to load custom horizon</value>
@@ -5470,6 +5470,21 @@ For quickly changing conditions a smaller sample size will help to respond more 
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
     <value>Loop while Altitude Above Horizon</value>
     <comment>Describes a continuing while condition: stop once the target falls below its horizon threshold.</comment>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_ProgressUpper" xml:space="preserve">
+    <value>Waiting until target is below the upper horizon. Target Altitude {0}° / Upper Horizon Altitude {1}°</value>
+  </data>
+  <data name="LblUnreachableTargetForSkyWindow" xml:space="preserve">
+    <value>Target will not be inside the available sky within the next 24 hours</value>
+  </data>
+  <data name="LblUpperHorizonLimit" xml:space="preserve">
+    <value>Upper horizon limit</value>
+  </data>
+  <data name="LblUpperOffset" xml:space="preserve">
+    <value>Upper offset</value>
+  </data>
+  <data name="LblUpperOffsetTooltip" xml:space="preserve">
+    <value>Safety margin below the upper horizon. The target has to stay at or below the upper horizon minus this offset</value>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>Target will never be above the horizon</value>

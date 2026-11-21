@@ -20,10 +20,15 @@ namespace NINA.Astrometry {
         protected SkyObjectBase(string id, string imageRepository, CustomHorizon customHorizon) : this(id, null as Func<SkyObjectBase, Task<BitmapSource>>, customHorizon) {
         }
 
-        protected SkyObjectBase(string id, Func<SkyObjectBase, Task<BitmapSource>> imageFactory, CustomHorizon customHorizon) {
+        protected SkyObjectBase(string id, Func<SkyObjectBase, Task<BitmapSource>> imageFactory, CustomHorizon customHorizon)
+            : this(id, imageFactory, SkyWindow.From(customHorizon)) {
+        }
+
+        protected SkyObjectBase(string id, Func<SkyObjectBase, Task<BitmapSource>> imageFactory, SkyWindow skyWindow) {
             Id = id;
             Name = id;
-            this.customHorizon = customHorizon;
+            this.skyWindow = skyWindow;
+            this.customHorizon = skyWindow?.Lower;
             this.imageFactory = imageFactory;
         }
 
@@ -213,8 +218,28 @@ namespace NINA.Astrometry {
             Altitudes = null;
         }
 
+        private List<DataPoint> _upperHorizon;
+
+        public List<DataPoint> UpperHorizon {
+            get {
+                if (_upperHorizon == null) {
+                    _upperHorizon = new List<DataPoint>();
+                }
+                return _upperHorizon;
+            }
+            private set {
+                _upperHorizon = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public void SetCustomHorizon(CustomHorizon customHorizon) {
-            this.customHorizon = customHorizon;
+            SetSkyWindow(SkyWindow.From(customHorizon));
+        }
+
+        public void SetSkyWindow(SkyWindow skyWindow) {
+            this.skyWindow = skyWindow;
+            this.customHorizon = skyWindow?.Lower;
             this.UpdateHorizonAndTransit();
         }
 
@@ -231,6 +256,12 @@ namespace NINA.Astrometry {
         }
 
         private BitmapSource _image;
+        protected SkyWindow skyWindow;
+
+        /// <summary>
+        /// Lower horizon of <see cref="skyWindow"/>. Kept in sync for classes deriving from <see cref="SkyObjectBase"/>
+        /// (e.g. in plugins) that still read it.
+        /// </summary>
         protected CustomHorizon customHorizon;
 
         private Func<SkyObjectBase, Task<BitmapSource>> imageFactory;

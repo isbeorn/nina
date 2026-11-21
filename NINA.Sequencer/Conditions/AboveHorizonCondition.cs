@@ -100,6 +100,14 @@ namespace NINA.Sequencer.Conditions {
         [IsExpression(Default = 0, Range = [-90, 90], Proxy = "Data.Offset")]
         public partial double Offset { get; set; }
 
+        /// <summary>
+        /// Signed safety margin below the upper horizon: the target has to stay at or below [upper horizon] - UpperOffset,
+        /// so a positive value lowers the limit and a negative value raises it.
+        /// Independent of <see cref="Offset"/>, which only applies to the lower horizon.
+        /// </summary>
+        [IsExpression(Default = 0, Range = [-90, 90], Proxy = "Data.UpperOffset")]
+        public partial double UpperOffset { get; set; }
+
         private void Coordinates_CoordinatesChanged(object sender, EventArgs e) {
             // When coordinates change, we change the decimal value
             InputCoordinates ic = (InputCoordinates)sender;
@@ -179,6 +187,19 @@ namespace NINA.Sequencer.Conditions {
             var targetAltitude = Data.TargetAltitude;
             var check = Data.CurrentAltitude >= targetAltitude;
 
+            if (check && Data.HasUpperHorizon) {
+                // The target must also stay below the upper horizon
+                // Updated together with the current altitude by CalculateExpectedTime
+                var upperAltitude = Data.UpperTargetAltitude;
+                check = Data.CurrentAltitude <= upperAltitude;
+                if (!check && IsActive()) {
+                    Logger.Info(
+                        $"{nameof(AboveHorizonCondition)} finished. Target is above the upper horizon. "
+                        + $"Current / Upper limit: {Data.CurrentAltitude}° / {upperAltitude}°");
+                }
+                return check;
+            }
+
             if (!check && IsActive()) {
                 Logger.Info($"{nameof(AboveHorizonCondition)} finished. Current / Target: {Data.CurrentAltitude}° / {targetAltitude}°");
             }
@@ -197,6 +218,7 @@ namespace NINA.Sequencer.Conditions {
         public void CalculateExpectedTime(DateTime time) {
             ResolveEffectiveCoordinates();
             _ = Offset; // Refresh the target consumed by the shared altitude calculator.
+            _ = UpperOffset;
             Data.CalculateTargetExpectedTime(time, TargetCrossingComparison.BelowStrict);
         }
 

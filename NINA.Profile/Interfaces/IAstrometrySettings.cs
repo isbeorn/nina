@@ -23,6 +23,13 @@ namespace NINA.Profile.Interfaces {
 
         string HorizonFilePath { get; set; }
         CustomHorizon Horizon { get; set; }
+
+        // The member below was added later. It has a default implementation so that existing
+        // implementors of this interface (e.g. in plugins) keep compiling.
+        // It is derived from Horizon, including an upper horizon embedded in it.
+
+        /// <summary>Combination of the lower and the optional upper horizon (obstacles above, e.g. a balcony)</summary>
+        SkyWindow SkyWindow => SkyWindow.From(Horizon);
         string Observer { get; set; }
         string Observatory { get; set; }
         string Site { get; set; }
